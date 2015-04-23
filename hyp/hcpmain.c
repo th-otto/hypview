@@ -59,6 +59,7 @@ static void print_version(FILE *out)
 
 /* ------------------------------------------------------------------------- */
 
+#if 0
 static void print_short_version(FILE *out)
 {
 	char *version = gl_program_version();
@@ -73,6 +74,7 @@ static void print_short_version(FILE *out)
 	g_free(msg);
 	g_free(version);
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
@@ -2625,9 +2627,6 @@ int main(int argc, const char **argv)
 		{
 			if (opts->do_list)
 			{
-				if (opts->verbose >= 0)
-					print_short_version(stdout);
-				
 				/*
 				 * maybe TODO: handle -o~ here
 				 */
@@ -2645,8 +2644,6 @@ int main(int argc, const char **argv)
 			{
 				const char *filename = argv[c++];
 
-				if (opts->output_filename != NULL && opts->verbose >= 0)
-					print_short_version(stdout);
 				if (opts->output_charset != HYP_CHARSET_NONE)
 					output_charset = opts->output_charset;
 				/*
@@ -2658,8 +2655,6 @@ int main(int argc, const char **argv)
 				}
 			} else if (opts->do_recompile)
 			{
-				if (opts->output_filename != NULL && opts->verbose >= 0)
-					print_short_version(stdout);
 				if (opts->output_charset != HYP_CHARSET_NONE)
 					output_charset = opts->output_charset;
 				while (c < argc)
@@ -2680,8 +2675,6 @@ int main(int argc, const char **argv)
 			{
 				const char *filename = argv[c++];
 				
-				if (opts->output_filename != NULL && opts->verbose >= 0)
-					print_short_version(stdout);
 				/*
 				 * args beyond filename are node names to display
 				 */
@@ -2691,9 +2684,6 @@ int main(int argc, const char **argv)
 				}
 			} else if (opts->do_compile)
 			{
-				if (opts->verbose >= 0)
-					print_short_version(stdout);
-	
 				if (opts->output_filename && num_args > 1)
 				{
 					hcp_usage_error(_("cannot compile multiple input files to single output"));
