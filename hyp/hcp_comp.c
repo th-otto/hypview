@@ -5081,6 +5081,8 @@ static gboolean finish_pass1(hcp_vars *vars)
 				if (j < i)
 				{
 					entry->extern_nodeindex = j;
+					if (vars->extern_table[j]->xlink_target == HYP_NOINDEX)
+						vars->extern_table[j]->xlink_target = vars->p2_real_external_node_counter;
 					entry->xlink_target = vars->extern_table[j]->xlink_target;
 				} else
 				{
@@ -5312,7 +5314,7 @@ static int addlink(hcp_vars *vars, unsigned char type, const char *text, const u
 			len = HYP_LINKTEXT_MAX;
 		}
 	}
-	if (name != NULL && target != HYP_NOINDEX)
+	if (name != NULL /* && target != HYP_NOINDEX */)
 	{
 		ASSERT(target != HYP_NOINDEX);
 		addbyte(vars, HYP_ESC);
