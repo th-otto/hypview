@@ -1,7 +1,7 @@
 #ifndef __HV_GTK_H__
 #define __HV_GTK_H__
 
-#include "hypdefs.h"
+#include "hypdoc.h"
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>

@@ -944,9 +944,16 @@ int g_ascii_strncasecmp(const char *s1, const char *s2, size_t n);
 gboolean walk_dir(const char *dirname, gboolean (*f)(const char *filename, void *data), void *data);
 gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, void *data), void *data);
 
+#if !defined(P_WAIT) && defined(_P_WAIT)
+#define P_WAIT   _P_WAIT
+#define P_NOWAIT _P_NOWAIT
+#define P_OVERLAY _P_OVERLAY
+#endif
+#ifndef P_WAIT
 #define P_WAIT		0
 #define P_NOWAIT	1
 #define P_OVERLAY	2
+#endif
 int hyp_utf8_spawnvp(int mode, int argc, const char *const argv[]);
 
 #endif /* __HYP_H__ */

@@ -71,7 +71,7 @@ libhyp_a_SOURCES += unix/spawn.c
 endif
 
 if OS_WIN32
-libhyp_a_SOURCES += win32.c
+libhyp_a_SOURCES += win32.c win32/spawn.c
 endif
 
 
