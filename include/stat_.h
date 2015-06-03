@@ -34,6 +34,16 @@
 #  define O_BINARY 0
 #endif
 
+#ifndef O_EXCL
+#  ifdef _O_EXCL
+#    define O_EXCL _O_EXCL
+#  endif
+#endif
+
+#ifndef O_EXCL
+#  define O_EXCL 0
+#endif
+
 
 #ifndef S_ISDIR
 #  define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)

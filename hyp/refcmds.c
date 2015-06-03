@@ -390,9 +390,11 @@ error:
 gboolean ref_add_entries(const char *refname, const char *modname, gboolean delete_mod, FILE *outfile, gboolean verbose)
 {
 	int ref_handle = -1, mod_handle = -1;
+	int lck_handle = -1;
 	char *refname2 = NULL, *modname2 = NULL;
 	REF_FILE *ref = NULL, *mod = NULL;
-	char *dir, *tmpname = NULL;
+	char *dir = NULL, *tmpname = NULL;
+	char *lckname = NULL;
 	char *tmp;
 	REF_MODULE *mod1, *mod2;
 	gboolean found;
@@ -431,6 +433,13 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 		goto error;
 	}
 	
+	dir = g_path_get_dirname(refname);
+	lckname = g_build_filename(dir, "hypview.lck", NULL);
+	while ((lck_handle = hyp_utf8_open(lckname, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, HYP_DEFAULT_FILEMODE)) < 0 && errno == EEXIST)
+	{
+		usleep(100000);
+	}
+	
 	ref_handle = hyp_utf8_open(refname, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 	if (ref_handle < 0 && hyp_guess_filetype(refname) != HYP_FT_REF)
 	{
@@ -460,11 +469,11 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 		ref_handle = -1;
 	}
 	
-	dir = g_path_get_dirname(refname);
 	tmp = g_strdup_printf("hy(%u).ref", (int)getpid());
 	tmpname = g_build_filename(dir, tmp, NULL);
 	g_free(tmp);
 	g_free(dir);
+	dir = NULL;
 	
 	ref_handle = hyp_utf8_open(tmpname, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, HYP_DEFAULT_FILEMODE);
 	if (ref_handle < 0)
@@ -537,6 +546,11 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 	g_free(modname2);
 	g_free(refname2);
 	g_free(tmpname);
+	if (lck_handle >= 0)
+		hyp_utf8_close(lck_handle);
+	if (lckname)
+		hyp_utf8_unlink(lckname);
+	g_free(lckname);
 	
 	return TRUE;
 
@@ -552,11 +566,17 @@ error:
 		hyp_utf8_close(mod_handle);
 	g_free(modname2);
 	g_free(refname2);
+	g_free(dir);
 	if (tmpname)
 	{
 		hyp_utf8_unlink(tmpname);
 		g_free(tmpname);
 	}
+	if (lck_handle >= 0)
+		hyp_utf8_close(lck_handle);
+	if (lckname)
+		hyp_utf8_unlink(lckname);
+	g_free(lckname);
 	return FALSE;
 }
 
