@@ -96,5 +96,4 @@ EXTRA_DIST = lang utils \
 	hypview.prj hcp.prj stool.prj refcheck.prj reflink.prj hypfind.prj \
 	help_rc.prj all.prj dragdrop/libdgdp.prj \
 	bubble/history.txt bubble/libbgh.prj bubble/test.bgh bubble/test.c \
-	gif2bmp.prj picinfo.prj \
-	malloc.c
+	gif2bmp.prj picinfo.prj

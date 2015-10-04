@@ -180,7 +180,6 @@ unsigned char must_read = TRUE;					/* For get_nibble    */
 /*-----------------------------------------------------------*/
 /*-------------- Prototypes ---------------------------------*/
 /*-----------------------------------------------------------*/
-char *strsave(char *s);
 void strfill(char *s, char c, int cnt);
 void trans_bstr(char *s, unsigned char *bstr);
 void read_info(void);
@@ -216,17 +215,6 @@ void wr_options(void);
 void open_log(void);
 
 /*--------- Some general routines --------------*/
-char *strsave(char *s)
-{
-	char *p;
-
-	p = calloc(strlen(s) + 1, 1);
-	if (p)
-		strcpy(p, s);
-	return (p);
-}
-
-
 void strfill(char *s, char c, int cnt)
 {
 	while (cnt-- > 0)
@@ -578,7 +566,7 @@ static int read_key_table(SRCHKEY_ENTRY ** ptable, int which)
 	if (size != 0)
 	{
 		fseek(hlpfile, offset, SEEK_SET);
-		*ptable = (SRCHKEY_ENTRY *) malloc(size);
+		*ptable = (SRCHKEY_ENTRY *) g_malloc(size);
 		if (*ptable != NULL)
 			fread(*ptable, 1, size, hlpfile);
 	}
@@ -709,7 +697,7 @@ long decode(int index, char *plain_text)
 
 	if (first_call)
 	{
-		code_buffer = malloc(MAXCODEDSIZE);
+		code_buffer = g_new(unsigned char, MAXCODEDSIZE);
 		first_call = FALSE;
 	}
 
@@ -871,6 +859,22 @@ int write_names(NAME_ENTRY * namelist)
 }
 
 
+/*** ---------------------------------------------------------------------- ***/
+
+#if !defined(g_strdup) && !defined(HAVE_GLIB)
+char *g_strdup(const char *str)
+{
+	char *dst;
+	
+	if (str == NULL)
+		return NULL;
+	dst = g_new(char, strlen(str) + 1);
+	if (dst == NULL)
+		return NULL;
+	return strcpy(dst, str);
+}
+#endif
+
 /*-----------------------------------------------*/
 /* ins_name:                                     */
 /*-----------------------------------------------*/
@@ -883,7 +887,7 @@ void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, u
 {
 	NAME_ENTRY *new;
 
-	new = malloc(sizeof(NAME_ENTRY));
+	new = g_new(NAME_ENTRY, 1);
 	if (!new)
 	{
 		sprintf(msg, "%s\n", no_ram_msg);
@@ -896,7 +900,7 @@ void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, u
 	new->next = *namelist;
 	new->name_attr = attr;
 	new->scr_code = code;
-	new->name = strsave(sname);
+	new->name = g_strdup(sname);
 	if (attr == LINK)
 		new->link_index = lnk_idx;
 	*namelist = new;
@@ -937,7 +941,7 @@ void setup_namearr(NAME_ENTRY * namelist)
 {
 	int arr_idx;
 
-	name_array = malloc(name_cnt * sizeof(NAME_ENTRY *));
+	name_array = g_new(NAME_ENTRY *, name_cnt);
 	if (!name_array)
 	{
 		sprintf(msg, "\n%s\n", no_ram_msg);
@@ -1050,19 +1054,14 @@ void transform(char *source, long length, char *d)
 int decompile(void)
 {
 	int i = 0;
-
 	_UWORD last_code;
-
 	unsigned char new_screen = TRUE;
-
 	char *result;
-
 	char *textbuffer;
-
 	long textlength;
 
 	wr_msg(decomp_msg, TO_SCREEN);
-	result = malloc(TXTBUFSIZE);
+	result = g_new(char, TXTBUFSIZE);
 	if (!result)
 	{
 		sprintf(msg, "%s", no_ram_msg);
@@ -1071,7 +1070,7 @@ int decompile(void)
 		return (FALSE);
 	}
 
-	textbuffer = malloc(MAXCODEDSIZE);
+	textbuffer = g_new(char, MAXCODEDSIZE);
 	if (!textbuffer)
 	{
 		sprintf(msg, "%s", no_ram_msg);
@@ -1169,7 +1168,7 @@ int make_txtfile(void)
 
 	setvbuf(txtfile, NULL, _IOFBF, 32 * 1024L);
 
-	textbuffer = malloc(TXTBUFSIZE);
+	textbuffer = g_new(char, TXTBUFSIZE);
 	if (!textbuffer)
 	{
 		wr_msg(no_ram_msg, TO_ALL);
@@ -1209,7 +1208,7 @@ int make_txtfile(void)
 		}
 	}
 
-	free(textbuffer);
+	g_free(textbuffer);
 	fclose(txtfile);
 
 	return (TRUE);
@@ -1242,7 +1241,7 @@ int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
 
 	if (first_call)
 	{
-		plain_text = malloc(MAXCODEDSIZE);
+		plain_text = g_new(char, MAXCODEDSIZE);
 		first_call = FALSE;
 	}
 	if (!plain_text)
@@ -1327,7 +1326,7 @@ int read_Link(void)
 	wr_msg(link_msg, TO_SCREEN);
 	if (first_call)
 	{
-		plain_text = malloc(TXTBUFSIZE);
+		plain_text = g_new(char, TXTBUFSIZE);
 		first_call = FALSE;
 	}
 
@@ -1397,7 +1396,7 @@ int read_Index(void)
 	_UWORD screen_code;
 
 	wr_msg(rd_idx_msg, TO_SCREEN);
-	plain_idx_text = malloc(0x1000L);
+	plain_idx_text = g_new(char, 0x1000L);
 	if (!plain_idx_text)
 		return (FALSE);
 
@@ -1431,7 +1430,7 @@ int read_Index(void)
 		if (!rd_sidx_names(subidx_scrs[i]))
 			return (FALSE);
 
-	free(plain_idx_text);
+	g_free(plain_idx_text);
 	return (TRUE);
 }
 
@@ -1473,19 +1472,18 @@ int read_header(void)
 int read_screen_table(void)
 {
 	long bytes_read;
-
 	int i;
 
 	wr_msg(rd_scr_msg, TO_SCREEN);
 	fseek(hlpfile, 0x88L, SEEK_SET);
-	screen_table = (long *) malloc(hlphdr.scr_tab_size);
+	screen_table = (long *) g_malloc(hlphdr.scr_tab_size);
 	if (!screen_table)
 	{
 		sprintf(msg, "%s", no_ram_msg);
 		wr_msg(msg, TO_ALL);
 	}
 	screen_cnt = (int) hlphdr.scr_tab_size >> 2;
-	screen_done = (unsigned char *) malloc(screen_cnt);
+	screen_done = g_new(unsigned char, screen_cnt);
 	if (!screen_done)
 	{
 		sprintf(msg, "\n%s\n", no_ram_msg);
@@ -1513,7 +1511,7 @@ int read_string_table(void)
 	long bytes_read;
 
 	wr_msg(rd_str_msg, TO_SCREEN);
-	string_tab = (unsigned char *) malloc(hlphdr.str_size);
+	string_tab = g_new(unsigned char, hlphdr.str_size);
 	if (!string_tab)
 	{
 		sprintf(msg, "%s", no_ram_msg);

@@ -63,15 +63,16 @@ if OS_TOS
 #libhyp_a_SOURCES += tos/cookie.c
 libhyp_a_SOURCES += tos/mkdir.c
 libhyp_a_SOURCES += tos/spawn.c
+libhyp_a_SOURCES += tos/malloc.c
 INCLUDES +=  -I$(hyp_srcdir)/include/tos
 endif
 
 if OS_UNIX
-libhyp_a_SOURCES += unix/spawn.c
+libhyp_a_SOURCES += unix/spawn.c unix/malloc.c
 endif
 
 if OS_WIN32
-libhyp_a_SOURCES += win32.c win32/spawn.c
+libhyp_a_SOURCES += win32.c win32/spawn.c unix/malloc.c
 endif
 
 

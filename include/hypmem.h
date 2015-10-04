@@ -149,7 +149,8 @@ char *g_ascii_formatd(char *buffer, int buf_len, const char *format, double d);
 #define g_getenv(s) getenv(s)
 #endif
 
-#endif
+#endif /* HAVE_GLIB */
+
 
 #if MEM_GARBAGE_FRIENDLY
 #define mem_garbage_clear(p) p = NULL
@@ -198,5 +199,16 @@ char *replace_ext(const char *str, const char *from, const char *to);
 char *strslash(const char *str);
 char *strrslash(const char *str);
 void convslash(char *str);
+
+void _crtexit(void);
+void _crtinit(void);
+
+#if !DEBUG_ALLOC
+#define _crtexit()
+#endif
+
+#if DEBUG_ALLOC < 4
+#define _crtinit()
+#endif
 
 #endif /* __HYPMEM_H__ */

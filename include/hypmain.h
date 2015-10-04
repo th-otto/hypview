@@ -38,6 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	
 	start_info.newmode = 0;
 	__wgetmainargs(&__argc, &__wargv, &dummy_environ, 0, &start_info);
+	_crtinit();
 	__argv = g_new(char *, __argc + 1);
 	for (i = 0; i < __argc; i++)
 		__argv[i] = hyp_wchar_to_utf8(__wargv[i], STR0TERM);
@@ -48,12 +49,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	for (i = 0; i < __argc; i++)
 		g_free(__argv[i]);
 	g_free(__argv[i]);
+	_crtexit();
+#undef _crtinit
+#undef _crtexit
+#define _crtinit()
+#define _crtexit()
 	return ret;
 }
 #endif
 
-
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 #undef _argc
 #undef __argc
 #undef _argv
@@ -61,7 +66,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 #undef main
 static int __argc = 0;
 static char **__argv = 0;
-void _crtexit(void);
 int main(int argc, const char **argv)
 {
 	int i;
@@ -72,6 +76,7 @@ int main(int argc, const char **argv)
 	Fsetdta(&mydta);
 	
 	Pdomain(1); /* DOM_MINT */
+	_crtinit();
 	
 	__argc = argc;
 	__argv = g_new(char *, argc + 1);
@@ -84,9 +89,11 @@ int main(int argc, const char **argv)
 	for (i = 0; i < __argc; i++)
 		g_free(__argv[i]);
 	g_free(__argv);
-#if (defined(__TOS__) || defined(__atarist__)) && DEBUG_ALLOC
 	_crtexit();
-#endif
+#undef _crtinit
+#undef _crtexit
+#define _crtinit()
+#define _crtexit()
 	return ret;
 }
 #endif
@@ -96,6 +103,8 @@ int main(int argc, const char **argv)
 {
 	int ret;
 	
+	_crtinit();
+
 #ifdef __TOS__
 	_argv0 = argv[0];
 	g_tos_get_bindir = g_ttp_get_bindir;
@@ -118,5 +127,8 @@ int main(int argc, const char **argv)
 #ifdef ENABLE_NLS
 	xs_locale_exit();
 #endif
+
+	_crtexit();
+
 	return ret;
 }

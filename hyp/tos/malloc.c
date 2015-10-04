@@ -177,9 +177,17 @@ struct mem_chunk
 #define ZeroMallocs 0
 
 /* linked list of free blocks struct defined in lib.h */
-static struct mem_chunk _mchunk_free_list = { VAL_FREE, &_mchunk_free_list, &_mchunk_free_list, 0 };
+static struct mem_chunk _mchunk_free_list = { VAL_FREE, &_mchunk_free_list, &_mchunk_free_list, 0
+#if DEBUG_ALLOC >= 2
+, 0, 0
+#endif
+};
 #if DEBUG_ALLOC >= 1
-static struct mem_chunk _mchunk_alloc_list = { VAL_ALLOC, &_mchunk_alloc_list, &_mchunk_alloc_list, 0 };
+static struct mem_chunk _mchunk_alloc_list = { VAL_ALLOC, &_mchunk_alloc_list, &_mchunk_alloc_list, 0
+#if DEBUG_ALLOC >= 2
+, 0, 0
+#endif
+};
 #endif
 
 
