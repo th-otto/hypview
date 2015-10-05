@@ -1105,7 +1105,7 @@ void pic_savepalette(PALETTE pal)
 
 void pic_showpalette(PALETTE pal)
 {
-#if defined(__TOS__) || defined(__atarist__)
+#if (defined(__TOS__) || defined(__atarist__)) && 0
 	TOSPALETTE tospal;
 	int i;
 	_WORD *palp = (_WORD *)(tospal);

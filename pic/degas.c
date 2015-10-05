@@ -164,12 +164,12 @@ _UBYTE *degas_pack(const _UBYTE *src, PICTURE *pic)
 	_UBYTE *_dest;
 	
 	bytes = tobyte(width);
-	words = (bytes >> 1);
+	words = (bytes + 1) >> 1;
 	linesize = (_LONG)words * 2 * planes;
 	linebuf = g_new(_UBYTE, linesize);
 	if (linebuf == NULL)
 		return NULL;
-	_dest = g_new(_UBYTE, (linesize + (linesize + 255) / 256) * height);
+	_dest = g_new(_UBYTE, (linesize + 255) * height);
 	if (_dest == NULL)
 	{
 		g_free(linebuf);
@@ -183,7 +183,7 @@ _UBYTE *degas_pack(const _UBYTE *src, PICTURE *pic)
 	planeptr[2] = src + 4;
 	planeptr[3] = src + 6;
 	bytes = tobyte(width);
-	words = (bytes >> 1);
+	words = (bytes + 1) >> 1;
 	linesize = (_LONG)words * 2 * planes;
 	while (--height >= 0)
 	{
