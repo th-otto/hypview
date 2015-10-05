@@ -452,6 +452,8 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 		FLUSHLINE();
 		FLUSHTREE();
 		++lineno;
+		
+		hyp_node_free(nodeptr);
 	} else
 	{
 		hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
@@ -1286,6 +1288,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		
 		hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@endnode%s%s%s", stg_nl, stg_nl, stg_nl);
 		
+		hyp_node_free(nodeptr);
 	} else
 	{
 		hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
@@ -1795,6 +1798,8 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 			}
 		}
 		DUMPTEXT();
+		
+		hyp_node_free(nodeptr);
 	} else
 	{
 		hyp_utf8_fprintf(opts->outfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
