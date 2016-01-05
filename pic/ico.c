@@ -119,6 +119,8 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 	width = get_byte();
 	height = get_byte();
 	colors = get_byte();
+	if (colors == 0)
+		colors = 256;
 	buf += 5; /* skip stuff2 */
 	dsize = get_long();
 	(void) dsize;
@@ -130,6 +132,7 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 	
 	switch (colors)
 	{
+		case 0: pic->pi_planes = 0; break;
 		case 2: pic->pi_planes = 1; break;
 		case 8: pic->pi_planes = 4; break;
 		case 16: pic->pi_planes = 4; break;
@@ -224,7 +227,7 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 	pic->pi_type = FT_ICO;
 	pic->pi_width = width;
 	pic->pi_height = height;
-	if (planes != 1 || pic->pi_compressed != 0)
+	if (planes != 1 || pic->pi_planes == 0 || pic->pi_compressed != 0)
 	{
 		pic->pi_unsupported = TRUE;
 		return TRUE;
@@ -236,6 +239,8 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 		return FALSE;
 	if (mapentrysize > 0)
 	{
+		if (colors == 0)
+			colors = clrused;
 		if (clrused <= 0)
 			clrused = colors;
 		else if (clrused > colors)

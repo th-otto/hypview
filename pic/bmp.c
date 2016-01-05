@@ -28,7 +28,9 @@ typedef struct {
 #define BMP_RGB 0
 #define BMP_RLE8 1
 #define BMP_RLE4 2
-#define BMP_BITFIELDS 24
+#define BMP_BITFIELDS 3
+#define BMP_JPEG 4
+#define BMP_PNG 5
 			unsigned char sizeImage[4];		/* size of data */
 			unsigned char xPelsPerMeter[4];
 			unsigned char yPelsPerMeter[4];
