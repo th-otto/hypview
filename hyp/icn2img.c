@@ -147,6 +147,23 @@ static gboolean conv_file(const char *filename)
 	g_free(buf);
 	buf = NULL;
 	
+	if (pic.pi_planes <= 8 && pic.pi_planes != 1)
+	{
+		/*
+		 * ICN reader reads separate planes, but other converters
+		 * expect interleaved planes
+		 */
+		unsigned char *planebuf = g_new(unsigned char, pic.pi_picsize);
+		if (planebuf == NULL)
+		{
+			oom();
+			goto error;
+		}
+		pic_planes_to_interleaved(planebuf, dest, &pic);
+		g_free(dest);
+		dest = planebuf;
+	}
+
 	outname = replace_ext(filename, ".icn", ".img");
 	
 	out = fopen(outname, "wb");
