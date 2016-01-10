@@ -1,6 +1,6 @@
 include ../Makefile.common
 
-if HAVE_GTK
+if WITH_GUI_GTK
 bin_PROGRAMS = hypview
 endif
 

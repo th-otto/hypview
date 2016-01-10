@@ -1,6 +1,6 @@
 include ../Makefile.common
 
-if OS_TOS
+if WITH_GUI_GEM
 noinst_PROGRAMS = hypview
 noinst_SCRIPTS = hypview.app
 endif
