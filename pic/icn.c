@@ -156,13 +156,15 @@ again:;
 	{
 		*buf++ = (unsigned char)c;
 		len = 1;
-		while (isalnum(c = c_parse_getc(pic, inbuf)) || c == '_')
+		c = c_parse_getc(pic, inbuf);
+		while (isalnum(c) || c == '_')
 		{
 			if (len < C_VALLEN)
 			{
 				*buf++ = (unsigned char)c;
 				len++;
 			}
+			c = c_parse_getc(pic, inbuf);
 		}
 		toktype = T_ID;
 	} else if (isdigit(c))
