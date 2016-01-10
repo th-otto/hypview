@@ -1,4 +1,7 @@
+#define GDK_DISABLE_DEPRECATION_WARNINGS
+
 #include "hv_gtk.h"
+#include "gdkkeysyms.h"
 
 #include "../icons/hypview.h"
 
@@ -20,8 +23,6 @@ typedef struct _shell_dialog
 	GtkWidget *main_vbox;
 	GtkWidget *text_window;
 	GtkWidget *text_view;
-	
-	GtkTooltips *tooltips;
 } SHELL_DIALOG;
 
 char const gl_program_name[] = "hypview";
@@ -199,7 +200,7 @@ static GtkWidget *show_message(SHELL_DIALOG *sd, const char *title, const char *
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("message"));
-	gtk_signal_connect(GTK_OBJECT(dialog), "destroy", GTK_SIGNAL_FUNC(message_destroyed), sd);
+	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(message_destroyed), sd);
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
@@ -221,9 +222,9 @@ static GtkWidget *show_message(SHELL_DIALOG *sd, const char *title, const char *
 		gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	}
 	
-	button = gtk_button_new_from_stock(GTK_STOCK_OK);
+	button = gtk_button_new_ok();
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
-	gtk_signal_connect_object(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), dialog);
+	g_signal_connect_object(G_OBJECT(button), "clicked", G_CALLBACK(gtk_widget_destroy), dialog, 0);
 	
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), GTK_BUTTONBOX_SPREAD);
 
@@ -275,7 +276,9 @@ static gboolean init_gtk(SHELL_DIALOG *sd)
 	
 	if (gtk_inited == 0)
 	{
+#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_set_locale();
+#endif
 		gdk_threads_init();
 		argc = 0;
 		argv[argc++] = NO_CONST(gl_program_name);
@@ -388,10 +391,6 @@ static void NOINLINE ShellDialog_Delete(SHELL_DIALOG *sd)
 		g_freep(&sd->m_file_source);
 		g_freep(&sd->hypview_helpfile);
 		HypProfile_Delete();
-
-		if (sd->tooltips != NULL)
-			gtk_object_unref(GTK_OBJECT(sd->tooltips));
-		sd->tooltips = NULL;
 
 		g_free(sd);
 		global_sd = NULL;
@@ -558,10 +557,6 @@ static void create_shell_dialog(SHELL_DIALOG *sd)
 	GtkAccelGroup *accel_group;
 	GdkPixbuf *icon;
 	
-	sd->tooltips = gtk_tooltips_new();
-	gtk_object_ref(GTK_OBJECT(sd->tooltips));
-	gtk_object_sink(GTK_OBJECT(sd->tooltips));
-	
 	accel_group = gtk_accel_group_new ();
 	
 	sd->hwnd = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -590,7 +585,7 @@ static void create_shell_dialog(SHELL_DIALOG *sd)
 	item = gtk_image_menu_item_new_with_mnemonic(_("Open Hypertext..."));
 	gtk_widget_show(item);
 	gtk_container_add(GTK_CONTAINER(submenu), item);
-	gtk_widget_add_accelerator(item, "activate", accel_group, GDK_O, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+	gtk_widget_add_accelerator(item, "activate", accel_group, GDK_KEY_O, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 	image = gtk_image_new_from_stock("gtk-open", GTK_ICON_SIZE_MENU);
 	gtk_widget_show(image);
 	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(item), image);
@@ -675,8 +670,8 @@ static void create_shell_dialog(SHELL_DIALOG *sd)
 	
 	gtk_window_add_accel_group (GTK_WINDOW (sd->hwnd), accel_group);
 
-	gtk_signal_connect(GTK_OBJECT(sd->hwnd), "delete_event", GTK_SIGNAL_FUNC(wm_toplevel_close_cb), (gpointer) sd);
-	gtk_signal_connect(GTK_OBJECT(sd->hwnd), "destroy", GTK_SIGNAL_FUNC(shell_destroyed), (gpointer) sd);
+	g_signal_connect(G_OBJECT(sd->hwnd), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) sd);
+	g_signal_connect(G_OBJECT(sd->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) sd);
 }
 
 /******************************************************************************/
@@ -899,7 +894,7 @@ int main(int argc, char **argv)
 	
 		if (sd->hwnd == NULL)
 		{
-			gtk_exit(1);
+			exit(1);
 		}
 		
 		gtk_window_parse_geometry(GTK_WINDOW(sd->hwnd), sd->m_geometry);

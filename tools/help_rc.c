@@ -9,6 +9,12 @@
 /*  Last changes: 31.01.1992                     */
 /*************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#undef HAVE_GLIB
+#undef HAVE_GTK
+
 #include "hypdefs.h"
 #include <portab.h>
 #include <stdio.h>

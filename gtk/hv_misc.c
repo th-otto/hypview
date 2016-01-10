@@ -1,3 +1,4 @@
+#define GDK_DISABLE_DEPRECATION_WARNINGS
 #include "hv_gtk.h"
 
 
@@ -100,11 +101,11 @@ void show_dialog(GtkWidget *parent, const char *type, const char *message, void 
 
 	if (ok_fn != NULL)
 	{
-		gtk_signal_connect(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(ok_fn), user_data);
-		gtk_signal_connect(GTK_OBJECT(cancel), "clicked", GTK_SIGNAL_FUNC(warning_dialog_dismiss_cb), user_data);
+		g_signal_connect(G_OBJECT(ok), "clicked", G_CALLBACK(ok_fn), user_data);
+		g_signal_connect(G_OBJECT(cancel), "clicked", G_CALLBACK(warning_dialog_dismiss_cb), user_data);
 	} else
 	{
-		gtk_signal_connect(GTK_OBJECT(ok), "clicked", GTK_SIGNAL_FUNC(warning_dialog_dismiss_cb), user_data);
+		g_signal_connect(G_OBJECT(ok), "clicked", G_CALLBACK(warning_dialog_dismiss_cb), user_data);
 	}
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
@@ -271,8 +272,8 @@ int choose_file(GtkWidget *parent, char **name, gboolean must_exist, const char 
 	info->selector = selector;
 	info->ok = FALSE;
 	info->done = FALSE;
-	gtk_signal_connect(GTK_OBJECT(selector), "response", GTK_SIGNAL_FUNC(choose_file_response), (gpointer) info);
-	gtk_signal_connect(GTK_OBJECT(selector), "destroy", GTK_SIGNAL_FUNC(choose_file_destroyed), (gpointer) info);
+	g_signal_connect(G_OBJECT(selector), "response", G_CALLBACK(choose_file_response), (gpointer) info);
+	g_signal_connect(G_OBJECT(selector), "destroy", G_CALLBACK(choose_file_destroyed), (gpointer) info);
 
 	if (must_exist)
 		gtk_file_chooser_set_action(GTK_FILE_CHOOSER(selector), GTK_FILE_CHOOSER_ACTION_OPEN);
@@ -343,3 +344,29 @@ int choose_file(GtkWidget *parent, char **name, gboolean must_exist, const char 
 	}
 	return FALSE;
 }
+
+/*-----------------------------------------------------------------------*/
+
+#if GTK_CHECK_VERSION(2, 6, 0)
+
+GtkWidget *_gtk_button_new_with_image_and_label(const char *stock, const gchar *label)
+{
+	GtkWidget *button;
+	GtkWidget *image;
+	
+	if (stock && *stock && (image = gtk_image_new_from_stock(stock, GTK_ICON_SIZE_BUTTON)) != NULL)
+	{
+		button = (GtkWidget *)g_object_new(GTK_TYPE_BUTTON,
+                       "label", label,
+                       "use_stock", FALSE,
+                       "use_underline", TRUE,
+                       "image", image,
+                       NULL);
+	} else
+	{
+		button = gtk_button_new_with_mnemonic(label);
+	}
+	return button;
+}
+
+#endif

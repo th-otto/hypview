@@ -2,6 +2,7 @@
  * HELP.C
  *****************************************************************************/
 
+#define GDK_DISABLE_DEPRECATION_WARNINGS
 #include "hv_gtk.h"
 
 #ifdef G_PLATFORM_WIN32
