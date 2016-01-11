@@ -314,7 +314,7 @@ void pic_showpalette(PALETTE);
 void pic_getpalette(PALETTE, const TOSPALETTE *);
 void pic_setpalette(TOSPALETTE, PALETTE);
 void pic_stdpalette(PALETTE pal, _WORD planes);
-long pic_rowsize(PICTURE *pic);
+long pic_rowsize(PICTURE *pic, _WORD planes);
 void pic_calcsize(PICTURE *pic);
 void pic_stdsize(PICTURE *pic);
 _WORD pic_calcrez(_WORD planes);

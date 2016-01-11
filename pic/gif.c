@@ -346,7 +346,7 @@ static void initPixelCursor(struct pixelCursor *pixelCursor, unsigned int width,
 -----------------------------------------------------------------------------*/
 static __inline int GifGetPixel(struct gif_dest *gif, int x, int y)
 {
-	size_t bytes = pic_rowsize(gif->pic);
+	size_t bytes = pic_rowsize(gif->pic, gif->pic->pi_planes);
 	const unsigned char *pos = gif->pixels + bytes * y;
 	unsigned char mask;
 	unsigned char color = 0;
@@ -1932,7 +1932,7 @@ static void addPixelToRaster(struct gif_src *gif, unsigned int color, PALETTE cm
 {
 	unsigned int x = gif->pnmBuffer.col + gif->pnmBuffer.left;
 	unsigned int y = gif->pnmBuffer.row + gif->pnmBuffer.top;
-	size_t bytes = pic_rowsize(gif->pic);
+	size_t bytes = pic_rowsize(gif->pic, gif->pic->pi_planes);
 	unsigned char *pos = gif->pnmBuffer.pixels + bytes * y;
 	unsigned char mask;
 		
@@ -2154,7 +2154,7 @@ static gboolean readGifHeader(struct gif_src *gif)
 		size_t rowsize;
 		size_t size;
 		
-		rowsize = pic_rowsize(gif->pic);
+		rowsize = pic_rowsize(gif->pic, gif->pic->pi_planes);
 		size = rowsize * gif->screen.Height;
 		gif->pnmBuffer.pixels = g_new0(unsigned char, size);
 		if (gif->pnmBuffer.pixels == NULL)

@@ -1147,16 +1147,16 @@ _WORD pic_calcplanes(_WORD rez)
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG pic_rowsize(PICTURE *pic)
+_LONG pic_rowsize(PICTURE *pic, _WORD planes)
 {
-	return (_LONG)tobyte(pic->pi_width) * (_LONG)pic->pi_planes;
+	return (_LONG)tobyte(pic->pi_width) * (_LONG)planes;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void pic_calcsize(PICTURE *pic)
 {
-	_LONG bytes = pic_rowsize(pic);
+	_LONG bytes = pic_rowsize(pic, pic->pi_planes);
 	
 	pic->pi_bytes = tobyte(pic->pi_width);
 	pic->pi_picsize = bytes * (_LONG)pic->pi_height;

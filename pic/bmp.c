@@ -490,7 +490,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 	
 	memset(dest, 0, pic->pi_picsize);
 	bmp_bytes = bmp_rowsize(pic, pic->pi_planes);
-	dst_rowsize = pic_rowsize(pic);
+	dst_rowsize = pic_rowsize(pic, pic->pi_planes);
 	if (!pic->pi_topdown)
 		dest += pic->pi_picsize;
 	if (pic->pi_compressed && pic->pi_planes == 4)
@@ -801,7 +801,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 		case 8:
 			for (i = pic->pi_height; --i >= 0; )
 			{
-				src -= pic_rowsize(pic);
+				src -= pic_rowsize(pic, planes);
 				rp = dest;
 				gp = src;
 				memset(rp, 0, dstrowsize);
@@ -846,7 +846,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 		case 4:
 			for (i = pic->pi_height; --i >= 0; )
 			{
-				src -= pic_rowsize(pic);
+				src -= pic_rowsize(pic, planes);
 				rp = dest;
 				gp = src;
 				memset(rp, 0, dstrowsize);
@@ -908,7 +908,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 				short l;
 
 				j = (((pic->pi_width) + 7) >> 3);
-				k = (short) pic_rowsize(pic);
+				k = (short) pic_rowsize(pic, planes);
 				for (i = pic->pi_height; --i >= 0; )
 				{
 					src -= k;
