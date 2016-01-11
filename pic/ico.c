@@ -338,20 +338,11 @@ _LONG ico_pack(_UBYTE *dest, const _UBYTE *data, const _UBYTE *mask, PICTURE *pi
 	long masksize;
 	
 	pic->pi_compressed = 0 /* BMP_RGB */;
-	datasize = bmp_pack_planes(dest, data, pic->pi_planes, pic, FALSE);
+	datasize = bmp_pack_planes(dest, data, pic, FALSE);
 	masksize = bmp_rowsize(pic, 1) * pic->pi_height;
 	if (mask)
 	{
-		_UBYTE *p;
-		long i;
-		
-		p = dest + pic->pi_dataoffset + datasize;
-		datasize += bmp_pack_planes(dest + datasize, mask, 1, pic, FALSE);
-		for (i = 0; i < masksize; i++)
-		{
-			*p = ~*p;
-			p++;
-		}
+		datasize += bmp_pack_mask(dest + datasize, mask, pic);
 	} else
 	{
 		memset(dest + pic->pi_dataoffset + datasize, 0, masksize);

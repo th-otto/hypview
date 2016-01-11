@@ -269,7 +269,8 @@ long bmp_rowsize(PICTURE *pic, _WORD planes);
 
 gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
-long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes, PICTURE *pic, gboolean update_header);
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
+long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 
 /*** GIF ------------------------------------------------------------------ ***/
 

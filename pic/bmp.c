@@ -771,7 +771,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes, PICTURE *pic, gboolean update_header)
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header)
 {
 	short i, j, k;
 	unsigned char *rp;
@@ -784,7 +784,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 	
 	dest += pic->pi_dataoffset;
 	
-	dstrowsize = bmp_rowsize(pic, planes);
+	dstrowsize = bmp_rowsize(pic, pic->pi_planes);
 	if (pic->pi_compressed != BMP_RGB)
 	{
 	} else
@@ -796,12 +796,12 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 		 * start from the end
 		 */
 		src += pic->pi_picsize;
-		switch (planes)
+		switch (pic->pi_planes)
 		{
 		case 8:
 			for (i = pic->pi_height; --i >= 0; )
 			{
-				src -= pic_rowsize(pic, planes);
+				src -= pic_rowsize(pic, pic->pi_planes);
 				rp = dest;
 				gp = src;
 				memset(rp, 0, dstrowsize);
@@ -846,7 +846,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 		case 4:
 			for (i = pic->pi_height; --i >= 0; )
 			{
-				src -= pic_rowsize(pic, planes);
+				src -= pic_rowsize(pic, pic->pi_planes);
 				rp = dest;
 				gp = src;
 				memset(rp, 0, dstrowsize);
@@ -908,7 +908,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 				short l;
 
 				j = (((pic->pi_width) + 7) >> 3);
-				k = (short) pic_rowsize(pic, planes);
+				k = (short) pic_rowsize(pic, pic->pi_planes);
 				for (i = pic->pi_height; --i >= 0; )
 				{
 					src -= k;
@@ -954,6 +954,62 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes
 
 /*** ---------------------------------------------------------------------- ***/
 
+long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic)
+{
+	short i, j, k;
+	long datasize = 0;
+	unsigned long dstrowsize;
+	
+	dest += pic->pi_dataoffset;
+	
+	dstrowsize = bmp_rowsize(pic, 1);
+	if (pic->pi_compressed != BMP_RGB)
+	{
+	} else
+	{
+		/* uncompressed data */
+		
+		/*
+		 * BMP is stored upside down,
+		 * start from the end
+		 */
+		long picsize = pic_rowsize(pic, 1) * pic->pi_height;
+		src += picsize;
+		{
+			short l;
+
+			j = (((pic->pi_width) + 7) >> 3);
+			k = (short) pic_rowsize(pic, 1);
+			for (i = pic->pi_height; --i >= 0; )
+			{
+				src -= k;
+				for (l = 0; l < j; l++)
+					*dest++ = ~src[l];
+				switch (j & 3)
+				{
+				case 1:
+					*dest++ = '\0';
+					*dest++ = '\0';
+					*dest++ = '\0';
+					break;
+				case 2:
+					*dest++ = '\0';
+					*dest++ = '\0';
+					break;
+				case 3:
+					*dest++ = '\0';
+					break;
+				}
+			}
+		}
+		datasize = (long)pic->pi_height * dstrowsize;
+	}
+
+	return datasize;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header)
 {
 	_WORD planes = pic->pi_planes;
@@ -972,7 +1028,7 @@ long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gbool
 	{
 		pic->pi_compressed = BMP_RGB;
 	}
-	datasize = bmp_pack_planes(dest, src, planes, pic, update_header);
+	datasize = bmp_pack_planes(dest, src, pic, update_header);
 	pic->pi_datasize = datasize;
 	return datasize;
 }

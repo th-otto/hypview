@@ -133,7 +133,7 @@ static gboolean conv_file(const char *filename)
 		goto error;
 	}
 	
-	masksize = bmp_rowsize(&pic, 1) * pic.pi_height;
+	masksize = pic_rowsize(&pic, 1) * pic.pi_height;
 	pic.pi_datasize = pic.pi_picsize + masksize;
 	dest = g_new(unsigned char, pic.pi_datasize);
 	if (dest == NULL)
@@ -156,13 +156,14 @@ static gboolean conv_file(const char *filename)
 		 * ICN reader reads separate planes, but other converters
 		 * expect interleaved planes
 		 */
-		unsigned char *planebuf = g_new(unsigned char, pic.pi_picsize);
+		unsigned char *planebuf = g_new(unsigned char, pic.pi_datasize);
 		if (planebuf == NULL)
 		{
 			oom();
 			goto error;
 		}
 		pic_planes_to_interleaved(planebuf, dest, &pic);
+		memcpy(planebuf + pic.pi_picsize, dest + pic.pi_picsize, masksize);
 		g_free(dest);
 		dest = planebuf;
 	}
@@ -276,7 +277,6 @@ int main(int argc, const char **argv)
 	}
 	
 	getopt_finish_r(&d);
-	x_free_resources();
 	
 	return retval;
 }
