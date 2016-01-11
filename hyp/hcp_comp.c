@@ -7117,7 +7117,7 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 			format = HYP_PIC_UNKNOWN;
 		break;
 	case HYP_PIC_ICN:
-		if (icn_unpack(planebuf, buf + pic.pi_dataoffset, &pic) == FALSE)
+		if (icn_unpack(planebuf, buf + pic.pi_dataoffset, &pic, FALSE) == FALSE)
 			format = HYP_PIC_UNKNOWN;
 		break;
 	case HYP_PIC_IMG:

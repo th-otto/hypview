@@ -182,7 +182,7 @@ long img_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
  */
 gboolean pic_type_icn(PICTURE *pic, const unsigned char *buf, long size);
 
-gboolean icn_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
+gboolean icn_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean mask);
 gboolean icn_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic);
 
 /*** STAD ----------------------------------------------------------------- ***/
@@ -254,10 +254,10 @@ long imagic_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 /*** Windows Icons -------------------------------------------------------- ***/
 
 gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size);
-long ico_header(unsigned char *buf, PICTURE *pic);
+long ico_header(unsigned char **buf, PICTURE *pic);
 
 gboolean ico_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
-long ico_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
+long ico_pack(unsigned char *dest, const unsigned char *data, const _UBYTE *mask, PICTURE *pic);
 
 /*** BMP ------------------------------------------------------------------ ***/
 
@@ -265,9 +265,11 @@ unsigned char *bmp_put_palette(unsigned char *buf, PICTURE *pic);
 
 gboolean pic_type_bmp(PICTURE *pic, const unsigned char *buf, long size);
 long bmp_header(unsigned char **buf, PICTURE *pic);
+long bmp_rowsize(PICTURE *pic, _WORD planes);
 
 gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes, PICTURE *pic, gboolean update_header);
 
 /*** GIF ------------------------------------------------------------------ ***/
 

@@ -67,36 +67,6 @@ typedef struct {
 
 /*** ---------------------------------------------------------------------- ***/
 
-static long bmp_rowsize(PICTURE *pic, short planes)
-{
-	long bmp_bytes = pic->pi_width;
-	
-	switch (planes)
-	{
-	case 1:
-		bmp_bytes = ((((bmp_bytes) + 7) >> 3) + 3) & ~3;
-		break;
-	case 4:
-		bmp_bytes = (((bmp_bytes + 1) >> 1) + 3) & ~3;
-		break;
-	case 8:
-		bmp_bytes = (bmp_bytes + 3) & ~3;
-		break;
-	case 24:
-		bmp_bytes = ((bmp_bytes * 3) + 3) & ~3;
-		break;
-	case 32:
-		bmp_bytes = bmp_bytes * 4;
-		break;
-	default:
-		bmp_bytes = 0;
-		break;
-	}
-	return bmp_bytes;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 {
 	short width, height, colors, i;
@@ -285,11 +255,12 @@ gboolean ico_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG ico_header(_UBYTE *buf, PICTURE *pic)
+_LONG ico_header(_UBYTE **dest_p, PICTURE *pic)
 {
 	_ULONG len, headlen;
 	_WORD ncolors;
 	_ULONG cmapsize;
+	unsigned char *buf;
 	struct _rgb {
 		_UBYTE r;
 		_UBYTE g;
@@ -318,9 +289,18 @@ _LONG ico_header(_UBYTE *buf, PICTURE *pic)
 
 	ncolors = 1 << pic->pi_planes;
 	cmapsize = 4 * ncolors;
-	headlen = 40 + cmapsize;
+	headlen = ICO_FILE_HEADER_SIZE + 40 + cmapsize;
 	len = headlen + pic->pi_datasize;
 
+	if (*dest_p == NULL)
+		buf = g_new(unsigned char, len);
+	else
+		buf = *dest_p;
+	if (buf == NULL)
+		return 0;
+	*dest_p = buf;
+	pic->pi_dataoffset = headlen;
+	
 	put_word(0); /* magic */
 	put_word(1); /* type */
 	put_word(1); /* count */
@@ -328,9 +308,9 @@ _LONG ico_header(_UBYTE *buf, PICTURE *pic)
 	put_byte(pic->pi_height);
 	put_byte(ncolors);
 	put_byte(0);
-	put_word(0);
-	put_word(0);
-	put_long(len);
+	put_word(1);					/* planes */
+	put_word(pic->pi_planes);		/* bits per pixel */
+	put_long(len - ICO_FILE_HEADER_SIZE);
 	put_long((int32_t)ICO_FILE_HEADER_SIZE);
 	
 	put_long(40l);
@@ -347,12 +327,36 @@ _LONG ico_header(_UBYTE *buf, PICTURE *pic)
 
 	bmp_put_palette(buf, pic);
 	
-	return ICO_FILE_HEADER_SIZE + headlen;
+	return headlen;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG ico_pack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic)
+_LONG ico_pack(_UBYTE *dest, const _UBYTE *data, const _UBYTE *mask, PICTURE *pic)
 {
-	return bmp_pack(dest, src, pic, FALSE);
+	long datasize;
+	long masksize;
+	
+	pic->pi_compressed = 0 /* BMP_RGB */;
+	datasize = bmp_pack_planes(dest, data, pic->pi_planes, pic, FALSE);
+	masksize = bmp_rowsize(pic, 1) * pic->pi_height;
+	if (mask)
+	{
+		_UBYTE *p;
+		long i;
+		
+		p = dest + pic->pi_dataoffset + datasize;
+		datasize += bmp_pack_planes(dest + datasize, mask, 1, pic, FALSE);
+		for (i = 0; i < masksize; i++)
+		{
+			*p = ~*p;
+			p++;
+		}
+	} else
+	{
+		memset(dest + pic->pi_dataoffset + datasize, 0, masksize);
+		datasize += masksize;
+	}
+	pic->pi_datasize = datasize;
+	return datasize;
 }

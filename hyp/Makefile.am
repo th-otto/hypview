@@ -18,7 +18,7 @@ endif
 EXTRA_DIST = gfx.s genmaptab.c
 
 
-noinst_PROGRAMS = img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp
+noinst_PROGRAMS = img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico
 
 INCLUDES = -I$(hyp_srcdir)/include
 AM_CPPFLAGS = $(GLIB_CFLAGS) \
@@ -189,6 +189,14 @@ icn2img_SOURCES = \
 
 icn2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 icn2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+
+
+icn2ico_SOURCES = \
+	icn2ico.c \
+	$(UTIL_SRC)
+
+icn2ico_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
+icn2ico_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
 
 
 picinfo_SOURCES = \

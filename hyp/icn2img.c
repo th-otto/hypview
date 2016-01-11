@@ -138,7 +138,7 @@ static gboolean conv_file(const char *filename)
 		oom();
 		goto error;
 	}
-	if (icn_unpack(dest, buf + pic.pi_dataoffset, &pic) == FALSE)
+	if (icn_unpack(dest, buf + pic.pi_dataoffset, &pic, FALSE) == FALSE)
 	{
 		hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
 		goto error;
@@ -195,6 +195,8 @@ done:
 	g_free(buf);
 	if (fp)
 		fclose(fp);
+	if (out)
+		fclose(out);
 	return retval;
 }
 

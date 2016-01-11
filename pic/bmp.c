@@ -144,11 +144,11 @@ LOCAL struct _rgb const win2_palette[2] = {
 
 /*** ---------------------------------------------------------------------- ***/
 
-static long bmp_rowsize(PICTURE *pic)
+long bmp_rowsize(PICTURE *pic, _WORD planes)
 {
 	long bmp_bytes = pic->pi_width;
 	
-	switch (pic->pi_planes)
+	switch (planes)
 	{
 	case 1:
 		/* get_dib_stride */
@@ -292,7 +292,7 @@ gboolean pic_type_bmp(PICTURE *pic, const unsigned char *buf, long size)
 		return TRUE;
 	}
 	pic_calcsize(pic);
-	bmp_bytes = bmp_rowsize(pic);
+	bmp_bytes = bmp_rowsize(pic, pic->pi_planes);
 	if (bmp_bytes == 0)
 		return FALSE;
 	if (pic->pi_compressed != BMP_RGB)
@@ -489,7 +489,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 	unsigned long dst_rowsize;
 	
 	memset(dest, 0, pic->pi_picsize);
-	bmp_bytes = bmp_rowsize(pic);
+	bmp_bytes = bmp_rowsize(pic, pic->pi_planes);
 	dst_rowsize = pic_rowsize(pic);
 	if (!pic->pi_topdown)
 		dest += pic->pi_picsize;
@@ -771,7 +771,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header)
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, _WORD planes, PICTURE *pic, gboolean update_header)
 {
 	short i, j, k;
 	unsigned char *rp;
@@ -784,20 +784,7 @@ long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gbool
 	
 	dest += pic->pi_dataoffset;
 	
-	dstrowsize = bmp_rowsize(pic);
-	if (pic->pi_compressed)
-	{
-		switch (pic->pi_planes)
-		{
-			case 1: pic->pi_compressed = BMP_RGB; break;
-			case 4: pic->pi_compressed = BMP_RLE4; break;
-			case 8: pic->pi_compressed = BMP_RLE8; break;
-		}
-		pic->pi_compressed = BMP_RGB; /* compresssion NYI */
-	} else
-	{
-		pic->pi_compressed = BMP_RGB;
-	}
+	dstrowsize = bmp_rowsize(pic, planes);
 	if (pic->pi_compressed != BMP_RGB)
 	{
 	} else
@@ -809,7 +796,7 @@ long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gbool
 		 * start from the end
 		 */
 		src += pic->pi_picsize;
-		switch (pic->pi_planes)
+		switch (planes)
 		{
 		case 8:
 			for (i = pic->pi_height; --i >= 0; )
@@ -951,21 +938,43 @@ long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gbool
 		datasize = (long)pic->pi_height * dstrowsize;
 	}
 
-	pic->pi_datasize = datasize;
-	
 	if (update_header)
 	{
 		/*
 		 * update filesize & datasize in header
 		 */
 		buf += 2;
-		datasize += pic->pi_dataoffset;
-		put_long(datasize);
+		put_long(datasize + pic->pi_dataoffset);
 		buf += 28;
-		put_long(pic->pi_datasize);
+		put_long(datasize);
 	}
 	
-	return pic->pi_datasize;
+	return datasize;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header)
+{
+	_WORD planes = pic->pi_planes;
+	long datasize;
+	
+	if (pic->pi_compressed)
+	{
+		switch (planes)
+		{
+			case 1: pic->pi_compressed = BMP_RGB; break;
+			case 4: pic->pi_compressed = BMP_RLE4; break;
+			case 8: pic->pi_compressed = BMP_RLE8; break;
+		}
+		pic->pi_compressed = BMP_RGB; /* compresssion NYI */
+	} else
+	{
+		pic->pi_compressed = BMP_RGB;
+	}
+	datasize = bmp_pack_planes(dest, src, planes, pic, update_header);
+	pic->pi_datasize = datasize;
+	return datasize;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1031,7 +1040,7 @@ long bmp_header(unsigned char **dest_p, PICTURE *pic)
 
 	pic->pi_compressed = 0; /* compression NYI */
 	headlen = 14 + 40 + cmapsize;
-	bmp_bytes = bmp_rowsize(pic);
+	bmp_bytes = bmp_rowsize(pic, pic->pi_planes);
 	if (bmp_bytes == 0)
 		return 0;
 	pic->pi_datasize = bmp_bytes * pic->pi_height;

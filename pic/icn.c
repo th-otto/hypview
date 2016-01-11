@@ -308,6 +308,35 @@ static TOKEN icn_data_read(PICTURE *pic, const unsigned char *inbuf, unsigned ch
 }
 
 
+static TOKEN icn_data_skip(PICTURE *pic, const unsigned char *inbuf, long width, long height, _WORD planes, TOKEN tok)
+{
+	unsigned char buf[C_VALLEN + 1];
+	long offset;
+	long h;
+	
+	offset = 0;
+	while (--planes >= 0)
+	{
+		h = height;
+		while (h)
+		{
+			if (tok == T_EOF)
+				tok = gettok(pic, inbuf, buf);
+			if (tok != T_NUMCONST)
+				break;
+			if (++offset == width)
+			{
+				offset = 0;
+				h--;
+			}
+			if ((tok = gettok(pic, inbuf, buf)) == T_COMMA)
+				tok = gettok(pic, inbuf, buf);
+		}
+	}
+	return tok;
+}
+
+
 static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char *datap, unsigned char *maskp)
 {
 	TOKEN tok;
@@ -316,6 +345,7 @@ static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char
 	unsigned long iconw, iconh, iconsize;
 	unsigned long planes;
 	unsigned long val;
+	gboolean has_mask = FALSE;
 	
 	iconw = iconh = iconsize = 0;
 	while ((tok = gettok(pic, inbuf, buf)) != T_EOF && tok != T_LBRACKET)
@@ -369,6 +399,7 @@ static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char
 	{
 		return FALSE;
 	}
+	pic->pi_planes = (_WORD) planes;
 	while ((tok = gettok(pic, inbuf, buf)) != T_RBRACKET && tok != T_EOF)
 	{
 		if (tok == T_MUL)
@@ -376,8 +407,12 @@ static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char
 			if ((tok = gettok(pic, inbuf, buf)) == T_NUMCONST)
 			{
 				planes = get_numconst(buf);
-				if (maskp != NULL && planes > 1)
+				if ((planes == 2 && pic->pi_planes == 1) ||
+					(planes & 1))
+				{
 					planes--;
+					has_mask = TRUE;
+				}
 			}
 		}
 	}
@@ -393,8 +428,19 @@ static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char
 	tok = T_EOF;
 	if (datap != NULL)
 		tok = icn_data_read(pic, inbuf, datap, iconw, iconh, (_WORD) planes, tok);
-	if (maskp != NULL)
-		tok = icn_data_read(pic, inbuf, maskp, iconw, iconh, 1, tok);
+	else
+		tok = icn_data_skip(pic, inbuf, iconw, iconh, (_WORD) planes, tok);
+	if (has_mask)
+	{
+		if (maskp != NULL)
+			tok = icn_data_read(pic, inbuf, maskp, iconw, iconh, 1, tok);
+		else
+			tok = icn_data_skip(pic, inbuf, iconw, iconh, 1, tok);
+	} else
+	{
+		if (maskp != NULL)
+			memset(maskp, 0, iconw * 2 * iconh);
+	}
 	if (datap != NULL && tok != T_NUMCONST)
 	{
 		if (tok != T_RBRACE ||
@@ -423,10 +469,10 @@ gboolean pic_type_icn(PICTURE *pic, const _UBYTE *buf, _LONG size)
 }
 
 
-gboolean icn_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic)
+gboolean icn_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic, gboolean mask)
 {
 	pic->pi_dataoffset = 0;
-	return icn_scan(pic, src, dest, NULL);
+	return icn_scan(pic, src, dest, mask ? dest + pic->pi_picsize : NULL);
 }
 
 
