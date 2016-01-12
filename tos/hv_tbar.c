@@ -63,7 +63,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	toolbar[TO_BUTTONBOX].ob_flags &= ~OF_HIDETREE;
 	
 	doc->buttons.back = TRUE;
-	doc->buttons.moreback = TRUE;
+	doc->buttons.history = TRUE;
 	doc->buttons.memory = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
@@ -71,7 +71,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	if (CountWindowHistoryEntries(win) == 0)
 	{
 		doc->buttons.back = FALSE;
-		doc->buttons.moreback = FALSE;
+		doc->buttons.history = FALSE;
 	}
 	
 	if (doc->buttons.memory)
@@ -104,10 +104,10 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	else
 		toolbar[TO_BACK].ob_state |= OS_DISABLED;
 
-	if (doc->buttons.moreback)
-		toolbar[TO_MOREBACK].ob_state &= ~OS_DISABLED;
+	if (doc->buttons.history)
+		toolbar[TO_HISTORY].ob_state &= ~OS_DISABLED;
 	else
-		toolbar[TO_MOREBACK].ob_state |= OS_DISABLED;
+		toolbar[TO_HISTORY].ob_state |= OS_DISABLED;
 
 	/*	Gibt es ein Katalog?	*/
 	if (!empty(gl_profile.viewer.catalog_file))
@@ -216,12 +216,12 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 	case TO_HELP:
 		GotoHelp(doc);
 		break;
-	case TO_MOREBACK:
+	case TO_HISTORY:
 		{
 			_WORD x, y;
 			
 			position_popup(win, obj, &x, &y);
-			MoreBackPopup(doc, x, y);
+			HistoryPopup(doc, x, y);
 		}
 		break;
 	case TO_BACK:

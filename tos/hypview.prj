@@ -118,7 +118,7 @@ h:\src\udo\tools\hypview\tos\nf_vers.c
 h:\src\udo\tools\hypview\tos\dragdrop\dragdrop.c
 h:\src\udo\tools\hypview\tos\bubble\bgh.c
 
-h:\src\udo\tools\hypview\tos\malloc.c
+h:\src\udo\tools\hypview\hyp\tos\malloc.c
 
 pcgemlib.lib
 pctoslib.lib

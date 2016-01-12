@@ -151,7 +151,7 @@ void hv_set_title(WINDOW_DATA *win, const char *wintitle);
  */
 void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc);
 void GoBack(DOCUMENT *doc);
-void MoreBackPopup(DOCUMENT *doc, short x, short y);
+void HistoryPopup(DOCUMENT *doc, short x, short y);
 void GotoHelp(DOCUMENT *doc);
 void GotoIndex(DOCUMENT *doc);
 void GoThisButton(DOCUMENT *doc, short obj);

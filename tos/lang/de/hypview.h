@@ -1,7 +1,7 @@
 /*
  * resource set indices for hypview
  *
- * created by ORCS 2.12
+ * created by ORCS 2.14
  */
 
 /*
@@ -46,28 +46,28 @@
 
 
 #define DIAL_LIBRARY                       0 /* form/dialog */
-#define DI_ICON                            1 /* CICON in tree DIAL_LIBRARY */ /* max len 1 */
+#define DI_ICON                            1 /* CICON in tree DIAL_LIBRARY */
 
 #define TOOLBAR                            1 /* form/dialog */
 #define TO_BACKGRND                        0 /* BOX in tree TOOLBAR */
 #define TO_BUTTONBOX                       1 /* IBOX in tree TOOLBAR */
-#define TO_BACK                            2 /* CICON in tree TOOLBAR */ /* max len 4 */
-#define TO_MOREBACK                        3 /* CICON in tree TOOLBAR */ /* max len 0 */
-#define TO_MEMORY                          4 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_PREVIOUS                        5 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_HOME                            6 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_NEXT                            7 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_INDEX                           8 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_KATALOG                         9 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_REFERENCES                     10 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_HELP                           11 /* CICON in tree TOOLBAR */ /* max len 0 */
-#define TO_INFO                           12 /* CICON in tree TOOLBAR */ /* max len 0 */
-#define TO_LOAD                           13 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_SAVE                           14 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_MENU                           15 /* CICON in tree TOOLBAR */ /* max len 1 */
+#define TO_BACK                            2 /* CICON in tree TOOLBAR */
+#define TO_HISTORY                         3 /* CICON in tree TOOLBAR */
+#define TO_MEMORY                          4 /* CICON in tree TOOLBAR */
+#define TO_PREVIOUS                        5 /* CICON in tree TOOLBAR */
+#define TO_HOME                            6 /* CICON in tree TOOLBAR */
+#define TO_NEXT                            7 /* CICON in tree TOOLBAR */
+#define TO_INDEX                           8 /* CICON in tree TOOLBAR */
+#define TO_KATALOG                         9 /* CICON in tree TOOLBAR */
+#define TO_REFERENCES                     10 /* CICON in tree TOOLBAR */
+#define TO_HELP                           11 /* CICON in tree TOOLBAR */
+#define TO_INFO                           12 /* CICON in tree TOOLBAR */
+#define TO_LOAD                           13 /* CICON in tree TOOLBAR */
+#define TO_SAVE                           14 /* CICON in tree TOOLBAR */
+#define TO_MENU                           15 /* CICON in tree TOOLBAR */
 #define TO_SEARCHBOX                      16 /* BOX in tree TOOLBAR */
-#define TO_SEARCH                         17 /* FTEXT in tree TOOLBAR */ /* max len 25 */
-#define TO_STRNOTFOUND                    18 /* TEXT in tree TOOLBAR */ /* max len 15 */
+#define TO_SEARCH                         17 /* FTEXT in tree TOOLBAR */
+#define TO_STRNOTFOUND                    18 /* TEXT in tree TOOLBAR */
 
 #define CONTEXT                            2 /* form/dialog */
 #define CO_BACK                            1 /* STRING in tree CONTEXT */
@@ -98,10 +98,10 @@
 #define PROGINFO                           4 /* form/dialog */
 #define PROG_OK                            5 /* BUTTON in tree PROGINFO */
 #define PROG_NAME                          6 /* STRING in tree PROGINFO */
-#define PROG_FILE                          7 /* TEXT in tree PROGINFO */ /* max len 40 */
-#define PROG_DATABASE                      8 /* TEXT in tree PROGINFO */ /* max len 40 */
-#define PROG_AUTHOR                        9 /* TEXT in tree PROGINFO */ /* max len 40 */
-#define PROG_VERSION                      10 /* TEXT in tree PROGINFO */ /* max len 40 */
+#define PROG_FILE                          7 /* TEXT in tree PROGINFO */
+#define PROG_DATABASE                      8 /* TEXT in tree PROGINFO */
+#define PROG_AUTHOR                        9 /* TEXT in tree PROGINFO */
+#define PROG_VERSION                      10 /* TEXT in tree PROGINFO */
 #define PROG_DATE                         11 /* STRING in tree PROGINFO */
 
 #define SEARCH_RESULT                      5 /* form/dialog */
@@ -110,20 +110,20 @@
 #define SR_FSTL_WHITE                      3 /* BOX in tree SEARCH_RESULT */
 #define SR_FSTL_DOWN                       4 /* BOXCHAR in tree SEARCH_RESULT */
 #define SR_BOX                             5 /* IBOX in tree SEARCH_RESULT */
-#define SR_FSTL_0                          6 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_1                          7 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_2                          8 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_3                          9 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_4                         10 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_5                         11 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_6                         12 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_7                         13 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_8                         14 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
-#define SR_FSTL_9                         15 /* TEXT in tree SEARCH_RESULT */ /* max len 70 */
+#define SR_FSTL_0                          6 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_1                          7 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_2                          8 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_3                          9 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_4                         10 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_5                         11 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_6                         12 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_7                         13 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_8                         14 /* TEXT in tree SEARCH_RESULT */
+#define SR_FSTL_9                         15 /* TEXT in tree SEARCH_RESULT */
 #define SR_ABORT                          16 /* BUTTON in tree SEARCH_RESULT */
 
 #define HYPFIND                            6 /* form/dialog */
-#define HYPFIND_STRING                     2 /* FTEXT in tree HYPFIND */ /* max len 30 */
+#define HYPFIND_STRING                     2 /* FTEXT in tree HYPFIND */
 #define HYPFIND_TEXT                       3 /* BUTTON in tree HYPFIND */
 #define HYPFIND_PAGES                      4 /* BUTTON in tree HYPFIND */
 #define HYPFIND_REF                        5 /* BUTTON in tree HYPFIND */
@@ -132,49 +132,34 @@
 #define HYPFIND_ALL_HYP                    8 /* BUTTON in tree HYPFIND */
 
 #define WARN_FEXIST                        0 /* Alert string */
-/* [2][Die Datei existiert schon.|Soll sie ersetzt werden?][Ersetzen|Abbruch] */
 
 #define WARN_ERASEMARK                     1 /* Alert string */
-/* [2][Wollen Sie wirklich die Marke|%s|lîschen?][  Ja  | Nein ] */
 
 #define ASK_SETMARK                        2 /* Alert string */
-/* [2][Wollen Sie eine Marke auf|%s|setzen?][  Ja  | Nein ] */
 
 #define ASK_SAVEMARKFILE                   3 /* Alert string */
-/* [2][Marken speichern?][  Ja  | Nein ] */
 
 #define WARN_NORESULT                      4 /* Alert string */
-/* [1][HypView:|<%s>|konnte nicht gefunden werden.][ Abbruch ] */
 
 #define FSLX_LOAD                          5 /* Free string */
-/* Bitte Hypertext wÑhlen: */
 
 #define FSLX_SAVE                          6 /* Free string */
-/* ASCII Text speichern unter: */
 
 #define WDLG_SEARCH_PATTERN                7 /* Free string */
-/* Pattern Suchen... */
 
 #define DI_MEMORY_ERROR                    8 /* Alert string */
-/* [1][Konnte Befehl nicht ausfÅhren,|da nicht genÅgend Speicher frei|ist.][Abbruch] */
 
 #define DI_WDIALOG_ERROR                   9 /* Alert string */
-/* [1][Bitte starten Sie zuvor die|Systemerweiterung WDIALOG.PRG][Abbruch] */
 
 #define DI_VDI_WKS_ERROR                  10 /* Alert string */
-/* [1][Konnte keine VDI-Workstation|îffnen.][Abbruch] */
 
 #define HV_ERR_NO_HOSTNAME                11 /* Alert string */
-/* [1][Kein Hostname im Hypertext|angegeben.][Abbruch] */
 
 #define HV_ERR_HOST_NOT_FOUND             12 /* Alert string */
-/* [1][Host Applikation nicht gefunden.][Abbruch] */
 
 #define HV_ERR_NOT_IMPLEMENTED            13 /* Alert string */
-/* [1][Nicht implementiert.][Abbruch] */
 
 #define DI_WDIALOG_FONTSEL_ERROR          14 /* Alert string */
-/* [1][Kann keinen Fontselector|anzeigen. Mîglicherweise nicht|unterstÅtzt?][Abbruch] */
 
 
 

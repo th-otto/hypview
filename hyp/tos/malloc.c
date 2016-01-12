@@ -583,6 +583,7 @@ char *dbg_strndup(const char *str, size_t len, const char *file, long line)
 #endif
 
 
+#if DEBUG_ALLOC
 void _crtexit(void)
 {
 #if DEBUG_ALLOC >= 3
@@ -615,6 +616,7 @@ void _crtexit(void)
 	}
 #endif
 }
+#endif
 
 
 #ifdef MAIN

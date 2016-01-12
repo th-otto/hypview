@@ -103,7 +103,7 @@ void GoBack(DOCUMENT *old_doc)
 }
 
 
-void MoreBackPopup(DOCUMENT *old_doc, short x, short y)
+void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 {
 	WINDOW_DATA *win = old_doc->window;
 	OBJECT *tree = rs_tree(EMPTYPOPUP);
