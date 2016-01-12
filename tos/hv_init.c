@@ -29,7 +29,7 @@
 static RSHDR *skin_rsh;
 
 
-void Init(void)
+void hv_init(void)
 {
 	_WORD dummy;
 	_WORD font_w, font_h;
@@ -152,7 +152,7 @@ void Init(void)
 }
 
 
-void Exit(void)
+void hv_exit(void)
 {
 	MarkerSaveToDisk();
 

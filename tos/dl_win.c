@@ -25,7 +25,7 @@
 #include "hypview.h"
 
 
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 #define DL_WIN_XADD	(ptr->x_offset + ptr->x_margin_left + ptr->x_margin_right)
 #define DL_WIN_YADD	(ptr->y_offset + ptr->y_margin_top + ptr->y_margin_bottom)
 #else
@@ -74,11 +74,11 @@ WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT ma
 	ptr->x_margin_right = 0;
 	ptr->y_margin_top = 0;
 	ptr->y_margin_bottom = 0;
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 	ptr->x_raster = 1;
 	ptr->y_raster = 1;
 #endif
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 	ptr->toolbar = NULL;
 	ptr->x_offset = 0;
 	ptr->y_offset = 0;
@@ -91,7 +91,7 @@ WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT ma
 	{
 		short ok = TRUE;
 
-#if OPEN_VDI_WORKSTATION==YES
+#if OPEN_VDI_WORKSTATION
 		_WORD i;
 		_WORD workin[16];
 
@@ -116,7 +116,7 @@ WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT ma
 
 			wind_calc_grect(WC_WORK, ptr->kind, &screen, &win);
 
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 			win.g_w =
 				(short) min(DL_WIN_XADD + ptr->docsize.w * ptr->x_raster,
 							win.g_w - (win.g_w - DL_WIN_XADD) % ptr->x_raster);
@@ -133,7 +133,7 @@ WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT ma
 			open_size = ptr->full;
 
 
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 			if (proc(ptr, WIND_OPENSIZE, &open_size))
 			{
 				GRECT real_worksize;
@@ -166,7 +166,7 @@ WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT ma
 		if (!ok)
 		{
 			proc(ptr, WIND_EXIT, NULL);
-#if OPEN_VDI_WORKSTATION==YES
+#if OPEN_VDI_WORKSTATION
 			if (ptr->vdi_handle)
 				v_clsvwk(ptr->vdi_handle);
 #endif
@@ -266,7 +266,7 @@ void RemoveWindow(WINDOW_DATA * ptr)
 				graf_shrinkbox_grect(&small, &big);
 			}
 			ptr->proc(ptr, WIND_EXIT, NULL);
-#if OPEN_VDI_WORKSTATION==YES
+#if OPEN_VDI_WORKSTATION
 			v_clsvwk(ptr->vdi_handle);
 #endif
 			wind_delete(ptr->whandle);
@@ -290,7 +290,7 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 	GRECT work, box, redraw;
 	_WORD ret;
 	
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 	short lines_width,
 	 lines_height;
 #endif
@@ -312,7 +312,7 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 	wind_get_grect(DESK, WF_WORKXYWH, &box);
 	rc_intersect(&box, &work);
 
-#if USE_LOGICALRASTER == YES
+#if USE_LOGICALRASTER
 	lines_width = work.g_w / ptr->x_raster;
 	lines_height = work.g_h / ptr->y_raster;
 
@@ -362,7 +362,7 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 	if (r_y)
 		*r_y = rel_y;
 
-#if USE_LOGICALRASTER == YES
+#if USE_LOGICALRASTER
 	if ((abs(ptr->docsize.x - ox) >= lines_width) || (abs(ptr->docsize.y - oy) >= lines_height))
 	{
 		move_screen = FALSE;
@@ -423,14 +423,10 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 					pxy[3] += rel_y;
 					pxy[5] -= rel_y;
 				}
-#if OPEN_VDI_WORKSTATION==YES
+#if OPEN_VDI_WORKSTATION
 				vro_cpyfm(ptr->vdi_handle, 3, pxy, &screen, &screen);
-#else
-#if USE_GLOBAL_VDI==YES
+#elif USE_GLOBAL_VDI
 				vro_cpyfm(vdi_handle, 3, pxy, &screen, &screen);
-#else
-#error "Es muss mindestens eine VDI Workstation geffnet werden! (USE_GLOBAL_VDI=YES oder OPEN_VDI_WORKSTATION=YES)"
-#endif
 #endif
 
 				redraw = box;
@@ -503,7 +499,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 
 	if (event->mwhich & MU_BUTTON)
 	{
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 		GRECT toolbar;
 
 		wind_get_grect(ptr->whandle, WF_WORKXYWH, &toolbar);
@@ -590,7 +586,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 					graf_mouse(M_ON, NULL);
 				} else
 				{
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 					GRECT toolbar;
 
 					wind_get_grect(event->msg[3], WF_WORKXYWH, &toolbar);
@@ -621,7 +617,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 					graf_mouse(M_OFF, NULL);
 					while (ret != 0 && box.g_w && box.g_h)
 					{
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 						GRECT temp_tbar;
 
 						temp_tbar = toolbar;
@@ -688,7 +684,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 					ptr->status |= WIS_FULL;
 
 					wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 					rel_x = (short) ((ptr->docsize.w - ptr->docsize.x) - (win.g_w - DL_WIN_XADD) / ptr->x_raster);
 					rel_y = (short) ((ptr->docsize.h - ptr->docsize.y) - (win.g_h - DL_WIN_YADD) / ptr->y_raster);
 #else
@@ -715,7 +711,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 
 				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
 
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 				/*  Toolbar beim Scrollen beruecksichtigen  */
 				win.g_w -= DL_WIN_XADD;
 				win.g_h -= DL_WIN_YADD;
@@ -723,7 +719,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 
 				switch (event->msg[4])
 				{
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 				case WA_UPPAGE:
 					rel_y = -win.g_h / ptr->y_raster;
 					break;
@@ -773,7 +769,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 				GRECT win;
 
 				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 				rel_x =
 					(short) ((event->msg[4] * (ptr->docsize.w - (win.g_w - DL_WIN_XADD) / ptr->x_raster)) / 1000 -
 							 ptr->docsize.x);
@@ -791,7 +787,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 				GRECT win;
 
 				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 				rel_y =
 					(short) ((event->msg[4] * (ptr->docsize.h - (win.g_h - DL_WIN_YADD) / ptr->y_raster)) / 1000 - ptr->docsize.y);
 #else
@@ -811,7 +807,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 				ptr->status &= ~WIS_FULL;
 
 				WindowCalcScroll(ptr);
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 				rel_x = (short) ((ptr->docsize.w - ptr->docsize.x) - ptr->scroll.g_w / ptr->x_raster);
 				rel_y = (short) ((ptr->docsize.h - ptr->docsize.y) - ptr->scroll.g_h / ptr->y_raster);
 #else
@@ -886,7 +882,7 @@ void SetWindowSlider(WINDOW_DATA * ptr)
 
 	wind_get_grect(ptr->whandle, WF_WORKXYWH, &win);
 
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 	temp = ptr->docsize.w - (win.g_w - DL_WIN_XADD) / ptr->x_raster;
 #else
 	temp = ptr->docsize.w - (win.g_w - DL_WIN_XADD);
@@ -894,7 +890,7 @@ void SetWindowSlider(WINDOW_DATA * ptr)
 	if (temp > 0)
 	{
 		wind_set_int(ptr->whandle, WF_HSLIDE, (short) (ptr->docsize.x * 1000L / temp));
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 		wind_set_int(ptr->whandle, WF_HSLSIZE, (short) ((win.g_w - DL_WIN_XADD) / ptr->x_raster * 1000L / ptr->docsize.w));
 #else
 		wind_set_int(ptr->whandle, WF_HSLSIZE, (short) ((win.g_w - DL_WIN_XADD) * 1000L / ptr->docsize.w));
@@ -904,7 +900,7 @@ void SetWindowSlider(WINDOW_DATA * ptr)
 		wind_set_int(ptr->whandle, WF_HSLIDE, 1000);
 		wind_set_int(ptr->whandle, WF_HSLSIZE, 1000);
 	}
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 	temp = ptr->docsize.h - (win.g_h - DL_WIN_YADD) / ptr->y_raster;
 #else
 	temp = ptr->docsize.h - (win.g_h - DL_WIN_YADD);
@@ -912,7 +908,7 @@ void SetWindowSlider(WINDOW_DATA * ptr)
 	if (temp > 0)
 	{
 		wind_set_int(ptr->whandle, WF_VSLIDE, (short) (ptr->docsize.y * 1000L / temp));
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 		wind_set_int(ptr->whandle, WF_VSLSIZE, (short) ((win.g_h - DL_WIN_YADD) * 1000L / ptr->y_raster / ptr->docsize.h));
 #else
 		wind_set_int(ptr->whandle, WF_VSLSIZE, (short) ((win.g_h - DL_WIN_YADD) * 1000L / ptr->docsize.h));
@@ -931,7 +927,7 @@ void ResizeWindow(WINDOW_DATA *ptr, WP_UNIT max_w, WP_UNIT max_h)
 
 	wind_get_grect(DESK, WF_WORKXYWH, &wind);
 	wind_calc_grect(WC_WORK, ptr->kind, &wind, &wind);
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 	wind.g_w = (short) min(DL_WIN_XADD + max_w * ptr->x_raster, wind.g_w - (wind.g_w - DL_WIN_XADD) % ptr->x_raster);
 	wind.g_h = (short) min(DL_WIN_YADD + max_h * ptr->y_raster, wind.g_h - (wind.g_h - DL_WIN_YADD) % ptr->y_raster);
 #else
@@ -957,7 +953,7 @@ void IconifyWindow(WINDOW_DATA * ptr, GRECT * r)
 	wind_close(ptr->whandle);
 	wind_set_grect(ptr->whandle, WF_ICONIFY, r);
 	wind_set_grect(ptr->whandle, WF_UNICONIFYXYWH, &current_size);
-#if SET_ICONIFY_NAME==YES
+#if SET_ICONIFY_NAME
 	wind_set_string(ptr->whandle, WF_NAME, iconified_name);
 #endif
 	wind_get_grect(ptr->whandle, WF_CURRXYWH, &new_pos);
@@ -1003,14 +999,14 @@ void UniconifyWindow(WINDOW_DATA * ptr)
 	wind_get_grect(ptr->whandle, WF_UNICONIFY, &current_size);
 	graf_growbox_grect(&small, &current_size);
 	wind_set_int(ptr->whandle, WF_TOP, 0);
-#if SET_ICONIFY_NAME==YES
+#if SET_ICONIFY_NAME
 	hv_set_title(ptr, ptr->title);
 #endif
 	wind_set_grect(ptr->whandle, WF_UNICONIFY, &current_size);
 	ptr->status &= ~WIS_ICONIFY;
 }
 
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 void DrawToolbar(WINDOW_DATA * win)
 {
 	if (!win->toolbar)

@@ -25,7 +25,7 @@
 #include <mint/cookie.h>
 #include "magx.h"
 
-#if USE_LONGEDITFIELDS == YES
+#if USE_LONGEDITFIELDS
 
 static short magic_version = -1;
 

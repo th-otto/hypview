@@ -64,7 +64,7 @@ int main(int argc, const char **argv)
 	
 	LoadConfig();						/* Konfiguration laden */
 
-	Init();								/* restliche Initialisierung */
+	hv_init();							/* restliche Initialisierung */
 
 	if (!_app)							/* Als ACC gestartet? */
 		menu_register(gl_apid, "  " PROGRAM_NAME);	/* ...im Menu anmelden */
@@ -99,7 +99,7 @@ int main(int argc, const char **argv)
 
 	RemoveItems();
 
-	Exit();
+	hv_exit();
 
 	DoExitSystem();
 

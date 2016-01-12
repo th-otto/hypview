@@ -41,7 +41,7 @@ void DoButton(EVNT * event)
 {
 	UNUSED(event);
 
-#if USE_BUBBLEGEM==YES
+#if USE_BUBBLEGEM
 	if (event->button == 2)
 		Bubble(event->mx, event->my);
 #endif
@@ -188,7 +188,7 @@ void DoUserEvents(EVNT *event)
 /*******************************************************/
 /****** Men-Auswahl                              ******/
 /*******************************************************/
-#if USE_MENU == YES
+#if USE_MENU
 void SelectMenu(short title, short entry)
 {
 	switch (title)
@@ -218,7 +218,7 @@ void SelectMenu(short title, short entry)
 /*******************************************************/
 /****** Dialogobjekte mit Langen Editfeldern      ******/
 /*******************************************************/
-#if USE_LONGEDITFIELDS == YES
+#if USE_LONGEDITFIELDS
 LONG_EDIT long_edit[] = {
 	{ MAIN, MA_EDIT, 20 },
 	{ ABOUT, AB_EDIT, 40 }
@@ -232,7 +232,7 @@ short long_edit_count = (short) (sizeof(long_edit) / sizeof(LONG_EDIT));
 /*******************************************************/
 /****** Drag&Drop Protokoll                       ******/
 /*******************************************************/
-#if USE_DRAGDROP == YES
+#if USE_DRAGDROP
 /*
 	Hier koennen je nach Zielobjekt <obj> die D&D-Daten <data> anders
 	ausgewertet werden. <data> hat eines der gewuenschten Formate

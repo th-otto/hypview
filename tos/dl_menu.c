@@ -23,7 +23,7 @@
 
 #include "hv_defs.h"
 
-#if USE_MENU == YES
+#if USE_MENU
 
 void ChooseMenu(short title, short entry)
 {

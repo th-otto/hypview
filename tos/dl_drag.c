@@ -25,7 +25,7 @@
 #include "hypview.h"
 #include "dragdrop.h"
 
-#if USE_DRAGDROP == YES
+#if USE_DRAGDROP
 
 G_STATIC_ASSERT(sizeof(DD_FNAME) == 20);
 

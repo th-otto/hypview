@@ -28,7 +28,7 @@
 #include "tos/mem.h"
 
 
-#if USE_DOCUMENTHISTORY == YES
+#if USE_DOCUMENTHISTORY
 
 void DhstAddFile(const char *path)
 {

@@ -39,7 +39,7 @@ _WORD has_iconify = 0;
 _WORD __magix = 0;
 _WORD __geneva = 0;
 
-#if USE_GLOBAL_VDI==YES
+#if USE_GLOBAL_VDI
 _WORD vdi_handle;
 
 _WORD workin[16];
@@ -48,7 +48,7 @@ _WORD workout[57];
 
 _WORD ext_workout[57];
 
-#if SAVE_COLORS==YES
+#if SAVE_COLORS
 static RGB1000 save_palette[256];
 #endif
 #endif
@@ -216,7 +216,7 @@ int DoAesInit(void)
 
 int DoInitSystem(void)
 {
-#if USE_GLOBAL_VDI==YES
+#if USE_GLOBAL_VDI
 	{
 		short i;
 
@@ -234,16 +234,16 @@ int DoInitSystem(void)
 		}
 		vq_extnd(vdi_handle, 1, ext_workout);
 
-#if SAVE_COLORS==YES
+#if SAVE_COLORS
 		for (i = 0; i < 256; i++)
 			vq_color(vdi_handle, i, 1, (short *) &save_palette[i]);
 #endif
 	}
 #endif
-#if USE_LONGEDITFIELDS==YES
+#if USE_LONGEDITFIELDS
 	DoInitLongEdit();
 #endif
-#if USE_BUBBLEGEM==YES
+#if USE_BUBBLEGEM
 	DoInitBubble();
 #endif
 	va_proto_init();
@@ -257,16 +257,16 @@ void DoExitSystem(void)
 {
 	if (_app)							/*  Ist kein Accessory? */
 		DoAV_EXIT();
-#if USE_BUBBLEGEM==YES
+#if USE_BUBBLEGEM
 	DoExitBubble();
 #endif
-#if USE_LONGEDITFIELDS==YES
+#if USE_LONGEDITFIELDS
 	DoExitLongEdit();
 #endif
-#if USE_GLOBAL_VDI==YES
+#if USE_GLOBAL_VDI
 	if (vdi_handle)
 	{
-#if SAVE_COLORS==YES
+#if SAVE_COLORS
 		short i;
 
 		for (i = 0; i < 256; i++)

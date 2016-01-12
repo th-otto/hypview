@@ -23,7 +23,7 @@
 
 #include "hv_defs.h"
 
-#if USE_BUBBLEGEM == YES
+#if USE_BUBBLEGEM
 #include "bgh.h"
 
 static char const bub_fname[] = "hypview.bgh";

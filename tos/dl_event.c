@@ -27,10 +27,10 @@
 
 
 #include "av.h"
-#if USE_BUBBLEGEM == YES
+#if USE_BUBBLEGEM
 #include "bubble.h"
 #endif
-#if USE_DOCUMENTHISTORY == YES
+#if USE_DOCUMENTHISTORY
 #include "dhst.h"
 #endif
 
@@ -79,7 +79,7 @@ static void DoKeybd(EVNT *event)
 		switch (ascii)
 		{
 		case 'Q':
-#if USE_MENU==YES
+#if USE_MENU
 			ChooseMenu(ME_FILE, ME_QUIT);
 #else
 			if (_app)
@@ -148,20 +148,20 @@ static void DoMessage(EVNT *event)
 
 	switch ((unsigned short)event->msg[0])
 	{
-#if USE_MENU==YES
+#if USE_MENU
 	case MN_SELECTED:
 		ChooseMenu(event->msg[3], event->msg[4]);
 		break;
 #endif
 	case AP_TERM:
 		quitApp = TRUE;
-#if USE_MENU==YES
+#if USE_MENU
 		ChooseMenu(ME_FILE, ME_QUIT);
 #else
 		doneFlag = TRUE;
 #endif
 		break;
-#if USE_DRAGDROP==YES
+#if USE_DRAGDROP
 	case AP_DRAGDROP:
 		DragDrop(event->msg);
 		break;
@@ -211,14 +211,14 @@ static void DoMessage(EVNT *event)
 		event->key = event->msg[4];
 		DoEventDispatch(event);
 		break;
-#if USE_BUBBLEGEM==YES
+#if USE_BUBBLEGEM
 	case BUBBLEGEM_REQUEST:
 		Bubble(event->msg[4], event->msg[5]);
 		break;
 	case BUBBLEGEM_ACK:
 		break;
 #endif
-#if USE_DOCUMENTHISTORY == YES
+#if USE_DOCUMENTHISTORY
 	case DHST_ACK:
 		DhstFree(event->msg);
 		break;

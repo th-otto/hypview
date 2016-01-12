@@ -321,7 +321,7 @@ void RemoveItems(void)
 }
 
 
-#if USE_MENU == YES
+#if USE_MENU
 static short menu_enabled = TRUE;
 
 static void SetMenu(short enable)
@@ -360,7 +360,7 @@ static void SetMenu(short enable)
 void ModalItem(void)
 {
 	wind_get_int(0, WF_TOP, &modal_stack[++modal_items]);
-#if USE_MENU == YES
+#if USE_MENU
 	SetMenu(FALSE);
 #endif
 }
@@ -404,7 +404,7 @@ void ItemEvent(EVNT *event)
 		else if (ptr->type == WIN_FONTSEL)
 			FontselectorEvents((FONTSEL_DATA *) ptr, event);
 	}
-#if USE_MENU == YES
+#if USE_MENU
 	if ((modal_items < 0) && !menu_enabled)
 		SetMenu(TRUE);
 #endif

@@ -14,10 +14,10 @@ extern short sel_font_id, sel_font_pt;
 
 
 /*
- *		Init.c
+ *		hv_init.c
  */
-void Init(void);
-void Exit(void);
+void hv_init(void);
+void hv_exit(void);
 
 /*
  *		Fileselc.c

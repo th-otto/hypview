@@ -11,6 +11,8 @@ INCLUDES = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos
 
 hypview_SOURCES = \
 	hypview.c hypview.h hypview.rsh \
+	hv_defs.h \
+	\
 	hv_asc.c \
 	hv_autol.c \
 	hv_bin.c \
