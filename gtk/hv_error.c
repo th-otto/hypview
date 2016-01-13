@@ -34,7 +34,8 @@ void check_toplevels(GtkWidget *toplevel)
 	
 	if ((num_open = toplevels_open_except(toplevel)) == 0)
 	{
-		gtk_main_quit();
+		if (gtk_main_level() > 0)
+			gtk_main_quit();
 	}
 }
 
@@ -248,10 +249,7 @@ void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean
 		fflush(stdout);
 		fflush(stderr);
 		desc = g_locale_from_utf8(s, -1, NULL, NULL, NULL);
-		if (desc)
-			fputs(desc, to_stderr ? stderr : stdout);
-		else
-			fputs(s, to_stderr ? stderr : stdout);
+		fprintf(to_stderr ? stderr : stdout, "%s\n", desc ? desc : s);
 		g_free(desc);
 	}
 	if (use_gui && init_gtk())
