@@ -112,6 +112,7 @@ void show_dialog(GtkWidget *parent, const char *type, const char *message, void 
 
 	gtk_window_present(GTK_WINDOW(dialog));
 	g_free(msg);
+	gtk_dialog_run(GTK_DIALOG(dialog));
 }
 
 /******************************************************************************/

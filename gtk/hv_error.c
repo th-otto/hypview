@@ -127,7 +127,7 @@ static void dialog_response(GtkWidget *w, gint response_id, gpointer user_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-GtkWidget *show_message(const char *title, const char *text, gboolean big)
+void show_message(const char *title, const char *text, gboolean big)
 {
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
@@ -178,8 +178,7 @@ GtkWidget *show_message(const char *title, const char *text, gboolean big)
 		gtk_window_set_default_size(GTK_WINDOW(dialog), 640, 400);
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), top_window());
 	gtk_widget_show_all(dialog);
-
-	return dialog;
+	gtk_dialog_run(GTK_DIALOG(dialog));
 }
 
 /*** ---------------------------------------------------------------------- ***/

@@ -102,7 +102,7 @@ void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean
 gboolean init_gtk(void);
 int toplevels_open_except(GtkWidget *top);
 void check_toplevels(GtkWidget *toplevel);
-GtkWidget *show_message(const char *title, const char *text, gboolean big);
+void show_message(const char *title, const char *text, gboolean big);
 gboolean ask_yesno(GtkWindow *parent, const char *text);
 GtkWindow *top_window(void);
 
