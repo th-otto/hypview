@@ -586,6 +586,14 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 			hyp->flatindex = FALSE;
 		}
 		
+		/*
+		 * looks like original hcp had a bug,
+		 * setting the comp_diff member of the EOF
+		 * entry to the value from the previous entry
+		 */
+		if (hyp->indextable[hyp->num_index - 1]->type == HYP_NODE_EOF)
+			hyp->indextable[hyp->num_index - 1]->comp_diff = 0;
+		
 		hyp->indextable[hyp->num_index] = g_new0(INDEX_ENTRY, 1);
 		if (hyp->indextable[hyp->num_index] == NULL)
 		{
