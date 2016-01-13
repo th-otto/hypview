@@ -1,7 +1,7 @@
 #include "hv_defs.h"
 
 
-void HypGetCursorPosition(DOCUMENT *doc, short x, short y, TEXT_POS *pos)
+void HypGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 {
 	WINDOW_DATA *win = doc->window;
 	HYP_NODE *node;

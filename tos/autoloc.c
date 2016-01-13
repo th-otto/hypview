@@ -31,7 +31,7 @@ LINEPTR *HypGetYLine(HYP_NODE *node, long y)
 /*
  * Return the real Y value for a line
  * You can not only make "line * win->y_raster", because the picture have also
- * lines. The first line have in his "y" value a offest, otherwise the are
+ * lines. The first line have in his "y" value a offset, otherwise the are
  * zero.
  */
 long HypGetLineY(HYP_NODE *node, long line)
@@ -57,7 +57,7 @@ long HypGetLineY(HYP_NODE *node, long line)
 
 /*
  * Return the real Textline
- * It is the same Problem like above. If you get a Line you can't use this
+ * It is the same Problem like above. If you get a line you can't use this
  * direct to get for example the "line_ptr[line].txt".
  * You must be convert the value "line" before you can use them.
  */

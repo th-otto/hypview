@@ -12,7 +12,9 @@ if OS_TOS
 bin_SCRIPTS = reflink.ttp refcheck.ttp hcp.ttp stool.tos hypfind.ttp
 endif
 if !CROSS_COMPILING
-noinst_SCRIPTS = $(build_triplet)-hcp$(EXEEXT)
+noinst_SCRIPTS = $(build_triplet)-hcp$(EXEEXT) \
+		 $(build_triplet)-hypfind$(EXEEXT) \
+		 $(build_triplet)-stool$(EXEEXT)
 endif
 
 EXTRA_DIST = gfx.s genmaptab.c
@@ -139,6 +141,9 @@ stool_LDADD = $(LIBHYP) $(GLIB_LIBS) $(LIBINTL)
 stool.tos: stool
 	$(LN_S) $?$(EXEEXT) $@
 
+$(build_triplet)-stool$(EXEEXT): stool$(EXEEXT)
+	cp -a $? $@
+
 
 hypfind_SOURCES = \
 	hypfind.c \
@@ -149,6 +154,9 @@ hypfind_LDADD = $(LIBHYP) $(GLIB_LIBS) $(LIBINTL)
 
 hypfind.ttp: hypfind
 	$(LN_S) $?$(EXEEXT) $@
+
+$(build_triplet)-hypfind$(EXEEXT): hypfind$(EXEEXT)
+	cp -a $? $@
 
 
 img2bmp_SOURCES = \

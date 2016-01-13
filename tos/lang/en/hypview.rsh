@@ -400,6 +400,8 @@ static char hypview_string_152[] = "[1][No hostname specified in|Hypertext.][Can
 static char hypview_string_153[] = "[1][Host application not found.][Cancel]";
 static char hypview_string_154[] = "[1][Not Implemented.][Cancel]";
 static char hypview_string_155[] = "[1][Cannot create a fontselector.|Maybe the system does not|support it.][Cancel]";
+static char hypview_string_156[] = "from: %s";
+static char hypview_string_157[] = "Programinfo...";
 
 
 /* mask of DI_ICON */
@@ -1955,7 +1957,9 @@ static char *rs_frstr[] = {
 	hypview_string_152,
 	hypview_string_153,
 	hypview_string_154,
-	hypview_string_155
+	hypview_string_155,
+	hypview_string_156,
+	hypview_string_157
 };
 
 
@@ -2192,13 +2196,13 @@ static OBJECT *rs_trindex[] = {
 #undef NUM_OBS
 #undef NUM_TREE
 #undef NUM_UD
-#define NUM_STRINGS 156
+#define NUM_STRINGS 158
 #define NUM_BB		0
 #define NUM_IB		0
 #define NUM_CIB     15
 #define NUM_CIC     29
 #define NUM_TI		27
-#define NUM_FRSTR	15
+#define NUM_FRSTR	17
 #define NUM_FRIMG	0
 #define NUM_OBS     101
 #define NUM_TREE	7
@@ -2393,8 +2397,8 @@ _WORD hypview_rsc_free()
 #endif /* RSC_NAMED_FUNCTIONS */
 
 #else /* !RSC_STATIC_FILE */
-int rs_numstrings = 156;
-int rs_numfrstr = 15;
+int rs_numstrings = 158;
+int rs_numfrstr = 17;
 
 int rs_nuser = 0;
 int rs_numimages = 0;

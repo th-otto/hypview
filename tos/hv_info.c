@@ -156,7 +156,7 @@ void ProgrammInfos(DOCUMENT *doc)
 	
 	sprintf(tree[PROG_NAME].ob_spec.free_string, "%s %s", gl_program_name, version);
 	g_free(version);
-	sprintf(tree[PROG_DATE].ob_spec.free_string, "from: %s", gl_compile_date);
+	sprintf(tree[PROG_DATE].ob_spec.free_string, rs_string(PROGINFO_FROM), gl_compile_date);
 
 	set_text(tree, PROG_FILE, hyp_basename(doc->path));
 	if (doc->type == HYP_FT_HYP)
@@ -193,7 +193,7 @@ void ProgrammInfos(DOCUMENT *doc)
 	
 	if (has_window_dialogs())
 	{
-		Prog_Dialog = OpenDialog(ProgHandle, tree, _("Programminfo..."), -1, -1, NULL);
+		Prog_Dialog = OpenDialog(ProgHandle, tree, rs_string(PROGINFO_TITLE), -1, -1, NULL);
 	} else
 	{
 		_WORD obj;

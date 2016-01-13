@@ -27,36 +27,36 @@
  *   begin options                          *
  ********************************************/
 /* Use a global VDI workstation? */
-#define	USE_GLOBAL_VDI			YES
+#define	USE_GLOBAL_VDI			1
 /*	Save color palette on init?	*/
-#define	SAVE_COLORS				NO
+#define	SAVE_COLORS				0
 
 /* Install/remove menubar on initialization? (Needs a resource object MENU) */
-#define	USE_MENU		NO
+#define	USE_MENU		0
 
 /* Use window dialog management routines? (Based on WDialog) */
-#define	USE_DIALOG		YES
+#define	USE_DIALOG		1
 
 /* Automatically set the title when iconifying according to RSC file */
-#define	SET_ICONIFY_NAME	NO
+#define	SET_ICONIFY_NAME	0
 /* Open a separate VDI workstation for each new window */
-#define	OPEN_VDI_WORKSTATION	NO
+#define	OPEN_VDI_WORKSTATION	0
 /* Use a logical raster for computations (=not the pixel raster) */
-#define	USE_LOGICALRASTER	YES
+#define	USE_LOGICALRASTER	1
 /* Use toolbar routines */
-#define	USE_TOOLBAR		YES
+#define	USE_TOOLBAR		1
 
 /* Support Drag&Drop protokol */
-#define	USE_DRAGDROP        YES
+#define	USE_DRAGDROP        1
 
 /* Enable support for long edit fields (As in MagiC)	*/
-#define	USE_LONGEDITFIELDS  NO
+#define	USE_LONGEDITFIELDS  0
 
 /* BubbleGEM help system */
-#define	USE_BUBBLEGEM       NO
+#define	USE_BUBBLEGEM       0
 
 /* Document history protocol */
-#define	USE_DOCUMENTHISTORY	YES
+#define	USE_DOCUMENTHISTORY	1
 
 /* Application name in uppercase letters */
 #define	PROGRAM_UNAME		"HYPVIEW"
@@ -78,6 +78,10 @@
 #define MBLOCK1		0, 0, 0, 0, 0
 #define MBLOCK2		0, 0, 0, 0, 0
 #define WAIT		0
+
+#if !OPEN_VDI_WORKSTATION && !USE_GLOBAL_VDI
+#error "Need at least one VDI workstation! (USE_GLOBAL_VDI or OPEN_VDI_WORKSTATION)"
+#endif
 
 /********************************************
  *   end options                            *

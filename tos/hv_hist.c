@@ -25,7 +25,8 @@
 #include "hypdebug.h"
 
 
-HISTORY *history = NULL;				/*  Pointer auf die History-Daten   */
+/* pointer to history data */
+HISTORY *history = NULL;
 
 void AddHistoryEntry(WINDOW_DATA *win)
 {
@@ -46,11 +47,12 @@ void AddHistoryEntry(WINDOW_DATA *win)
 	new_entry->next = history;
 	new_entry->title = g_strdup_printf(" %s", win->title);
 
-	history = new_entry;				/*  History Pointer anpassen    */
+	/* put new entry at top */
+	history = new_entry;
 }
 
 
-gboolean RemoveHistoryEntry(DOCUMENT ** doc, hyp_nodenr *node, long *line)
+gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line)
 {
 	WINDOW_DATA *win = (*doc)->window;
 	HISTORY *entry = history;
@@ -91,7 +93,9 @@ gboolean RemoveHistoryEntry(DOCUMENT ** doc, hyp_nodenr *node, long *line)
 }
 
 
-/*	Entfernt alle Eintrge, die mit <win> verbunden sind	*/
+/*
+ * remove all entries connected to <win>
+ */
 void RemoveAllHistoryEntries(WINDOW_DATA *win)
 {
 	HISTORY *entry = history;
@@ -107,7 +111,7 @@ void RemoveAllHistoryEntries(WINDOW_DATA *win)
 		entry = history;
 	}
 
-	/*  Keine weiteren Eintraege? ... Ende  */
+	/* no more entries? => done */
 	if (!entry)
 		return;
 
@@ -195,7 +199,7 @@ HISTORY *GetLastHistory(void)
 		new_entry->line = entry->line;
 		new_entry->next = last;
 		new_entry->title = g_strdup(entry->title);
-		last = new_entry;				/*  History Pointer anpassen    */
+		last = new_entry;
 
 		entry = entry->next;
 	}
@@ -222,7 +226,8 @@ void SetLastHistory(WINDOW_DATA *the_win, HISTORY *last)
 		new_entry->line = entry->line;
 		new_entry->next = history;
 		new_entry->title = g_strdup(entry->title);
-		history = new_entry;			/*  History Pointer anpassen    */
+		/* put new entry at top */
+		history = new_entry;
 
 		entry = entry->next;
 	}

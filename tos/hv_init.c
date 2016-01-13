@@ -71,7 +71,7 @@ void hv_init(void)
 	/*  AES-Initialisierung:    */
 	/************************/
 
-	/*  Toolbar/Skin laden  */
+	/* load toolbar/skin */
 	skin = gl_profile.viewer.skin_path;
 	if (!empty(skin))
 	{
@@ -147,7 +147,7 @@ void hv_init(void)
 	/******************************/
 
 
-	/*  Lade Marken */
+	/* load markers */
 	MarkerInit();
 }
 

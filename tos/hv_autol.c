@@ -28,14 +28,15 @@
 
 #define AUTOLOC_SIZE		26
 
-/*	Initialisiert und aktiviert den Autolocator
-	Rueckgabewert ist die Position des naechsten Zeichens.
-*/
+/*
+ * Initialize and activate the autolocator.
+ * Returns position of next character
+ */
 static char *AutolocatorInit(DOCUMENT * doc)
 {
 	char *ptr;
 
-	/*  Noch kein Speicher fuer Autolocator alloziert?  */
+	/* memory already allocated? */
 	if (doc->autolocator == NULL)
 	{
 		ptr = g_new(char, AUTOLOC_SIZE);
@@ -49,13 +50,13 @@ static char *AutolocatorInit(DOCUMENT * doc)
 		*ptr = 0;
 	} else
 	{
-		/*  Zum Stringende...   */
+		/* to end of string */
 		ptr = doc->autolocator;
 		while (*ptr)
 			ptr++;
 	}
 
-	/*  Search-Box noch nicht aktiviert?    */
+	/* search box already active? */
 	if (!doc->buttons.searchbox)
 		doc->buttons.searchbox = TRUE;
 
@@ -80,7 +81,7 @@ static void autolocator_redraw(WINDOW_DATA *win, _WORD obj, GRECT *tbar)
 }
 
 
-/*	Aktualisiert den Autolocator und startet evtl. eine Suche	*/
+/* Update the autolocator and start a search */
 static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 {
 	WINDOW_DATA *win = doc->window;
@@ -91,20 +92,18 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 	if (!doc->buttons.searchbox)
 		return;
 
-	/*  Toolbar mit neuem Text zeichnen */
+	/* draw toolbar with new text */
 	wind_get_grect(win->whandle, WF_WORKXYWH, &tbar);
 	tbar.g_h = win->y_offset;
 
 	win->toolbar[TO_STRNOTFOUND].ob_flags |= OF_HIDETREE;
 
-	if (tbar.g_w > 472)					/* Box vergroessern damit kein haesslicher Streifen bleibt */
-		win->toolbar[TO_SEARCHBOX].ob_width = tbar.g_w;
-	else
-		win->toolbar[TO_SEARCHBOX].ob_width = 472;	/* Standardwert aus Resource setzen */
+	/* enlarge box to avoid leftovers from backspacing */
+	win->toolbar[TO_SEARCHBOX].ob_width = tbar.g_w;
 
 	autolocator_redraw(win, TO_BACKGRND, &tbar);
 
-	/*  Wenn der Auto-Locator nicht leer ist... */
+	/* if autolocator is not empty... */
 	if (*doc->autolocator)
 	{
 		graf_mouse(BUSY_BEE, NULL);
@@ -128,7 +127,7 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 	}
 }
 
-/*	Fuegt dem Autolocator ein neues Zeichen ein und aktiviert die Suche */
+/*add a new character to the Autolocator and start search */
 short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 {
 	WINDOW_DATA *win = doc->window;
@@ -166,10 +165,9 @@ short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 		}
 	} else if (ascii == ' ')
 	{
-		/*  Leerzeichen am Anfang werden ignoriert  */
+		/* ignore space at start of string */
 		if (ptr != doc->autolocator)
 			*ptr++ = ' ';
-
 		*ptr = 0;
 	} else if (ascii > ' ')
 	{
@@ -191,7 +189,7 @@ short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 }
 
 
-/* Fuegt den Inhalt des Clipboards im Autolocator ein. */
+/* insert contents of clipboard in autolocator. */
 void AutoLocatorPaste(DOCUMENT *doc)
 {
 	WINDOW_DATA *win = doc->window;
@@ -218,7 +216,7 @@ void AutoLocatorPaste(DOCUMENT *doc)
 		{
 			if (c == ' ')
 			{
-				/*  Leerzeichen am Anfang werden ignoriert  */
+				/* ignore spaces at start */
 				if (ptr != doc->autolocator)
 					*ptr++ = c;
 				*ptr = 0;

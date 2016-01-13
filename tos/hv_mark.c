@@ -48,9 +48,13 @@ static MARKEN marken[MAX_MARKEN];
 
 static void MarkerDelete(short num)
 {
+	char *dst;
+	
 	memset(&marken[num], 0, sizeof(MARKEN));
 	marken[num].node_num = HYP_NOINDEX;
-	strcpy(marken[num].node_name, _(" free"));
+	dst = marken[num].node_name;
+	*dst++ = ' ';
+	strcpy(dst, _("free"));
 }
 
 /*----------------------------------------------------------------------------------*/
@@ -61,7 +65,7 @@ void MarkerSave(DOCUMENT *doc, short num)
 	const char *src;
 	char *dst, *end;
 
-	/* Vermeide illegale Aufrufe    */
+	/* avoid illegal parameters */
 	if (num < 0 || num >= MAX_MARKEN)
 		return;
 
@@ -70,7 +74,7 @@ void MarkerSave(DOCUMENT *doc, short num)
 	strncpy(marken[num].path, doc->path, PATH_LEN - 1);
 	marken[num].path[PATH_LEN - 1] = 0;
 
-	/* Kopiere Marken-Titel */
+	/* copy marker title */
 	src = doc->window_title;
 	dst = marken[num].node_name;
 	end = &marken[num].node_name[NODE_LEN - 1];
@@ -111,7 +115,7 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 {
 	WINDOW_DATA *win = doc->window;
 
-	/* Vermeide illegale Aufrufe */
+	/* avoid illegal parameters */
 	if (num < 0 || num >= MAX_MARKEN)
 		return;
 
@@ -190,14 +194,16 @@ void MarkerPopup(DOCUMENT *doc, short x, short y)
 		{
 			sel = i;
 			if (event.kstate & KbSHIFT)
-				MarkerSave(doc, sel);
-			else if (marken[sel].node_num == HYP_NOINDEX)
 			{
-				char buff[256];
+				MarkerSave(doc, sel);
+			} else if (marken[sel].node_num == HYP_NOINDEX)
+			{
+				char *buff;
 	
-				sprintf(buff, rs_string(ASK_SETMARK), doc->window_title);
+				buff = g_strdup_printf(rs_string(ASK_SETMARK), doc->window_title);
 				if (form_alert(1, buff) == 1)
 					MarkerSave(doc, sel);
+				g_free(buff);
 			} else
 			{
 				if (event.kstate & KbALT)

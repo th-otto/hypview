@@ -32,10 +32,13 @@ void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 	graf_mouse(BUSY_BEE, NULL);
 	if (doc->gotoNodeProc(doc, NULL, num))
 	{
-		if (calc)							/* Falls wir von einem Link kommen muessen wir die  */
-		{									/* die richtige "line" ermittelt. Ist wichtig falls */
-			/* sich Bilder in der Seite befinden.               */
-			short y;
+		if (calc)
+		{
+			/*
+			 * when activated by a link, we have to calculate the correct "line".
+			 * Important if page contains images.
+			 */
+			long y;
 			HYP_NODE *node;
 	
 			node = doc->displayed_node;
@@ -60,30 +63,30 @@ void GoBack(DOCUMENT *old_doc)
 	new_doc = old_doc;
 	if (RemoveHistoryEntry(&new_doc, &page, &line))
 	{
-		/*  Bereits geschlossene Datei oeffnen? => Datei wechsel    */
+		/* changing file? */
 		if (new_doc != old_doc)
 		{
 			int ret;
 
-			/*  Falls das alte Dokument nicht mehr benoetigt wird...    */
+			/* if old document is not used anymore...    */
 			if (!CountDocumentHistoryEntries(old_doc))
 			{
 				win->data = old_doc->next;
-				HypCloseFile(old_doc);		/*  Dokument schliessen */
+				HypCloseFile(old_doc);		/* ...close document */
 			} else
 			{
 				DOCUMENT *prev_doc = old_doc;
 
 				old_doc->closeProc(old_doc);
 
-				/*  Platziere neues Dokument an den Anfang der Liste    */
+				/* place new document at top of list */
 				while (prev_doc->next != new_doc)
 					prev_doc = prev_doc->next;
 				prev_doc->next = new_doc->next;
 				new_doc->next = old_doc;
 			}
 
-			/*  neue Datei laden    */
+			/* load new file */
 			ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 			if (ret >= 0)
 			{
@@ -95,8 +98,8 @@ void GoBack(DOCUMENT *old_doc)
 			}
 		}
 
-		if (new_doc->type >= 0)			/*  bekannter Typ?  */
-			GotoPage(new_doc, page, line, FALSE);	/*  Zur Seite wechseln  */
+		if (new_doc->type >= 0)			/* known filetype? */
+			GotoPage(new_doc, page, line, FALSE);	/* switch to requested page */
 		else
 			FileError(hyp_basename(new_doc->path), _("format not recognized"));
 	}
@@ -267,7 +270,7 @@ static void GotoDocPage(DOCUMENT *doc, hyp_nodenr page)
 		GotoPage(doc, page, 0, FALSE);
 	} else
 	{
-		/*  Visuelles Feedback  */
+		/* short visual feedback */
 		graf_mouse(BUSY_BEE, NULL);
 		evnt_timer_gemlib(10);
 		graf_mouse(ARROW, NULL);
@@ -305,11 +308,11 @@ void GoThisButton(DOCUMENT *doc, short obj)
 	if (!hypnode_valid(hyp, new_node))
 		return;
 	
-	/*  Letzte Seite erreicht?  */
+	/* already displaying this page? */
 	if (new_node == doc->getNodeProc(doc))
 		return;
 
-	/*  Eintrag ist keine Seite?    */
+	/* is node a text page? */
 	if (!HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type))
 		return;
 

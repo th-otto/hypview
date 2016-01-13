@@ -24,6 +24,7 @@ static HTMLHELP_TYPE p_htmlhelp;
 #endif
 #endif /* HELP_SUPPORT_CHM */
 
+static const char *help_filename;
 static char *docdir;
 
 /******************************************************************************/
@@ -132,7 +133,7 @@ static gboolean file_found(char *filename)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-gboolean Help_Show(GtkWidget *parent, const char *filename, const char *entry)
+gboolean Help_Show(GtkWidget *parent, const char *entry)
 {
 	gboolean found;
 	char *my_help_name;
@@ -140,7 +141,7 @@ gboolean Help_Show(GtkWidget *parent, const char *filename, const char *entry)
 	int type;
 	
 	UNUSED(entry);
-	if (empty(filename))
+	if (empty(help_filename))
 		return FALSE;
 	
 	parent = gtk_widget_get_toplevel(parent);
@@ -150,7 +151,7 @@ gboolean Help_Show(GtkWidget *parent, const char *filename, const char *entry)
 		return FALSE;
 	type = -1;
 
-	strcpy(my_help_name, filename);
+	strcpy(my_help_name, help_filename);
 	if (file_found(my_help_name))
 	{
 		p = strrchr(my_help_name, '.');
@@ -272,23 +273,23 @@ gboolean Help_Show(GtkWidget *parent, const char *filename, const char *entry)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Help_Index(GtkWidget *parent, const char *filename)
+void Help_Index(GtkWidget *parent)
 {
-	Help_Show(parent, filename, "$Index");
+	Help_Show(parent, "$Index");
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Help_Contents(GtkWidget *parent, const char *filename)
+void Help_Contents(GtkWidget *parent)
 {
-	Help_Show(parent, filename, "$Contents");
+	Help_Show(parent, "$Contents");
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Help_Using_Help(GtkWidget *parent, const char *filename)
+void Help_Using_Help(GtkWidget *parent)
 {
-	Help_Show(parent, filename, "$Help");
+	Help_Show(parent, "$Help");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -308,5 +309,6 @@ void Help_Init(void)
 	
 	root = g_get_package_installation_directory();
 	docdir = g_build_filename(root, "/share/doc/hypview" , NULL);
+	help_filename = _("hypview_en.chm");
 	g_free(root);
 }

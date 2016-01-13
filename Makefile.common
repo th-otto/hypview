@@ -5,16 +5,16 @@ LIBHYP_DEP = $(hyp_builddir)/hyp/libhyp.a
 LIBHYP = $(LIBHYP_DEP)
 
 $(LIBHYP_DEP)::
-	if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) -C $(hyp_builddir)/hyp libhyp.a; fi
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/hyp libhyp.a; fi
 
 LIBHYPDOC_DEP = $(hyp_builddir)/hyp/libhypdoc.a
 LIBHYPDOC = $(LIBHYPDOC_DEP)
 
 $(LIBHYPDOC_DEP)::
-	if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) -C $(hyp_builddir)/hyp libhypdoc.a; fi
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/hyp libhypdoc.a; fi
 
 LIBPIC_DEP = $(hyp_builddir)/pic/libpic.a
 LIBPIC = $(LIBPIC_DEP)
 
 $(LIBPIC_DEP)::
-	if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) -C $(hyp_builddir)/pic libpic.a; fi
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/pic libpic.a; fi

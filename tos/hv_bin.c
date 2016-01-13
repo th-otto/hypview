@@ -72,7 +72,7 @@ void BinaryDisplayPage(DOCUMENT *doc)
 }
 
 
-void BinaryGetCursorPosition(DOCUMENT *doc, short x, short y, TEXT_POS *pos)
+void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 {
 	WINDOW_DATA *win = doc->window;
 	FMT_ASCII *ascii = doc->data;

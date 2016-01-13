@@ -60,7 +60,7 @@ void AsciiDisplayPage(DOCUMENT *doc)
 }
 
 
-void AsciiGetCursorPosition(DOCUMENT *doc, short x, short y, TEXT_POS *pos)
+void AsciiGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 {
 	WINDOW_DATA *win = doc->window;
 	FMT_ASCII *ascii = doc->data;
@@ -77,7 +77,6 @@ void AsciiGetCursorPosition(DOCUMENT *doc, short x, short y, TEXT_POS *pos)
 		return;
 	}
 
-	/*  Falls die Zeile nicht mehr im Dokument enthalten ist... */
 	if (line < 0)
 	{
 		pos->line = 0;

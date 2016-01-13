@@ -24,11 +24,6 @@
 #ifndef _diallib_h
 #define _diallib_h
 
-#define	ON                      1
-#define	OFF                     0
-#define	YES                     ON
-#define	NO                      OFF
-
 #define	NLS_LANG_GERMAN         0
 #define	NLS_LANG_ENGLISH        1
 #define	NLS_LANG_FRENCH         0
@@ -142,7 +137,7 @@ struct _window_data_
 	const char *title;
 	char titlebuf[80];
 	short	kind;
-#if OPEN_VDI_WORKSTATION == YES
+#if OPEN_VDI_WORKSTATION
 	short	vdi_handle;
 	_WORD workout[57];
 	_WORD ext_workout[57];
@@ -157,11 +152,11 @@ struct _window_data_
 	short	y_speed;
 	short	x_margin_left, x_margin_right;
 	short	y_margin_top, y_margin_bottom;
-#if USE_LOGICALRASTER==YES
+#if USE_LOGICALRASTER
 	short	x_raster;
 	short	y_raster;
 #endif
-#if USE_TOOLBAR==YES
+#if USE_TOOLBAR
 	OBJECT *toolbar;
 	short	x_offset;
 	short	y_offset;
@@ -229,7 +224,7 @@ extern	_WORD has_wlffp, has_iconify, has_form_popup;
 #define has_window_dialogs() (has_wlffp & 1)
 #define has_filesel_dialog() (has_wlffp & 8)
 extern _WORD __magix;
-#if USE_GLOBAL_VDI == YES
+#if USE_GLOBAL_VDI
 extern	_WORD vdi_handle;
 extern	_WORD workin[16];
 extern	_WORD workout[57];
@@ -237,7 +232,7 @@ extern	_WORD ext_workout[57];
 #endif
 extern OBJECT *dial_library_tree;
 extern OBJECT *toolbar_tree;
-#if USE_MENU == YES
+#if USE_MENU
 extern	OBJECT	*menu_tree;
 #endif
 extern	KEYTAB *key_table;
@@ -362,7 +357,8 @@ void DoAV_EXIT(void);
 
 _BOOL Protokoll_Send(_WORD apid, _UWORD prot, _UWORD a1, _UWORD a2, _UWORD a3, _UWORD a4, _UWORD a5);
 _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self);
-_WORD shel_xwrite(_WORD sh_wdoex, _WORD sh_wisgr, _WORD sh_wiscr, const void *sh_wpcmd, const char *sh_wptail);_BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id);
+_WORD shel_xwrite(_WORD sh_wdoex, _WORD sh_wisgr, _WORD sh_wiscr, const void *sh_wpcmd, const char *sh_wptail);
+_BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id);
 _WORD appl_locate(const char *pathlist, _BOOL startit);
 void va_proto_init(void);
 

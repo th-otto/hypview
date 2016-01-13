@@ -32,7 +32,7 @@ typedef	hyp_nodenr (*DOC_GETNODEPROC)(DOCUMENT *doc);
 typedef	gboolean (*DOC_GOTOPROC)(DOCUMENT *doc, const char *chapter, hyp_nodenr node);
 typedef	void (*DOC_CLICKPROC)(DOCUMENT *doc, EVNTDATA *event);
 typedef	long (*DOC_AUTOLOCPROC)(DOCUMENT *doc, long line);
-typedef	void (*DOC_GETCURSORPROC)(DOCUMENT *doc, short x, short y, TEXT_POS *pos);
+typedef	void (*DOC_GETCURSORPROC)(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 typedef	gboolean (*DOC_BLOCKPROC)(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
 
 typedef struct _hyp_nav_buttons
@@ -103,12 +103,6 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref);
 hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter);
 
 /*
- *		Ext_Refs.c
- */
-void HypExtRefPopup(DOCUMENT *doc, short x, short y);
-void HypOpenExtRef(void *win, const char *name, gboolean new_window);
-
-/*
  *		Search.c
  */
 void search_allref(void /* WINDOW_DATA */ *win, const char *string, gboolean no_message);
@@ -122,12 +116,6 @@ void HypCloseFile(DOCUMENT *doc);
 DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref);
 void CheckFiledate(DOCUMENT *doc);
 void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp);
-
-
-/*
- *		Popup.c
- */
-void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y);
 
 
 /*
@@ -151,6 +139,6 @@ long HypAutolocator(DOCUMENT *doc, long line);
 /*
  *		Cursor.c
  */
-void HypGetCursorPosition(DOCUMENT *doc, short x, short y, TEXT_POS *pos);
+void HypGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 
 #endif /* __HYPDOC_H__ */

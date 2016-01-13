@@ -54,7 +54,7 @@ void HypExtRefPopup(DOCUMENT *doc, short x, short y)
 			
 			if (i == ROOT)
 			{
-				/* FIXME: warn that there more extrefs than fit in popup */
+				/* FIXME: warn that there are more extrefs than fit in popup */
 				break;
 			}
 			dest_page = DEC_255(&pos[3]);
@@ -185,10 +185,10 @@ void HypExtRefPopup(DOCUMENT *doc, short x, short y)
 
 
 /*
- *	Oeffnet einen Link <name> der als Externe Referenz angegeben wurde.
- *	D.h. er hat die Form: <Datei.hyp>/<Kapitelname>
- *	Falls es sich um die Form: <absoluter Pfad zur Datei.hyp> handelt,
- *	so wird kein Kapitel-Trennzeichen (='/') umgewandelt.
+ * Open an external reference <name>.
+ * External references are stored as <file.hyp>/<nodename>.
+ * If it is an absolute filename, nodename will be considered
+ * as part of the filename.
  */
 void HypOpenExtRef(void *ptr, const char *name, gboolean new_window)
 {
@@ -204,14 +204,13 @@ void HypOpenExtRef(void *ptr, const char *name, gboolean new_window)
 
 	path = temp;
 	/*
-	   Kein Doppelpunkt im Namen? => relativer Pfad
-	   Doppelpunkt an zweiter Position => absoluter Pfad
-	   sonst => kein Pfad, also auch kein Kapitelname suchen
+	   No colon in name? => relative path
+	   colon as 2nd char => absolute Pfad
+	   else => kein Pfad, also auch kein Kapitelname suchen
 	 */
 	cptr = strchr(temp, ':');
 	if (cptr == NULL || cptr == &temp[1])
 	{
-		/*  Kapitelseparator von '/' nach ' ' konvertieren  */
 		cptr = strchr(temp, '/');
 		if (cptr)
 			*cptr++ = 0;

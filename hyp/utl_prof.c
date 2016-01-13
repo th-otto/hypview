@@ -2212,6 +2212,10 @@ void HypProfile_Load(void)
 		setdefault("HypView.EXTVIEW", gl_profile.viewer.extview = g_strdup(VIEWER_DEFAULT));
 	if (!Profile_ReadString(profile, "HypView", "SKIN", &gl_profile.viewer.skin_path))
 		{}
+	if (!Profile_ReadString(profile, "HypView", "LASTFILE", &gl_profile.viewer.last_file))
+		setdefault("HypView.LASTFILE", gl_profile.viewer.last_file = NULL);
+	if (!Profile_ReadInt(profile, "HypView", "STARTUP", &gl_profile.viewer.startup))
+		setdefault("HypView.STARTUP", gl_profile.viewer.startup = 0);
 	
 	if (!Profile_ReadInt(profile, "HypView", "WINSIZE.X", &gl_profile.viewer.win_x))
 		setdefault("HypView.WINSIZE.X", gl_profile.viewer.win_x = 0);
@@ -2385,6 +2389,8 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteString(profile, "HypView", "HYPTOP", gl_profile.viewer.hyptop_file);
 	Profile_WriteString(profile, "HypView", "PRINTER", gl_profile.viewer.printer);
 	Profile_WriteString(profile, "HypView", "EXTVIEW", gl_profile.viewer.extview);
+	Profile_WriteString(profile, "HypView", "LASTFILE", gl_profile.viewer.last_file);
+	Profile_WriteInt(profile, "HypView", "STARTUP", gl_profile.viewer.startup);
 	Profile_WriteInt(profile, "HypView", "WINSIZE.X", gl_profile.viewer.win_x);
 	Profile_WriteInt(profile, "HypView", "WINSIZE.Y", gl_profile.viewer.win_y);
 	Profile_WriteInt(profile, "HypView", "WINSIZE.W", gl_profile.viewer.win_w);
@@ -2464,6 +2470,7 @@ void HypProfile_Delete(void)
 	g_freep(&gl_profile.viewer.default_file);
 	g_freep(&gl_profile.viewer.catalog_file);
 	g_freep(&gl_profile.viewer.hyptop_file);
+	g_freep(&gl_profile.viewer.last_file);
 	g_freep(&gl_profile.viewer.printer);
 	g_freep(&gl_profile.viewer.extview);
 	g_freep(&gl_profile.viewer.skin_path);

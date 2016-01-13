@@ -51,7 +51,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	WINDOW_DATA *win = doc->window;
 	OBJECT *toolbar = win->toolbar;
 	
-	/* Autolocator aktiv? */
+	/* autolocator active? */
 	if (doc->buttons.searchbox && doc->autolocator != NULL)
 	{
 		toolbar[TO_BUTTONBOX].ob_flags |= OF_HIDETREE;
@@ -109,13 +109,13 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	else
 		toolbar[TO_HISTORY].ob_state |= OS_DISABLED;
 
-	/*	Gibt es ein Katalog?	*/
+	/* is there a catalog file?*/
 	if (!empty(gl_profile.viewer.catalog_file))
 		toolbar[TO_KATALOG].ob_state &= ~OS_DISABLED;
 	else
 		toolbar[TO_KATALOG].ob_state |= OS_DISABLED;
 
-	/* Folgende Buttons sind Typ-spezifisch	*/
+	/* next buttons are type specific */
 	if (doc->buttons.previous)
 		toolbar[TO_PREVIOUS].ob_state &= ~OS_DISABLED;
 	else

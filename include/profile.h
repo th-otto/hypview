@@ -27,6 +27,8 @@ typedef struct {
 		char *catalog_file;         /* The hypertext file to be loaded via the 'Catalog' option */
 		char *hyptop_file;
 		char *marker_path;          /* Default file to save mark files to */
+		short startup;				/* 0=show selector, 1=load default_file, 2=load last file */
+		char *last_file;
 		char *printer;              /* external print application */
 		short text_color;           /* Displays text in the specified color */
 		short link_color;           /* Displays references in the specified color */
