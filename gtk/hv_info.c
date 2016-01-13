@@ -1,7 +1,7 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
-static char const prghelp_name[] = "HypView.hyp";
+static char const prghelp_name[] = "hypview.hyp";
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/

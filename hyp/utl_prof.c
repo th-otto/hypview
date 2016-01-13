@@ -2180,7 +2180,7 @@ void HypProfile_Load(void)
 #ifdef G_OS_TOS
 		setdefault("PATH.HYPFOLD", gl_profile.general.hypfold = g_strdup("*:\\GUIDES"));
 #else
-		setdefault("PATH.HYPFOLD", gl_profile.general.hypfold = g_strdup("$APPDATA/Guides"));
+		setdefault("PATH.HYPFOLD", gl_profile.general.hypfold = g_strdup("$APPDATA/guides"));
 #endif
 	}
 	if (!Profile_ReadString(profile, "PATH", "Pathlist", &gl_profile.general.path_list))
@@ -2201,7 +2201,7 @@ void HypProfile_Load(void)
 		setdefault("PATH.HCP", gl_profile.general.hcp_path = g_strdup("$BINDIR/hcp" EXT_TTP));
 	
 	if (!Profile_ReadString(profile, "HypView", "DEFAULT", &gl_profile.viewer.default_file))
-		setdefault("HypView.DEFAULT", gl_profile.viewer.default_file = g_strdup("$HYPFOLD/HypView.hyp"));
+		setdefault("HypView.DEFAULT", gl_profile.viewer.default_file = g_strdup("$HYPFOLD/hypview.hyp"));
 	if (!Profile_ReadString(profile, "HypView", "CATALOG", &gl_profile.viewer.catalog_file))
 		setdefault("HypView.CATALOG", gl_profile.viewer.catalog_file = g_strdup("$HYPFOLD/catalog.hyp"));
 	if (!Profile_ReadString(profile, "HypView", "HYPTOP", &gl_profile.viewer.hyptop_file))
