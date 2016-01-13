@@ -449,6 +449,9 @@ typedef struct
 #define hypnode_valid(hyp, node) ((node) != HYP_NOINDEX && (node) < (hyp)->num_index)
 
 
+/*
+ * cached entry for images
+ */
 typedef struct {
 	hyp_nodenr number;          /* Page number of this entry */
 	gboolean decompressed;
@@ -706,7 +709,7 @@ struct hyp_gfx
 
 void hyp_decode_gfx(HYP_DOCUMENT *hyp, const unsigned char *src, struct hyp_gfx *adm);
 gboolean hyp_prep_graphics(HYP_DOCUMENT *hyp, HYP_NODE *node);
-void W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
+gboolean W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
 void W_Release_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
 _WORD GetNumPlanes(void);
 

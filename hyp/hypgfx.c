@@ -113,6 +113,7 @@ static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 	unsigned char *buf;
 	void *image;
 	HYP_IMAGE *pic;
+	gboolean inplace;
 	
 	pic = (HYP_IMAGE *)AskCache(hyp, node);
 	if (pic == NULL || pic->pic.fd_addr == NULL)
@@ -140,7 +141,7 @@ static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 	}
 	hyp_pic_get_header(&hyp_pic, buf);
 	image = buf + SIZEOF_HYP_PICTURE;
-	W_Fix_Bitmap(&image, hyp_pic.width, hyp_pic.height, hyp_pic.planes);
+	inplace = W_Fix_Bitmap(&image, hyp_pic.width, hyp_pic.height, hyp_pic.planes);
 	if (image == NULL)
 	{
 		g_free(buf);
@@ -150,7 +151,7 @@ static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 		HYP_DBG(("%s:%d: failed transform image for %u", hyp_basename(__FILE__), __LINE__, node));
 		return FALSE;
 	}
-	if (hyp_pic.planes == 1 || hyp_pic.planes == GetNumPlanes())
+	if (inplace)
 	{
 		/*
 		 * device data is either monochrome (which does not need conversion),

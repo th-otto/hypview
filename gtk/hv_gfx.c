@@ -23,20 +23,29 @@ _WORD GetNumPlanes(void)
 
 void W_Release_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 {
-	/* YYY */
-	UNUSED(pdata);
+	GdkPixbuf *data = *pdata;
+	
 	UNUSED(width);
 	UNUSED(height);
 	UNUSED(planes);
+	if (data != NULL)
+	{
+		/*
+		 * image was converted to pixbuf
+		 */
+		gdk_pixbuf_unref(data);
+		*pdata = NULL;
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void W_Fix_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
+gboolean W_Fix_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 {
 	/* YYY */
 	UNUSED(pdata);
 	UNUSED(width);
 	UNUSED(height);
 	UNUSED(planes);
+	return FALSE;
 }

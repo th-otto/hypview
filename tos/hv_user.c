@@ -727,7 +727,7 @@ static _BOOL xfix_cicon(_UWORD *col_data, _LONG len, _WORD old_planes, _WORD new
 
 /*** ---------------------------------------------------------------------- ***/
 
-void W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes)
+gboolean W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes)
 {
 	MFDB d;
 	
@@ -753,6 +753,7 @@ void W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes)
 		xfix_cicon((_UWORD *)*data, len, planes, xscrn_planes, &d);
 		*data = d.fd_addr;
 	}
+	return planes == 1 || planes == xscrn_planes;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -765,7 +766,7 @@ void W_Release_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 	UNUSED(height);
 	if (data != NULL)
 	{
-		if (planes == 1 || planes == GetNumPlanes())
+		if (planes == 1 || planes == xscrn_planes)
 		{
 			/*
 			 * image was converted inplace, head back to buffer start

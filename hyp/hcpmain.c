@@ -1333,6 +1333,7 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 			g_free(data);
 			goto error;
 		}
+		image->number = node;
 		image->pic.fd_addr = data;
 		if (!TellCache(hyp, node, (HYP_NODE *) image))
 		{

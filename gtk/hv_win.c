@@ -291,7 +291,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc)
 	icon = app_icon();
 	gtk_window_set_icon(GTK_WINDOW(win->hwnd), icon);
 	gdk_pixbuf_unref(icon);
-	gtk_window_set_role(GTK_WINDOW(win->hwnd), "udoshell");
+	gtk_window_set_role(GTK_WINDOW(win->hwnd), "hypview");
 	}
 	
 	vbox = gtk_vbox_new(FALSE, 0);
