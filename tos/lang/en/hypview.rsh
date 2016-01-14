@@ -2062,7 +2062,7 @@ static OBJECT rs_object[] = {
 	{ -1, 1, 16, G_BOX, OF_FL3DBAK, OS_NORMAL, C_UNION(0xFE1100L), 0,0, 1093,4 }, /* TO_BACKGRND */
 	{ 16, 2, 15, G_IBOX, OF_NONE, OS_NORMAL, C_UNION(0x1100L), 0,0, 61,2305 }, /* TO_BUTTONBOX */
 	{ 3, -1, -1, G_CICON, 0x41, OS_NORMAL, C_UNION(&rs_ciconblk[1]), 1024,512, 8192,5376 }, /* TO_BACK */
-	{ 4, -1, -1, G_CICON, 0x41, OS_NORMAL, C_UNION(&rs_ciconblk[2]), 1028,512, 8192,8192 }, /* TO_HISTORY */
+	{ 4, -1, -1, G_CICON, 0x41, OS_NORMAL, C_UNION(&rs_ciconblk[2]), 1028,512, 8192,5376 }, /* TO_HISTORY */
 	{ 5, -1, -1, G_CICON, 0x41, OS_NORMAL, C_UNION(&rs_ciconblk[3]), 1032,512, 8192,5376 }, /* TO_MEMORY */
 	{ 6, -1, -1, G_CICON, 0x41, OS_NORMAL, C_UNION(&rs_ciconblk[4]), 13,512, 8192,5376 }, /* TO_PREVIOUS */
 	{ 7, -1, -1, G_CICON, 0x41, OS_NORMAL, C_UNION(&rs_ciconblk[5]), 17,512, 8192,5376 }, /* TO_HOME */
