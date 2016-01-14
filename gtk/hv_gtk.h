@@ -128,7 +128,7 @@ extern GSList *all_list;
 
 void hv_win_set_geometry(WINDOW_DATA *win, const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
-WINDOW_DATA *hv_win_new(DOCUMENT *doc);
+WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(DOCUMENT *doc);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);

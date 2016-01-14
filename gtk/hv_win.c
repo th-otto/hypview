@@ -235,8 +235,9 @@ static GtkWidget *gtk_load_icon_from_data(const unsigned char *data)
 static void tb_button_activated(GtkWidget *w, gpointer user_data)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)user_data;
-	(void) win;
-	(void) w;
+	void *pbutton = g_object_get_data(G_OBJECT(w), "buttonnumber");
+	enum toolbutton button_num = (enum toolbutton)(int)(intptr_t)pbutton;
+	ToolbarClick(win->data, button_num, GDK_BUTTON_PRIMARY);
 }
 
 static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *text, int button_num)
@@ -262,7 +263,7 @@ static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *te
 
 /*** ---------------------------------------------------------------------- ***/
 
-WINDOW_DATA *hv_win_new(DOCUMENT *doc)
+WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 {
 	WINDOW_DATA *win;
 	GtkWidget *vbox, *hbox, *vbox2, *hbox2;
@@ -480,6 +481,11 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc)
 	
 	all_list = g_slist_prepend(all_list, win);
 	
+	if (!popup)
+		doc->window = win;
+	
+	ToolbarUpdate(doc, FALSE);
+
 	return win;
 }
 

@@ -64,7 +64,7 @@ WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr
 				(find_default && doc->gotoNodeProc(doc, NULL, HYP_NOINDEX)))
 			{
 				/*  neues Fenster anlegen?  */
-				win = doc->window = hv_win_new(doc);
+				win = hv_win_new(doc, FALSE);
 			}
 			if (win == NULL)
 				HypCloseFile(doc);
@@ -177,7 +177,7 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 			/* no window already? */
 			if (!win)
 			{
-				win = doc->window = hv_win_new(doc);
+				win = hv_win_new(doc, FALSE);
 			} else
 			{
 				doc->window = win;

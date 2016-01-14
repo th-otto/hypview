@@ -18,7 +18,7 @@ void OpenPopup(DOCUMENT *doc, hyp_nodenr num, int x, int y)
 {
 	WINDOW_DATA *win = doc->window;
 
-	win = hv_win_new(doc);
+	win = hv_win_new(doc, TRUE);
 	UNUSED(x);
 	UNUSED(y);
 	
