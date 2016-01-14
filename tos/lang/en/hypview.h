@@ -5,19 +5,19 @@
  */
 
 /*
- * Number of Strings:        158
+ * Number of Strings:        162
  * Number of Bitblks:        0
  * Number of Iconblks:       0
  * Number of Color Iconblks: 15
  * Number of Color Icons:    29
- * Number of Tedinfos:       27
+ * Number of Tedinfos:       28
  * Number of Free Strings:   17
  * Number of Free Images:    0
- * Number of Objects:        101
+ * Number of Objects:        103
  * Number of Trees:          7
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          27236
+ * Total file size:          27362
  */
 
 #undef RSC_NAME
@@ -30,7 +30,7 @@
 #endif
 
 #if !defined(RSC_STATIC_FILE) || !RSC_STATIC_FILE
-#define NUM_STRINGS 158
+#define NUM_STRINGS 162
 #define NUM_FRSTR 17
 #define NUM_UD 0
 #define NUM_IMAGES 0
@@ -38,8 +38,8 @@
 #define NUM_FRIMG 0
 #define NUM_IB 0
 #define NUM_CIB 15
-#define NUM_TI 27
-#define NUM_OBS 101
+#define NUM_TI 28
+#define NUM_OBS 103
 #define NUM_TREE 7
 #endif
 
@@ -118,6 +118,7 @@
 #define INFO_MORE                         21 /* BUTTON in tree PROGINFO */
 #define INFO_LESS                         22 /* BUTTON in tree PROGINFO */
 #define PROG_OK                           23 /* BUTTON in tree PROGINFO */
+#define PROG_SUBJECT                      25 /* TEXT in tree PROGINFO */ /* max len 40 */
 
 #define SEARCH_RESULT                      5 /* form/dialog */
 #define SR_FSTL_UP                         1 /* BOXCHAR in tree SEARCH_RESULT */

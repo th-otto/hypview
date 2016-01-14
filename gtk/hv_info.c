@@ -40,6 +40,7 @@ void ProgrammInfos(DOCUMENT *doc)
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Programinfo..."));
 	gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
+	/* needed ot make the dialog shrink when the expander is closed */
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -71,17 +72,14 @@ void ProgrammInfos(DOCUMENT *doc)
 
 	if (doc->type == HYP_FT_HYP)
 	{
-		str = g_strdup_printf(_("Subject: %s"), fixnull(hyp->database));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("Author: %s"), fixnull(hyp->author));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("Version: %s"), fixnull(hyp->version));
+		str = g_strdup_printf(_("Topic   : %s\n"
+		                        "Author  : %s\n"
+		                        "Version : %s\n"
+		                        "Subject : %s"),
+		                        fixnull(hyp->database),
+		                        fixnull(hyp->author),
+		                        fixnull(hyp->version),
+		                        fixnull(hyp->subject));
 		label = gtk_label_new(str);
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -97,47 +95,24 @@ void ProgrammInfos(DOCUMENT *doc)
 		g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(expander_toggled), NULL);
 		gtk_expander_set_expanded(GTK_EXPANDER(expander), expanded);
 		
-		str = g_strdup_printf(_("Nodes       : %7d"), hyp->num_index);
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("Index Size  : %7ld"), hyp->itable_size);
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("HCP-Version : %3u"), hyp->comp_vers);
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("Compiled on : %s"), hyp_osname(hyp->comp_os));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("@charset    : %s"), hyp_charset_name(hyp->comp_charset));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("@default    : %s"), fixnull(hyp->default_name));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("@help       : %s"), fixnull(hyp->help_name));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("@options    : %s"), fixnull(hyp->hcp_options));
-		label = gtk_label_new(str);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-		g_free(str);
-		str = g_strdup_printf(_("@width      : %3u"), hyp->line_width);
+		str = g_strdup_printf(_("Nodes       : %7d\n"
+		                        "Index Size  : %7ld\n"
+		                        "HCP-Version : %3u\n"
+		                        "Compiled on : %s\n"
+		                        "@charset    : %s\n"
+		                        "@default    : %s\n"
+		                        "@help       : %s\n"
+		                        "@options    : %s\n"
+		                        "@width      : %3u"),
+		                        hyp->num_index,
+		                        hyp->itable_size,
+		                        hyp->comp_vers,
+		                        hyp_osname(hyp->comp_os),
+		                        hyp_charset_name(hyp->comp_charset),
+		                        fixnull(hyp->default_name),
+		                        fixnull(hyp->help_name),
+		                        fixnull(hyp->hcp_options),
+		                        hyp->line_width);
 		label = gtk_label_new(str);
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);

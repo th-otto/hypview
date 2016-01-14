@@ -299,7 +299,7 @@ static char hypview_string_51[] = "File:";
 static char hypview_string_52[] = "1234567890123456789012345678901234567890";
 static char hypview_string_53[] = "";
 static char hypview_string_54[] = "";
-static char hypview_string_55[] = "Subject:";
+static char hypview_string_55[] = "Topic:";
 static char hypview_string_56[] = "1234567890123456789012345678901234567890";
 static char hypview_string_57[] = "";
 static char hypview_string_58[] = "";
@@ -342,66 +342,70 @@ static char hypview_string_94[] = "";
 static char hypview_string_95[] = "More \002\002";
 static char hypview_string_96[] = "Less \001\001";
 static char hypview_string_97[] = "  OK  ";
-static char hypview_string_98[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_99[] = "";
+static char hypview_string_98[] = "Subject:";
+static char hypview_string_99[] = "1234567890123456789012345678901234567890";
 static char hypview_string_100[] = "";
-static char hypview_string_101[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_102[] = "";
+static char hypview_string_101[] = "";
+static char hypview_string_102[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_103[] = "";
-static char hypview_string_104[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_105[] = "";
+static char hypview_string_104[] = "";
+static char hypview_string_105[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_106[] = "";
-static char hypview_string_107[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_108[] = "";
+static char hypview_string_107[] = "";
+static char hypview_string_108[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_109[] = "";
-static char hypview_string_110[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_111[] = "";
+static char hypview_string_110[] = "";
+static char hypview_string_111[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_112[] = "";
-static char hypview_string_113[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_114[] = "";
+static char hypview_string_113[] = "";
+static char hypview_string_114[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_115[] = "";
-static char hypview_string_116[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_117[] = "";
+static char hypview_string_116[] = "";
+static char hypview_string_117[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_118[] = "";
-static char hypview_string_119[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_120[] = "";
+static char hypview_string_119[] = "";
+static char hypview_string_120[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_121[] = "";
-static char hypview_string_122[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_123[] = "";
+static char hypview_string_122[] = "";
+static char hypview_string_123[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_124[] = "";
-static char hypview_string_125[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
-static char hypview_string_126[] = "";
+static char hypview_string_125[] = "";
+static char hypview_string_126[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_127[] = "";
-static char hypview_string_128[] = "Abort";
-static char hypview_string_129[] = "Search:";
+static char hypview_string_128[] = "";
+static char hypview_string_129[] = "1234567890123456789012345678901234567890123456789012345678901234567890";
 static char hypview_string_130[] = "";
 static char hypview_string_131[] = "";
-static char hypview_string_132[] = "------------------------------";
-static char hypview_string_133[] = "______________________________";
-static char hypview_string_134[] = "X";
-static char hypview_string_135[] = "in page";
-static char hypview_string_136[] = "as page";
-static char hypview_string_137[] = "as reference";
-static char hypview_string_138[] = "Cancel";
-static char hypview_string_139[] = "in all pages";
-static char hypview_string_140[] = "... of all Hypertexts";
-static char hypview_string_141[] = "[2][This file exists already.|Do you want to replace it?][Replace|Abort]";
-static char hypview_string_142[] = "[2][Do you want to remove|%s|from your bookmarks?][  Yes  |  No  ]";
-static char hypview_string_143[] = "[2][Do you want to add|%s|to your bookmarks?][  Yes  |  No  ]";
-static char hypview_string_144[] = "[2][Save bookmarks?][  Yes  |  No  ]";
-static char hypview_string_145[] = "[1][HypView: could not find|<%s>][ Abort ]";
-static char hypview_string_146[] = "Select hypertext to load:";
-static char hypview_string_147[] = "Save ASCII text as:";
-static char hypview_string_148[] = "Search Pattern...";
-static char hypview_string_149[] = "[1][Command could not be executed.|There is not enough memory.][Cancel]";
-static char hypview_string_150[] = "[1][Please install the system|extension WDIALOG.PRG][Cancel]";
-static char hypview_string_151[] = "[1][Can\'t open a VDI workstation.][Cancel]";
-static char hypview_string_152[] = "[1][No hostname specified in|Hypertext.][Cancel]";
-static char hypview_string_153[] = "[1][Host application not found.][Cancel]";
-static char hypview_string_154[] = "[1][Not Implemented.][Cancel]";
-static char hypview_string_155[] = "[1][Cannot create a fontselector.|Maybe the system does not|support it.][Cancel]";
-static char hypview_string_156[] = "from: %s";
-static char hypview_string_157[] = "Programinfo...";
+static char hypview_string_132[] = "Abort";
+static char hypview_string_133[] = "Search:";
+static char hypview_string_134[] = "";
+static char hypview_string_135[] = "";
+static char hypview_string_136[] = "------------------------------";
+static char hypview_string_137[] = "______________________________";
+static char hypview_string_138[] = "X";
+static char hypview_string_139[] = "in page";
+static char hypview_string_140[] = "as page";
+static char hypview_string_141[] = "as reference";
+static char hypview_string_142[] = "Cancel";
+static char hypview_string_143[] = "in all pages";
+static char hypview_string_144[] = "... of all Hypertexts";
+static char hypview_string_145[] = "[2][This file exists already.|Do you want to replace it?][Replace|Abort]";
+static char hypview_string_146[] = "[2][Do you want to remove|%s|from your bookmarks?][  Yes  |  No  ]";
+static char hypview_string_147[] = "[2][Do you want to add|%s|to your bookmarks?][  Yes  |  No  ]";
+static char hypview_string_148[] = "[2][Save bookmarks?][  Yes  |  No  ]";
+static char hypview_string_149[] = "[1][HypView: could not find|<%s>][ Abort ]";
+static char hypview_string_150[] = "Select hypertext to load:";
+static char hypview_string_151[] = "Save ASCII text as:";
+static char hypview_string_152[] = "Search Pattern...";
+static char hypview_string_153[] = "[1][Command could not be executed.|There is not enough memory.][Cancel]";
+static char hypview_string_154[] = "[1][Please install the system|extension WDIALOG.PRG][Cancel]";
+static char hypview_string_155[] = "[1][Can\'t open a VDI workstation.][Cancel]";
+static char hypview_string_156[] = "[1][No hostname specified in|Hypertext.][Cancel]";
+static char hypview_string_157[] = "[1][Host application not found.][Cancel]";
+static char hypview_string_158[] = "[1][Not Implemented.][Cancel]";
+static char hypview_string_159[] = "[1][Cannot create a fontselector.|Maybe the system does not|support it.][Cancel]";
+static char hypview_string_160[] = "from: %s";
+static char hypview_string_161[] = "Programinfo...";
 
 
 /* mask of DI_ICON */
@@ -1943,10 +1947,6 @@ static _UBYTE RS14_8CMASK[] = {
 0x3F, 0xFF, 0xFF, 0xFF};
 
 static char *rs_frstr[] = {
-	hypview_string_141,
-	hypview_string_142,
-	hypview_string_143,
-	hypview_string_144,
 	hypview_string_145,
 	hypview_string_146,
 	hypview_string_147,
@@ -1959,7 +1959,11 @@ static char *rs_frstr[] = {
 	hypview_string_154,
 	hypview_string_155,
 	hypview_string_156,
-	hypview_string_157
+	hypview_string_157,
+	hypview_string_158,
+	hypview_string_159,
+	hypview_string_160,
+	hypview_string_161
 };
 
 
@@ -2031,18 +2035,19 @@ static TEDINFO rs_tedinfo[] = {
 	{ hypview_string_86, hypview_string_87, hypview_string_88, IBM, 0, TE_LEFT, 0x1100, 0x0, 0, 34,48 }, /* INFO_DEFAULT */
 	{ hypview_string_89, hypview_string_90, hypview_string_91, IBM, 0, TE_LEFT, 0x1100, 0x0, 0, 4,22 }, /* INFO_WIDTH */
 	{ hypview_string_92, hypview_string_93, hypview_string_94, SMALL, 0, TE_CNTR, 0x1180, 0x0, -1, 5,1 }, /* PROG_HELP */
-	{ hypview_string_98, hypview_string_99, hypview_string_100, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_0 */
-	{ hypview_string_101, hypview_string_102, hypview_string_103, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_1 */
-	{ hypview_string_104, hypview_string_105, hypview_string_106, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_2 */
-	{ hypview_string_107, hypview_string_108, hypview_string_109, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_3 */
-	{ hypview_string_110, hypview_string_111, hypview_string_112, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_4 */
-	{ hypview_string_113, hypview_string_114, hypview_string_115, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_5 */
-	{ hypview_string_116, hypview_string_117, hypview_string_118, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_6 */
-	{ hypview_string_119, hypview_string_120, hypview_string_121, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_7 */
-	{ hypview_string_122, hypview_string_123, hypview_string_124, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_8 */
-	{ hypview_string_125, hypview_string_126, hypview_string_127, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_9 */
-	{ hypview_string_129, hypview_string_130, hypview_string_131, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 8,1 },
-	{ hypview_string_132, hypview_string_133, hypview_string_134, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 31,31 } /* HYPFIND_STRING */
+	{ hypview_string_99, hypview_string_100, hypview_string_101, IBM, 0, TE_LEFT, 0x1100, 0x0, -1, 41,1 }, /* PROG_SUBJECT */
+	{ hypview_string_102, hypview_string_103, hypview_string_104, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_0 */
+	{ hypview_string_105, hypview_string_106, hypview_string_107, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_1 */
+	{ hypview_string_108, hypview_string_109, hypview_string_110, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_2 */
+	{ hypview_string_111, hypview_string_112, hypview_string_113, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_3 */
+	{ hypview_string_114, hypview_string_115, hypview_string_116, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_4 */
+	{ hypview_string_117, hypview_string_118, hypview_string_119, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_5 */
+	{ hypview_string_120, hypview_string_121, hypview_string_122, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_6 */
+	{ hypview_string_123, hypview_string_124, hypview_string_125, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_7 */
+	{ hypview_string_126, hypview_string_127, hypview_string_128, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_8 */
+	{ hypview_string_129, hypview_string_130, hypview_string_131, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_9 */
+	{ hypview_string_133, hypview_string_134, hypview_string_135, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 8,1 },
+	{ hypview_string_136, hypview_string_137, hypview_string_138, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 31,31 } /* HYPFIND_STRING */
 };
 
 
@@ -2112,17 +2117,17 @@ static OBJECT rs_object[] = {
 
 /* PROGINFO */
 
-	{ -1, 1, 23, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 0,0, 53,23 },
+	{ -1, 1, 25, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 0,0, 53,23 },
 	{ 2, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_49), 2,1, 40,1 }, /* PROG_NAME */
 	{ 3, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_50), 2,2, 40,1 }, /* PROG_DATE */
-	{ 4, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_51), 258,3332, 8,1 },
-	{ 5, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[2]), 267,3332, 40,1 }, /* PROG_FILE */
-	{ 6, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_55), 258,3333, 8,1 },
-	{ 7, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[3]), 267,3333, 40,1 }, /* PROG_DATABASE */
-	{ 8, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_59), 258,3334, 9,1 },
-	{ 9, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[4]), 267,3334, 40,1 }, /* PROG_AUTHOR */
-	{ 10, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_63), 258,3335, 8,1 },
-	{ 11, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[5]), 267,3335, 40,1 }, /* PROG_VERSION */
+	{ 4, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_51), 2,4, 5,1 },
+	{ 5, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[2]), 11,4, 40,1 }, /* PROG_FILE */
+	{ 6, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_55), 2,5, 8,1 },
+	{ 7, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[3]), 11,5, 40,1 }, /* PROG_DATABASE */
+	{ 8, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_59), 2,6, 9,1 },
+	{ 9, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[4]), 11,6, 40,1 }, /* PROG_AUTHOR */
+	{ 10, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_63), 2,7, 8,1 },
+	{ 11, -1, -1, G_TEXT, OF_NONE, OS_NORMAL, C_UNION(&rs_tedinfo[5]), 11,7, 40,1 }, /* PROG_VERSION */
 	{ 20, 12, 19, (20<<8)+G_BUTTON, OF_FL3DBAK, OS_NORMAL, C_UNION(hypview_string_67), 2,10, 49,10 }, /* INFO_MORE_BOX */
 	{ 13, -1, -1, G_FTEXT, OF_FL3DBAK, OS_NORMAL, C_UNION(&rs_tedinfo[6]), 1,1, 21,1 }, /* INFO_NODES */
 	{ 14, -1, -1, G_FTEXT, OF_FL3DBAK, OS_NORMAL, C_UNION(&rs_tedinfo[7]), 1,2, 21,1 }, /* INFO_INDEXSIZE */
@@ -2135,7 +2140,9 @@ static OBJECT rs_object[] = {
 	{ 21, -1, -1, (21<<8)+G_BOXTEXT, 0x5, 0x30, C_UNION(&rs_tedinfo[14]), 2,21, 8,1 }, /* PROG_HELP */
 	{ 22, -1, -1, G_BUTTON, 0x205, 0x240, C_UNION(hypview_string_95), 20,21, 12,1 }, /* INFO_MORE */
 	{ 23, -1, -1, G_BUTTON, 0x285, 0x240, C_UNION(hypview_string_96), 20,21, 12,1 }, /* INFO_LESS */
-	{ 0, -1, -1, G_BUTTON, 0x227, 0x240, C_UNION(hypview_string_97), 41,21, 1033,1 }, /* PROG_OK */
+	{ 24, -1, -1, G_BUTTON, 0x207, 0x240, C_UNION(hypview_string_97), 41,21, 1033,1 }, /* PROG_OK */
+	{ 25, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hypview_string_98), 2,8, 8,1 },
+	{ 0, -1, -1, G_TEXT, OF_LASTOB, OS_NORMAL, C_UNION(&rs_tedinfo[15]), 11,8, 40,1 }, /* PROG_SUBJECT */
 
 /* SEARCH_RESULT */
 
@@ -2145,29 +2152,29 @@ static OBJECT rs_object[] = {
 	{ 2, -1, -1, G_BOX, 0x640, OS_NORMAL, C_UNION(0x21100L), 0,0, 514,513 }, /* SR_FSTL_WHITE */
 	{ 5, -1, -1, G_BOXCHAR, 0x640, OS_NORMAL, C_UNION(0x2021100L), 72,11, 514,513 }, /* SR_FSTL_DOWN */
 	{ 16, 6, 15, G_IBOX, OF_NONE, OS_NORMAL, C_UNION(0xFF1100L), 2,2, 70,10 }, /* SR_BOX */
-	{ 7, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[15]), 0,0, 70,1 }, /* SR_FSTL_0 */
-	{ 8, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[16]), 0,1, 70,1 }, /* SR_FSTL_1 */
-	{ 9, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[17]), 0,2, 70,1 }, /* SR_FSTL_2 */
-	{ 10, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[18]), 0,3, 70,1 }, /* SR_FSTL_3 */
-	{ 11, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[19]), 0,4, 70,1 }, /* SR_FSTL_4 */
-	{ 12, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[20]), 0,5, 70,1 }, /* SR_FSTL_5 */
-	{ 13, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[21]), 0,6, 70,1 }, /* SR_FSTL_6 */
-	{ 14, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[22]), 0,7, 70,1 }, /* SR_FSTL_7 */
-	{ 15, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[23]), 0,8, 70,1 }, /* SR_FSTL_8 */
-	{ 5, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[24]), 0,9, 70,1 }, /* SR_FSTL_9 */
-	{ 0, -1, -1, G_BUTTON, 0x227, OS_NORMAL, C_UNION(hypview_string_128), 546,13, 8,1 }, /* SR_ABORT */
+	{ 7, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[16]), 0,0, 70,1 }, /* SR_FSTL_0 */
+	{ 8, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[17]), 0,1, 70,1 }, /* SR_FSTL_1 */
+	{ 9, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[18]), 0,2, 70,1 }, /* SR_FSTL_2 */
+	{ 10, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[19]), 0,3, 70,1 }, /* SR_FSTL_3 */
+	{ 11, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[20]), 0,4, 70,1 }, /* SR_FSTL_4 */
+	{ 12, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[21]), 0,5, 70,1 }, /* SR_FSTL_5 */
+	{ 13, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[22]), 0,6, 70,1 }, /* SR_FSTL_6 */
+	{ 14, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[23]), 0,7, 70,1 }, /* SR_FSTL_7 */
+	{ 15, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[24]), 0,8, 70,1 }, /* SR_FSTL_8 */
+	{ 5, -1, -1, G_TEXT, OF_TOUCHEXIT, OS_NORMAL, C_UNION(&rs_tedinfo[25]), 0,9, 70,1 }, /* SR_FSTL_9 */
+	{ 0, -1, -1, G_BUTTON, 0x227, OS_NORMAL, C_UNION(hypview_string_132), 546,13, 8,1 }, /* SR_ABORT */
 
 /* HYPFIND */
 
 	{ -1, 1, 8, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 3,1, 56,8 },
-	{ 2, -1, -1, G_TEXT, OF_FL3DBAK, OS_NORMAL, C_UNION(&rs_tedinfo[25]), 5,1, 6,1 },
-	{ 3, -1, -1, G_FTEXT, 0x408, OS_NORMAL, C_UNION(&rs_tedinfo[26]), 12,1, 30,1 }, /* HYPFIND_STRING */
-	{ 4, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_135), 2,4, 11,1 }, /* HYPFIND_TEXT */
-	{ 5, -1, -1, G_BUTTON, 0x607, OS_NORMAL, C_UNION(hypview_string_136), 14,4, 11,1 }, /* HYPFIND_PAGES */
-	{ 6, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_137), 26,4, 15,1 }, /* HYPFIND_REF */
-	{ 7, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_138), 42,4, 11,1 }, /* HYPFIND_ABORT */
-	{ 8, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_139), 2,6, 23,1 }, /* HYPFIND_ALL_PAGE */
-	{ 0, -1, -1, G_BUTTON, 0x621, OS_NORMAL, C_UNION(hypview_string_140), 26,6, 27,1 } /* HYPFIND_ALL_HYP */
+	{ 2, -1, -1, G_TEXT, OF_FL3DBAK, OS_NORMAL, C_UNION(&rs_tedinfo[26]), 5,1, 6,1 },
+	{ 3, -1, -1, G_FTEXT, 0x408, OS_NORMAL, C_UNION(&rs_tedinfo[27]), 12,1, 30,1 }, /* HYPFIND_STRING */
+	{ 4, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_139), 2,4, 11,1 }, /* HYPFIND_TEXT */
+	{ 5, -1, -1, G_BUTTON, 0x607, OS_NORMAL, C_UNION(hypview_string_140), 14,4, 11,1 }, /* HYPFIND_PAGES */
+	{ 6, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_141), 26,4, 15,1 }, /* HYPFIND_REF */
+	{ 7, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_142), 42,4, 11,1 }, /* HYPFIND_ABORT */
+	{ 8, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_143), 2,6, 23,1 }, /* HYPFIND_ALL_PAGE */
+	{ 0, -1, -1, G_BUTTON, 0x621, OS_NORMAL, C_UNION(hypview_string_144), 26,6, 27,1 } /* HYPFIND_ALL_HYP */
 };
 
 
@@ -2177,8 +2184,8 @@ static OBJECT *rs_trindex[] = {
 	&rs_object[21], /* CONTEXT */
 	&rs_object[38], /* EMPTYPOPUP */
 	&rs_object[51], /* PROGINFO */
-	&rs_object[75], /* SEARCH_RESULT */
-	&rs_object[92] /* HYPFIND */
+	&rs_object[77], /* SEARCH_RESULT */
+	&rs_object[94] /* HYPFIND */
 };
 
 
@@ -2196,15 +2203,15 @@ static OBJECT *rs_trindex[] = {
 #undef NUM_OBS
 #undef NUM_TREE
 #undef NUM_UD
-#define NUM_STRINGS 158
+#define NUM_STRINGS 162
 #define NUM_BB		0
 #define NUM_IB		0
 #define NUM_CIB     15
 #define NUM_CIC     29
-#define NUM_TI		27
+#define NUM_TI		28
 #define NUM_FRSTR	17
 #define NUM_FRIMG	0
-#define NUM_OBS     101
+#define NUM_OBS     103
 #define NUM_TREE	7
 #define NUM_UD		0
 
@@ -2397,7 +2404,7 @@ _WORD hypview_rsc_free()
 #endif /* RSC_NAMED_FUNCTIONS */
 
 #else /* !RSC_STATIC_FILE */
-int rs_numstrings = 158;
+int rs_numstrings = 162;
 int rs_numfrstr = 17;
 
 int rs_nuser = 0;
@@ -2406,8 +2413,8 @@ int rs_numbb = 0;
 int rs_numfrimg = 0;
 int rs_numib = 0;
 int rs_numcib = 15;
-int rs_numti = 27;
-int rs_numobs = 101;
+int rs_numti = 28;
+int rs_numobs = 103;
 int rs_numtree = 7;
 
 char rs_name[] = "hypview.rsc";

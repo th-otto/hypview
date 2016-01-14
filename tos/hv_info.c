@@ -167,6 +167,8 @@ void ProgrammInfos(DOCUMENT *doc)
 		tree[PROG_AUTHOR].ob_flags &= ~OF_HIDETREE;
 		set_text(tree, PROG_VERSION, hyp->version);
 		tree[PROG_VERSION].ob_flags &= ~OF_HIDETREE;
+		set_text(tree, PROG_SUBJECT, hyp->subject);
+		tree[PROG_SUBJECT].ob_flags &= ~OF_HIDETREE;
 		sprintf(buf, "%5d", hyp->num_index);
 		set_text(tree, INFO_NODES, buf);
 		sprintf(buf, "%7ld", hyp->itable_size);
@@ -187,6 +189,7 @@ void ProgrammInfos(DOCUMENT *doc)
 		tree[PROG_DATABASE].ob_flags |= OF_HIDETREE;
 		tree[PROG_AUTHOR].ob_flags |= OF_HIDETREE;
 		tree[PROG_VERSION].ob_flags |= OF_HIDETREE;
+		tree[PROG_SUBJECT].ob_flags |= OF_HIDETREE;
 		tree[INFO_LESS].ob_flags |= OF_HIDETREE;
 		tree[INFO_MORE].ob_flags |= OF_HIDETREE;
 	}
