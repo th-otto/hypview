@@ -798,7 +798,7 @@ void g_freep(char **str)
  * like basename() or g_basename(),
  * but using this function throughout the package
  * because we sometimes have to deal with pathnames
- * from diffent OS than current one
+ * from different OS than current one
  */
 const char *hyp_basename(const char *path)
 {

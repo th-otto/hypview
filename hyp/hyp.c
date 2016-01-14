@@ -272,12 +272,29 @@ char *hyp_find_file(const char *path)
 			tmp = g_strndup(list, end - list);
 			dir = path_subst(tmp);
 			real_path = g_build_filename(dir, filename, NULL);
-			g_free(dir);
 			g_free(tmp);
 			list = end;
 			if (*list != '\0')
 				list++;
 			ret = hyp_utf8_open(real_path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+#ifdef G_OS_UNIX /* should be: if filesystem of <dir> is case-sensitive */
+			/*
+			 * filenames from external references are unpredictable,
+			 * try lowercase version, too.
+			 */
+			if (ret < 0)
+			{
+				char *lower = g_utf8_strdown(filename, -1);
+				if (strcmp(lower, filename) != 0)
+				{
+					g_free(real_path);
+					real_path = g_build_filename(dir, lower, NULL);
+					ret = hyp_utf8_open(real_path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+				}
+				g_free(lower);
+			}
+#endif
+			g_free(dir);
 			if (ret >= 0)
 			{
 				hyp_utf8_close(ret);
