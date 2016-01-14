@@ -3,23 +3,6 @@
 
 /*----------------------------------------------------------------------------------*/
 
-static void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data)
-{
-	int x, y;
-	int wx, wy;
-	DOCUMENT *doc = (DOCUMENT *)data;
-	WINDOW_DATA *win = doc->window;
-	
-	UNUSED(menu);
-	gtk_widget_translate_coordinates(win->m_buttons[TO_REFERENCES], win->hwnd, 0, 0, &x, &y);
-	gdk_window_get_origin(gtk_widget_get_window(win->hwnd), &wx, &wy);
-	*xret = x + wx;
-	*yret = y + wy;
-	*push_in = TRUE;
-}
-
-/*----------------------------------------------------------------------------------*/
-
 void HypExtRefPopup(DOCUMENT *doc, int button)
 {
 	GtkWidget *menu;
@@ -29,6 +12,10 @@ void HypExtRefPopup(DOCUMENT *doc, int button)
 	WINDOW_DATA *win = doc->window;
 	const unsigned char *end;
 	GdkModifierType mask;
+	struct popup_pos popup_pos;
+	
+	if (!win->m_buttons[TO_REFERENCES])
+		return;
 	
 	hyp = doc->data;
 	menu = gtk_menu_new();
@@ -82,7 +69,9 @@ void HypExtRefPopup(DOCUMENT *doc, int button)
 	}
 	
 	sel = -1;
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, doc, button, gtk_get_current_event_time());
+	popup_pos.doc = doc;
+	popup_pos.obj = TO_REFERENCES;
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, gtk_get_current_event_time());
 	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
 	gtk_widget_unref(menu);
 	

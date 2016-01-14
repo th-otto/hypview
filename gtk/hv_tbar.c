@@ -1,5 +1,8 @@
 #include "hv_gtk.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void toolbar_redraw(DOCUMENT *doc)
 {
@@ -7,6 +10,7 @@ static void toolbar_redraw(DOCUMENT *doc)
 	gtk_widget_queue_draw(win->toolbar);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 {
@@ -33,25 +37,42 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 		doc->buttons.history = FALSE;
 	}
 	
-	gtk_widget_set_sensitive(win->m_buttons[TO_MEMORY], doc->buttons.memory);
-	gtk_widget_set_sensitive(win->m_buttons[TO_REFERENCES], doc->buttons.references);
-	/* gtk_widget_set_sensitive(win->m_buttons[TO_MENU], doc->buttons.menu); */
-	gtk_widget_set_sensitive(win->m_buttons[TO_LOAD], doc->buttons.load);
-	gtk_widget_set_sensitive(win->m_buttons[TO_INFO], doc->buttons.info);
-	gtk_widget_set_sensitive(win->m_buttons[TO_BACK], doc->buttons.back);
-	gtk_widget_set_sensitive(win->m_buttons[TO_HISTORY], doc->buttons.history);
+	if (win->m_buttons[TO_MEMORY])
+		gtk_widget_set_sensitive(win->m_buttons[TO_MEMORY], doc->buttons.memory);
+	if (win->m_buttons[TO_REFERENCES])
+		gtk_widget_set_sensitive(win->m_buttons[TO_REFERENCES], doc->buttons.references);
+#if 0
+	if (win->m_buttons[TO_MENU])
+		gtk_widget_set_sensitive(win->m_buttons[TO_MENU], doc->buttons.menu);
+#endif
+	if (win->m_buttons[TO_LOAD])
+		gtk_widget_set_sensitive(win->m_buttons[TO_LOAD], doc->buttons.load);
+	if (win->m_buttons[TO_INFO])
+		gtk_widget_set_sensitive(win->m_buttons[TO_INFO], doc->buttons.info);
+	if (win->m_buttons[TO_BACK])
+		gtk_widget_set_sensitive(win->m_buttons[TO_BACK], doc->buttons.back);
+	if (win->m_buttons[TO_HISTORY])
+		gtk_widget_set_sensitive(win->m_buttons[TO_HISTORY], doc->buttons.history);
 
 	/* is there a catalog file?*/
-	gtk_widget_set_sensitive(win->m_buttons[TO_KATALOG], !empty(gl_profile.viewer.catalog_file));
+	if (win->m_buttons[TO_KATALOG])
+		gtk_widget_set_sensitive(win->m_buttons[TO_KATALOG], !empty(gl_profile.viewer.catalog_file));
 
 	/* next buttons are type specific */
-	gtk_widget_set_sensitive(win->m_buttons[TO_PREVIOUS], doc->buttons.previous);
-	gtk_widget_set_sensitive(win->m_buttons[TO_HOME], doc->buttons.home);
-	gtk_widget_set_sensitive(win->m_buttons[TO_NEXT], doc->buttons.next);
-	gtk_widget_set_sensitive(win->m_buttons[TO_INDEX], doc->buttons.index);
-	gtk_widget_set_sensitive(win->m_buttons[TO_REFERENCES], doc->buttons.references);
-	gtk_widget_set_sensitive(win->m_buttons[TO_HELP], doc->buttons.help);
-	gtk_widget_set_sensitive(win->m_buttons[TO_SAVE], doc->buttons.save);
+	if (win->m_buttons[TO_PREVIOUS])
+		gtk_widget_set_sensitive(win->m_buttons[TO_PREVIOUS], doc->buttons.previous);
+	if (win->m_buttons[TO_HOME])
+	 	gtk_widget_set_sensitive(win->m_buttons[TO_HOME], doc->buttons.home);
+	if (win->m_buttons[TO_NEXT])
+		gtk_widget_set_sensitive(win->m_buttons[TO_NEXT], doc->buttons.next);
+	if (win->m_buttons[TO_INDEX])
+		gtk_widget_set_sensitive(win->m_buttons[TO_INDEX], doc->buttons.index);
+	if (win->m_buttons[TO_REFERENCES])
+		gtk_widget_set_sensitive(win->m_buttons[TO_REFERENCES], doc->buttons.references);
+	if (win->m_buttons[TO_HELP])
+		gtk_widget_set_sensitive(win->m_buttons[TO_HELP], doc->buttons.help);
+	if (win->m_buttons[TO_SAVE])
+		gtk_widget_set_sensitive(win->m_buttons[TO_SAVE], doc->buttons.save);
 
 	if (redraw)
 	{
@@ -59,14 +80,9 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	}	
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-#if 0
-struct popup_pos {
-	DOCUMENT *doc;
-	enum toolbutton obj;
-};
-
-static void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data)
+void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data)
 {
 	struct popup_pos *pos = (struct popup_pos *)data;
 	int x, y;
@@ -81,8 +97,8 @@ static void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push
 	*yret = y + wy;
 	*push_in = TRUE;
 }
-#endif
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* Handle mouse click on toolbar */
 void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button)
@@ -91,7 +107,7 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button)
 	
 	if ((int)obj < 0)
 		RemoveSearchBox(doc);
-	else if (!gtk_widget_get_sensitive(win->m_buttons[obj]))
+	else if (!win->m_buttons[obj] || !gtk_widget_get_sensitive(win->m_buttons[obj]))
 		return;
 
 	if (gl_profile.viewer.check_time)
@@ -138,13 +154,16 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button)
 	case TO_INFO:
 		ProgrammInfos(doc);
 		break;
-	/* case TO_MENU:
-		break; */
+#if 0
+	case TO_MENU:
+		break;
+#endif
 	default:
 		break;
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void RemoveSearchBox(DOCUMENT *doc)
 {

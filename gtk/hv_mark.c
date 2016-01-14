@@ -20,7 +20,9 @@ typedef struct
 static gboolean marken_change;
 static MARKEN marken[MAX_MARKEN];
 
-/*----------------------------------------------------------------------------------*/
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void MarkerDelete(short num)
 {
@@ -32,7 +34,7 @@ static void MarkerDelete(short num)
 	strcpy(dst, _("free"));
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerSave(DOCUMENT *doc, short num)
 {
@@ -84,7 +86,7 @@ void MarkerSave(DOCUMENT *doc, short num)
 	marken_change = TRUE;
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 {
@@ -108,24 +110,7 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 	}
 }
 
-/*----------------------------------------------------------------------------------*/
-
-static void position_marker(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data)
-{
-	int x, y;
-	int wx, wy;
-	DOCUMENT *doc = (DOCUMENT *)data;
-	WINDOW_DATA *win = doc->window;
-	
-	UNUSED(menu);
-	gtk_widget_translate_coordinates(win->m_buttons[TO_MEMORY], win->hwnd, 0, 0, &x, &y);
-	gdk_window_get_origin(gtk_widget_get_window(win->hwnd), &wx, &wy);
-	*xret = x + wx;
-	*yret = y + wy;
-	*push_in = TRUE;
-}
-
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerPopup(DOCUMENT *doc, int button)
 {
@@ -134,6 +119,10 @@ void MarkerPopup(DOCUMENT *doc, int button)
 	GtkWidget *menu;
 	GdkModifierType mask;
 	WINDOW_DATA *win = doc->window;
+	struct popup_pos popup_pos;
+	
+	if (!win->m_buttons[TO_MEMORY])
+		return;
 	
 	menu = gtk_menu_new();
 	
@@ -142,8 +131,11 @@ void MarkerPopup(DOCUMENT *doc, int button)
 		gtk_menu_append(menu, gtk_label_new(marken[i].node_name));
 	}
 
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_marker, doc, button, gtk_get_current_event_time());
+	popup_pos.doc = doc;
+	popup_pos.obj = TO_MEMORY;
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, gtk_get_current_event_time());
 	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
+	gtk_widget_unref(menu);
 	
 	if (sel >= 0 && sel < MAX_MARKEN)
 	{
@@ -179,7 +171,7 @@ void MarkerPopup(DOCUMENT *doc, int button)
 	}
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerSaveToDisk(void)
 {
@@ -211,8 +203,7 @@ void MarkerSaveToDisk(void)
 	}
 }
 
-
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerInit(void)
 {
@@ -246,4 +237,3 @@ void MarkerInit(void)
 
 	marken_change = FALSE;
 }
-

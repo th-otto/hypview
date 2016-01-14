@@ -105,6 +105,10 @@ static __inline__ void __g_cond_free(GCond *p)
 
 #endif
 
+#ifndef G_VALUE_INIT
+#define G_VALUE_INIT { 0, { { 0 } } }
+#endif
+
 #if GLIB_CHECK_VERSION(2, 35, 3)
 /* g_type_init() is deprecated in glib >= 2.35,3 */
 #define g_type_init()

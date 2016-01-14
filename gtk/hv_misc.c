@@ -149,3 +149,85 @@ GtkWidget *_gtk_button_new_with_image_and_label(const char *stock, const gchar *
 }
 
 #endif
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+/*
+ * for debugging
+ */ 
+static void g_object_list_properties_for_type(const char *name, GObject *obj, GType type, int indent)
+{
+	int ind;
+	
+	for (ind = 0; ind < indent; ind++)
+		printf("  ");
+	printf("%s (%s):\n", name, g_type_name(type));
+	if (G_OBJECT_TYPE(obj) == type)
+	{
+		GObjectClass *object_class;
+		GParamSpec **specs;
+		guint i, num;
+		GValue value = G_VALUE_INIT;
+		
+		object_class = (GObjectClass *)g_type_class_peek(type);
+		
+		specs = g_object_class_list_properties(object_class, &num);
+		for (i = 0; i < num; i++)
+		{
+			GParamSpec *param = specs[i];
+			char *val;
+			
+			for (ind = 0; ind < indent; ind++)
+				printf("  ");
+			if (param->flags & G_PARAM_READABLE)
+			{
+				g_value_init(&value, param->value_type);
+				g_object_get_property(obj, param->name, &value);
+				val = g_strdup_value_contents(&value);
+				printf("  %-20s: %s\n", param->name, val);
+				g_free(val);
+				g_value_unset(&value);
+			} else
+			{
+				printf("  %-20s: (read-protected)\n", param->name);
+			}
+		}
+		g_free(specs);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean list_root_props(const char *name, GObject *obj, GType type, int *max_indent, int indent)
+{
+	gboolean found = FALSE;
+	GType currtype = type;
+	
+	if (currtype == G_TYPE_OBJECT)
+	{
+		found = TRUE;
+	} else
+	{
+		currtype = g_type_parent(currtype);
+		++(*max_indent);
+		found = list_root_props(name, obj, currtype, max_indent, indent + 1);
+	}
+	if (found)
+		g_object_list_properties_for_type(name, obj, type, *max_indent - indent);
+	return found;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void g_object_list_properties(const char *name, GObject *obj)
+{
+	GType type = G_OBJECT_TYPE(obj);
+	int indent = 0;
+	
+	if (!list_root_props(name, obj, type, &indent, 0))
+	{
+		g_object_list_properties_for_type(name, obj, type, 0);
+	}
+}

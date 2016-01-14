@@ -117,6 +117,11 @@ void ProgrammInfos(DOCUMENT *doc)
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 		g_free(str);
+		str = g_strdup_printf(_("@charset    : %s"), hyp_charset_name(hyp->comp_charset));
+		label = gtk_label_new(str);
+		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+		g_free(str);
 		str = g_strdup_printf(_("@default    : %s"), fixnull(hyp->default_name));
 		label = gtk_label_new(str);
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);

@@ -240,10 +240,12 @@ static void tb_button_activated(GtkWidget *w, gpointer user_data)
 	ToolbarClick(win->data, button_num, GDK_BUTTON_PRIMARY);
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
 static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *text, int button_num)
 {
 	GtkWidget *button = (GtkWidget *)gtk_tool_button_new(icon, NULL);
-	if (text)
+	if (text && 0)
 	{
 		GtkWidget *label = gtk_label_new(NULL);
 		char *str = g_strdup_printf("<span size=\"small\">%s</span>", text);
@@ -255,7 +257,11 @@ static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *te
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(tb_button_activated), win);
 	gtk_tool_item_set_visible_horizontal(GTK_TOOL_ITEM(button), TRUE);
 	gtk_tool_item_set_visible_vertical(GTK_TOOL_ITEM(button), TRUE);
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(button), FALSE);
 	gtk_toolbar_insert(GTK_TOOLBAR(win->toolbar), GTK_TOOL_ITEM(button), -1);
+	gtk_widget_set_can_focus(GTK_WIDGET(button), FALSE);
+	gtk_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(button)), FALSE);
+	gtk_widget_set_receives_default(gtk_bin_get_child(GTK_BIN(button)), FALSE);
 	g_object_set_data(G_OBJECT(button), "buttonnumber", (void *)(intptr_t)button_num);
 	win->m_buttons[button_num] = button;
 	return button;
@@ -382,11 +388,12 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 #endif
 	gtk_toolbar_set_style(GTK_TOOLBAR(win->toolbar), GTK_TOOLBAR_ICONS);
 	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(win->toolbar), FALSE);
-
+	gtk_toolbar_set_icon_size(GTK_TOOLBAR(win->toolbar), GTK_ICON_SIZE_BUTTON);
+	
 	{
 	GtkWidget *icon;
 	GtkWidget *w;
-	
+
 	icon = gtk_load_icon_from_data(back_icon_data);
 	w = AppendButton(win, icon, _("Back"), TO_BACK);
 	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Back one page"));
@@ -467,6 +474,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(win->text_window), GTK_SHADOW_IN);
 	gtk_widget_show(win->text_window);
 	win->text_view = gtk_text_view_new();
+	gtk_widget_set_can_default(win->text_view, TRUE);
+	gtk_widget_set_receives_default(win->text_view, TRUE);
 	gtk_widget_show(win->text_view);
 	gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);

@@ -1,5 +1,8 @@
 #include "hv_gtk.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 {
@@ -26,6 +29,7 @@ void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 	ReInitWindow(doc);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GoBack(DOCUMENT *old_doc)
 {
@@ -79,6 +83,7 @@ void GoBack(DOCUMENT *old_doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void HistoryPopup(DOCUMENT *old_doc, int button)
 {
@@ -88,6 +93,9 @@ void HistoryPopup(DOCUMENT *old_doc, int button)
 }
 
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 
 /****** Module dependend	****/
@@ -106,6 +114,7 @@ static void GotoDocPage(DOCUMENT *doc, hyp_nodenr page)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GotoHelp(DOCUMENT *doc)
 {
@@ -113,6 +122,7 @@ void GotoHelp(DOCUMENT *doc)
 	GotoDocPage(doc, hyp->help_page);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GotoIndex(DOCUMENT *doc)
 {
@@ -120,6 +130,7 @@ void GotoIndex(DOCUMENT *doc)
 	GotoDocPage(doc, hyp->index_page);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GoThisButton(DOCUMENT *doc, enum toolbutton obj)
 {

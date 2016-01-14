@@ -137,9 +137,14 @@ void SendRedraw(WINDOW_DATA *win);
 /*
  * hv_tbar.c
  */
+struct popup_pos {
+	DOCUMENT *doc;
+	enum toolbutton obj;
+};
 void ToolbarUpdate(DOCUMENT *doc, gboolean redraw);
 void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button);
 void RemoveSearchBox(DOCUMENT *doc);
+void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data);
 
 
 /*

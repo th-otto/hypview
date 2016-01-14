@@ -133,7 +133,7 @@ static void show_version(void)
 static void fix_fds(void)
 {
 	/* Bad Things Happen if stdin, stdout, and stderr have been closed
-	   (as by the `sh incantation "attraction >&- 2>&-").  When you do
+	   (as by the `sh incantation "hypview >&- 2>&-").  When you do
 	   that, the X connection gets allocated to one of these fds, and
 	   then some random library writes to stderr, and random bits get
 	   stuffed down the X pipe, causing "Xlib: sequence lost" errors.
@@ -191,6 +191,7 @@ static void myInvalidParameterHandler(const wchar_t *expression,
 int main(int argc, char **argv)
 {
 	int exit_status = EXIT_SUCCESS;
+	gboolean threads_entered = FALSE;
 	
 	check_console();
 	fix_fds();
@@ -243,6 +244,7 @@ int main(int argc, char **argv)
 			gl_profile.viewer.background_color = gl_profile.viewer.text_color ^ 1;
 
 		GDK_THREADS_ENTER();
+		threads_entered = TRUE;
 		
 		Help_Init();
 		
@@ -288,12 +290,13 @@ int main(int argc, char **argv)
 		gtk_main();	
 	}
 	
-	if (!bShowHelp && !bShowVersion)
+	Help_Exit();
+
+	if (threads_entered)
 	{
 		GDK_THREADS_LEAVE();
 	}	
 	
-	Help_Exit();
 	hv_exit();
 	HypProfile_Delete();
 	x_free_resources();
