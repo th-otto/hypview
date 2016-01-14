@@ -218,8 +218,6 @@ int main(int argc, char **argv)
 
 	LoadConfig();
 
-	hv_init();
-	
 	if (!ParseCommandLine(&argc, &argv))
 		return EXIT_FAILURE;
 	
@@ -233,6 +231,8 @@ int main(int argc, char **argv)
 	{
 		WINDOW_DATA *win = NULL;
 		
+		hv_init();
+	
 		if (!init_gtk())
 			return EXIT_FAILURE;
 
@@ -292,13 +292,14 @@ int main(int argc, char **argv)
 	
 	Help_Exit();
 
+	hv_exit();
+	HypProfile_Delete();
+
 	if (threads_entered)
 	{
 		GDK_THREADS_LEAVE();
 	}	
 	
-	hv_exit();
-	HypProfile_Delete();
 	x_free_resources();
 
 	return exit_status;

@@ -3,81 +3,20 @@
 
 /*----------------------------------------------------------------------------------*/
 
-void HypExtRefPopup(DOCUMENT *doc, int button)
+static void xref_selected(GtkWidget *w, void *user_data)
 {
-	GtkWidget *menu;
+	DOCUMENT *doc = (DOCUMENT *)user_data;
+	void *psel = g_object_get_data(G_OBJECT(w), "item-num");
+	int sel = (int)(intptr_t)psel;
+	int i;
+	HYP_DOCUMENT *hyp = doc->data;
 	const unsigned char *pos;
-	int i, sel;
-	HYP_DOCUMENT *hyp;
-	WINDOW_DATA *win = doc->window;
 	const unsigned char *end;
-	GdkModifierType mask;
-	struct popup_pos popup_pos;
-	
-	if (!win->m_buttons[TO_REFERENCES])
-		return;
-	
-	hyp = doc->data;
-	menu = gtk_menu_new();
-	
-	i = 0;
-	pos = doc->displayed_node->start;
-	end = doc->displayed_node->end;
-	while (pos < end && *pos == HYP_ESC)
-	{
-		if (pos[1] == HYP_ESC_EXTERNAL_REFS)
-		{
-			hyp_nodenr dest_page;
-			char *text;
-			char *dest;
-			gboolean converror = FALSE;
-			size_t namelen;
-			
-			dest_page = DEC_255(&pos[3]);
-			if (hypnode_valid(hyp, dest_page))
-			{
-				INDEX_ENTRY *entry = hyp->indextable[dest_page];
-				namelen = entry->length - SIZEOF_INDEX_ENTRY;
-				dest = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), entry->name, namelen, &converror);
-			} else
-			{
-				dest = g_strdup_printf(_("<invalid destination page %u>"), dest_page);
-			}
-			text = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), pos + 5, max(pos[2], 5u) - 5u, &converror);
-			if (empty(text) || strcmp(dest, text) == 0)
-			{
-				g_free(text);
-				text = dest;
-			} else
-			{
-				g_free(dest);
-			}
-			gtk_menu_append(menu, gtk_label_new(text));
-			g_free(text);
-			i++;
-		}
-		pos = hyp_skip_esc(pos);
-	}
-	
-	if (i == 0)
-	{
-		/*
-		 * no extrefs found? we should not get here,
-		 * the toolbar entry should not have been selectable
-		 */
-		return;
-	}
-	
-	sel = -1;
-	popup_pos.doc = doc;
-	popup_pos.obj = TO_REFERENCES;
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, gtk_get_current_event_time());
-	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
-	gtk_widget_unref(menu);
-	
-	if (sel > 0)
+
+	if (sel >= 0)
 	{
 		pos = doc->displayed_node->start;
+		end = doc->displayed_node->end;
 		i = 0;
 		while (pos < end && *pos == HYP_ESC)
 		{
@@ -124,6 +63,85 @@ void HypExtRefPopup(DOCUMENT *doc, int button)
 		}
 		nf_debugprintf("openext: selection %d not found\n", sel);
 	}
+}
+
+/*----------------------------------------------------------------------------------*/
+
+void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time)
+{
+	GtkWidget *menu;
+	const unsigned char *pos;
+	int i;
+	HYP_DOCUMENT *hyp = doc->data;
+	WINDOW_DATA *win = doc->window;
+	const unsigned char *end;
+	struct popup_pos popup_pos;
+	
+	if (!win->m_buttons[TO_REFERENCES])
+		return;
+	
+	menu = gtk_menu_new();
+	if (g_object_is_floating(menu))
+		g_object_ref_sink(menu);
+	
+	i = 0;
+	pos = doc->displayed_node->start;
+	end = doc->displayed_node->end;
+	while (pos < end && *pos == HYP_ESC)
+	{
+		if (pos[1] == HYP_ESC_EXTERNAL_REFS)
+		{
+			hyp_nodenr dest_page;
+			char *text;
+			char *dest;
+			gboolean converror = FALSE;
+			size_t namelen;
+			GtkWidget *item;
+			
+			dest_page = DEC_255(&pos[3]);
+			if (hypnode_valid(hyp, dest_page))
+			{
+				INDEX_ENTRY *entry = hyp->indextable[dest_page];
+				namelen = entry->length - SIZEOF_INDEX_ENTRY;
+				dest = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), entry->name, namelen, &converror);
+			} else
+			{
+				dest = g_strdup_printf(_("<invalid destination page %u>"), dest_page);
+			}
+			text = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), pos + 5, max(pos[2], 5u) - 5u, &converror);
+			if (empty(text) || strcmp(dest, text) == 0)
+			{
+				g_free(text);
+				text = dest;
+			} else
+			{
+				g_free(dest);
+			}
+			item = gtk_menu_item_new_with_label(text);
+			g_object_set_data(G_OBJECT(item), "item-num", (void *)(intptr_t)i);
+			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(xref_selected), doc);
+			gtk_widget_show(item);
+			gtk_menu_append(menu, item);
+			g_free(text);
+			i++;
+		}
+		pos = hyp_skip_esc(pos);
+	}
+	
+	if (i == 0)
+	{
+		/*
+		 * no extrefs found? we should not get here,
+		 * the toolbar entry should not have been selectable
+		 */
+		gtk_widget_unref(menu);
+		return;
+	}
+	
+	popup_pos.doc = doc;
+	popup_pos.obj = TO_REFERENCES;
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
+	gtk_widget_unref(menu);
 }
 
 

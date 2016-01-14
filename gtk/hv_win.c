@@ -232,13 +232,15 @@ static GtkWidget *gtk_load_icon_from_data(const unsigned char *data)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#if 0
 static void tb_button_activated(GtkWidget *w, gpointer user_data)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)user_data;
 	void *pbutton = g_object_get_data(G_OBJECT(w), "buttonnumber");
 	enum toolbutton button_num = (enum toolbutton)(int)(intptr_t)pbutton;
-	ToolbarClick(win->data, button_num, GDK_BUTTON_PRIMARY);
+	ToolbarClick(win->data, button_num, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -246,7 +248,10 @@ static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer 
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == GDK_BUTTON_PRIMARY)
 	{
-		tb_button_activated(w, user_data);
+		WINDOW_DATA *win = (WINDOW_DATA *)user_data;
+		void *pbutton = g_object_get_data(G_OBJECT(w), "buttonnumber");
+		enum toolbutton button_num = (enum toolbutton)(int)(intptr_t)pbutton;
+		ToolbarClick(win->data, button_num, event->button, event->time);
 		return TRUE;
 	}
 	return FALSE;

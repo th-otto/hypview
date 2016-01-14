@@ -112,31 +112,15 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerPopup(DOCUMENT *doc, int button)
+static void marker_selected(GtkWidget *w, void *user_data)
 {
-	int sel = -1;
-	int i;
-	GtkWidget *menu;
-	GdkModifierType mask;
+	DOCUMENT *doc = (DOCUMENT *)user_data;
+	void *psel = g_object_get_data(G_OBJECT(w), "item-num");
+	int sel = (int)(intptr_t)psel;
 	WINDOW_DATA *win = doc->window;
-	struct popup_pos popup_pos;
-	
-	if (!win->m_buttons[TO_MEMORY])
-		return;
-	
-	menu = gtk_menu_new();
-	
-	for (i = 0; i < MAX_MARKEN; i++)
-	{
-		gtk_menu_append(menu, gtk_label_new(marken[i].node_name));
-	}
+	GdkModifierType mask;
 
-	popup_pos.doc = doc;
-	popup_pos.obj = TO_MEMORY;
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, gtk_get_current_event_time());
 	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
-	gtk_widget_unref(menu);
-	
 	if (sel >= 0 && sel < MAX_MARKEN)
 	{
 		if (mask & GDK_SHIFT_MASK)
@@ -169,6 +153,37 @@ void MarkerPopup(DOCUMENT *doc, int button)
 			}
 		}
 	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time)
+{
+	WINDOW_DATA *win = doc->window;
+	int i;
+	GtkWidget *menu;
+	struct popup_pos popup_pos;
+	
+	if (!win->m_buttons[TO_MEMORY])
+		return;
+	
+	menu = gtk_menu_new();
+	if (g_object_is_floating(menu))
+		g_object_ref_sink(menu);
+	
+	for (i = 0; i < MAX_MARKEN; i++)
+	{
+		GtkWidget *item = gtk_menu_item_new_with_label(marken[i].node_name);
+		g_object_set_data(G_OBJECT(item), "item-num", (void *)(intptr_t)i);
+		g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(marker_selected), doc);
+		gtk_widget_show(item);
+		gtk_menu_append(menu, item);
+	}
+	
+	popup_pos.doc = doc;
+	popup_pos.obj = TO_MEMORY;
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
+	gtk_widget_unref(menu);
 }
 
 /*** ---------------------------------------------------------------------- ***/

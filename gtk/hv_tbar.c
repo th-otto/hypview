@@ -89,9 +89,11 @@ void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, vo
 	int wx, wy;
 	DOCUMENT *doc = pos->doc;
 	WINDOW_DATA *win = doc->window;
+	GtkAllocation a;
 	
 	UNUSED(menu);
-	gtk_widget_translate_coordinates(win->m_buttons[pos->obj], win->hwnd, 0, 0, &x, &y);
+	gtk_widget_get_allocation(win->m_buttons[pos->obj], &a);
+	gtk_widget_translate_coordinates(win->m_buttons[pos->obj], win->hwnd, 0, a.height, &x, &y);
 	gdk_window_get_origin(gtk_widget_get_window(win->hwnd), &wx, &wy);
 	*xret = x + wx;
 	*yret = y + wy;
@@ -101,7 +103,7 @@ void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, vo
 /*** ---------------------------------------------------------------------- ***/
 
 /* Handle mouse click on toolbar */
-void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button)
+void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_time)
 {
 	WINDOW_DATA *win = doc->window;
 	
@@ -132,13 +134,13 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button)
 		}
 		break;
 	case TO_REFERENCES:
-		HypExtRefPopup(doc, button);
+		HypExtRefPopup(doc, button, event_time);
 		break;
 	case TO_HELP:
 		GotoHelp(doc);
 		break;
 	case TO_HISTORY:
-		HistoryPopup(doc, button);
+		HistoryPopup(doc, button, event_time);
 		break;
 	case TO_BACK:
 		GoBack(doc);
@@ -149,7 +151,7 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button)
 		GoThisButton(doc, obj);
 		break;
 	case TO_MEMORY:
-		MarkerPopup(doc, button);
+		MarkerPopup(doc, button, event_time);
 		break;
 	case TO_INFO:
 		ProgrammInfos(doc);

@@ -142,7 +142,7 @@ struct popup_pos {
 	enum toolbutton obj;
 };
 void ToolbarUpdate(DOCUMENT *doc, gboolean redraw);
-void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button);
+void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_time);
 void RemoveSearchBox(DOCUMENT *doc);
 void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data);
 
@@ -200,7 +200,7 @@ WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr
  */
 void MarkerSave(DOCUMENT *doc, short num);
 void MarkerShow(DOCUMENT *doc, short num, gboolean new_window);
-void MarkerPopup(DOCUMENT *doc, int button);
+void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time);
 void MarkerSaveToDisk(void);
 void MarkerInit(void);
 
@@ -210,7 +210,7 @@ void MarkerInit(void);
  */
 void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc);
 void GoBack(DOCUMENT *doc);
-void HistoryPopup(DOCUMENT *doc, int button);
+void HistoryPopup(DOCUMENT *doc, int button, guint32 event_time);
 void GotoHelp(DOCUMENT *doc);
 void GotoIndex(DOCUMENT *doc);
 void GoThisButton(DOCUMENT *doc, enum toolbutton obj);
@@ -226,7 +226,7 @@ void CenterWindow(GtkWidget *hwnd);
 /*
  * hv_eref.c
  */
-void HypExtRefPopup(DOCUMENT *doc, int button);
+void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time);
 void HypOpenExtRef(void *win, const char *name, gboolean new_window);
 
 
