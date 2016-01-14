@@ -200,7 +200,7 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 			}
 		}
 
-		if (doc->gotoNodeProc(doc, chapter, 0))
+		if (doc->gotoNodeProc(doc, chapter, HYP_NOINDEX))
 		{
 			/* no window already? */
 			if (!win)
@@ -218,10 +218,16 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 			}
 		} else
 		{
+			doc->gotoNodeProc(doc, NULL, HYP_NOINDEX);
 			if (win)
 			{
 				doc->next = win->data;
 				win->data = doc;
+				doc->window = win;
+				if (win->status & WIS_ICONIFY)
+					UniconifyWindow(win);
+				ReInitWindow(doc);
+				wind_set_int(win->whandle, WF_TOP, 0);
 			}
 			if (!no_message)
 			{
