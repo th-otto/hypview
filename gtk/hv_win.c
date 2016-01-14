@@ -242,8 +242,35 @@ static void tb_button_activated(GtkWidget *w, gpointer user_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *text, int button_num)
+static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer user_data)
 {
+	if (event->type == GDK_BUTTON_PRESS && event->button == GDK_BUTTON_PRIMARY)
+	{
+		tb_button_activated(w, user_data);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *text, int button_num, const char *tooltip)
+{
+#if 1
+	GtkWidget *button = (GtkWidget *)gtk_tool_item_new();
+	GtkWidget *event_box = gtk_event_box_new();
+	UNUSED(text);
+	gtk_container_add(GTK_CONTAINER(event_box), icon);
+	gtk_container_add(GTK_CONTAINER(button), event_box);
+	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(button), tooltip);
+	gtk_toolbar_insert(GTK_TOOLBAR(win->toolbar), GTK_TOOL_ITEM(button), -1);
+	gtk_widget_add_events(event_box, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+	g_signal_connect(G_OBJECT(event_box), "button-press-event", G_CALLBACK(tb_button_clicked), win);
+	g_signal_connect(G_OBJECT(event_box), "button-release-event", G_CALLBACK(tb_button_clicked), win);
+	gtk_widget_set_can_focus(button, FALSE);
+	gtk_widget_set_receives_default(button, FALSE);
+	g_object_set_data(G_OBJECT(event_box), "buttonnumber", (void *)(intptr_t)button_num);
+#else
 	GtkWidget *button = (GtkWidget *)gtk_tool_button_new(icon, NULL);
 	if (text && 0)
 	{
@@ -254,6 +281,7 @@ static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *te
 		gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(button), label);
 	}
 	
+	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(button), tooltip);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(tb_button_activated), win);
 	gtk_tool_item_set_visible_horizontal(GTK_TOOL_ITEM(button), TRUE);
 	gtk_tool_item_set_visible_vertical(GTK_TOOL_ITEM(button), TRUE);
@@ -263,6 +291,7 @@ static GtkWidget *AppendButton(WINDOW_DATA *win, GtkWidget *icon, const char *te
 	gtk_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(button)), FALSE);
 	gtk_widget_set_receives_default(gtk_bin_get_child(GTK_BIN(button)), FALSE);
 	g_object_set_data(G_OBJECT(button), "buttonnumber", (void *)(intptr_t)button_num);
+#endif
 	win->m_buttons[button_num] = button;
 	return button;
 }
@@ -392,59 +421,45 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	
 	{
 	GtkWidget *icon;
-	GtkWidget *w;
 
 	icon = gtk_load_icon_from_data(back_icon_data);
-	w = AppendButton(win, icon, _("Back"), TO_BACK);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Back one page"));
+	AppendButton(win, icon, _("Back"), TO_BACK, _("Back one page"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(history_icon_data);
-	w = AppendButton(win, icon, _("History"), TO_HISTORY);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Show history of pages"));
+	AppendButton(win, icon, _("History"), TO_HISTORY, _("Show history of pages"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(memory_icon_data);
-	w = AppendButton(win, icon, _("Bookmarks"), TO_MEMORY);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Show list of bookmarks"));
+	AppendButton(win, icon, _("Bookmarks"), TO_MEMORY, _("Show list of bookmarks"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(previous_icon_data);
-	w = AppendButton(win, icon, _("Previous"), TO_PREVIOUS);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Goto previous page"));
+	AppendButton(win, icon, _("Previous"), TO_PREVIOUS, _("Goto previous page"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(home_icon_data);
-	w = AppendButton(win, icon, _("Contents"), TO_HOME);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Go up one page"));
+	AppendButton(win, icon, _("Contents"), TO_HOME, _("Go up one page"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(next_icon_data);
-	w = AppendButton(win, icon, _("Next"), TO_NEXT);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Goto next page"));
+	AppendButton(win, icon, _("Next"), TO_NEXT, _("Goto next page"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(index_icon_data);
-	w = AppendButton(win, icon, _("Index"), TO_INDEX);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Goto index page"));
+	AppendButton(win, icon, _("Index"), TO_INDEX, _("Goto index page"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(katalog_icon_data);
-	w = AppendButton(win, icon, _("Catalog"), TO_KATALOG);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Show catalog of hypertexts"));
+	AppendButton(win, icon, _("Catalog"), TO_KATALOG, _("Show catalog of hypertexts"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(reference_icon_data);
-	w = AppendButton(win, icon, _("References"), TO_REFERENCES);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Show list of cross references"));
+	AppendButton(win, icon, _("References"), TO_REFERENCES, _("Show list of cross references"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(help_icon_data);
-	w = AppendButton(win, icon, _("Help"), TO_HELP);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Show help page of hypertext"));
+	AppendButton(win, icon, _("Help"), TO_HELP, _("Show help page of hypertext"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(info_icon_data);
-	w = AppendButton(win, icon, _("Info"), TO_INFO);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Show info about hypertext"));
+	AppendButton(win, icon, _("Info"), TO_INFO, _("Show info about hypertext"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(load_icon_data);
-	w = AppendButton(win, icon, _("Load"), TO_LOAD);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Load a file"));
+	AppendButton(win, icon, _("Load"), TO_LOAD, _("Load a file"));
 	gtk_widget_unref(icon);
 	icon = gtk_load_icon_from_data(save_icon_data);
-	w = AppendButton(win, icon, _("Save"), TO_SAVE);
-	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(w), _("Save page to file"));
+	AppendButton(win, icon, _("Save"), TO_SAVE, _("Save page to file"));
 	gtk_widget_unref(icon);
 	}
 	gtk_widget_show_all(win->toolbar);
