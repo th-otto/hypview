@@ -237,6 +237,8 @@ void HypOpenExtRef(void *ptr, const char *name, gboolean new_window)
 	} else
 	{
 		chapter = cptr;
+		if (strcmp(chapter, hyp_default_main_node_name) == 0)
+			chapter = NULL;
 		if (new_window)
 			win = OpenFileNewWindow(path, chapter, HYP_NOINDEX, FALSE);
 		else
