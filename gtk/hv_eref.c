@@ -172,7 +172,7 @@ void HypOpenExtRef(void *ptr, const char *name, gboolean new_window)
 	cptr = strchr(temp, ':');
 	if (cptr == NULL || cptr == &temp[1])
 	{
-		cptr = strchr(temp, '/');
+		cptr = strslash(temp);
 		if (cptr)
 			*cptr++ = 0;
 	}
