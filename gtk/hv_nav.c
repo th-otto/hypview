@@ -265,31 +265,68 @@ void GotoIndex(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void GotoCatalog(WINDOW_DATA *win)
+{
+	char *filename = path_subst(gl_profile.viewer.catalog_file);
+	OpenFileSameWindow(win, filename, NULL, FALSE, FALSE);
+	g_free(filename);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void GoThisButton(DOCUMENT *doc, enum toolbutton obj)
 {
 	WINDOW_DATA *win = doc->window;
 	HYP_DOCUMENT *hyp = doc->data;
-	hyp_nodenr new_node = HYP_NOINDEX;
-
-	if (obj == TO_NEXT)
-		new_node = hyp->indextable[doc->displayed_node->number]->next;
-	else if (obj == TO_PREVIOUS)
-		new_node = hyp->indextable[doc->displayed_node->number]->previous;
-	else if (obj == TO_HOME)
-		new_node = hyp->indextable[doc->displayed_node->number]->toc_index;
-
+	hyp_nodenr new_node;
+	hyp_nodenr current_node = doc->getNodeProc(doc);
+	gboolean add_to_hist = FALSE;
+	
+	switch (obj)
+	{
+	case TO_NEXT:
+		new_node = hyp->indextable[current_node]->next;
+		break;
+	case TO_NEXT_PHYS:
+		new_node = current_node + 1;
+		while (hypnode_valid(hyp, new_node) && !(HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type)))
+			new_node++;
+		break;
+	case TO_PREV:
+		new_node = hyp->indextable[current_node]->previous;
+		break;
+	case TO_PREV_PHYS:
+		new_node = current_node - 1;
+		while (hypnode_valid(hyp, new_node) && !(HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type)))
+			new_node--;
+		break;
+	case TO_LAST:
+		new_node = hyp->last_text_page;
+		break;
+	case TO_FIRST:
+		new_node = hyp->first_text_page;
+		break;
+	case TO_HOME:
+		add_to_hist = TRUE;
+		new_node = hyp->indextable[current_node]->toc_index;
+		break;
+	default:
+		new_node = HYP_NOINDEX;
+		break;
+	}
+	
 	if (!hypnode_valid(hyp, new_node))
 		return;
 	
 	/* already displaying this page? */
-	if (new_node == doc->getNodeProc(doc))
+	if (new_node == current_node)
 		return;
 
 	/* is node a text page? */
 	if (!HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type))
 		return;
 
-	if (obj == TO_HOME)
+	if (add_to_hist)
 		AddHistoryEntry(win);
 	GotoPage(doc, new_node, 0, FALSE);
 }

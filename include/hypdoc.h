@@ -37,20 +37,24 @@ typedef	gboolean (*DOC_BLOCKPROC)(DOCUMENT *doc, hyp_blockop op, BLOCK *block, v
 
 typedef struct _hyp_nav_buttons
 {
-	unsigned int info : 1; /* TO_INFO; alway enabled */
-	unsigned int load : 1; /* TO_LOAD: always enabled */
-	unsigned int back : 1; /* TO_BACK; disabled when history empty */
-	unsigned int history : 1; /* TO_HISTORY; disabled when history empty */
-	unsigned int memory : 1; /* TO_MEMORY (marks); disabled if form_popup() is not available */
-	unsigned int save : 1; /* TO_SAVE; currently enable only when displaying ASCII */
-	unsigned int help : 1; /* TO_HELP; enabled if file contains help entry */
-	unsigned int index : 1; /* TO_INDEX; enabled if file contains Index entry */
-	unsigned int previous : 1; /* TO_PREV; disabled if current node has no predecessor */
-	unsigned int next : 1; /* TO_NEXT; disabled if current node has no successor */
-	unsigned int home : 1; /* TO_HOME; enabled if current node has parent toc_index */
+	unsigned int info : 1;       /* TO_INFO; always enabled */
+	unsigned int load : 1;       /* TO_LOAD: always enabled */
+	unsigned int back : 1;       /* TO_BACK; disabled when history empty */
+	unsigned int history : 1;    /* TO_HISTORY; disabled when history empty */
+	unsigned int memory : 1;     /* TO_MEMORY (marks); disabled if form_popup() is not available */
+	unsigned int save : 1;       /* TO_SAVE; currently enable only when displaying ASCII */
+	unsigned int help : 1;       /* TO_HELP; enabled if file contains help entry */
+	unsigned int index : 1;      /* TO_INDEX; enabled if file contains Index entry */
+	unsigned int prevphys : 1;   /* TO_PREV_PHYS; disabled if current node has no predecessor */
+	unsigned int previous : 1;   /* TO_PREV; disabled if current node has no predecessor */
+	unsigned int next : 1;       /* TO_NEXT; disabled if current node has no successor */
+	unsigned int nextphys : 1;   /* TO_NEXT_PHYS; disabled if current node has no successor */
+	unsigned int first : 1;      /* TO_FIRST; disabled if already on first text page */
+	unsigned int last : 1;       /* TO_LAST; disabled if already on last text page */
+	unsigned int home : 1;       /* TO_HOME; enabled if current node has parent toc_index */
 	unsigned int references : 1; /* TO_REFERENCES; enabled if current node has external references */
-	unsigned int ascii : 1; /* TO_ASCII; enabled if we can save file as ASCII */
-	unsigned int searchbox : 1; /* enabled if search text entry is visible */
+	unsigned int ascii : 1;      /* TO_ASCII; enabled if we can save file as ASCII */
+	unsigned int searchbox : 1;  /* enabled if search text entry is visible */
 	unsigned int menu : 1;
 } hyp_nav_buttons;
 

@@ -43,7 +43,7 @@ hypview_SOURCES = \
 	autoloc.c \
 	$(empty)
 
-hypview_DEPENDENCIES = $(LIBHYP_DEP)
+hypview_DEPENDENCIES = $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
 hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(LIBINTL)
 
 icons: $(srcdir)/../icons/hypview.h

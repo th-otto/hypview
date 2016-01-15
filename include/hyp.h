@@ -436,6 +436,8 @@ typedef struct
 	hyp_nodenr default_page;    /* Page number of default page (@default) */
 	hyp_nodenr help_page;       /* Page number of help page */
 	REF_FILE *ref;              /* Pointer to REF file structure */
+	hyp_nodenr first_text_page; /* first node number with text */
+	hyp_nodenr last_text_page;  /* last node number with text */
 } HYP_DOCUMENT;
 
 /*
@@ -786,11 +788,13 @@ gboolean WriteEntryBytes(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned char *src, 
 
 
 /*
- *		Tool.c
+ * tool.c
  */
 hyp_nodenr find_nr_by_title(HYP_DOCUMENT *hyp_doc, const char *title);
 const unsigned char *hyp_skip_esc(const unsigned char *pos);
 gboolean hyp_node_find_windowtitle(HYP_NODE *nodeptr);
+hyp_nodenr hyp_first_text_page(HYP_DOCUMENT *hyp_doc);
+hyp_nodenr hyp_last_text_page(HYP_DOCUMENT *hyp_doc);
 
 
 /*

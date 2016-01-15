@@ -31,9 +31,13 @@ enum toolbutton {
 	TO_BACK,
 	TO_HISTORY,
 	TO_MEMORY,
-	TO_PREVIOUS,
+	TO_FIRST,
+	TO_PREV_PHYS,
+	TO_PREV,
 	TO_HOME,
 	TO_NEXT,
+	TO_NEXT_PHYS,
+	TO_LAST,
 	TO_INDEX,
 	TO_KATALOG,
 	TO_REFERENCES,
@@ -41,7 +45,6 @@ enum toolbutton {
 	TO_INFO,
 	TO_LOAD,
 	TO_SAVE,
-	/* TO_MENU, */
 	TO_MAX
 };
 
@@ -60,6 +63,7 @@ struct _window_data_
 		WP_UNIT y;
 	} docsize;
 
+	GtkActionGroup *action_group;
 
 	char *m_geometry;
 	GtkWidget *hwnd;					/* GtkWindow */
@@ -214,6 +218,7 @@ void HistoryPopup(DOCUMENT *doc, int button, guint32 event_time);
 void GotoHelp(DOCUMENT *doc);
 void GotoIndex(DOCUMENT *doc);
 void GoThisButton(DOCUMENT *doc, enum toolbutton obj);
+void GotoCatalog(WINDOW_DATA *win);
 
 
 /*

@@ -98,6 +98,38 @@ const unsigned char *hyp_skip_esc(const unsigned char *pos)
 
 /* ------------------------------------------------------------------------- */
 
+hyp_nodenr hyp_first_text_page(HYP_DOCUMENT *hyp)
+{
+	hyp_nodenr node_num;
+	
+	node_num = 0;
+	while (node_num < hyp->num_index)
+	{
+		if (HYP_NODE_IS_TEXT(hyp->indextable[node_num]->type))
+			return node_num;
+		node_num++;
+	}
+	return HYP_NOINDEX;
+}
+
+/* ------------------------------------------------------------------------- */
+
+hyp_nodenr hyp_last_text_page(HYP_DOCUMENT *hyp)
+{
+	hyp_nodenr node_num;
+	
+	node_num = hyp->num_index;
+	while (node_num > 0)
+	{
+		--node_num;
+		if (HYP_NODE_IS_TEXT(hyp->indextable[node_num]->type))
+			return node_num;
+	}
+	return HYP_NOINDEX;
+}
+
+/* ------------------------------------------------------------------------- */
+
 int __my_assert(const char *expr, const char *file, int line)
 {
 	fflush(stdout);

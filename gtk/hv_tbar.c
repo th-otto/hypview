@@ -37,42 +37,28 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 		doc->buttons.history = FALSE;
 	}
 	
-	if (win->m_buttons[TO_MEMORY])
-		gtk_widget_set_sensitive(win->m_buttons[TO_MEMORY], doc->buttons.memory);
-	if (win->m_buttons[TO_REFERENCES])
-		gtk_widget_set_sensitive(win->m_buttons[TO_REFERENCES], doc->buttons.references);
-#if 0
-	if (win->m_buttons[TO_MENU])
-		gtk_widget_set_sensitive(win->m_buttons[TO_MENU], doc->buttons.menu);
-#endif
-	if (win->m_buttons[TO_LOAD])
-		gtk_widget_set_sensitive(win->m_buttons[TO_LOAD], doc->buttons.load);
-	if (win->m_buttons[TO_INFO])
-		gtk_widget_set_sensitive(win->m_buttons[TO_INFO], doc->buttons.info);
-	if (win->m_buttons[TO_BACK])
-		gtk_widget_set_sensitive(win->m_buttons[TO_BACK], doc->buttons.back);
-	if (win->m_buttons[TO_HISTORY])
-		gtk_widget_set_sensitive(win->m_buttons[TO_HISTORY], doc->buttons.history);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "bookmarks"), doc->buttons.memory);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "open"), doc->buttons.load);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "info"), doc->buttons.info);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "back"), doc->buttons.back);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "history"), doc->buttons.history);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "clearstack"), doc->buttons.history);
 
 	/* is there a catalog file?*/
-	if (win->m_buttons[TO_KATALOG])
-		gtk_widget_set_sensitive(win->m_buttons[TO_KATALOG], !empty(gl_profile.viewer.catalog_file));
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "catalog"), !empty(gl_profile.viewer.catalog_file));
 
 	/* next buttons are type specific */
-	if (win->m_buttons[TO_PREVIOUS])
-		gtk_widget_set_sensitive(win->m_buttons[TO_PREVIOUS], doc->buttons.previous);
-	if (win->m_buttons[TO_HOME])
-	 	gtk_widget_set_sensitive(win->m_buttons[TO_HOME], doc->buttons.home);
-	if (win->m_buttons[TO_NEXT])
-		gtk_widget_set_sensitive(win->m_buttons[TO_NEXT], doc->buttons.next);
-	if (win->m_buttons[TO_INDEX])
-		gtk_widget_set_sensitive(win->m_buttons[TO_INDEX], doc->buttons.index);
-	if (win->m_buttons[TO_REFERENCES])
-		gtk_widget_set_sensitive(win->m_buttons[TO_REFERENCES], doc->buttons.references);
-	if (win->m_buttons[TO_HELP])
-		gtk_widget_set_sensitive(win->m_buttons[TO_HELP], doc->buttons.help);
-	if (win->m_buttons[TO_SAVE])
-		gtk_widget_set_sensitive(win->m_buttons[TO_SAVE], doc->buttons.save);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "prevlogpage"), doc->buttons.previous);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "prevphyspage"), doc->buttons.prevphys);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "toc"), doc->buttons.home);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "nextlogpage"), doc->buttons.next);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "nextphyspage"), doc->buttons.nextphys);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "firstpage"), doc->buttons.first);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "lastpage"), doc->buttons.last);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "index"), doc->buttons.index);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "xref"), doc->buttons.references);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "help"), doc->buttons.help);
+	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "save"), doc->buttons.save);
 
 	if (redraw)
 	{
@@ -127,11 +113,7 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_
 		GotoIndex(doc);
 		break;
 	case TO_KATALOG:
-		{
-			char *filename = path_subst(gl_profile.viewer.catalog_file);
-			OpenFileSameWindow(win, filename, NULL, FALSE, FALSE);
-			g_free(filename);
-		}
+		GotoCatalog(win);
 		break;
 	case TO_REFERENCES:
 		HypExtRefPopup(doc, button, event_time);
@@ -146,7 +128,11 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_
 		GoBack(doc);
 		break;
 	case TO_NEXT:
-	case TO_PREVIOUS:
+	case TO_PREV:
+	case TO_NEXT_PHYS:
+	case TO_PREV_PHYS:
+	case TO_FIRST:
+	case TO_LAST:
 	case TO_HOME:
 		GoThisButton(doc, obj);
 		break;
@@ -156,10 +142,6 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_
 	case TO_INFO:
 		ProgrammInfos(doc);
 		break;
-#if 0
-	case TO_MENU:
-		break;
-#endif
 	default:
 		break;
 	}

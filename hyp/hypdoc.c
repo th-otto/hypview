@@ -19,22 +19,13 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 		node_num = hyp->default_page;
 		if (node_num == HYP_NOINDEX)
 		{
-			node_num = 0;
-			
 			/*
 			 * no default page: use first text page
 			 */
-			while (node_num < hyp->num_index)
-			{
-				if (HYP_NODE_IS_TEXT(hyp->indextable[node_num]->type))
-					break;
-				node_num++;
-			}
-	
-			if (node_num >= hyp->num_index)
+			node_num = hyp->first_text_page;
+			if (node_num == HYP_NOINDEX)
 			{
 				FileError(hyp_basename(doc->path), _("no start page found."));
-				node_num = HYP_NOINDEX;
 			}
 		}
 	}
@@ -85,11 +76,15 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 	}
 	
 	/* update toolbar state */
-	doc->buttons.help = hypnode_valid(hyp, hyp->help_page);
-	doc->buttons.index = hypnode_valid(hyp, hyp->index_page);
+	doc->buttons.help = hypnode_valid(hyp, hyp->help_page) && node_num != hyp->help_page;
+	doc->buttons.index = hypnode_valid(hyp, hyp->index_page) && node_num != hyp->index_page;
 	doc->buttons.previous = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->previous) && node_num != hyp->indextable[node_num]->previous;
 	doc->buttons.next = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->next) && node_num != hyp->indextable[node_num]->next;
-	doc->buttons.home = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->next) && node_num != hyp->indextable[node_num]->toc_index;
+	doc->buttons.nextphys = hypnode_valid(hyp, hyp->last_text_page) && node_num < hyp->last_text_page;
+	doc->buttons.prevphys = hypnode_valid(hyp, hyp->first_text_page) && node_num > hyp->first_text_page;
+	doc->buttons.first = hypnode_valid(hyp, hyp->first_text_page) && node_num != hyp->first_text_page;
+	doc->buttons.last = hypnode_valid(hyp, hyp->last_text_page) && node_num != hyp->last_text_page;
+	doc->buttons.home = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->toc_index) && node_num != hyp->indextable[node_num]->toc_index;
 	doc->buttons.references = HypCountExtRefs(node) != 0;
 	
 	/* ASCII Export supported */
@@ -122,8 +117,8 @@ static hyp_nodenr HypGetNode(DOCUMENT *doc)
 /* ------------------------------------------------------------------------- */
 
 /*
- *		Ueberprueft ob es sich um einen Hypertext handelt und ladet
- *		danach die wichtigsten Daten in den Speicher.
+ * Check for file being hyp-file, and load index.
+ * Set document to HYP_DOCUMENT if successful.
  */
 hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 {
@@ -131,11 +126,11 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	REF_FILE *ref;
 	hyp_filetype ftype;
 	
-	/* Zurueck zum Dateianfang */
+	/* back to beginning o file */
 	if (lseek(handle, 0, SEEK_SET) != 0)
 		return HYP_FT_UNKNOWN;
 
-	/* Datei Extension ermitteln */
+	/* guess file type by checking filename extension */
 	ftype = hyp_guess_filetype(doc->path);
 	if (ftype == HYP_FT_REF)	/* REF file? */
 	{
@@ -275,7 +270,7 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 		return NULL;
 	}
 
-	/*  Nicht gefunden? --> neues Dokument erstellen    */
+	/* create a new document */
 	doc = g_new0(DOCUMENT, 1);
 
 	doc->path = g_strdup(path);
@@ -285,7 +280,7 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	doc->autolocator = NULL;
 	doc->selection.valid = FALSE;
 
-	/*  Hier folgt die typ-spezifische Lade-Routine */
+	/* type-spezific loading follows */
 	if (LoadFile(doc, handle, return_if_ref) < 0)
 	{
 		FileError(hyp_basename(doc->path), _("format not recognized"));
@@ -295,7 +290,7 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	{
 		struct stat st;
 
-		/*  Aenderungsdatum und -zeit sichern   */
+		/* save file modification time&date */
 		if (rpl_fstat(handle, &st) < 0)
 		{
 			doc->mtime = 0;
@@ -312,13 +307,14 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 
 /* ------------------------------------------------------------------------- */
 
-/*	Entfernt die Datei <doc> aus dem Speicher und aus der Liste.
-	<doc> muss (!!) ein Zeiger auf ein Dokument in der Liste sein.	*/
+/*
+ * Remove DOCUMENT from memory.
+ */
 void HypCloseFile(DOCUMENT *doc)
 {
 	if (doc == NULL)
 		return;
-	/*  Hier folgt die typ-spezifische Aufrum-Arbeit. */
+	/* type-spezific clenaup follows */
 	if (doc->data)
 		doc->closeProc(doc);
 	g_free(doc->window_title);

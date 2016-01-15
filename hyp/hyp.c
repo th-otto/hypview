@@ -433,6 +433,8 @@ HYP_DOCUMENT *hyp_new(void)
 	hyp->default_page = HYP_NOINDEX;
 	hyp->help_page = HYP_NOINDEX;
 	hyp->index_page = HYP_NOINDEX;
+	hyp->first_text_page = HYP_NOINDEX;
+	hyp->last_text_page = HYP_NOINDEX;
 
 	hyp->handle = -1;
 	
@@ -806,6 +808,9 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 	if (hyp->num_index > 0)
 		hyp->indextable[hyp->num_index]->seek_offset = lseek(handle, 0, SEEK_END);
 	
+	hyp->first_text_page = hyp_first_text_page(hyp);
+	hyp->last_text_page = hyp_last_text_page(hyp);
+
 	*err = HYP_FT_HYP;
 	return hyp;
 }
