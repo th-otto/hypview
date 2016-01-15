@@ -89,6 +89,7 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 /* NYI */
 static void About(GtkWidget *parent)
 {
+	/* YYY */
 	UNUSED(parent);
 }
 
@@ -233,6 +234,7 @@ static GtkWidget *gtk_load_icon_from_data(const unsigned char *data)
 /*** ---------------------------------------------------------------------- ***/
 
 #if 0
+
 static void tb_button_activated(GtkWidget *w, gpointer user_data)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)user_data;
@@ -240,9 +242,8 @@ static void tb_button_activated(GtkWidget *w, gpointer user_data)
 	enum toolbutton button_num = (enum toolbutton)(int)(intptr_t)pbutton;
 	ToolbarClick(win->data, button_num, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
-#endif
 
-/*** ---------------------------------------------------------------------- ***/
+#else
 
 static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer user_data)
 {
@@ -256,6 +257,8 @@ static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer 
 	}
 	return FALSE;
 }
+
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 

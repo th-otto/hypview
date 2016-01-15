@@ -1,8 +1,6 @@
 #define GDK_DISABLE_DEPRECATION_WARNINGS
 #include "hv_gtk.h"
 
-static GtkFileChooserDialog *choose_file_selector;
-
 /*
  * filters for file chooser.
  * Filters are separated by newlines.
@@ -18,51 +16,23 @@ static GtkFileChooserDialog *choose_file_selector;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void choose_file_ok(GtkWidget *dialog, gpointer user_data)
+static void choose_file_response(GtkWidget *dialog, gint response_id, gpointer user_data)
 {
-	GtkFileChooserDialog *selector = GTK_FILE_CHOOSER_DIALOG(dialog);
+	UNUSED(dialog);
 	UNUSED(user_data);
-	gtk_widget_hide(GTK_WIDGET(selector));
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void choose_file_destroyed(GtkWidget *dialog, gpointer user_data)
-{
-	GtkFileChooserDialog *selector = GTK_FILE_CHOOSER_DIALOG(dialog);
-	UNUSED(selector);
-	UNUSED(user_data);
-	choose_file_selector = NULL;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void choose_file_cancel(GtkWidget *dialog, gpointer user_data)
-{
-	GtkFileChooserDialog *selector = GTK_FILE_CHOOSER_DIALOG(dialog);
-	UNUSED(user_data);
-	gtk_widget_hide(GTK_WIDGET(selector));
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void choose_file_response(GtkDialog *dialog, gint response_id, gpointer user_data)
-{
+	
 	switch (response_id)
 	{
 	case GTK_RESPONSE_OK:
 	case GTK_RESPONSE_APPLY:
 	case GTK_RESPONSE_ACCEPT:
 	case GTK_RESPONSE_YES:
-		choose_file_ok(GTK_WIDGET(dialog), user_data);
 		break;
 	case GTK_RESPONSE_CANCEL:
 	case GTK_RESPONSE_CLOSE:
 	case GTK_RESPONSE_NO:
-		choose_file_cancel(GTK_WIDGET(dialog), user_data);
 		break;
 	case GTK_RESPONSE_DELETE_EVENT:
-		choose_file_cancel(GTK_WIDGET(dialog), user_data);
 		break;
 	}
 }
@@ -107,51 +77,44 @@ static gboolean filter_exe(const GtkFileFilterInfo *filter_info, gpointer userda
 static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist, const char *title, const char *filter)
 {
 	GtkFileChooserDialog *selector;
-	GSList *filters, *f;
 	int resp;
+	gboolean save = !must_exist;
+	gboolean res = FALSE;
 	
 	if (parent)
 		parent = gtk_widget_get_toplevel(parent);
 
-	if (choose_file_selector == NULL)
-		choose_file_selector = GTK_FILE_CHOOSER_DIALOG(
-			gtk_file_chooser_dialog_new(title,
-			GTK_WINDOW(parent),
-			GTK_FILE_CHOOSER_ACTION_OPEN,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-			NULL));
-	selector = choose_file_selector;
+	selector = GTK_FILE_CHOOSER_DIALOG(
+		gtk_file_chooser_dialog_new(title,
+		GTK_WINDOW(parent),
+		save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+		NULL));
 	g_object_set_data(G_OBJECT(selector), "hypview_window_type", NO_CONST("fileselector"));
+	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(selector), save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
 	
 	if (!empty(*name))
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(selector), *name);
-
-	g_signal_connect(G_OBJECT(selector), "response", G_CALLBACK(choose_file_response), NULL);
-	g_signal_connect(G_OBJECT(selector), "destroy", G_CALLBACK(choose_file_destroyed), NULL);
-
-	if (must_exist)
-		gtk_file_chooser_set_action(GTK_FILE_CHOOSER(selector), GTK_FILE_CHOOSER_ACTION_OPEN);
-	else
-		gtk_file_chooser_set_action(GTK_FILE_CHOOSER(selector), GTK_FILE_CHOOSER_ACTION_SAVE);
-
-	gtk_window_set_title(GTK_WINDOW(selector), title);
-	gtk_window_set_modal(GTK_WINDOW(selector), TRUE);
-	gtk_widget_show(GTK_WIDGET(selector));
-
+	{
+		const char *base = hyp_basename(*name);
+		if (*base == '*')
+		{
+			char *dir = g_strndup(*name, base - *name);
+			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(selector), dir);
+			g_free(dir);
+		} else
+		{
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(selector), *name);
+		}
+	}
+	
 	/*
-	 * clear old list of filters
-	 */
-	filters = gtk_file_chooser_list_filters(GTK_FILE_CHOOSER(selector));
-	for (f = filters; f != NULL; f = f->next)
-		gtk_file_chooser_remove_filter(GTK_FILE_CHOOSER(selector), (GtkFileFilter *)f->data);
-	g_slist_free(filters);
-
-	/*
-	 * create new list of filters
+	 * create list of filters
 	 */
 	if (!empty(filter))
 	{
+#if 0
 		char **filterlist = g_strsplit(filter, "\n", 0);
 		int i, j;
 		char *displayname;
@@ -186,21 +149,28 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 			gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(selector), filefilter);
 		}
 		g_strfreev(filterlist);
+#endif
+		(void) filter_exe;
 	}
 	
+	g_signal_connect(G_OBJECT(selector), "response", G_CALLBACK(choose_file_response), NULL);
+	gtk_window_set_modal(GTK_WINDOW(selector), TRUE);
+
+	gtk_window_set_transient_for(GTK_WINDOW(selector), GTK_WINDOW(parent));
+	gtk_widget_show(GTK_WIDGET(selector));
 	resp = gtk_dialog_run(GTK_DIALOG(selector));
 	if (resp == GTK_RESPONSE_ACCEPT ||
 		resp == GTK_RESPONSE_OK ||
 		resp == GTK_RESPONSE_YES ||
 		resp == GTK_RESPONSE_APPLY)
 	{
-		const char *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(selector));
 		g_free(*name);
-		*name = g_strdup(path);
-		return TRUE;
+		*name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(selector));
+		res = TRUE;
 	}
+	gtk_widget_destroy(GTK_WIDGET(selector));
 		  	
-	return FALSE;
+	return res;
 }
 
 /******************************************************************************/
@@ -252,10 +222,10 @@ void SelectFileSave(DOCUMENT *doc)
 	{
 		int ret;
 
-		ret = open(filepath, O_RDONLY | O_BINARY);
+		ret = hyp_utf8_open(filepath, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 		if (ret >= 0)
 		{
-			close(ret);
+			hyp_utf8_close(ret);
 			if (ask_yesno(GTK_WINDOW(parent), _("This file exists already.\nDo you want to replace it?")))
 				ret = -1;
 		}

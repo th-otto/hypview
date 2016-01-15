@@ -194,6 +194,7 @@ void HistoryPopup(DOCUMENT *old_doc, int button, guint32 event_time)
 	if (g_object_is_floating(menu))
 		g_object_ref_sink(menu);
 	
+	i = 0;
 	while (entry)
 	{
 		if (entry->win == win)
