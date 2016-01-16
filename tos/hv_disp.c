@@ -10,6 +10,10 @@ struct fVDI_cookie {
 	void /* struct fVDI_log */ *log;
 };
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	DOCUMENT *doc = win->data;
@@ -48,13 +52,13 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		if (ty >= win->scroll.g_h || (ty + gfx->pixheight) <= 0)
 			return y;
 
-		/*  Quellrechteck   */
+		/* source rectangle */
 		xy[0] = 0;
 		xy[1] = 0;
 		xy[2] = gfx->pixwidth - 1;
 		xy[3] = gfx->pixheight - 1;
 
-		/*  Zielrechteck    */
+		/* destination rectangle */
 		xy[4] = (_WORD) (tx + win->scroll.g_x);
 		xy[5] = (_WORD) (ty + win->scroll.g_y);
 		xy[6] = xy[4] + xy[2];
@@ -95,6 +99,7 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	return y;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
@@ -113,7 +118,7 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	if (ty >= win->scroll.g_h || (ty + h) < 0)
 		return;
 
-	/*  Rechteck    */
+	/* rectangle */
 	xy[0] = (_WORD) (tx + win->scroll.g_x);
 	xy[1] = (_WORD) (ty + win->scroll.g_y);
 	xy[2] = xy[0] + w;
@@ -181,8 +186,9 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 #endif
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-static void DrawBox(WINDOW_DATA * win, struct hyp_gfx *gfx, long x, long y)
+static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	_WORD xy[4], w, h;
 	WP_UNIT tx, ty;
@@ -199,7 +205,7 @@ static void DrawBox(WINDOW_DATA * win, struct hyp_gfx *gfx, long x, long y)
 	if (ty >= win->scroll.g_h || (ty + h) <= 0)
 		return;
 
-	/* Rechteck */
+	/* rectangle */
 	xy[0] = (_WORD) (tx + win->scroll.g_x);
 	xy[1] = (_WORD) (ty + win->scroll.g_y);
 	xy[2] = xy[0] + w - 1;
@@ -227,6 +233,7 @@ static void DrawBox(WINDOW_DATA * win, struct hyp_gfx *gfx, long x, long y)
 	vsf_perimeter(vdi_handle, FALSE);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 {
@@ -238,14 +245,14 @@ static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 	return hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), entry->name, namelen, NULL);
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 static char *invalid_page(hyp_nodenr page)
 {
 	return g_strdup_printf(_("<invalid destination page %u>"), page);
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
 {
@@ -272,8 +279,7 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 	return sy;
 }
 
-
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 void HypDisplayPage(DOCUMENT *doc)
 {
@@ -287,7 +293,7 @@ void HypDisplayPage(DOCUMENT *doc)
 	unsigned char textattr;
 	char *str;
 	
-	if (node == NULL)					/*  Abbruch falls keine Seite geladen   */
+	if (node == NULL)					/* stop if no page loaded */
 		return;
 
 	end = node->end;
@@ -297,33 +303,29 @@ void HypDisplayPage(DOCUMENT *doc)
 	sx = -win->docsize.x * win->x_raster;
 	sy = -win->docsize.y * win->y_raster;
 
-	/*  Ab hier kommen die Text-Ausgaben    */
-
-	/*  Standard Text-Farbe */
+	/* standard text color */
 	vst_color(vdi_handle, gl_profile.viewer.text_color);
 	vst_effects(vdi_handle, 0);
 
-#define TEXTOUT(str, len) \
+#define TEXTOUT(str) \
 	{ \
 	_WORD ext[8], w; \
-	char *s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), str, len, NULL); \
-	vqt_extent(vdi_handle, s, ext); \
+	vqt_extent(vdi_handle, str, ext); \
 	w = (ext[2] + ext[4]) >> 1; \
 	if (x < win->scroll.g_w && (x + w) > 0 && sy < win->scroll.g_h && (sy + win->y_raster) > 0) \
-		v_gtext(vdi_handle, (_WORD) (x + win->scroll.g_x), (_WORD)(sy + win->scroll.g_y), s); \
+		v_gtext(vdi_handle, (_WORD) (x + win->scroll.g_x), (_WORD)(sy + win->scroll.g_y), str); \
 	x += w; \
-	g_free(s); \
 	}
 
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
+		/* draw remaining text */ \
+		char *s; \
 		len = (_UWORD)(src - textstart); \
-		/* noch fehlende Daten ausgeben */ \
-		if (len != 0) \
-		{ \
-			TEXTOUT(textstart, len); \
-		} \
+		s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL); \
+		TEXTOUT(s); \
+		g_free(s); \
 	}
 
 	src = node->start;
@@ -337,15 +339,15 @@ void HypDisplayPage(DOCUMENT *doc)
 	
 	while (src < end)
 	{
-		if (*src == HYP_ESC)		/*  ESC-Sequenz ??  */
+		if (*src == HYP_ESC)		/* ESC-sequence */
 		{
-			/* ungeschriebene Daten? */
+			/* unwritten data? */
 			DUMPTEXT();
 			src++;
 
 			switch (*src)
 			{
-			case HYP_ESC_ESC:		/*  ESC */
+			case HYP_ESC_ESC:		/* ESC */
 				textstart = src;
 				src++;
 				break;
@@ -368,7 +370,7 @@ void HypDisplayPage(DOCUMENT *doc)
 					vst_effects(vdi_handle, gl_profile.viewer.link_effect | textattr);
 
 					/* get link text for output */
-					if (*src <= HYP_STRLEN_OFFSET)	/*  Kein Text angegeben */
+					if (*src <= HYP_STRLEN_OFFSET)	/* no text in link: use nodename */
 					{
 						if (hypnode_valid(hyp, dest_page))
 						{
@@ -386,7 +388,7 @@ void HypDisplayPage(DOCUMENT *doc)
 						str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, len, NULL);
 						src += len;
 					}
-					TEXTOUT(str, len);
+					TEXTOUT(str);
 					g_free(str);
 
 					vst_color(vdi_handle, gl_profile.viewer.text_color);
@@ -470,4 +472,12 @@ void HypDisplayPage(DOCUMENT *doc)
 		vsf_interior(vdi_handle, FIS_SOLID);
 		vr_recfl(vdi_handle, pxy);
 	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void HypPrepNode(DOCUMENT *doc)
+{
+	/* nothing to do */
+	UNUSED(doc);
 }

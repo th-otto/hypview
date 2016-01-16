@@ -114,7 +114,6 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 	 */
 	if (!empty(filter))
 	{
-#if 0
 		char **filterlist = g_strsplit(filter, "\n", 0);
 		int i, j;
 		char *displayname;
@@ -149,8 +148,6 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 			gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(selector), filefilter);
 		}
 		g_strfreev(filterlist);
-#endif
-		(void) filter_exe;
 	}
 	
 	g_signal_connect(G_OBJECT(selector), "response", G_CALLBACK(choose_file_response), NULL);

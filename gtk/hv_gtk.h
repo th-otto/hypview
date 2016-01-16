@@ -68,8 +68,7 @@ struct _window_data_
 	char *m_geometry;
 	GtkWidget *hwnd;					/* GtkWindow */
 	GtkWidget *history_menu;			/* GtkMenu */
-	GtkWidget *main_hbox;				/* GtkHBox */
-	GtkWidget *main_vbox;				/* GtkVBox */
+	GtkTextBuffer *text_buffer;
 	GtkWidget *text_window;				/* GtkScrolledWindow */
 	GtkWidget *text_view;				/* GtkTextView */
 	GtkWidget *toolbar;					/* GtkToolbar */

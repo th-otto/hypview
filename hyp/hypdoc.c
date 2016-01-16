@@ -64,6 +64,7 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 	{
 		doc->displayed_node = node;
 	
+		doc->prepNode(doc);
 		/* update document with node data XXFIXME */
 		doc->lines = node->lines;
 		doc->height = node->height;
@@ -193,7 +194,8 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	doc->autolocProc = HypAutolocator;
 	doc->getCursorProc = HypGetCursorPosition;
 	doc->blockProc = HypBlockOperations;
-
+	doc->prepNode = HypPrepNode;
+	
 	doc->start_line = 0;
 	doc->lines = 0;
 	doc->height = 0;

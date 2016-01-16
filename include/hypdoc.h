@@ -34,6 +34,7 @@ typedef	void (*DOC_CLICKPROC)(DOCUMENT *doc, EVNTDATA *event);
 typedef	long (*DOC_AUTOLOCPROC)(DOCUMENT *doc, long line);
 typedef	void (*DOC_GETCURSORPROC)(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 typedef	gboolean (*DOC_BLOCKPROC)(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
+typedef	void (*DOC_PREPNODEPROC)(DOCUMENT *doc);
 
 typedef struct _hyp_nav_buttons
 {
@@ -87,6 +88,7 @@ struct _document_
 	DOC_GETCURSORPROC getCursorProc;/* Cursor position function */
 	BLOCK selection;            /* Content of  selection */
 	DOC_BLOCKPROC blockProc;    /* Block operation function */
+	DOC_PREPNODEPROC prepNode;
 };
 
 
@@ -126,6 +128,7 @@ void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp);
  *		Display.c
  */
 void HypDisplayPage(DOCUMENT *doc);
+void HypPrepNode(DOCUMENT *doc);
 
 /*
  *		Ascii.c

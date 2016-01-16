@@ -65,7 +65,6 @@ void hv_win_open(WINDOW_DATA *win)
 			gl_profile.viewer.win_h,
 			gl_profile.viewer.win_x,
 			gl_profile.viewer.win_y);
-
 	}
 	gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), win->m_geometry);
 		
@@ -562,6 +561,76 @@ static void register_stock_icons(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_name, const gchar *first_property_name, ...)
+{
+	GtkTextTag *tag;
+	va_list list;
+
+	tag = gtk_text_tag_new(tag_name);
+
+	gtk_text_tag_table_add(table, tag);
+
+	if (first_property_name)
+	{
+		va_start(list, first_property_name);
+		g_object_set_valist(G_OBJECT(tag), first_property_name, list);
+		va_end(list);
+	}
+
+	g_object_unref(tag);
+
+	return tag;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static GtkTextTagTable *create_tags(void)
+{
+	static GtkTextTagTable *_table;
+	GtkTextTagTable *table;
+	
+	if (_table)
+		return _table;
+	
+	table = gtk_text_tag_table_new();
+	
+	gtk_text_table_create_tag(table, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
+	gtk_text_table_create_tag(table, "light", "foreground", "#cccccc", NULL);
+	gtk_text_table_create_tag(table, "italic", "style", PANGO_STYLE_ITALIC, NULL);
+	gtk_text_table_create_tag(table, "underlined", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "outlined", NULL); /* TODO */
+	gtk_text_table_create_tag(table, "shadowed", NULL); /* TODO */
+
+	gtk_text_table_create_tag(table, "link", "foreground", "blue", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "popup", "foreground", "blue", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "xref", "foreground", "blue", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "system", "foreground", "red", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "rexx", "foreground", "red", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "quit", "foreground", "red", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+
+	gtk_text_table_create_tag(table, "white", "foreground", "white", NULL);
+	gtk_text_table_create_tag(table, "black", "foreground", "black", NULL);
+	gtk_text_table_create_tag(table, "red", "foreground", "red", NULL);
+	gtk_text_table_create_tag(table, "green", "foreground", "green", NULL);
+	gtk_text_table_create_tag(table, "blue", "foreground", "blue", NULL);
+	gtk_text_table_create_tag(table, "cyan", "foreground", "cyan", NULL);
+	gtk_text_table_create_tag(table, "yellow", "foreground", "yellow", NULL);
+	gtk_text_table_create_tag(table, "magenta", "foreground", "magenta", NULL);
+	gtk_text_table_create_tag(table, "light-gray", "foreground", "#cccccc", NULL);
+	gtk_text_table_create_tag(table, "dark-gray", "foreground", "#777777", NULL);
+	gtk_text_table_create_tag(table, "dark-red", "foreground", "#770000", NULL);
+	gtk_text_table_create_tag(table, "dark-green", "foreground", "#007700", NULL);
+	gtk_text_table_create_tag(table, "dark-blue", "foreground", "#000077", NULL);
+	gtk_text_table_create_tag(table, "dark-cyan", "foreground", "#007777", NULL);
+	gtk_text_table_create_tag(table, "dark-yellow", "foreground", "#aa9933", NULL);
+	gtk_text_table_create_tag(table, "dark-magenta", "foreground", "#770077", NULL);
+	
+	_table = table;
+	return table;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static GtkActionEntry const action_entries[] = {
 	/*
 	 * menu titles
@@ -677,6 +746,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	GtkWidget *tool_box;
 	GtkUIManager *ui_manager;
 	GError *error = NULL;
+	GtkTextTagTable *tagtable;
 	
 	win = g_new0(WINDOW_DATA, 1);
 	if (win == NULL)
@@ -698,90 +768,98 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_window_set_role(GTK_WINDOW(win->hwnd), "hypview");
 	}
 
-	win->action_group = gtk_action_group_new("AppWindowActions");
-	gtk_action_group_add_actions(win->action_group, action_entries, G_N_ELEMENTS(action_entries), win);
-	
-	ui_manager = gtk_ui_manager_new();
-	g_object_set_data_full(G_OBJECT(win->hwnd), "ui-manager", ui_manager, g_object_unref);
-	
-	gtk_ui_manager_insert_action_group(ui_manager, win->action_group, 0);
-	gtk_window_add_accel_group(GTK_WINDOW(win->hwnd), gtk_ui_manager_get_accel_group(ui_manager));
-	
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(win->hwnd), vbox);
  	
-	if (!gtk_ui_manager_add_ui_from_string(ui_manager, ui_info, -1, &error))
-	{
-		g_message("building menus failed: %s", error->message);
-		g_error_free(error);
-	}
-
-	menubar = gtk_ui_manager_get_widget(ui_manager, "/MenuBar");
-	gtk_widget_show(menubar);
-	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
-
-	win->history_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/RecentMenu");
-	win->history_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->history_menu));
+ 	if (!popup)
+ 	{
+		win->action_group = gtk_action_group_new("AppWindowActions");
+		gtk_action_group_add_actions(win->action_group, action_entries, G_N_ELEMENTS(action_entries), win);
+		
+		ui_manager = gtk_ui_manager_new();
+		g_object_set_data_full(G_OBJECT(win->hwnd), "ui-manager", ui_manager, g_object_unref);
+		
+		gtk_ui_manager_insert_action_group(ui_manager, win->action_group, 0);
+		gtk_window_add_accel_group(GTK_WINDOW(win->hwnd), gtk_ui_manager_get_accel_group(ui_manager));
+		
+		if (!gtk_ui_manager_add_ui_from_string(ui_manager, ui_info, -1, &error))
+		{
+			g_message("building menus failed: %s", error->message);
+			g_error_free(error);
+		}
 	
-	tool_box = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), tool_box, FALSE, FALSE, 0);
-	gtk_widget_show(tool_box);
-	win->toolbar = gtk_ui_manager_get_widget(ui_manager, "/ToolBar");
-	win->toolbar = gtk_toolbar_new();
-	gtk_box_pack_start(GTK_BOX(tool_box), win->toolbar, FALSE, FALSE, 0);
+		menubar = gtk_ui_manager_get_widget(ui_manager, "/MenuBar");
+		gtk_widget_show(menubar);
+		gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
+	
+		win->history_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/RecentMenu");
+		win->history_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->history_menu));
+		
+		tool_box = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), tool_box, FALSE, FALSE, 0);
+		gtk_widget_show(tool_box);
+		win->toolbar = gtk_ui_manager_get_widget(ui_manager, "/ToolBar");
+		win->toolbar = gtk_toolbar_new();
+		gtk_box_pack_start(GTK_BOX(tool_box), win->toolbar, FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3, 0, 0)
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(win->toolbar), GTK_ORIENTATION_HORIZONTAL);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(win->toolbar), GTK_ORIENTATION_HORIZONTAL);
 #else
-	gtk_toolbar_set_orientation(GTK_TOOLBAR(win->toolbar), GTK_ORIENTATION_HORIZONTAL);
+		gtk_toolbar_set_orientation(GTK_TOOLBAR(win->toolbar), GTK_ORIENTATION_HORIZONTAL);
 #endif
-	gtk_toolbar_set_style(GTK_TOOLBAR(win->toolbar), GTK_TOOLBAR_ICONS);
-	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(win->toolbar), FALSE);
-	gtk_toolbar_set_icon_size(GTK_TOOLBAR(win->toolbar), GTK_ICON_SIZE_BUTTON);
+		gtk_toolbar_set_style(GTK_TOOLBAR(win->toolbar), GTK_TOOLBAR_ICONS);
+		gtk_toolbar_set_show_arrow(GTK_TOOLBAR(win->toolbar), FALSE);
+		gtk_toolbar_set_icon_size(GTK_TOOLBAR(win->toolbar), GTK_ICON_SIZE_BUTTON);
+		
+		{
+		AppendButton(win, TO_BACK);
+		AppendButton(win, TO_HISTORY);
+		AppendButton(win, TO_MEMORY);
+		AppendButton(win, TO_PREV);
+		AppendButton(win, TO_HOME);
+		AppendButton(win, TO_NEXT);
+		AppendButton(win, TO_INDEX);
+		AppendButton(win, TO_KATALOG);
+		AppendButton(win, TO_REFERENCES);
+		AppendButton(win, TO_HELP);
+		AppendButton(win, TO_INFO);
+		AppendButton(win, TO_LOAD);
+		AppendButton(win, TO_SAVE);
+		}
 	
-	{
-	AppendButton(win, TO_BACK);
-	AppendButton(win, TO_HISTORY);
-	AppendButton(win, TO_MEMORY);
-	AppendButton(win, TO_PREV);
-	AppendButton(win, TO_HOME);
-	AppendButton(win, TO_NEXT);
-	AppendButton(win, TO_INDEX);
-	AppendButton(win, TO_KATALOG);
-	AppendButton(win, TO_REFERENCES);
-	AppendButton(win, TO_HELP);
-	AppendButton(win, TO_INFO);
-	AppendButton(win, TO_LOAD);
-	AppendButton(win, TO_SAVE);
+		gtk_widget_show_all(win->toolbar);
+		
+		win->searchbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), win->searchbox, TRUE, TRUE, 0);
+		win->searchentry = gtk_entry_new();
+		gtk_box_pack_start(GTK_BOX(win->searchbox), win->searchentry, TRUE, TRUE, 0);
+		win->strnotfound = gtk_label_new(NULL);
+		gtk_label_set_markup(GTK_LABEL(win->strnotfound), _("<span color=\"red\">not found!</span>"));
+		gtk_box_pack_end(GTK_BOX(win->searchbox), win->strnotfound, FALSE, FALSE, 0);
 	}
-
-	gtk_widget_show_all(win->toolbar);
-	
-	win->searchbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), win->searchbox, TRUE, TRUE, 0);
-	win->searchentry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(win->searchbox), win->searchentry, TRUE, TRUE, 0);
-	win->strnotfound = gtk_label_new(NULL);
-	gtk_label_set_markup(GTK_LABEL(win->strnotfound), _("<span color=\"red\">not found!</span>"));
-	gtk_box_pack_end(GTK_BOX(win->searchbox), win->strnotfound, FALSE, FALSE, 0);
-	
+			
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
-	vbox2 = win->main_vbox = gtk_vbox_new(TRUE, 0);
+	vbox2 = gtk_vbox_new(TRUE, 0);
 	gtk_widget_show(vbox2);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
 
-	hbox2 = win->main_hbox = gtk_hbox_new(TRUE, 0);
+	hbox2 = gtk_hbox_new(TRUE, 0);
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, TRUE, TRUE, 0);
 
+	tagtable = create_tags();
+	win->text_buffer = gtk_text_buffer_new(tagtable);
+	g_object_unref(tagtable);
+	
 	win->text_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(win->text_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(win->text_window), GTK_SHADOW_IN);
 	gtk_widget_show(win->text_window);
-	win->text_view = gtk_text_view_new();
+	win->text_view = gtk_text_view_new_with_buffer(win->text_buffer);
+	g_object_unref(win->text_buffer);
 	gtk_widget_set_can_default(win->text_view, TRUE);
 	gtk_widget_set_receives_default(win->text_view, TRUE);
 	gtk_widget_show(win->text_view);
@@ -790,17 +868,20 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(win->text_view), GTK_WRAP_NONE); 
 	gtk_widget_set_can_focus(win->text_view, FALSE);
 	gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
-	
-	g_signal_connect(G_OBJECT(win->hwnd), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) win);
+
 	g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
 	
 	all_list = g_slist_prepend(all_list, win);
-	
+
 	if (!popup)
+	{
+		g_signal_connect(G_OBJECT(win->hwnd), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) win);
+
 		doc->window = win;
 	
-	ToolbarUpdate(doc, FALSE);
-
+		ToolbarUpdate(doc, FALSE);
+	}
+	
 	return win;
 }
 

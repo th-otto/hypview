@@ -38,7 +38,7 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 
 
 /*
- * open a file in a new windows
+ * open a file in a new window
  */
 WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, _BOOL find_default)
 {
@@ -60,11 +60,14 @@ WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr
 		doc = HypOpenFile(real_path, FALSE);
 		if (doc != NULL)
 		{
+			win = hv_win_new(doc, FALSE);
 			if (doc->gotoNodeProc(doc, chapter, node) ||
 				(find_default && doc->gotoNodeProc(doc, NULL, HYP_NOINDEX)))
 			{
-				/*  neues Fenster anlegen?  */
-				win = hv_win_new(doc, FALSE);
+			} else
+			{
+				gtk_widget_destroy(win->hwnd);
+				win = NULL;
 			}
 			if (win == NULL)
 				HypCloseFile(doc);
@@ -172,6 +175,8 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 			}
 		}
 
+		if (!win)
+			win = hv_win_new(doc, FALSE);
 		if (doc->gotoNodeProc(doc, chapter, HYP_NOINDEX))
 		{
 			/* no window already? */
