@@ -25,6 +25,7 @@ hypview_SOURCES = \
 	hv_eref.c \
 	hv_error.c \
 	hv_file.c \
+	hv_font.c \
 	hv_fsel.c \
 	hv_gfx.c \
 	hv_globl.c \

@@ -61,6 +61,7 @@ typedef struct {
 		gboolean arrowpatch;        /* work around a AES bug of old TOS versions */
 		gboolean adjust_winsize;    /* automatically adjust window size */
 		gboolean transparent_pics;  /* display pictures transparent */
+		gboolean scale_bitmaps;
 		gboolean check_time;        /* watch modification times of files */
 		short va_start_newwin;      /* AV_START opens a new window */
 		gboolean intelligent_fuller; /* INTELLIGENT_FULLER                              INTELLIGENT_FULLER */

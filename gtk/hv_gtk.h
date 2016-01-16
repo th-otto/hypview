@@ -120,8 +120,17 @@ _WORD GetNumPlanes(void);
 /*
  * hv_init.c
  */
+extern const char *sel_font_name;
+
 void hv_init(void);
 void hv_exit(void);
+
+
+/*
+ * hv_font.c
+ */
+void SwitchFont(DOCUMENT *doc);
+void SelectFont(DOCUMENT *doc);
 
 
 /*

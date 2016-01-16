@@ -2305,6 +2305,8 @@ void HypProfile_Load(void)
 		setdefault("HypView.QUIT_COLOR", gl_profile.viewer.quit_color = G_RED);
 	if (!Profile_ReadBool(profile, "HypView", "TRANSPARENT_PICS", &gl_profile.viewer.transparent_pics))
 		setdefault("HypView.TRANSPARENT_PICS", gl_profile.viewer.transparent_pics = TRUE);
+	if (!Profile_ReadBool(profile, "HypView", "SCALE_BITMAPS", &gl_profile.viewer.scale_bitmaps))
+		setdefault("HypView.SCALE_BITMAPS", gl_profile.viewer.scale_bitmaps = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "EXPAND_SPACES", &gl_profile.viewer.expand_spaces))
 		setdefault("HypView.EXPAND_SPACES", gl_profile.viewer.expand_spaces = TRUE);
 	if (!Profile_ReadInt(profile, "HypView", "BIN_COLUMNS", &gl_profile.viewer.binary_columns))
@@ -2488,6 +2490,7 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteInt(profile, "HypView", "REXX_COLOR", gl_profile.viewer.rexx_color);
 	Profile_WriteInt(profile, "HypView", "QUIT_COLOR", gl_profile.viewer.quit_color);
 	Profile_WriteBool(profile, "HypView", "TRANSPARENT_PICS", gl_profile.viewer.transparent_pics);
+	Profile_WriteBool(profile, "HypView", "SCALE_BITMAPS", gl_profile.viewer.scale_bitmaps);
 	Profile_WriteBool(profile, "HypView", "EXPAND_SPACES", gl_profile.viewer.expand_spaces);
 	Profile_WriteInt(profile, "HypView", "BIN_COLUMNS", gl_profile.viewer.binary_columns);
 	Profile_WriteInt(profile, "HypView", "TABSIZE", gl_profile.viewer.ascii_tab_size);

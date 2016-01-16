@@ -23,6 +23,10 @@
 
 #include "hv_defs.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 static void ApplyFont(void)
 {
 	WINDOW_DATA *win;
@@ -37,7 +41,7 @@ static void ApplyFont(void)
 		font_cw = font_w;
 	}
 
-	/*  Alle geoeffneten Fenster und Dokumente anpassen */
+	/* adjust all open documents and windows */
 	win = (WINDOW_DATA *) all_list;
 
 	while (win)
@@ -47,20 +51,21 @@ static void ApplyFont(void)
 			gboolean ret;
 			
 			doc = win->data;
-			/*  Seite/Datei neuladen    */
+			/* reload page or file */
 			graf_mouse(BUSY_BEE, NULL);
 
 			if (doc->type == HYP_FT_HYP)
 			{
 				hyp_nodenr node = doc->getNodeProc(doc);
 
-				/*  Nodes aus dem Cache entfernen   */
+				/* remove all nodes from cache */
 				RemoveNodes(doc->data);
 
-				/*  Seite neu laden */
+				/* reload page */
 				ret = doc->gotoNodeProc(doc, NULL, node);
 			} else
 			{
+				/* reload file */
 				ret = doc->gotoNodeProc(doc, NULL, doc->getNodeProc(doc));
 			}
 			
@@ -68,10 +73,10 @@ static void ApplyFont(void)
 			{
 				doc->start_line = win->docsize.y;
 
-				/*  Fuller-Status "vergessen"   */
+				/* forget about "fulled" state */
 				win->status &= ~WIS_FULL;
 
-				/*  Fenster neu initialisieren  */
+				/* re-init window*/
 				ReInitWindow(doc);
 			}
 			graf_mouse(ARROW, NULL);
@@ -80,6 +85,7 @@ static void ApplyFont(void)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static short FontSelected(FONTSEL_DATA *ptr)
 {
@@ -97,6 +103,7 @@ static short FontSelected(FONTSEL_DATA *ptr)
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SelectFont(DOCUMENT *doc)
 {
@@ -115,6 +122,7 @@ void SelectFont(DOCUMENT *doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean ProportionalFont(_WORD *width)
 {
@@ -145,6 +153,7 @@ gboolean ProportionalFont(_WORD *width)
 	return isProp;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SwitchFont(DOCUMENT *doc)
 {

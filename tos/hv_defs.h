@@ -103,7 +103,7 @@ void RemoveSelection(DOCUMENT *doc);
 void DrawSelection(DOCUMENT *doc);
 
 
-/*	
+/*
  * hv_font.c
  */
 gboolean ProportionalFont(_WORD *width);

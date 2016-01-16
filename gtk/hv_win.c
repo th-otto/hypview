@@ -215,7 +215,7 @@ static void on_switch_font(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NYI: on_switch_font\n");
+	SwitchFont(win->data);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -223,7 +223,9 @@ static void on_switch_font(GtkWidget *widget, WINDOW_DATA *win)
 static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
-	UNUSED(win);
+	gl_profile.viewer.expand_spaces = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "expandspaces")));
+	if (win->text_window)
+		ReInitWindow(win->data);
 	printf("NYI: on_expand_spaces\n");
 }
 
@@ -704,8 +706,12 @@ static GtkTextTagTable *create_tags(void)
 
 static void set_font_attributes(WINDOW_DATA *win)
 {
+	PangoFontDescription *font = pango_font_description_from_string(sel_font_name);
+	 
 	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
 	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
+	gtk_widget_modify_font(win->text_view, font);
+	pango_font_description_free(font);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -758,7 +764,7 @@ static GtkActionEntry const action_entries[] = {
 
 static GtkToggleActionEntry const toggle_action_entries[] = {
 	{ "altfont",            NULL,                    N_("_Alternative font"),               "<Ctrl><Shift>Z", NULL,                                             G_CALLBACK(on_switch_font), FALSE },
-	{ "expandspaces",       NULL,                    N_("_Expand multiple spaces"),         "<Ctrl>L",     NULL,                                                G_CALLBACK(on_expand_spaces), TRUE },
+	{ "expandspaces",       NULL,                    N_("_Expand multiple spaces"),         "<Ctrl>L",     NULL,                                                G_CALLBACK(on_expand_spaces), FALSE },
 	{ "scalebitmaps",       NULL,                    N_("_Scale bitmaps"),                  "<Ctrl>B",     NULL,                                                G_CALLBACK(on_scale_bitmaps), FALSE },
 };
 
@@ -886,6 +892,10 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		/* g_signal_connect(G_OBJECT(recent_action), "activate", G_CALLBACK(on_recent), win); */
 		
 		gtk_action_group_add_action(win->action_group, recent_action);
+		
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), sel_font_name != gl_profile.viewer.font_name);
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "expandspaces")), gl_profile.viewer.expand_spaces);
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "scalebitmaps")), gl_profile.viewer.scale_bitmaps);
 		
 		ui_manager = gtk_ui_manager_new();
 		g_object_set_data_full(G_OBJECT(win->hwnd), "ui-manager", ui_manager, g_object_unref);
