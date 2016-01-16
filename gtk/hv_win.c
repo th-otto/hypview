@@ -161,6 +161,69 @@ static void on_select_source(GtkWidget *widget, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void on_font_select(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_font_select\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_color_select(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_color_select\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_output_settings(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_output_settings\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_switch_font(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_switch_font\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_expand_spaces\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_scale_bitmaps(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_scale_bitmaps\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_preferences(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(win);
+	printf("NY: on_preferences\n");
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void on_help_contents(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
@@ -245,7 +308,7 @@ static void on_bookmarks(GtkWidget *widget, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 	UNUSED(widget);
-	ToolbarClick(doc, TO_MEMORY, 0, 0);
+	ToolbarClick(doc, TO_MEMORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -586,11 +649,7 @@ static GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar
 
 static GtkTextTagTable *create_tags(void)
 {
-	static GtkTextTagTable *_table;
 	GtkTextTagTable *table;
-	
-	if (_table)
-		return _table;
 	
 	table = gtk_text_tag_table_new();
 	
@@ -625,7 +684,6 @@ static GtkTextTagTable *create_tags(void)
 	gtk_text_table_create_tag(table, "dark-yellow", "foreground", "#aa9933", NULL);
 	gtk_text_table_create_tag(table, "dark-magenta", "foreground", "#770077", NULL);
 	
-	_table = table;
 	return table;
 }
 
@@ -648,7 +706,6 @@ static GtkActionEntry const action_entries[] = {
 	 */
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_select_source) },
-	{ "recent",             NULL,                    NULL,                                  NULL,          NULL,                                                G_CALLBACK(on_select_source) },
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
 	{ "quit",               "gtk-quit",              N_("_Quit"),                           "<Ctrl>Q",     NULL,                                                G_CALLBACK(on_quit) },
 
@@ -668,9 +725,20 @@ static GtkActionEntry const action_entries[] = {
 	{ "xref",               "hv-xref",               N_("References"),                      NULL,          N_("Show list of cross references"),                 G_CALLBACK(on_xref) },
 	{ "help",               "hv-help",               N_("Show help page"),                  NULL,          N_("Show help page"),                                G_CALLBACK(on_help) },
 
+	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Ctrl>Z",     NULL,                                                G_CALLBACK(on_font_select) },
+	{ "selectcolors",       NULL,                    N_("_Colors..."),                      NULL,          NULL,                                                G_CALLBACK(on_color_select) },
+	{ "outputconfig",       NULL,                    N_("_Output..."),                      NULL,          NULL,                                                G_CALLBACK(on_output_settings) },
+	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    NULL,          NULL,                                                G_CALLBACK(on_preferences) },
+
 	{ "helpcontents",       "gtk-info",              N_("_Contents"),                       NULL,          NULL,                                                G_CALLBACK(on_help_contents) },
 	{ "helpindex",          "gtk-index",             N_("_Index"),                          NULL,          NULL,                                                G_CALLBACK(on_help_index) },
 	{ "about",              "gtk-about",             N_("_About"),                          NULL,          NULL,                                                G_CALLBACK(on_about) },
+};
+
+static GtkToggleActionEntry const toggle_action_entries[] = {
+	{ "altfont",            NULL,                    N_("_Alternative font"),               "<Ctrl><Shift>Z", NULL,                                             G_CALLBACK(on_switch_font), FALSE },
+	{ "expandspaces",       NULL,                    N_("_Expand multiple spaces"),         "<Ctrl>L",     NULL,                                                G_CALLBACK(on_expand_spaces), TRUE },
+	{ "scalebitmaps",       NULL,                    N_("_Scale bitmaps"),                  "<Ctrl>B",     NULL,                                                G_CALLBACK(on_scale_bitmaps), FALSE },
 };
 
 static char const ui_info[] =
@@ -681,9 +749,7 @@ static char const ui_info[] =
 "      <separator/>"
 "      <menuitem action='save'/>"
 "      <separator/>"
-"      <menu action='RecentMenu'>"
-"        <menuitem action='recent' />"
-"      </menu>"
+"      <menuitem action='recent' />"
 "      <separator/>"
 "      <menuitem action='info'/>"
 "      <separator/>"
@@ -705,6 +771,19 @@ static char const ui_info[] =
 "      <separator/>"
 "      <menuitem action='back'/>"
 "      <menuitem action='clearstack'/>"
+"    </menu>"
+"    <menu action='OptionsMenu'>"
+"      <menuitem action='selectfont'/>"
+"      <menuitem action='selectcolors'/>"
+"      <separator/>"
+"      <menuitem action='outputconfig'/>"
+"      <menuitem action='outputconfig'/>"
+"      <separator/>"
+"      <menuitem action='altfont'/>"
+"      <menuitem action='expandspaces'/>"
+"      <menuitem action='scalebitmaps'/>"
+"      <separator/>"
+"      <menuitem action='preferences'/>"
 "    </menu>"
 "    <menu action='HelpMenu'>"
 "      <menuitem action='helpcontents'/>"
@@ -774,8 +853,18 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
  	
  	if (!popup)
  	{
+ 		GtkAction *recent_action;
+ 		static GtkRecentManager *recent_manager;
+ 		
 		win->action_group = gtk_action_group_new("AppWindowActions");
 		gtk_action_group_add_actions(win->action_group, action_entries, G_N_ELEMENTS(action_entries), win);
+		gtk_action_group_add_toggle_actions(win->action_group, toggle_action_entries, G_N_ELEMENTS(toggle_action_entries), win);
+		if (!recent_manager)
+			recent_manager = gtk_recent_manager_new();
+		recent_action = gtk_recent_action_new_for_manager("recent", _("Open _Recent"), NULL, NULL, recent_manager);
+		/* g_signal_connect(G_OBJECT(recent_action), "activate", G_CALLBACK(on_recent), win); */
+		
+		gtk_action_group_add_action(win->action_group, recent_action);
 		
 		ui_manager = gtk_ui_manager_new();
 		g_object_set_data_full(G_OBJECT(win->hwnd), "ui-manager", ui_manager, g_object_unref);
@@ -793,7 +882,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		gtk_widget_show(menubar);
 		gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
 	
-		win->history_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/RecentMenu");
+		win->history_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/recent");
 		win->history_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->history_menu));
 		
 		tool_box = gtk_hbox_new(FALSE, 0);
