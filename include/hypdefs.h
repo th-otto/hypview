@@ -11,6 +11,9 @@
 #if (defined(atarist) || defined(__atarist)) && !defined(__TOS__)
 #  define __TOS__
 #endif
+#if defined(__TOS__) && !defined(WITH_GUI_GEM)
+#  define WITH_GUI_GEM 1
+#endif
 #if defined(__TOS__) && !defined(HAVE_CONFIG_H)
 # define HAVE_UNISTD_H 1
 # define HAVE_GETUID 1

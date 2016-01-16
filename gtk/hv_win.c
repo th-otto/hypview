@@ -44,6 +44,29 @@ static const char *const tb_action_names[TO_MAX] = {
 	[TO_SAVE] = "save",
 };
 
+/*
+ * colornames used for tags; the actual color is configurable
+ */
+static const char *const colornames[16] = {
+	"white",
+	"black",
+	"red",
+	"green",
+	"blue",
+	"cyan",
+	"yellow",
+	"magenta",
+	"light-gray",
+	"dark-gray",
+	"dark-red",
+	"dark-green",
+	"dark-blue",
+	"dark-cyan",
+	"dark-yellow",
+	"dark-magenta"
+};
+static GdkColor gdk_colors[16];
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -165,7 +188,7 @@ static void on_font_select(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_font_select\n");
+	printf("NYI: on_font_select\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -174,7 +197,7 @@ static void on_color_select(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_color_select\n");
+	printf("NYI: on_color_select\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -183,7 +206,7 @@ static void on_output_settings(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_output_settings\n");
+	printf("NYI: on_output_settings\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -192,7 +215,7 @@ static void on_switch_font(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_switch_font\n");
+	printf("NYI: on_switch_font\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -201,7 +224,7 @@ static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_expand_spaces\n");
+	printf("NYI: on_expand_spaces\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -210,7 +233,7 @@ static void on_scale_bitmaps(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_scale_bitmaps\n");
+	printf("NYI: on_scale_bitmaps\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -219,7 +242,7 @@ static void on_preferences(GtkWidget *widget, WINDOW_DATA *win)
 {
 	UNUSED(widget);
 	UNUSED(win);
-	printf("NY: on_preferences\n");
+	printf("NYI: on_preferences\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -650,6 +673,7 @@ static GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar
 static GtkTextTagTable *create_tags(void)
 {
 	GtkTextTagTable *table;
+	int i;
 	
 	table = gtk_text_tag_table_new();
 	
@@ -660,31 +684,28 @@ static GtkTextTagTable *create_tags(void)
 	gtk_text_table_create_tag(table, "outlined", NULL); /* TODO */
 	gtk_text_table_create_tag(table, "shadowed", NULL); /* TODO */
 
-	gtk_text_table_create_tag(table, "link", "foreground", "blue", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "popup", "foreground", "blue", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "xref", "foreground", "blue", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "system", "foreground", "red", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "rexx", "foreground", "red", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "quit", "foreground", "red", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "link", "foreground", gl_profile.viewer.color[gl_profile.viewer.link_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "popup", "foreground", gl_profile.viewer.color[gl_profile.viewer.popup_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "xref", "foreground", gl_profile.viewer.color[gl_profile.viewer.xref_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "system", "foreground", gl_profile.viewer.color[gl_profile.viewer.system_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "rexx", "foreground", gl_profile.viewer.color[gl_profile.viewer.rexx_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "quit", "foreground", gl_profile.viewer.color[gl_profile.viewer.quit_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
 
-	gtk_text_table_create_tag(table, "white", "foreground", "white", NULL);
-	gtk_text_table_create_tag(table, "black", "foreground", "black", NULL);
-	gtk_text_table_create_tag(table, "red", "foreground", "red", NULL);
-	gtk_text_table_create_tag(table, "green", "foreground", "green", NULL);
-	gtk_text_table_create_tag(table, "blue", "foreground", "blue", NULL);
-	gtk_text_table_create_tag(table, "cyan", "foreground", "cyan", NULL);
-	gtk_text_table_create_tag(table, "yellow", "foreground", "yellow", NULL);
-	gtk_text_table_create_tag(table, "magenta", "foreground", "magenta", NULL);
-	gtk_text_table_create_tag(table, "light-gray", "foreground", "#cccccc", NULL);
-	gtk_text_table_create_tag(table, "dark-gray", "foreground", "#777777", NULL);
-	gtk_text_table_create_tag(table, "dark-red", "foreground", "#770000", NULL);
-	gtk_text_table_create_tag(table, "dark-green", "foreground", "#007700", NULL);
-	gtk_text_table_create_tag(table, "dark-blue", "foreground", "#000077", NULL);
-	gtk_text_table_create_tag(table, "dark-cyan", "foreground", "#007777", NULL);
-	gtk_text_table_create_tag(table, "dark-yellow", "foreground", "#aa9933", NULL);
-	gtk_text_table_create_tag(table, "dark-magenta", "foreground", "#770077", NULL);
+	for (i = 0; i < 16; i++)
+	{
+		gdk_color_parse(gl_profile.viewer.color[i], &gdk_colors[i]);
+		gtk_text_table_create_tag(table, colornames[i], "foreground", gl_profile.viewer.color[i], NULL);
+	}
 	
 	return table;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void set_font_attributes(WINDOW_DATA *win)
+{
+	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
+	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -959,6 +980,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
+	set_font_attributes(win);
 	
 	all_list = g_slist_prepend(all_list, win);
 
@@ -1001,7 +1023,8 @@ void ReInitWindow(DOCUMENT *doc)
 	win->y_raster = font_ch;
 	hv_set_title(win, win->title);
 	doc->selection.valid = FALSE;
-
+	set_font_attributes(win);
+	
 	/*  Fenstergroesse: mindestens 5 Kolonnen und eine Zeile    */
 	/* ResizeWindow(win, max(doc->columns, 5), max(doc->lines, 1)); */
 

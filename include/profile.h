@@ -31,16 +31,29 @@ typedef struct {
 		char *last_file;
 		char *printer;              /* external print application */
 		short text_color;           /* Displays text in the specified color */
-		short link_color;           /* Displays references in the specified color */
 		short link_effect;          /* Text Effect for references */
+		short link_color;           /* Displays references in the specified color */
+		short xref_color;           /* Displays external references in the specified color */
+		short popup_color;          /* Displays references to popups in the specified color */
+		short system_color;         /* Displays references to {@ system } in the specified color */
+		short rexx_color;           /* Displays references to {@ rx } in the specified color */
+		short quit_color;           /* Displays references to {@ quit } in the specified color */
 		short background_color;     /* window background color */
+#ifdef WITH_GUI_GEM
 		short font_id;              /* GDOS font ID */
 		short font_pt;              /* Size of font, in points */
 		short xfont_id;             /* Alternate font ID */
 		short xfont_pt;             /* Alternate font size */
+#endif
+#if defined(WITH_GUI_GTK) || defined(WITH_GUI_WIN32)
+		char *font_name;
+		char *xfont_name;
+		char *color[16];			/* actual color values for the first 16 GEM colors (any format understood by gdk_color_parse()) */
+#endif
 		short win_x, win_y, win_w, win_h; /* initial window position */
 		short text_offset;          /* vertical separation in pixels of the window contents */
 		short binary_columns;       /* # of calumns to show for binary data */
+		gboolean expand_spaces;		/* wether to expand multiple spaces when using proportional font */
 		short ascii_tab_size;       /* The number of spaces a tab will be expanded to */
 		short ascii_break_len;      /* break lines in ASCII files after this many chars */
 		gboolean rightback;         /* if set, right mouse button means "BACK" */
@@ -167,5 +180,6 @@ char *path_subst(const char *path);
 void HypProfile_Load(void);
 gboolean HypProfile_Save(gboolean report_error);
 void HypProfile_Delete(void);
+void Profile_ValidateColors(_WORD display_colors);
 
 #endif

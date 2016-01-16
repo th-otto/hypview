@@ -236,13 +236,8 @@ int main(int argc, char **argv)
 		if (!init_gtk())
 			return EXIT_FAILURE;
 
-		if (GetNumColors() < 16 || gl_profile.viewer.background_color >= 16)
-			gl_profile.viewer.background_color = G_WHITE;
-		if (GetNumColors() < 16 || gl_profile.viewer.text_color >= 16)
-			gl_profile.viewer.text_color = G_BLACK;
-		if (gl_profile.viewer.background_color == gl_profile.viewer.text_color)
-			gl_profile.viewer.background_color = gl_profile.viewer.text_color ^ 1;
-
+		Profile_ValidateColors(GetNumColors());
+		
 		GDK_THREADS_ENTER();
 		threads_entered = TRUE;
 		

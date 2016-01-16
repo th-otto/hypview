@@ -36,12 +36,7 @@ static void LoadConfig(void)
 	Profile_Delete(gl_profile.profile);
 	gl_profile.profile = NULL;
 	
-	if (GetNumColors() < 16 || gl_profile.viewer.background_color >= 16)
-		gl_profile.viewer.background_color = G_WHITE;
-	if (GetNumColors() < 16 || gl_profile.viewer.text_color >= 16)
-		gl_profile.viewer.text_color = G_BLACK;
-	if (gl_profile.viewer.background_color == gl_profile.viewer.text_color)
-		gl_profile.viewer.background_color = gl_profile.viewer.text_color ^ 1;
+	Profile_ValidateColors(GetNumColors());
 }
 
 /*** ---------------------------------------------------------------------- ***/
