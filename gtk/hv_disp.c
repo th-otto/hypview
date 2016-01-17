@@ -145,6 +145,7 @@ struct prep_info {
 	int tab_array_size;
 	GtkTextMark *linestart;
 	GtkTextMark *tagstart;
+	GtkTextMark *attrstart;
 	GtkTextBuffer *text_buffer;
 	GtkTextTagTable *tag_table;
 	int last_was_space;
@@ -152,6 +153,7 @@ struct prep_info {
 	WP_UNIT x;
 	WP_UNIT x_raster;
 	GtkTextIter iter;
+	unsigned char textattr;
 };
 
 static void insert_str(struct prep_info *info, const char *str, const char *tag)
@@ -183,7 +185,7 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 			next = g_utf8_skipchar(scan);
 			if (info->last_was_space)
 			{
-				if (*scan != ' ')
+				if (*scan != ' ' || *scan == '\t')
 				{
 					if (info->last_was_space > 1)
 					{
@@ -203,7 +205,7 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 				{
 					info->last_was_space++;
 				}
-			} else if (*scan == ' ')
+			} else if (*scan == ' ' || *scan == '\t')
 			{
 				info->last_was_space++;
 			} else
@@ -227,6 +229,26 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 		tagend_iter = info->iter;
 		gtk_text_buffer_apply_tag_by_name(info->text_buffer, tag, &tagstart_iter, &tagend_iter);
 	}
+	
+	if (info->textattr)
+	{
+		GtkTextIter tagstart_iter, tagend_iter;
+		
+		gtk_text_buffer_get_iter_at_mark(info->text_buffer, &tagstart_iter, info->attrstart);
+		tagend_iter = info->iter;
+		if (info->textattr & HYP_TXT_BOLD)
+			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bold", &tagstart_iter, &tagend_iter);
+		if (info->textattr & HYP_TXT_LIGHT)
+			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "ghosted", &tagstart_iter, &tagend_iter);
+		if (info->textattr & HYP_TXT_ITALIC)
+			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "italic", &tagstart_iter, &tagend_iter);
+		if (info->textattr & HYP_TXT_UNDERLINED)
+			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "underlined", &tagstart_iter, &tagend_iter);
+		if (info->textattr & HYP_TXT_SHADOWED)
+			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "shadowed", &tagstart_iter, &tagend_iter);
+		if (info->textattr & HYP_TXT_OUTLINED)
+			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "outlined", &tagstart_iter, &tagend_iter);
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -238,7 +260,6 @@ void HypPrepNode(DOCUMENT *doc)
 	HYP_DOCUMENT *hyp = doc->data;
 	size_t len;
 	const unsigned char *src, *end, *textstart;
-	unsigned char textattr;
 	long lineno;
 	WP_UNIT sx, sy;
 	gboolean at_bol;
@@ -291,9 +312,13 @@ void HypPrepNode(DOCUMENT *doc)
 	if (info.tagstart == NULL)
 		info.tagstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-tagstart", &info.iter, TRUE);
 	gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
+	info.attrstart = gtk_text_buffer_get_mark(info.text_buffer, "hv-attrstart");
+	if (info.attrstart == NULL)
+		info.attrstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-attrstart", &info.iter, TRUE);
+	gtk_text_buffer_move_mark(info.text_buffer, info.attrstart, &info.iter);
 	
 	textstart = src;
-	textattr = 0;
+	info.textattr = 0;
 	lineno = 0;
 	info.x = sx = sy = 0;
 	at_bol = TRUE;
@@ -311,6 +336,8 @@ void HypPrepNode(DOCUMENT *doc)
 			/* unwritten data? */
 			DUMPTEXT();
 			src++;
+			
+			gtk_text_buffer_move_mark(info.text_buffer, info.attrstart, &info.iter);
 
 			switch (*src)
 			{
@@ -364,7 +391,7 @@ void HypPrepNode(DOCUMENT *doc)
 				break;
 				
 			case HYP_ESC_CASE_TEXTATTR:
-				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+				info.textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 				/* vst_effects(vdi_handle, textattr); */
 				src++;
 				textstart = src;

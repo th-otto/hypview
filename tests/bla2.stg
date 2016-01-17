@@ -1,0 +1,23 @@
+@options "+g -i -s +z -t4 -d12"
+@os Atari
+@charset atarist
+@inputenc atarist
+@subject "Keins"
+@width 75
+
+
+@node "Main"
+     Allgemeines                 Der ST-Guide und seine Umgebung
+      ú Einleitung                ú Hypertexte anderer Formate
+      ú Philosophie               ú @{"Der ST-Guide und das AV-Protokoll" LINK "AV-Protokoll"}
+      ú Funktionsbersicht
+      ú Konfiguration            Sonstiges
+      ú @{"Dateitypen" LINK "HCP.HYP/Dateitypen"}                ú Rechtliches
+                                  ú Verwendete Software
+     Bedienung des ST-Guide       ú Update-History
+      ú @{"Icon-Leiste" LINK "Symbolleiste"}
+      ú Maus-Funktionen          Zu guter letzt ...
+      ú Tastatur-Funktionen       ú Wie schreibe ich einen Hypertext?
+      ú Auto-Locator              ú Danksagung
+
+@endnode

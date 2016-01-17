@@ -1,0 +1,18 @@
+@options "+g -i -s +z -t4 -d12"
+@os Atari
+@charset atarist
+@inputenc atarist
+@subject "Keins"
+@width 75
+
+
+@node "Main"
+Dies ist normaler Text.
+Dies ist @{G}heller@{g} Text.
+Dies ist @{B}fetter@{b} Text.
+Dies ist @{U}unterstrichener@{u} Text.
+Dies ist @{U}  auch   unterstrichener  @{u} Text.
+Dies ist @{I}kursiver@{i} Text.
+Dies ist @{O}umrandeter@{o} Text.
+Dies ist @{S}schattierter@{s} Text.
+@endnode

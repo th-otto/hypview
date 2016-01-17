@@ -678,6 +678,35 @@ static GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar
 
 /*** ---------------------------------------------------------------------- ***/
 
+static GtkTextTag *create_link_tag(GtkTextTagTable *table, const gchar *tag_name, int color)
+{
+	GtkTextTag *tag;
+
+	tag = gtk_text_tag_new(tag_name);
+
+	gtk_text_tag_table_add(table, tag);
+
+	g_object_set(G_OBJECT(tag), "foreground", gl_profile.viewer.color[color], NULL);
+	if (gl_profile.viewer.link_effect & HYP_TXT_BOLD)
+		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_BOLD, NULL);
+	if (gl_profile.viewer.link_effect & HYP_TXT_LIGHT)
+		g_object_set(G_OBJECT(tag), "foreground", "#cccccc", NULL);
+	if (gl_profile.viewer.link_effect & HYP_TXT_ITALIC)
+		g_object_set(G_OBJECT(tag), "style", PANGO_STYLE_ITALIC, NULL);
+	if (gl_profile.viewer.link_effect & HYP_TXT_UNDERLINED)
+		g_object_set(G_OBJECT(tag), "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	if (gl_profile.viewer.link_effect & HYP_TXT_SHADOWED)
+		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_HEAVY, NULL);
+	if (gl_profile.viewer.link_effect & HYP_TXT_OUTLINED)
+		g_object_set(G_OBJECT(tag), "strikethrough", TRUE, NULL);
+	
+	g_object_unref(tag);
+
+	return tag;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static GtkTextTagTable *create_tags(void)
 {
 	GtkTextTagTable *table;
@@ -685,26 +714,26 @@ static GtkTextTagTable *create_tags(void)
 	
 	table = gtk_text_tag_table_new();
 	
-	gtk_text_table_create_tag(table, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
-	gtk_text_table_create_tag(table, "light", "foreground", "#cccccc", NULL);
-	gtk_text_table_create_tag(table, "italic", "style", PANGO_STYLE_ITALIC, NULL);
-	gtk_text_table_create_tag(table, "underlined", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "outlined", NULL); /* TODO */
-	gtk_text_table_create_tag(table, "shadowed", NULL); /* TODO */
-
-	gtk_text_table_create_tag(table, "link", "foreground", gl_profile.viewer.color[gl_profile.viewer.link_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "popup", "foreground", gl_profile.viewer.color[gl_profile.viewer.popup_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "xref", "foreground", gl_profile.viewer.color[gl_profile.viewer.xref_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "system", "foreground", gl_profile.viewer.color[gl_profile.viewer.system_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "rexx", "foreground", gl_profile.viewer.color[gl_profile.viewer.rexx_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_table_create_tag(table, "quit", "foreground", gl_profile.viewer.color[gl_profile.viewer.quit_color], "underline", PANGO_UNDERLINE_SINGLE, NULL);
-
 	for (i = 0; i < 16; i++)
 	{
 		gdk_color_parse(gl_profile.viewer.color[i], &gdk_colors[i]);
 		gtk_text_table_create_tag(table, colornames[i], "foreground", gl_profile.viewer.color[i], NULL);
 	}
 	
+	gtk_text_table_create_tag(table, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
+	gtk_text_table_create_tag(table, "ghosted", "foreground", "#cccccc", NULL);
+	gtk_text_table_create_tag(table, "italic", "style", PANGO_STYLE_ITALIC, NULL);
+	gtk_text_table_create_tag(table, "underlined", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_table_create_tag(table, "outlined", "strikethrough", TRUE, NULL); /* TODO */
+	gtk_text_table_create_tag(table, "shadowed", "weight", PANGO_WEIGHT_HEAVY, NULL); /* TODO */
+
+	create_link_tag(table, "link", gl_profile.viewer.link_color);
+	create_link_tag(table, "popup", gl_profile.viewer.popup_color);
+	create_link_tag(table, "xref", gl_profile.viewer.xref_color);
+	create_link_tag(table, "system", gl_profile.viewer.system_color);
+	create_link_tag(table, "rexx", gl_profile.viewer.rexx_color);
+	create_link_tag(table, "quit", gl_profile.viewer.quit_color);
+
 	return table;
 }
 
