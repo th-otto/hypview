@@ -225,8 +225,14 @@ static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
 	UNUSED(widget);
 	gl_profile.viewer.expand_spaces = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "expandspaces")));
 	if (win->text_window)
-		ReInitWindow(win->data);
-	printf("NYI: on_expand_spaces\n");
+	{
+		DOCUMENT *doc = win->data;
+		if (doc && doc->prepNode)
+		{
+			doc->prepNode(doc);
+			ReInitWindow(doc);
+		}
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -706,12 +712,36 @@ static GtkTextTagTable *create_tags(void)
 
 static void set_font_attributes(WINDOW_DATA *win)
 {
-	PangoFontDescription *font = pango_font_description_from_string(sel_font_name);
-	 
+	PangoFontDescription *desc = pango_font_description_from_string(sel_font_name);
+	PangoFontMap *font_map;
+	PangoFont *font;
+	PangoContext *context;
+	GdkScreen *screen;
+	PangoFontMetrics *metrics = NULL;
+	
 	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
 	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
-	gtk_widget_modify_font(win->text_view, font);
-	pango_font_description_free(font);
+	gtk_widget_modify_font(win->text_view, desc);
+	screen = gtk_widget_get_screen(win->hwnd);
+	context = gdk_pango_context_get_for_screen(screen);
+	font_map = pango_context_get_font_map(context);
+	font = pango_font_map_load_font(font_map, context, desc);
+	if (font)
+	{
+		metrics = pango_font_get_metrics(font, pango_language_get_default());
+		g_object_unref(font);
+	}
+	if (metrics)
+	{
+		win->x_raster = pango_font_metrics_get_approximate_char_width(metrics) / PANGO_SCALE;
+		win->y_raster = (pango_font_metrics_get_ascent(metrics) + pango_font_metrics_get_descent(metrics)) / PANGO_SCALE;
+		pango_font_metrics_unref(metrics);
+	} else
+	{
+		win->x_raster = font_cw;
+		win->y_raster = font_ch;
+	}
+	pango_font_description_free(desc);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1029,8 +1059,6 @@ void ReInitWindow(DOCUMENT *doc)
 	
 	win->data = doc;
 	win->title = doc->window_title;
-	win->x_raster = font_cw;
-	win->y_raster = font_ch;
 	hv_set_title(win, win->title);
 	doc->selection.valid = FALSE;
 	set_font_attributes(win);

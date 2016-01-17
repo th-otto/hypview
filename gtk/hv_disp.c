@@ -91,31 +91,159 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 
 /*** ---------------------------------------------------------------------- ***/
 
+#if 0 /* for debugging */
+static void print_text_and_tabs(WINDOW_DATA *win, GtkTextIter *start, GtkTextIter *end, PangoTabArray *tab_array)
+{
+	char *line;
+	int i, j, size;
+	int x;
+	int tabnum;
+	
+	line = gtk_text_buffer_get_text(win->text_buffer, start, end, FALSE);
+	size = pango_tab_array_get_size(tab_array);
+	x = 0;
+	i = 0;
+	tabnum = 0;
+	for (i = 0; line[i]; i++)
+	{
+		if (line[i] == '\t')
+		{
+			int pos;
+			pango_tab_array_get_tab(tab_array, tabnum, NULL, &pos);
+			tabnum++;
+			pos /= win->x_raster;
+			for (j = x; j < pos; j++)
+				putchar(' ');
+			x = pos;
+		} else
+		{
+			putchar(line[i]);
+		}
+		x++;
+	}
+	printf("\n");
+	x = 0;
+	for (i = 0; i < size; i++)
+	{
+		int pos;
+		pango_tab_array_get_tab(tab_array, i, NULL, &pos);
+		pos /= win->x_raster;
+		for (j = x; j < pos; j++)
+			putchar(' ');
+		putchar('^');
+		x = pos + 1;
+	}
+	printf("\n");
+	g_free(line);
+}
+#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
+struct prep_info {
+	PangoTabArray *tab_array;
+	int tab_array_size;
+	GtkTextMark *linestart;
+	GtkTextMark *tagstart;
+	GtkTextBuffer *text_buffer;
+	GtkTextTagTable *tag_table;
+	int last_was_space;
+	int tab_id;
+	WP_UNIT x;
+	WP_UNIT x_raster;
+	GtkTextIter iter;
+};
+
+static void insert_str(struct prep_info *info, const char *str, const char *tag)
+{
+	if (tag)
+	{
+		if (info->last_was_space > 1)
+		{
+			gtk_text_buffer_insert(info->text_buffer, &info->iter, "\t", 1);
+			pango_tab_array_set_tab(info->tab_array, info->tab_array_size, PANGO_TAB_LEFT, info->x * info->x_raster);
+			info->tab_array_size++;
+		} else
+		{
+			if (info->last_was_space == 1)
+			{
+				gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
+			}
+		}
+		gtk_text_buffer_move_mark(info->text_buffer, info->tagstart, &info->iter);
+		info->last_was_space = 0;
+	}
+		
+	if (gl_profile.viewer.expand_spaces)
+	{
+		const char *scan = str;
+		const char *next;
+		while (*scan)
+		{
+			next = g_utf8_skipchar(scan);
+			if (info->last_was_space)
+			{
+				if (*scan != ' ')
+				{
+					if (info->last_was_space > 1)
+					{
+						gtk_text_buffer_insert(info->text_buffer, &info->iter, "\t", 1);
+						pango_tab_array_set_tab(info->tab_array, info->tab_array_size, PANGO_TAB_LEFT, info->x * info->x_raster);
+						info->tab_array_size++;
+					} else
+					{
+						if (info->last_was_space == 1)
+						{
+							gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
+						}
+					}
+					gtk_text_buffer_insert(info->text_buffer, &info->iter, scan, next - scan);
+					info->last_was_space = 0;
+				} else
+				{
+					info->last_was_space++;
+				}
+			} else if (*scan == ' ')
+			{
+				info->last_was_space++;
+			} else
+			{
+				gtk_text_buffer_insert(info->text_buffer, &info->iter, scan, next - scan);
+				info->last_was_space = 0;
+			}
+			scan = next;
+			info->x++;
+		}
+	} else
+	{ 
+		gtk_text_buffer_insert(info->text_buffer, &info->iter, str, -1);
+	}
+	
+	if (tag)
+	{
+		GtkTextIter tagstart_iter, tagend_iter;
+		
+		gtk_text_buffer_get_iter_at_mark(info->text_buffer, &tagstart_iter, info->tagstart);
+		tagend_iter = info->iter;
+		gtk_text_buffer_apply_tag_by_name(info->text_buffer, tag, &tagstart_iter, &tagend_iter);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void HypPrepNode(DOCUMENT *doc)
 {
 	HYP_NODE *node = doc->displayed_node;
 	WINDOW_DATA *win = doc->window;
 	HYP_DOCUMENT *hyp = doc->data;
-	GtkTextIter iter;
 	size_t len;
 	const unsigned char *src, *end, *textstart;
 	unsigned char textattr;
 	long lineno;
 	WP_UNIT sx, sy;
 	gboolean at_bol;
-	char *str;
+	struct prep_info info;
 	
-	gtk_text_buffer_set_text(win->text_buffer, "", 0);
-	gtk_text_buffer_get_iter_at_offset(win->text_buffer, &iter, 0);
-	
-#define TEXTOUT(str, tag) \
-	{ \
-	if (tag) \
-		gtk_text_buffer_insert_with_tags_by_name(win->text_buffer, &iter, str, -1, tag, NULL); \
-	else \
-		gtk_text_buffer_insert(win->text_buffer, &iter, str, -1); \
-	}
-
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
@@ -123,20 +251,56 @@ void HypPrepNode(DOCUMENT *doc)
 		len = src - textstart; \
 		/* draw remaining text */ \
 		s = hyp_conv_charset(hyp->comp_os, HYP_CHARSET_UTF8, textstart, len, NULL); \
-		TEXTOUT(s, 0); \
+		insert_str(&info, s, NULL); \
 		g_free(s); \
 		at_bol = FALSE; \
 	}
-#define FLUSHLINE() \
-	at_bol = TRUE
 
 	end = node->end;
 	src = node->start;
+
+	info.text_buffer = win->text_buffer;
+	info.x_raster = win->x_raster;
+	
+	/*
+	 * clear buffer
+	 */
+	gtk_text_buffer_set_text(info.text_buffer, "", 0);
+	/*
+	 * remove old tabulator tags
+	 */
+	info.tag_table = gtk_text_buffer_get_tag_table(info.text_buffer);
+	info.tab_id = 0;
+	for (;;)
+	{
+		char *tag_name = g_strdup_printf("hv-tabtag-%d", info.tab_id);
+		GtkTextTag *tag = gtk_text_tag_table_lookup(info.tag_table, tag_name);
+		g_free(tag_name);
+		if (tag == 0)
+			break;
+		gtk_text_tag_table_remove(info.tag_table, tag);
+		info.tab_id++;
+	}
+	info.tab_id = 0;
+	
+	gtk_text_buffer_get_iter_at_offset(info.text_buffer, &info.iter, 0);
+	info.linestart = gtk_text_buffer_get_mark(info.text_buffer, "hv-linestart");
+	if (info.linestart == NULL)
+		info.linestart = gtk_text_buffer_create_mark(info.text_buffer, "hv-linestart", &info.iter, TRUE);
+	info.tagstart = gtk_text_buffer_get_mark(info.text_buffer, "hv-tagstart");
+	if (info.tagstart == NULL)
+		info.tagstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-tagstart", &info.iter, TRUE);
+	gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
+	
 	textstart = src;
 	textattr = 0;
 	lineno = 0;
-	sx = sy = 0;
+	info.x = sx = sy = 0;
 	at_bol = TRUE;
+	info.last_was_space = 0;
+	
+	info.tab_array_size = 0;
+	info.tab_array = pango_tab_array_new(info.tab_array_size, TRUE);
 	
 	sy = draw_graphics(win, node->gfx, lineno, sx, sy);
 	
@@ -161,6 +325,7 @@ void HypPrepNode(DOCUMENT *doc)
 			case HYP_ESC_ALINK_LINE:
 				{
 					hyp_nodenr dest_page;	/* Index of destination page */
+					char *str;
 					
 					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)	/* skip destination line number */
 						src += 2;
@@ -189,7 +354,7 @@ void HypPrepNode(DOCUMENT *doc)
 					}
 					/* vst_color(vdi_handle, gl_profile.viewer.link_color); */
 					/* vst_effects(vdi_handle, gl_profile.viewer.link_effect | textattr); */
-					TEXTOUT(str, "link");
+					insert_str(&info, str, "link");
 					g_free(str);
 
 					/* vst_color(vdi_handle, gl_profile.viewer.text_color); */
@@ -221,11 +386,34 @@ void HypPrepNode(DOCUMENT *doc)
 		} else if (*src == HYP_EOL)
 		{
 			DUMPTEXT();
+			{
+				if (info.tab_array_size > 0)
+				{
+					char *tag_name = g_strdup_printf("hv-tabtag-%d", info.tab_id);
+					GtkTextIter start;
+					GtkTextTag *tag = gtk_text_tag_new(tag_name);
+					
+					g_free(tag_name);
+					info.tab_id++;
+					g_object_set(G_OBJECT(tag), "tabs", info.tab_array, NULL);
+					gtk_text_tag_table_add(info.tag_table, tag);
+					gtk_text_buffer_get_iter_at_mark(info.text_buffer, &start, info.linestart);
+					
+					/* print_text_and_tabs(win, &start, &info.iter, info.tab_array); */
+					
+					gtk_text_buffer_apply_tag(info.text_buffer, tag, &start, &info.iter);
+					info.tab_array_size = 0;
+					info.tab_array = pango_tab_array_new(info.tab_array_size, TRUE);
+				}
+			}
 			++lineno;
 			src++;
 			textstart = src;
+			info.last_was_space = 0;
+			info.x = sx;
 			at_bol = TRUE;
-			gtk_text_buffer_insert(win->text_buffer, &iter, "\n", 1); \
+			gtk_text_buffer_insert(info.text_buffer, &info.iter, "\n", 1);
+			gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
 			sy += win->y_raster;
 			sy = draw_graphics(win, node->gfx, lineno, sx, sy);
 		} else
@@ -236,8 +424,25 @@ void HypPrepNode(DOCUMENT *doc)
 	DUMPTEXT();
 	if (!at_bol)
 	{
+		if (info.tab_array_size > 0)
+		{
+			char *tag_name = g_strdup_printf("hv-tabtag-%d", info.tab_id);
+			GtkTextIter start;
+			GtkTextTag *tag = gtk_text_tag_new(tag_name);
+			
+			g_free(tag_name);
+			info.tab_id++;
+			g_object_set(G_OBJECT(tag), "tabs", info.tab_array, NULL);
+			gtk_text_tag_table_add(info.tag_table, tag);
+			gtk_text_buffer_get_iter_at_mark(info.text_buffer, &start, info.linestart);
+			gtk_text_buffer_apply_tag(info.text_buffer, tag, &start, &info.iter);
+			info.tab_array_size = 0;
+			info.tab_array = NULL;
+		}
 		++lineno;
 		sy += win->y_raster;
 		sy = draw_graphics(win, node->gfx, lineno, sx, sy);
 	}
+	if (info.tab_array)
+		pango_tab_array_free(info.tab_array);
 }
