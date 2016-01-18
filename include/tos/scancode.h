@@ -5,21 +5,21 @@
 #ifndef __SCANCODES__
 #define __SCANCODES__	1
 
-/*	Bits zu Kennzeichnung der Zusatztasten	*/
-#define	KbNUM			0x10		/*	Zahlenblock	*/
+/* Bits zu Kennzeichnung der Zusatztasten */
+#define	KbNUM			0x10		/* Zahlenblock */
 #define	KbALT			0x08
 #define	KbCTRL			0x04
 #define	KbSHIFT			0x03
 #define	KbLSHIFT		0x02
 #define	KbRSHIFT		0x01
 
-/*	selten vorhandene Tasten	*/
+/* selten vorhandene Tasten */
 #define	KbISO				0x37
 #define	KbPAGEUP			0x49
 #define	KbPAGEDOWN		0x51
 #define	KbEND				0x4F
 
-/*	Funktionstasten	*/
+/* Funktionstasten */
 #define	KbF1				0x3b
 #define	KbF2				0x3c
 #define	KbF3				0x3d
@@ -30,7 +30,7 @@
 #define	KbF8				0x42
 #define	KbF9				0x43
 #define	KbF10				0x44
-/*	Shift+Funktionstasten	*/
+/* Shift+Funktionstasten */
 #define	KbF11				0x54
 #define	KbF12				0x55
 #define	KbF13				0x56
@@ -41,7 +41,7 @@
 #define	KbF18				0x5b
 #define	KbF19				0x5c
 #define	KbF20				0x5d
-/*	Cursor-Bereich	*/
+/* Cursor-Bereich */
 #define KbESC           0x01
 #define KbTAB           0x0f
 #define KbBACKSPACE     0x0e
@@ -56,7 +56,7 @@
 #define	KbRIGHT			0x4d
 #define KbRETURN        0x1c
 #define KbENTER         0x72
-/*	Alternate-numerische Tasten	*/
+/* Alternate-numerische Tasten */
 #define	KbAlt1			0x78
 #define	KbAlt2			0x79
 #define	KbAlt3			0x7a

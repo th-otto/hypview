@@ -25,13 +25,17 @@
 #include "hypview.h"
 #include "dragdrop.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 #if USE_DRAGDROP
 
 G_STATIC_ASSERT(sizeof(DD_FNAME) == 20);
 
 /*
-	Erledigt das ganze Drag&Drop-Geschehen
-*/
+ * handles the whole drag&drop protocoll
+ */
 void DragDrop(_WORD msg[8])
 {
 	unsigned long format[MAX_DDFORMAT], sformat;
@@ -106,7 +110,7 @@ void DragDrop(_WORD msg[8])
 		return;
 	}
 
-	for (i = 0; i < MAX_DDFORMAT; i++)	/*  Alle moeglichen Formate probieren   */
+	for (i = 0; i < MAX_DDFORMAT; i++)	/* try all possible formats */
 	{
 		ddrtry(pipe_handle, name, &sformat, &size);
 
@@ -137,6 +141,8 @@ void DragDrop(_WORD msg[8])
 
 		g_free(data);
 	} else
+	{
 		form_alert(1, rs_string(DI_MEMORY_ERROR));
+	}
 }
 #endif

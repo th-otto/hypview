@@ -23,10 +23,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
-	Tabulatorweite: 8
-	Kommentare ab: Spalte 			*Spalte 50*
-*/
 #ifndef _DRAGDROP_H_
 #define _DRAGDROP_H_
 

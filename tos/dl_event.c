@@ -46,6 +46,10 @@ short doneFlag = FALSE, quitApp = FALSE;
 	msg[6] = g; \
 	msg[7] = h
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 static void DoKeybd(EVNT *event)
 {
 	_WORD ascii = event->key, scan;
@@ -128,18 +132,19 @@ static void DoKeybd(EVNT *event)
 	UNUSED(scan);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void DoMessage(EVNT *event)
 {
-	if (event->msg[2] > 0)				/* erweiterte Message ?? */
+	if (event->msg[2] > 0)				/* extended message ?? */
 	{
 		short *xmsg;
 
-		xmsg = (short *)g_malloc(event->msg[2]);	/* Platz vorbereiten */
+		xmsg = (short *)g_malloc(event->msg[2]);	/* reserve memory */
 		if (xmsg != NULL)
 		{
-			appl_read(gl_apid, event->msg[2], xmsg);	/* "Message" lesen */
-			g_free(xmsg);								/* Speicher freigeben */
+			appl_read(gl_apid, event->msg[2], xmsg);	/* read "message" */
+			g_free(xmsg);
 		} else
 		{
 			form_alert(1, rs_string(DI_MEMORY_ERROR));
@@ -166,7 +171,7 @@ static void DoMessage(EVNT *event)
 		DragDrop(event->msg);
 		break;
 #endif
-	case VA_PROTOSTATUS:					/* Server bestaetigt Anmeldung */
+	case VA_PROTOSTATUS:					/* server acknowledges registration */
 		DoVA_PROTOSTATUS(event->msg);
 		break;
 	case VA_SETSTATUS:
@@ -193,10 +198,10 @@ static void DoMessage(EVNT *event)
 	case VA_DRAGACCWIND:
 		DoVA_DRAGACCWIND(event->msg);
 		break;
-	case VA_START:						/* Kommandozeile uebergeben */
+	case VA_START:						/* pass command line */
 		DoVA_START(event->msg);
 		break;
-	case AV_SENDCLICK:					/* Mausklick gemeldet (BubbleGEM) */
+	case AV_SENDCLICK:					/* mouse click reported (BubbleGEM) */
 		event->mwhich = MU_BUTTON;
 		event->mx = event->msg[3];
 		event->my = event->msg[4];
@@ -205,7 +210,7 @@ static void DoMessage(EVNT *event)
 		event->mclicks = event->msg[7];
 		DoEventDispatch(event);
 		break;
-	case AV_SENDKEY:					/* Tastendruck gemeldet (BubbleGEM) */
+	case AV_SENDKEY:					/* key press reported (BubbleGEM) */
 		event->mwhich = MU_KEYBD;
 		event->kstate = event->msg[3];
 		event->key = event->msg[4];
@@ -230,6 +235,7 @@ static void DoMessage(EVNT *event)
 
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DoEventDispatch(EVNT *event)
 {
@@ -247,6 +253,7 @@ void DoEventDispatch(EVNT *event)
 		DoMessage(event);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DoEvent(void)
 {

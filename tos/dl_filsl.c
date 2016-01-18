@@ -26,6 +26,9 @@
 
 static char fslx_default_paths[DL_PATHMAX] = "C:\\\0";
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void *OpenFileselector(HNDL_FSL proc, char *comment, char *filepath, char *path, const char *pattern, short mode, void *user_data)
 {
@@ -89,27 +92,29 @@ void *OpenFileselector(HNDL_FSL proc, char *comment, char *filepath, char *path,
 		short result;
 		const char *p;
 		
-		if (pattern && !strchr(pattern, ','))	/*  Nur ein Suchmuster angegeben?   */
+		if (pattern && !strchr(pattern, ','))	/* only a single pattern? */
 			strcat(ptr->path, pattern);
 		else
 			strcat(ptr->path, "*.*");
 		ptr->dialog = NULL;
 
 		result = fsel_exinput(ptr->path, ptr->name, &ptr->button, comment);
-		if (!result || !ptr->button)					/* Fileselectbox  */
+		if (!result || !ptr->button)
 		{
 			g_free(ptr);
-			return NULL;				/* Fehler zurueck  */
+			return NULL;						/* return error */
 		}
 		
 		p = hyp_basename(ptr->path);
-		/*  Datei-Maske entfernen   */
+		/* remove file pattern */
 		ptr->path[p - ptr->path] = '\0';
 		proc(ptr, 1);
 		g_free(ptr);
 		return NULL;
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void FileselectorEvents(FILESEL_DATA * ptr, EVNT * event)
 {
@@ -121,6 +126,8 @@ void FileselectorEvents(FILESEL_DATA * ptr, EVNT * event)
 		RemoveFileselector(ptr);
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void RemoveFileselector(FILESEL_DATA * ptr)
 {

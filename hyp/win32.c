@@ -113,8 +113,8 @@ int win32_to_errno(DWORD oserrno)
 	}
 
 	/* The error code wasn't in the table.	We check for a range of */
-	/* EACCES errors or exec failure errors (ENOEXEC).  Otherwise	*/
-	/* EINVAL is returned.						*/
+	/* EACCES errors or exec failure errors (ENOEXEC).  Otherwise */
+	/* EINVAL is returned. */
 
 	if (oserrno >= MIN_EACCES_RANGE && oserrno <= MAX_EACCES_RANGE)
 		return EACCES;

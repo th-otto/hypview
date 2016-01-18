@@ -64,6 +64,9 @@ char const prghelp_name[] = "hypview.hyp";
 
 KEYTAB *key_table;
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 OBJECT *rs_tree(_WORD nr)
 {
@@ -72,12 +75,14 @@ OBJECT *rs_tree(_WORD nr)
 	return tree;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *rs_string(_WORD nr)
 {
 	return string_addr[nr];
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void dialog_set_iconify(DIALOG *dialog, GRECT *r)
 {
@@ -94,14 +99,14 @@ void GetScreenSize(_WORD *width, _WORD *height)
 
 /*** ---------------------------------------------------------------------- ***/
 
-_WORD GetNumPlanes(_VOID)
+_WORD GetNumPlanes(void)
 {
 	return ext_workout[4];
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-_WORD GetNumColors(_VOID)
+_WORD GetNumColors(void)
 {
 	static _WORD num_colors;
 	
@@ -127,7 +132,9 @@ void singletos_fail_loop(void)
 	}
 }
 
+/******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 int DoAesInit(void)
 {
@@ -164,11 +171,11 @@ int DoAesInit(void)
 		_WORD dummy, level;
 		
 		/*
-		   Bit 0:           wdlg_xx()-Funktionen sind vorhanden (1)
-		   Bit 1:           lbox_xx()-Funktionen sind vorhanden (1)
-		   Bit 2:           fnts_xx()-Funktionen sind vorhanden (1)
-		   Bit 3:           fslx_xx()-Funktionen sind vorhanden (1)
-		   Bit 4:           pdlg_xx()-Funktionen sind vorhanden (1)
+		   Bit 0:           wdlg_xx()-funktions are available (1)
+		   Bit 1:           lbox_xx()-funktions are available (1)
+		   Bit 2:           fnts_xx()-funktions are available (1)
+		   Bit 3:           fslx_xx()-funktions are available (1)
+		   Bit 4:           pdlg_xx()-funktions are available (1)
 		 */
 		appl_xgetinfo(AES_WDIALOG, &has_wlffp, &dummy, &dummy, &dummy);
 
@@ -178,7 +185,7 @@ int DoAesInit(void)
 		has_iconify &= 0x80;
 
 		if (appl_xgetinfo(AES_SHELL, &level, &dummy, &dummy, &dummy) && (level & 0x00FF) >= 9)
-			shel_write(SHW_MSGREC, 1, 1, "", "");			/* wir koennen AP_TERM! */
+			shel_write(SHW_MSGREC, 1, 1, "", "");			/* we understand AP_TERM! */
 	}
 
 	{
@@ -194,25 +201,27 @@ int DoAesInit(void)
 	
 	iconified_tree = dial_library_tree;
 #if 0
-/* Zentriere Iconify-Icon */
-	if(has_iconify)
+	/* center iconify-icon */
+	if (has_iconify)
 	{
-	GRECT icon={0,0,72,72};
-	short w,h,dummy;
-		if(wind_get(0,WF_ICONIFY,&dummy,&w,&h,&dummy))
+		GRECT icon= { 0, 0, 72, 72 };
+		_WORD w, h, dummy;
+		
+		if (wind_get(0,WF_ICONIFY, &dummy, &w, &h, &dummy))
 		{
-			icon.g_w=w;
-			icon.g_h=h;
+			icon.g_w = w;
+			icon.g_h = h;
 		}
-		wind_calc(WC_WORK,NAME,&icon,&icon);
-		dial_library_tree[DI_ICON].ob_x=(icon.g_w - dial_library_tree[DI_ICON].ob_width)>>1;
-		dial_library_tree[DI_ICON].ob_y=(icon.g_h - dial_library_tree[DI_ICON].ob_height)>>1;
+		wind_calc(WC_WORK, NAME, &icon, &icon);
+		dial_library_tree[DI_ICON].ob_x = (icon.g_w - dial_library_tree[DI_ICON].ob_width) >> 1;
+		dial_library_tree[DI_ICON].ob_y = (icon.g_h - dial_library_tree[DI_ICON].ob_height) >> 1;
 	}
 #endif
 
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int DoInitSystem(void)
 {
@@ -248,15 +257,17 @@ int DoInitSystem(void)
 #endif
 	va_proto_init();
 
-	key_table = Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/*  Key-Table ermitteln */
+	key_table = Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/* fetch keytable */
 
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
 void DoExitSystem(void)
 {
-	if (_app)							/*  Ist kein Accessory? */
-		DoAV_EXIT();
+	if (_app)
+		va_proto_exit();
 #if USE_BUBBLEGEM
 	DoExitBubble();
 #endif

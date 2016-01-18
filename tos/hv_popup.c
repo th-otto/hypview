@@ -130,8 +130,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				} while (event->mbutton & 1);
 	
 				wind_get_grect(win->whandle, WF_WORKXYWH, &work);
-	/*			GetLink(file,event->mx-work.g_x,event->my-work.g_y-ptr->y_offset);
-	*/
+				/* GetLink(file,event->mx-work.g_x, event->my - work.g_y-ptr->y_offset); */
 				SendCloseWindow(win);
 			}
 		}

@@ -24,6 +24,9 @@
 #include "hv_defs.h"
 #include "hypview.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 FONTSEL_DATA *CreateFontselector(HNDL_FONT proc, short font_flag, const char *sample_text, const char *opt_button)
 {
@@ -83,6 +86,7 @@ FONTSEL_DATA *CreateFontselector(HNDL_FONT proc, short font_flag, const char *sa
 	return ptr;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 short OpenFontselector(FONTSEL_DATA *ptr, short button_flag, long id, long pt, long ratio)
 {
@@ -103,6 +107,7 @@ short OpenFontselector(FONTSEL_DATA *ptr, short button_flag, long id, long pt, l
 	return ptr->whandle;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void CloseFontselector(FONTSEL_DATA *ptr)
 {
@@ -119,6 +124,8 @@ void CloseFontselector(FONTSEL_DATA *ptr)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
 void RemoveFontselector(FONTSEL_DATA *ptr)
 {
 	if (ptr == NULL || ptr->dialog == NULL)
@@ -130,6 +137,8 @@ void RemoveFontselector(FONTSEL_DATA *ptr)
 	v_clsvwk(ptr->vdi_handle);
 	g_free(ptr);
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void FontselectorEvents(FONTSEL_DATA *ptr, EVNT *event)
 {

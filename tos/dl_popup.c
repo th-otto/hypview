@@ -468,6 +468,7 @@ static _BOOL popup_setup(POPUP *popup, OBJECT *obj, _WORD x, _WORD y)
 	return found;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void popup_drawobj(POPUP *popup)
 {
@@ -485,6 +486,7 @@ static void popup_drawobj(POPUP *popup)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static _BOOL popup_mouse(EVNT *event, POPUP *popup)
 {
@@ -495,6 +497,7 @@ static _BOOL popup_mouse(EVNT *event, POPUP *popup)
 	return FALSE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static _BOOL popup_key(EVNT *event, POPUP *popup)
 {
@@ -555,6 +558,7 @@ static _BOOL popup_key(EVNT *event, POPUP *popup)
 	return FALSE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static _BOOL popup_button(EVNT *event, POPUP *popup)
 {
@@ -574,6 +578,7 @@ static _BOOL popup_button(EVNT *event, POPUP *popup)
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * popup_select(obj, x, y): select item from popup-menu

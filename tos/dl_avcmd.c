@@ -28,18 +28,20 @@
 
 
 /*
- *		Normales AV-Protokoll: Anmelden und Abmelden beim Server
+ * basic AV-Protokoll: register to server
  */
 
-static _WORD av_server_id = -1;			/*  Programm ID des Servers */
+static _WORD av_server_id = -1;			/* program ID of server */
 long av_server_cfg = 0;
 
-static char *av_name = NULL;			/*  Eigener Programmname    */
-/*	Fuer AV_STARTPROG	*/
+static char *av_name = NULL;			/* our program name */
+/* for AV_STARTPROG */
 static char *av_parameter = NULL;
 
 
+/******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 /*
  * work around a bug in XaAES that changes our current directory
@@ -110,9 +112,9 @@ _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self)
 	
 	message[1] = gl_apid;
 	message[2] = 0;
-	/* gibts shel_write() broadcast? */
+	/* is shel_write() broadcast available? */
 	if (_AESversion >= 0x400 ||
-		__magix >= 0x500 ||		/* soll angeblich ab 0x300 gehen, fuehrt aber zu Fehlermeldungen */
+		__magix >= 0x500 ||
 		(appl_xgetinfo(AES_SHELL, &info, &dummy, &dummy, &dummy) && ((info & 0xff) >= SHW_GLOBMSG)))
 	{
 		shel_xwrite(SHW_GLOBMSG, 0, 1, (char *)message, NULL);
@@ -213,14 +215,22 @@ _WORD appl_locate(const char *pathlist, _BOOL startit)
 	return id;
 }
 
-/*	Nachfrage nach dem Konfigurationsstring, der mit AV_STATUS gesetzt wurde	*/
+/*** ---------------------------------------------------------------------- ***/
+
+/*
+ * ask server for the configuration string thet was set with
+ * AV_STATUS
+ */
 void SendAV_GETSTATUS(void)
 {
 	Protokoll_Send(av_server_id, AV_GETSTATUS, 0, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Uebermittelt einen Konfigurationsstring, den der Server speichert	*/
+/*
+ * send a configuration string that is saved by the server
+ */
 void SendAV_STATUS(const char *string)
 {
 	g_free_shared(av_parameter);
@@ -231,43 +241,61 @@ void SendAV_STATUS(const char *string)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Uebermittelt dem Server einen Tastendruck, der nicht verarbeitet wurde	*/
+/*
+ * send a key event that was not handled
+ */
 void SendAV_SENDKEY(short kbd_state, short code)
 {
 	Protokoll_Send(av_server_id, AV_SENDKEY, kbd_state, code, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Fragt beim Server nach, mit welchem Font die Dateien dargestellt werden	*/
+/*
+ * ask server about default font to use for displaying text
+ */
 void SendAV_ASKFILEFONT(void)
 {
 	Protokoll_Send(av_server_id, AV_ASKFILEFONT, 0, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Fragt beim Server nach dem Konsolen-Font	*/
+/*
+ * ask server about font to use for console text
+ */
 void SendAV_ASKCONFONT(void)
 {
 	Protokoll_Send(av_server_id, AV_ASKCONFONT, 0, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Fragt beim Server nach dem selektierten Objekt	*/
+/*
+ * ask server about currently selected object
+ */
 void SendAV_ASKOBJECT(void)
 {
 	Protokoll_Send(av_server_id, AV_ASKOBJECT, 0, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll ein Consolenfenster oeffnen	*/
+/*
+ * tell server to open console window
+ */
 void SendAV_OPENCONSOLE(void)
 {
 	Protokoll_Send(av_server_id, AV_OPENCONSOLE, 0, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll ein Verzeichnisfenster oeffnen	*/
+/*
+ * tell server to open a directory window
+ */
 void SendAV_OPENWIND(const char *path, const char *wildcard)
 {
 	char *ptr2;
@@ -280,8 +308,11 @@ void SendAV_OPENWIND(const char *path, const char *wildcard)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll ein Programmstarten oder eine Datei oeffnen	*/
+/*
+ * tell server to open a document or start a program
+ */
 void SendAV_STARTPROG(const char *path, const char *commandline)
 {
 	char *ptr2;
@@ -294,6 +325,7 @@ void SendAV_STARTPROG(const char *path, const char *commandline)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SendVA_START(_WORD dst_app, const char *path)
 {
@@ -305,22 +337,31 @@ void SendVA_START(_WORD dst_app, const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Es wird dem Server ein neues Fenster gemeldet (fuer Cycling und Drag&Drop)	*/
+/*
+ * register a new window with server (for window-cycle and  Drag&Drop)
+ */
 void SendAV_ACCWINDOPEN(short handle)
 {
 	Protokoll_Send(av_server_id, AV_ACCWINDOPEN, handle, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Es wird dem Server mitgeteilt, dass ein Fenster geschlossen wurde	*/
+/*
+ * uregister a window handle
+ */
 void SendAV_ACCWINDCLOSED(short handle)
 {
 	Protokoll_Send(av_server_id, AV_ACCWINDCLOSED, handle, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll die Dateien kopieren, die ihm zuvor gemeldet wurden	*/
+/*
+ * ask server to copy the file
+ */
 void SendAV_COPY_DRAGGED(short kbd_state, const char *path)
 {
 	g_free_shared(av_parameter);
@@ -331,8 +372,11 @@ void SendAV_COPY_DRAGGED(short kbd_state, const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll das Verzeichnisfenster <path> neu einlesen	*/
+/*
+ * ask server to update a directory window
+ */
 void SendAV_PATH_UPDATE(const char *path)
 {
 	g_free_shared(av_parameter);
@@ -343,15 +387,21 @@ void SendAV_PATH_UPDATE(const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Fragt beim Server, was sich an der Position x,y befindet	*/
+/*
+ * ask server about object at position x,y
+ */
 void SendAV_WHAT_IZIT(short x, short y)
 {
 	Protokoll_Send(av_server_id, AV_WHAT_IZIT, x, y, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Teilt dem Server mit, dass Objekte auf sein Fenster gezogen wurden	*/
+/*
+ * tell server that an object has been dragged to a window
+ */
 void SendAV_DRAG_ON_WINDOW(short x, short y, short kbd_state, const char *path)
 {
 	g_free_shared(av_parameter);
@@ -362,15 +412,21 @@ void SendAV_DRAG_ON_WINDOW(short x, short y, short kbd_state, const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Antwort auf VA_START	*/
+/*
+ * reply to VA_START
+ */
 void SendAV_STARTED(const _WORD *msg)
 {
 	Protokoll_Send(msg[1], AV_STARTED, msg[3], msg[4], msg[5], msg[6], msg[7]);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll ein bestimmtes Fenster oeffnen	*/
+/*
+ * Tell server to open a window
+ */
 void SendAV_XWIND(const char *path, const char *wild_card, short bits)
 {
 	char *ptr2;
@@ -383,8 +439,11 @@ void SendAV_XWIND(const char *path, const char *wild_card, short bits)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll den passenden Viewer fuer eine Datei starten	*/
+/*
+ * Tell server to start a viewer registered for a file
+ */
 void SendAV_VIEW(const char *path)
 {
 	g_free_shared(av_parameter);
@@ -395,8 +454,11 @@ void SendAV_VIEW(const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll die Datei-/Ordnerinformationen anzeigen	*/
+/*
+ * Tell server to show the file-/directory information
+ */
 void SendAV_FILEINFO(const char *path)
 {
 	g_free_shared(av_parameter);
@@ -407,8 +469,11 @@ void SendAV_FILEINFO(const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll die Dateien/Ordner ans Ziel kopieren	*/
+/*
+ * Ask server to copy the files
+ */
 void SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits)
 {
 	char *ptr2;
@@ -421,8 +486,11 @@ void SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Der Server soll die Dateien/Ordner loeschen	*/
+/*
+ * Ask server to delete the files
+ */
 void SendAV_DELFILE(const char *file_list)
 {
 	g_free_shared(av_parameter);
@@ -433,26 +501,35 @@ void SendAV_DELFILE(const char *file_list)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Teilt dem Server mit, wo das naechste Fenster geffnet werden soll	*/
+/*
+ * Tell server where to open the next window
+ */
 void SendAV_SETWINDPOS(short x, short y, short w, short h)
 {
 	Protokoll_Send(av_server_id, AV_SETWINDPOS, x, y, w, h, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Dem Server wird ein Mouseklick gemeldet	*/
+/*
+ * Tell server about mouse event that was not handled
+ */
 void SendAV_SENDCLICK(EVNTDATA *m, short ev_return)
 {
 	Protokoll_Send(av_server_id, AV_SENDCLICK, m->x, m->y, m->bstate, m->kstate, ev_return);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/************************************************
- *		VA-Befehle, bzw. Antworten vom Server		*
- ************************************************/
+/**************************************************
+ * VA-commands, notification messages from server *
+ **************************************************/
 
-/*	Antwort des Servers auf AV_PROTOKOLL	*/
+/*
+ * reply to AV_PROTOKOLL
+ */
 void DoVA_PROTOSTATUS(_WORD msg[8])
 {
 	union {
@@ -469,12 +546,17 @@ void DoVA_PROTOSTATUS(_WORD msg[8])
 	}
 }
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 /************************************************
- *		AV-Befehle, bzw. Kommandos an den Server	*
+ * AV-commands, status messages send to server  *
  ************************************************/
 
-/*	Anmeldung beim Server (unter Angabe des Protokolls)	*/
+/*
+ * register to server (including type of protokoll)
+ */
 void DoAV_PROTOKOLL(short flags)
 {
 	char servername[9];
@@ -514,13 +596,17 @@ void DoAV_PROTOKOLL(short flags)
 	Protokoll_Broadcast(msg, FALSE);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-/*	Teilt dem Server mit, dass die Applikation nicht mehr am Protokoll teilnimmt	*/
+/*
+ * unregister from server
+ */
 void DoAV_EXIT(void)
 {
 	Protokoll_Send(av_server_id, AV_EXIT, gl_apid, 0, 0, 0, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DoVA_Message(_WORD msg[8])
 {
@@ -548,8 +634,16 @@ void DoVA_Message(_WORD msg[8])
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void va_proto_init(void)
 {
 	DoAV_PROTOKOLL(AV_PROTOKOLL_QUOTING | AV_PROTOKOLL_START | AV_PROTOKOLL_STARTED);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void va_proto_exit(void)
+{
+	DoAV_EXIT();
 }

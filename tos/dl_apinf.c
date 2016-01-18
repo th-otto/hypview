@@ -1,5 +1,8 @@
 #include "hv_defs.h"
 
+/*
+ * if your GEM library does not have this function, activate this
+ */
 #if 0
 
 _WORD appl_xgetinfo(_WORD type, _WORD *out1, _WORD *out2, _WORD *out3, _WORD *out4)

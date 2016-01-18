@@ -23,13 +23,17 @@
 
 #include "hv_defs.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 #if USE_MENU
 
 void ChooseMenu(short title, short entry)
 {
 	if ((menu_tree[title].ob_state & DISABLED) ||
-		(menu_tree[entry].ob_state & DISABLED))	/* Wenn Menutitel inaktiv... */
-		return;									/* ... tschuess */
+		(menu_tree[entry].ob_state & DISABLED))	/* if menu title or entry inactive... */
+		return;									/* ... bye */
 
 	menu_tnormal(menu_tree, title, 0);
 	SelectMenu(title, entry);

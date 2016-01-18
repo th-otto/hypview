@@ -44,6 +44,10 @@ _WORD modal_stack[MAX_MODALRECURSION];
 	msg[6] = g; \
 	msg[7] = h
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void add_item(CHAIN_DATA * item)
 {
 	CHAIN_DATA *ptr = all_list;
@@ -62,6 +66,7 @@ void add_item(CHAIN_DATA * item)
 	item->next = NULL;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void remove_item(CHAIN_DATA * item)
 {
@@ -82,6 +87,8 @@ void remove_item(CHAIN_DATA * item)
 			ptr = ptr->next;
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void FlipIconify(void)
 {
@@ -106,6 +113,7 @@ void FlipIconify(void)
 	appl_write(gl_apid, 16, msg);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void AllIconify(short handle, GRECT *r)
 {
@@ -219,6 +227,7 @@ void AllIconify(short handle, GRECT *r)
 #endif
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void CycleItems(void)
 {
@@ -297,6 +306,7 @@ void CycleItems(void)
 #endif
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void RemoveItems(void)
 {
@@ -320,6 +330,9 @@ void RemoveItems(void)
 	}
 }
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 #if USE_MENU
 static short menu_enabled = TRUE;
@@ -356,6 +369,7 @@ static void SetMenu(short enable)
 }
 #endif
 
+/*** ---------------------------------------------------------------------- ***/
 
 void ModalItem(void)
 {
@@ -365,6 +379,7 @@ void ModalItem(void)
 #endif
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void ItemEvent(EVNT *event)
 {
@@ -410,6 +425,7 @@ void ItemEvent(EVNT *event)
 #endif
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 CHAIN_DATA *find_ptr_by_whandle(short handle)
 {
@@ -424,6 +440,7 @@ CHAIN_DATA *find_ptr_by_whandle(short handle)
 	return NULL;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 CHAIN_DATA *find_ptr_by_type(_WORD type)
 {
@@ -438,6 +455,7 @@ CHAIN_DATA *find_ptr_by_type(_WORD type)
 	return NULL;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 CHAIN_DATA *find_ptr_by_status(short mask, short status)
 {

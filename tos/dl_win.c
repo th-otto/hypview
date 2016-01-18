@@ -57,7 +57,7 @@ WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT ma
 		return NULL;
 	}
 	if (!has_iconify)
-		kind &= ~SMALLER;				/*  SMALLER und andere Buttons wegfiltern   */
+		kind &= ~SMALLER;				/* filter out SMALLER */
 	ptr->type = WIN_WINDOW;
 	ptr->status = 0;
 	ptr->proc = proc;
@@ -308,7 +308,7 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 	WindowCalcScroll(ptr);
 	work = ptr->scroll;
 	
-	/*  Zu bearbeitender Bereich auf den Bildschirm beschraenken    */
+	/* restrict rectangle to screen */
 	wind_get_grect(DESK, WF_WORKXYWH, &box);
 	rc_intersect(&box, &work);
 
@@ -521,17 +521,19 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 
 			ptr->proc(ptr, WIND_TBUPDATE, &toolbar);
 
-			/*  Wurde in die Toolbar geklickt?  */
+			/* click i toolbar? */
 			if ((event->mx >= toolbar.g_x) && (event->my >= toolbar.g_y) &&
 				(event->mx < toolbar.g_x + toolbar.g_w) && (event->my < toolbar.g_y + toolbar.g_h))
 			{
 				_WORD num;
 
-				/*  Welches Objekt? */
+				/* which object? */
 				num = objc_find(ptr->toolbar, 0, MAX_DEPTH, event->mx, event->my);
 
-				/*  Gueltiges (>=0), selektierbares, aktives Objekt mit
-				   Exit / Touchexit Flag??  */
+				/*
+				 * check for legal (>=0), selectable, and active object
+				 * with exit or touchexit flag
+				 */
 				if ((num >= 0) && (ptr->toolbar[num].ob_flags & OF_SELECTABLE) &&
 					!(ptr->toolbar[num].ob_state & OS_DISABLED) &&
 					(ptr->toolbar[num].ob_flags & (OF_EXIT | OF_TOUCHEXIT)))
@@ -544,9 +546,13 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 					}
 				}
 			} else
+			{
 				ptr->proc(ptr, WIND_CLICK, event);
+			}
 		} else
+		{
 			ptr->proc(ptr, WIND_CLICK, event);
+		}
 #else
 		ptr->proc(ptr, WIND_CLICK, event);
 #endif
@@ -558,7 +564,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 	}
 	if (event->mwhich & MU_MESAG)
 	{
-		if (event->msg[3] != ptr->whandle)	/*  Message fuer ein anderes Fenster?   */
+		if (event->msg[3] != ptr->whandle)	/* message for a different window?*/
 			return;
 
 		event->mwhich &= ~MU_MESAG;
@@ -594,14 +600,14 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 					{
 						ptr->toolbar->ob_x = toolbar.g_x;
 						ptr->toolbar->ob_y = toolbar.g_y;
-						if (ptr->y_offset)	/*  Horizontale Toolbar?    */
+						if (ptr->y_offset)	/* horizontal toolbar? */
 						{
-							ptr->toolbar->ob_width = toolbar.g_w;	/*  Objektbreite anpassen   */
+							ptr->toolbar->ob_width = toolbar.g_w;	/* adjust object width */
 							toolbar.g_h = ptr->y_offset;
 						}
-						if (ptr->x_offset)	/*  Vertikale Toolbar?  */
+						if (ptr->x_offset)	/* vertical toolbar? */
 						{
-							ptr->toolbar->ob_height = toolbar.g_h;	/*  Objekthoehe anpassen    */
+							ptr->toolbar->ob_height = toolbar.g_h;	/* adjust object height */
 							toolbar.g_w = ptr->x_offset;
 						}
 
@@ -623,12 +629,12 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 						temp_tbar = toolbar;
 						if (rc_intersect(&box, &temp_tbar))
 						{
-							if (ptr->x_offset)	/*  Vertikale Toolbar?  */
+							if (ptr->x_offset)	/* vertical toolbar? */
 							{
 								box.g_x += temp_tbar.g_w;
 								box.g_w -= temp_tbar.g_w;
 							}
-							if (ptr->y_offset)	/*  Horizontale Toolbar?    */
+							if (ptr->y_offset)	/* horizontall Toolbar? */
 							{
 								box.g_y += temp_tbar.g_h;
 								box.g_h -= temp_tbar.g_h;
@@ -712,7 +718,7 @@ void WindowEvents(WINDOW_DATA * ptr, EVNT * event)
 				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
 
 #if USE_TOOLBAR
-				/*  Toolbar beim Scrollen beruecksichtigen  */
+				/* take toolbar into account */
 				win.g_w -= DL_WIN_XADD;
 				win.g_h -= DL_WIN_YADD;
 #endif
@@ -1022,14 +1028,14 @@ void DrawToolbar(WINDOW_DATA * win)
 
 		win->toolbar->ob_x = toolbar.g_x;
 		win->toolbar->ob_y = toolbar.g_y;
-		if (win->y_offset)				/*  Horizontale Toolbar?    */
+		if (win->y_offset)				/* horizontal toolbar? */
 		{
-			win->toolbar->ob_width = toolbar.g_w;	/*  Objektbreite anpassen   */
+			win->toolbar->ob_width = toolbar.g_w;	/* adjust object width */
 			toolbar.g_h = win->y_offset;
 		}
-		if (win->x_offset)				/*  Vertikale Toolbar?  */
+		if (win->x_offset)				/* vertical toolbar? */
 		{
-			win->toolbar->ob_height = toolbar.g_h;	/*  Objekthoehe anpassen    */
+			win->toolbar->ob_height = toolbar.g_h;	/* adjust object height */
 			toolbar.g_w = win->x_offset;
 		}
 

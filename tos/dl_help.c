@@ -27,12 +27,15 @@
 #include "av.h"
 #include <ctype.h>
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 _WORD help_viewer_id(void)
 {
 	_WORD viewer;
 	
-	/*  Look for environment variable which points to the help viewer   */
+	/* look for environment variable which points to the help viewer */
 	viewer = appl_locate(getenv("HELPVIEWER"), FALSE);
 
 	/*

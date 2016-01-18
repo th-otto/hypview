@@ -31,14 +31,14 @@
 #include "tos/dl_user.h"            /* Application specific definitions */
 
 
-/*	Window types	*/
+/* Window types */
 #define	WIN_WINDOW  1
 #define	WIN_DIALOG  2
 #define	WIN_FILESEL 3
 #define	WIN_FONTSEL 4
 #define	WIN_PRINTER 5
 
-/*	USER_DATA status flags	*/
+/* USER_DATA status flags */
 #define	WIS_OPEN        0x01
 #define	WIS_ICONIFY     0x02
 #define	WIS_ALLICONIFY  0x04
@@ -46,7 +46,7 @@
 #define WIS_MFCLOSE     0x20	/* Marked for CLOSE */
 
 
-/*	Window messages	*/
+/* Window messages */
 #define	WIND_INIT                -1
 #define	WIND_OPEN                -2
 #define	WIND_OPENSIZE            -3
@@ -75,11 +75,11 @@
 
 #define	WIND_BUBBLE             -50
 
-/*	Toolbar messages	*/
+/* Toolbar messages */
 #define	WIND_TBCLICK            -60
 #define	WIND_TBUPDATE           -61
 
-/*	File maximum	*/
+/* File maximum */
 #define	DL_PATHMAX              256
 
 typedef struct _chain_data_
@@ -215,7 +215,7 @@ typedef struct _fontsel_data_
 
 
 /*
- *		DL_INIT.C
+ * dl_init.c
  */
 extern	_WORD aes_handle, aes_fontid, aes_fontsize, pwchar, phchar, pwbox, phbox;
 extern	_WORD has_wlffp, has_iconify, has_form_popup;
@@ -248,7 +248,7 @@ void GetScreenSize(_WORD *width, _WORD *height);
 _WORD GetNumColors(_VOID);
 
 /*
- *		DL_EVENT.C
+ * dl_event.c
  */
 extern	short	doneFlag;
 extern	short	quitApp;
@@ -261,7 +261,7 @@ void DoEvent(void);
 _WORD popup_select(OBJECT *tree, _WORD mx, _WORD my);
 
 /*
- *		DL_ITEMS.C
+ * dl_items.c
  */
 extern	char	const iconified_name[];
 extern	char	const prghelp_name[];
@@ -288,12 +288,12 @@ CHAIN_DATA *find_ptr_by_type(_WORD type);
 
 
 /*
- *		DL_MENU.C
+ * dl_menu.c
  */
 void ChooseMenu(short title, short entry);
 
 /*
- *		DL_DIAL.C
+ * dl_dial.c
  */
 DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, short y, void *data);
 void SendCloseDialog(DIALOG *dial);
@@ -305,7 +305,7 @@ void DialogEvents(DIALOG_DATA *ptr,EVNT *event);
 void SpecialMessageEvents(DIALOG *dialog,EVNT *event);
 
 /*
- *		DL_WIN.C
+ * dl_win.c
  */
 WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, 
 					WP_UNIT max_w, WP_UNIT max_h,void *user_data);
@@ -326,14 +326,14 @@ WINDOW_DATA *find_window_by_data(void *data);
 int count_window(void);
 
 /*
- *		DL_FILSL.C
+ * dl_filsl.c
  */
 void *OpenFileselector(HNDL_FSL proc,char *comment,char *filepath,char *path, const char *pattern, short mode, void *data);
 void FileselectorEvents(FILESEL_DATA *ptr,EVNT *event);
 void RemoveFileselector(FILESEL_DATA *ptr);
 
 /*
- *		DL_FONSL.C
+ * dl_fonsl.c
  */
 extern char fnts_std_text[80];
 FONTSEL_DATA *CreateFontselector(HNDL_FONT proc, short font_flag, const char *sample_text, const char *opt_button);
@@ -343,7 +343,7 @@ void RemoveFontselector(FONTSEL_DATA *ptr);
 void FontselectorEvents(FONTSEL_DATA *ptr,EVNT *event);
 
 /*
- *		DL_AV.C
+ * dl_av.c
  */
 extern long av_server_cfg;
 
@@ -361,9 +361,10 @@ _WORD shel_xwrite(_WORD sh_wdoex, _WORD sh_wisgr, _WORD sh_wiscr, const void *sh
 _BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id);
 _WORD appl_locate(const char *pathlist, _BOOL startit);
 void va_proto_init(void);
+void va_proto_exit(void);
 
 /*
- *		DL_AVCMD.C
+ * dl_avcmd.c
  */
 void SendAV_GETSTATUS(void);
 void SendAV_STATUS(const char *string);
@@ -391,37 +392,37 @@ void SendAV_SETWINDPOS(short x, short y, short w, short h);
 void SendAV_SENDCLICK(EVNTDATA *mouse, short ev_return);
 
 /*
- *		DL_DRAG.C
+ * dl_drag.c
  */
 void DragDrop(_WORD message[]);
 
 /*
- *		DL_BUBBL.C
+ * dl_bubbl.c
  */
 void DoInitBubble(void);
 void DoExitBubble(void);
 void Bubble(short mx,short my);
 
 /*
- *		DL_HELP.C
+ * dl_help.c
  */
 _WORD help_viewer_id(void);
 void STGuideHelp(void);
 
 /*
- *		DL_LEDIT.C
+ * dl_ledit.c
  */
 void DoInitLongEdit(void);
 void DoExitLongEdit(void);
 
 /*
- *		DL_DHST.C
+ * dl_dhst.c
  */
 void DhstAddFile(const char *path);
 void DhstFree(_WORD message[]);
 
 /*
- *		DL_ROUTS.C
+ * dl_routs.c
  */
 void ConvertKeypress(_WORD *key, _WORD *kstate);
 void CopyMaximumChars(OBJECT *obj, char *str);
@@ -429,7 +430,7 @@ char *ParseData(char *start);
 short rc_intersect_my(GRECT *p1, GRECT *p2);
 
 /*
- *		DL_USER.C
+ * dl_user.c
  */
 typedef struct
 {

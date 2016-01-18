@@ -2,6 +2,10 @@
 #include "diallib.h"
 #include "tos/mem.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 /*
    Mxmask returns a bit-mask with which one should mask the mode
    WORD of a Mxalloc call if one wants to use protection bits.
@@ -14,7 +18,7 @@
    mxMask = Mxmask();
    p = mxMask ? Mxalloc( size, 0x43 & mxMask) : Malloc( size); */
 
-static unsigned short Mxmask (void)
+static unsigned short Mxmask(void)
 {
 	static unsigned short mxmask = 1;
     void *svStack;         /* Supervisor-Stack */
@@ -55,6 +59,7 @@ static unsigned short Mxmask (void)
 	
 } /* Mxmask */
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * allocate memory to be used by IPC
@@ -77,6 +82,7 @@ void *g_alloc_shared(size_t size)
 	return ptr;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *g_strdup2_shared(const char *str1, const char *str2, char **ptr2)
 {
@@ -102,6 +108,7 @@ char *g_strdup2_shared(const char *str1, const char *str2, char **ptr2)
 	return ptr;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *g_strdup_shared(const char *str)
 {
@@ -117,6 +124,7 @@ char *g_strdup_shared(const char *str)
 	return ptr;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void g_free_shared(void *ptr)
 {

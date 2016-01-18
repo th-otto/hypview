@@ -23,23 +23,26 @@
 
 #include "hv_defs.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void ConvertKeypress(_WORD *key, _WORD *kstate)
 {
 	short ascii = *key & 0xff;
-	short scan = (*key >> 8) & 0x7f;	/*  Scan code immer < 128+  */
+	short scan = (*key >> 8) & 0x7f;	/* scancode always < 128 */
 
-	if (!scan)							/*  Falls kein Scancode vorhanden ist,  */
-		return;							/*  dann gibt's nichts zu tun!  */
+	if (!scan)							/* if no scancode..., */
+		return;							/* nothing to do */
 
-	if ((scan >= KbAlt1) && (scan <= 0x83))	/*  Alt+Numerische Tasten...    */
-		scan -= 0x76;					/*  in Numerische Tasten wandeln    */
+	if ((scan >= KbAlt1) && (scan <= 0x83))	/* Alt+numpad key... */
+		scan -= 0x76;					/* convert to regular key */
 
-	if (((scan >= 99) && (scan <= 114))	/*  Zahlenblock Tasten...   */
+	if (((scan >= 99) && (scan <= 114))	/* numpad keys */
 		|| (scan == 74) || (scan == 78))
 		*kstate |= KbNUM;
 
-	if ((scan >= 115) && (scan <= 119))	/*  CTRL+Kombinationen...   */
+	if ((scan >= 115) && (scan <= 119))	/* ctrl+combinations... */
 	{
 		*kstate |= KbCTRL;
 		switch (scan)
@@ -50,9 +53,9 @@ void ConvertKeypress(_WORD *key, _WORD *kstate)
 		case 116:
 			scan = KbRIGHT;
 			break;
-		case 117:						/*  CTRL + END  */
+		case 117:						/* CTRL + END */
 			break;
-		case 118:						/*  CTRL + PAGE DOWN    */
+		case 118:						/* CTRL + PAGE DOWN  */
 			break;
 		case 119:
 			scan = KbHOME;
@@ -60,14 +63,16 @@ void ConvertKeypress(_WORD *key, _WORD *kstate)
 		}
 	}
 
-	if (*kstate & (KbCTRL | KbALT))		/*  CTRL und ALT Kombinationen ?    */
+	if (*kstate & (KbCTRL | KbALT))		/* CTRL and ALT combinations */
 	{
 		if (ascii < 32)
-			ascii = ((const char *) key_table->caps)[scan];	/*  in Grossbuchstaben umwandeln    */
+			ascii = ((const char *) key_table->caps)[scan];	/* convert to uppercase */
 	}
 
 	*key = (scan << 8) + ascii;
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void CopyMaximumChars(OBJECT * obj, char *str)
 {
@@ -77,20 +82,21 @@ void CopyMaximumChars(OBJECT * obj, char *str)
 	obj->ob_spec.tedinfo->te_ptext[max_size] = 0;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
-	Liefert in <start> den ersten Parameter und gibt den Pointer
-	auf den nchsten Parameter zurck.
-	Um alle Parameter zu erfahren muss man folgendermassen vorgehen:
+    Modifies <start> to point to the first parameter, and returns
+    pointer to next parameter.
+    To handle all parameters, do something like:
 
 	{
-	char *next,*ptr=data;
+		char *next, *ptr = data;
 		do
 		{
-			next=ParseData(ptr);
+			next = ParseData(ptr);
 			DoSomething(ptr);
-			ptr=next;
-		}while(*next);
+			ptr = next;
+		} while (*next);
 	}
 */
 char *ParseData(char *start)
@@ -124,6 +130,7 @@ char *ParseData(char *start)
 		return start;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 short rc_intersect_my(GRECT *p1, GRECT *p2)
 {

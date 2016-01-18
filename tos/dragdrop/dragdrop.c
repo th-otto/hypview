@@ -34,18 +34,18 @@
 #define       SIG_IGN	((__sighandler_t) 1L)
 #define       SIG_ERR	((__sighandler_t)-1L)
 
-/*----------------------------------------------------------------------------------------*/
-/* Drag & Drop - Pipe ffnen (fuer den Sender)															*/
-/* Funktionsresultat:	Handle der Pipe, -1 fuer Fehler oder -2 fuer Fehler bei appl_write	*/
-/*	app_id:					ID des Senders (der eigenen Applikation)									*/
-/*	rcvr_id:					ID des Empfaengers																	*/
-/*	window:					Handle des Empaefnger-Fensters													*/
-/*	mx:						x-Koordinate der Maus beim Loslassen oder -1								*/
-/*	my:						y-Koordinate der Maus beim Loslassen oder -1								*/
-/*	kbstate:					Status der Kontrolltasten														*/
-/*	format:					Feld fuer die max. 8 vom Empfaenger unterstuetzten Formate				*/
-/*	oldpipesig:				Zeiger auf den alten Signal-Dispatcher										*/
-/*----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------*/
+/* Drag & Drop - Pipe ffnen (fuer den Sender)											   */
+/* Funktionsresultat:	Handle der Pipe, -1 fuer Fehler oder -2 fuer Fehler bei appl_write */
+/*  app_id:					ID des Senders (der eigenen Applikation)					   */
+/*  rcvr_id:					ID des Empfaengers										   */
+/*  window:					Handle des Empaefnger-Fensters								   */
+/*  mx:						x-Koordinate der Maus beim Loslassen oder -1				   */
+/*  my:						y-Koordinate der Maus beim Loslassen oder -1				   */
+/*  kbstate:					Status der Kontrolltasten								   */
+/*  format:					Feld fuer die max. 8 vom Empfaenger unterstuetzten Formate	   */
+/*  oldpipesig:				Zeiger auf den alten Signal-Dispatcher						   */
+/*-----------------------------------------------------------------------------------------*/
 short
 ddcreate(short app_id, short rcvr_id, short window, short mx, short my, short kbstate, unsigned long format[8],
 		 void **oldpipesig)
@@ -114,17 +114,17 @@ ddcreate(short app_id, short rcvr_id, short window, short mx, short my, short kb
 }
 
 
-/*----------------------------------------------------------------------------------------*/
-/* Drag & Drop - berprfen ob der Empfaenger ein Format akzeptiert								*/
-/* Funktionsresultat:	DD_OK: Empfnger unterstuetzt das Format										*/
-/*								DD_EXT: Empfaenger akzeptiert das Format nicht							*/
-/*								DD_LEN: Daten sind zu lang fuer den Empfaenger								*/
-/*								DD_NAK: Fehler bei Kommunikation												*/
-/*	handle:					Handle der Pipe																	*/
-/*	format:					Kruezel fuer das Format															*/
-/*	name:						Beschreibung des Formats als C-String										*/
-/*	size:						Laenge der zu sendenen Daten													*/
-/*----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------*/
+/* Drag & Drop - berprfen ob der Empfaenger ein Format akzeptiert						   */
+/* Funktionsresultat:	DD_OK: Empfnger unterstuetzt das Format							   */
+/*  							DD_EXT: Empfaenger akzeptiert das Format nicht			   */
+/*  							DD_LEN: Daten sind zu lang fuer den Empfaenger			   */
+/*  							DD_NAK: Fehler bei Kommunikation						   */
+/*  handle:					Handle der Pipe												   */
+/*  format:					Kruezel fuer das Format										   */
+/*  name:						Beschreibung des Formats als C-String					   */
+/*  size:						Laenge der zu sendenen Daten							   */
+/*-----------------------------------------------------------------------------------------*/
 short ddstry(short handle, unsigned long format, char *name, long size)
 {
 	long str_len;
@@ -152,24 +152,24 @@ short ddstry(short handle, unsigned long format, char *name, long size)
 	return DD_NAK;
 }
 
-/*----------------------------------------------------------------------------------------*/
-/* Drag & Drop - Pipe schliessen																				*/
-/*	handle:					Handle der Pipe																	*/
-/* oldpipesig:				Zeiger auf den alten Signalhandler											*/
-/*----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------*/
+/* Drag & Drop - Pipe schliessen														   */
+/*  handle:					Handle der Pipe												   */
+/* oldpipesig:				Zeiger auf den alten Signalhandler							   */
+/*-----------------------------------------------------------------------------------------*/
 void ddclose(short handle, void *oldpipesig)
 {
 	Psignal(SIGPIPE, oldpipesig);		/* wieder alten Dispatcher eintragen */
 	Fclose(handle);						/* Pipe schliessen */
 }
 
-/*----------------------------------------------------------------------------------------*/
-/* Drag & Drop - Pipe oeffnen (fuer den Empfnger)														*/
-/* Funktionsresultat:	Handle der Pipe oder -1 (Fehler)												*/
-/* pipe:						Zeiger auf den Namen der Pipe ("DRAGDROP.??")							*/
-/* format:					Zeiger auf Array mit unterstuetzten Datenformaten						*/
-/* oldpipesig:				Zeiger auf den Zeiger auf den alten Signalhandler						*/
-/*----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------*/
+/* Drag & Drop - Pipe oeffnen (fuer den Empfnger)										   */
+/* Funktionsresultat:	Handle der Pipe oder -1 (Fehler)								   */
+/* pipe:						Zeiger auf den Namen der Pipe ("DRAGDROP.??")			   */
+/* format:					Zeiger auf Array mit unterstuetzten Datenformaten			   */
+/* oldpipesig:				Zeiger auf den Zeiger auf den alten Signalhandler			   */
+/*-----------------------------------------------------------------------------------------*/
 short ddopen(char *pipe, unsigned long format[8], void **oldpipesig)
 {
 	short handle;
@@ -193,14 +193,14 @@ short ddopen(char *pipe, unsigned long format[8], void **oldpipesig)
 	return -1;
 }
 
-/*----------------------------------------------------------------------------------------*/
-/* Header fuer Drag & Drop einlesen																			*/
-/* Funktionsresultat:	0 Fehler 1: alles in Ordnung													*/
-/*	handle:					Handle der Pipe																	*/
-/* name:						Zeiger auf Array fuer den Datennamen											*/
-/* format:					Zeiger auf ein Long, das das Datenformat anzeigt						*/
-/* size:						Zeiger auf ein Long fuer die Laenge der Daten								*/
-/*----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------*/
+/* Header fuer Drag & Drop einlesen														   */
+/* Funktionsresultat:	0 Fehler 1: alles in Ordnung									   */
+/*  handle:					Handle der Pipe												   */
+/* name:						Zeiger auf Array fuer den Datennamen					   */
+/* format:					Zeiger auf ein Long, das das Datenformat anzeigt			   */
+/* size:						Zeiger auf ein Long fuer die Laenge der Daten			   */
+/*-----------------------------------------------------------------------------------------*/
 short ddrtry(short handle, char *name, unsigned long *format, long *size)
 {
 	short hdr_len;
@@ -244,12 +244,12 @@ short ddrtry(short handle, char *name, unsigned long *format, long *size)
 	return 0;							/* Fehler */
 }
 
-/*----------------------------------------------------------------------------------------*/
-/* Meldung an den Drag & Drop - Initiator senden														*/
-/* Funktionsresultat:	0: Fehler 1: alles in Ordnung													*/
-/*	handle:					Handle der Pipe																	*/
-/* msg:						Nachrichtennummer																	*/
-/*----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------*/
+/* Meldung an den Drag & Drop - Initiator senden										   */
+/* Funktionsresultat:	0: Fehler 1: alles in Ordnung									   */
+/*  handle:					Handle der Pipe												   */
+/*  msg:					Nachrichtennummer											   */
+/*-----------------------------------------------------------------------------------------*/
 short ddreply(short handle, short msg)
 {
 	if (Fwrite(handle, 1, ((char *) &msg) + 1) != 1)	/* Fehler? */

@@ -26,11 +26,13 @@
 #include <mint/arch/nf_ops.h>
 
 
-/*	Dateien und Pfade	*/
+/* files and paths */
 static char file_extensions[DL_PATHMAX] = "*.HYP\0*.*\0";
 
-/*	Erstellt in <dst> eine Liste mit absoluten Pfaden aus <src>.
-	Relative Pfade werden ignoriert.	*/
+/*
+ * Create a list of absolute paths of <src> in <dst>.
+ * Ignores relative paths.
+ */
 static void CreatePathList(char *dst, const char *src)
 {
 	while (*src)

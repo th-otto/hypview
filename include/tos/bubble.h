@@ -1,7 +1,7 @@
 #ifndef __BUBBLE_H__
 #define __BUBBLE_H__
 
-/* BUBBLEGEM_REQUEST - Nachricht
+/* BUBBLEGEM_REQUEST - message
  * msg[0]   $BABA
  * msg[1]   demonID
  * msg[2]   0
@@ -13,7 +13,7 @@
  */
 #define BUBBLEGEM_REQUEST  0xBABA
 
-/* BUBBLEGEM_SHOW - Nachricht:
+/* BUBBLEGEM_SHOW - message
  * msg[0]   $BABB
  * msg[1]   gl_apid
  * msg[2]   0
@@ -78,11 +78,10 @@
 
 
 /*
- * Daten fuer das Special-Word von BUBBLEGEM_SHOW
+ * constants for the special-word of BUBBLEGEM_SHOW
  */
-#define BGS7_USRHIDE	0x0001		/*	fuer modalen Aufruf noetig	*/
-#define BGS7_MOUSE 	0x0004		/*	BubbleGEM benutzt die Koordinaten nur 
-												zum Zeichnen	*/
+#define BGS7_USRHIDE	0x0001		/* neccessary for modal call */
+#define BGS7_MOUSE 		0x0004		/* BubbleGEM uses coordinated only for drawing */
 
 
 /*
@@ -90,14 +89,13 @@
  */
 typedef struct
 {
-	long	magic;   /*	'BGEM'	*/
-	long	size;    /*	Groesse dieser Struktur, derzeit 18	*/
-	int	release; /*	derzeit 6, nie kleiner als 5	*/
-	int	active;  /*	<>0, wenn gerade eine Hilfe angezeigt wird;
-								0  sonst	*/
-	MFORM	*mhelp;	/*	Zeiger auf Hilfe-Mausform	*/
-	int	dtimer;	/*	Daemon-Timer; Default 200ms; ab Release 6	*/
-}BGEM;
+	long	magic;   /* 'BGEM' */
+	long	size;    /* size of this structure; currently 18 */
+	short	release; /* currently 6, always >= 5 */
+	short	active;  /* <>0, if help s displayed; 0 otherwise /
+	MFORM	*mhelp;  /* pointer to mouse form used for help */
+	short	dtimer;  /* daemon-timer; default 200ms; since release 6 */
+} BGEM;
 
 
 /* BHLP-Cookie:

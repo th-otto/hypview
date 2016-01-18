@@ -1,9 +1,9 @@
 typedef struct
 {
-	const char *appname;	/*	The name of the application (e.g. "Texel")	*/
-	char *apppath;			/*	The absolute path of the  application (e.g. "c:\program\texel.app")	*/
-	const char *docname;	/*	The name of the document (e.g. "balmer.txl")	*/
-	char *docpath;			/*	The absolute path of the document (e.B. "d:\data\balmer.txl")	*/
+	const char *appname;	/* The name of the application (e.g. "Texel") */
+	char *apppath;			/* The absolute path of the  application (e.g. "c:\program\texel.app") */
+	const char *docname;	/* The name of the document (e.g. "balmer.txl") */
+	char *docpath;			/* The absolute path of the document (e.B. "d:\data\balmer.txl") */
 } DHSTINFO;
 
 /*

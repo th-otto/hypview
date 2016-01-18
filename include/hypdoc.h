@@ -56,7 +56,7 @@ typedef struct _hyp_nav_buttons
 	unsigned int references : 1; /* TO_REFERENCES; enabled if current node has external references */
 	unsigned int ascii : 1;      /* TO_ASCII; enabled if we can save file as ASCII */
 	unsigned int searchbox : 1;  /* enabled if search text entry is visible */
-	unsigned int menu : 1;
+	unsigned int menu : 1;       /* context menu */
 } hyp_nav_buttons;
 
 struct _document_

@@ -24,13 +24,13 @@
 #ifndef _mem_h
 #define _mem_h
 
-/*	Mxalloc()-Modus	*/
+/* Mxalloc()-Mode */
 #define MX_STRAM		0x00
 #define MX_TTRAM		0x01
 #define	MX_PREFSTRAM	0x02
 #define MX_PREFTTRAM	0x03
 
-/* Protection bits.  */
+/* Protection bits. */
 #define MX_MPROT		0x08			/* change protection of already allocated block */
 
 #define MX_HEADER		0x00			/* default protection from program header */

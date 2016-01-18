@@ -462,7 +462,7 @@
 #define AV_SENDCLICK 0x4709
 
 
-/*	AV protokol flags	*/
+/* AV protokol flags */
 #define AV_PROTOKOLL_SETSTATUS   0x01
 #define AV_PROTOKOLL_START       0x02
 #define AV_PROTOKOLL_STARTED     0x04

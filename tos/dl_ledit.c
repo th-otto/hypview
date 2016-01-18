@@ -29,20 +29,18 @@
 
 static short magic_version = -1;
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
-static void InitScrollTED(OBJECT * obj, XTED * xted, short txt_len)
+static void InitScrollTED(OBJECT *obj, XTED *xted, short txt_len)
 {
 	TEDINFO *tedinfo = obj->ob_spec.tedinfo;
+	char *src, *dst, *txt, *tmplt;
+	short tmplt_len = 0;
+	short i;
 
-	char *src,
-	*dst,
-	*txt,
-	*tmplt;
-
-	short tmplt_len = 0,
-		i;
-
-	if (magic_version == -1)			/*  Kein MagiC vorhanden ?  */
+	if (magic_version == -1)			/* MagiC available ? */
 	{
 		txt = g_new(char, (txt_len << 1) + tmplt_len + 2);
 		if (txt == NULL)
@@ -55,9 +53,11 @@ static void InitScrollTED(OBJECT * obj, XTED * xted, short txt_len)
 		tedinfo->te_txtlen = txt_len + 1;
 		return;
 	} else if (magic_version < 0x520)
+	{
 		txt_len = min(128, txt_len);
-
-	if (tedinfo->te_ptmplt == NULL)		/*  evtl. schon initialisiert ? */
+	}
+	
+	if (tedinfo->te_ptmplt == NULL)		/* already initialized? */
 		return;
 
 	src = tedinfo->te_ptmplt;
@@ -103,10 +103,11 @@ static void InitScrollTED(OBJECT * obj, XTED * xted, short txt_len)
 	tedinfo->te_ptmplt = NULL;
 	tedinfo->te_tmplen = tmplt_len + txt_len + 1;
 
-	tedinfo->te_just = TE_LEFT;			/* wichtig! */
+	tedinfo->te_just = TE_LEFT;			/* important! */
 	tedinfo->te_pvalid = (void *) xted;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DoInitLongEdit(void)
 {
@@ -123,6 +124,8 @@ void DoInitLongEdit(void)
 		InitScrollTED(&tree[long_edit[i].obj], &long_edit[i].xted, long_edit[i].len);
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void DoExitLongEdit(void)
 {

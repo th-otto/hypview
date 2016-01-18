@@ -28,7 +28,7 @@
  ********************************************/
 /* Use a global VDI workstation? */
 #define	USE_GLOBAL_VDI			1
-/*	Save color palette on init?	*/
+/* Save color palette on init? */
 #define	SAVE_COLORS				0
 
 /* Install/remove menubar on initialization? (Needs a resource object MENU) */
@@ -49,7 +49,7 @@
 /* Support Drag&Drop protokol */
 #define	USE_DRAGDROP        1
 
-/* Enable support for long edit fields (As in MagiC)	*/
+/* Enable support for long edit fields (As in MagiC) */
 #define	USE_LONGEDITFIELDS  0
 
 /* BubbleGEM help system */
@@ -70,7 +70,7 @@
 #define	MAX_MODALRECURSION	10
 
 
-/* event_multi parameters	*/
+/* event_multi parameters */
 #define EVENTS		MU_MESAG|MU_KEYBD|MU_BUTTON
 #define MBCLICKS	2|0x0100
 #define MBMASK		3

@@ -37,6 +37,7 @@ static HISTORY *last_history = NULL;
 /*******************************************************/
 /****** Events                                    ******/
 /*******************************************************/
+
 void DoButton(EVNT * event)
 {
 	UNUSED(event);
@@ -63,11 +64,11 @@ void DoUserEvents(EVNT *event)
 					win = OpenFileNewWindow(last_path, NULL, last_node, FALSE);
 					if (win)
 					{
-	/* ----
+#if 0
 						SetLastHistory(win, last_history);
 	 					DeleteLastHistory(last_history);
 	 					last_history = NULL;
-	--- */
+#endif
 					}
 				}
 	
@@ -79,8 +80,10 @@ void DoUserEvents(EVNT *event)
 						if (OpenFileNewWindow(filename, NULL, HYP_NOINDEX, FALSE) == NULL)
 						{
 							g_freep(&gl_profile.viewer.default_file);
-							/* if (gl_profile.profile)
-								gl_profile.profile->changed = TRUE; */
+#if 0
+							if (gl_profile.profile)
+								gl_profile.profile->changed = TRUE;
+#endif
 							SelectFileLoad(NULL);
 						}
 						g_free(filename);
@@ -120,9 +123,11 @@ void DoUserEvents(EVNT *event)
 			break;
 
 		case WM_CLOSED:
-			{								/* Dies ist ein Hack um das letzte Fenster zufinden */
-				/* MU_MESAG darf am Ende nicht maskiert werden sonst */
-				/* wird das Fenster nicht geschlossen!              */
+			{								/* find the last window */
+				/*
+				 * MU_MESAG must not be removed otherwise
+				 * the window will not be closed
+				 */
 				CHAIN_DATA *ptr;
 	
 				ptr = find_ptr_by_whandle(event->msg[3]);
@@ -169,7 +174,7 @@ void DoUserEvents(EVNT *event)
 			{
 				short global_cycle = (kstate & KbSHIFT ? !gl_profile.viewer.av_window_cycle : gl_profile.viewer.av_window_cycle);
 
-				if (av_server_cfg != 0 && global_cycle)	/*  AV initialisiert?   */
+				if (av_server_cfg != 0 && global_cycle)
 				{
 					SendAV_SENDKEY(event->kstate, event->key);
 					event->mwhich &= ~MU_KEYBD;
@@ -186,7 +191,7 @@ void DoUserEvents(EVNT *event)
 
 
 /*******************************************************/
-/****** Men-Auswahl                              ******/
+/****** menu selection                                 */
 /*******************************************************/
 #if USE_MENU
 void SelectMenu(short title, short entry)
@@ -216,7 +221,7 @@ void SelectMenu(short title, short entry)
 
 
 /*******************************************************/
-/****** Dialogobjekte mit Langen Editfeldern      ******/
+/****** dialog objects with extended edit fields  ******/
 /*******************************************************/
 #if USE_LONGEDITFIELDS
 LONG_EDIT long_edit[] = {
@@ -230,7 +235,7 @@ short long_edit_count = (short) (sizeof(long_edit) / sizeof(LONG_EDIT));
 
 
 /*******************************************************/
-/****** Drag&Drop Protokoll                       ******/
+/****** Drag&Drop protokol                        ******/
 /*******************************************************/
 #if USE_DRAGDROP
 /*
@@ -259,10 +264,9 @@ void DD_Object(DIALOG *dial, GRECT *rect, OBJECT *tree, short obj, char *data, u
 
 
 /*
-	Hier kann an Hand des Objektbaumes und der Objektnummer
-	Das gewuenschte Daten-Format angegeben werden.
-*/
-void DD_DialogGetFormat(OBJECT * tree, short obj, unsigned long format[])
+ * select target format depending on object tree and object
+ */
+void DD_DialogGetFormat(OBJECT *tree, short obj, unsigned long format[])
 {
 	short i;
 
@@ -282,12 +286,11 @@ void DD_DialogGetFormat(OBJECT * tree, short obj, unsigned long format[])
 /****** AV Protokoll                              ******/
 /*******************************************************/
 /*
-	Der Server aktiviert das Programm und bergibt eine Kommandozeile.
-	Evtl. muss mittels ParseData() alles ausgewertet werden.
-*/
+ * The server activates the program and passes a command line.
+ */
 void DoVA_START(_WORD msg[8])
 {
-	if (modal_items < 0)				/*  klappt nur, wenn kein modaler Dialog offen ist  */
+	if (modal_items < 0)				/* only do this if we have no modal dialog */
 	{
 		char *data;
 
@@ -317,11 +320,11 @@ void DoVA_START(_WORD msg[8])
 
 			if (count == 0 && win != NULL)
 			{
-/* ----
+#if 0
 				SetLastHistory(win, last_history);
 				DeleteLastHistory(last_history);
 				last_history = NULL;
----- */
+#endif
 			}
 			g_free(filename);
 			g_free(arg);
@@ -347,7 +350,7 @@ void DoVA_START(_WORD msg[8])
 
 void DoVA_DRAGACCWIND(_WORD msg[8])
 {
-	if (modal_items < 0)		/*  klappt nur, wenn kein modaler Dialog offen ist  */
+	if (modal_items < 0)		/* only do this if we have no modal dialog */
 	{
 		char *data;
 

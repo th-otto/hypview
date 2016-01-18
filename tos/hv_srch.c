@@ -41,12 +41,12 @@ static _WORD const entrie_objs[10] = { SR_FSTL_0, SR_FSTL_1, SR_FSTL_2, SR_FSTL_
 /*----------------------------------------------------------------------------------------*/
 /* n entry in the list box has been selected...				  */
 /* Function result:	-								  */
-/*	box:				Pointer to the list box structure			  */
-/*	tree:				Pointer to the object tree		  */
-/*	item:				Pointer to the entry		  */
-/*	user_data:			...						  */
-/*	obj_index:			Index of the object, poss. | 0x8000, poss. 0 (not visible) */
-/*	last_state:			The previous state				  */
+/*  box:				Pointer to the list box structure			  */
+/*  tree:				Pointer to the object tree		  */
+/*  item:				Pointer to the entry		  */
+/*  user_data:			...						  */
+/*  obj_index:			Index of the object, poss. | 0x8000, poss. 0 (not visible) */
+/*  last_state:			The previous state				  */
 /*----------------------------------------------------------------------------------------*/
 
 
@@ -78,13 +78,13 @@ static void __CDECL select_item(struct SLCT_ITEM_args args)
 
 /*----------------------------------------------------------------------------------------*/
 /* Set string and object status of a GTEXT object in the list box					  */
-/* Function result:	Number of the start object to be drawn							  */
-/*	box:				Pointer to the list box structure 								  */
-/*	tree:				Pointer to the object tree										  */
+/*  Function result:	Number of the start object to be drawn							  */
+/*  box:				Pointer to the list box structure 								  */
+/*  tree:				Pointer to the object tree										  */
 /*  item:				Pointer to the entry											  */
 /*  index:				Object number													  */
 /*  user_data:			...																  */
-/*	rect:				GRECT for selection/deselection or 0L (not alterable)		  */
+/*  rect:				GRECT for selection/deselection or 0L (not alterable)		  */
 /*  offset:																				  */
 /*----------------------------------------------------------------------------------------*/
 
@@ -159,12 +159,12 @@ static void make_results(RESULT_ENTRY *ptr)
 
 /*----------------------------------------------------------------------------------------*/
 /* Service routine for window dialog 													  */
-/* Function resul:	0: Close dialog     1: Continue								  */
-/*	dialog:				Pointer to the dialog structure									  */
-/*	events:				Pointer to EVNT structure or 0L								  */
-/*	obj:				Number of the object or event number							  */
-/*	clicks:				Number of mouse clicks											  */
-/*	data:				Pointer to additional data									  */
+/* Function result:	0: Close dialog     1: Continue								  */
+/*  dialog:				Pointer to the dialog structure									  */
+/*  events:				Pointer to EVNT structure or 0L								  */
+/*  obj:				Number of the object or event number							  */
+/*  clicks:				Number of mouse clicks											  */
+/*  data:				Pointer to additional data									  */
 /*----------------------------------------------------------------------------------------*/
 
 static _WORD __CDECL SearchResultHandle(struct HNDL_OBJ_args args)

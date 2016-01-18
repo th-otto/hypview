@@ -35,6 +35,9 @@
 	msg[6] = g; \
 	msg[7] = h
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static DIALOG_DATA *find_dialog_by_obj(OBJECT *tree)
 {
@@ -51,6 +54,7 @@ static DIALOG_DATA *find_dialog_by_obj(OBJECT *tree)
 	return NULL;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 #if 0
 static DIALOG_DATA *find_dialog_by_whandle(short handle)
@@ -69,6 +73,7 @@ static DIALOG_DATA *find_dialog_by_whandle(short handle)
 }
 #endif
 
+/*** ---------------------------------------------------------------------- ***/
 
 DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, short y, void *data)
 {
@@ -117,8 +122,9 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 			GRECT small = { 0, 0, 0, 0 };
 			
 			if ((ptr->last.g_x == -1) && (ptr->last.g_y == -1))
+			{
 				form_center_grect(ptr->obj, &big);
-			else
+			} else
 			{
 				big.g_x = ptr->last.g_x;
 				big.g_y = ptr->last.g_y;
@@ -205,17 +211,19 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 	return ptr->dial;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SendCloseDialog(DIALOG *dial)
 {
 	SendClose(wdlg_get_handle(dial));
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void CloseDialog(DIALOG_DATA *ptr)
 {
-	GRECT big,
-	 small = { 0, 0, 0, 0 };
+	GRECT big;
+	GRECT small = { 0, 0, 0, 0 };
 	OBJECT *tree;
 
 	if (ptr->status & WIS_ICONIFY)
@@ -234,9 +242,8 @@ void CloseDialog(DIALOG_DATA *ptr)
 	if (ptr->status & WIS_ALLICONIFY)
 	{
 		GRECT sm;
-
-		short i,
-		 copy = FALSE;
+		short i;
+		short copy = FALSE;
 
 		wind_get_grect(iconified_list[0]->whandle, WF_CURRXYWH, &sm);
 
@@ -265,6 +272,7 @@ void CloseDialog(DIALOG_DATA *ptr)
 		modal_items--;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void CloseAllDialogs(void)
 {
@@ -277,6 +285,8 @@ void CloseAllDialogs(void)
 		ptr = ptr->next;
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void RemoveDialog(DIALOG_DATA * ptr)
 {
@@ -299,6 +309,7 @@ void RemoveDialog(DIALOG_DATA * ptr)
 		modal_items--;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void dialog_iconify(DIALOG *dialog, GRECT *r)
 {
@@ -317,6 +328,7 @@ static void dialog_iconify(DIALOG *dialog, GRECT *r)
 	CycleItems();
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void dialog_uniconify(DIALOG *dialog, GRECT *r)
 {
@@ -352,6 +364,7 @@ static void dialog_uniconify(DIALOG *dialog, GRECT *r)
 	ptr->status &= ~WIS_ICONIFY;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SpecialMessageEvents(DIALOG * dialog, EVNT * event)
 {
@@ -368,6 +381,8 @@ void SpecialMessageEvents(DIALOG * dialog, EVNT * event)
 		break;
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void DialogEvents(DIALOG_DATA *ptr, EVNT *event)
 {

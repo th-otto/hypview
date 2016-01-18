@@ -772,9 +772,10 @@ static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry)
 	format = opts->pic_format;
 	if (format == HYP_PIC_ORIG)
 	{
-		/* not documented, but HCP seems to write the
-		   orignal file format into the "up" field
-		*/
+		/*
+		 * not documented, but HCP seems to write the
+		 * orignal file format into the "up" field
+		 */
 		format = (hyp_pic_format)entry->toc_index;
 	}
 	if (format < 1 || format > HYP_PIC_LAST)
