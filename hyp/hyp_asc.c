@@ -3,6 +3,9 @@
 #include "hypdebug.h"
 
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void AsciiClose(DOCUMENT *doc)
 {
@@ -15,6 +18,7 @@ static void AsciiClose(DOCUMENT *doc)
 	doc->data = NULL;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static gboolean AsciiGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node)
 {
@@ -25,6 +29,7 @@ static gboolean AsciiGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr nod
 	return FALSE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static hyp_nodenr AsciiGetNode(DOCUMENT *doc)
 {
@@ -33,6 +38,7 @@ static hyp_nodenr AsciiGetNode(DOCUMENT *doc)
 	return HYP_NOINDEX;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *end)
 {
@@ -85,6 +91,7 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 	return ret;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void AsciiClick(DOCUMENT *doc, EVNTDATA *event)
 {
@@ -92,6 +99,14 @@ static void AsciiClick(DOCUMENT *doc, EVNTDATA *event)
 	UNUSED(event);
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+static void AsciiPrep(DOCUMENT *doc)
+{
+	UNUSED(doc);
+}
+
+/*** ---------------------------------------------------------------------- ***/
 
 long AsciiAutolocator(DOCUMENT *doc, long line)
 {
@@ -140,6 +155,7 @@ long AsciiAutolocator(DOCUMENT *doc, long line)
 	return -1;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
 {
@@ -209,14 +225,14 @@ gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void 
 	return TRUE;
 }
 
-
+/*** ---------------------------------------------------------------------- ***/
 
 hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 {
 	ssize_t ret, file_len;
 	FMT_ASCII *ascii;
 
-	/* Dateilaenge bestimmen   */
+	/* determine file size */
 	if (lseek(handle, 0, SEEK_END) != 0)
 		return HYP_FT_LOADERROR;
 	file_len = lseek(handle, 0, SEEK_CUR);
@@ -224,7 +240,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 	if (file_len < 0)
 		return HYP_FT_LOADERROR;
 
-	/*  Speicher fuer die gesamte (!) Datei reservieren */
+	/* allocate memory for the whole file */
 	ascii = (FMT_ASCII *)g_malloc(sizeof(FMT_ASCII) + file_len);
 	if (ascii)
 	{
@@ -233,7 +249,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 		ascii->line_height = font_ch;
 		ascii->char_width = font_cw;
 		
-		/*  Datei in den Speicher lesen */
+		/* load file into memory */
 		ret = read(handle, ascii->start, file_len);
 		if (ret != file_len)
 		{
@@ -248,15 +264,16 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 			long columns = 0;
 			hyp_filetype type = HYP_FT_ASCII;
 
-			/*  Anzahl Linien und Kolonnen initialisieren */
+			/* init lines and columns */
 			doc->lines = 1;
 			doc->columns = 0;
 			*end = 0;
 
-			/*  In dieser Schleife wird bestimmt ob es sich wirklich
-			   um einen ASCII Text handelt oder ob es ein Null-Byte
-			   in den Daten hat.
-			   Ausserdem wird die Anzahl Linien und Kolonnen ermittelt. */
+			/*
+			 * this loop determines wether file is really ASCII text
+			 * or wether it contain null bytes.
+			 * Also determine number of lines and columns
+			 */
 			while (ptr < end)
 			{
 				val = *ptr;
@@ -265,9 +282,9 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				{
 					unsigned char *old_ptr = ptr;
 
-					doc->lines++;		/*  Zeile zaehlen   */
+					doc->lines++;		/* count lines */
 
-					/*  Suche den Wort-Anfang   */
+					/* search for beginning of word */
 					while (columns)
 					{
 						ptr--;
@@ -280,7 +297,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 
 					if (columns)
 					{
-						*ptr++ = '\n';	/*  kuenstliches Zeilen-Ende    */
+						*ptr++ = '\n';	/* insert line break */
 						doc->columns = max(doc->columns, columns);
 					} else
 					{
@@ -288,25 +305,25 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 						doc->columns = max(doc->columns, gl_profile.viewer.ascii_break_len);
 					}
 					columns = 0;
-				} else if ((val == 0x0d) || (val == 0x0a))	/*  CR oder LF? */
+				} else if ((val == 0x0d) || (val == 0x0a))	/*  CR or LF? */
 				{
-					doc->lines++;		/*  Zeile zaehlen   */
+					doc->lines++;		/* count lines */
 					doc->columns = max(doc->columns, columns);
 					columns = 0;
-					ptr++;				/*  Zeilenende ueberspringen    */
+					ptr++;				/* skip line ending */
 					if (val == 0x0d && *ptr == 0x0a)
 						ptr++;
-				} else if (val == '\t')	/*  Tab-Stopp?...   */
+				} else if (val == '\t')	/* tab-stop?... */
 				{
 					columns += gl_profile.viewer.ascii_tab_size - columns % gl_profile.viewer.ascii_tab_size;
-					ptr++;				/*  Tabulator ueberspringen */
+					ptr++;				/* skip tab */
 				} else if (val)
 				{
-					ptr++;				/*  Normales Zeichen ueberspringen  */
+					ptr++;				/* skip regular character */
 					columns++;
 				} else
 				{
-					/*  ... dann handelt es sich um eine binaer Datei   */
+					/* ... it is a binary file */
 					doc->lines = (file_len + gl_profile.viewer.binary_columns) / gl_profile.viewer.binary_columns;
 					doc->columns = gl_profile.viewer.binary_columns;
 					columns = 0;
@@ -323,8 +340,9 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 			doc->gotoNodeProc = AsciiGotoNode;
 			doc->getNodeProc = AsciiGetNode;
 			doc->clickProc = AsciiClick;
-
-			/* Handelt es sich um eine ASCII Datei? */
+			doc->prepNode = AsciiPrep;
+			
+			/* is it an ASCII file? */
 			if (type == HYP_FT_ASCII)
 			{
 				long line = 0;
@@ -332,7 +350,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				doc->columns = max(doc->columns, columns);
 				ptr = (unsigned char *) &ascii->start;
 
-				/*  Zeilen-Tabelle allozieren   */
+				/* allocate table of lines */
 				ascii->line_ptr = g_new(unsigned char *, doc->lines + 2);
 				if (ascii->line_ptr == NULL)
 				{
@@ -341,8 +359,9 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				}
 
 				ascii->line_ptr[line++] = ptr;
-				/*  Diese Schleife konvertiert alle CR/LF in 0/1 und
-				   speichert zusaetzlich die Zeilenanfaenge */
+				/*
+				 * convert all CR/LF and store line pointers
+				 */
 				ptr = start;
 				columns = 0;
 				while (ptr < end)
@@ -353,20 +372,20 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 					{
 						columns = 0;
 						ascii->line_ptr[line++] = ptr;
-					} else if ((val == 0x0d) || (val == 0x0a))	/*  CR oder LF? */
+					} else if ((val == 0x0d) || (val == 0x0a))	/* CR or LF? */
 					{
 						columns = 0;
 						*ptr++ = 0;
 						if ((val == 0x0d) && (*ptr == 0x0a))
 							ptr++;
 						ascii->line_ptr[line++] = ptr;
-					} else if (val == '\t')	/*  Tab-Stopp?...   */
+					} else if (val == '\t')	/* tab-stop?... */
 					{
 						columns += gl_profile.viewer.ascii_tab_size - columns % gl_profile.viewer.ascii_tab_size;
-						ptr++;			/*  Tabulator ueberspringen */
+						ptr++;			/* skip tab */
 					} else
 					{
-						ptr++;			/*  Normales Zeichen ueberspringen  */
+						ptr++;			/* skip regular character */
 						columns++;
 					}
 				}
@@ -377,7 +396,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				doc->getCursorProc = AsciiGetCursorPosition;
 				doc->blockProc = AsciiBlockOperations;
 
-				/*  ASCII Export supported  */
+				/* indicate that ASCII Export is supported */
 				doc->buttons.save = TRUE;
 			} else
 			{

@@ -2,8 +2,9 @@
 #include "hypdebug.h"
 #include <stddef.h>
 
-
-/* ------------------------------------------------------------------------- */
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_num)
 {
@@ -60,6 +61,21 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 		}
 	}
 
+	/* update toolbar state */
+	doc->buttons.help = hypnode_valid(hyp, hyp->help_page) && node_num != hyp->help_page;
+	doc->buttons.index = hypnode_valid(hyp, hyp->index_page) && node_num != hyp->index_page;
+	doc->buttons.previous = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->previous) && node_num != hyp->indextable[node_num]->previous;
+	doc->buttons.next = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->next) && node_num != hyp->indextable[node_num]->next;
+	doc->buttons.nextphys = hypnode_valid(hyp, hyp->last_text_page) && node_num < hyp->last_text_page;
+	doc->buttons.prevphys = hypnode_valid(hyp, hyp->first_text_page) && node_num > hyp->first_text_page;
+	doc->buttons.first = hypnode_valid(hyp, hyp->first_text_page) && node_num != hyp->first_text_page;
+	doc->buttons.last = hypnode_valid(hyp, hyp->last_text_page) && node_num != hyp->last_text_page;
+	doc->buttons.home = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->toc_index) && node_num != hyp->indextable[node_num]->toc_index;
+	doc->buttons.references = HypCountExtRefs(node) != 0;
+	
+	/* ASCII Export supported */
+	doc->buttons.ascii = TRUE;
+	
 	if (node != NULL)
 	{
 		doc->displayed_node = node;
@@ -76,25 +92,10 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 			doc->window_title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node_num]->name, STR0TERM);
 	}
 	
-	/* update toolbar state */
-	doc->buttons.help = hypnode_valid(hyp, hyp->help_page) && node_num != hyp->help_page;
-	doc->buttons.index = hypnode_valid(hyp, hyp->index_page) && node_num != hyp->index_page;
-	doc->buttons.previous = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->previous) && node_num != hyp->indextable[node_num]->previous;
-	doc->buttons.next = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->next) && node_num != hyp->indextable[node_num]->next;
-	doc->buttons.nextphys = hypnode_valid(hyp, hyp->last_text_page) && node_num < hyp->last_text_page;
-	doc->buttons.prevphys = hypnode_valid(hyp, hyp->first_text_page) && node_num > hyp->first_text_page;
-	doc->buttons.first = hypnode_valid(hyp, hyp->first_text_page) && node_num != hyp->first_text_page;
-	doc->buttons.last = hypnode_valid(hyp, hyp->last_text_page) && node_num != hyp->last_text_page;
-	doc->buttons.home = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->toc_index) && node_num != hyp->indextable[node_num]->toc_index;
-	doc->buttons.references = HypCountExtRefs(node) != 0;
-	
-	/* ASCII Export supported */
-	doc->buttons.ascii = TRUE;
-	
 	return node != NULL;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 static void HypClose(DOCUMENT *doc)
 {
@@ -105,7 +106,7 @@ static void HypClose(DOCUMENT *doc)
 	HypDeleteIfLast(doc, hyp);
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 static hyp_nodenr HypGetNode(DOCUMENT *doc)
 {
@@ -115,7 +116,7 @@ static hyp_nodenr HypGetNode(DOCUMENT *doc)
 	return HYP_NOINDEX;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * Check for file being hyp-file, and load index.
@@ -207,7 +208,7 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	return doc->type;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 {
@@ -244,7 +245,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 	return node_num;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref)
 {
@@ -257,7 +258,7 @@ hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	return type;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 {
@@ -307,7 +308,7 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	return doc;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * Remove DOCUMENT from memory.

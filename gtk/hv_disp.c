@@ -258,7 +258,6 @@ void HypPrepNode(DOCUMENT *doc)
 	HYP_NODE *node = doc->displayed_node;
 	WINDOW_DATA *win = doc->window;
 	HYP_DOCUMENT *hyp = doc->data;
-	size_t len;
 	const unsigned char *src, *end, *textstart;
 	long lineno;
 	WP_UNIT sx, sy;
@@ -269,7 +268,7 @@ void HypPrepNode(DOCUMENT *doc)
 	if (src > textstart) \
 	{ \
 		char *s; \
-		len = src - textstart; \
+		size_t len = src - textstart; \
 		/* draw remaining text */ \
 		s = hyp_conv_charset(hyp->comp_os, HYP_CHARSET_UTF8, textstart, len, NULL); \
 		insert_str(&info, s, NULL); \
@@ -277,6 +276,8 @@ void HypPrepNode(DOCUMENT *doc)
 		at_bol = FALSE; \
 	}
 
+	ToolbarUpdate(doc, FALSE);
+	
 	end = node->end;
 	src = node->start;
 
@@ -353,6 +354,7 @@ void HypPrepNode(DOCUMENT *doc)
 				{
 					hyp_nodenr dest_page;	/* Index of destination page */
 					char *str;
+					size_t len;
 					
 					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)	/* skip destination line number */
 						src += 2;
@@ -379,20 +381,15 @@ void HypPrepNode(DOCUMENT *doc)
 						str = hyp_conv_charset(hyp->comp_charset, HYP_CHARSET_UTF8, src, len, NULL);
 						src += len;
 					}
-					/* vst_color(vdi_handle, gl_profile.viewer.link_color); */
-					/* vst_effects(vdi_handle, gl_profile.viewer.link_effect | textattr); */
 					insert_str(&info, str, "link");
 					g_free(str);
 
-					/* vst_color(vdi_handle, gl_profile.viewer.text_color); */
-					/* vst_effects(vdi_handle, textattr); */
 					textstart = src;
 				}
 				break;
 				
 			case HYP_ESC_CASE_TEXTATTR:
 				info.textattr = *src - HYP_ESC_TEXTATTR_FIRST;
-				/* vst_effects(vdi_handle, textattr); */
 				src++;
 				textstart = src;
 				break;
@@ -413,25 +410,23 @@ void HypPrepNode(DOCUMENT *doc)
 		} else if (*src == HYP_EOL)
 		{
 			DUMPTEXT();
+			if (info.tab_array_size > 0)
 			{
-				if (info.tab_array_size > 0)
-				{
-					char *tag_name = g_strdup_printf("hv-tabtag-%d", info.tab_id);
-					GtkTextIter start;
-					GtkTextTag *tag = gtk_text_tag_new(tag_name);
-					
-					g_free(tag_name);
-					info.tab_id++;
-					g_object_set(G_OBJECT(tag), "tabs", info.tab_array, NULL);
-					gtk_text_tag_table_add(info.tag_table, tag);
-					gtk_text_buffer_get_iter_at_mark(info.text_buffer, &start, info.linestart);
-					
-					/* print_text_and_tabs(win, &start, &info.iter, info.tab_array); */
-					
-					gtk_text_buffer_apply_tag(info.text_buffer, tag, &start, &info.iter);
-					info.tab_array_size = 0;
-					info.tab_array = pango_tab_array_new(info.tab_array_size, TRUE);
-				}
+				char *tag_name = g_strdup_printf("hv-tabtag-%d", info.tab_id);
+				GtkTextIter start;
+				GtkTextTag *tag = gtk_text_tag_new(tag_name);
+				
+				g_free(tag_name);
+				info.tab_id++;
+				g_object_set(G_OBJECT(tag), "tabs", info.tab_array, NULL);
+				gtk_text_tag_table_add(info.tag_table, tag);
+				gtk_text_buffer_get_iter_at_mark(info.text_buffer, &start, info.linestart);
+				
+				/* print_text_and_tabs(win, &start, &info.iter, info.tab_array); */
+				
+				gtk_text_buffer_apply_tag(info.text_buffer, tag, &start, &info.iter);
+				info.tab_array_size = 0;
+				info.tab_array = pango_tab_array_new(info.tab_array_size, TRUE);
 			}
 			++lineno;
 			src++;
