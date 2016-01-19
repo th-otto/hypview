@@ -15,6 +15,7 @@ hypview_SOURCES = \
 	hv_gtk.h \
 	gtk_comp.h \
 	\
+	hv_about.c \
 	hv_asc.c \
 	hv_autol.c \
 	hv_bin.c \

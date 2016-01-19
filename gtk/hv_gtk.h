@@ -3,7 +3,6 @@
 
 #include "hypdoc.h"
 #include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib/gstdio.h>
 #ifdef G_OS_UNIX
@@ -54,10 +53,8 @@ struct _window_data_
 {
 	GRECT last;
 	const char *title;	/* copy of doc->window_title; do not free */
-	short	x_speed;
-	short	y_speed;
-	short	x_raster;
-	short	y_raster;
+	int x_raster;
+	int y_raster;
 	DOCUMENT *data;
 	struct {
 		WP_UNIT y;
@@ -84,6 +81,11 @@ struct _window_data_
 void check_toplevels(GtkWidget *toplevel);
 GdkPixbuf *app_icon(void);
 void check_desktop_file(char **filename);
+
+
+/* about.c */
+
+void About(GtkWidget *parent);
 
 
 /*
