@@ -442,6 +442,14 @@ static void on_info(GtkWidget *widget, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void on_close(GtkWidget *widget, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	SendCloseWindow(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static gboolean wm_toplevel_close_cb(GtkWidget *widget, GdkEvent *event, WINDOW_DATA *win)
 {
 	UNUSED(event);
@@ -793,6 +801,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_select_source) },
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
+	{ "close",              "gtk-close",             N_("_Close"),                          "<Ctrl>U",     NULL,                                                G_CALLBACK(on_close) },
 	{ "quit",               "gtk-quit",              N_("_Quit"),                           "<Ctrl>Q",     NULL,                                                G_CALLBACK(on_quit) },
 
 	{ "back",               "hv-back",               N_("Back one page"),                   NULL,          N_("Back one page"),                                 G_CALLBACK(on_back) },
@@ -839,6 +848,7 @@ static char const ui_info[] =
 "      <separator/>"
 "      <menuitem action='info'/>"
 "      <separator/>"
+"      <menuitem action='close'/>"
 "      <menuitem action='quit'/>"
 "    </menu>"
 "    <menu action='NavigateMenu'>"
@@ -1078,6 +1088,29 @@ void hv_set_title(WINDOW_DATA *win, const char *title)
 void SendRedraw(WINDOW_DATA *win)
 {
 	gtk_widget_queue_draw(win->hwnd);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void SendCloseWindow(WINDOW_DATA *win)
+{
+	if (win)
+		SendClose(win->hwnd);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void SendClose(GtkWidget *w)
+{
+	if (w)
+		w = gtk_widget_get_toplevel(w);
+	if (w)
+	{
+		GdkEvent *event = gdk_event_new(GDK_DELETE);
+		event->any.window = gtk_widget_get_window(w);
+		gdk_event_put(event);
+		gdk_event_free(event);
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/

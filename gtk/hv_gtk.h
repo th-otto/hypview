@@ -144,6 +144,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(DOCUMENT *doc);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
+void SendCloseWindow(WINDOW_DATA *win);
+void SendClose(GtkWidget *w);
 
 
 /*
