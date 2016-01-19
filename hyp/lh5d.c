@@ -38,6 +38,9 @@ typedef struct {
 #define BITBUFSIZ	(CHAR_BIT * (short)sizeof(lh5->bitbuf))
 
 
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 static void fillbuf(lh5_decoder *lh5, short n)			/* Shift bitbuf n bits left, read n bits */
 {
@@ -58,6 +61,7 @@ static void fillbuf(lh5_decoder *lh5, short n)			/* Shift bitbuf n bits left, re
 	lh5->bitbuf |= lh5->subbitbuf >> (lh5->bitcount -= n);
 }
 
+/* ------------------------------------------------------------------------- */
 
 static unsigned short getbits(lh5_decoder *lh5, short n)
 {
@@ -71,6 +75,7 @@ static unsigned short getbits(lh5_decoder *lh5, short n)
 	return x;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void make_table(lh5_decoder *lh5, short nchar, unsigned char bitlen[], short tablebits, unsigned short table[])
 {
@@ -146,6 +151,7 @@ static void make_table(lh5_decoder *lh5, short nchar, unsigned char bitlen[], sh
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void read_pt_len(lh5_decoder *lh5, short nn, short nbit, short i_special)
 {
@@ -190,6 +196,7 @@ static void read_pt_len(lh5_decoder *lh5, short nn, short nbit, short i_special)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void read_c_len(lh5_decoder *lh5)
 {
@@ -244,6 +251,7 @@ static void read_c_len(lh5_decoder *lh5)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 static unsigned short decode_c(lh5_decoder *lh5)
 {
@@ -274,6 +282,7 @@ static unsigned short decode_c(lh5_decoder *lh5)
 	return j;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static unsigned short decode_p(lh5_decoder *lh5)
 {
@@ -298,6 +307,7 @@ static unsigned short decode_p(lh5_decoder *lh5)
 	return j;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void init_getbits(lh5_decoder *lh5)
 {
@@ -307,6 +317,7 @@ static void init_getbits(lh5_decoder *lh5)
 	fillbuf(lh5, BITBUFSIZ);
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void decode_start(lh5_decoder *lh5)
 {
@@ -315,6 +326,7 @@ static void decode_start(lh5_decoder *lh5)
 	lh5->dec_j = 0;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* The calling function must keep the number of
    bytes to be processed.  This function decodes
@@ -359,6 +371,7 @@ static void decode5(lh5_decoder *lh5, unsigned int count)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 gboolean lh5_decode(unsigned char *unpackedMem, unsigned long unpackedLen, const unsigned char *packedMem, unsigned long packedLen)
 {

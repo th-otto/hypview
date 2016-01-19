@@ -355,7 +355,7 @@ static const char *file_lookup_name(hcp_vars *vars, FILE_ID id)
 	f = file_lookup(vars, id);
 	if (f)
 		return f->name;
-	return "<no filename>";
+	return _("<no filename>");
 }
 
 /* ------------------------------------------------------------------------- */

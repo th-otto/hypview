@@ -3,6 +3,9 @@
 #include "hypdebug.h"
 
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 long BinaryAutolocator(DOCUMENT *doc, long line)
 {
@@ -40,6 +43,7 @@ long BinaryAutolocator(DOCUMENT *doc, long line)
 	return -1;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean BinaryBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
 {

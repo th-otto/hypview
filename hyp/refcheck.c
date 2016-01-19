@@ -171,7 +171,7 @@ static gboolean maybe_load_hyp_or_ref(const char *filename, void *data)
 	
 	if (hyp_guess_filetype(base) == HYP_FT_HYP)
 	{
-		/* to not try to load "all.ref" here if there happens to be a "all.hyp" */
+		/* do not try to load "all.ref" here if there happens to be a "all.hyp" */
 		if (g_utf8_strcasecmp(base, "all.hyp") == 0)
 			return TRUE;
 		

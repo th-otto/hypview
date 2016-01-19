@@ -12,6 +12,9 @@ static unsigned short crctable[UCHAR_MAX + 1];
 #define CRCPOLY  0xA001					/* ANSI CRC-16 */
 						 /* CCITT: 0x8408 */
 
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 void lh5_make_crctable(void)
 {
@@ -37,6 +40,7 @@ void lh5_make_crctable(void)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 unsigned short lh5_update_crc(const unsigned char *p, unsigned long n, unsigned short crc)
 {

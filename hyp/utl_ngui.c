@@ -1,11 +1,13 @@
 #include "hypdefs.h"
 
-
-
 #if 0
 _WORD font_cw = HYP_PIC_FONTW;
 _WORD font_ch = HYP_PIC_FONTH;
 #endif
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 void W_Release_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 {
@@ -14,6 +16,8 @@ void W_Release_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 	UNUSED(height);
 	UNUSED(planes);
 }
+
+/* ------------------------------------------------------------------------- */
 
 gboolean W_Fix_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 {
@@ -24,10 +28,14 @@ gboolean W_Fix_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
+
 _WORD GetNumPlanes(void)
 {
 	return 1;
 }
+
+/* ------------------------------------------------------------------------- */
 
 #ifdef __TOS__
 

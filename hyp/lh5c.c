@@ -84,7 +84,9 @@ typedef struct {
 	unsigned short right_[2 * NC - 1];
 } lh5_encoder;
 
-
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 /* Write rightmost n bits of x */
 static gboolean putbits(lh5_encoder *lh5, int n, unsigned int x)
@@ -123,6 +125,7 @@ static gboolean putbits(lh5_encoder *lh5, int n, unsigned int x)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void count_t_freq(lh5_encoder *lh5)
 {
@@ -164,6 +167,7 @@ static void count_t_freq(lh5_encoder *lh5)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean write_pt_len(lh5_encoder *lh5, int n, int nbit, int i_special)
 {
@@ -197,6 +201,7 @@ static gboolean write_pt_len(lh5_encoder *lh5, int n, int nbit, int i_special)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean write_c_len(lh5_encoder *lh5)
 {
@@ -254,12 +259,14 @@ static gboolean write_c_len(lh5_encoder *lh5)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean encode_c(lh5_encoder *lh5, int c)
 {
 	return putbits(lh5, lh5->c_len[c], lh5->c_code[c]);
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean encode_p(lh5_encoder *lh5, unsigned int p)
 {
@@ -280,12 +287,13 @@ static gboolean encode_p(lh5_encoder *lh5, unsigned int p)
 	return TRUE;
 }
 
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 /***********************************************************
 	maketree.c -- make Huffman tree
 ***********************************************************/
-
-
 
 /* priority queue; send i-th entry down heap */
 static void downheap(lh5_encoder *lh5, int i)
@@ -305,6 +313,7 @@ static void downheap(lh5_encoder *lh5, int i)
 	lh5->heap[i] = k;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void count_len(lh5_encoder *lh5, int i, int depth)			/* call with i = root */
 {
@@ -322,6 +331,7 @@ static void count_len(lh5_encoder *lh5, int i, int depth)			/* call with i = roo
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void make_len(lh5_encoder *lh5, int root)
 {
@@ -357,6 +367,7 @@ static void make_len(lh5_encoder *lh5, int root)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void make_code(lh5_encoder *lh5, int n, unsigned char len[], unsigned short code[])
 {
@@ -370,6 +381,7 @@ static void make_code(lh5_encoder *lh5, int n, unsigned char len[], unsigned sho
 		code[i] = start[len[i]]++;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* make tree, calculate len[], return root */
 static int make_tree(lh5_encoder *lh5, int nparm, unsigned short freqparm[], unsigned char lenparm[], unsigned short codeparm[])
@@ -421,6 +433,7 @@ static int make_tree(lh5_encoder *lh5, int nparm, unsigned short freqparm[], uns
 	return k;							/* return root */
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean send_block(lh5_encoder *lh5)
 {
@@ -501,6 +514,7 @@ static gboolean send_block(lh5_encoder *lh5)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean output5(lh5_encoder *lh5, unsigned int c, unsigned int p)
 {
@@ -536,6 +550,7 @@ static gboolean output5(lh5_encoder *lh5, unsigned int c, unsigned int p)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void init_putbits(lh5_encoder *lh5)
 {
@@ -543,6 +558,7 @@ static void init_putbits(lh5_encoder *lh5)
 	lh5->subbitbuf = 0;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean start_huf(lh5_encoder *lh5)
 {
@@ -568,6 +584,7 @@ static gboolean start_huf(lh5_encoder *lh5)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean end_huf(lh5_encoder *lh5)
 {
@@ -581,6 +598,7 @@ static gboolean end_huf(lh5_encoder *lh5)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void init_slide(lh5_encoder *lh5)
 {
@@ -607,8 +625,9 @@ static void init_slide(lh5_encoder *lh5)
 		next[i] = NIL;
 }
 
-#define HASH(p, c) ((p) + ((c) << (DICBIT - 9)) + DICSIZ * 2)
+/* ------------------------------------------------------------------------- */
 
+#define HASH(p, c) ((p) + ((c) << (DICBIT - 9)) + DICSIZ * 2)
 
 /* q's child for character c (NIL if not found) */
 static node child(lh5_encoder *lh5, node q, unsigned char c)
@@ -624,6 +643,7 @@ static node child(lh5_encoder *lh5, node q, unsigned char c)
 	return r;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Let r be q's child for character c. */
 static void makechild(lh5_encoder *lh5, node q, unsigned char c, node r)
@@ -644,6 +664,7 @@ static void makechild(lh5_encoder *lh5, node q, unsigned char c, node r)
 	childcount[q]++;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void split(lh5_encoder *lh5, node old)
 {
@@ -672,6 +693,7 @@ static void split(lh5_encoder *lh5, node old)
 	makechild(lh5, newnode, text[lh5->pos + lh5->matchlen], lh5->pos);
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void insert_node(lh5_encoder *lh5)
 {
@@ -779,6 +801,7 @@ static void insert_node(lh5_encoder *lh5)
 	lh5->matchlen = matchl;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void delete_node(lh5_encoder *lh5)
 {
@@ -850,6 +873,7 @@ static void delete_node(lh5_encoder *lh5)
 	lh5->avail = r;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static void get_next_match(lh5_encoder *lh5)
 {
@@ -871,6 +895,7 @@ static void get_next_match(lh5_encoder *lh5)
 	insert_node(lh5);
 }
 
+/* ------------------------------------------------------------------------- */
 
 gboolean lh5_encode(FILE *outfile, const unsigned char *unpackedMem, unsigned long orgsize, unsigned int bufsize, unsigned long *packedLen)
 {

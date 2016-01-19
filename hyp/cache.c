@@ -1,13 +1,16 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
 
-
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 void InitCache(HYP_DOCUMENT *hyp)
 {
 	hyp->cache = g_new0(HYP_NODE *, hyp->num_index);
 }
 
+/* ------------------------------------------------------------------------- */
 
 void ClearCache(HYP_DOCUMENT *hyp)
 {
@@ -40,6 +43,7 @@ void ClearCache(HYP_DOCUMENT *hyp)
 	}
 }
 
+/* ------------------------------------------------------------------------- */
 
 gboolean TellCache(HYP_DOCUMENT *hyp, hyp_nodenr node_num, HYP_NODE *node)
 {
@@ -51,6 +55,7 @@ gboolean TellCache(HYP_DOCUMENT *hyp, hyp_nodenr node_num, HYP_NODE *node)
 	return FALSE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 HYP_NODE *AskCache(HYP_DOCUMENT *hyp, hyp_nodenr node_num)
 {
@@ -59,6 +64,7 @@ HYP_NODE *AskCache(HYP_DOCUMENT *hyp, hyp_nodenr node_num)
 	return NULL;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /*
  * Remove text pages from cache

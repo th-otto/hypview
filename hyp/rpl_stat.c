@@ -33,93 +33,73 @@ static char _rootdir;
 static uid_t __uid;
 static gid_t __gid;
 
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 uid_t getuid(void)
 {
 	long r;
 
 	r = Pgetuid();
-	if (r == -ETOS_NOSYS)
-		return __uid;
-	else
+	if (r != -ETOS_NOSYS)
 		return (uid_t) r;
+	return __uid;
 }
 
+/* ------------------------------------------------------------------------- */
 
 uid_t geteuid(void)
 {
-	static short have_geteuid = 1;
+	long r;
 
-	if (have_geteuid)
-	{
-		long r;
-
-		r = Pgeteuid();
-		if (r == -ETOS_NOSYS)
-			have_geteuid = 0;
-		else
-			return (uid_t) r;
-	}
+	r = Pgeteuid();
+	if (r != -ETOS_NOSYS)
+		return (uid_t) r;
 
 	return getuid();
 }
 
+/* ------------------------------------------------------------------------- */
 
 gid_t getgid(void)
 {
-	static short have_getgid = 1;
+	long r;
 
-	if (have_getgid)
-	{
-		long r;
-
-		r = Pgetgid();
-		if (r == -ETOS_NOSYS)
-			have_getgid = 0;
-		else
-			return (gid_t) r;
-	}
+	r = Pgetgid();
+	if (r != -ETOS_NOSYS)
+		return (gid_t) r;
 
 	return __gid;
 }
 
+/* ------------------------------------------------------------------------- */
 
 gid_t getegid(void)
 {
-	static short have_getegid = 1;
+	long r;
 
-	if (have_getegid)
-	{
-		long r;
-
-		r = Pgetegid();
-		if (r == -ETOS_NOSYS)
-			have_getegid = 0;
-		else
-			return (gid_t) r;
-	}
+	r = Pgetegid();
+	if (r != -ETOS_NOSYS)
+		return (gid_t) r;
 
 	return getgid();
 }
 
+/* ------------------------------------------------------------------------- */
 
 pid_t getpid(void)
 {
-	static short have_getpid = 1;
+	long r;
 
-	if (have_getpid)
-	{
-		long r;
+	r = Pgetpid();
+	if (r != -ETOS_NOSYS)
+		return (pid_t) r;
 
-		r = Pgetpid();
-		if (r == -ETOS_NOSYS)
-			have_getpid = 0;
-		else
-			return (pid_t) r;
-	}
 	return ((pid_t) (((long) _base) >> 8));
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* date for files (like root directories) that don't have one */
 #define OLDDATE __unixtime(0,0)
@@ -142,6 +122,7 @@ static time_t __unixtime(unsigned timestamp, unsigned datestamp)
 	return mktime(tm);
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* 
  * stat system call wrapper
@@ -200,8 +181,9 @@ static long __sys_stat(const char *path, struct stat *st, int lflag, int exact)
 	return r;
 }
 
+/* ------------------------------------------------------------------------- */
 
-int _enoent (const char *path)
+int _enoent(const char *path)
 {
 	register const char *s;
 	long oldmask;
@@ -216,8 +198,10 @@ int _enoent (const char *path)
 
 	oldmask = Psigblock(~0L);
 
-	for ( ; s != path; s--) {
-		if (*s == '\\' || *s == '/') {
+	for ( ; s != path; s--)
+	{
+		if (*s == '\\' || *s == '/')
+		{
 			struct stat st;
 			long r;
 
@@ -236,7 +220,8 @@ int _enoent (const char *path)
 			r = __sys_stat (tmp, &st, 0, 0);
 
 			if (r == -ETOS_NOSYS 
-			    || (r == 0 && ((st.st_mode & S_IFMT) != S_IFDIR))) {
+			    || (r == 0 && ((st.st_mode & S_IFMT) != S_IFDIR)))
+			{
 				if (tmp)
 					free(tmp);
 
@@ -258,6 +243,7 @@ int _enoent (const char *path)
 	return dir_seen; /* should have been ENOENT */
 }
 
+/* ------------------------------------------------------------------------- */
 
 int _unx2dos(const char *unx, char *dos, size_t len)
 {
@@ -332,6 +318,7 @@ int _unx2dos(const char *unx, char *dos, size_t len)
 	return 0;
 }
 
+/* ------------------------------------------------------------------------- */
 
 int _dos2unx(const char *dos, char *unx, size_t len)
 {
@@ -399,6 +386,7 @@ int _dos2unx(const char *dos, char *unx, size_t len)
 	return 0;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static int __do_stat(const char *_path, struct stat *st, int lflag)
 {
@@ -661,17 +649,21 @@ static int __do_stat(const char *_path, struct stat *st, int lflag)
 	return 0;
 }
 
+/* ------------------------------------------------------------------------- */
+
 static int mint_stat(const char *path, struct stat *st)
 {
 	return __do_stat(path, st, 0);
 }
 
+/* ------------------------------------------------------------------------- */
 
 static int mint_lstat(const char *path, struct stat *st)
 {
 	return __do_stat(path, st, 1);
 }
 
+/* ------------------------------------------------------------------------- */
 
 static long __sys_fstat (short fd, struct stat *st, int exact)
 {
@@ -683,13 +675,14 @@ static long __sys_fstat (short fd, struct stat *st, int exact)
 	{
 		/* try the stat64 fcntl() */
 		r = Fcntl (fd, st, FSTAT64);
-		if (r == -ETOS_NOSYS || r == -ETOS_INVAL) {
-
+		if (r == -ETOS_NOSYS || r == -ETOS_INVAL)
+		{
 			/* fall back to the xattr fcntl() */
 			struct xattr xattr;
 
 			r = Fcntl (fd, &xattr, FSTAT);
-			if (r == 0) {
+			if (r == 0)
+			{
 				memset(st, 0, sizeof (*st));
 
 				__quad_make(st->st_dev, 0, xattr.st_dev);
@@ -700,7 +693,8 @@ static long __sys_fstat (short fd, struct stat *st, int exact)
 				st->st_gid = (gid_t) xattr.st_gid;
 				__quad_make(st->st_rdev, 0, xattr.st_rdev);
 
-				if (exact) {
+				if (exact)
+				{
 					union { unsigned short s[2]; unsigned long l; } data;
 					data.l = xattr.st_mtime;
 					st->st_mtime = __unixtime (data.s[0], data.s[1]);
@@ -723,15 +717,18 @@ static long __sys_fstat (short fd, struct stat *st, int exact)
 	return r;
 }
 
+/* ------------------------------------------------------------------------- */
 
 int __do_fstat(int fd, struct stat *st, int exact)
 {
 	long r;
 
-	r = __sys_fstat (fd, st, exact);
-	if (r != -ETOS_NOSYS) {
-		if (r) {
-			__set_errno (_XltErr((int)r));
+	r = __sys_fstat(fd, st, exact);
+	if (r != -ETOS_NOSYS)
+	{
+		if (r)
+		{
+			__set_errno(_XltErr((int)r));
 			return -1;
 		}
 		return 0;
@@ -750,7 +747,8 @@ int __do_fstat(int fd, struct stat *st, int exact)
 		else
 			r = Fdatime(&timeptr, fd, 0);
 		
-		if (r < 0) {			/* assume TTY */
+		if (r < 0)			/* assume TTY */
+		{
 			st->st_mode = S_IFCHR | 0600;
 			st->st_flags = 0;
 			if (exact)
@@ -758,8 +756,8 @@ int __do_fstat(int fd, struct stat *st, int exact)
 					time ((time_t*) 0) - 2;
 					
 			st->st_size = 0;
-		}
-		else {
+		} else
+		{
 			if (exact)
 				st->st_mtime = st->st_atime = st->st_ctime =
 					__unixtime(timeptr.time, timeptr.date);
@@ -768,18 +766,20 @@ int __do_fstat(int fd, struct stat *st, int exact)
 
 			/* get current file location */
 			oldplace = Fseek(0L, fd, SEEK_CUR);
-			if (oldplace < 0) { /* can't seek -- must be pipe */
+			if (oldplace < 0)	/* can't seek -- must be pipe */
+			{
 				st->st_mode = S_IFIFO | 0644;
 				st->st_size = 1024;
-			}
-			else {
+			} else
+			{
 				/* Go to end of file. */
 				r = Fseek(0L, fd, SEEK_END);
 				st->st_size = r;
 				/* Go to start of file. */
 				(void) Fseek (0L, fd, SEEK_SET);
 				/* Check for executable file. */
-				if (Fread (fd, 2, (char *)&magic) == 2) {
+				if (Fread (fd, 2, (char *)&magic) == 2)
+				{
 					if (magic == 0x601a 
 					    || magic == 0x2321)
 						st->st_mode |= 0111;
@@ -804,6 +804,7 @@ int __do_fstat(int fd, struct stat *st, int exact)
 	return 0;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static int mint_fstat(int fd, struct stat *st)
 {
@@ -827,7 +828,7 @@ static int mint_fstat(int fd, struct stat *st)
 
 #endif
 
-
+/* ------------------------------------------------------------------------- */
 
 /* Store information about NAME into ST.  Work around bugs with
    trailing slashes.  Mingw has other bugs (such as st_ino always
@@ -865,7 +866,7 @@ static int rpl_do_stat(char const *name, struct stat *st, int lflag)
 		   ENAMETOOLONG, and for stat("file/"), when we want ENOTDIR.
 		   Fortunately, mingw PATH_MAX is small enough for stack
 		   allocation. */
-		char fixed_name[PATH_MAX + 1] = { 0 };
+		char fixed_name[PATH_MAX + 1];
 		size_t len = strlen(name);
 		int check_dir = FALSE;
 
@@ -898,24 +899,28 @@ static int rpl_do_stat(char const *name, struct stat *st, int lflag)
 	return result;
 }
 
+/* ------------------------------------------------------------------------- */
 
 int rpl_stat(char const *name, struct stat *st)
 {
 	return rpl_do_stat(name, st, 0);
 }
 
+/* ------------------------------------------------------------------------- */
 
 int rpl_lstat(char const *name, struct stat *st)
 {
 	return rpl_do_stat(name, st, 1);
 }
 
+/* ------------------------------------------------------------------------- */
 
 int rpl_fstat(int handle, struct stat *st)
 {
 	return real_fstat(handle, st);
 }
 
+/* ------------------------------------------------------------------------- */
 
 int hyp_utf8_stat(char const *name, struct stat *st)
 {
@@ -923,6 +928,7 @@ int hyp_utf8_stat(char const *name, struct stat *st)
 	return rpl_do_stat(name, st, 0);
 }
 
+/* ------------------------------------------------------------------------- */
 
 int hyp_utf8_lstat(char const *name, struct stat *st)
 {

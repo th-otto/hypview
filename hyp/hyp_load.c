@@ -1,7 +1,9 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
 
-
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 /* decrypt encrypted data */
 void hyp_decrypt(unsigned char *ptr, long bytes)
@@ -13,6 +15,7 @@ void hyp_decrypt(unsigned char *ptr, long bytes)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * return uncompressed size of index entry <num>
@@ -30,6 +33,7 @@ unsigned long GetDataSize(HYP_DOCUMENT *hyp, hyp_nodenr num)
 	return data_size;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * Load index entry.
@@ -92,7 +96,7 @@ unsigned char *hyp_loaddata(HYP_DOCUMENT *hyp, hyp_nodenr num)
 	return data;
 }
 
-/* ------------------------------------------------------------------------- */
+/*** ---------------------------------------------------------------------- ***/
 
 HYP_NODE *hyp_loadtext(HYP_DOCUMENT *hyp, hyp_nodenr node_num)
 {
@@ -134,6 +138,7 @@ HYP_NODE *hyp_loadtext(HYP_DOCUMENT *hyp, hyp_nodenr node_num)
 	return node;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * Copy <bytes> entry bytes (read by hyp_loaddata())

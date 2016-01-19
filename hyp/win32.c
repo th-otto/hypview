@@ -82,6 +82,9 @@ static struct errentry errtable[] = {
 #define MIN_EACCES_RANGE ERROR_WRITE_PROTECT
 #define MAX_EACCES_RANGE ERROR_SHARING_BUFFER_EXCEEDED
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 char *win32_errstring(DWORD err)
 {
@@ -100,6 +103,7 @@ char *win32_errstring(DWORD err)
 	return res;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int win32_to_errno(DWORD oserrno)
 {
@@ -123,6 +127,7 @@ int win32_to_errno(DWORD oserrno)
 	return EINVAL;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 DWORD win32_from_errno(int err_no)
 {
@@ -137,12 +142,14 @@ DWORD win32_from_errno(int err_no)
 	return ERROR_INVALID_PARAMETER;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *hyp_utf8_strerror(int err)
 {
 	return win32_errstring(win32_from_errno(err));
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 {
@@ -158,6 +165,7 @@ int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 	return fd;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_unlink(const char *name)
 {
@@ -173,6 +181,7 @@ int hyp_utf8_unlink(const char *name)
 	return ret;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_rename(const char *oldname, const char *newname)
 {
@@ -194,6 +203,7 @@ int hyp_utf8_rename(const char *oldname, const char *newname)
 	return ret;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 {
@@ -216,6 +226,7 @@ FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 	return fp;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 DIR *hyp_utf8_opendir(const char *dirname)
 {
@@ -231,6 +242,8 @@ DIR *hyp_utf8_opendir(const char *dirname)
 	return (DIR *)dir;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
 char *hyp_utf8_readdir(DIR *dir)
 {
 	_WDIR *wdir = (_WDIR *)dir;
@@ -244,10 +257,10 @@ char *hyp_utf8_readdir(DIR *dir)
 	return str;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void hyp_utf8_closedir(DIR *dir)
 {
 	_WDIR *wdir = (_WDIR *)dir;
 	_wclosedir(wdir);
 }
-

@@ -1,23 +1,25 @@
 #include "hypdefs.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 #ifdef __TOS__
-static char bootDrive = -1;
-
 static long getBootDrive(void)
 {
-	bootDrive = *((char *) 0x447) + 'A';
+	char bootDrive = *((char *) 0x447) + 'A';
 
 	return bootDrive;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char GetBootDrive(void)
 {
-	Supexec(getBootDrive);
-	return bootDrive;
+	return (char)Supexec(getBootDrive);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 #if defined(__PUREC__) && defined(_PUREC_SOURCE)
 /*
@@ -46,7 +48,9 @@ int purec_fclose(FILE *fp)
 
 #endif
 
-
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 #ifdef __WIN32__
 
@@ -68,6 +72,7 @@ int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 	return fd;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 {
@@ -83,6 +88,7 @@ FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 	return fp;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_unlink(const char *name)
 {
@@ -98,6 +104,7 @@ int hyp_utf8_unlink(const char *name)
 	return ret;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_rename(const char *oldname, const char *newname)
 {
@@ -119,6 +126,7 @@ int hyp_utf8_rename(const char *oldname, const char *newname)
 	return ret;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *hyp_utf8_strerror(int err)
 {
@@ -126,6 +134,7 @@ char *hyp_utf8_strerror(int err)
 	return hyp_conv_to_utf8(hyp_get_current_charset(), str, STR0TERM);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 DIR *hyp_utf8_opendir(const char *dirname)
 {
@@ -141,6 +150,7 @@ DIR *hyp_utf8_opendir(const char *dirname)
 	return dir;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *hyp_utf8_readdir(DIR *dir)
 {
@@ -155,6 +165,7 @@ char *hyp_utf8_readdir(DIR *dir)
 	return str;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void hyp_utf8_closedir(DIR *dir)
 {
@@ -163,6 +174,9 @@ void hyp_utf8_closedir(DIR *dir)
 
 #endif
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static gboolean do_walk_dir(const char *dirname, gboolean (*f)(const char *filename, void *data), void *data, gboolean retval_if_fails)
 {
@@ -211,12 +225,14 @@ static gboolean do_walk_dir(const char *dirname, gboolean (*f)(const char *filen
 	return ret;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean walk_dir(const char *dirname, gboolean (*f)(const char *filename, void *data), void *data)
 {
 	return do_walk_dir(dirname, f, data, FALSE);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, void *data), void *data)
 {
@@ -246,6 +262,7 @@ gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, voi
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * just for consistency
@@ -255,6 +272,7 @@ int hyp_utf8_close(int fd)
 	return close(fd);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_fclose(FILE *fp)
 {

@@ -1,7 +1,9 @@
 #include "hypdoc.h"
 #include "hypdebug.h"
 
-
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
 {
@@ -23,7 +25,7 @@ gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *p
 			const char *src;
 			int *handle = (int *) param;
 
-			if (!node)					/* Keine Seite geladen */
+			if (!node)					/* no page loaded */
 			{
 				HYP_DBG(("Error: Can't save, no page loaded"));
 				return FALSE;

@@ -1,7 +1,9 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
 
-
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 gboolean ref_list(REF_FILE *ref, FILE *outfile, gboolean all)
 {
@@ -88,6 +90,7 @@ gboolean ref_list(REF_FILE *ref, FILE *outfile, gboolean all)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 const char *ref_osname(HYP_OS os)
 {
@@ -120,6 +123,7 @@ const char *ref_osname(HYP_OS os)
 	return ret;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 {
@@ -208,7 +212,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 				module->module_filename = pos;
 				/* convert now, because we might need it for error messages */
 				module->filename = hyp_conv_to_utf8(module->charset, module->module_filename, STR0TERM);
-				/* Falls Datei-Erweiterung fehlt: hyp anfuegen */
+				/* if file extension is missing: append '.hyp' */
 				if (strrchr(module->filename, '.') == NULL)
 				{
 					 str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
@@ -217,16 +221,16 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 				}
 				break;
 			case REF_NODENAME:
-				/* name well be converted later */
+				/* name will be converted later */
 				break;
 			case REF_ALIASNAME:
-				/* name well be converted later */
+				/* name will be converted later */
 				break;
 			case REF_TITLE:
-				/* name well be converted later */
+				/* name will be converted later */
 				break;
 			case REF_LABELNAME:
-				/* name well be converted later */
+				/* name will be converted later */
 				module->entries[num].lineno = short_from_chars(pos + size - 2);
 				break;
 			case REF_DATABASE:
@@ -354,7 +358,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			
 			g_free(module->filename);
 			module->filename = hyp_conv_to_utf8(module->charset, module->module_filename, STR0TERM);
-			/* Falls Datei-Erweiterung fehlt: hyp anfuegen */
+			/* if file extension is missing: append '.hyp' */
 			if (strrchr(module->filename, '.') == NULL)
 			{
 				 str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
@@ -419,6 +423,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 REF_FILE *ref_new(const char *filename, size_t size)
 {
@@ -439,6 +444,7 @@ REF_FILE *ref_new(const char *filename, size_t size)
 	return ref;
 }
 
+/* ------------------------------------------------------------------------- */
 
 REF_FILE *ref_load(const char *filename, int handle, gboolean verbose)
 {
@@ -451,7 +457,7 @@ REF_FILE *ref_load(const char *filename, int handle, gboolean verbose)
 	if (read(handle, magic, SIZEOF_LONG) != SIZEOF_LONG)
 		return NULL;
 
-	/* "magischer Wert" im Datei-Kopf? */
+	/* "magic value" in file header? */
 	if (long_from_chars(magic) != HYP_MAGIC_REF)			/* 'HREF' */
 	{
 		if (verbose)
@@ -497,6 +503,7 @@ REF_FILE *ref_load(const char *filename, int handle, gboolean verbose)
 	return ref;
 }
 
+/* ------------------------------------------------------------------------- */
 
 void ref_close(REF_FILE *ref)
 {
@@ -516,6 +523,7 @@ void ref_close(REF_FILE *ref)
 	g_free(ref);
 }
 
+/* ------------------------------------------------------------------------- */
 
 int ref_num_modules(REF_FILE *ref)
 {
@@ -530,6 +538,7 @@ int ref_num_modules(REF_FILE *ref)
 	return count;
 }
 
+/* ------------------------------------------------------------------------- */
 
 char *ref_hyp_basename(const char *filename)
 {
@@ -541,6 +550,7 @@ char *ref_hyp_basename(const char *filename)
 	return name;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /*
  * Find node by name in (first module of) REF file.
@@ -590,6 +600,7 @@ gboolean ref_findnode(REF_FILE *ref, const char *string, hyp_nodenr *node, hyp_l
 	return FALSE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /*
  * Find node(s) by name in all modules of REF file.
@@ -670,6 +681,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 	return list;
 }
 
+/* ------------------------------------------------------------------------- */
 
 void ref_freeresults(RESULT_ENTRY **result_list)
 {

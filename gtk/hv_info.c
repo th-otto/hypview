@@ -81,6 +81,8 @@ void ProgrammInfos(DOCUMENT *doc)
 
 	if (doc->type == HYP_FT_HYP)
 	{
+		HYP_HOSTNAME *h;
+
 		str = g_strdup_printf(_("Topic   : %s\n"
 		                        "Author  : %s\n"
 		                        "Version : %s\n"
@@ -126,6 +128,15 @@ void ProgrammInfos(DOCUMENT *doc)
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 		g_free(str);
+		
+		for (h = hyp->hostname; h != NULL; h = h->next)
+		{
+			str = g_strdup_printf(_("@hostname   : %s\n"), h->name);
+			label = gtk_label_new(str);
+			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+			g_free(str);
+		}
 	}
 	
 	button = gtk_button_new_help();

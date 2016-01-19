@@ -2,6 +2,9 @@
 #include "hypdebug.h"
 
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 /*
  * set uncompressed size of index entry <num>
@@ -13,8 +16,7 @@ void SetCompressedSize(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned long prev_pos
 	hyp->indextable[num + 1]->seek_offset = curr_pos;
 }
 
-
-
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * return uncompressed size of index entry <num>
@@ -36,6 +38,7 @@ gboolean SetDataSize(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned long datasize)
 	return datasize == GetDataSize(hyp, num);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * Write <bytes> entry bytes from <src> to output file.
@@ -68,6 +71,7 @@ gboolean WriteEntryBytes(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned char *src, 
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 #if 0
 static gboolean SaveAsAscii(DOCUMENT *doc, int handle)
@@ -110,4 +114,3 @@ static gboolean SaveAsAscii(DOCUMENT *doc, int handle)
 	return FALSE;
 }
 #endif
-

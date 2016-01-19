@@ -48,17 +48,23 @@ struct kwset
 	void *user_accepting;
 };
 
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
 
 static void *kws_malloc(size_t size)
 {
 	return g_malloc(size);
 }
 
+/* ------------------------------------------------------------------------- */
+
 static void kws_free(void *block)
 {
 	g_free(block);
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Allocate and initialize a keyword set object, returning an opaque
    pointer to it.  Return NULL if memory is not available. */
@@ -99,6 +105,7 @@ kwset_t kwsalloc(char const *trans)
 	return (kwset_t) kwset;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Add the given string to the contents of the keyword set.  Return TRUE
    for success, an FALSE otherwise. */
@@ -270,6 +277,7 @@ int kwsincr(kwset_t kws, char const *text, size_t len, void *user)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Enqueue the trie nodes referenced from the given tree in the
    given queue. */
@@ -282,6 +290,7 @@ static void enqueue(struct tree *tree, struct trie **last)
 	(*last) = (*last)->next = tree->trie;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Compute the Aho-Corasick failure function for the trie nodes referenced
    from the given tree, given the failure function for their parent as
@@ -317,6 +326,7 @@ static void treefails(register struct tree const *tree, struct trie const *fail,
 	tree->trie->fail = recourse;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Set delta entries for the links of the given tree such that
    the preexisting delta value is larger than the current depth. */
@@ -332,6 +342,7 @@ static void treedelta(register struct tree const *tree,
 		delta[tree->label] = (unsigned char)depth;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Return true if A has every label in B. */
 static int hasevery(register struct tree const *a, register struct tree const *b)
@@ -352,6 +363,7 @@ static int hasevery(register struct tree const *a, register struct tree const *b
 	return !!a;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Compute a vector, indexed by character code, of the trie nodes
    referenced from the given tree. */
@@ -364,6 +376,7 @@ static void treenext(struct tree const *tree, struct trie *next[])
 	next[tree->label] = tree->trie;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Compute the shift for each trie node, as well as the delta
    table and next cache for the given keyword set. */
@@ -482,6 +495,7 @@ int kwsprep(kwset_t kws)
 	return TRUE;
 }
 
+/* ------------------------------------------------------------------------- */
 
 #define U(C) ((unsigned char) (C))
 
@@ -568,6 +582,7 @@ static size_t bmexec(kwset_t kws, char const *text, size_t size)
 	return -1;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Hairy multiple string search. */
 static size_t cwexec(kwset_t kws, char const *text, size_t len, struct kwsmatch *kwsmatch)
@@ -722,6 +737,7 @@ static size_t cwexec(kwset_t kws, char const *text, size_t len, struct kwsmatch 
 	return mch - text;
 }
 
+/* ------------------------------------------------------------------------- */
 
 /* Search through the given text for a match of any member of the
    given keyword set.  Return a pointer to the first character of
@@ -752,6 +768,8 @@ size_t kwsexec(kwset_t kws, char const *text, size_t size, struct kwsmatch *kwsm
 	} else
 		return cwexec(kws, text, size, kwsmatch);
 }
+
+/* ------------------------------------------------------------------------- */
 
 /* Free the components of the given keyword set. */
 void kwsfree(kwset_t kws)
