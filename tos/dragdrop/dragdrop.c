@@ -179,9 +179,9 @@ short ddopen(char *pipe, unsigned long format[8], void **oldpipesig)
 	if (handle < 0)
 		return -1;
 
-	reply = DD_OK;						/* Programm unterstuetzt Drag & Drop    */
+	reply = DD_OK;						/* Programm unterstuetzt Drag & Drop */
 
-	*oldpipesig = (void *) Psignal(SIGPIPE, (void *) SIG_IGN);	/* Signal ignorieren    */
+	*oldpipesig = (void *) Psignal(SIGPIPE, (void *) SIG_IGN);	/* Signal ignorieren */
 
 	if (Fwrite(handle, 1, &reply) == 1)
 	{
@@ -205,11 +205,11 @@ short ddrtry(short handle, char *name, unsigned long *format, long *size)
 {
 	short hdr_len;
 
-	if (Fread(handle, 2, &hdr_len) == 2)	/* Headerlaenge auslesen    */
+	if (Fread(handle, 2, &hdr_len) == 2)	/* Headerlaenge auslesen */
 	{
-		if (hdr_len >= 9)				/* kompletter Header?   */
+		if (hdr_len >= 9)				/* kompletter Header? */
 		{
-			if (Fread(handle, 4, format) == 4)	/* Datentyp auslesen    */
+			if (Fread(handle, 4, format) == 4)	/* Datentyp auslesen */
 			{
 				if (Fread(handle, 4, size) == 4)	/* Laenge der Daten in Bytes auslesen */
 				{
@@ -220,13 +220,13 @@ short ddrtry(short handle, char *name, unsigned long *format, long *size)
 					if (name_len > DD_NAMEMAX)
 						name_len = DD_NAMEMAX;
 
-					if (Fread(handle, name_len, name) == name_len)	/* Datennamen auslesen  */
+					if (Fread(handle, name_len, name) == name_len)	/* Datennamen auslesen */
 					{
 						char buf[64];
 
 						hdr_len -= name_len;
 
-						while (hdr_len > 64)	/* Headerrest auslesen  */
+						while (hdr_len > 64)	/* Headerrest auslesen */
 						{
 							Fread(handle, 64, buf);
 							hdr_len -= 64;

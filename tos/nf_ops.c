@@ -155,7 +155,7 @@ static long __attribute__((noinline)) __CDECL _nf_get_id(const char *feature_nam
 	__asm__ volatile(
 		ASM_NATFEAT(NATFEAT_ID)
 	: "=g"(ret)  /* outputs */
-	: /* inputs  */
+	: /* inputs */
 	: __CLOBBER_RETURN("d0") "d1" AND_MEMORY /* clobbered regs */
 	);
 	return ret;
@@ -169,7 +169,7 @@ static long __attribute__((noinline)) __CDECL _nf_call(long id, ...)
 	__asm__ volatile(
 		ASM_NATFEAT(NATFEAT_CALL)
 	: "=g"(ret)  /* outputs */
-	: /* inputs  */
+	: /* inputs */
 	: __CLOBBER_RETURN("d0") "d1" AND_MEMORY /* clobbered regs */
 	);
 	return ret;
@@ -215,7 +215,7 @@ static long _nf_detect(void)
 
 	"\tnop\n"						/* flush pipelines (for 68040+) */
 	: "=g"(ret)  /* outputs */
-	: "g"(nf_version)		/* inputs  */
+	: "g"(nf_version)		/* inputs */
 	: __CLOBBER_RETURN("d0") "a0", "d1" AND_MEMORY
 	);
 	return ret;

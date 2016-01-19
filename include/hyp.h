@@ -551,7 +551,7 @@ static inline short short_from_lechars(const unsigned char *p)
 }
 
 
-/* Return values for file loading routines  */
+/* Return values for file loading routines */
 typedef enum {
 	HYP_FT_NONE = -3,
 	HYP_FT_LOADERROR = -2,      /* Error while loading */

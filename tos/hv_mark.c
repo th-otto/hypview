@@ -36,15 +36,17 @@ typedef struct
 {
 	hyp_nodenr node_num;
 	short line;
-	char unknown[UNKNOWN_LEN];			/* Unbekannt                                    */
-	char path[PATH_LEN];				/* Kompletter Pfad+Datei                        */
-	char node_name[NODE_LEN];			/* Titel der Seite, nullterminiert              */
+	char unknown[UNKNOWN_LEN];
+	char path[PATH_LEN];				/* full path */
+	char node_name[NODE_LEN];			/* display title */
 } MARKEN;
 
 static gboolean marken_change;
 static MARKEN marken[MAX_MARKEN];
 
-/*----------------------------------------------------------------------------------*/
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void MarkerDelete(short num)
 {
@@ -57,7 +59,7 @@ static void MarkerDelete(short num)
 	strcpy(dst, _("free"));
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerSave(DOCUMENT *doc, short num)
 {
@@ -109,7 +111,7 @@ void MarkerSave(DOCUMENT *doc, short num)
 	marken_change = TRUE;
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 {
@@ -133,7 +135,7 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 	}
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerPopup(DOCUMENT *doc, short x, short y)
 {
@@ -226,7 +228,7 @@ void MarkerPopup(DOCUMENT *doc, short x, short y)
 	}
 }
 
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerSaveToDisk(void)
 {
@@ -258,8 +260,7 @@ void MarkerSaveToDisk(void)
 	}
 }
 
-
-/*----------------------------------------------------------------------------------*/
+/*** ---------------------------------------------------------------------- ***/
 
 void MarkerInit(void)
 {
@@ -267,13 +268,13 @@ void MarkerInit(void)
 	int ret;
 	char *filename;
 	
-	/* Initialisiere Marken */
+	/* initialize markers */
 	for (i = 0; i < MAX_MARKEN; i++)
 	{
 		MarkerDelete(i);
 	}
 
-	/* Pfad vorhanden, dann diese Marken-Datei laden */
+	/* load file if it exists */
 	if (!empty(gl_profile.viewer.marker_path))
 	{
 		filename = path_subst(gl_profile.viewer.marker_path);

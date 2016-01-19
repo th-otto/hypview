@@ -54,7 +54,7 @@
 #define TO_BACK                            2 /* CICON in tree TOOLBAR */ /* max len 4 */
 #define TO_HISTORY                         3 /* CICON in tree TOOLBAR */ /* max len 0 */
 #define TO_MEMORY                          4 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_PREVIOUS                        5 /* CICON in tree TOOLBAR */ /* max len 1 */
+#define TO_PREV                            5 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_HOME                            6 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_NEXT                            7 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_INDEX                           8 /* CICON in tree TOOLBAR */ /* max len 1 */

@@ -27,12 +27,16 @@
 #include "av.h"
 #include "tos/mem.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static inline int isword(unsigned char ch)
 {
 	return isalnum(ch) || ch >= 0x80 || ch == '-';
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void get_word(const unsigned char *min, const unsigned char *src, unsigned char *dst)
 {
@@ -56,6 +60,7 @@ static void get_word(const unsigned char *min, const unsigned char *src, unsigne
 	*dst = 0;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void HypClick(DOCUMENT *doc, EVNTDATA *m)
 {
@@ -100,21 +105,21 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 				goto check_char;
 			} else if (*src >= HYP_ESC_LINK && *src <= HYP_ESC_ALINK_LINE)
 			{
-				unsigned char link_type = *src;	/*  Linktyp merken  */
-				hyp_lineno line_nr = 0;	/*  anzuspringende Zeilennummer */
-				hyp_nodenr dst_page;	/*  Index auf die Zielseite */
+				unsigned char link_type = *src;	/* remember link type */
+				hyp_lineno line_nr = 0;	/* line number to go to */
+				hyp_nodenr dst_page;	/* index of target node */
 				unsigned short link_len;
 				char *str;
 				
 				src++;
 
-				if (link_type == HYP_ESC_LINK_LINE || link_type == HYP_ESC_ALINK_LINE)		/*  Zeilennummer ueberspringen  */
+				if (link_type == HYP_ESC_LINK_LINE || link_type == HYP_ESC_ALINK_LINE)		/* get line number */
 				{
 					line_nr = DEC_255(src);
 					src += 2;
 				}
 
-				dst_page = DEC_255(src);	/*  Index   */
+				dst_page = DEC_255(src);
 				src += 2;
 
 				vst_effects(vdi_handle, gl_profile.viewer.link_effect);
@@ -173,7 +178,7 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 								short dst_id = -1;
 								HYP_HOSTNAME *h;
 								
-								/*  Host suchen...  */
+								/* search for host application */
 								if (hyp->hostname == NULL)
 								{
 									form_alert(1, rs_string(HV_ERR_NO_HOSTNAME));
@@ -181,29 +186,30 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 								}
 								for (h = hyp->hostname; h != NULL && dst_id < 0; h = h->next)
 									dst_id = appl_locate(h->name, FALSE);
-								if (dst_id < 0)	/*  Host nicht gefunden?    */
+								if (dst_id < 0)	/* host application found? */
 								{
 									form_alert(1, rs_string(HV_ERR_HOST_NOT_FOUND));
-									break;		/*  ... Abbruch */
+									break;		/* ... camcel */
 								}
 		
-								/*  Parameter per VA_START an Host senden   */
+								/* use VA_START to send parameter to host application */
 								{
 									char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dst_page]->name, STR0TERM, NULL);
 									char *dir;
 									char *dfn;
 		
-									/* Suche die Datei im Verzeichnis des Hypertexts */
+									/* search for file in directory of hypertext */
 									dir = g_path_get_dirname(hyp->file);
 									dfn = g_build_filename(dir, prog, NULL);
 									g_free(dir);
 		
-									/*  Datei nicht mit shel_find() auffindbar? */
+									/* can file be located with shel_find()? */
 									if (!shel_find(dfn))
 									{
 										g_free(dfn);
-										/*  Parameter so wie angegeben senden   */
-										dfn = g_strdup(prog);
+										/* use filename as specified */
+										dfn = prog;
+										prog = NULL;
 									}
 		
 									SendVA_START(dst_id, dfn);
@@ -214,22 +220,24 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 							break;
 						case HYP_NODE_SYSTEM_ARGUMENT:
 						case HYP_NODE_REXX_SCRIPT:
-							/*  Parameter per AV_STARTPROG vom Server starten lassen    */
+							/* ask server to start parameter using AV_STARTPROG */
 							{
 								char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dst_page]->name, STR0TERM, NULL);
 								char *dir;
 								char *dfn;
 	
-								/*  Suche die Datei im Verzeichnis des Hypertexts   */
+								/* search for file in directory of hypertext */
 								dir = g_path_get_dirname(hyp->file);
 								dfn = g_build_filename(dir, prog, NULL);
 								g_free(dir);
 								
-								if (!shel_find(dfn))	/*  Datei nicht auffindbar? */
+								/* can file be located with shel_find()? */
+								if (!shel_find(dfn))
 								{
 									g_free(dfn);
-									/*  Parameter so wie angegeben senden   */
-									dfn = g_strdup(prog);
+									/* use filename as specified */
+									dfn = prog;
+									prog = NULL;
 								}
 	
 								SendAV_STARTPROG(dfn, NULL);
@@ -261,7 +269,7 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 				src += link_len;
 			} else
 			{
-				if (HYP_ESC_IS_TEXATTR(*src))	/*  Text-Attribute  */
+				if (HYP_ESC_IS_TEXATTR(*src))	/* text attributes */
 				{
 					curr_txt_effect = *src - HYP_ESC_TEXTATTR_FIRST;
 					vst_effects(vdi_handle, curr_txt_effect);

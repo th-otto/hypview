@@ -28,7 +28,7 @@
 #include "tos/mem.h"
 
 
-#define AC_HELP		1025				/*  PureC Hilfe-Protokoll */
+#define AC_HELP		1025				/* PureC Hilfe-Protokoll */
 
 static hyp_nodenr last_node;
 static char last_path[DL_PATHMAX];

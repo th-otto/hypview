@@ -11,7 +11,7 @@
 # include <libintl.h>
 # include <locale.h>
 
-/* The separator between msgctxt and msgid in a .mo file.  */
+/* The separator between msgctxt and msgid in a .mo file. */
 #ifndef GETTEXT_CONTEXT_GLUE
 #  define GETTEXT_CONTEXT_GLUE "\004"
 #endif

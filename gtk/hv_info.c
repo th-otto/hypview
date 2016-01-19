@@ -9,19 +9,28 @@ static gboolean expanded = FALSE;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void message_destroyed(GtkWidget *w, gpointer user_data)
+static void message_destroyed(GtkWidget *w, GtkWidget *dialog)
 {
-	UNUSED(user_data);
-	check_toplevels(w);
+	UNUSED(w);
+	check_toplevels(dialog);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void expander_toggled(GtkWidget *w, gpointer user_data)
+static void expander_toggled(GtkWidget *w, GtkWidget *dialog)
 {
 	UNUSED(w);
-	UNUSED(user_data);
+	UNUSED(dialog);
 	expanded = !expanded;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void help_clicked(GtkWidget *w, GtkWidget *dialog)
+{
+	UNUSED(w);
+	UNUSED(dialog);
+	OpenFileNewWindow(prghelp_name, NULL, HYP_NOINDEX, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -36,7 +45,7 @@ void ProgrammInfos(DOCUMENT *doc)
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("message"));
-	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(message_destroyed), NULL);
+	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(message_destroyed), dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Programinfo..."));
 	gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
@@ -92,7 +101,7 @@ void ProgrammInfos(DOCUMENT *doc)
 		vbox = gtk_vbox_new(FALSE, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
 		gtk_container_add(GTK_CONTAINER(frame), vbox);
-		g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(expander_toggled), NULL);
+		g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(expander_toggled), dialog);
 		gtk_expander_set_expanded(GTK_EXPANDER(expander), expanded);
 		
 		str = g_strdup_printf(_("Nodes       : %7d\n"
@@ -119,13 +128,16 @@ void ProgrammInfos(DOCUMENT *doc)
 		g_free(str);
 	}
 	
+	button = gtk_button_new_help();
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_HELP);
+	gtk_widget_set_can_default(button, TRUE);
+	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), button, TRUE);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(help_clicked), dialog);
+	
 	button = gtk_button_new_ok();
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_OK);
-	g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
-	
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), GTK_BUTTONBOX_SPREAD);
-
 	gtk_widget_set_can_default(button, TRUE);
+	g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 	gtk_widget_grab_default(button);
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), top_window());

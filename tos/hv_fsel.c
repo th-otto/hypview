@@ -29,6 +29,10 @@
 /* files and paths */
 static char file_extensions[DL_PATHMAX] = "*.HYP\0*.*\0";
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 /*
  * Create a list of absolute paths of <src> in <dst>.
  * Ignores relative paths.
@@ -64,6 +68,7 @@ static void CreatePathList(char *dst, const char *src)
 	*dst = 0;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void OpenFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 {
@@ -76,6 +81,7 @@ static void OpenFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SelectFileLoad(WINDOW_DATA *win)
 {
@@ -89,7 +95,7 @@ void SelectFileLoad(WINDOW_DATA *win)
 	OpenFileselector(OpenFile_FSLX, rs_string(FSLX_LOAD), NULL, paths, file_extensions, 0, win);
 }
 
-
+/*** ---------------------------------------------------------------------- ***/
 
 static void SaveFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 {
@@ -117,6 +123,7 @@ static void SaveFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SelectFileSave(DOCUMENT *doc)
 {

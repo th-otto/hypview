@@ -107,6 +107,7 @@ h:\src\udo\tools\hypview\tos\dl_drag.c
 h:\src\udo\tools\hypview\tos\dl_dhst.c
 h:\src\udo\tools\hypview\tos\dl_apinf.c
 h:\src\udo\tools\hypview\tos\dl_mem.c
+h:\src\udo\tools\hypview\tos\dirent.c
 
 h:\src\udo\tools\hypview\tos\nf_debug.c
 h:\src\udo\tools\hypview\tos\nf_name.c

@@ -28,6 +28,9 @@
 
 static DIALOG *Prog_Dialog;
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void adjust_tree(OBJECT *tree, _WORD box, _WORD diff)
 {
@@ -45,6 +48,7 @@ static void adjust_tree(OBJECT *tree, _WORD box, _WORD diff)
 	tree[ROOT].ob_height += diff;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void show_morebox(OBJECT *tree, _WORD box)
 {
@@ -56,6 +60,7 @@ static void show_morebox(OBJECT *tree, _WORD box)
 	tree[INFO_MORE].ob_flags |= OF_HIDETREE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void hide_morebox(OBJECT *tree, _WORD box)
 {
@@ -67,6 +72,7 @@ static void hide_morebox(OBJECT *tree, _WORD box)
 	tree[INFO_LESS].ob_flags |= OF_HIDETREE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void toggle_morebox(OBJECT *tree, _WORD box)
 {
@@ -76,6 +82,7 @@ static void toggle_morebox(OBJECT *tree, _WORD box)
 		hide_morebox(tree, box);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static _WORD __CDECL ProgHandle(struct HNDL_OBJ_args args)
 {
@@ -119,6 +126,7 @@ static _WORD __CDECL ProgHandle(struct HNDL_OBJ_args args)
 	return 1;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void set_text(OBJECT *tree, _WORD idx, const char *txt)
 {
@@ -138,6 +146,7 @@ static void set_text(OBJECT *tree, _WORD idx, const char *txt)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void ProgrammInfos(DOCUMENT *doc)
 {

@@ -81,7 +81,7 @@ typedef LPCSTR LPCTSTR;
 #define HH_SET_EXCLUSIVE_FILTER 0x0019  /* set exclusive filtering method for untyped topics to be excluded from display */
 #define HH_INITIALIZE           0x001C  /* Initializes the help system. */
 #define HH_UNINITIALIZE         0x001D  /* Uninitializes the help system. */
-#define HH_PRETRANSLATEMESSAGE  0x00fd  /* Pumps messages. (NULL, NULL, MSG*).  */
+#define HH_PRETRANSLATEMESSAGE  0x00fd  /* Pumps messages. (NULL, NULL, MSG*). */
 #define HH_SET_GLOBAL_PROPERTY  0x00fc  /* Set a global property. (NULL, NULL, HH_GPROP) */
 
 #define HHWIN_PROP_TAB_AUTOHIDESHOW (1l << 0)    /* Automatically hide/show tri-pane window */

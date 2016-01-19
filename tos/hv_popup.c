@@ -33,7 +33,9 @@ typedef struct
 	void *entry;
 } POPUP_INFO;
 
-
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 {
@@ -42,7 +44,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	switch (obj)
 	{
 	case WIND_INIT:
-		/*  Als Rasterweite werden die Font-Groessen benutzt    */
+		/* use font size for window raster */
 		win->x_raster = font_cw;
 		win->y_raster = font_ch;
 
@@ -55,7 +57,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 	case WIND_OPEN:
 		break;
-	case WIND_OPENSIZE:	/*  Fenstergroesse beim oeffnen */
+	case WIND_OPENSIZE:	/* initial opening size */
 		{
 			GRECT *osize = (GRECT *) data;
 			GRECT screen;
@@ -139,6 +141,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y)
 {

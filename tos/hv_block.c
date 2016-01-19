@@ -25,6 +25,9 @@
 #include "hypdebug.h"
 #include "hypview.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void BlockOperation(DOCUMENT *doc, short num)
 {
@@ -68,6 +71,7 @@ void BlockOperation(DOCUMENT *doc, short num)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
 {
@@ -82,6 +86,7 @@ void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
 	b->valid = TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockCopy(DOCUMENT *doc)
 {
@@ -91,7 +96,7 @@ void BlockCopy(DOCUMENT *doc)
 	if (!b.valid)
 		BlockSelectAll(doc, &b);
 
-	/*  Kopier-Aktion ins Clipboard */
+	/* copy to clipboard */
 	graf_mouse(BUSY_BEE, NULL);
 	if ((scrap_file = GetScrapPath(TRUE)) == NULL)
 	{
@@ -107,12 +112,13 @@ void BlockCopy(DOCUMENT *doc)
 	graf_mouse(ARROW, NULL);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 {
 	char *scrap_file;
 
-	/*  "Einfuege"-Aktion ladet SCRAP.TXT aus dem Clipboard */
+	/* "Paste"-action loads SCRAP.TXT from clipboard */
 	if ((scrap_file = GetScrapPath(FALSE)) == NULL)
 	{
 		HYP_DBG(("No clipboard defined"));
@@ -132,6 +138,7 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockAsciiSave(DOCUMENT *doc, const char *path)
 {
@@ -139,7 +146,7 @@ void BlockAsciiSave(DOCUMENT *doc, const char *path)
 
 	if (doc->blockProc == NULL)
 	{
-		Cconout(7);						/*  Bing!!!!    */
+		Cconout(7);						/* Bing!!!! */
 		return;
 	}
 
@@ -151,7 +158,7 @@ void BlockAsciiSave(DOCUMENT *doc, const char *path)
 	{
 		BLOCK b = doc->selection;
 
-		if (!b.valid)					/*  Kein gltiger Block angewhlt?    */
+		if (!b.valid)					/* no block selected? */
 			BlockSelectAll(doc, &b);
 
 		doc->blockProc(doc, BLK_ASCIISAVE, &b, &handle);
@@ -159,42 +166,37 @@ void BlockAsciiSave(DOCUMENT *doc, const char *path)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 char *GetScrapPath(gboolean clear)
 {
-	long ret;
 	char *ptr;
 	char scrap_path[DL_PATHMAX];
 
 	if (!scrp_read(scrap_path))
 		return NULL;
 
-	if (clear)							/* Klemmbrett loeschen?             */
+	if (clear)							/* empty clipboard? */
 	{
-		if (!scrp_clear())				/*  scrp_clear() nicht vorhanden?   */
+		if (!scrp_clear())				/* scrp_clear() available? */
 		{
-			long dirhandle;
-
-			/*  Verzeichnis oeffnen und alle "SCRAP.*" Dateien loeschen */
-			dirhandle = Dopendir(scrap_path, 0);
-			if ((dirhandle >> 24) != 0xff)
+			DIR *dir;
+			struct dirent *entry;
+			
+			/* open directory and remove all "SCRAP.*" files */
+			dir = opendir(scrap_path);
+			if (dir != NULL)
 			{
-				char filename[DL_PATHMAX];
-				XATTR xattr;
-				long xret;
-
-				do
+				while ((entry = readdir(dir)) != NULL)
 				{
-					ret = Dxreaddir(DL_PATHMAX, dirhandle, filename, &xattr, &xret);
-					if ((ret >= 0) && (xret >= 0) &&
-						((xattr.st_mode & S_IFMT) == S_IFREG) && !strncasecmp(filename + 4, "SCRAP.", 6))
+					if (strncasecmp(entry->d_name, "SCRAP.", 6) == 0)
 					{
-						ptr = g_build_filename(scrap_path, filename, NULL);
+						ptr = g_build_filename(scrap_path, entry->d_name, NULL);
 						Fdelete(ptr);
 						g_free(ptr);
 					}
-				} while (ret == 0);
-				Dclosedir(dirhandle);
+				}
+				closedir(dir);
 			}
 		}
 	}

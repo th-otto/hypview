@@ -23,6 +23,9 @@
 
 #include "hv_defs.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void SelectAll(DOCUMENT *doc)
 {
@@ -31,6 +34,8 @@ void SelectAll(DOCUMENT *doc)
 	BlockSelectAll(doc, &doc->selection);
 	SendRedraw(win);
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 {
@@ -46,20 +51,20 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 	wind_update(BEG_MCTRL);
 	wind_get_grect(win->whandle, WF_WORKXYWH, &work);
 
-	/* VDI Fuell-Attribute fr XOR-Flaechen */
+	/* set VDI fill attributes for XOR mode */
 	vsf_interior(vdi_handle, FIS_SOLID);
 	vsf_color(vdi_handle, G_BLACK);
 	vsf_perimeter(vdi_handle, FALSE);
 	vswr_mode(vdi_handle, MD_XOR);
 
-	/* Clipping Rechteck festlegen */
+	/* set clipping rectangle */
 	clip_rect[0] = work.g_x;
 	clip_rect[1] = work.g_y + win->y_offset;
 	clip_rect[2] = work.g_x + work.g_w - 1;
 	clip_rect[3] = work.g_y + work.g_h - 1;
 	vs_clip(vdi_handle, TRUE, clip_rect);	/* clipping ON */
 
-	/* Wird SHIFT gedrueckt? */
+	/* shift pressed? -> extend selection */
 	if ((m_data->kstate & KbSHIFT) && doc->selection.valid)
 	{
 		start = doc->selection.start;
@@ -85,7 +90,7 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 		goto shift_entry;
 	} else
 	{
-		/* Falls noch eine Selektion aktiv ist: Neu zeichnen = loeschen */
+		/* removes old selection */
 		if (doc->selection.valid)
 			DrawSelection(doc);
 
@@ -119,16 +124,16 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 			m_data->y = nmy;
 			m_data->bstate = nbs;
 		}
-		/* Falls Maustaste losgelassen wurde: sofort Schleife verlassen */
+		/* leave loop if button has been released */
 		if ((m_data->bstate & 1) == 0)
 			break;
 
 	  shift_entry:
-		/* Mauskoordinaten relativ zum echten Arbeitsbereich */
+		/* mouse coordinates relative to actual working area */
 		x = m_data->x - work.g_x;
 		y = m_data->y - work.g_y - win->y_offset;
 
-		/* Maus ausserhalb des Arbeitsbereichs? */
+		/* mouse in work area? */
 		if (x < 0)
 		{
 			x = -1;
@@ -158,30 +163,30 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 			scroll_y = 0;
 		}
 		
-		/* Muss gescrollt werden? */
+		/* do we have to scroll? */
 		if (scroll_x || scroll_y)
 		{
-			/* Versuche zu scrollen */
+			/* try to scroll inside window */
 			if (ScrollWindow(win, &scroll_x, &scroll_y))
 			{
-				/* VDI Fll-Attribute reinitialisieren */
+				/* re-initialize VDI fill attributes */
 				vsf_interior(vdi_handle, FIS_SOLID);
 				vsf_color(vdi_handle, G_BLACK);
 				vsf_perimeter(vdi_handle, FALSE);
 				vswr_mode(vdi_handle, MD_XOR);
 				vs_clip(vdi_handle, TRUE, clip_rect);
 
-				if (scroll_y)			/* wurde in y-Richtung gescrollt? */
+				if (scroll_y)			/* did we scroll in y-direction? */
 				{
 					oy -= scroll_y * font_ch;
 				}
 
-				if (scroll_x)			/* wurde in x-Richtung gescrollt? */
+				if (scroll_x)			/* did we scroll in x-direction? */
 					ox -= scroll_x * font_cw;
 			}
 		}
 
-		/* Berechne Cursor-Position im Text */
+		/* calculate cursor position in text */
 		doc->getCursorProc(doc, x, y, &new);
 
 		x = (short)(new.x - win->docsize.x * font_cw);
@@ -192,13 +197,13 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 			short py1, py2;
 			short px1, px2;
 
-			if (y < oy)					/* Selektion zurueck bewegt? */
+			if (y < oy)					/* has selection been moved backwards? */
 			{
 				px1 = x;
 				py1 = y;
 				px2 = ox;
 				py2 = oy;
-			} else						/* Selektion vorwaerts bewegt? */
+			} else						/* has selection been moved forwards? */
 			{
 				px1 = ox;
 				py1 = oy;
@@ -208,7 +213,7 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 
 			graf_mouse(M_OFF, NULL);
 
-			/* Evtl. bis Zeilen-Ende zeichnen */
+			/* draw till end of line */
 			if (px1 < work.g_w - 1)
 			{
 				xy[0] = work.g_x + px1;
@@ -218,7 +223,7 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 				vr_recfl(vdi_handle, xy);
 			}
 
-			/* Gefuellte Zeilen Zeichnen */
+			/* draw whole lines */
 			py1 += font_ch;
 
 			if (py1 < py2)
@@ -229,9 +234,9 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 				xy[3] = work.g_y + win->y_offset + py2 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
-			if (px2 >= 0)					/* ueberhaupt etwas selektiert? */
+			if (px2 >= 0)
 			{
-				/* Vom Zeilen-Anfang an zeichnen */
+				/* draw from beginning of line */
 				xy[0] = work.g_x;
 				xy[1] = work.g_y + win->y_offset + py2;
 				xy[2] = work.g_x + px2 - 1;
@@ -255,7 +260,7 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 			}
 
 			graf_mouse(M_OFF, NULL);
-			/* Nur die nderung zeichnen */
+			/* draw only changes */
 			xy[0] = work.g_x + px1;
 			xy[1] = work.g_y + win->y_offset + oy;
 			xy[2] = work.g_x + px2 - 1;
@@ -267,8 +272,9 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 
 		if (scroll_x || scroll_y)
 		{
-			/* Kleine Pause, damit das Scrollen auch auf schnellen Rechnern
-			   brauchbar ist */
+			/*
+			 * small delay to make scrolling usable on fast machines
+			 */
 			/* XXX Add some config to this */
 			/* evnt_timer(300); */
 		}
@@ -276,8 +282,9 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 		end = new;
 
 		if ((start.line == end.line) && (start.offset == end.offset))
+		{
 			doc->selection.valid = FALSE;
-		else
+		} else
 		{
 			doc->selection.valid = TRUE;
 			if (start.line < end.line)
@@ -329,6 +336,7 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 	wind_update(END_UPDATE);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void RemoveSelection(DOCUMENT *doc)
 {
@@ -338,6 +346,7 @@ void RemoveSelection(DOCUMENT *doc)
 	SendRedraw(win);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DrawSelection(DOCUMENT *doc)
 {
@@ -346,18 +355,18 @@ void DrawSelection(DOCUMENT *doc)
 	_WORD xy[4], x1, y1, x2, y2;
 	short vis_height;
 
-	/* VDI Fll-Attribute fr XOR-Flchen */
+	/* set VDI fill attributes for XOR mode */
 	vsf_interior(vdi_handle, FIS_SOLID);
 	vsf_color(vdi_handle, G_BLACK);
 	vsf_perimeter(vdi_handle, FALSE);
 	vswr_mode(vdi_handle, MD_XOR);
 
-	if (!doc->selection.valid)				/* Keine gueltige Selektion? */
-		return;								/* Zeichnen abbrechen */
+	if (!doc->selection.valid)				/* is something selected? */
+		return;
 
 	wind_get_grect(win->whandle, WF_WORKXYWH, &work);
 
-	/* Fenster-relative Koordinaten der Selektion berechnen */
+	/* calculate window-relative coordinates of selection */
 	x1 = doc->selection.start.x - (short)(win->docsize.x * font_cw);
 	y1 = (_WORD) (doc->selection.start.y - (win->docsize.y * font_ch));
 	x2 = doc->selection.end.x - (short)(win->docsize.x * font_cw);
@@ -367,9 +376,9 @@ void DrawSelection(DOCUMENT *doc)
 	if ((y1 >= vis_height) || (y2 < 0))
 		return;
 
-	graf_mouse(M_OFF, NULL);				/* Maus-Cursor deaktivieren */
+	graf_mouse(M_OFF, NULL);
 
-	/* Anfang und Ende nicht auf der gleichen Zeile */
+	/* start and end not on the same line */
 	if (y1 != y2)
 	{
 		if (y1 < 0)
@@ -378,7 +387,7 @@ void DrawSelection(DOCUMENT *doc)
 			x1 = 0;
 		} else if (x1 <= work.g_w)
 		{
-			/* Vom Blockanfang bis zum Zeilenende zeichnen */
+			/* draw from start of block to lineend */
 			xy[0] = work.g_x + x1;
 			xy[1] = work.g_y + win->y_offset + y1;
 			xy[2] = work.g_x + work.g_w - 1;
@@ -392,7 +401,7 @@ void DrawSelection(DOCUMENT *doc)
 			x2 = work.g_w;
 		} else if (x2 > 0)
 		{
-			/* Vom Zeilenanfang bis zum Blockende an zeichnen */
+			/* draw from start of line to blockend */
 			xy[0] = work.g_x;
 			xy[1] = work.g_y + win->y_offset + y2;
 			xy[2] = work.g_x + x2 - 1;
@@ -400,7 +409,7 @@ void DrawSelection(DOCUMENT *doc)
 			vr_recfl(vdi_handle, xy);
 		}
 
-		/* Mehr als nur 1 Zeile Differenz? */
+		/* draw whole lines */
 		if (y2 > y1 + font_ch)
 		{
 			xy[0] = work.g_x;
@@ -409,7 +418,7 @@ void DrawSelection(DOCUMENT *doc)
 			xy[3] = work.g_y + win->y_offset + y2 - 1;
 			vr_recfl(vdi_handle, xy);
 		}
-	} else	/* Anfang und Ende auf der gleichen Zeile */
+	} else	/* start and end on same line */
 	{
 		/* Nur die Aenderung zeichnen */
 		xy[0] = work.g_x + x1;

@@ -104,12 +104,12 @@ char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
 	len = 0;
 	while (*src)
 	{
-		if (*src == HYP_ESC)					/*  ESC-Sequenz ??  */
+		if (*src == HYP_ESC)					/* ESC-Sequence ?? */
 		{
 			src++;
 			switch (*src)
 			{
-			case HYP_ESC_ESC:					/*  ESC */
+			case HYP_ESC_ESC:					/* ESC */
 				len++;
 				break;
 			case HYP_ESC_LINK:
@@ -126,7 +126,7 @@ char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
 					src += 3;
 
 					/* get and display link text */
-					if (*src <= HYP_STRLEN_OFFSET)		/* no text in link */
+					if (*src <= HYP_STRLEN_OFFSET)		/* no text specified in link */
 					{
 						len += ustrlen(hyp->indextable[i]->name);
 						src++;
@@ -155,7 +155,7 @@ char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
 	
 	while (*src)
 	{
-		if (*src == HYP_ESC)					/* ESC-sequence ??  */
+		if (*src == HYP_ESC)					/* ESC-sequence ?? */
 		{
 			*dst = 0;							/* mark end of buffer */
 			src++;
@@ -178,7 +178,7 @@ char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
 					src += 3;
 
 					/* get and display link text */
-					if (*src <= HYP_STRLEN_OFFSET)	/* no text in link */
+					if (*src <= HYP_STRLEN_OFFSET)	/* no text specified in link */
 					{
 						strcpy(dst, (const char *)hyp->indextable[i]->name);
 						src++;
@@ -230,7 +230,7 @@ long HypAutolocator(DOCUMENT *doc, long line)
 		return -1;
 	node = doc->displayed_node;
 	
-	if (node == NULL)						/* no node loaded  */
+	if (node == NULL)						/* no node loaded */
 		return -1;
 
 	if (empty(search))

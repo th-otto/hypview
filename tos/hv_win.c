@@ -35,6 +35,10 @@
 	msg[6] = g; \
 	msg[7] = h
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void SendClose(_WORD whandle)
 {
 	_WORD msg[8];
@@ -42,12 +46,14 @@ void SendClose(_WORD whandle)
 	appl_write(gl_apid, 16, msg);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SendCloseWindow(WINDOW_DATA *win)
 {
 	SendClose(win->whandle);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SendTopped(_WORD whandle)
 {
@@ -56,6 +62,7 @@ void SendTopped(_WORD whandle)
 	appl_write(gl_apid, 16, msg);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SendRedraw(WINDOW_DATA *win)
 {
@@ -68,6 +75,7 @@ void SendRedraw(WINDOW_DATA *win)
 	appl_write(gl_apid, 16, msg);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void hv_set_title(WINDOW_DATA *win, const char *wintitle)
 {
@@ -80,6 +88,7 @@ void hv_set_title(WINDOW_DATA *win, const char *wintitle)
 	wind_set_str(win->whandle, WF_NAME, win->titlebuf);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void calc_opensize(WINDOW_DATA *win, GRECT *curr)
 {
@@ -130,6 +139,7 @@ static void calc_opensize(WINDOW_DATA *win, GRECT *curr)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void WindowCalcScroll(WINDOW_DATA *win)
 {
@@ -140,6 +150,7 @@ void WindowCalcScroll(WINDOW_DATA *win)
 	win->scroll.g_h = win->work.g_h - win->y_offset - win->y_margin_top - win->y_margin_top;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void ReInitWindow(DOCUMENT *doc)
 {
@@ -154,12 +165,12 @@ void ReInitWindow(DOCUMENT *doc)
 	hv_set_title(win, win->title);
 	doc->selection.valid = FALSE;
 
-	/*  Fenstergroesse: mindestens 5 Kolonnen und eine Zeile    */
+	/* window size: at least 5 columns and 1 line */
 	ResizeWindow(win, max(doc->columns, 5), max(doc->lines, 1));
 
 	wind_get_grect(win->whandle, WF_CURRXYWH, &curr);
 
-	/*  Breite und Hoehe des Fensters den neuen Ausmassen anpassen  */
+	/* adjust window size to new dimensions */
 	if (gl_profile.viewer.adjust_winsize)
 	{
 		GRECT screen;
@@ -186,6 +197,7 @@ void ReInitWindow(DOCUMENT *doc)
 	SendRedraw(win);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 {
@@ -194,21 +206,21 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	switch (obj)
 	{
 	case WIND_INIT:
-		/*  Als Rasterweite werden die Font-Groessen benutzt    */
+		/* use font size for raster */
 		win->x_raster = font_cw;
 		win->y_raster = font_ch;
 
 		win->y_margin_top = gl_profile.viewer.text_offset;
 		win->x_margin_left = font_cw;
 		
-		/*  Toolbar installieren    */
+		/* install toolbar */
 		win->toolbar = toolbar_tree;
 		win->x_offset = 0;
 		win->y_offset = toolbar_tree[0].ob_height + 2;
 
 		win->title = doc->window_title;
 
-		/*  Fenstergrsse: mindestens 5 Kolonnen und eine Zeile  */
+		/* window size: at least 5 columns and 1 line */
 		win->docsize.w = max(doc->columns, 5);
 		win->docsize.h = max(doc->lines, 1);
 
@@ -219,8 +231,8 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_EXIT:
-		if (doc->popup)					/*  Falls noch ein Popup offen ist...   */
-			RemoveWindow(doc->popup);	/*  ... schliessen  */
+		if (doc->popup)					/* if a popup is still open... */
+			RemoveWindow(doc->popup);	/* ... close it */
 		HypCloseFile(doc);
 		RemoveAllHistoryEntries(win);
 		win = NULL;
@@ -235,7 +247,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			wind_get_grect(0, WF_WORKXYWH, &win->full);
 		break;
 		
-	case WIND_OPENSIZE:	/*  Fenstergrsse beim ffnen */
+	case WIND_OPENSIZE:	/* initial window size */
 		{
 			GRECT *open_size = (GRECT *) data;
 			GRECT screen;
@@ -245,11 +257,11 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			if (!gl_profile.viewer.adjust_winsize)
 				*open_size = screen;
 	
-			/*  Default X-Koordinate angegeben? */
+			/* default X-coordinate specified? */
 			if (gl_profile.viewer.win_x && (gl_profile.viewer.win_x <= screen.g_x + screen.g_w - 50))
 				open_size->g_x = gl_profile.viewer.win_x;
 	
-			/*  Default Y-Koordinate angegeben? */
+			/* default Y-Koordinate specified? */
 			if (gl_profile.viewer.win_y && (gl_profile.viewer.win_y <= screen.g_y + screen.g_h - 70))
 				open_size->g_y = gl_profile.viewer.win_y;
 
@@ -259,8 +271,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			if (gl_profile.viewer.win_h != 0 && (gl_profile.viewer.win_h < open_size->g_h))
 				open_size->g_h = gl_profile.viewer.win_h;
 			
-			/*  Keine automatische Groessenanpassung?
-			   Und Fenster-Breite oder Fensterhoehe definiert?  */
+			/* window width or height specified? */
 			if (!gl_profile.viewer.adjust_winsize)
 			{
 				if (gl_profile.viewer.win_w == 0)
@@ -304,21 +315,21 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		}
 		break;
 		
-	case WIND_SIZED:		/*  Fenstergroesse gendert  */
+	case WIND_SIZED:		/* window size has changed */
 		{
 			GRECT *out = (GRECT *) data;
 			GRECT in;
 			
-			wind_calc_grect(WC_WORK, win->kind, out, &in);	/*  Arbeitsbereich berechnen    */
+			wind_calc_grect(WC_WORK, win->kind, out, &in);	/* calculate working area */
 			
-			in.g_w -= (in.g_w - win->x_offset - win->x_margin_left - win->x_margin_right) % win->x_raster;	/*  Breite auf Rastergrsse "stutzen"    */
-			in.g_h -= (in.g_h - win->y_offset - win->y_margin_top - win->y_margin_bottom) % win->y_raster;	/*  Hhe auf Rastergroesse "stutzen" */
+			in.g_w -= (in.g_w - win->x_offset - win->x_margin_left - win->x_margin_right) % win->x_raster;	/* align width to raster */
+			in.g_h -= (in.g_h - win->y_offset - win->y_margin_top - win->y_margin_bottom) % win->y_raster;	/* align height to raster */
 			
-			wind_calc_grect(WC_BORDER, win->kind, &in, out);	/*  Fensterrand berechnen   */
+			wind_calc_grect(WC_BORDER, win->kind, &in, out);	/* calculate window frame */
 		}
 		break;
 		
-	case WIND_FULLED:		/*  Fuller angeklickt?  */
+	case WIND_FULLED:		/* fuller activated */
 		{
 			GRECT *out = (GRECT *) data;
 			GRECT in;
@@ -327,9 +338,9 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			
 			wind_get_grect(DESK, WF_WORKXYWH, &screen);
 	
-			wind_calc_grect(WC_WORK, win->kind, out, &in);	/*  Arbeitsbereich berechnen    */
+			wind_calc_grect(WC_WORK, win->kind, out, &in);	/* calculate working area */
 	
-			/*  Falls Vergroessern: Verhindern, das Toolbar unsichtbar wird */
+			/* if window was enlarged, prevent toolbar from disappearing */
 			if (((win->status & WIS_FULL) == 0) && in.g_w < toolbar_tree[TO_SEARCHBOX].ob_width)
 			{
 				in.g_w = toolbar_tree[TO_SEARCHBOX].ob_width;
@@ -337,10 +348,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			
 			minw = win->x_offset + win->x_margin_left + win->x_margin_right;
 			minh = win->y_offset + win->y_margin_top + win->y_margin_bottom;
-			in.g_w -= (in.g_w - minw) % win->x_raster;	/*  Breite auf Rastergroesse "stutzen"  */
-			in.g_h -= (in.g_h - minh) % win->y_raster;	/*  Hhe auf Rastergroesse "stutzen" */
+			in.g_w -= (in.g_w - minw) % win->x_raster;	/* align window width */
+			in.g_h -= (in.g_h - minh) % win->y_raster;	/* align window height */
 	
-			wind_calc_grect(WC_BORDER, win->kind, &in, out);	/*  Fensterrand berechnen   */
+			wind_calc_grect(WC_BORDER, win->kind, &in, out);	/* calculate window frame */
 	
 			if (gl_profile.viewer.intelligent_fuller && ((win->status & WIS_FULL) == 0))
 			{
@@ -368,17 +379,17 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	
 			event->mwhich &= ~MU_KEYBD;
 	
-			if ((event->kstate & KbSHIFT) && (event->kstate & KbCTRL))	/*  Tastenkomb. mit SHIFT + CTRL    */
+			if ((event->kstate & KbSHIFT) && (event->kstate & KbCTRL))
 			{
 				if (scan == KbUP || scan == KbLEFT)
-					ToolbarClick(doc, TO_PREVIOUS);
+					ToolbarClick(doc, TO_PREV);
 				else if (scan == KbDOWN || scan == KbRIGHT)
 					ToolbarClick(doc, TO_NEXT);
 				else if (ascii == 'V')
 					BlockPaste(win, !gl_profile.viewer.clipbrd_new_window);
 				else
 					event->mwhich |= MU_KEYBD;
-			} else if (event->kstate & KbSHIFT)	/*  Tastenkomb. mit SHIFT           */
+			} else if (event->kstate & KbSHIFT)
 			{
 				_WORD val;
 				
@@ -431,7 +442,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					event->mwhich |= MU_KEYBD;
 					break;
 				}
-			} else if (event->kstate & KbALT)	/*  Tastenkomb. mit Alt     */
+			} else if (event->kstate & KbALT)
 			{
 				switch (ascii)
 				{
@@ -466,7 +477,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					BlockOperation(doc, CO_SELECT_FONT);
 					break;
 				}	
-			} else if (event->kstate & KbCTRL)	/*  Tastenkomb. mit CTRL    */
+			} else if (event->kstate & KbCTRL)
 			{
 				if (ascii == 'A')
 					BlockOperation(doc, CO_SELECT_ALL);
@@ -498,17 +509,17 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	
 					ScrollWindow(win, NULL, &val);
 				} else if (scan == KbLEFT)
-					ToolbarClick(doc, TO_PREVIOUS);
+					ToolbarClick(doc, TO_PREV);
 				else if (scan == KbRIGHT)
 					ToolbarClick(doc, TO_NEXT);
 				else if (scan >= KbF1 && scan <= KbF10)
 					MarkerShow(doc, scan - KbF1, TRUE);
 				else
 					event->mwhich |= MU_KEYBD;
-			} else if (event->kstate & KbNUM)	/*  Tasten auf dem Ziffernblock */
+			} else if (event->kstate & KbNUM)
 			{
 				if (ascii == '-')
-					ToolbarClick(doc, TO_PREVIOUS);
+					ToolbarClick(doc, TO_PREV);
 				else if (ascii == '+')
 					ToolbarClick(doc, TO_NEXT);
 				else
@@ -625,20 +636,20 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			EVNT *event = (EVNT *) data;
 	
-			if (doc->popup)					/*  Popup aktiv?    */
+			if (doc->popup)					/* Popup active? */
 				SendCloseWindow(doc->popup);
 	
 			RemoveSearchBox(doc);
 	
-			if (event->mbutton & 1)			/*  Links-Klick */
+			if (event->mbutton & 1)			/* left button */
 			{
 				graf_mkstate(&event->mx, &event->my, &event->mbutton, &event->kstate);
 	
 				if (gl_profile.viewer.check_time)
 					CheckFiledate(doc);
 	
-				if ((event->mbutton & 1) ||	/*  Maustaste noch gedrckt? */
-					(event->kstate & KbSHIFT))	/*  oder Shift gedrckt? */
+				if ((event->mbutton & 1) ||		/* button still pressed? */
+					(event->kstate & KbSHIFT))	/* or shift pressee? */
 				{
 					EVNTDATA d;
 					d.x = event->mx;
@@ -656,7 +667,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					RemoveSelection(doc);
 					doc->clickProc(doc, &d);
 				}
-			} else if (event->mbutton & 2)	/*  Rechts-Klick    */
+			} else if (event->mbutton & 2)	/* right button */
 			{
 				_WORD num;
 				OBJECT *tree = rs_tree(CONTEXT);
@@ -684,7 +695,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_TOPPED:
-		if (doc->popup != NULL)					/*  Popup aktiv?    */
+		if (doc->popup != NULL)					/* popup active? */
 		{
 			_WORD top;
 			WINDOW_DATA *popup = doc->popup;

@@ -26,6 +26,10 @@
 #include "hypdebug.h"
 
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void BinaryDisplayPage(DOCUMENT *doc)
 {
 	FMT_ASCII *ascii = doc->data;
@@ -50,7 +54,6 @@ void BinaryDisplayPage(DOCUMENT *doc)
 	while (src < end)
 	{
 		short i;
-
 		char *dst;
 
 		dst = line_buffer;
@@ -71,6 +74,7 @@ void BinaryDisplayPage(DOCUMENT *doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 {
@@ -88,7 +92,7 @@ void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	/*  Falls die Zeile nicht mehr im Dokument enthalten ist... */
+	/* if line was not found in document... */
 	if (line < 0)
 	{
 		pos->line = 0;

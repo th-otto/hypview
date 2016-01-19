@@ -1092,10 +1092,7 @@ void ReInitWindow(DOCUMENT *doc)
 	doc->selection.valid = FALSE;
 	set_font_attributes(win);
 	
-	/*  Fenstergroesse: mindestens 5 Kolonnen und eine Zeile    */
-	/* ResizeWindow(win, max(doc->columns, 5), max(doc->lines, 1)); */
-
-	/*  Breite und Hoehe des Fensters den neuen Ausmassen anpassen  */
+	/* adjust window size to new dimensions */
 	if (gl_profile.viewer.adjust_winsize)
 	{
 	}

@@ -357,7 +357,7 @@ void HypDisplayPage(DOCUMENT *doc)
 			case HYP_ESC_ALINK:
 			case HYP_ESC_ALINK_LINE:
 				{
-					hyp_nodenr dest_page;	/* Index of destination page */
+					hyp_nodenr dest_page;	/* index of destination page */
 					
 					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)	/* skip destination line number */
 						src += 2;

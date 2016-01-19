@@ -125,7 +125,7 @@ pid_t getpid(void)
 #define OLDDATE __unixtime(0,0)
 
 /* Convert a GEMDOS time to seconds since the epoch.
-   The calculated value is always in UTC.  */
+   The calculated value is always in UTC. */
 static time_t __unixtime(unsigned timestamp, unsigned datestamp)
 {
 	struct tm tmbuf;
@@ -244,7 +244,8 @@ int _enoent (const char *path)
 
 				/* Either we don't have Fstat or existing
 				 * non-directory in PATH.  ENOTDIR is ok in
-				 * either case.  */
+				 * either case.
+				 */
 				return 0;
 			}
 		}
@@ -510,7 +511,7 @@ static int __do_stat(const char *_path, struct stat *st, int lflag)
 		 * so we do the same thing if the path ends in '\\'.
 		 */
 
-		/* Find the end of the string, and previous directory for kludging  */
+		/* Find the end of the string, and previous directory for kludging */
 		for (ext = path; ext[0] && ext[1]; ext++)
 		{
 			if (ext[1] && ext[1] != '.')
@@ -772,12 +773,12 @@ int __do_fstat(int fd, struct stat *st, int exact)
 				st->st_size = 1024;
 			}
 			else {
-				/* Go to end of file.  */
+				/* Go to end of file. */
 				r = Fseek(0L, fd, SEEK_END);
 				st->st_size = r;
-				/* Go to start of file.  */
+				/* Go to start of file. */
 				(void) Fseek (0L, fd, SEEK_SET);
-				/* Check for executable file.  */
+				/* Check for executable file. */
 				if (Fread (fd, 2, (char *)&magic) == 2) {
 					if (magic == 0x601a 
 					    || magic == 0x2321)
@@ -793,7 +794,7 @@ int __do_fstat(int fd, struct stat *st, int exact)
 		st->st_uid = getuid();
 		st->st_gid = getgid();
 		st->st_blksize = 1024;
-		/* Note: most Unixes measure st_blocks in 512 byte units.  */
+		/* Note: most Unixes measure st_blocks in 512 byte units. */
 		st->st_blocks = (st->st_size + 511) / 512;
 		st->st_ino = __inode++;
 		st->st_nlink = 1;
@@ -832,7 +833,8 @@ static int mint_fstat(int fd, struct stat *st)
    trailing slashes.  Mingw has other bugs (such as st_ino always
    being 0 on success) which this wrapper does not work around.  But
    at least this implementation provides the ability to emulate fchdir
-   correctly.  */
+   correctly.
+*/
 static int rpl_do_stat(char const *name, struct stat *st, int lflag)
 {
 	int result = (lflag ? real_lstat : real_stat)(name, st);
@@ -862,7 +864,7 @@ static int rpl_do_stat(char const *name, struct stat *st, int lflag)
 		   reports ENOENT for names longer than PATH_MAX, when we want
 		   ENAMETOOLONG, and for stat("file/"), when we want ENOTDIR.
 		   Fortunately, mingw PATH_MAX is small enough for stack
-		   allocation.  */
+		   allocation. */
 		char fixed_name[PATH_MAX + 1] = { 0 };
 		size_t len = strlen(name);
 		int check_dir = FALSE;

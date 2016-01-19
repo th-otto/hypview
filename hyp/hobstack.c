@@ -4,7 +4,7 @@
 
 #define POINTER void *
 
-/* Determine default alignment.  */
+/* Determine default alignment. */
 struct fooalign
 {
 	char x;
@@ -15,7 +15,7 @@ struct fooalign
   ((PTR_INT_TYPE) ((char *) &((struct fooalign *) 0)->d - (char *) 0))
 /* If malloc were really smart, it would round addresses to DEFAULT_ALIGNMENT.
    But in fact it might be less smart and round addresses to as much as
-   DEFAULT_ROUNDING.  So we prepare for it to do that.  */
+   DEFAULT_ROUNDING.  So we prepare for it to do that. */
 union fooround
 {
 	long x;
@@ -27,7 +27,7 @@ union fooround
 /* When we copy a long block of data, this is the unit to do it with.
    On some machines, copying successive ints does not work;
    in such a case, redefine COPYING_UNIT to `long' (if that works)
-   or `char' as a last resort.  */
+   or `char' as a last resort. */
 #ifndef COPYING_UNIT
 #  define COPYING_UNIT int
 #endif	/* COPYING_UNIT */
@@ -44,7 +44,7 @@ union fooround
    and FREEFUN the function to free them.
 
    Return nonzero if successful, calls obstack_alloc_failed_handler if
-   allocation fails.  */
+   allocation fails. */
 
 gboolean _hyp_obstack_begin(struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE alignment, POINTER(*chunkfun) (size_t), void (*freefun) (POINTER))
 {
@@ -53,7 +53,7 @@ gboolean _hyp_obstack_begin(struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE a
 	if (alignment == 0)
 		alignment = DEFAULT_ALIGNMENT;
 	if (size == 0)
-		/* Default size is what GNU malloc can fit in a 4096-byte block.  */
+		/* Default size is what GNU malloc can fit in a 4096-byte block. */
 	{
 		/* 12 is sizeof (mhead) and 4 is EXTRA from GNU malloc.
 		   Use the values for range checking, because if range checking is off,
@@ -62,7 +62,7 @@ gboolean _hyp_obstack_begin(struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE a
 		   allocated.
 
 		   These number are irrelevant to the new GNU malloc.  I suspect it is
-		   less sensitive to the size of the request.  */
+		   less sensitive to the size of the request. */
 		PTR_INT_TYPE extra = ((((12 + DEFAULT_ROUNDING - 1) & ~(DEFAULT_ROUNDING - 1))
 					  + 4 + DEFAULT_ROUNDING - 1)
 					 & ~(DEFAULT_ROUNDING - 1));
@@ -81,7 +81,7 @@ gboolean _hyp_obstack_begin(struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE a
 	h->chunk_limit = chunk->limit
 		= (char *) chunk + h->chunk_size;
 	chunk->prev = 0;
-	/* The initial chunk now contains no empty object.  */
+	/* The initial chunk now contains no empty object. */
 	h->maybe_empty_object = 0;
 	h->alloc_failed = 0;
 	return TRUE;
@@ -92,7 +92,7 @@ gboolean _hyp_obstack_begin(struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE a
    on the assumption that LENGTH bytes need to be added
    to the current object, or a new object of length LENGTH allocated.
    Copies any partial object from the end of the old chunk
-   to the beginning of the new one.  */
+   to the beginning of the new one. */
 
 gboolean _hyp_obstack_newchunk(struct obstack *h, PTR_INT_TYPE length)
 {
@@ -101,12 +101,12 @@ gboolean _hyp_obstack_newchunk(struct obstack *h, PTR_INT_TYPE length)
 	register long new_size;
 	register long obj_size = h->next_free - h->object_base;
 
-	/* Compute size for new chunk.  */
+	/* Compute size for new chunk. */
 	new_size = (obj_size + length) + (obj_size >> 3) + 100;
 	if (new_size < h->chunk_size)
 		new_size = h->chunk_size;
 
-	/* Allocate and initialize the new chunk.  */
+	/* Allocate and initialize the new chunk. */
 	new_chunk = CALL_CHUNKFUN(h, new_size);
 	if (!new_chunk)
 		return FALSE;
@@ -119,7 +119,7 @@ gboolean _hyp_obstack_newchunk(struct obstack *h, PTR_INT_TYPE length)
 
 	/* If the object just copied was the only data in OLD_CHUNK,
 	   free that chunk and remove it from the chain.
-	   But not if that chunk might contain an empty object.  */
+	   But not if that chunk might contain an empty object. */
 	if (h->object_base == old_chunk->contents && !h->maybe_empty_object)
 	{
 		new_chunk->prev = old_chunk->prev;
@@ -127,17 +127,17 @@ gboolean _hyp_obstack_newchunk(struct obstack *h, PTR_INT_TYPE length)
 	}
 	h->object_base = new_chunk->contents;
 	h->next_free = h->object_base + obj_size;
-	/* The new chunk certainly contains no empty object yet.  */
+	/* The new chunk certainly contains no empty object yet. */
 	h->maybe_empty_object = 0;
 	return TRUE;
 }
 
 /* Return nonzero if object OBJ has been allocated from obstack H.
    This is here for debugging.
-   If you use it in a program, you are probably losing.  */
+   If you use it in a program, you are probably losing. */
 
 /* Suppress -Wmissing-prototypes warning.  We don't want to declare this in
-   obstack.h because it is just for debugging.  */
+   obstack.h because it is just for debugging. */
 gboolean _hyp_obstack_allocated_p(struct obstack *h, POINTER obj);
 
 gboolean _hyp_obstack_allocated_p(struct obstack *h, POINTER obj)
@@ -148,7 +148,7 @@ gboolean _hyp_obstack_allocated_p(struct obstack *h, POINTER obj)
 	lp = (h)->chunk;
 	/* We use >= rather than > since the object cannot be exactly at
 	   the beginning of the chunk but might be an empty object exactly
-	   at the end of an adjacent chunk.  */
+	   at the end of an adjacent chunk. */
 	while (lp != 0 && ((POINTER) lp >= obj || (POINTER) (lp)->limit < obj))
 	{
 		plp = lp->prev;
@@ -158,7 +158,7 @@ gboolean _hyp_obstack_allocated_p(struct obstack *h, POINTER obj)
 }
 
 /* Free objects in obstack H, including OBJ and everything allocate
-   more recently than OBJ.  If OBJ is zero, free everything in H.  */
+   more recently than OBJ.  If OBJ is zero, free everything in H. */
 
 gboolean hyp_obstack_free(struct obstack *h, POINTER obj)
 {
@@ -177,14 +177,14 @@ gboolean hyp_obstack_free(struct obstack *h, POINTER obj)
 		lp = h->chunk;
 		/* We use >= because there cannot be an object at the beginning of a chunk.
 		   But there can be an empty object at that address
-		   at the end of another chunk.  */
+		   at the end of another chunk. */
 		while (lp != 0 && ((POINTER) lp >= obj || (POINTER) (lp)->limit < obj))
 		{
 			plp = lp->prev;
 			CALL_FREEFUN(h, lp);
 			lp = plp;
 			/* If we switch chunks, we can't tell whether the new current
-			   chunk contains an empty object, so assume that it may.  */
+			   chunk contains an empty object, so assume that it may. */
 			h->maybe_empty_object = 1;
 		}
 		if (lp)
@@ -217,27 +217,27 @@ PTR_INT_TYPE hyp_obstack_memory_used(struct obstack *h)
 
 /* Pointer to beginning of object being allocated or to be allocated next.
    Note that this might not be the final address of the object
-   because a new chunk might be needed to hold the final size.  */
+   because a new chunk might be needed to hold the final size. */
 POINTER hyp_obstack_base(struct obstack *obstack)
 {
 	return obstack->object_base;
 }
 
 
-/* Pointer to next byte not yet allocated in current chunk.  */
+/* Pointer to next byte not yet allocated in current chunk. */
 POINTER hyp_obstack_next_free(struct obstack *obstack)
 {
 	return obstack->next_free;
 }
 
 
-/* Size for allocating ordinary chunks.  */
+/* Size for allocating ordinary chunks. */
 long hyp_obstack_chunk_size (struct obstack *obstack)
 {
 	return obstack->chunk_size;
 }
 
-/* Mask specifying low bits that should be clear in address of an object.  */
+/* Mask specifying low bits that should be clear in address of an object. */
 PTR_INT_TYPE hyp_obstack_alignment_mask (struct obstack *obstack)
 {
 	return obstack->alignment_mask;

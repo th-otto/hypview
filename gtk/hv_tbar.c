@@ -44,7 +44,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "history"), doc->buttons.history);
 	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "clearstack"), doc->buttons.history);
 
-	/* is there a catalog file?*/
+	/* is there a catalog file? */
 	gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "catalog"), !empty(gl_profile.viewer.catalog_file));
 
 	/* next buttons are type specific */

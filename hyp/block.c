@@ -23,7 +23,7 @@ gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *p
 			const char *src;
 			int *handle = (int *) param;
 
-			if (!node)					/*  Keine Seite geladen */
+			if (!node)					/* Keine Seite geladen */
 			{
 				HYP_DBG(("Error: Can't save, no page loaded"));
 				return FALSE;

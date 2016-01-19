@@ -55,7 +55,7 @@ void ConvertKeypress(_WORD *key, _WORD *kstate)
 			break;
 		case 117:						/* CTRL + END */
 			break;
-		case 118:						/* CTRL + PAGE DOWN  */
+		case 118:						/* CTRL + PAGE DOWN */
 			break;
 		case 119:
 			scan = KbHOME;

@@ -42,10 +42,10 @@ SRCHKEY_ENTRY *c_key_table = NULL;
 /*---------- The screen-table -------------------*/
 long *screen_table;						/* File-offsets of screens  */
 int screen_cnt = 0;						/* Number of screens        */
-unsigned char *screen_done;						/* 'Done' marking           */
+unsigned char *screen_done;				/* 'Done' marking           */
 
 /*---------- The string-table -------------------*/
-unsigned char *string_tab;						/* Coded strings     */
+unsigned char *string_tab;				/* Coded strings     */
 
 /*---------- File-streams -----------------------*/
 FILE *hlpfile = NULL;					/* Input help-file     */
@@ -585,7 +585,7 @@ static int read_key_table(SRCHKEY_ENTRY ** ptable, int which)
 /*---------------------------------------------*/
 /*  Reads in the 'Index' screen.               */
 /*---------------------------------------------*/
-static int read_coded(int index, unsigned char * coded_text)
+static int read_coded(int index, unsigned char *coded_text)
 {
 	long code_length,
 	 bytes_read;
@@ -597,7 +597,7 @@ static int read_coded(int index, unsigned char * coded_text)
 }
 
 
-static void wr_keytable(SRCHKEY_ENTRY * table, int cnt)
+static void wr_keytable(SRCHKEY_ENTRY *table, int cnt)
 {
 	int i;
 
@@ -634,7 +634,7 @@ static void wr_keytables(void)
 /*  Gets the 'i'th keyword from the search-word */
 /*  table. ('i' starts from 0)                  */
 /*----------------------------------------------*/
-char *get_keyword(SRCHKEY_ENTRY * keytable, int i)
+char *get_keyword(SRCHKEY_ENTRY *keytable, int i)
 {
 	return ((char *) (&keytable[i]) + keytable[i].pos);
 }
@@ -648,12 +648,10 @@ char *get_keyword(SRCHKEY_ENTRY * keytable, int i)
 /*  corresponds to its affiliation to the       */
 /*  search-word tables is set.                  */
 /*----------------------------------------------*/
-void corr_attrs(NAME_ENTRY * namelist)
+void corr_attrs(NAME_ENTRY *namelist)
 {
 	int i;
-
 	char *search_name;
-
 	NAME_ENTRY *elem;
 
 	wr_msg(set_attr_msg, TO_SCREEN);
@@ -686,19 +684,12 @@ void corr_attrs(NAME_ENTRY * namelist)
 long decode(int index, char *plain_text)
 {
 	static unsigned char first_call = TRUE;
-
 	static unsigned char *code_buffer = NULL;
-
 	unsigned char nibble;
-
 	_UWORD idx;
-
 	_UWORD str_len;
-
 	_ULONG offset;
-
 	char *p;
-
 	long size = 0L;
 
 	if (first_call)
@@ -707,14 +698,14 @@ long decode(int index, char *plain_text)
 		first_call = FALSE;
 	}
 
-  /*------------- Read the screen -------*/
+	/*------------- Read the screen -------*/
 	if (!read_coded(index, code_buffer))
 		return (0L);
 
 	curr_coded_text = code_buffer;
-	must_read = TRUE;					/* No byte read yet       */
+	must_read = TRUE;					/* No byte read yet */
 
-  /*------------ Now also decode it -----------*/
+	/*------------ Now also decode it -----------*/
 	while (TRUE)
 	{
 		nibble = get_nibble();
@@ -902,7 +893,7 @@ void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, u
 		errors++;
 		exit(1);
 	}
-	/* Insert at start of list  */
+	/* Insert at start of list */
 	new->next = *namelist;
 	new->name_attr = attr;
 	new->scr_code = code;
@@ -1039,7 +1030,7 @@ void transform(char *source, long length, char *d)
 			s += 2;						/* Jump over LF */
 			break;
 
-		case BACKSLASH:				/* Must be doubled up  */
+		case BACKSLASH:				/* Must be doubled up */
 			*d++ = *s++;
 			*d++ = '\\';
 			break;

@@ -11,7 +11,7 @@ long BinaryAutolocator(DOCUMENT *doc, long line)
 	const unsigned char *src, *end;
 	size_t len = strlen(search);
 	
-	if (!ascii)							/*  Keine Datei geladen */
+	if (!ascii)							/* no file loaded */
 		return -1;
 
 	end = ascii->start + ascii->length - len;

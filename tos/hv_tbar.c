@@ -24,6 +24,9 @@
 #include "hv_defs.h"
 #include "hypview.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void toolbar_redraw(DOCUMENT *doc)
 {
@@ -45,6 +48,7 @@ static void toolbar_redraw(DOCUMENT *doc)
 	wind_update(END_UPDATE);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 {
@@ -109,7 +113,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	else
 		toolbar[TO_HISTORY].ob_state |= OS_DISABLED;
 
-	/* is there a catalog file?*/
+	/* is there a catalog file? */
 	if (!empty(gl_profile.viewer.catalog_file))
 		toolbar[TO_KATALOG].ob_state &= ~OS_DISABLED;
 	else
@@ -117,9 +121,9 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 
 	/* next buttons are type specific */
 	if (doc->buttons.previous)
-		toolbar[TO_PREVIOUS].ob_state &= ~OS_DISABLED;
+		toolbar[TO_PREV].ob_state &= ~OS_DISABLED;
 	else
-		toolbar[TO_PREVIOUS].ob_state |= OS_DISABLED;
+		toolbar[TO_PREV].ob_state |= OS_DISABLED;
 
 	if (doc->buttons.home)
 		toolbar[TO_HOME].ob_state &= ~OS_DISABLED;
@@ -157,6 +161,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	}	
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void position_popup(WINDOW_DATA *win, _WORD obj, _WORD *x, _WORD *y)
 {
@@ -172,6 +177,7 @@ static void position_popup(WINDOW_DATA *win, _WORD obj, _WORD *x, _WORD *y)
 		*y = toolbar.g_y + win->y_offset;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* Handle mouse click on toolbar */
 void ToolbarClick(DOCUMENT *doc, short obj)
@@ -228,7 +234,7 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 		GoBack(doc);
 		break;
 	case TO_NEXT:
-	case TO_PREVIOUS:
+	case TO_PREV:
 	case TO_HOME:
 		GoThisButton(doc, obj);
 		break;
@@ -264,6 +270,7 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 		objc_draw_grect(win->toolbar, obj, 1, (GRECT *)&win->toolbar[0].ob_x);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void RemoveSearchBox(DOCUMENT *doc)
 {
@@ -273,6 +280,6 @@ void RemoveSearchBox(DOCUMENT *doc)
 		doc->buttons.searchbox = FALSE;	/* disable it */
 		*doc->autolocator = 0;			/* clear autolocator string */
 
-		ToolbarUpdate(doc, TRUE);	/* update toolbar */
+		ToolbarUpdate(doc, TRUE);		/* update toolbar */
 	}
 }

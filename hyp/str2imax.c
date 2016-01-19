@@ -69,13 +69,13 @@ intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)
 
 	save = s = nptr;
 
-	/* Skip white space.  */
+	/* Skip white space. */
 	while (len && ISSPACE(*s))
 		len--, ++s;
 	if (len == 0)
 		goto noconv;
 
-	/* Check for a sign.  */
+	/* Check for a sign. */
 	if (*s == '-')
 	{
 		negative = 1;
@@ -87,7 +87,7 @@ intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)
 	} else
 		negative = 0;
 
-	/* Recognize number prefix and if BASE is zero, figure it out ourselves.  */
+	/* Recognize number prefix and if BASE is zero, figure it out ourselves. */
 	if (len != 0 && *s == '0')
 	{
 		if ((base == 0 || base == 16) && len >= 2 && TOUPPER(s[1]) == 'X')
@@ -100,7 +100,7 @@ intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)
 	} else if (base == 0)
 		base = 10;
 
-	/* Save the pointer so we can check later if anything happened.  */
+	/* Save the pointer so we can check later if anything happened. */
 	save = s;
 
 	cutoff = __extension__ STRTOL_ULONG_MAX / (uintmax_t) base;
@@ -121,7 +121,7 @@ intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)
 			break;
 		if ((int) c >= base)
 			break;
-		/* Check for overflow.  */
+		/* Check for overflow. */
 		if (i > cutoff || (i == cutoff && c > cutlim))
 			overflow = 1;
 		else
@@ -132,17 +132,17 @@ intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)
 		s++, --len;
 	}
 
-	/* Check if anything actually happened.  */
+	/* Check if anything actually happened. */
 	if (s == save)
 		goto noconv;
 
 	/* Store in ENDPTR the address of one character
-	   past the last character we converted.  */
+	   past the last character we converted. */
 	if (endptr != NULL)
 		*endptr = s;
 
 	/* Check for a value that is within the range of
-	   'unsigned LONG int', but outside the range of 'LONG int'.  */
+	   'unsigned LONG int', but outside the range of 'LONG int'. */
 	if (overflow == 0
 		&& i > (negative ? -((uintmax_t) (__extension__ STRTOL_LONG_MIN + 1)) + 1 : __extension__ (uintmax_t) STRTOL_LONG_MAX))
 		overflow = 1;
@@ -153,20 +153,20 @@ intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)
 		return negative ? __extension__ STRTOL_LONG_MIN : __extension__ STRTOL_LONG_MAX;
 	}
 
-	/* Return the result of the appropriate sign.  */
+	/* Return the result of the appropriate sign. */
 	return negative ? -i : i;
 
   noconv:
 	/* We must handle a special case here: the base is 0 or 16 and the
 	   first two characters are '0' and 'x', but the rest are no
 	   hexadecimal digits.  This is no error case.  We return 0 and
-	   ENDPTR points to the 'x'.  */
+	   ENDPTR points to the 'x'. */
 	if (endptr != NULL)
 	{
 		if (save - nptr >= 2 && TOUPPER(save[-1]) == 'X' && save[-2] == '0')
 			*endptr = &save[-1];
 		else
-			/*  There was no number to convert.  */
+			/* There was no number to convert. */
 			*endptr = nptr;
 	}
 

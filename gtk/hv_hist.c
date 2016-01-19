@@ -5,6 +5,10 @@
 /* pointer to history data */
 HISTORY *history = NULL;
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void AddHistoryEntry(WINDOW_DATA *win)
 {
 	HISTORY *new_entry;
@@ -22,12 +26,13 @@ void AddHistoryEntry(WINDOW_DATA *win)
 	new_entry->node = doc->getNodeProc(doc);
 	new_entry->line = 0; /* YYY win->docsize.y */
 	new_entry->next = history;
-	new_entry->title = g_strdup_printf(" %s", win->title);
+	new_entry->title = g_strdup(win->title);
 
 	/* put new entry at top */
 	history = new_entry;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line)
 {
@@ -69,6 +74,7 @@ gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line)
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * remove all entries connected to <win>
@@ -110,6 +116,7 @@ void RemoveAllHistoryEntries(WINDOW_DATA *win)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 short CountWindowHistoryEntries(WINDOW_DATA *win)
 {
@@ -125,6 +132,7 @@ short CountWindowHistoryEntries(WINDOW_DATA *win)
 	return num;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 short CountDocumentHistoryEntries(DOCUMENT *doc)
 {
@@ -140,6 +148,7 @@ short CountDocumentHistoryEntries(DOCUMENT *doc)
 	return num;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DeleteLastHistory(HISTORY *entry)
 {
@@ -156,6 +165,7 @@ void DeleteLastHistory(HISTORY *entry)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 HISTORY *GetLastHistory(void)
 {
@@ -183,6 +193,7 @@ HISTORY *GetLastHistory(void)
 	return last;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SetLastHistory(WINDOW_DATA *the_win, HISTORY *last)
 {
@@ -209,4 +220,3 @@ void SetLastHistory(WINDOW_DATA *the_win, HISTORY *last)
 		entry = entry->next;
 	}
 }
-

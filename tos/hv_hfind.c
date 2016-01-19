@@ -28,6 +28,9 @@
 static DIALOG *Hypfind_Dialog;
 static short HypfindID;
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static void hypfind_search_allref(WINDOW_DATA *win, OBJECT *tree)
 {
@@ -38,6 +41,7 @@ static void hypfind_search_allref(WINDOW_DATA *win, OBJECT *tree)
 	g_free(name);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc)
 {
@@ -65,6 +69,7 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 {
@@ -110,6 +115,7 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 	return 1;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void Hypfind(DOCUMENT *doc)
 {
@@ -164,6 +170,7 @@ void Hypfind(DOCUMENT *doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void HypfindFinish(short AppID, short ret)
 {

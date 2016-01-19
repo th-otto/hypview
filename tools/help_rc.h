@@ -78,7 +78,7 @@ typedef _UWORD SUB_IDX_ENTRY;
 typedef struct name_entry {
   _UWORD scr_code;       /* Index-Code ScreenTab   */
   unsigned char name_attr;      /* Attribute of the name  */
-  char  *name;          /* The name itself        */
+  char  *name;           /* The name itself        */
   _UWORD link_index;     /* link-Index ScreenTab   */
   struct name_entry *next;        /* Follower     */
 } NAME_ENTRY;

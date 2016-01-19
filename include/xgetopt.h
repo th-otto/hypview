@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 #ifndef _XGETOPT_H
 #define _XGETOPT_H 1
@@ -27,7 +27,7 @@
    we have already included it).  Then systematically rename
    identifiers so that they do not collide with the system functions
    and variables.  Renaming avoids problems with some compilers and
-   linkers.  */
+   linkers. */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -71,7 +71,7 @@
    that does not exist if we are standalone.  So: if __GNU_LIBRARY__ is
    not defined, include <ctype.h>, which will pull in <features.h> for us
    if it's from glibc.  (Why ctype.h?  It's guaranteed to exist and it
-   doesn't flood the namespace with stuff the way some other headers do.)  */
+   doesn't flood the namespace with stuff the way some other headers do.) */
 #if !defined __GNU_LIBRARY__
 # include <ctype.h>
 #endif
@@ -84,7 +84,7 @@ extern "C" {
    When `getopt' finds an option that takes an argument,
    the argument value is returned here.
    Also, when `ordering' is RETURN_IN_ORDER,
-   each non-option ARGV-element is returned here.  */
+   each non-option ARGV-element is returned here. */
 
 extern const char *optarg;
 
@@ -98,16 +98,16 @@ extern const char *optarg;
    non-option elements that the caller should itself scan.
 
    Otherwise, `optind' communicates from one call to the next
-   how much of ARGV has been scanned so far.  */
+   how much of ARGV has been scanned so far. */
 
 extern int optind;
 
 /* Callers store zero here to inhibit the error message `getopt' prints
-   for unrecognized options.  */
+   for unrecognized options. */
 
 	extern int opterr;
 
-/* Set to an option character which was unrecognized.  */
+/* Set to an option character which was unrecognized. */
 
 extern int optopt;
 
@@ -131,19 +131,19 @@ extern int optopt;
    option's `flag' field to zero and its `val' field to a nonzero
    value (the equivalent single-letter option character, if there is
    one).  For long options that have a zero `flag' field, `getopt'
-   returns the contents of the `val' field.  */
+   returns the contents of the `val' field. */
 
 struct option
 {
 	const char *name;
 	/* has_arg can't be an enum because some compilers complain about
-	   type mismatches in all the code that assumes it is an int.  */
+	   type mismatches in all the code that assumes it is an int. */
 	int has_arg;
 	int *flag;
 	int val;
 };
 
-/* Names for the values of the `has_arg' field of `struct option'.  */
+/* Names for the values of the `has_arg' field of `struct option'. */
 
 # define no_argument            0
 # define required_argument      1
@@ -174,7 +174,7 @@ struct option
    If OPTS begins with `-', then non-option arguments are treated as
    arguments to the option '\1'.  This behavior is specific to the GNU
    `getopt'.  If OPTS begins with `+', or POSIXLY_CORRECT is set in
-   the environment, then do not permute arguments.  */
+   the environment, then do not permute arguments. */
 
 struct _getopt_data;
 #ifndef __XGETOPT_IMPLEMENTATION__

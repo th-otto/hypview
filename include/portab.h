@@ -201,7 +201,7 @@ _BOOL is_big_endian (void);
 #endif
 
 #define ATARI 1
-#define PU_MOTOROLA  1			/* Motorola Processing Unit    */
+#define PU_MOTOROLA  1			/* Motorola Processing Unit */
 #define NO_GEM 0
 
 #ifndef __attribute__

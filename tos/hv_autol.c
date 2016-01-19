@@ -28,6 +28,10 @@
 
 #define AUTOLOC_SIZE		26
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 /*
  * Initialize and activate the autolocator.
  * Returns position of next character
@@ -63,6 +67,7 @@ static char *AutolocatorInit(DOCUMENT * doc)
 	return ptr;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 static void autolocator_redraw(WINDOW_DATA *win, _WORD obj, GRECT *tbar)
 {
@@ -80,6 +85,7 @@ static void autolocator_redraw(WINDOW_DATA *win, _WORD obj, GRECT *tbar)
 	wind_update(END_UPDATE);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* Update the autolocator and start a search */
 static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
@@ -127,7 +133,9 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 	}
 }
 
-/*add a new character to the Autolocator and start search */
+/*** ---------------------------------------------------------------------- ***/
+
+/* add a new character to the Autolocator and start search */
 short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 {
 	WINDOW_DATA *win = doc->window;
@@ -188,6 +196,7 @@ short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* insert contents of clipboard in autolocator. */
 void AutoLocatorPaste(DOCUMENT *doc)

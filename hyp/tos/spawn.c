@@ -433,7 +433,6 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 			}
 			*s++ = '\0';
 		}
-/*                *cmd = (char) cmlen;  NOT ANY MORE */
 	}
 
 	/* tie off environment */

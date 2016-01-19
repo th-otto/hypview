@@ -24,6 +24,9 @@
 #include "hv_defs.h"
 #include "hypview.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 {
@@ -52,6 +55,7 @@ void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 	ReInitWindow(doc);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GoBack(DOCUMENT *old_doc)
 {
@@ -68,7 +72,7 @@ void GoBack(DOCUMENT *old_doc)
 		{
 			int ret;
 
-			/* if old document is not used anymore...    */
+			/* if old document is not used anymore... */
 			if (!CountDocumentHistoryEntries(old_doc))
 			{
 				win->data = old_doc->next;
@@ -105,6 +109,7 @@ void GoBack(DOCUMENT *old_doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 {
@@ -211,7 +216,7 @@ void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 					{
 						DOCUMENT *prev_doc = old_doc;
 
-						/* add new document at the beginning  */
+						/* add new document at the beginning */
 						while (prev_doc->next != new_doc)
 							prev_doc = prev_doc->next;
 						prev_doc->next = new_doc->next;
@@ -252,8 +257,9 @@ void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 	}
 }
 
-
-
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 /****** Module dependend	****/
 
@@ -277,6 +283,7 @@ static void GotoDocPage(DOCUMENT *doc, hyp_nodenr page)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GotoHelp(DOCUMENT *doc)
 {
@@ -284,6 +291,7 @@ void GotoHelp(DOCUMENT *doc)
 	GotoDocPage(doc, hyp->help_page);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GotoIndex(DOCUMENT *doc)
 {
@@ -291,32 +299,69 @@ void GotoIndex(DOCUMENT *doc)
 	GotoDocPage(doc, hyp->index_page);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void GoThisButton(DOCUMENT *doc, short obj)
 {
 	WINDOW_DATA *win = doc->window;
 	HYP_DOCUMENT *hyp = doc->data;
 	hyp_nodenr new_node = HYP_NOINDEX;
+	hyp_nodenr current_node = doc->getNodeProc(doc);
+	gboolean add_to_hist = FALSE;
 
-	if (obj == TO_NEXT)
-		new_node = hyp->indextable[doc->displayed_node->number]->next;
-	else if (obj == TO_PREVIOUS)
-		new_node = hyp->indextable[doc->displayed_node->number]->previous;
-	else if (obj == TO_HOME)
-		new_node = hyp->indextable[doc->displayed_node->number]->toc_index;
-
+	switch (obj)
+	{
+	case TO_NEXT:
+		new_node = hyp->indextable[current_node]->next;
+		break;
+#ifdef TO_NEXT_PHYS
+	case TO_NEXT_PHYS:
+		new_node = current_node + 1;
+		while (hypnode_valid(hyp, new_node) && !(HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type)))
+			new_node++;
+		break;
+#endif
+	case TO_PREV:
+		new_node = hyp->indextable[current_node]->previous;
+		break;
+#ifdef TO_PREV_PHYS
+	case TO_PREV_PHYS:
+		new_node = current_node - 1;
+		while (hypnode_valid(hyp, new_node) && !(HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type)))
+			new_node--;
+		break;
+#endif
+#ifdef TO_LAST
+	case TO_LAST:
+		new_node = hyp->last_text_page;
+		break;
+#endif
+#ifdef TO_FIRST
+	case TO_FIRST:
+		new_node = hyp->first_text_page;
+		break;
+#endif
+	case TO_HOME:
+		add_to_hist = TRUE;
+		new_node = hyp->indextable[current_node]->toc_index;
+		break;
+	default:
+		new_node = HYP_NOINDEX;
+		break;
+	}
+	
 	if (!hypnode_valid(hyp, new_node))
 		return;
 	
 	/* already displaying this page? */
-	if (new_node == doc->getNodeProc(doc))
+	if (new_node == current_node)
 		return;
 
 	/* is node a text page? */
 	if (!HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type))
 		return;
 
-	if (obj == TO_HOME)
+	if (add_to_hist)
 		AddHistoryEntry(win);
 	GotoPage(doc, new_node, 0, FALSE);
 }

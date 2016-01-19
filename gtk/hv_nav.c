@@ -46,7 +46,7 @@ void GoBack(DOCUMENT *old_doc)
 		{
 			int ret;
 
-			/* if old document is not used anymore...    */
+			/* if old document is not used anymore... */
 			if (!CountDocumentHistoryEntries(old_doc))
 			{
 				win->data = old_doc->next;
@@ -136,7 +136,7 @@ static void history_selected(GtkWidget *w, void *user_data)
 					{
 						DOCUMENT *prev_doc = old_doc;
 
-						/* add new document at the beginning  */
+						/* add new document at the beginning */
 						while (prev_doc->next != new_doc)
 							prev_doc = prev_doc->next;
 						prev_doc->next = new_doc->next;

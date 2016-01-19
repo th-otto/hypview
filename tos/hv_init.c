@@ -28,6 +28,9 @@
 
 static RSHDR *skin_rsh;
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void hv_init(void)
 {
@@ -35,41 +38,43 @@ void hv_init(void)
 	_WORD font_w, font_h;
 	char *skin;
 	
-	/*  VDI-Initialisierung:    */
-	/************************/
+	/*
+	 * initialize VDI
+	 */
 
-	/*  Standard-Werte fr die VDI-Text-Ausgaben */
+	/* set default value for text putput */
 	vswr_mode(vdi_handle, MD_TRANS);
 
-	if (vq_gdos())						/*  GDOS installiert?   */
-		vst_load_fonts(vdi_handle, 0);	/*  Zeichensaetze laden */
+	if (vq_gdos())						/* GDOS avaiablable? */
+		vst_load_fonts(vdi_handle, 0);	/* load fonts */
 
 	sel_font_id = gl_profile.viewer.font_id ? gl_profile.viewer.font_id : aes_fontid;
 	sel_font_pt = gl_profile.viewer.font_pt ? gl_profile.viewer.font_pt : aes_fontsize;
 	
-	vst_font(vdi_handle, sel_font_id);		/*  Font einstellen */
+	vst_font(vdi_handle, sel_font_id);		/* select font */
 	vst_point(vdi_handle, sel_font_pt, &font_w, &font_h, &font_cw, &font_ch);
 
 	if (ProportionalFont(&font_w))
 		font_cw = font_w;
 
-	/*  Text-Ausgabe-Ausrichtung konfigurieren  */
+	/* set default alignment */
 	vst_alignment(vdi_handle, TA_LEFT, TA_TOP, &dummy, &dummy);
 
-	/*  Standard-Werte fuer die VDI-Fuell-Funktionen    */
+	/* set default fill attributes */
 	vsf_color(vdi_handle, G_WHITE);
 	vsf_interior(vdi_handle, FIS_SOLID);
 	vsf_perimeter(vdi_handle, 0);
 
-	/*  Standard-Wert fuer User-spezifisches Linienattribut */
-	vsl_udsty(vdi_handle, 0xAAAA);		/*  Gepunktetes Linienmuster    */
+	/* set default line attribtes */
+	vsl_udsty(vdi_handle, 0xAAAA);		/* dotted line */
 	vsl_width(vdi_handle, 1);
 	vsl_ends(vdi_handle, 0, 0);
 	vsl_type(vdi_handle, SOLID);
 	vsl_color(vdi_handle, G_BLACK);
 
-	/*  AES-Initialisierung:    */
-	/************************/
+	/*
+	 * initialize AES
+	 */
 
 	/* load toolbar/skin */
 	skin = gl_profile.viewer.skin_path;
@@ -117,7 +122,7 @@ void hv_init(void)
 	{
 		_WORD i;
 		
-		/*  Entferne jeglichen Icon-Text    */
+		/* remove icon text */
 		for (i = ROOT; ; i++)
 		{
 			switch (toolbar_tree[i].ob_type & 0xff)
@@ -143,14 +148,11 @@ void hv_init(void)
 
 
 
-	/*  diverse Initialisierungen:  */
-	/******************************/
-
-
 	/* load markers */
 	MarkerInit();
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void hv_exit(void)
 {

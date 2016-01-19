@@ -3,6 +3,9 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static char *find_file(WINDOW_DATA *win, const char *path)
 {
@@ -12,12 +15,12 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 	char *filename;
 	
 	filename = path_subst(path);
-	/*  Falls schon eine Datei/ein Fenster geoeffnet wurde  */
+	/* if we already have a window... */
 	if (win)
 	{
 		DOCUMENT *doc = win->data;
 
-		/* search for file in path of window */
+		/* ...search for file in path of window */
 		dir = g_path_get_dirname(doc->path);
 		real_path = g_build_filename(dir, filename, NULL);
 		g_free(dir);
@@ -36,6 +39,7 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 	return real_path;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * open a file in a new window
@@ -81,6 +85,7 @@ WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr
 	return win;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* open a file in the same window */
 WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message)
@@ -228,6 +233,7 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 	return win;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* Verifies the current documents file modification time/date and reloads the
  * document if necessary. This behaviour is enabled by the CHECK_TIME option. */
@@ -244,7 +250,7 @@ void CheckFiledate(DOCUMENT *doc)
 			hyp_nodenr node;
 
 			node = doc->getNodeProc(doc);	/* Remember current node */
-			doc->closeProc(doc);		/* Close document */
+			doc->closeProc(doc);			/* Close document */
 
 			/* Reload file */
 			ret = hyp_utf8_open(doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
@@ -265,6 +271,7 @@ void CheckFiledate(DOCUMENT *doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp)
 {

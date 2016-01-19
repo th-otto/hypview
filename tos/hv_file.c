@@ -25,6 +25,9 @@
 #include "hypdebug.h"
 #include "hypview.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 static char *find_file(WINDOW_DATA *win, const char *path)
 {
@@ -34,12 +37,12 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 	char *filename;
 	
 	filename = path_subst(path);
-	/*  Falls schon eine Datei/ein Fenster geoeffnet wurde  */
+	/* if we already have a window... */
 	if (win)
 	{
 		DOCUMENT *doc = win->data;
 
-		/* search for file in path of window */
+		/* ...search for file in path of window */
 		dir = g_path_get_dirname(doc->path);
 		real_path = g_build_filename(dir, filename, NULL);
 		g_free(dir);
@@ -58,6 +61,7 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 	return real_path;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * open a file in a new windows
@@ -87,7 +91,7 @@ WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr
 			if (doc->gotoNodeProc(doc, chapter, node) ||
 				(find_default && doc->gotoNodeProc(doc, NULL, HYP_NOINDEX)))
 			{
-				/*  neues Fenster anlegen?  */
+				/* create a new window */
 				win = doc->window = OpenWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER |
 						   UPARROW | DNARROW | VSLIDE | LFARROW | RTARROW | HSLIDE | SMALLER, doc->path, -1, -1, doc);
 			}
@@ -104,6 +108,7 @@ WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr
 	return win;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* open a file in the same window */
 WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message)
@@ -254,6 +259,7 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 	return win;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /* Verifies the current documents file modification time/date and reloads the
  * document if necessary. This behaviour is enabled by the CHECK_TIME option. */
@@ -269,7 +275,7 @@ void CheckFiledate(DOCUMENT *doc)
 		{
 			hyp_nodenr node;
 
-			graf_mouse(BUSY_BEE, NULL);	/*  We are busy... */
+			graf_mouse(BUSY_BEE, NULL);	/* We are busy... */
 
 			node = doc->getNodeProc(doc);	/* Remember current node */
 			doc->closeProc(doc);		/* Close document */
@@ -294,6 +300,7 @@ void CheckFiledate(DOCUMENT *doc)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp)
 {

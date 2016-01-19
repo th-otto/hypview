@@ -208,7 +208,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 				module->module_filename = pos;
 				/* convert now, because we might need it for error messages */
 				module->filename = hyp_conv_to_utf8(module->charset, module->module_filename, STR0TERM);
-				/*  Falls Datei-Erweiterung fehlt: hyp anfuegen */
+				/* Falls Datei-Erweiterung fehlt: hyp anfuegen */
 				if (strrchr(module->filename, '.') == NULL)
 				{
 					 str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
@@ -354,7 +354,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			
 			g_free(module->filename);
 			module->filename = hyp_conv_to_utf8(module->charset, module->module_filename, STR0TERM);
-			/*  Falls Datei-Erweiterung fehlt: hyp anfuegen */
+			/* Falls Datei-Erweiterung fehlt: hyp anfuegen */
 			if (strrchr(module->filename, '.') == NULL)
 			{
 				 str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);

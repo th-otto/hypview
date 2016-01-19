@@ -24,9 +24,12 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
 
-
 /* pointer to history data */
 HISTORY *history = NULL;
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void AddHistoryEntry(WINDOW_DATA *win)
 {
@@ -51,6 +54,7 @@ void AddHistoryEntry(WINDOW_DATA *win)
 	history = new_entry;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line)
 {
@@ -92,6 +96,7 @@ gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line)
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 /*
  * remove all entries connected to <win>
@@ -133,6 +138,7 @@ void RemoveAllHistoryEntries(WINDOW_DATA *win)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 short CountWindowHistoryEntries(WINDOW_DATA *win)
 {
@@ -148,6 +154,7 @@ short CountWindowHistoryEntries(WINDOW_DATA *win)
 	return num;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 short CountDocumentHistoryEntries(DOCUMENT *doc)
 {
@@ -163,6 +170,7 @@ short CountDocumentHistoryEntries(DOCUMENT *doc)
 	return num;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void DeleteLastHistory(HISTORY *entry)
 {
@@ -179,6 +187,7 @@ void DeleteLastHistory(HISTORY *entry)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 HISTORY *GetLastHistory(void)
 {
@@ -206,6 +215,7 @@ HISTORY *GetLastHistory(void)
 	return last;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void SetLastHistory(WINDOW_DATA *the_win, HISTORY *last)
 {

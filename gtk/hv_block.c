@@ -1,6 +1,10 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void BlockOperation(DOCUMENT *doc, short num)
 {
 	/* YYY */
@@ -8,6 +12,7 @@ void BlockOperation(DOCUMENT *doc, short num)
 	UNUSED(num);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
 {
@@ -16,6 +21,7 @@ void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
 	UNUSED(b);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockCopy(DOCUMENT *doc)
 {
@@ -23,6 +29,7 @@ void BlockCopy(DOCUMENT *doc)
 	UNUSED(doc);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 {
@@ -31,6 +38,7 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 	UNUSED(new_window);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BlockAsciiSave(DOCUMENT *doc, const char *path)
 {

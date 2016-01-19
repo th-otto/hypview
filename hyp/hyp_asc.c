@@ -305,7 +305,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 						doc->columns = max(doc->columns, gl_profile.viewer.ascii_break_len);
 					}
 					columns = 0;
-				} else if ((val == 0x0d) || (val == 0x0a))	/*  CR or LF? */
+				} else if ((val == 0x0d) || (val == 0x0a))	/* CR or LF? */
 				{
 					doc->lines++;		/* count lines */
 					doc->columns = max(doc->columns, columns);

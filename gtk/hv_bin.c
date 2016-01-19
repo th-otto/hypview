@@ -2,6 +2,9 @@
 #include "hv_ascii.h"
 #include "hypdebug.h"
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
 
 void BinaryDisplayPage(DOCUMENT *doc)
 {
@@ -9,6 +12,7 @@ void BinaryDisplayPage(DOCUMENT *doc)
 	UNUSED(doc);
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
 void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 {
@@ -21,7 +25,7 @@ void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	/*  Falls die Zeile nicht mehr im Dokument enthalten ist... */
+	/* if line was not found in document... */
 	if (line < 0)
 	{
 		pos->line = 0;

@@ -22,20 +22,20 @@ static unsigned short Mxmask(void)
 {
 	static unsigned short mxmask = 1;
     void *svStack;         /* Supervisor-Stack */
-    int32_t sRAM, sRAMg;   /* ST-RAM           */
-    int32_t aRAM, aRAMg;   /* Alternate RAM    */
+    int32_t sRAM, sRAMg;   /* ST-RAM */
+    int32_t aRAM, aRAMg;   /* Alternate RAM */
 
 	if (mxmask != 1)
 		return mxmask;
 	
-    /*
-    // Sample table of possible values:
-    //           | newfashion  | oldfashion
-    // sRAM aRAM | sRAMg aRAMg | sRAMg aRAMg
-    //   1    0  |   1     0   |   1     1
-    //   0    2  |   0     2   |   2     2
-    //   1    2  |   1     2   |   3     3
-    */
+	/*
+	// Sample table of possible values:
+	//           | newfashion  | oldfashion
+	// sRAM aRAM | sRAMg aRAMg | sRAMg aRAMg
+	//   1    0  |   1     0   |   1     1
+	//   0    2  |   0     2   |   2     2
+	//   1    2  |   1     2   |   3     3
+	*/
 
     svStack = (void *) Super( 0);  /* Disallow task-switching */
 

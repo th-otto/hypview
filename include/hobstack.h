@@ -17,7 +17,7 @@
    You should have received a copy of the GNU Library General Public
    License along with the GNU C Library; see the file COPYING.LIB.  If not,
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.  */
+   Boston, MA 02111-1307, USA. */
 
 /* Summary:
 
@@ -102,7 +102,7 @@ Summary:
 */
 
 
-/* Don't do the contents of this file more than once.  */
+/* Don't do the contents of this file more than once. */
 
 #ifndef _UDO_OBSTACK_H
 #define _UDO_OBSTACK_H 1
@@ -113,7 +113,7 @@ extern "C" {
 
 /* We use subtraction of (char *) 0 instead of casting to int
    because on word-addressable machines a simple cast to int
-   may ignore the byte-within-word field of the pointer.  */
+   may ignore the byte-within-word field of the pointer. */
 
 #ifndef __PTR_TO_INT
 # define __PTR_TO_INT(P) ((P) - (char *) 0)
@@ -137,7 +137,7 @@ extern "C" {
    defined, as with GNU C, use that; that way we don't pollute the
    namespace with <stddef.h>'s symbols.  Otherwise, if <stddef.h> is
    available, include it and use ptrdiff_t.  In traditional C, long is
-   the best that we can do.  */
+   the best that we can do. */
 
 #ifdef __PTRDIFF_TYPE__
 # define PTR_INT_TYPE __PTRDIFF_TYPE__
@@ -176,10 +176,10 @@ struct obstack		/* control current object in current chunk */
 				   a bigger chunk to replace it. */
   unsigned alloc_failed:1;	/* No longer used, as we now call the failed
 				   handler on error, but retained for binary
-				   compatibility.  */
+				   compatibility. */
 };
 
-/* Declare the external functions we use; they are in obstack.c.  */
+/* Declare the external functions we use; they are in obstack.c. */
 
 extern gboolean _hyp_obstack_newchunk (struct obstack *, PTR_INT_TYPE);
 extern gboolean _hyp_obstack_begin (struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE alignment,
@@ -187,7 +187,7 @@ extern gboolean _hyp_obstack_begin (struct obstack *h, PTR_INT_TYPE size, PTR_IN
 extern PTR_INT_TYPE hyp_obstack_memory_used (struct obstack *);
 
 /* Do the function-declarations after the structs
-   but before defining the macros.  */
+   but before defining the macros. */
 
 void hyp_obstack_init (struct obstack *obstack);
 
@@ -229,7 +229,7 @@ long hyp_obstack_chunk_size (struct obstack *obstack);
 
 
 /* To prevent prototype warnings provide complete argument list in
-   standard C version.  */
+   standard C version. */
 # define hyp_obstack_init(h) _hyp_obstack_begin ((h), 0, 0, hyp_obstack_chunk_alloc, hyp_obstack_chunk_free)
 
 # define hyp_obstack_begin(h, size) _hyp_obstack_begin ((h), (size), 0, hyp_obstack_chunk_alloc, hyp_obstack_chunk_free)

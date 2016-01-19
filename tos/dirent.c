@@ -43,27 +43,30 @@ DIR *opendir(const char *uname)
 	const char* name = uname;
 	
 	d = malloc(sizeof(DIR));
-	if (!d) {
-		__set_errno (ENOMEM);
+	if (!d)
+	{
+		__set_errno(ENOMEM);
 		return NULL;
 	}
 
 	if (!__libc_unix_names)
-	  {
-	    _unx2dos(uname, namebuf, sizeof (namebuf));
-	    name = namebuf;
-	  }
+	{
+		_unx2dos(uname, namebuf, sizeof(namebuf));
+		name = namebuf;
+	}
 	  
 	r = Dopendir(name, 0);
-	if (r != -ETOS_NOSYS) {
-		if ( (r & 0xff000000L) == 0xff000000L ) {
+	if (r != -ETOS_NOSYS)
+	{
+		if ((r & 0xff000000L) == 0xff000000L)
+		{
 			if ((r == -ETOS_NOTDIR) && (_enoent(name)))
 				r = -ETOS_NOENT;
 			free(d);
 			__set_errno (_XltErr((int)r));
 			return NULL;
-		}
-		else {
+		} else
+		{
 			d->handle = r;
 			d->buf.d_off = 0;
 
@@ -83,12 +86,15 @@ DIR *opendir(const char *uname)
 	if (name != namebuf)
 		strcpy(namebuf, name);
 	p = namebuf;
-	if (p) {
-	/* find the end of the string */
-		for (p = namebuf; *p; p++) ;
+	if (p)
+	{
+		/* find the end of the string */
+		for (p = namebuf; *p; p++)
+			;
 
-	/* make sure the string ends in '\' */
-		if (*(p-1) != '\\') {
+		/* make sure the string ends in '\' */
+		if (*(p-1) != '\\')
+		{
 			*p++ = '\\';
 		}
 	}
@@ -99,20 +105,25 @@ DIR *opendir(const char *uname)
 	r = Fsfirst(namebuf, 0x17);
 	Fsetdta(olddta);
 
-	if (r == 0) {
+	if (r == 0)
+	{
 		d->status = _STARTSEARCH;
-	} else if (r == -ETOS_NOENT) {
+	} else if (r == -ETOS_NOENT)
+	{
 		d->status = _NMFILE;
-	} else {
+	} else
+	{
 		free(d);
 		__set_errno (_XltErr((int)r));
 		return 0;
 	}
 	d->buf.d_off = 0;
 /* for rewinddir: if necessary, build a relative path */
-	if (namebuf[1] == ':') {	/* absolute path, no problem */
+	if (namebuf[1] == ':')	/* absolute path, no problem */
+	{
 		dirpath[0] = 0;
-	} else {
+	} else
+	{
 		dirpath[0] = Dgetdrv() + 'A';
 		dirpath[1] = ':';
 		dirpath[2] = 0;
@@ -120,7 +131,8 @@ DIR *opendir(const char *uname)
 			(void)Dgetpath(dirpath+2, 0);
 	}
 	d->dirname = malloc(strlen(dirpath)+strlen(namebuf)+1);
-	if (d->dirname) {
+	if (d->dirname)
+	{
 		strcpy(d->dirname, dirpath);
 		strcat(d->dirname, namebuf);
 	}
@@ -133,9 +145,10 @@ int closedir(DIR *dirp)
 	long r;
 
 	/* The GNU libc closedir returns gracefully if a NULL pointer is
-	   passed.  We follow here.  */
-	if (dirp == NULL) {
-		__set_errno (EBADF);
+	   passed.  We follow here. */
+	if (dirp == NULL)
+	{
+		__set_errno(EBADF);
 		return -1;
 	}
 	
@@ -144,7 +157,8 @@ int closedir(DIR *dirp)
 	else
 		r = 0;
 	free(dirp);
-	if (r == -ETOS_NOSYS) {
+	if (r == -ETOS_NOSYS)
+	{
 		/* hmm, something went wrong, just ignore it. */
 	} else if (r < 0)
 	{
@@ -165,23 +179,27 @@ struct dirent *readdir(DIR *d)
 	_DTA *olddta;
 	struct dirent *dd = &d->buf;
 
-	if (d == NULL) {
-		__set_errno (EBADF);
+	if (d == NULL)
+	{
+		__set_errno(EBADF);
 		return NULL;
 	}
 	
-	if (d->handle != (long) 0xff000000L)  {
+	if (d->handle != (long) 0xff000000L)
+	{
 		/* The directory descriptor was optained by calling Dopendir(), as
 		 * there is a valid handle.
 		 */
 		r = (int)Dreaddir((int)(NAME_MAX+1+sizeof(long)), d->handle, (char *) &dbuf);
 		if (r == -ETOS_NMFILES)
+		{
 			return NULL;
-		else if (r) {
+		} else if (r)
+		{
 			__set_errno (_XltErr((int)r));
 			return NULL;
-		}
-		else {
+		} else
+		{
 			dd->d_ino = dbuf.ino;
 			dd->d_off++;
 			dd->d_namlen = (short)strlen(dbuf.name);
@@ -200,24 +218,28 @@ struct dirent *readdir(DIR *d)
  */
 	if (d->status == _NMFILE)
 		return 0;
-	if (d->status == _STARTSEARCH) {
+	if (d->status == _STARTSEARCH)
+	{
 		d->status = _INSEARCH;
-	} else {
+	} else
+	{
 		olddta = Fgetdta();
 		Fsetdta(&(d->dta));
 		r = Fsnext();
 		Fsetdta(olddta);
-		if (r == -ETOS_NMFILES) {
+		if (r == -ETOS_NMFILES)
+		{
 			d->status = _NMFILE;
 			return NULL;
-		} else if (r) {
+		} else if (r)
+		{
 			__set_errno (_XltErr((int)r));
 			return NULL;
 		}
 	}
 	dd->d_ino = __inode++;
 	dd->d_off++;
-	_dos2unx(d->dta.dta_name, dd->d_name, sizeof (dd->d_name));
+	_dos2unx(d->dta.dta_name, dd->d_name, sizeof(dd->d_name));
 	dd->d_namlen = (short)strlen(dd->d_name);
 	return dd;
 }
