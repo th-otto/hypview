@@ -64,6 +64,7 @@ typedef struct {
 		gboolean scale_bitmaps;
 		gboolean check_time;        /* watch modification times of files */
 		short va_start_newwin;      /* AV_START opens a new window */
+		gboolean alink_newwin;		/* ALINKs are opened in a new window */
 		gboolean intelligent_fuller; /* INTELLIGENT_FULLER                              INTELLIGENT_FULLER */
 		gboolean clipbrd_new_window; /* if set, pasting a block opens new window */
 		gboolean av_window_cycle;   /* send window cycles to AV-Server */

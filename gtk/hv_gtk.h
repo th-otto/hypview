@@ -73,7 +73,16 @@ struct _window_data_
 	GtkWidget *searchbox;				/* GtkHBox */
 	GtkWidget *searchentry;				/* GtkEntry */
 	GtkWidget *strnotfound;				/* GtkLabel */
+	gboolean hovering_over_link;
 };
+
+typedef struct _link_info {
+	unsigned char link_type;
+	hyp_indextype dst_type;
+	char *tip;
+	hyp_nodenr dest_page;
+	hyp_lineno line_nr;
+} LINK_INFO;
 
 
 /* hv_main.c */
@@ -148,6 +157,13 @@ void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(GtkWidget *w);
+
+
+/*
+ *	hv_click.c
+ */
+void HypClick(WINDOW_DATA *win, LINK_INFO *info);
+
 
 
 /*

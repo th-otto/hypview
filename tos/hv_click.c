@@ -129,9 +129,11 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 				
 				if (link_len > HYP_STRLEN_OFFSET)
 				{
-					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, link_len - HYP_STRLEN_OFFSET, NULL);
+					size_t len = link_len - HYP_STRLEN_OFFSET;
+					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, len, NULL);
 					vqt_extent(vdi_handle, str, xy);
 					g_free(str);
+					src += len;
 				} else if (hypnode_valid(hyp, dst_page))
 				{
 					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dst_page]->name, STR0TERM, NULL);
@@ -152,7 +154,7 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 						switch (dst_type)
 						{
 						case HYP_NODE_INTERNAL:
-							if ((m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK))
+							if ((m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin))
 							{
 								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dst_page]->name, STR0TERM);
 								OpenFileNewWindow(doc->path, name, HYP_NOINDEX, FALSE);
@@ -169,7 +171,7 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 						case HYP_NODE_EXTERNAL_REF:
 							{
 								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dst_page]->name, STR0TERM);
-								HypOpenExtRef(win, name, (m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK));
+								HypOpenExtRef(win, name, (m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin));
 								g_free(name);
 							}
 							break;
@@ -189,7 +191,7 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 								if (dst_id < 0)	/* host application found? */
 								{
 									form_alert(1, rs_string(HV_ERR_HOST_NOT_FOUND));
-									break;		/* ... camcel */
+									break;		/* ... cancel */
 								}
 		
 								/* use VA_START to send parameter to host application */
@@ -266,7 +268,6 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 					}
 					break;
 				}
-				src += link_len;
 			} else
 			{
 				if (HYP_ESC_IS_TEXATTR(*src))	/* text attributes */

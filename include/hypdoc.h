@@ -30,7 +30,6 @@ typedef enum {
 typedef	void (*DOC_PROC1)(DOCUMENT *doc);
 typedef	hyp_nodenr (*DOC_GETNODEPROC)(DOCUMENT *doc);
 typedef	gboolean (*DOC_GOTOPROC)(DOCUMENT *doc, const char *chapter, hyp_nodenr node);
-typedef	void (*DOC_CLICKPROC)(DOCUMENT *doc, EVNTDATA *event);
 typedef	long (*DOC_AUTOLOCPROC)(DOCUMENT *doc, long line);
 typedef	void (*DOC_GETCURSORPROC)(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 typedef	gboolean (*DOC_BLOCKPROC)(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
@@ -81,7 +80,6 @@ struct _document_
 	DOC_PROC1 closeProc;        /* Document close function */
 	DOC_GOTOPROC gotoNodeProc;  /* Document navigation function */
 	DOC_GETNODEPROC getNodeProc;/* Function to determine current node number */
-	DOC_CLICKPROC clickProc;    /* Mouse-click processing function */
 	DOC_AUTOLOCPROC autolocProc;/* Autolocator search function */
 	char *autolocator;          /* Autolocator search string */
 	int autolocator_dir;        /* Autolocator direction (1 = down, else up) */
@@ -99,14 +97,11 @@ gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *p
 
 
 /*
- *		Click.c
+ *	hypdco.c
  */
-void HypClick(DOCUMENT *doc, EVNTDATA *event);
-
-
-
 hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref);
 hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter);
+
 
 /*
  *		Search.c

@@ -2317,6 +2317,8 @@ void HypProfile_Load(void)
 		setdefault("HypView.ASCII_BREAK", gl_profile.viewer.ascii_break_len = 127);
 	if (!Profile_ReadInt(profile, "HypView", "VA_START_NEWWIN", &gl_profile.viewer.va_start_newwin))
 		setdefault("HypView.VA_START_NEWWIN", gl_profile.viewer.va_start_newwin = FALSE);
+	if (!Profile_ReadBool(profile, "HypView", "ALINK_NEWWIN", &gl_profile.viewer.alink_newwin))
+		setdefault("HypView.ALINK_NEWWIN", gl_profile.viewer.alink_newwin = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "CHECK_TIME", &gl_profile.viewer.check_time))
 		setdefault("HypView.CHECK_TIME", gl_profile.viewer.check_time = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "INTELLIGENT_FULLER", &gl_profile.viewer.intelligent_fuller))
@@ -2496,6 +2498,7 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteInt(profile, "HypView", "TABSIZE", gl_profile.viewer.ascii_tab_size);
 	Profile_WriteInt(profile, "HypView", "ASCII_BREAK", gl_profile.viewer.ascii_break_len);
 	Profile_WriteInt(profile, "HypView", "VA_START_NEWWIN", gl_profile.viewer.va_start_newwin);
+	Profile_WriteBool(profile, "HypView", "ALINK_NEWWIN", gl_profile.viewer.alink_newwin);
 	Profile_WriteBool(profile, "HypView", "CHECK_TIME", gl_profile.viewer.check_time);
 	Profile_WriteBool(profile, "HypView", "INTELLIGENT_FULLER", gl_profile.viewer.intelligent_fuller);
 	Profile_WriteBool(profile, "HypView", "CLIPBRD_NEW_WINDOW", gl_profile.viewer.clipbrd_new_window);

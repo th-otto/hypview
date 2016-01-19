@@ -61,6 +61,13 @@ void RemoveSearchBox(DOCUMENT *doc);
 
 
 /*
+ *	hv_click.c
+ */
+void HypClick(DOCUMENT *doc, EVNTDATA *event);
+
+
+
+/*
  * hv_hist.c
  */
 typedef struct _history_  HISTORY;

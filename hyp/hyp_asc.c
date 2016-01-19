@@ -93,14 +93,6 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void AsciiClick(DOCUMENT *doc, EVNTDATA *event)
-{
-	UNUSED(doc);
-	UNUSED(event);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 static void AsciiPrep(DOCUMENT *doc)
 {
 	UNUSED(doc);
@@ -339,7 +331,6 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 			doc->closeProc = AsciiClose;
 			doc->gotoNodeProc = AsciiGotoNode;
 			doc->getNodeProc = AsciiGetNode;
-			doc->clickProc = AsciiClick;
 			doc->prepNode = AsciiPrep;
 			
 			/* is it an ASCII file? */

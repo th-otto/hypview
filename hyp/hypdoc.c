@@ -191,7 +191,6 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	doc->closeProc = HypClose;
 	doc->gotoNodeProc = HypGotoNode;
 	doc->getNodeProc = HypGetNode;
-	doc->clickProc = HypClick;
 	doc->autolocProc = HypAutolocator;
 	doc->getCursorProc = HypGetCursorPosition;
 	doc->blockProc = HypBlockOperations;

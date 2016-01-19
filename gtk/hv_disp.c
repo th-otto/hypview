@@ -150,14 +150,17 @@ struct prep_info {
 	GtkTextTagTable *tag_table;
 	int last_was_space;
 	int tab_id;
+	int target_link_id;
 	WP_UNIT x;
 	WP_UNIT x_raster;
 	GtkTextIter iter;
 	unsigned char textattr;
 };
 
-static void insert_str(struct prep_info *info, const char *str, const char *tag)
+static GtkTextTag *insert_str(struct prep_info *info, const char *str, const char *tag)
 {
+	GtkTextTag *target_tag = NULL;
+	
 	if (tag)
 	{
 		if (info->last_was_space > 1)
@@ -165,12 +168,9 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 			gtk_text_buffer_insert(info->text_buffer, &info->iter, "\t", 1);
 			pango_tab_array_set_tab(info->tab_array, info->tab_array_size, PANGO_TAB_LEFT, info->x * info->x_raster);
 			info->tab_array_size++;
-		} else
+		} else if (info->last_was_space == 1)
 		{
-			if (info->last_was_space == 1)
-			{
-				gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
-			}
+			gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
 		}
 		gtk_text_buffer_move_mark(info->text_buffer, info->tagstart, &info->iter);
 		info->last_was_space = 0;
@@ -192,12 +192,9 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 						gtk_text_buffer_insert(info->text_buffer, &info->iter, "\t", 1);
 						pango_tab_array_set_tab(info->tab_array, info->tab_array_size, PANGO_TAB_LEFT, info->x * info->x_raster);
 						info->tab_array_size++;
-					} else
+					} else if (info->last_was_space == 1)
 					{
-						if (info->last_was_space == 1)
-						{
-							gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
-						}
+						gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
 					}
 					gtk_text_buffer_insert(info->text_buffer, &info->iter, scan, next - scan);
 					info->last_was_space = 0;
@@ -224,10 +221,16 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 	if (tag)
 	{
 		GtkTextIter tagstart_iter, tagend_iter;
+		char *target_name;
 		
 		gtk_text_buffer_get_iter_at_mark(info->text_buffer, &tagstart_iter, info->tagstart);
 		tagend_iter = info->iter;
 		gtk_text_buffer_apply_tag_by_name(info->text_buffer, tag, &tagstart_iter, &tagend_iter);
+		target_name = g_strdup_printf("hv-link-%d", info->target_link_id);
+		target_tag = gtk_text_buffer_create_tag(info->text_buffer, target_name, NULL);
+		gtk_text_buffer_apply_tag(info->text_buffer, target_tag, &tagstart_iter, &tagend_iter);
+		info->target_link_id++;
+		g_free(target_name);
 	}
 	
 	if (info->textattr)
@@ -249,6 +252,8 @@ static void insert_str(struct prep_info *info, const char *str, const char *tag)
 		if (info->textattr & HYP_TXT_OUTLINED)
 			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "outlined", &tagstart_iter, &tagend_iter);
 	}
+	
+	return target_tag;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -304,6 +309,22 @@ void HypPrepNode(DOCUMENT *doc)
 		info.tab_id++;
 	}
 	info.tab_id = 0;
+
+	/*
+	 * remove old target links
+	 */
+	info.target_link_id = 0;
+	for (;;)
+	{
+		char *tag_name = g_strdup_printf("hv-link-%d", info.target_link_id);
+		GtkTextTag *tag = gtk_text_tag_table_lookup(info.tag_table, tag_name);
+		g_free(tag_name);
+		if (tag == 0)
+			break;
+		gtk_text_tag_table_remove(info.tag_table, tag);
+		info.target_link_id++;
+	}
+	info.target_link_id = 0;
 	
 	gtk_text_buffer_get_iter_at_offset(info.text_buffer, &info.iter, 0);
 	info.linestart = gtk_text_buffer_get_mark(info.text_buffer, "hv-linestart");
@@ -352,18 +373,34 @@ void HypPrepNode(DOCUMENT *doc)
 			case HYP_ESC_ALINK:
 			case HYP_ESC_ALINK_LINE:
 				{
+					unsigned char link_type = *src;	/* remember link type */
+					hyp_lineno line_nr = 0;	/* line number to go to */
 					hyp_nodenr dest_page;	/* Index of destination page */
 					char *str;
 					size_t len;
+					unsigned short link_len;
+					const char *tagtype = "link";
+					hyp_indextype dst_type = HYP_NODE_EOF;
+					char *tip = NULL;
+					LINK_INFO *linkinfo;
+					GtkTextTag *target_tag;
 					
-					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)	/* skip destination line number */
+					src++;
+					
+					if (link_type == HYP_ESC_LINK_LINE || link_type == HYP_ESC_ALINK_LINE)	/* skip destination line number */
+					{
+						line_nr = DEC_255(src);
 						src += 2;
+					}
+					
+					dest_page = DEC_255(src);
+					src += 2;
 
-					dest_page = DEC_255(&src[1]);
-					src += 3;
-
+					link_len = *src;
+					src++;
+					
 					/* get link text for output */
-					if (*src <= HYP_STRLEN_OFFSET)	/* no text in link: use nodename */
+					if (link_len <= HYP_STRLEN_OFFSET)	/* no text in link: use nodename */
 					{
 						if (hypnode_valid(hyp, dest_page))
 						{
@@ -373,17 +410,63 @@ void HypPrepNode(DOCUMENT *doc)
 							str = invalid_page(dest_page);
 						}
 						len = strlen(str);
-						src++;
 					} else
 					{
-						len = *src - HYP_STRLEN_OFFSET;
-						src++;
+						len = link_len - HYP_STRLEN_OFFSET;
 						str = hyp_conv_charset(hyp->comp_charset, HYP_CHARSET_UTF8, src, len, NULL);
 						src += len;
 					}
-					insert_str(&info, str, "link");
-					g_free(str);
 
+					if (hypnode_valid(hyp, dest_page))
+					{
+						dst_type = hyp->indextable[dest_page]->type;
+						tip = pagename(hyp, dest_page);
+						switch (dst_type)
+						{
+						case HYP_NODE_INTERNAL:
+							tagtype = "link";
+							break;
+						case HYP_NODE_POPUP:
+							tagtype = "popup";
+							break;
+						case HYP_NODE_EXTERNAL_REF:
+							tagtype = "xref";
+							break;
+						case HYP_NODE_REXX_COMMAND:
+						case HYP_NODE_REXX_SCRIPT:
+							tagtype = "rexx";
+							break;
+						case HYP_NODE_QUIT:
+						case HYP_NODE_CLOSE:
+							tagtype = "close";
+							break;
+						case HYP_NODE_SYSTEM_ARGUMENT:
+							tagtype = "system";
+							break;
+						case HYP_NODE_IMAGE:
+						case HYP_NODE_EOF:
+						default:
+							tagtype = "red";
+							g_free(tip);
+							tip = g_strdup_printf(_("Link to node of type %u not Implemented."), dst_type);
+							break;
+						}
+					} else
+					{
+						tip = invalid_page(dest_page);
+					}
+					
+					target_tag = insert_str(&info, str, tagtype);
+					g_free(str);
+					
+					linkinfo = g_new(LINK_INFO, 1);
+					linkinfo->link_type = link_type;
+					linkinfo->dst_type = dst_type;
+					linkinfo->tip = tip;
+					linkinfo->dest_page = dest_page;
+					linkinfo->line_nr = line_nr;
+					g_object_set_data(G_OBJECT(target_tag), "hv-linkinfo", linkinfo);
+					
 					textstart = src;
 				}
 				break;

@@ -515,6 +515,129 @@ static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer 
 
 /*** ---------------------------------------------------------------------- ***/
 
+/* Looks at all tags covering the position (x, y) in the text view, 
+ * and if one of them is a link, change the cursor to the "hands" cursor
+ * typically used by web browsers.
+ */
+static GdkCursor *hand_cursor = NULL;
+static GdkCursor *regular_cursor = NULL;
+
+static void set_cursor_if_appropriate(WINDOW_DATA *win, gint x, gint y)
+{
+	GtkTextView *text_view = (GtkTextView *)win->text_view;
+	GSList *tags;
+	GSList *tagp;
+	GtkTextIter iter;
+	gboolean hovering = FALSE;
+
+	gtk_text_view_get_iter_at_location(text_view, &iter, x, y);
+
+	tags = gtk_text_iter_get_tags(&iter);
+	for (tagp = tags; tagp != NULL; tagp = tagp->next)
+	{
+		GtkTextTag *tag = tagp->data;
+		LINK_INFO *info = g_object_get_data(G_OBJECT(tag), "hv-linkinfo");
+
+		if (info)
+		{
+			if (info->tip)
+				gtk_widget_set_tooltip_text(GTK_WIDGET(text_view), info->tip);
+			hovering = TRUE;
+			break;
+		}
+	}
+
+	if (hovering != win->hovering_over_link)
+	{
+		win->hovering_over_link = hovering;
+
+		if (hovering)
+		{
+			gdk_window_set_cursor(gtk_text_view_get_window(text_view, GTK_TEXT_WINDOW_TEXT), hand_cursor);
+		} else
+		{
+			gdk_window_set_cursor(gtk_text_view_get_window(text_view, GTK_TEXT_WINDOW_TEXT), regular_cursor);
+			gtk_widget_set_tooltip_text(GTK_WIDGET(text_view), NULL);
+		}
+	}
+
+	if (tags)
+		g_slist_free(tags);
+}
+
+/* Update the cursor image if the pointer moved. 
+ */
+static gboolean motion_notify_event(GtkWidget *text_view, GdkEventMotion *event, WINDOW_DATA *win)
+{
+	gint x, y;
+
+	gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->x, event->y, &x, &y);
+
+	set_cursor_if_appropriate(win, x, y);
+
+	gdk_window_get_pointer(text_view->window, NULL, NULL, NULL);
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/* Looks at all tags covering the position of iter in the text view, 
+ * and if one of them is a link, follow it by showing the page identified
+ * by the data attached to it.
+ */
+static void follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
+{
+	GSList *tags;
+	GSList *tagp;
+
+	(void) win;
+	tags = gtk_text_iter_get_tags(iter);
+	for (tagp = tags; tagp != NULL; tagp = tagp->next)
+	{
+		GtkTextTag *tag = tagp->data;
+		LINK_INFO *info = g_object_get_data(G_OBJECT(tag), "hv-linkinfo");
+		
+		if (info)
+		{
+			HypClick(win, info);
+			break;
+		}
+	}
+
+	if (tags)
+		g_slist_free(tags);
+}
+
+static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_DATA *win)
+{
+	GtkTextIter start, end, iter;
+	GtkTextBuffer *buffer;
+	gint x, y;
+
+	if (event->type != GDK_BUTTON_RELEASE)
+		return FALSE;
+
+	if (event->button != GDK_BUTTON_PRIMARY)
+		return FALSE;
+
+	buffer = win->text_buffer;
+
+	/* we shouldn't follow a link if the user has selected something */
+	gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+	if (gtk_text_iter_get_offset(&start) != gtk_text_iter_get_offset(&end))
+		return FALSE;
+
+	gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->x, event->y, &x, &y);
+
+	gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
+
+	follow_if_link(win, &iter);
+
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static GtkWidget *AppendButton(WINDOW_DATA *win, int button_num)
 {
 #if 1
@@ -647,6 +770,10 @@ static void register_stock_icons(void)
 	register_icon(factory, "hv-save", save_icon_data);
 	
 	g_object_unref(factory);
+
+	hand_cursor = gdk_cursor_new(GDK_HAND2);
+	regular_cursor = gdk_cursor_new(GDK_XTERM);
+	
 	registered = TRUE;
 }
 
@@ -1048,7 +1175,10 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
-	set_font_attributes(win);
+	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
+	g_signal_connect(G_OBJECT(win->text_view), "event-after", G_CALLBACK(event_after), win);
+	
+    set_font_attributes(win);
 	
 	all_list = g_slist_prepend(all_list, win);
 
@@ -1112,6 +1242,9 @@ void ReInitWindow(DOCUMENT *doc)
 	win->title = doc->window_title;
 	hv_set_title(win, win->title);
 	doc->selection.valid = FALSE;
+	win->hovering_over_link = FALSE;
+	gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT), regular_cursor);
+	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
 	set_font_attributes(win);
 	
 	/* adjust window size to new dimensions */

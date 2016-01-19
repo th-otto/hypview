@@ -588,7 +588,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					MarkerShow(doc, scan - KbF1, FALSE);
 					break;
 				default:
-					if ((ascii == 27) && !(doc->buttons.searchbox))
+					if ((ascii == 27 || ascii == 8) && !(doc->buttons.searchbox))
 						ToolbarClick(doc, TO_BACK);
 					else
 						event->mwhich |= MU_KEYBD;
@@ -665,7 +665,8 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					d.bstate = event->mbutton;
 					d.kstate = event->kstate;
 					RemoveSelection(doc);
-					doc->clickProc(doc, &d);
+					if (doc->type == HYP_FT_HYP)
+						HypClick(doc, &d);
 				}
 			} else if (event->mbutton & 2)	/* right button */
 			{

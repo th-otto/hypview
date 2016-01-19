@@ -60,12 +60,4 @@ typedef struct mfdb
 } MFDB;
 #endif
 
-typedef struct
-{
-	_WORD x;
-	_WORD y;
-	_WORD bstate;
-	_WORD kstate;
-} EVNTDATA;
-
 #endif /* __TOS_FAKE_H__ */
