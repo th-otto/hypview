@@ -9,7 +9,6 @@
 
 static char *find_file(WINDOW_DATA *win, const char *path)
 {
-	int ret;
 	char *real_path;
 	char *dir;
 	char *filename;
@@ -19,16 +18,15 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 	if (win)
 	{
 		DOCUMENT *doc = win->data;
-
+		struct stat s;
+		
 		/* ...search for file in path of window */
 		dir = g_path_get_dirname(doc->path);
 		real_path = g_build_filename(dir, filename, NULL);
 		g_free(dir);
 		
-		ret = hyp_utf8_open(real_path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-		if (ret >= 0)
+		if (hyp_utf8_stat(real_path, &s) == 0)
 		{
-			hyp_utf8_close(ret);
 			g_free(filename);
 			return real_path;
 		}
@@ -44,7 +42,7 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 /*
  * open a file in a new window
  */
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, _BOOL find_default)
+WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default)
 {
 	DOCUMENT *doc = NULL;
 	char *real_path;
@@ -181,33 +179,25 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 		}
 
 		if (!win)
+		{
 			win = hv_win_new(doc, FALSE);
+		} else
+		{
+			doc->next = win->data;
+			win->data = doc;
+		}
+		doc->window = win;
 		if (doc->gotoNodeProc(doc, chapter, HYP_NOINDEX))
 		{
-			/* no window already? */
-			if (!win)
-			{
-				win = hv_win_new(doc, FALSE);
-			} else
-			{
-				doc->window = win;
-				gtk_widget_show(win->hwnd);
-				doc->next = win->data;
-				ReInitWindow(doc);
-				gtk_window_present(GTK_WINDOW(win->hwnd));
-			}
+			gtk_widget_show(win->hwnd);
+			ReInitWindow(doc);
+			gtk_window_present(GTK_WINDOW(win->hwnd));
 		} else
 		{
 			doc->gotoNodeProc(doc, NULL, HYP_NOINDEX);
-			if (win)
-			{
-				doc->next = win->data;
-				win->data = doc;
-				doc->window = win;
-				gtk_widget_show(win->hwnd);
-				ReInitWindow(doc);
-				gtk_window_present(GTK_WINDOW(win->hwnd));
-			}
+			gtk_widget_show(win->hwnd);
+			ReInitWindow(doc);
+			gtk_window_present(GTK_WINDOW(win->hwnd));
 			if (!no_message)
 			{
 				char *str;

@@ -35,7 +35,7 @@ void SelectFileSave(DOCUMENT *doc);
 /*
  * hv_file.c
  */
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, _BOOL find_default);
+WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default);
 WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message);
 
 

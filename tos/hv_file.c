@@ -66,7 +66,7 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 /*
  * open a file in a new windows
  */
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, _BOOL find_default)
+WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default)
 {
 	DOCUMENT *doc = NULL;
 	char *real_path;
@@ -218,6 +218,7 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 				if (win->status & WIS_ICONIFY)
 					UniconifyWindow(win);
 				doc->next = win->data;
+				win->data = doc;
 				ReInitWindow(doc);
 				wind_set_int(win->whandle, WF_TOP, 0);
 			}
