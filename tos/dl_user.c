@@ -61,7 +61,7 @@ void DoUserEvents(EVNT *event)
 				
 				if (count_window() == 0 && last_path[0] != '\0')
 				{
-					win = OpenFileNewWindow(last_path, NULL, last_node, FALSE);
+					win = OpenFileInWindow(NULL, last_path, NULL, last_node, FALSE, TRUE, FALSE);
 					if (win)
 					{
 #if 0
@@ -77,7 +77,7 @@ void DoUserEvents(EVNT *event)
 					if (!empty(gl_profile.viewer.default_file))
 					{
 						char *filename = path_subst(gl_profile.viewer.default_file);
-						if (OpenFileNewWindow(filename, NULL, HYP_NOINDEX, FALSE) == NULL)
+						if (OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE) == NULL)
 						{
 							g_freep(&gl_profile.viewer.default_file);
 #if 0
@@ -313,10 +313,7 @@ void DoVA_START(_WORD msg[8])
 			
 			win = get_first_window();
 
-			if (gl_profile.viewer.va_start_newwin == 2 || !win)
-				win = OpenFileNewWindow(filename, chapter, HYP_NOINDEX, TRUE);
-			else
-				win = OpenFileSameWindow(win, filename, chapter, gl_profile.viewer.va_start_newwin, FALSE);
+			win = OpenFileInWindow(win, filename, chapter, HYP_NOINDEX, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
 
 			if (count == 0 && win != NULL)
 			{
@@ -337,7 +334,7 @@ void DoVA_START(_WORD msg[8])
 			if (gl_profile.viewer.va_start_newwin == 2 || !win)
 				win = NULL;
 			if (!empty(gl_profile.viewer.default_file))
-				win = OpenFileSameWindow(win, gl_profile.viewer.default_file, NULL, gl_profile.viewer.va_start_newwin, FALSE);
+				win = OpenFileInWindow(win, gl_profile.viewer.default_file, NULL, HYP_NOINDEX, FALSE, gl_profile.viewer.va_start_newwin, FALSE);
 			else
 				SelectFileLoad(win);
 		}
@@ -368,10 +365,7 @@ void DoVA_DRAGACCWIND(_WORD msg[8])
 			if (win && win->owner != gl_apid)
 				win = NULL;
 			
-			if (gl_profile.viewer.va_start_newwin == 2)
-				win = OpenFileNewWindow(arg, NULL, HYP_NOINDEX, FALSE);
-			else
-				win = OpenFileSameWindow(win, arg, NULL, gl_profile.viewer.va_start_newwin, FALSE);
+			win = OpenFileInWindow(win, arg, NULL, HYP_NOINDEX, FALSE, gl_profile.viewer.va_start_newwin, FALSE);
 			g_free(arg);
 		}
 	}

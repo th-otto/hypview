@@ -26,6 +26,13 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 			node_num = hyp->first_text_page;
 			if (node_num == HYP_NOINDEX)
 			{
+				/*
+				 * This could only happen if we loaded a non-empty file
+				 * without any text page.
+				 * The compiler should prevent that: any command that can
+				 * create an entry which is not a text node can only
+				 * appear inside a text node.
+				 */
 				FileError(hyp_basename(doc->path), _("no start page found."));
 			}
 		}

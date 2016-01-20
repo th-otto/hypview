@@ -27,35 +27,35 @@ typedef struct {
 		char *catalog_file;         /* The hypertext file to be loaded via the 'Catalog' option */
 		char *hyptop_file;
 		char *marker_path;          /* Default file to save mark files to */
-		short startup;				/* 0=show selector, 1=load default_file, 2=load last file */
+		int startup;				/* 0=show selector, 1=load default_file, 2=load last file */
 		char *last_file;
 		char *printer;              /* external print application */
-		short text_color;           /* Displays text in the specified color */
-		short link_effect;          /* Text Effect for references */
-		short link_color;           /* Displays references in the specified color */
-		short xref_color;           /* Displays external references in the specified color */
-		short popup_color;          /* Displays references to popups in the specified color */
-		short system_color;         /* Displays references to {@ system } in the specified color */
-		short rexx_color;           /* Displays references to {@ rx } in the specified color */
-		short quit_color;           /* Displays references to {@ quit } in the specified color */
-		short background_color;     /* window background color */
+		int text_color;             /* Displays text in the specified color */
+		int link_effect;            /* Text Effect for references */
+		int link_color;             /* Displays references in the specified color */
+		int xref_color;             /* Displays external references in the specified color */
+		int popup_color;            /* Displays references to popups in the specified color */
+		int system_color;           /* Displays references to {@ system } in the specified color */
+		int rexx_color;             /* Displays references to {@ rx } in the specified color */
+		int quit_color;             /* Displays references to {@ quit } in the specified color */
+		int background_color;       /* window background color */
 #ifdef WITH_GUI_GEM
-		short font_id;              /* GDOS font ID */
-		short font_pt;              /* Size of font, in points */
-		short xfont_id;             /* Alternate font ID */
-		short xfont_pt;             /* Alternate font size */
+		int font_id;                /* GDOS font ID */
+		int font_pt;                /* Size of font, in points */
+		int xfont_id;               /* Alternate font ID */
+		int xfont_pt;               /* Alternate font size */
 #endif
 #if defined(WITH_GUI_GTK) || defined(WITH_GUI_WIN32)
 		char *font_name;
 		char *xfont_name;
 		char *color[16];			/* actual color values for the first 16 GEM colors (any format understood by gdk_color_parse()) */
 #endif
-		short win_x, win_y, win_w, win_h; /* initial window position */
-		short text_offset;          /* vertical separation in pixels of the window contents */
-		short binary_columns;       /* # of calumns to show for binary data */
+		int win_x, win_y, win_w, win_h; /* initial window position */
+		int text_offset;            /* vertical separation in pixels of the window contents */
+		int binary_columns;         /* # of calumns to show for binary data */
 		gboolean expand_spaces;		/* wether to expand multiple spaces when using proportional font */
-		short ascii_tab_size;       /* The number of spaces a tab will be expanded to */
-		short ascii_break_len;      /* break lines in ASCII files after this many chars */
+		int ascii_tab_size;         /* The number of spaces a tab will be expanded to */
+		int ascii_break_len;        /* break lines in ASCII files after this many chars */
 		gboolean rightback;         /* if set, right mouse button means "BACK" */
 		gboolean backwind;          /* if set, right mouse button will top a background window */
 		gboolean arrowpatch;        /* work around a AES bug of old TOS versions */
@@ -63,7 +63,7 @@ typedef struct {
 		gboolean transparent_pics;  /* display pictures transparent */
 		gboolean scale_bitmaps;
 		gboolean check_time;        /* watch modification times of files */
-		short va_start_newwin;      /* AV_START opens a new window */
+		int va_start_newwin;        /* AV_START opens a new window */
 		gboolean alink_newwin;		/* ALINKs are opened in a new window */
 		gboolean intelligent_fuller; /* INTELLIGENT_FULLER                              INTELLIGENT_FULLER */
 		gboolean clipbrd_new_window; /* if set, pasting a block opens new window */
@@ -84,13 +84,13 @@ typedef struct {
 	
 	struct {
 		char *options;              /* options that are used automatically when Hyptree is called */
-		short win_x, win_y, win_w, win_h; /* default size of the HypTree window */
+		int win_x, win_y, win_w, win_h; /* default size of the HypTree window */
 		gboolean openall;           /* whether all pages are visible */
 		gboolean maclike;           /* position of the triangle in the window */
 		char *stg_start;            /* command line sent to HypTree from the viewer */
 		char *stg_stop;             /* command line sent to viewer from HypTree */
 		gboolean usequotes;			/* quote/dequote VA_START command line */
-		short debug;				/* debug options */
+		int debug;				    /* debug options */
 	} hyptree;
 	
 	struct {
@@ -155,17 +155,17 @@ gboolean Profile_DeleteKey(Profile *profile, const char *section, const char *ke
 
 gboolean Profile_ReadString(Profile *profile, const char *section, const char *key, char **strp);
 gboolean Profile_ReadByte(Profile *profile, const char *section, const char *key, unsigned char *pval);
-gboolean Profile_ReadInt(Profile *profile, const char *section, const char *key, short *pval);
+gboolean Profile_ReadInt(Profile *profile, const char *section, const char *key, int *pval);
 gboolean Profile_ReadLong(Profile *profile, const char *section, const char *key, intmax_t *pval);
-gboolean Profile_ReadCard(Profile *profile, const char *section, const char *key, unsigned short *pval);
+gboolean Profile_ReadCard(Profile *profile, const char *section, const char *key, unsigned int *pval);
 gboolean Profile_ReadLongCard(Profile *profile, const char *section, const char *key, uintmax_t *pval);
 gboolean Profile_ReadBool(Profile *profile, const char *section, const char *key, gboolean *pval);
 gboolean Profile_ReadChar(Profile *profile, const char *section, const char *key, char *pval);
 
 void Profile_WriteString(Profile *profile, const char *section, const char *key, const char *str);
 void Profile_WriteByte(Profile *profile, const char *section, const char *key, unsigned char val);
-void Profile_WriteInt(Profile *profile, const char *section, const char *key, short val);
-void Profile_WriteCard(Profile *profile, const char *section, const char *key, unsigned short val);
+void Profile_WriteInt(Profile *profile, const char *section, const char *key, int val);
+void Profile_WriteCard(Profile *profile, const char *section, const char *key, unsigned int val);
 void Profile_WriteLong(Profile *profile, const char *section, const char *key, intmax_t val);
 void Profile_WriteLongCard(Profile *profile, const char *section, const char *key, uintmax_t val);
 void Profile_WriteBool(Profile *profile, const char *section, const char *key, gboolean val);

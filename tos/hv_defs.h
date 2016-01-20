@@ -35,8 +35,7 @@ void SelectFileSave(DOCUMENT *doc);
 /*
  * hv_file.c
  */
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default);
-WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message);
+WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *chapter, hyp_nodenr node, gboolean find_default, int new_window, gboolean no_message);
 
 
 /*
@@ -193,6 +192,6 @@ void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y);
  * hv_eref.c
  */
 void HypExtRefPopup(DOCUMENT *doc, short x, short y);
-void HypOpenExtRef(void *win, const char *name, gboolean new_window);
+void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window);
 
 #endif /* __HV_DEFS_H__ */

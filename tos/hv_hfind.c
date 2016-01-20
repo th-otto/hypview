@@ -99,7 +99,7 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 		return 0;
 	case HYPFIND_PAGES:
 		name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-		OpenFileSameWindow(win, doc->path, name, FALSE, FALSE);
+		OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
 		g_free(name);
 		return 0;
 	case HYPFIND_ABORT:
@@ -160,7 +160,7 @@ void Hypfind(DOCUMENT *doc)
 			break;
 		case HYPFIND_PAGES:
 			name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-			OpenFileSameWindow(win, doc->path, name, FALSE, FALSE);
+			OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
 			g_free(name);
 			break;
 		case HYPFIND_ALL_PAGE:
@@ -178,6 +178,6 @@ void HypfindFinish(short AppID, short ret)
 	if (AppID == HypfindID)
 	{
 		HypfindID = -1;
-		OpenFileNewWindow(HYP_FILENAME_HYPFIND, NULL, HYP_NOINDEX, FALSE);
+		OpenFileInWindow(NULL, HYP_FILENAME_HYPFIND, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 	}
 }

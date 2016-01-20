@@ -39,54 +39,8 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 
 /*** ---------------------------------------------------------------------- ***/
 
-/*
- * open a file in a new window
- */
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default)
-{
-	DOCUMENT *doc = NULL;
-	char *real_path;
-	WINDOW_DATA *win = NULL;
-	
-	/* done if we don't have a name */
-	if (empty(path))
-		return NULL;
-
-	/* if path starts with "*:\", remove it */
-	if (path[0] == '*' && path[1] == ':' && G_IS_DIR_SEPARATOR(path[2]))
-		path += 3;
-
-	if ((real_path = find_file(NULL, path)) != NULL)
-	{
-		/* load and initialize hypertext file */
-		doc = HypOpenFile(real_path, FALSE);
-		if (doc != NULL)
-		{
-			win = hv_win_new(doc, FALSE);
-			if (doc->gotoNodeProc(doc, chapter, node) ||
-				(find_default && doc->gotoNodeProc(doc, NULL, HYP_NOINDEX)))
-			{
-			} else
-			{
-				gtk_widget_destroy(win->hwnd);
-				win = NULL;
-			}
-			if (win == NULL)
-				HypCloseFile(doc);
-		}
-		g_free(real_path);
-	}
-	
-	if (doc == NULL)
-		FileError(path, _("not found"));
-
-	return win;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 /* open a file in the same window */
-WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message)
+WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *chapter, hyp_nodenr node, gboolean find_default, int new_window, gboolean no_message)
 {
 	DOCUMENT *doc = NULL;
 	char *real_path;
@@ -106,7 +60,10 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 	}
 
 	/* only load file if neccessary */
-	if (new_window)
+	if (new_window > 1)
+	{
+		win = NULL;
+	} else if (new_window)
 	{
 		DOCUMENT *doc2;
 		GSList *l;
@@ -178,26 +135,26 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 			}
 		}
 
+		new_window = 0;
 		if (!win)
 		{
 			win = hv_win_new(doc, FALSE);
+			new_window = 1;
 		} else
 		{
 			doc->next = win->data;
 			win->data = doc;
 		}
 		doc->window = win;
-		if (doc->gotoNodeProc(doc, chapter, HYP_NOINDEX))
+		if (doc->gotoNodeProc(doc, chapter, node))
 		{
-			gtk_widget_show(win->hwnd);
 			ReInitWindow(doc);
-			gtk_window_present(GTK_WINDOW(win->hwnd));
-		} else
+			hv_win_open(win);
+		} else if (find_default)
 		{
 			doc->gotoNodeProc(doc, NULL, HYP_NOINDEX);
-			gtk_widget_show(win->hwnd);
 			ReInitWindow(doc);
-			gtk_window_present(GTK_WINDOW(win->hwnd));
+			hv_win_open(win);
 			if (!no_message)
 			{
 				char *str;
@@ -213,7 +170,17 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 				g_free(name);
 				g_free(str);
 			}
-		
+		} else
+		{
+			if (new_window)
+			{
+				gtk_widget_destroy(win->hwnd);
+			} else
+			{
+				win->data = doc->next;
+				doc->next = NULL;
+			}
+			win = NULL;
 		}
 	} else
 	{

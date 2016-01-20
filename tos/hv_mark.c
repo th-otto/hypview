@@ -123,10 +123,7 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 
 	if (marken[num].node_num != HYP_NOINDEX)
 	{
-		if (new_window)
-			win = OpenFileNewWindow(marken[num].path, NULL, marken[num].node_num, TRUE);
-		else
-			win = OpenFileSameWindow(win, marken[num].path, NULL, FALSE, FALSE);
+		win = OpenFileInWindow(win, marken[num].path, NULL, marken[num].node_num, TRUE, new_window, FALSE);
 		if (win != NULL)
 		{
 			doc = win->data;

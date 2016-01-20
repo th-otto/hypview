@@ -68,21 +68,21 @@ int main(int argc, const char **argv)
 	{
 		if (_app)						/* Als Programm gestartet? */
 		{
-			if (!empty(gl_profile.viewer.default_file))			/* Default-Hypertext angegeben? */
+			if (!empty(gl_profile.viewer.default_file))			/* default-Hypertext specified? */
 			{
 				char *filename = path_subst(gl_profile.viewer.default_file);
-				if (OpenFileNewWindow(filename, NULL, HYP_NOINDEX, FALSE) == NULL)
-					SelectFileLoad(NULL);		/* Datei per Fileselector erfragen */
+				if (OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE) == NULL)
+					SelectFileLoad(NULL);						/* use file selector */
 				g_free(filename);
 			} else
 			{
-				SelectFileLoad(NULL);		/* Datei per Fileselector erfragen */
+				SelectFileLoad(NULL);							/* use file selector */
 			}
 		}
-	} else								/* Falls Parameter angegeben... */
+	} else
 	{
-		/* ...diese Datei (inkl. Kapitel) laden */
-		OpenFileNewWindow(argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE);
+		/* ...load this file (incl. chapter) */
+		OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
 	}
 
 	while (!_app || (!doneFlag && all_list))

@@ -92,7 +92,7 @@ typedef struct
 	long	magic;   /* 'BGEM' */
 	long	size;    /* size of this structure; currently 18 */
 	short	release; /* currently 6, always >= 5 */
-	short	active;  /* <>0, if help s displayed; 0 otherwise /
+	short	active;  /* <>0, if help s displayed; 0 otherwise */
 	MFORM	*mhelp;  /* pointer to mouse form used for help */
 	short	dtimer;  /* daemon-timer; default 200ms; since release 6 */
 } BGEM;

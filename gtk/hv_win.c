@@ -71,6 +71,146 @@ static GdkColor gdk_colors[16];
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+static int read_int(const char *string, const char **next)
+{
+	int result = 0;
+	int sign = 1;
+
+	if (*string == '+')
+		string++;
+	else if (*string == '-')
+	{
+		string++;
+		sign = -1;
+	}
+
+	for (; (*string >= '0') && (*string <= '9'); string++)
+	{
+		result = (result * 10) + (*string - '0');
+	}
+
+	*next = string;
+
+	if (sign >= 0)
+		return result;
+	return -result;
+}
+
+/* 
+ * Bitmask returned by XParseGeometry().  Each bit tells if the corresponding
+ * value (x, y, width, height) was found in the parsed string.
+ */
+#define NoValue         0x0000
+#define XValue          0x0001
+#define YValue          0x0002
+#define WidthValue      0x0004
+#define HeightValue     0x0008
+#define AllValues       0x000F
+#define XNegative       0x0010
+#define YNegative       0x0020
+
+int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height)
+{
+	int mask = NoValue;
+	const char *strind;
+	unsigned int tempWidth, tempHeight;
+	int tempX, tempY;
+
+	const char *nextCharacter;
+
+	/* These initializations are just to silence gcc */
+	tempWidth = 0;
+	tempHeight = 0;
+	tempX = 0;
+	tempY = 0;
+
+	if ((string == NULL) || (*string == '\0'))
+		return mask;
+	if (*string == '=')
+		string++;						/* ignore possible '=' at beg of geometry spec */
+
+	strind = string;
+	if (*strind != '+' && *strind != '-' && *strind != 'x')
+	{
+		tempWidth = read_int(strind, &nextCharacter);
+		if (strind == nextCharacter)
+			return NoValue;
+		strind = nextCharacter;
+		mask |= WidthValue;
+	}
+
+	if (*strind == 'x' || *strind == 'X')
+	{
+		strind++;
+		tempHeight = read_int(strind, &nextCharacter);
+		if (strind == nextCharacter)
+			return NoValue;
+		strind = nextCharacter;
+		mask |= HeightValue;
+	}
+
+	if ((*strind == '+') || (*strind == '-'))
+	{
+		if (*strind == '-')
+		{
+			strind++;
+			tempX = -read_int(strind, &nextCharacter);
+			if (strind == nextCharacter)
+				return NoValue;
+			strind = nextCharacter;
+			mask |= XNegative;
+
+		} else
+		{
+			strind++;
+			tempX = read_int(strind, &nextCharacter);
+			if (strind == nextCharacter)
+				return NoValue;
+			strind = nextCharacter;
+		}
+		mask |= XValue;
+		if ((*strind == '+') || (*strind == '-'))
+		{
+			if (*strind == '-')
+			{
+				strind++;
+				tempY = -read_int(strind, &nextCharacter);
+				if (strind == nextCharacter)
+					return NoValue;
+				strind = nextCharacter;
+				mask |= YNegative;
+
+			} else
+			{
+				strind++;
+				tempY = read_int(strind, &nextCharacter);
+				if (strind == nextCharacter)
+					return NoValue;
+				strind = nextCharacter;
+			}
+			mask |= YValue;
+		}
+	}
+
+	/* If strind isn't at the end of the string then it's an invalid
+	   geometry specification. */
+
+	if (*strind != '\0')
+		return NoValue;
+
+	if (mask & XValue)
+		*x = tempX;
+	if (mask & YValue)
+		*y = tempY;
+	if (mask & WidthValue)
+		*width = tempWidth;
+	if (mask & HeightValue)
+		*height = tempHeight;
+	return mask;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void hv_win_set_geometry(WINDOW_DATA *win, const char *geometry)
 {
 	g_free(win->m_geometry);
@@ -549,15 +689,19 @@ static void set_cursor_if_appropriate(WINDOW_DATA *win, gint x, gint y)
 
 	if (hovering != win->hovering_over_link)
 	{
-		win->hovering_over_link = hovering;
-
-		if (hovering)
+		GdkWindow *window = gtk_text_view_get_window(text_view, GTK_TEXT_WINDOW_TEXT);
+		
+		if (window)
 		{
-			gdk_window_set_cursor(gtk_text_view_get_window(text_view, GTK_TEXT_WINDOW_TEXT), hand_cursor);
-		} else
-		{
-			gdk_window_set_cursor(gtk_text_view_get_window(text_view, GTK_TEXT_WINDOW_TEXT), regular_cursor);
-			gtk_widget_set_tooltip_text(GTK_WIDGET(text_view), NULL);
+			win->hovering_over_link = hovering;
+			if (hovering)
+			{
+				gdk_window_set_cursor(window, hand_cursor);
+			} else
+			{
+				gdk_window_set_cursor(window, regular_cursor);
+				gtk_widget_set_tooltip_text(GTK_WIDGET(text_view), NULL);
+			}
 		}
 	}
 
@@ -1237,13 +1381,16 @@ void SendClose(GtkWidget *w)
 void ReInitWindow(DOCUMENT *doc)
 {
 	WINDOW_DATA *win = doc->window;
+	GdkWindow *window;
 	
 	win->data = doc;
 	win->title = doc->window_title;
 	hv_set_title(win, win->title);
 	doc->selection.valid = FALSE;
 	win->hovering_over_link = FALSE;
-	gdk_window_set_cursor(gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT), regular_cursor);
+	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
+	if (window)
+		gdk_window_set_cursor(window, regular_cursor);
 	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
 	set_font_attributes(win);
 	

@@ -120,7 +120,7 @@ static _WORD __CDECL ProgHandle(struct HNDL_OBJ_args args)
 		break;
 	case PROG_HELP:
 		tree[PROG_HELP].ob_state &= ~OS_SELECTED;
-		OpenFileNewWindow(prghelp_name, NULL, HYP_NOINDEX, FALSE);
+		OpenFileInWindow(NULL, prghelp_name, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 		return 0;
 	}
 	return 1;
@@ -223,7 +223,7 @@ void ProgrammInfos(DOCUMENT *doc)
 		switch (obj)
 		{
 		case PROG_HELP:
-			OpenFileNewWindow(prghelp_name, NULL, HYP_NOINDEX, FALSE);
+			OpenFileInWindow(NULL, prghelp_name, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 			break;
 		}
 	}

@@ -30,7 +30,7 @@ static void help_clicked(GtkWidget *w, GtkWidget *dialog)
 {
 	UNUSED(w);
 	UNUSED(dialog);
-	OpenFileNewWindow(prghelp_name, NULL, HYP_NOINDEX, FALSE);
+	OpenFileInWindow(NULL, prghelp_name, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/

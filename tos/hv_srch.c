@@ -56,7 +56,7 @@ static void __CDECL select_item(struct SLCT_ITEM_args args)
 
 	if (nclicks > 1)
 	{
-		if ((win = OpenFileSameWindow(win, my_item->path, my_item->node_name, FALSE, FALSE)) != NULL)
+		if ((win = OpenFileInWindow(win, my_item->path, my_item->node_name, HYP_NOINDEX, FALSE, FALSE, FALSE)) != NULL)
 		{
 			if (my_item->lineno > 0)
 			{
@@ -313,7 +313,7 @@ void search_allref(void *w, const char *string, gboolean no_message)
 		/* only one result */
 		if (results == 1)
 		{
-			if ((win = OpenFileSameWindow(win, Result_List->path, Result_List->node_name, FALSE, FALSE)) != NULL)
+			if ((win = OpenFileInWindow(win, Result_List->path, Result_List->node_name, HYP_NOINDEX, FALSE, FALSE, FALSE)) != NULL)
 			{
 				if (Result_List->lineno > 0)
 					win->docsize.y = Result_List->lineno;
@@ -332,7 +332,7 @@ void search_allref(void *w, const char *string, gboolean no_message)
 			} else
 			{
 				/* FIXME: just open first result for now */
-				if ((win = OpenFileSameWindow(win, Result_List->path, Result_List->node_name, FALSE, FALSE)) != NULL)
+				if ((win = OpenFileInWindow(win, Result_List->path, Result_List->node_name, HYP_NOINDEX, FALSE, FALSE, FALSE)) != NULL)
 				{
 					if (Result_List->lineno > 0)
 						win->docsize.y = Result_List->lineno;

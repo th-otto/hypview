@@ -157,7 +157,7 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 							if ((m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin))
 							{
 								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dst_page]->name, STR0TERM);
-								OpenFileNewWindow(doc->path, name, HYP_NOINDEX, FALSE);
+								OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, 2, FALSE);
 								g_free(name);
 							} else
 							{

@@ -63,55 +63,8 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 
 /*** ---------------------------------------------------------------------- ***/
 
-/*
- * open a file in a new windows
- */
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default)
-{
-	DOCUMENT *doc = NULL;
-	char *real_path;
-	WINDOW_DATA *win = NULL;
-	
-	/* done if we don't have a name */
-	if (empty(path))
-		return NULL;
-
-	graf_mouse(BUSY_BEE, NULL);
-
-	/* if path starts with "*:\", remove it */
-	if (path[0] == '*' && path[1] == ':' && G_IS_DIR_SEPARATOR(path[2]))
-		path += 3;
-
-	if ((real_path = find_file(NULL, path)) != NULL)
-	{
-		/* load and initialize hypertext file */
-		doc = HypOpenFile(real_path, FALSE);
-		if (doc != NULL)
-		{
-			if (doc->gotoNodeProc(doc, chapter, node) ||
-				(find_default && doc->gotoNodeProc(doc, NULL, HYP_NOINDEX)))
-			{
-				/* create a new window */
-				win = doc->window = OpenWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER |
-						   UPARROW | DNARROW | VSLIDE | LFARROW | RTARROW | HSLIDE | SMALLER, doc->path, -1, -1, doc);
-			}
-			if (win == NULL)
-				HypCloseFile(doc);
-		}
-		g_free(real_path);
-	}
-	
-	graf_mouse(ARROW, NULL);
-	if (doc == NULL)
-		FileError(path, _("not found"));
-
-	return win;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 /* open a file in the same window */
-WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message)
+WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *chapter, hyp_nodenr node, gboolean find_default, int new_window, gboolean no_message)
 {
 	DOCUMENT *doc = NULL;
 	char *real_path;
@@ -131,7 +84,10 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 	}
 
 	/* only load file if neccessary */
-	if (new_window)
+	if (new_window > 1)
+	{
+		win = NULL;
+	} else if (new_window)
 	{
 		DOCUMENT *doc2;
 
@@ -205,13 +161,15 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 			}
 		}
 
-		if (doc->gotoNodeProc(doc, chapter, HYP_NOINDEX))
+		new_window = 0;
+		if (doc->gotoNodeProc(doc, chapter, node))
 		{
 			/* no window already? */
 			if (!win)
 			{
 				win = doc->window = OpenWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER | UPARROW | DNARROW |
 						   VSLIDE | LFARROW | RTARROW | HSLIDE | SMALLER, doc->path, -1, -1, doc);
+				new_window = 1;
 			} else
 			{
 				doc->window = win;
@@ -222,7 +180,7 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 				ReInitWindow(doc);
 				wind_set_int(win->whandle, WF_TOP, 0);
 			}
-		} else
+		} else if (find_default)
 		{
 			doc->gotoNodeProc(doc, NULL, HYP_NOINDEX);
 			if (win)
@@ -250,7 +208,9 @@ WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *
 				g_free(name);
 				g_free(str);
 			}
-		
+		} else
+		{
+			win = NULL;
 		}
 	} else
 	{

@@ -132,7 +132,7 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 			close((short) ret);
 			if (new_window)
 				win = NULL;
-			OpenFileSameWindow(win, scrap_file, NULL, FALSE, FALSE);
+			OpenFileInWindow(win, scrap_file, NULL, HYP_NOINDEX, FALSE, new_window, FALSE);
 		}
 		g_free(scrap_file);
 	}

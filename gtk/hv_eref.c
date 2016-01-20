@@ -154,12 +154,11 @@ void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time)
  * If it is an absolute filename, nodename will be considered
  * as part of the filename.
  */
-void HypOpenExtRef(void *ptr, const char *name, gboolean new_window)
+void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 {
 	char *cptr;
 	char *temp;
 	const char *path, *chapter;
-	WINDOW_DATA *win = (WINDOW_DATA *)ptr;
 	
 	if (empty(name))
 		return;
@@ -203,10 +202,7 @@ void HypOpenExtRef(void *ptr, const char *name, gboolean new_window)
 		chapter = cptr;
 		if (strcmp(chapter, hyp_default_main_node_name) == 0)
 			chapter = NULL;
-		if (new_window)
-			win = OpenFileNewWindow(path, chapter, HYP_NOINDEX, FALSE);
-		else
-			win = OpenFileSameWindow(win, path, chapter, FALSE, FALSE);
+		win = OpenFileInWindow(win, path, chapter, HYP_NOINDEX, FALSE, new_window ? 2 : 0, FALSE);
 	}
 	g_free(temp);
 }

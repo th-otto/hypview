@@ -196,7 +196,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 	
 	if (choose_file(parent, &name, TRUE, _("Open Hypertext..."), IDS_SELECT_HYPERTEXT))
 	{
-		win = OpenFileSameWindow(win, name, NULL, FALSE, FALSE);
+		win = OpenFileInWindow(win, name, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
 	}
 	g_free(name);
 	return win;

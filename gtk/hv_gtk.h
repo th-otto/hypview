@@ -223,8 +223,7 @@ void SelectFileSave(DOCUMENT *doc);
 /*
  * hv_file.c
  */
-WINDOW_DATA *OpenFileSameWindow(WINDOW_DATA *win, const char *path, const char *chapter, gboolean new_window, gboolean no_message);
-WINDOW_DATA *OpenFileNewWindow(const char *path, const char *chapter, hyp_nodenr node, gboolean find_default);
+WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *chapter, hyp_nodenr node, gboolean find_default, int new_window, gboolean no_message);
 
 
 /*
@@ -254,13 +253,14 @@ void GotoCatalog(WINDOW_DATA *win);
  */
 void show_dialog(GtkWidget *parent, const char *type, const char *message, void (*ok_fn)(GtkWidget *widget, gpointer user_data), gpointer user_data);
 void CenterWindow(GtkWidget *hwnd);
+int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
 
 
 /*
  * hv_eref.c
  */
 void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time);
-void HypOpenExtRef(void *win, const char *name, gboolean new_window);
+void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window);
 
 
 /*

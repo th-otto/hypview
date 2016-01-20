@@ -1694,7 +1694,7 @@ void Profile_WriteByte(Profile *profile, const char *section, const char *key, u
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Profile_WriteInt(Profile *profile, const char *section, const char *key, short val)
+void Profile_WriteInt(Profile *profile, const char *section, const char *key, int val)
 {
 	if (profile == NULL)
 		return;
@@ -1708,7 +1708,7 @@ void Profile_WriteInt(Profile *profile, const char *section, const char *key, sh
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Profile_WriteCard(Profile *profile, const char *section, const char *key, unsigned short val)
+void Profile_WriteCard(Profile *profile, const char *section, const char *key, unsigned int val)
 {
 	if (profile == NULL)
 		return;
@@ -1862,7 +1862,7 @@ gboolean Profile_ReadByte(Profile *profile, const char *section, const char *key
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean Profile_ReadInt(Profile *profile, const char *section, const char *key, short *pval)
+gboolean Profile_ReadInt(Profile *profile, const char *section, const char *key, int *pval)
 {
 	int val;
 	gboolean found;
@@ -1914,7 +1914,7 @@ gboolean Profile_ReadLong(Profile *profile, const char *section, const char *key
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean Profile_ReadCard(Profile *profile, const char *section, const char *key, unsigned short *pval)
+gboolean Profile_ReadCard(Profile *profile, const char *section, const char *key, unsigned int *pval)
 {
 	unsigned int val;
 	gboolean found;

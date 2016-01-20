@@ -268,7 +268,7 @@ void GotoIndex(DOCUMENT *doc)
 void GotoCatalog(WINDOW_DATA *win)
 {
 	char *filename = path_subst(gl_profile.viewer.catalog_file);
-	OpenFileSameWindow(win, filename, NULL, FALSE, FALSE);
+	OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
 	g_free(filename);
 }
 

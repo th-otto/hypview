@@ -242,27 +242,30 @@ int main(int argc, char **argv)
 		
 		Help_Init();
 		
+		if (!empty(geom_arg))
+			gtk_XParseGeometry(geom_arg, &gl_profile.viewer.win_x, &gl_profile.viewer.win_y, &gl_profile.viewer.win_w, &gl_profile.viewer.win_h);
+		
 		if (argc <= 1)
 		{
 			if (gl_profile.viewer.startup == 1 &&
-				!empty(gl_profile.viewer.default_file))			/* Default-Hypertext angegeben? */
+				!empty(gl_profile.viewer.default_file))			/* default-hypertext specified? */
 			{
 				char *filename = path_subst(gl_profile.viewer.default_file);
-				win = OpenFileNewWindow(filename, NULL, HYP_NOINDEX, FALSE);
+				win = OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 				g_free(filename);
 			} else if (gl_profile.viewer.startup == 2 &&
 				!empty(gl_profile.viewer.last_file))
 			{
 				char *filename = path_subst(gl_profile.viewer.last_file);
-				win = OpenFileNewWindow(filename, NULL, HYP_NOINDEX, FALSE);
+				win = OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 				g_free(filename);
 			}
 			if (win == NULL)
-				win = SelectFileLoad(NULL);						/* Datei per Fileselector erfragen */
+				win = SelectFileLoad(NULL);						/* use file selector */
 		} else
 		{
-			/* ...diese Datei (inkl. Kapitel) laden */
-			win = OpenFileNewWindow(argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE);
+			/* ...load this file (incl. chapter) */
+			win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
 		}
 		
 		if (win == NULL)
@@ -270,10 +273,6 @@ int main(int argc, char **argv)
 			exit_status = EXIT_FAILURE;
 		} else
 		{
-			if (!empty(geom_arg))
-			{
-				hv_win_set_geometry(win, geom_arg);
-			}
 			hv_win_open(win);
 		}
 	}

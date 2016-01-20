@@ -449,7 +449,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				case 'D':
 					{
 						char *filename = path_subst(gl_profile.viewer.default_file);
-						OpenFileSameWindow(win, filename, NULL, FALSE, FALSE);
+						OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
 						g_free(filename);
 					}
 					break;
@@ -460,7 +460,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				case 'K':
 					{
 						char *filename = path_subst(gl_profile.viewer.catalog_file);
-						OpenFileSameWindow(win, filename, NULL, FALSE, FALSE);
+						OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
 						g_free(filename);
 					}
 					break;
@@ -627,7 +627,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			chapter = ParseData(ptr);
 			if (chapter != ptr && *chapter == '\'')
 				ParseData(chapter);
-			OpenFileSameWindow(win, ptr, chapter, FALSE, FALSE);
+			OpenFileInWindow(win, ptr, chapter, HYP_NOINDEX, FALSE, FALSE, FALSE);
 			g_free(ptr);
 		}
 		break;

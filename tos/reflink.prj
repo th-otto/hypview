@@ -25,7 +25,7 @@ h:\src\udo\tools\hypview\hyp\prepare.c
 h:\src\udo\tools\hypview\hyp\cache.c
 h:\src\udo\tools\hypview\hyp\hyp_save.c
 h:\src\udo\tools\hypview\hyp\tool.c
-h:\src\udo\tools\hypview\hyp\cookie.c
+h:\src\udo\tools\hypview\hyp\tos\cookie.c
 h:\src\udo\tools\hypview\hyp\ext_refs.c
 h:\src\udo\tools\hypview\hyp\hyp_intl.c
 h:\src\udo\tools\hypview\hyp\hyp_file.c
@@ -43,3 +43,4 @@ h:\src\udo\tools\hypview\hyp\str2imax.c
 
 pctoslib.lib
 pcstdlib.lib
+pcextlib.lib ; for sleep()

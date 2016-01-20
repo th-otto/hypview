@@ -78,7 +78,7 @@ void search_allref(void *w, const char *string, gboolean no_message)
 		/* only one result */
 		if (results == 1)
 		{
-			if ((win = OpenFileSameWindow(win, Result_List->path, Result_List->node_name, FALSE, FALSE)) != NULL)
+			if ((win = OpenFileInWindow(win, Result_List->path, Result_List->node_name, HYP_NOINDEX, FALSE, FALSE, FALSE)) != NULL)
 			{
 				if (Result_List->lineno > 0)
 					win->docsize.y = Result_List->lineno;
