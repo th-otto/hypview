@@ -11,6 +11,7 @@ Dies ist normaler Text.
 Dies ist @{G}heller@{g} Text.
 Dies ist @{B}fetter@{b} Text.
 Dies ist @{U}unterstrichener@{u} Text.
+    @{U}Unterstrichener@{u} Text am Zeilenanfang.
 Dies ist @{U}  auch   unterstrichener  @{u} Text.
 Dies ist @{I}kursiver@{i} Text.
 Dies ist @{O}umrandeter@{o} Text.

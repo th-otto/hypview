@@ -1578,7 +1578,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 	{ \
 		str = hyp_conv_to_utf8(hyp->comp_charset, textstart, src - textstart); \
 		if (str != NULL) \
-			hyp_utf8_fprintf(opts->outfile, _("Text: %s\n"), str); \
+			hyp_utf8_fprintf(opts->outfile, _("Text: <%s>\n"), str); \
 		g_free(str); \
 	}
 

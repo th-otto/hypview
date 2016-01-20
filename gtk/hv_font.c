@@ -23,6 +23,7 @@ static void ApplyFont(void)
 			doc = win->data;
 			/* reload page or file */
 
+			win->docsize.y = hv_win_topline(win);
 			ret = doc->gotoNodeProc(doc, NULL, doc->getNodeProc(doc));
 			
 			if (ret)

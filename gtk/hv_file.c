@@ -146,6 +146,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			win->data = doc;
 		}
 		doc->window = win;
+		doc->start_line = 0;
 		if (doc->gotoNodeProc(doc, chapter, node))
 		{
 			ReInitWindow(doc);
@@ -205,8 +206,11 @@ void CheckFiledate(DOCUMENT *doc)
 		if (st.st_mtime != doc->mtime)
 		{
 			hyp_nodenr node;
-
+			long lineno = 0;
+			
 			node = doc->getNodeProc(doc);	/* Remember current node */
+			if (doc->window)
+				lineno = hv_win_topline(doc->window);
 			doc->closeProc(doc);			/* Close document */
 
 			/* Reload file */
@@ -222,7 +226,8 @@ void CheckFiledate(DOCUMENT *doc)
 
 			/* jump to previously active node */
 			doc->gotoNodeProc(doc, NULL, node);
-
+			
+			doc->start_line = lineno;
 			ReInitWindow(doc);
 		}
 	}

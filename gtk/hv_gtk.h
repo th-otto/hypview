@@ -157,6 +157,7 @@ void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(GtkWidget *w);
+long hv_win_topline(WINDOW_DATA *win);
 
 
 /*

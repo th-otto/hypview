@@ -358,7 +358,7 @@ static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
 		DOCUMENT *doc = win->data;
 		if (doc && doc->prepNode)
 		{
-			doc->prepNode(doc);
+			doc->start_line = win->docsize.y = hv_win_topline(win);
 			ReInitWindow(doc);
 		}
 	}
@@ -1378,10 +1378,25 @@ void SendClose(GtkWidget *w)
 
 /*** ---------------------------------------------------------------------- ***/
 
+long hv_win_topline(WINDOW_DATA *win)
+{
+	GtkTextIter iter;
+	long lineno;
+	
+	int x, y;
+	gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT, 0, 0, &x, &y);
+	gtk_text_view_get_line_at_y(GTK_TEXT_VIEW(win->text_view), &iter, y, NULL);
+	lineno = gtk_text_iter_get_line(&iter);
+	return lineno;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void ReInitWindow(DOCUMENT *doc)
 {
 	WINDOW_DATA *win = doc->window;
 	GdkWindow *window;
+	GtkTextIter iter;
 	
 	win->data = doc;
 	win->title = doc->window_title;
@@ -1393,14 +1408,19 @@ void ReInitWindow(DOCUMENT *doc)
 		gdk_window_set_cursor(window, regular_cursor);
 	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
 	set_font_attributes(win);
+	doc->prepNode(doc);
 	
 	/* adjust window size to new dimensions */
 	if (gl_profile.viewer.adjust_winsize)
 	{
 	}
 
-	/* gtk_text_view_scroll_to_iter(iter-of-line at doc->start_line) */
-
+	if (doc->start_line)
+	{
+		gtk_text_buffer_get_iter_at_line(win->text_buffer, &iter, doc->start_line);
+		gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(win->text_view), &iter, 0.0, TRUE, 0.0, 0.0);
+	}
+	
 	ToolbarUpdate(doc, FALSE);
 	SendRedraw(win);
 }
