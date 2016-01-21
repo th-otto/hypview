@@ -1392,11 +1392,61 @@ long hv_win_topline(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+/*
+ * scroll window such that <line> is displayed at the top
+ */
+static void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
+{
+	GdkWindow *window;
+	GtkTextIter iter;
+	GtkAdjustment *adj;
+	gdouble val;
+	
+	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
+	if (window)
+		gdk_window_process_updates(window, TRUE);
+	gtk_text_buffer_get_iter_at_line(win->text_buffer, &iter, line);
+#if 0
+	{
+		GtkTextMark *topmark;
+		topmark = gtk_text_buffer_get_mark(win->text_buffer, "hv-topmark");
+		if (topmark == NULL)
+			topmark = gtk_text_buffer_create_mark(win->text_buffer, "hv-topmark", &iter, TRUE);
+		else
+			gtk_text_buffer_move_mark(win->text_buffer, topmark, &iter);
+	}
+#endif
+	adj = gtk_text_view_get_vadjustment(GTK_TEXT_VIEW(win->text_view));
+	{
+		GdkRectangle rect;
+		gtk_text_view_get_iter_location(GTK_TEXT_VIEW(win->text_view), &iter, &rect);
+		val = rect.y;
+#if 0
+		printf("start %ld %d rect %d %d %d %d adj %f %f %f %f\n",
+			line,
+			gtk_text_iter_get_line(&iter),
+			rect.x, rect.y, rect.width, rect.height,
+			adj->lower, adj->upper, adj->page_size, adj->upper - adj->page_size);
+#endif
+	}
+#if 0
+	gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(win->text_view), &iter, 0.0, TRUE, 0.0, 0.0);
+#else
+	if (val > adj->upper)
+		val = adj->upper;
+	if (val < adj->lower)
+		val = adj->lower;
+	if (val != adj->value)
+		gtk_adjustment_set_value(adj, val);
+#endif
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void ReInitWindow(DOCUMENT *doc)
 {
 	WINDOW_DATA *win = doc->window;
 	GdkWindow *window;
-	GtkTextIter iter;
 	
 	win->data = doc;
 	win->title = doc->window_title;
@@ -1417,8 +1467,7 @@ void ReInitWindow(DOCUMENT *doc)
 
 	if (doc->start_line)
 	{
-		gtk_text_buffer_get_iter_at_line(win->text_buffer, &iter, doc->start_line);
-		gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(win->text_view), &iter, 0.0, TRUE, 0.0, 0.0);
+		hv_win_scroll_to_line(win, doc->start_line);
 	}
 	
 	ToolbarUpdate(doc, FALSE);
