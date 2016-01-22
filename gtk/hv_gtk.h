@@ -47,6 +47,21 @@ enum toolbutton {
 	TO_MAX
 };
 
+enum blockop {
+	CO_SAVE,
+	CO_BACK,
+	CO_COPY,
+	CO_PASTE,
+	CO_SELECT_ALL,
+	CO_SEARCH,
+	CO_SEARCH_AGAIN,
+	CO_DELETE_STACK,
+	CO_SWITCH_FONT,
+	CO_SELECT_FONT,
+	CO_REMARKER,
+	CO_PRINT
+};
+
 typedef struct _window_data_ WINDOW_DATA;
 
 struct _window_data_
@@ -56,15 +71,14 @@ struct _window_data_
 	int x_raster;
 	int y_raster;
 	DOCUMENT *data;
-	struct {
-		WP_UNIT y;
-	} docsize;
 
 	GtkActionGroup *action_group;
+	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
 
 	char *m_geometry;
 	GtkWidget *hwnd;					/* GtkWindow */
 	GtkWidget *history_menu;			/* GtkMenu */
+	GtkWidget *bookmarks_menu;			/* GtkMenu */
 	GtkTextBuffer *text_buffer;
 	GtkWidget *text_window;				/* GtkScrolledWindow */
 	GtkWidget *text_view;				/* GtkTextView */
@@ -158,6 +172,7 @@ void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(GtkWidget *w);
 long hv_win_topline(WINDOW_DATA *win);
+void hv_win_scroll_to_line(WINDOW_DATA *win, long line);
 
 
 /*
@@ -210,7 +225,7 @@ void DeleteLastHistory(HISTORY *entry);
 /*
  * hv_autol.c
  */
-short AutolocatorKey(DOCUMENT *doc, GdkModifierType state, int ascii);
+gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event);
 void AutoLocatorPaste(DOCUMENT *doc);
 
 
@@ -228,13 +243,21 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 
 
 /*
+ * hv_hfind.c
+ */
+void Hypfind(DOCUMENT *doc, gboolean first);
+
+
+/*
  * hv_mark.c
  */
 void MarkerSave(DOCUMENT *doc, short num);
 void MarkerShow(DOCUMENT *doc, short num, gboolean new_window);
 void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time);
+void MarkerUpdate(WINDOW_DATA *win);
 void MarkerSaveToDisk(void);
 void MarkerInit(void);
+void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win);
 
 
 /*
@@ -247,14 +270,16 @@ void GotoHelp(DOCUMENT *doc);
 void GotoIndex(DOCUMENT *doc);
 void GoThisButton(DOCUMENT *doc, enum toolbutton obj);
 void GotoCatalog(WINDOW_DATA *win);
+void GotoDefaultFile(WINDOW_DATA *win);
 
 
 /*
  * hv_misc.c
  */
-void show_dialog(GtkWidget *parent, const char *type, const char *message, void (*ok_fn)(GtkWidget *widget, gpointer user_data), gpointer user_data);
+gboolean show_dialog(GtkWidget *parent, const char *type, const char *message, gboolean can_cancel);
 void CenterWindow(GtkWidget *hwnd);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
+void hv_recent_add(const char *path);
 
 
 /*
@@ -273,7 +298,7 @@ void OpenPopup(DOCUMENT *doc, hyp_nodenr num, int x, int y);
 /*
  * hv_block.c
  */
-void BlockOperation(DOCUMENT *doc, short num);
+void BlockOperation(DOCUMENT *doc, enum blockop num);
 void BlockSelectAll(DOCUMENT *doc, BLOCK *b);
 void BlockCopy(DOCUMENT *doc);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);

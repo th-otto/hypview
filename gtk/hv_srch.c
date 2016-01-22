@@ -81,7 +81,7 @@ void search_allref(void *w, const char *string, gboolean no_message)
 			if ((win = OpenFileInWindow(win, Result_List->path, Result_List->node_name, HYP_NOINDEX, FALSE, FALSE, FALSE)) != NULL)
 			{
 				if (Result_List->lineno > 0)
-					win->docsize.y = Result_List->lineno;
+					hv_win_scroll_to_line(win, Result_List->lineno);
 			}
 			ref_freeresults(&Result_List);
 			ref_close(allref);

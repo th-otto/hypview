@@ -260,19 +260,22 @@ int main(int argc, char **argv)
 				win = OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
 				g_free(filename);
 			}
-			if (win == NULL)
-				win = SelectFileLoad(NULL);						/* use file selector */
 		} else
 		{
 			/* ...load this file (incl. chapter) */
 			win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
 		}
+		if (win == NULL)
+			win = SelectFileLoad(NULL);						/* use file selector */
 		
 		if (win == NULL)
 		{
 			exit_status = EXIT_FAILURE;
 		} else
 		{
+			hv_recent_add(win->data->path);
+			if (gl_profile.remarker.run_on_startup && !empty(gl_profile.remarker.path))
+				BlockOperation(win->data, CO_REMARKER);
 			hv_win_open(win);
 		}
 	}

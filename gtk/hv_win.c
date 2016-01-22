@@ -238,11 +238,11 @@ void hv_win_open(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void quit_force(GtkWidget *w, void *userdata)
+static void quit_force(GtkAction *action, void *userdata)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)userdata;
 
-	UNUSED(w);
+	UNUSED(action);
 	gtk_widget_destroy(win->hwnd);
 	check_toplevels(NULL);
 }
@@ -261,7 +261,8 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 	if (ret == FALSE)
 	{
 		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), g_strerror(errno));
-		show_dialog(win->hwnd, GTK_STOCK_DIALOG_ERROR, msg, quit_force, win);
+		if (show_dialog(win->hwnd, GTK_STOCK_DIALOG_ERROR, msg, TRUE))
+			quit_force(NULL, win);
 		g_free(msg);
 		return FALSE;
 	}
@@ -305,60 +306,57 @@ static void shell_destroyed(GtkWidget *w, void *userdata)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_select_source(GtkWidget *widget, WINDOW_DATA *win)
+static void on_select_source(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	SelectFileLoad(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_font_select(GtkWidget *widget, WINDOW_DATA *win)
+static void on_font_select(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
-	UNUSED(win);
-	printf("NYI: on_font_select\n");
+	UNUSED(action);
+	SelectFont(win->data);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_color_select(GtkWidget *widget, WINDOW_DATA *win)
+static void on_color_select(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	UNUSED(win);
 	printf("NYI: on_color_select\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_output_settings(GtkWidget *widget, WINDOW_DATA *win)
+static void on_output_settings(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	UNUSED(win);
 	printf("NYI: on_output_settings\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_switch_font(GtkWidget *widget, WINDOW_DATA *win)
+static void on_switch_font(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
-	UNUSED(win);
+	UNUSED(action);
 	SwitchFont(win->data);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
+static void on_expand_spaces(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
-	gl_profile.viewer.expand_spaces = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "expandspaces")));
+	gl_profile.viewer.expand_spaces = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action));
 	if (win->text_window)
 	{
 		DOCUMENT *doc = win->data;
 		if (doc && doc->prepNode)
 		{
-			doc->start_line = win->docsize.y = hv_win_topline(win);
+			doc->start_line = hv_win_topline(win);
 			ReInitWindow(doc);
 		}
 	}
@@ -366,44 +364,44 @@ static void on_expand_spaces(GtkWidget *widget, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_scale_bitmaps(GtkWidget *widget, WINDOW_DATA *win)
+static void on_scale_bitmaps(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	UNUSED(win);
 	printf("NYI: on_scale_bitmaps\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_preferences(GtkWidget *widget, WINDOW_DATA *win)
+static void on_preferences(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	UNUSED(win);
 	printf("NYI: on_preferences\n");
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_help_contents(GtkWidget *widget, WINDOW_DATA *win)
+static void on_help_contents(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	Help_Contents(win->hwnd);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_help_index(GtkWidget *widget, WINDOW_DATA *win)
+static void on_help_index(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	Help_Index(win->hwnd);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 #if 0
-static gboolean on_history_open(GtkWidget *widget, WINDOW_DATA *win)
+static gboolean on_history_open(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	UNUSED(win);
 	return TRUE;
 }
@@ -411,178 +409,202 @@ static gboolean on_history_open(GtkWidget *widget, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_about(GtkWidget *widget, WINDOW_DATA *win)
+static void on_about(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	About(win->hwnd);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_back(GtkWidget *widget, WINDOW_DATA *win)
+static void on_back(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoBack(doc);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_clearstack(GtkWidget *widget, WINDOW_DATA *win)
+static void on_clearstack(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
-	RemoveAllHistoryEntries(win);
-	ToolbarUpdate(doc, TRUE);
+	UNUSED(action);
+	BlockOperation(doc, CO_DELETE_STACK);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_history(GtkWidget *widget, WINDOW_DATA *win)
+static void on_history(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	ToolbarClick(doc, TO_HISTORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_catalog(GtkWidget *widget, WINDOW_DATA *win)
+static void on_catalog(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	GotoCatalog(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_help(GtkWidget *widget, WINDOW_DATA *win)
+static void on_defaultfile(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	GotoDefaultFile(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_help(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GotoHelp(doc);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_bookmarks(GtkWidget *widget, WINDOW_DATA *win)
+static void on_bookmarks(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	ToolbarClick(doc, TO_MEMORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_next(GtkWidget *widget, WINDOW_DATA *win)
+static void on_bookmarks_menu(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	MarkerUpdate(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_next(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_NEXT);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_nextphys(GtkWidget *widget, WINDOW_DATA *win)
+static void on_nextphys(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_NEXT_PHYS);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_prev(GtkWidget *widget, WINDOW_DATA *win)
+static void on_prev(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_PREV);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_prevphys(GtkWidget *widget, WINDOW_DATA *win)
+static void on_prevphys(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_PREV_PHYS);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_toc(GtkWidget *widget, WINDOW_DATA *win)
+static void on_toc(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_HOME);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_first(GtkWidget *widget, WINDOW_DATA *win)
+static void on_first(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_FIRST);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_last(GtkWidget *widget, WINDOW_DATA *win)
+static void on_last(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GoThisButton(doc, TO_LAST);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_index(GtkWidget *widget, WINDOW_DATA *win)
+static void on_index(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	GotoIndex(doc);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_xref(GtkWidget *widget, WINDOW_DATA *win)
+static void on_xref(GtkAction *action, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	UNUSED(widget);
+	UNUSED(action);
 	HypExtRefPopup(doc, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_quit(GtkWidget *widget, WINDOW_DATA *win)
+static void on_quit(GtkAction *action, WINDOW_DATA *win)
 {
 	if (!WriteProfile(win))
 		return;
-	quit_force(widget, win);
+	quit_force(action, win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_info(GtkWidget *widget, WINDOW_DATA *win)
+static void on_info(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	ProgrammInfos(win->data);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_close(GtkWidget *widget, WINDOW_DATA *win)
+static void on_close(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(widget);
+	UNUSED(action);
 	SendCloseWindow(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_remarker(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	BlockOperation(win->data, CO_REMARKER);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static gboolean wm_toplevel_close_cb(GtkWidget *widget, GdkEvent *event, WINDOW_DATA *win)
 {
+	UNUSED(widget);
 	UNUSED(event);
-	on_quit(widget, win);
+	on_quit(NULL, win);
 	return TRUE;
 }
 
@@ -729,12 +751,13 @@ static gboolean motion_notify_event(GtkWidget *text_view, GdkEventMotion *event,
  * and if one of them is a link, follow it by showing the page identified
  * by the data attached to it.
  */
-static void follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
+static gboolean follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 {
 	GSList *tags;
 	GSList *tagp;
-
-	(void) win;
+	gboolean found = FALSE;
+	
+	UNUSED(win);
 	tags = gtk_text_iter_get_tags(iter);
 	for (tagp = tags; tagp != NULL; tagp = tagp->next)
 	{
@@ -744,13 +767,17 @@ static void follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 		if (info)
 		{
 			HypClick(win, info);
+			found = TRUE;
 			break;
 		}
 	}
 
 	if (tags)
 		g_slist_free(tags);
+	return found;
 }
+
+/*** ---------------------------------------------------------------------- ***/
 
 static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_DATA *win)
 {
@@ -764,6 +791,9 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 	if (event->button != GDK_BUTTON_PRIMARY)
 		return FALSE;
 
+	if (gl_profile.viewer.check_time)
+		CheckFiledate(win->data);
+	
 	buffer = win->text_buffer;
 
 	/* we shouldn't follow a link if the user has selected something */
@@ -778,6 +808,242 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 	follow_if_link(win, &iter);
 
 	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hv_scroll_window(WINDOW_DATA *win, gint xamount, gint yamount)
+{
+	GdkWindow *window;
+	GtkAdjustment *adj;
+	gdouble val;
+	
+	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
+	if (!window)
+		return;
+	if (xamount != 0)
+	{
+		adj = gtk_text_view_get_hadjustment(GTK_TEXT_VIEW(win->text_view));
+		val = adj->value + xamount;
+		if (val > (adj->upper - adj->page_size))
+			val = adj->upper - adj->page_size;
+		if (val < adj->lower)
+			val = adj->lower;
+		if (val != adj->value)
+			gtk_adjustment_set_value(adj, val);
+	}
+	if (yamount != 0)
+	{
+		adj = gtk_text_view_get_vadjustment(GTK_TEXT_VIEW(win->text_view));
+		val = adj->value + yamount;
+		if (val > (adj->upper - adj->page_size))
+			val = adj->upper - adj->page_size;
+		if (val < adj->lower)
+			val = adj->lower;
+		if (val != adj->value)
+			gtk_adjustment_set_value(adj, val);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW_DATA *win)
+{
+	gboolean handled = TRUE;
+	GtkTextIter iter;
+	DOCUMENT *doc = win->data;
+	gint win_w, win_h;
+	
+	gdk_drawable_get_size(gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT), &win_w, &win_h);
+	UNUSED(text_view);
+	switch (event->keyval)
+	{
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
+		gtk_text_buffer_get_iter_at_mark(win->text_buffer, &iter, win->curlink_mark);
+		handled = follow_if_link(win, &iter);
+		break;
+	case GDK_KEY_Left:
+		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
+			GoThisButton(doc, TO_PREV);
+		else if ((event->state & GDK_SHIFT_MASK))
+			hv_scroll_window(win, -win_w, 0);
+		else if ((event->state & GDK_CONTROL_MASK))
+			GoThisButton(doc, TO_PREV);
+		else
+			hv_scroll_window(win, -win->x_raster, 0);
+		break;
+	case GDK_KEY_Right:
+		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
+			GoThisButton(doc, TO_NEXT);
+		else if ((event->state & GDK_SHIFT_MASK))
+			hv_scroll_window(win, win_w, 0);
+		else if ((event->state & GDK_CONTROL_MASK))
+			GoThisButton(doc, TO_NEXT);
+		else
+			hv_scroll_window(win, win->x_raster, 0);
+		break;
+	case GDK_KEY_Up:
+		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
+			GoThisButton(doc, TO_PREV);
+		else if ((event->state & GDK_SHIFT_MASK))
+			hv_scroll_window(win, 0, -win_h);
+		else if ((event->state & GDK_CONTROL_MASK))
+			hv_scroll_window(win, 0, -win_h);
+		else
+			hv_scroll_window(win, 0, -win->y_raster);
+		break;
+	case GDK_KEY_Down:
+		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
+			GoThisButton(doc, TO_NEXT);
+		else if ((event->state & GDK_SHIFT_MASK))
+			hv_scroll_window(win, 0, win_h);
+		else if ((event->state & GDK_CONTROL_MASK))
+			hv_scroll_window(win, 0, win_h);
+		else
+			hv_scroll_window(win, 0, win->y_raster);
+		break;
+	case GDK_KEY_KP_Subtract:
+		GoThisButton(doc, TO_PREV);
+		break;
+	case GDK_KEY_KP_Add:
+		GoThisButton(doc, TO_NEXT);
+		break;
+	case GDK_KEY_KP_Divide:
+		GoThisButton(doc, TO_PREV_PHYS);
+		break;
+	case GDK_KEY_KP_Multiply:
+		GoThisButton(doc, TO_NEXT_PHYS);
+		break;
+	case GDK_KEY_Help:
+		GotoHelp(doc);
+		break;
+	case GDK_KEY_Escape:
+	case GDK_KEY_BackSpace:
+		if (!(doc->buttons.searchbox))
+			GoThisButton(doc, TO_BACK);
+		else
+			handled = FALSE;
+		break;
+	case GDK_KEY_Undo:
+		GoThisButton(doc, TO_BACK);
+		break;
+	case GDK_KEY_Page_Up:			/* already handled by GtkTextView */
+	case GDK_KEY_Page_Down:			/* already handled by GtkTextView */
+	case GDK_KEY_End:				/* already handled by GtkTextView */
+	case GDK_KEY_Home:				/* already handled by GtkTextView */
+	case GDK_KEY_F1:				/* already handled by actions */
+	case GDK_KEY_F2:				/* already handled by actions */
+	case GDK_KEY_F3:				/* already handled by actions */
+	case GDK_KEY_F4:				/* already handled by actions */
+	case GDK_KEY_F5:				/* already handled by actions */
+	case GDK_KEY_F6:				/* already handled by actions */
+	case GDK_KEY_F7:				/* already handled by actions */
+	case GDK_KEY_F8:				/* already handled by actions */
+	case GDK_KEY_F9:				/* already handled by actions */
+	case GDK_KEY_F10:				/* already handled by actions */
+	default:
+		handled = FALSE;
+		break;
+	}
+	if (!handled)
+		handled = AutolocatorKey(doc, event);
+	return handled;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void populate_popup(GtkWidget *text_view, GtkMenu *menu, WINDOW_DATA *win)
+{
+	GList *children, *child;
+	
+	UNUSED(text_view);
+	UNUSED(win);
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (child = children; child; child = child->next)
+	{
+		GtkMenuItem *item = child->data;
+		const char *signal = g_object_get_data(G_OBJECT(item), "gtk-signal");
+		
+		if (signal && strcmp(signal, "paste-clipboard") == 0)
+		{
+			/*
+			 * the default popup disables this entry, because the textbuffer
+			 * is not editable. Fix that.
+			 */
+			gtk_widget_set_sensitive(GTK_WIDGET(item), TRUE);
+		}
+		if (signal && strcmp(signal, "copy-clipboard") == 0)
+		{
+			/*
+			 * the default popup disables this entry if there is no selection.
+			 * Fix that.
+			 */
+			gtk_widget_set_sensitive(GTK_WIDGET(item), TRUE);
+		}
+		if (signal && strcmp(signal, "cut-clipboard") == 0)
+		{
+			/* we don't need this entry */
+			gtk_widget_hide(GTK_WIDGET(item));
+		}
+	}
+	g_list_free(children);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void paste_clipboard(GtkWidget *text_view, WINDOW_DATA *win)
+{
+	UNUSED(text_view);
+	BlockOperation(win->data, CO_PASTE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_select_all(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	BlockOperation(win->data, CO_SELECT_ALL);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_paste_clipboard(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	BlockOperation(win->data, CO_PASTE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void copy_clipboard(GtkWidget *text_view, WINDOW_DATA *win)
+{
+	UNUSED(text_view);
+	BlockOperation(win->data, CO_COPY);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_copy_clipboard(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	BlockOperation(win->data, CO_COPY);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_search(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	BlockOperation(win->data, CO_SEARCH);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_search_again(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	BlockOperation(win->data, CO_SEARCH_AGAIN);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1054,6 +1320,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "OptionsMenu",        NULL,      N_("_Options"), 0, 0, 0 },
 	{ "HelpMenu",           NULL,      N_("_Help"), 0, 0, 0 },
 	{ "RecentMenu",         NULL,      N_("Open _Recent"), 0, 0, 0 },
+	{ "BookmarksMenu",      "hv-bookmarks",          N_("Bookmarks"),                       NULL,          N_("Show list of bookmarks"),                        G_CALLBACK(on_bookmarks_menu) },
 	/*
 	 * menu entries
 	 * name,                stock id,                label                                  accelerator    tooltip                                              callback
@@ -1061,26 +1328,45 @@ static GtkActionEntry const action_entries[] = {
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_select_source) },
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
+	{ "remarker",           NULL,                    N_("_Run Remarker"),                   "<Alt>R",      NULL,                                                G_CALLBACK(on_remarker) },
 	{ "close",              "gtk-close",             N_("_Close"),                          "<Ctrl>U",     NULL,                                                G_CALLBACK(on_close) },
 	{ "quit",               "gtk-quit",              N_("_Quit"),                           "<Ctrl>Q",     NULL,                                                G_CALLBACK(on_quit) },
 
+	{ "edit-copy",          "gtk-copy",              N_("_Copy"),                           "<Ctrl>C",     NULL,                                                G_CALLBACK(on_copy_clipboard) },
+	{ "edit-paste",         "gtk-paste",             N_("_Paste"),                          "<Ctrl>V",     NULL,                                                G_CALLBACK(on_paste_clipboard) },
+	{ "edit-find",          "gtk-find",              N_("_Find"),                           "<Ctrl>F",     NULL,                                                G_CALLBACK(on_search) },
+	{ "edit-find-next",     "gtk-find-next",         N_("Find _Next"),                      "<Ctrl>G",     NULL,                                                G_CALLBACK(on_search_again) },
+	{ "edit-select-all",    "gtk-select-all",        N_("Select _All"),                     "<Ctrl>A",     NULL,                                                G_CALLBACK(on_select_all) },
+
 	{ "back",               "hv-back",               N_("Back one page"),                   NULL,          N_("Back one page"),                                 G_CALLBACK(on_back) },
-	{ "clearstack",         NULL,                    N_("Clear stack"),                     NULL,          N_("Clear stack"),                                   G_CALLBACK(on_clearstack) },
+	{ "clearstack",         NULL,                    N_("Clear stack"),                     "<Alt>E",      N_("Clear stack"),                                   G_CALLBACK(on_clearstack) },
 	{ "history",            "hv-history",            N_("History"),                         NULL,          N_("Show history of pages"),                         G_CALLBACK(on_history) },
 	{ "bookmarks",          "hv-bookmarks",          N_("Bookmarks"),                       NULL,          N_("Show list of bookmarks"),                        G_CALLBACK(on_bookmarks) },
 	{ "prevphyspage",       "hv-prevphys",           N_("Previous physical page"),          NULL,          N_("Goto previous physical page"),                   G_CALLBACK(on_prevphys) },
 	{ "prevlogpage",        "hv-prev",               N_("Previous logical page"),           NULL,          N_("Goto previous page"),                            G_CALLBACK(on_prev) },
-	{ "toc",                "hv-toc",                N_("Contents"),                        NULL,          N_("Go up one page"),                                G_CALLBACK(on_toc) },
+	{ "toc",                "hv-toc",                N_("Contents"),                        "<Alt>T",      N_("Go up one page"),                                G_CALLBACK(on_toc) },
 	{ "nextlogpage",        "hv-next",               N_("Next logical page"),               NULL,          N_("Goto next page"),                                G_CALLBACK(on_next) },
 	{ "nextphyspage",       "hv-nextphys",           N_("Next physical page"),              NULL,          N_("Goto next physical page"),                       G_CALLBACK(on_nextphys) },
 	{ "firstpage",          "hv-first",              N_("First page"),                      NULL,          N_("Goto first page"),                               G_CALLBACK(on_first) },
 	{ "lastpage",           "hv-last",               N_("Last page"),                       NULL,          N_("Goto last page"),                                G_CALLBACK(on_last) },
-	{ "index",              "hv-index",              N_("Index"),                           NULL,          N_("Goto index page"),                               G_CALLBACK(on_index) },
-	{ "catalog",            "hv-catalog",            N_("Catalog"),                         NULL,          N_("Show catalog of hypertexts"),                    G_CALLBACK(on_catalog) },
+	{ "index",              "hv-index",              N_("Index"),                           "<Alt>X",      N_("Goto index page"),                               G_CALLBACK(on_index) },
+	{ "catalog",            "hv-catalog",            N_("Catalog"),                         "<Alt>K",      N_("Show catalog of hypertexts"),                    G_CALLBACK(on_catalog) },
+	{ "defaultfile",        NULL,                    N_("Default file"),                    "<Alt>D",      N_("Show default file"),                             G_CALLBACK(on_defaultfile) },
 	{ "xref",               "hv-xref",               N_("References"),                      NULL,          N_("Show list of cross references"),                 G_CALLBACK(on_xref) },
 	{ "help",               "hv-help",               N_("Show help page"),                  NULL,          N_("Show help page"),                                G_CALLBACK(on_help) },
 
-	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Ctrl>Z",     NULL,                                                G_CALLBACK(on_font_select) },
+	{ "bookmark-1",         NULL,                    N_("free"),                            "F1",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-2",         NULL,                    N_("free"),                            "F2",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-3",         NULL,                    N_("free"),                            "F3",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-4",         NULL,                    N_("free"),                            "F4",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-5",         NULL,                    N_("free"),                            "F5",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-6",         NULL,                    N_("free"),                            "F6",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-7",         NULL,                    N_("free"),                            "F7",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-8",         NULL,                    N_("free"),                            "F8",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-9",         NULL,                    N_("free"),                            "F9",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-10",        NULL,                    N_("free"),                            "F10",         N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+
+	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Alt>Z",      NULL,                                                G_CALLBACK(on_font_select) },
 	{ "selectcolors",       NULL,                    N_("_Colors..."),                      NULL,          NULL,                                                G_CALLBACK(on_color_select) },
 	{ "outputconfig",       NULL,                    N_("_Output..."),                      NULL,          NULL,                                                G_CALLBACK(on_output_settings) },
 	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    NULL,          NULL,                                                G_CALLBACK(on_preferences) },
@@ -1091,87 +1377,112 @@ static GtkActionEntry const action_entries[] = {
 };
 
 static GtkToggleActionEntry const toggle_action_entries[] = {
-	{ "altfont",            NULL,                    N_("_Alternative font"),               "<Ctrl><Shift>Z", NULL,                                             G_CALLBACK(on_switch_font), FALSE },
+	{ "altfont",            NULL,                    N_("_Alternative font"),               "<Ctrl>Z",     NULL,                                             G_CALLBACK(on_switch_font), FALSE },
 	{ "expandspaces",       NULL,                    N_("_Expand multiple spaces"),         "<Ctrl>L",     NULL,                                                G_CALLBACK(on_expand_spaces), FALSE },
 	{ "scalebitmaps",       NULL,                    N_("_Scale bitmaps"),                  "<Ctrl>B",     NULL,                                                G_CALLBACK(on_scale_bitmaps), FALSE },
 };
 
 static char const ui_info[] =
-"<ui>"
-"  <menubar name='MenuBar'>"
-"    <menu action='FileMenu'>"
-"      <menuitem action='open'/>"
-"      <separator/>"
-"      <menuitem action='save'/>"
-"      <separator/>"
-"      <menuitem action='recent' />"
-"      <separator/>"
-"      <menuitem action='info'/>"
-"      <separator/>"
-"      <menuitem action='close'/>"
-"      <menuitem action='quit'/>"
-"    </menu>"
-"    <menu action='NavigateMenu'>"
-"      <menuitem action='prevlogpage'/>"
-"      <menuitem action='nextlogpage'/>"
-"      <separator/>"
-"      <menuitem action='prevphyspage'/>"
-"      <menuitem action='nextphyspage'/>"
-"      <separator/>"
-"      <menuitem action='firstpage'/>"
-"      <menuitem action='lastpage'/>"
-"      <separator/>"
-"      <menuitem action='toc'/>"
-"      <menuitem action='index'/>"
-"      <menuitem action='help'/>"
-"      <separator/>"
-"      <menuitem action='back'/>"
-"      <menuitem action='clearstack'/>"
-"    </menu>"
-"    <menu action='OptionsMenu'>"
-"      <menuitem action='selectfont'/>"
-"      <menuitem action='selectcolors'/>"
-"      <separator/>"
-"      <menuitem action='outputconfig'/>"
-"      <menuitem action='outputconfig'/>"
-"      <separator/>"
-"      <menuitem action='altfont'/>"
-"      <menuitem action='expandspaces'/>"
-"      <menuitem action='scalebitmaps'/>"
-"      <separator/>"
-"      <menuitem action='preferences'/>"
-"    </menu>"
-"    <menu action='HelpMenu'>"
-"      <menuitem action='helpcontents'/>"
-"      <menuitem action='helpindex'/>"
-"      <separator/>"
-"      <menuitem action='about'/>"
-"    </menu>"
-"  </menubar>"
-"  <toolbar name='ToolBar'>"
-"    <toolitem action='back'/>"
-"    <toolitem action='history'/>"
-"    <toolitem action='bookmarks'/>"
-"    <separator/>"
-"    <toolitem action='firstpage'/>"
-"    <toolitem action='prevphyspage'/>"
-"    <toolitem action='prevlogpage'/>"
-"    <toolitem action='toc'/>"
-"    <toolitem action='nextlogpage'/>"
-"    <toolitem action='nextphyspage'/>"
-"    <toolitem action='lastpage'/>"
-"    <separator/>"
-"    <toolitem action='index'/>"
-"    <toolitem action='catalog'/>"
-"    <toolitem action='xref'/>"
-"    <toolitem action='help'/>"
-"    <separator/>"
-"    <toolitem action='info'/>"
-"    <toolitem action='open'/>"
-"    <toolitem action='save'/>"
-"    <separator/>"
-"  </toolbar>"
-"</ui>";
+"<ui>\n"
+"  <menubar name='MenuBar'>\n"
+"    <menu action='FileMenu'>\n"
+"      <menuitem action='open'/>\n"
+"      <separator/>\n"
+"      <menuitem action='save'/>\n"
+"      <separator/>\n"
+"      <menuitem action='catalog' />\n"
+"      <menuitem action='defaultfile' />\n"
+"      <menuitem action='remarker' />\n"
+"      <separator/>\n"
+"      <menuitem action='recent' />\n"
+"      <separator/>\n"
+"      <menuitem action='info'/>\n"
+"      <separator/>\n"
+"      <menuitem action='close'/>\n"
+"      <menuitem action='quit'/>\n"
+"    </menu>\n"
+"    <menu action='EditMenu'>\n"
+"      <menuitem action='edit-select-all'/>\n"
+"      <menuitem action='edit-copy'/>\n"
+"      <menuitem action='edit-paste'/>\n"
+"      <separator/>\n"
+"      <menuitem action='edit-find'/>\n"
+"      <menuitem action='edit-find-next'/>\n"
+"    </menu>\n"
+"    <menu action='NavigateMenu'>\n"
+"      <menuitem action='prevlogpage'/>\n"
+"      <menuitem action='nextlogpage'/>\n"
+"      <separator/>\n"
+"      <menuitem action='prevphyspage'/>\n"
+"      <menuitem action='nextphyspage'/>\n"
+"      <separator/>\n"
+"      <menuitem action='firstpage'/>\n"
+"      <menuitem action='lastpage'/>\n"
+"      <separator/>\n"
+"      <menuitem action='toc'/>\n"
+"      <menuitem action='index'/>\n"
+"      <menuitem action='help'/>\n"
+"      <separator/>\n"
+"      <menu action='BookmarksMenu'>\n"
+"        <menuitem action='bookmark-1'/>\n"
+"        <menuitem action='bookmark-2'/>\n"
+"        <menuitem action='bookmark-3'/>\n"
+"        <menuitem action='bookmark-4'/>\n"
+"        <menuitem action='bookmark-5'/>\n"
+"        <menuitem action='bookmark-6'/>\n"
+"        <menuitem action='bookmark-7'/>\n"
+"        <menuitem action='bookmark-8'/>\n"
+"        <menuitem action='bookmark-9'/>\n"
+"        <menuitem action='bookmark-10'/>\n"
+"      </menu>\n"
+"      <separator/>\n"
+"      <menuitem action='back'/>\n"
+"      <menuitem action='clearstack'/>\n"
+"    </menu>\n"
+"    <menu action='OptionsMenu'>\n"
+"      <menuitem action='selectfont'/>\n"
+"      <menuitem action='selectcolors'/>\n"
+"      <separator/>\n"
+"      <menuitem action='outputconfig'/>\n"
+"      <menuitem action='outputconfig'/>\n"
+"      <separator/>\n"
+"      <menuitem action='altfont'/>\n"
+"      <menuitem action='expandspaces'/>\n"
+"      <menuitem action='scalebitmaps'/>\n"
+"      <separator/>\n"
+"      <menuitem action='preferences'/>\n"
+"    </menu>\n"
+"    <menu action='HelpMenu'>\n"
+"      <menuitem action='helpcontents'/>\n"
+"      <menuitem action='helpindex'/>\n"
+"      <separator/>\n"
+"      <menuitem action='about'/>\n"
+"    </menu>\n"
+"  </menubar>\n"
+"  <toolbar name='ToolBar'>\n"
+"    <toolitem action='back'/>\n"
+"    <toolitem action='history'/>\n"
+"    <toolitem action='bookmarks'/>\n"
+"    <separator/>\n"
+"    <toolitem action='firstpage'/>\n"
+"    <toolitem action='prevphyspage'/>\n"
+"    <toolitem action='prevlogpage'/>\n"
+"    <toolitem action='toc'/>\n"
+"    <toolitem action='nextlogpage'/>\n"
+"    <toolitem action='nextphyspage'/>\n"
+"    <toolitem action='lastpage'/>\n"
+"    <separator/>\n"
+"    <toolitem action='index'/>\n"
+"    <toolitem action='catalog'/>\n"
+"    <toolitem action='xref'/>\n"
+"    <toolitem action='help'/>\n"
+"    <separator/>\n"
+"    <toolitem action='info'/>\n"
+"    <toolitem action='open'/>\n"
+"    <toolitem action='save'/>\n"
+"    <separator/>\n"
+"  </toolbar>\n"
+"</ui>\n";
 
 WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 {
@@ -1245,6 +1556,9 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		win->history_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/recent");
 		win->history_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->history_menu));
 		
+		win->bookmarks_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/NavigateMenu/BookmarksMenu");
+		win->bookmarks_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->bookmarks_menu));
+		
 		tool_box = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), tool_box, FALSE, FALSE, 0);
 		gtk_widget_show(tool_box);
@@ -1279,8 +1593,9 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		gtk_widget_show_all(win->toolbar);
 		
 		win->searchbox = gtk_hbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(vbox), win->searchbox, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), win->searchbox, FALSE, TRUE, 0);
 		win->searchentry = gtk_entry_new();
+		gtk_widget_show(win->searchentry);
 		gtk_box_pack_start(GTK_BOX(win->searchbox), win->searchentry, TRUE, TRUE, 0);
 		win->strnotfound = gtk_label_new(NULL);
 		gtk_label_set_markup(GTK_LABEL(win->strnotfound), _("<span color=\"red\">not found!</span>"));
@@ -1315,12 +1630,27 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(win->text_view), GTK_WRAP_NONE); 
-	gtk_widget_set_can_focus(win->text_view, FALSE);
+	gtk_widget_set_can_focus(win->text_view, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
 
+	/*
+	 * we don't want error beeps from unhandled key presses
+	 */
+	{
+		GtkSettings *settings;
+	
+		settings = gtk_widget_get_settings(win->text_view);
+		if (settings)
+			g_object_set(settings, "gtk-error-bell", FALSE, NULL);
+	}
+	
 	g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
 	g_signal_connect(G_OBJECT(win->text_view), "event-after", G_CALLBACK(event_after), win);
+	g_signal_connect(G_OBJECT(win->text_view), "key-press-event", G_CALLBACK(key_press_event), win);
+	g_signal_connect(G_OBJECT(win->text_view), "populate-popup", G_CALLBACK(populate_popup), win);
+	g_signal_connect(G_OBJECT(win->text_view), "paste-clipboard", G_CALLBACK(paste_clipboard), win);
+	g_signal_connect(G_OBJECT(win->text_view), "copy-clipboard", G_CALLBACK(copy_clipboard), win);
 	
     set_font_attributes(win);
 	
@@ -1395,7 +1725,7 @@ long hv_win_topline(WINDOW_DATA *win)
 /*
  * scroll window such that <line> is displayed at the top
  */
-static void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
+void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 {
 	GdkWindow *window;
 	GtkTextIter iter;

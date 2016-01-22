@@ -480,16 +480,24 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			} else if (event->kstate & KbCTRL)
 			{
 				if (ascii == 'A')
+				{
 					BlockOperation(doc, CO_SELECT_ALL);
-				else if (ascii == 'C')
+				} else if (ascii == 'C')
+				{
 					BlockOperation(doc, CO_COPY);
-				else if (ascii == 'I')
+				} else if (ascii == 'I')
+				{
 					ProgrammInfos(doc);
-				else if (ascii == 'F')
+				} else if (ascii == 'F')
+				{
 					BlockOperation(doc, CO_SEARCH);
-				else if (ascii == 'O')
+				} else if (ascii == 'G')
+				{
+					BlockOperation(doc, CO_SEARCH_AGAIN);
+				} else if (ascii == 'O')
+				{
 					ToolbarClick(doc, TO_LOAD);
-				else if (ascii == 'V')
+				} else if (ascii == 'V')
 				{
 					if (doc->buttons.searchbox)
 						AutoLocatorPaste(doc);
@@ -509,13 +517,18 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	
 					ScrollWindow(win, NULL, &val);
 				} else if (scan == KbLEFT)
+				{
 					ToolbarClick(doc, TO_PREV);
-				else if (scan == KbRIGHT)
+				} else if (scan == KbRIGHT)
+				{
 					ToolbarClick(doc, TO_NEXT);
-				else if (scan >= KbF1 && scan <= KbF10)
+				} else if (scan >= KbF1 && scan <= KbF10)
+				{
 					MarkerShow(doc, scan - KbF1, TRUE);
-				else
+				} else
+				{
 					event->mwhich |= MU_KEYBD;
+				}
 			} else if (event->kstate & KbNUM)
 			{
 				if (ascii == '-')
@@ -643,27 +656,23 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	
 			if (event->mbutton & 1)			/* left button */
 			{
+				EVNTDATA d;
+
 				graf_mkstate(&event->mx, &event->my, &event->mbutton, &event->kstate);
 	
 				if (gl_profile.viewer.check_time)
 					CheckFiledate(doc);
 	
+				d.x = event->mx;
+				d.y = event->my;
+				d.bstate = event->mbutton;
+				d.kstate = event->kstate;
 				if ((event->mbutton & 1) ||		/* button still pressed? */
 					(event->kstate & KbSHIFT))	/* or shift pressee? */
 				{
-					EVNTDATA d;
-					d.x = event->mx;
-					d.y = event->my;
-					d.bstate = event->mbutton;
-					d.kstate = event->kstate;
 					MouseSelection(doc, &d);
 				} else
 				{
-					EVNTDATA d;
-					d.x = event->mx;
-					d.y = event->my;
-					d.bstate = event->mbutton;
-					d.kstate = event->kstate;
 					RemoveSelection(doc);
 					if (doc->type == HYP_FT_HYP)
 						HypClick(doc, &d);

@@ -19,16 +19,17 @@ static void ApplyFont(void)
 		/* if (win->type == WIN_WINDOW) */
 		{
 			gboolean ret;
+			long topline;
 			
 			doc = win->data;
 			/* reload page or file */
 
-			win->docsize.y = hv_win_topline(win);
+			topline = hv_win_topline(win);
 			ret = doc->gotoNodeProc(doc, NULL, doc->getNodeProc(doc));
 			
 			if (ret)
 			{
-				doc->start_line = win->docsize.y;
+				doc->start_line = topline;
 
 				ReInitWindow(doc);
 			}
@@ -49,4 +50,12 @@ void SwitchFont(DOCUMENT *doc)
 		sel_font_name = gl_profile.viewer.font_name;
 	}
 	ApplyFont();
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void SelectFont(DOCUMENT *doc)
+{
+	UNUSED(doc);
+	printf("NYI: SelectFont\n");
 }

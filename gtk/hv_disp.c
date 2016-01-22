@@ -280,6 +280,7 @@ void HypPrepNode(DOCUMENT *doc)
 		at_bol = FALSE; \
 	}
 
+	RemoveSearchBox(doc);
 	ToolbarUpdate(doc, FALSE);
 	
 	end = node->end;
@@ -338,6 +339,11 @@ void HypPrepNode(DOCUMENT *doc)
 	if (info.attrstart == NULL)
 		info.attrstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-attrstart", &info.iter, TRUE);
 	gtk_text_buffer_move_mark(info.text_buffer, info.attrstart, &info.iter);
+	win->curlink_mark = gtk_text_buffer_get_mark(info.text_buffer, "hv-curlink");
+	if (win->curlink_mark == NULL)
+		win->curlink_mark = gtk_text_buffer_create_mark(info.text_buffer, "hv-curlink", &info.iter, TRUE);
+	else
+		gtk_text_buffer_move_mark(info.text_buffer, win->curlink_mark, &info.iter);
 
 	textstart = src;
 	info.textattr = 0;

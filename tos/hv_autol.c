@@ -136,7 +136,7 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 /*** ---------------------------------------------------------------------- ***/
 
 /* add a new character to the Autolocator and start search */
-short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
+gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 {
 	WINDOW_DATA *win = doc->window;
 	char *ptr;

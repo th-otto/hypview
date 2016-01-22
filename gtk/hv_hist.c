@@ -24,7 +24,7 @@ void AddHistoryEntry(WINDOW_DATA *win)
 	new_entry->win = win;
 	new_entry->doc = doc;
 	new_entry->node = doc->getNodeProc(doc);
-	new_entry->line = 0; /* YYY win->docsize.y */
+	new_entry->line = hv_win_topline(win);
 	new_entry->next = history;
 	new_entry->title = g_strdup(win->title);
 

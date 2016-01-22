@@ -119,7 +119,7 @@ gboolean glib_ensure_version(void);
 /*
  * for debugging
  */ 
-void g_object_list_properties(const char *name, GObject *obj);
+void g_object_list_properties(const char *name, void *obj);
 
 /*
  * Gtk 2.18 already has GSEAL on some classes,

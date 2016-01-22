@@ -1,8 +1,27 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
+#include "gdkkeysyms.h"
 
 
 #define AUTOLOC_SIZE		26
+
+#define IsModifierKey(key) \
+	((key) == GDK_KEY_Shift_L || \
+	 (key) == GDK_KEY_Shift_R || \
+	 (key) == GDK_KEY_Control_L || \
+	 (key) == GDK_KEY_Control_R || \
+	 (key) == GDK_KEY_Caps_Lock || \
+	 (key) == GDK_KEY_Shift_Lock || \
+	 (key) == GDK_KEY_Meta_L || \
+	 (key) == GDK_KEY_Meta_R || \
+	 (key) == GDK_KEY_Alt_L || \
+	 (key) == GDK_KEY_Alt_R || \
+	 (key) == GDK_KEY_Super_L || \
+	 (key) == GDK_KEY_Super_R || \
+	 (key) == GDK_KEY_Hyper_L || \
+	 (key) == GDK_KEY_Hyper_R || \
+	 ((key) >= GDK_KEY_ISO_Lock && (key) <= GDK_KEY_ISO_Last_Group_Lock) || \
+	 (key) == GDK_KEY_Scroll_Lock)
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -63,10 +82,10 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 
 	if (line >= 0)
 	{
-		if (line != win->docsize.y)
+		long topline = hv_win_topline(win);
+		if (line != topline)
 		{
-			win->docsize.y = line;
-			SendRedraw(win);
+			hv_win_scroll_to_line(win, line);
 		}
 	} else
 	{
@@ -78,33 +97,39 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 /*** ---------------------------------------------------------------------- ***/
 
 /* add a new character to the Autolocator and start search */
-short AutolocatorKey(DOCUMENT *doc, GdkModifierType state, int ascii)
+gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 {
 	WINDOW_DATA *win = doc->window;
 	char *ptr;
-	long line = win->docsize.y;
+	long line = hv_win_topline(win);
 
-	if (!ascii)
+	if (!event->keyval)
+		return FALSE;
+	if (IsModifierKey(event->keyval))
 		return FALSE;
 
 	ptr = AutolocatorInit(doc);
 	doc->autolocator_dir = 1;
 
-	if (ascii == 8)						/* Backspace */
+	switch (event->keyval)
 	{
+	case GDK_KEY_BackSpace:			/* Backspace */
 		if (ptr > doc->autolocator)
 			ptr--;
 		*ptr = 0;
-	} else if (ascii == 13)				/* Return */
-	{
-		if (state & GDK_SHIFT_MASK)
+		break;
+	case GDK_KEY_KP_Enter:
+	case GDK_KEY_Return:			/* Return */
+		if (event->state & GDK_SHIFT_MASK)
 		{
 			doc->autolocator_dir = 0;
 			line--;
 		} else
+		{
 			line++;
-	} else if (ascii == 27)				/* Escape */
-	{
+		}
+		break;
+	case GDK_KEY_Escape:			/* Escape */
 		if (ptr > doc->autolocator)
 		{
 			ptr = doc->autolocator;
@@ -113,23 +138,27 @@ short AutolocatorKey(DOCUMENT *doc, GdkModifierType state, int ascii)
 		{
 			RemoveSearchBox(doc);
 		}
-	} else if (ascii == ' ')
-	{
+		break;
+	case GDK_KEY_space:
 		/* ignore space at start of string */
 		if (ptr != doc->autolocator)
 			*ptr++ = ' ';
 		*ptr = 0;
-	} else if (ascii > ' ')
-	{
-		if (ptr - doc->autolocator < AUTOLOC_SIZE)
+		break;
+	default:
+		if (event->keyval > ' ')
 		{
-			*ptr++ = ascii;
-			*ptr = 0;
-		} else
-		{
-			--ptr;
-			*ptr = ascii;
+			if (ptr - doc->autolocator < AUTOLOC_SIZE)
+			{
+				*ptr++ = event->keyval;
+				*ptr = 0;
+			} else
+			{
+				--ptr;
+				*ptr = event->keyval;
+			}
 		}
+		break;
 	}
 
 	ToolbarUpdate(doc, FALSE);
@@ -144,5 +173,6 @@ short AutolocatorKey(DOCUMENT *doc, GdkModifierType state, int ascii)
 void AutoLocatorPaste(DOCUMENT *doc)
 {
 	/* YYY */
-	UNUSED(doc);
+	if (!doc->buttons.searchbox)
+		return;
 }

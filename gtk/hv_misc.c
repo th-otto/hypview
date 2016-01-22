@@ -6,19 +6,7 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void warning_dialog_dismiss_cb(GtkWidget *widget, gpointer user_data)
-{
-	GtkWidget *shell = GTK_WIDGET(widget);
-
-	UNUSED(user_data);
-	shell = gtk_widget_get_toplevel(shell);
-	gtk_widget_destroy(shell);
-	check_toplevels(shell);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-void show_dialog(GtkWidget *parent, const char *type, const char *message, void (*ok_fn)(GtkWidget *widget, gpointer user_data), gpointer user_data)
+gboolean show_dialog(GtkWidget *parent, const char *type, const char *message, gboolean can_cancel)
 {
 	char *msg = g_strdup(message);
 	char *head;
@@ -27,6 +15,7 @@ void show_dialog(GtkWidget *parent, const char *type, const char *message, void 
 	GtkWidget *ok = 0;
 	GtkWidget *cancel = 0;
 	int center = 100;
+	int resp;
 	
 	UNUSED(type);
 	while (parent && !gtk_widget_get_window(parent))
@@ -36,7 +25,7 @@ void show_dialog(GtkWidget *parent, const char *type, const char *message, void 
 	{
 		fprintf(stderr, _("%s: too early for dialog?\n"), gl_program_name);
 		fprintf(stderr, "%s: %s\n", gl_program_name, message);
-		return;
+		return FALSE;
 	}
 
 	dialog = gtk_dialog_new();
@@ -71,18 +60,17 @@ void show_dialog(GtkWidget *parent, const char *type, const char *message, void 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), label, TRUE, TRUE, 0);
 	gtk_widget_show(label);
 
-	label = gtk_hbutton_box_new();
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-					   label, TRUE, TRUE, 0);
-
-	if (ok_fn != NULL)
+	if (can_cancel)
 	{
-		cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-		gtk_container_add(GTK_CONTAINER(label), cancel);
+		cancel = gtk_button_new_cancel();
+		gtk_widget_set_can_default(cancel, TRUE);
+		gtk_widget_show(cancel);
+		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), cancel, GTK_RESPONSE_CANCEL);
+		g_signal_connect_swapped(G_OBJECT(cancel), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 	}
 
-	ok = gtk_button_new_from_stock(GTK_STOCK_OK);
-	gtk_container_add(GTK_CONTAINER(label), ok);
+	ok = gtk_button_new_ok();
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), ok, GTK_RESPONSE_OK);
 
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 10);
@@ -91,28 +79,19 @@ void show_dialog(GtkWidget *parent, const char *type, const char *message, void 
 	gtk_widget_show(ok);
 	gtk_widget_grab_focus(ok);
 
-	if (cancel)
-	{
-		gtk_widget_set_can_default(cancel, TRUE);
-		gtk_widget_show(cancel);
-	}
-	gtk_widget_show(label);
 	gtk_widget_show(dialog);
 
-	if (ok_fn != NULL)
-	{
-		g_signal_connect(G_OBJECT(ok), "clicked", G_CALLBACK(ok_fn), user_data);
-		g_signal_connect(G_OBJECT(cancel), "clicked", G_CALLBACK(warning_dialog_dismiss_cb), user_data);
-	} else
-	{
-		g_signal_connect(G_OBJECT(ok), "clicked", G_CALLBACK(warning_dialog_dismiss_cb), user_data);
-	}
+	g_signal_connect_swapped(G_OBJECT(ok), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
 
 	gtk_window_present(GTK_WINDOW(dialog));
 	g_free(msg);
-	gtk_dialog_run(GTK_DIALOG(dialog));
+	resp = gtk_dialog_run(GTK_DIALOG(dialog));
+	return resp == GTK_RESPONSE_ACCEPT ||
+		   resp == GTK_RESPONSE_OK ||
+		   resp == GTK_RESPONSE_YES ||
+		   resp == GTK_RESPONSE_APPLY;
 }
 
 /******************************************************************************/
@@ -221,8 +200,9 @@ static gboolean list_root_props(const char *name, GObject *obj, GType type, int 
 
 /*** ---------------------------------------------------------------------- ***/
 
-void g_object_list_properties(const char *name, GObject *obj)
+void g_object_list_properties(const char *name, void *_obj)
 {
+	GObject *obj = (GObject *)_obj;
 	GType type = G_OBJECT_TYPE(obj);
 	int indent = 0;
 	
@@ -230,4 +210,12 @@ void g_object_list_properties(const char *name, GObject *obj)
 	{
 		g_object_list_properties_for_type(name, obj, type, 0);
 	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_recent_add(const char *path)
+{
+	/* YYY */
+	UNUSED(path);
 }

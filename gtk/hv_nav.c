@@ -274,6 +274,15 @@ void GotoCatalog(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void GotoDefaultFile(WINDOW_DATA *win)
+{
+	char *filename = path_subst(gl_profile.viewer.default_file);
+	OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	g_free(filename);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void GoThisButton(DOCUMENT *doc, enum toolbutton obj)
 {
 	WINDOW_DATA *win = doc->window;

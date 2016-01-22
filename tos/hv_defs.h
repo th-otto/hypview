@@ -96,7 +96,7 @@ void DeleteLastHistory(HISTORY *entry);
 /*
  * hv_autol.c
  */
-short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii);
+gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii);
 void AutoLocatorPaste(DOCUMENT *doc);
 
 
@@ -120,6 +120,7 @@ void SelectFont(DOCUMENT *doc);
 /*
  * hv_block.c
  */
+char *GetScrapPath(gboolean clear);
 void BlockOperation(DOCUMENT *doc, short num);
 void BlockSelectAll(DOCUMENT *doc, BLOCK *b);
 void BlockCopy(DOCUMENT *doc);
@@ -147,8 +148,6 @@ void ProgrammInfos(DOCUMENT *doc);
  * hv_hfind.c
  */
 void Hypfind(DOCUMENT *doc);
-
-char *GetScrapPath(gboolean clear);
 
 
 /*

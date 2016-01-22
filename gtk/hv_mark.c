@@ -47,8 +47,7 @@ void MarkerSave(DOCUMENT *doc, short num)
 		return;
 
 	marken[num].node_num = doc->getNodeProc(doc);
-	marken[num].line = 0; /* YYY: win->docsize.y */
-	UNUSED(win); /* YYY */
+	marken[num].line = hv_win_topline(win);
 	strncpy(marken[num].path, doc->path, PATH_LEN - 1);
 	marken[num].path[PATH_LEN - 1] = 0;
 
@@ -109,14 +108,17 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void marker_selected(GtkWidget *w, void *user_data)
+void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = (DOCUMENT *)user_data;
-	void *psel = g_object_get_data(G_OBJECT(w), "item-num");
-	int sel = (int)(intptr_t)psel;
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
+	const char *action_name = gtk_action_get_name(action);
+	int sel;
 	GdkModifierType mask;
 
+	if (action_name == NULL || strncmp(action_name, "bookmark-", 9) != 0)
+		return;
+	sel = (int)strtol(action_name + 9, NULL, 10) - 1;
+	printf("action %d %s\n", sel, action_name);
 	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
 	if (sel >= 0 && sel < MAX_MARKEN)
 	{
@@ -154,33 +156,44 @@ static void marker_selected(GtkWidget *w, void *user_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void MarkerUpdate(WINDOW_DATA *win)
+{
+	int i;
+	GtkWidget *menu = win->bookmarks_menu;
+	GList *children, *child;
+	
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	for (child = children, i = 0; child; child = child->next)
+	{
+		GtkMenuItem *item = child->data;
+		const char *name = gtk_widget_get_name(GTK_WIDGET(item));
+		if (strncmp(name, "bookmark-", 9) == 0)
+		{
+			if (i < MAX_MARKEN)
+				gtk_menu_item_set_label(item, marken[i].node_name);
+			i++;
+		}
+	}
+	g_list_free(children);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time)
 {
 	WINDOW_DATA *win = doc->window;
-	int i;
 	GtkWidget *menu;
 	struct popup_pos popup_pos;
 	
 	if (!win->m_buttons[TO_MEMORY])
 		return;
 	
-	menu = gtk_menu_new();
-	if (g_object_is_floating(menu))
-		g_object_ref_sink(menu);
-	
-	for (i = 0; i < MAX_MARKEN; i++)
-	{
-		GtkWidget *item = gtk_menu_item_new_with_label(marken[i].node_name);
-		g_object_set_data(G_OBJECT(item), "item-num", (void *)(intptr_t)i);
-		g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(marker_selected), doc);
-		gtk_widget_show(item);
-		gtk_menu_append(menu, item);
-	}
+	MarkerUpdate(win);
+	menu = win->bookmarks_menu;
 	
 	popup_pos.doc = doc;
 	popup_pos.obj = TO_MEMORY;
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
-	gtk_widget_unref(menu);
 }
 
 /*** ---------------------------------------------------------------------- ***/

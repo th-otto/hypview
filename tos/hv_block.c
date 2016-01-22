@@ -53,6 +53,9 @@ void BlockOperation(DOCUMENT *doc, short num)
 	case CO_SEARCH:
 		Hypfind(doc);
 		break;
+	case CO_SEARCH_AGAIN:
+		/* NYI */
+		break;
 	case CO_DELETE_STACK:
 		RemoveAllHistoryEntries(win);
 		ToolbarUpdate(doc, TRUE);
