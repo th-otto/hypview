@@ -30,7 +30,7 @@ typedef enum {
 typedef	void (*DOC_PROC1)(DOCUMENT *doc);
 typedef	hyp_nodenr (*DOC_GETNODEPROC)(DOCUMENT *doc);
 typedef	gboolean (*DOC_GOTOPROC)(DOCUMENT *doc, const char *chapter, hyp_nodenr node);
-typedef	long (*DOC_AUTOLOCPROC)(DOCUMENT *doc, long line);
+typedef	long (*DOC_AUTOLOCPROC)(DOCUMENT *doc, long line, const char *search);
 typedef	void (*DOC_GETCURSORPROC)(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 typedef	gboolean (*DOC_BLOCKPROC)(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
 typedef	void (*DOC_PREPNODEPROC)(DOCUMENT *doc);
@@ -81,7 +81,9 @@ struct _document_
 	DOC_GOTOPROC gotoNodeProc;  /* Document navigation function */
 	DOC_GETNODEPROC getNodeProc;/* Function to determine current node number */
 	DOC_AUTOLOCPROC autolocProc;/* Autolocator search function */
+#ifdef WITH_GUI_GEM
 	char *autolocator;          /* Autolocator search string */
+#endif
 	int autolocator_dir;        /* Autolocator direction (1 = down, else up) */
 	DOC_GETCURSORPROC getCursorProc;/* Cursor position function */
 	BLOCK selection;            /* Content of  selection */
@@ -135,7 +137,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle);
  *		Autoloc.c
  */
 char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line);
-long HypAutolocator(DOCUMENT *doc, long line);
+long HypAutolocator(DOCUMENT *doc, long line, const char *search);
 
 
 /*

@@ -3,8 +3,6 @@
 #include "gdkkeysyms.h"
 
 
-#define AUTOLOC_SIZE		26
-
 #define IsModifierKey(key) \
 	((key) == GDK_KEY_Shift_L || \
 	 (key) == GDK_KEY_Shift_R || \
@@ -31,34 +29,11 @@
  * Initialize and activate the autolocator.
  * Returns position of next character
  */
-static char *AutolocatorInit(DOCUMENT *doc)
+static void AutolocatorInit(DOCUMENT *doc)
 {
-	char *ptr;
-
-	/* memory already allocated? */
-	if (doc->autolocator == NULL)
-	{
-		ptr = g_new(char, AUTOLOC_SIZE);
-		if (ptr == NULL)
-		{
-			return NULL;
-		}
-		doc->autolocator = ptr;
-		ptr[AUTOLOC_SIZE - 1] = 0;
-		*ptr = 0;
-	} else
-	{
-		/* to end of string */
-		ptr = doc->autolocator;
-		while (*ptr)
-			ptr++;
-	}
-
 	/* search box already active? */
 	if (!doc->buttons.searchbox)
 		doc->buttons.searchbox = TRUE;
-
-	return ptr;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -68,16 +43,18 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 {
 	WINDOW_DATA *win = doc->window;
 	long line = start_line;
-
+	const char *search;
+	
 	if (!doc->buttons.searchbox)
 		return;
 
 	gtk_widget_hide(win->strnotfound);
 
 	/* if autolocator is not empty... */
-	if (*doc->autolocator)
+	search = gtk_entry_get_text(GTK_ENTRY(win->searchentry));
+	if (!empty(search))
 	{
-		line = doc->autolocProc(doc, start_line);
+		line = doc->autolocProc(doc, start_line, search);
 	}
 
 	if (line >= 0)
@@ -100,23 +77,27 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 {
 	WINDOW_DATA *win = doc->window;
-	char *ptr;
 	long line = hv_win_topline(win);
-
+	gint len;
+	
 	if (!event->keyval)
 		return FALSE;
 	if (IsModifierKey(event->keyval))
 		return FALSE;
 
-	ptr = AutolocatorInit(doc);
+	AutolocatorInit(doc);
 	doc->autolocator_dir = 1;
 
 	switch (event->keyval)
 	{
 	case GDK_KEY_BackSpace:			/* Backspace */
-		if (ptr > doc->autolocator)
-			ptr--;
-		*ptr = 0;
+		len = gtk_entry_get_text_length(GTK_ENTRY(win->searchentry));
+		if (len > 0)
+		{
+			char *txt = gtk_editable_get_chars(GTK_EDITABLE(win->searchentry), 0, len - 1);
+			gtk_entry_set_text(GTK_ENTRY(win->searchentry), txt);
+			g_free(txt);
+		}
 		break;
 	case GDK_KEY_KP_Enter:
 	case GDK_KEY_Return:			/* Return */
@@ -130,10 +111,10 @@ gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 		}
 		break;
 	case GDK_KEY_Escape:			/* Escape */
-		if (ptr > doc->autolocator)
+		len = gtk_entry_get_text_length(GTK_ENTRY(win->searchentry));
+		if (len > 0)
 		{
-			ptr = doc->autolocator;
-			*ptr = 0;
+			gtk_entry_set_text(GTK_ENTRY(win->searchentry), "");
 		} else
 		{
 			RemoveSearchBox(doc);
@@ -141,22 +122,24 @@ gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 		break;
 	case GDK_KEY_space:
 		/* ignore space at start of string */
-		if (ptr != doc->autolocator)
-			*ptr++ = ' ';
-		*ptr = 0;
+		len = gtk_entry_get_text_length(GTK_ENTRY(win->searchentry));
+		if (len != 0)
+		{
+			char *txt = gtk_editable_get_chars(GTK_EDITABLE(win->searchentry), 0, -1);
+			char *newtxt = g_strconcat(txt, " ", NULL);
+			gtk_entry_set_text(GTK_ENTRY(win->searchentry), newtxt);
+			g_free(newtxt);
+			g_free(txt);
+		}
 		break;
 	default:
-		if (event->keyval > ' ')
+		if (event->keyval >= ' ' && event->length > 0)
 		{
-			if (ptr - doc->autolocator < AUTOLOC_SIZE)
-			{
-				*ptr++ = event->keyval;
-				*ptr = 0;
-			} else
-			{
-				--ptr;
-				*ptr = event->keyval;
-			}
+			char *txt = gtk_editable_get_chars(GTK_EDITABLE(win->searchentry), 0, -1);
+			char *newtxt = g_strconcat(txt, event->string, NULL);
+			gtk_entry_set_text(GTK_ENTRY(win->searchentry), newtxt);
+			g_free(newtxt);
+			g_free(txt);
 		}
 		break;
 	}
@@ -172,7 +155,9 @@ gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 /* insert contents of clipboard in autolocator. */
 void AutoLocatorPaste(DOCUMENT *doc)
 {
-	/* YYY */
+	WINDOW_DATA *win = doc->window;
+	
 	if (!doc->buttons.searchbox)
 		return;
+	gtk_editable_paste_clipboard(GTK_EDITABLE(win->searchentry));
 }

@@ -113,7 +113,7 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 	if (*doc->autolocator)
 	{
 		graf_mouse(BUSY_BEE, NULL);
-		line = doc->autolocProc(doc, start_line);
+		line = doc->autolocProc(doc, start_line, doc->autolocator);
 		graf_mouse(ARROW, NULL);
 	}
 

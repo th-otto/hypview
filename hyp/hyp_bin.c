@@ -7,10 +7,9 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-long BinaryAutolocator(DOCUMENT *doc, long line)
+long BinaryAutolocator(DOCUMENT *doc, long line, const char *search)
 {
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
-	const char *search = doc->autolocator;
 	const unsigned char *src, *end;
 	size_t len = strlen(search);
 	

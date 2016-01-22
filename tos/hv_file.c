@@ -229,6 +229,9 @@ void CheckFiledate(DOCUMENT *doc)
 	struct stat st;
 	int ret;
 	
+	if (!gl_profile.viewer.check_time)
+		return;
+	
 	if (rpl_stat(doc->path, &st) == 0)
 	{
 		/* Modification time or date has changed ? */

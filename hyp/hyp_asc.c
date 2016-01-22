@@ -100,15 +100,14 @@ static void AsciiPrep(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-long AsciiAutolocator(DOCUMENT *doc, long line)
+long AsciiAutolocator(DOCUMENT *doc, long line, const char *search)
 {
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
-	char *search = doc->autolocator;
 	unsigned char *src;
 
 	long len = strlen(search);
 
-	if (!ascii)							/* no file load */
+	if (!ascii)							/* no file loaded */
 		return -1;
 
 	if (doc->autolocator_dir > 0)

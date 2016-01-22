@@ -286,7 +286,9 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	doc->window_title = g_strdup(doc->path);
 	doc->buttons.load = TRUE;
 	doc->type = HYP_FT_UNKNOWN;
+#ifdef WITH_GUI_GEM
 	doc->autolocator = NULL;
+#endif
 	doc->selection.valid = FALSE;
 
 	/* type-spezific loading follows */
@@ -327,7 +329,9 @@ void HypCloseFile(DOCUMENT *doc)
 	if (doc->data)
 		doc->closeProc(doc);
 	g_free(doc->window_title);
+#ifdef WITH_GUI_GEM
 	g_free(doc->autolocator);
+#endif
 	g_free(doc->path);
 	g_free(doc);
 }

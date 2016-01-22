@@ -190,8 +190,7 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 	else if (win->toolbar[obj].ob_state & OS_DISABLED)
 		return;
 
-	if (gl_profile.viewer.check_time)
-		CheckFiledate(doc);		/* Check if file has changed */
+	CheckFiledate(doc);		/* Check if file has changed */
 	
 	switch (obj)
 	{

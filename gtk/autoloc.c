@@ -213,10 +213,9 @@ char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
 
 /*** ---------------------------------------------------------------------- ***/
 
-long HypAutolocator(DOCUMENT *doc, long line)
+long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 {
 	WINDOW_DATA *win = doc->window;
-	const char *search = doc->autolocator;
 	const char *src;
 	long y;
 	HYP_NODE *node;

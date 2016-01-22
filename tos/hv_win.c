@@ -660,8 +660,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 
 				graf_mkstate(&event->mx, &event->my, &event->mbutton, &event->kstate);
 	
-				if (gl_profile.viewer.check_time)
-					CheckFiledate(doc);
+				CheckFiledate(doc);
 	
 				d.x = event->mx;
 				d.y = event->my;
@@ -725,8 +724,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			wind_set_int(win->whandle, WF_TOP, 0);
 		}
-		if (gl_profile.viewer.check_time)
-			CheckFiledate(doc);
+		CheckFiledate(doc);
 		return FALSE;
 	}
 	return TRUE;

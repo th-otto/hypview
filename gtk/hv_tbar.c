@@ -17,11 +17,14 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	WINDOW_DATA *win = doc->window;
 	
 	/* autolocator active? */
-	if (doc->buttons.searchbox && doc->autolocator != NULL)
+	if (doc->buttons.searchbox)
 	{
-		gtk_widget_show(win->searchbox);
-		gtk_entry_set_text(GTK_ENTRY(win->searchentry), doc->autolocator);
-		return;
+		const char *search = gtk_entry_get_text(GTK_ENTRY(win->searchentry));
+		if (!empty(search))
+		{
+			gtk_widget_show(win->searchbox);
+			return;
+		}
 	}
 	gtk_widget_hide(win->searchbox);
 	
@@ -98,8 +101,7 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_
 	else if (!win->m_buttons[obj] || !gtk_widget_get_sensitive(win->m_buttons[obj]))
 		return;
 
-	if (gl_profile.viewer.check_time)
-		CheckFiledate(doc);		/* Check if file has changed */
+	CheckFiledate(doc);		/* Check if file has changed */
 	
 	switch (obj)
 	{
@@ -151,11 +153,13 @@ void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_
 
 void RemoveSearchBox(DOCUMENT *doc)
 {
+	WINDOW_DATA *win = doc->window;
+
 	/* Is the autolocator/search box displayed? */
 	if (doc->buttons.searchbox)
 	{
 		doc->buttons.searchbox = FALSE;	/* disable it */
-		*doc->autolocator = 0;			/* clear autolocator string */
+		gtk_entry_set_text(GTK_ENTRY(win->searchbox), "");			/* clear autolocator string */
 
 		ToolbarUpdate(doc, TRUE);	/* update toolbar */
 	}

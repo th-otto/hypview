@@ -16,7 +16,7 @@ typedef FMT_ASCII FMT_BINARY;
 void AsciiDisplayPage(DOCUMENT *doc);
 void AsciiGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
-long AsciiAutolocator(DOCUMENT *doc, long line);
+long AsciiAutolocator(DOCUMENT *doc, long line, const char *search);
 unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *end);
 
 /*
@@ -25,4 +25,4 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 void BinaryDisplayPage(DOCUMENT *doc);
 void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
 gboolean BinaryBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
-long BinaryAutolocator(DOCUMENT *doc, long line);
+long BinaryAutolocator(DOCUMENT *doc, long line, const char *search);

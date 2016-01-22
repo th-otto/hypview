@@ -807,8 +807,7 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 	if (event->button != GDK_BUTTON_PRIMARY)
 		return FALSE;
 
-	if (gl_profile.viewer.check_time)
-		CheckFiledate(win->data);
+	CheckFiledate(win->data);
 	
 	buffer = win->text_buffer;
 
