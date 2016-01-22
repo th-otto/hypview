@@ -6,23 +6,10 @@
 
 void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 {
-	WINDOW_DATA *win = doc->window;
-
 	if (doc->gotoNodeProc(doc, NULL, num))
 	{
 		if (calc)
 		{
-			/*
-			 * when activated by a link, we have to calculate the correct "line".
-			 * Important if page contains images.
-			 */
-			long y;
-			HYP_NODE *node;
-	
-			node = doc->displayed_node;
-	
-			y = HypGetLineY(node, line);
-			line = y / win->y_raster;
 		}
 		doc->start_line = line;
 	}
