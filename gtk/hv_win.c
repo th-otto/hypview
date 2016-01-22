@@ -296,12 +296,28 @@ static void NOINLINE hv_win_delete(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void shell_destroyed(GtkWidget *w, void *userdata)
+static void shell_destroyed(GtkWidget *w, WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = (WINDOW_DATA *)userdata;
-
 	UNUSED(w);
 	hv_win_delete(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean state_changed(GtkWidget *w, GdkEvent *event, WINDOW_DATA *win)
+{
+	UNUSED(w);
+	if (event->type == GDK_WINDOW_STATE &&
+		(event->window_state.changed_mask & GDK_WINDOW_STATE_ICONIFIED))
+	{
+		DOCUMENT *doc = win->data;
+		
+		if (event->window_state.new_window_state & GDK_WINDOW_STATE_ICONIFIED)
+			hv_set_title(win, hyp_basename(doc->path));
+		else
+			hv_set_title(win, doc->window_title);
+	}
+	return TRUE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1645,6 +1661,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	}
 	
 	g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
+	g_signal_connect(G_OBJECT(win->hwnd), "window-state-event", G_CALLBACK(state_changed), (gpointer) win);
+	g_signal_connect(G_OBJECT(win->hwnd), "frame-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
 	g_signal_connect(G_OBJECT(win->text_view), "event-after", G_CALLBACK(event_after), win);
 	g_signal_connect(G_OBJECT(win->text_view), "key-press-event", G_CALLBACK(key_press_event), win);
