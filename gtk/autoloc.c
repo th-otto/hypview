@@ -87,137 +87,24 @@ long HypGetRealTextLine(HYP_NODE *node, long y)
 
 /*** ---------------------------------------------------------------------- ***/
 
-char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
+char *HypGetTextLine(DOCUMENT *doc, HYP_NODE *node, long line)
 {
-	const unsigned char *src;
-	char *dst, *ret;
-	size_t len;
+	WINDOW_DATA *win;
+	GtkTextIter start, end;
 	
-	if (hyp == NULL || node == NULL || node->line_ptr == NULL || line < 0 || line >= node->lines)
-		return NULL;
-	src = node->line_ptr[line].txt;
-
-	if (src == NULL)
+	if (doc == NULL || doc->data == NULL || (win = doc->window) == NULL || node == NULL || line < 0 || line >= node->lines)
 		return NULL;
 
-	len = 0;
-	while (*src)
-	{
-		if (*src == HYP_ESC)					/* ESC-sequence ?? */
-		{
-			src++;
-			switch (*src)
-			{
-			case HYP_ESC_ESC:					/* ESC */
-				len++;
-				break;
-			case HYP_ESC_LINK:
-			case HYP_ESC_LINK_LINE:
-			case HYP_ESC_ALINK:
-			case HYP_ESC_ALINK_LINE:
-				{
-					hyp_nodenr i;	/* index of target page */
-
-					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)	/* skip destination line number */
-						src += 2;
-
-					i = DEC_255(&src[1]);
-					src += 3;
-
-					/* get and display link text */
-					if (*src <= HYP_STRLEN_OFFSET)		/* no text specified in link */
-					{
-						len += ustrlen(hyp->indextable[i]->name);
-						src++;
-					} else
-					{
-						unsigned char num = *src - HYP_STRLEN_OFFSET;
-
-						src += num + 1;
-						len += num;
-					}
-				}
-				break;
-			default:
-				src = hyp_skip_esc(src - 1);
-				break;
-			}
-		} else
-		{
-			src++;
-			len++;
-		}
-	}
-	
-	dst = ret = g_new(char, len + 1);
-	src = node->line_ptr[line].txt;
-	
-	while (*src)
-	{
-		if (*src == HYP_ESC)					/* ESC-sequence ?? */
-		{
-			*dst = 0;							/* mark end of buffer */
-			src++;
-			switch (*src)
-			{
-			case HYP_ESC_ESC:					/* ESC */
-				*dst++ = HYP_ESC_ESC;
-				break;
-			case HYP_ESC_LINK:
-			case HYP_ESC_LINK_LINE:
-			case HYP_ESC_ALINK:
-			case HYP_ESC_ALINK_LINE:
-				{
-					hyp_nodenr i;	/* index of target page */
-
-					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)		/* skip line number */
-						src += 2;
-
-					i = DEC_255(&src[1]);
-					src += 3;
-
-					/* get and display link text */
-					if (*src <= HYP_STRLEN_OFFSET)	/* no text specified in link */
-					{
-						strcpy(dst, (const char *)hyp->indextable[i]->name);
-						src++;
-						dst += strlen(dst);
-					} else
-					{
-						unsigned char num = (*src) - HYP_STRLEN_OFFSET;
-
-						memcpy(dst, src + 1, num);
-						src += num + 1;
-						dst += num;
-					}
-				}
-				break;
-			default:
-				src = hyp_skip_esc(src - 1);
-				break;
-			}
-		} else
-		{
-			*dst++ = *src++;
-		}
-	}
-	*dst = 0;							/* mark end of buffer */
-	ASSERT(dst == ret + len);
-	
-	dst = hyp_conv_to_utf8(hyp->comp_charset, ret, len);
-	g_free(ret);
-	ret = dst;
-
-	return ret;
+	gtk_text_buffer_get_iter_at_line(win->text_buffer, &start, line);
+	gtk_text_buffer_get_iter_at_line(win->text_buffer, &end, line + 1);
+	return gtk_text_buffer_get_text(win->text_buffer, &start, &end, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 {
-	WINDOW_DATA *win = doc->window;
 	const char *src;
-	long y;
 	HYP_NODE *node;
 	char *temp;
 	size_t len;
@@ -236,14 +123,11 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 	
 	len = strlen(search);
 
-	y = line * win->y_raster;
-	line = HypGetRealTextLine(node, y);
-
 	if (doc->autolocator_dir > 0)
 	{
 		while (line < node->lines)
 		{
-			temp = HypGetTextLine(hyp, node, line);
+			temp = HypGetTextLine(doc, node, line);
 			if (temp != NULL)
 			{
 				src = temp;
@@ -251,8 +135,6 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 				{
 					if (g_utf8_strncasecmp(src, search, len) == 0)
 					{
-						y = HypGetLineY(node, line);
-						line = y / win->y_raster;	/* get real llne of window */
 						g_free(temp);
 						return line;
 					}
@@ -266,7 +148,7 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 	{
 		while (line > 0)
 		{
-			temp = HypGetTextLine(hyp, node, line);
+			temp = HypGetTextLine(doc, node, line);
 			if (temp != NULL)
 			{
 				src = temp;
@@ -274,8 +156,6 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 				{
 					if (g_utf8_strncasecmp(src, search, len) == 0)
 					{
-						y = HypGetLineY(node, line);
-						line = y / win->y_raster;	/* get real line of window */
 						g_free(temp);
 						return line;
 					}

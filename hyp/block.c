@@ -8,10 +8,7 @@
 gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
 {
 	HYP_NODE *node;
-	HYP_DOCUMENT *hyp;
 	
-	hyp = (HYP_DOCUMENT *)doc->data;
-
 	node = doc->displayed_node;
 
 	switch (op)
@@ -35,7 +32,7 @@ gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *p
 
 			while ((line < doc->lines) && (line <= block->end.line))
 			{
-				line_buffer = HypGetTextLine(hyp, node, line);
+				line_buffer = HypGetTextLine(doc, node, line);
 
 				if (line_buffer != NULL)
 				{

@@ -88,13 +88,14 @@ long HypGetRealTextLine(HYP_NODE *node, long y)
 
 /*** ---------------------------------------------------------------------- ***/
 
-char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line)
+char *HypGetTextLine(DOCUMENT *doc, HYP_NODE *node, long line)
 {
+	HYP_DOCUMENT *hyp;
 	const unsigned char *src;
 	char *dst, *ret;
 	size_t len;
 	
-	if (hyp == NULL || node == NULL || node->line_ptr == NULL || line < 0 || line >= node->lines)
+	if (doc == NULL || (hyp = doc->data) == NULL || node == NULL || node->line_ptr == NULL || line < 0 || line >= node->lines)
 		return NULL;
 	src = node->line_ptr[line].txt;
 
@@ -244,7 +245,7 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 	{
 		while (line < node->lines)
 		{
-			temp = HypGetTextLine(hyp, node, line);
+			temp = HypGetTextLine(doc, node, line);
 			if (temp != NULL)
 			{
 				src = temp;
@@ -267,7 +268,7 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 	{
 		while (line > 0)
 		{
-			temp = HypGetTextLine(hyp, node, line);
+			temp = HypGetTextLine(doc, node, line);
 			if (temp != NULL)
 			{
 				src = temp;

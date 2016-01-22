@@ -136,7 +136,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle);
 /*
  *		Autoloc.c
  */
-char *HypGetTextLine(HYP_DOCUMENT *hyp, HYP_NODE *node, long line);
+char *HypGetTextLine(DOCUMENT *doc, HYP_NODE *node, long line);
 long HypAutolocator(DOCUMENT *doc, long line, const char *search);
 
 

@@ -94,7 +94,7 @@ static gboolean SaveAsAscii(DOCUMENT *doc, int handle)
 
 	for (line = 0; line < node->lines; line++)
 	{
-		temp = HypGetTextLine(hyp, node, line);
+		temp = HypGetTextLine(doc, node, line);
 
 		if (temp != NULL)
 		{

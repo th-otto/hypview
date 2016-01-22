@@ -556,4 +556,5 @@ void HypPrepNode(DOCUMENT *doc)
 	}
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
+	node->lines = info.lineno;
 }
