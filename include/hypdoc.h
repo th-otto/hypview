@@ -82,11 +82,11 @@ struct _document_
 	DOC_GETNODEPROC getNodeProc;/* Function to determine current node number */
 	DOC_AUTOLOCPROC autolocProc;/* Autolocator search function */
 #ifdef WITH_GUI_GEM
+	BLOCK selection;            /* Content of  selection */
 	char *autolocator;          /* Autolocator search string */
 #endif
 	int autolocator_dir;        /* Autolocator direction (1 = down, else up) */
 	DOC_GETCURSORPROC getCursorProc;/* Cursor position function */
-	BLOCK selection;            /* Content of  selection */
 	DOC_BLOCKPROC blockProc;    /* Block operation function */
 	DOC_PREPNODEPROC prepNode;
 };

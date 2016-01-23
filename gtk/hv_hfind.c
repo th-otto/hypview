@@ -2,9 +2,9 @@
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Hypfind(DOCUMENT *doc, gboolean first)
+void Hypfind(DOCUMENT *doc, gboolean again)
 {
 	UNUSED(doc);
-	UNUSED(first);
+	UNUSED(again);
 	printf("NYI: Hypfind\n");
 }

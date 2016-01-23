@@ -126,6 +126,7 @@ void BlockSelectAll(DOCUMENT *doc, BLOCK *b);
 void BlockCopy(DOCUMENT *doc);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(DOCUMENT *doc, const char *path);
+void StartRemarker(gboolean quiet);
 
 
 /*
@@ -147,7 +148,7 @@ void ProgrammInfos(DOCUMENT *doc);
 /*
  * hv_hfind.c
  */
-void Hypfind(DOCUMENT *doc);
+void Hypfind(DOCUMENT *doc, gboolean again);
 
 
 /*

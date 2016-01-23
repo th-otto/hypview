@@ -756,6 +756,7 @@ int hyp_utf8_rename(const char *oldname, const char *newname);
 DIR *hyp_utf8_opendir(const char *dirname);
 char *hyp_utf8_readdir(DIR *dir);
 void hyp_utf8_closedir(DIR *dir);
+ssize_t hyp_utf8_write(int fd, const void *buf, size_t len);
 
 /*
  * hyp_load.c

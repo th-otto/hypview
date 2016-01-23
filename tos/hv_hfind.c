@@ -27,6 +27,7 @@
 
 static DIALOG *Hypfind_Dialog;
 static short HypfindID;
+static gboolean can_search_again;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -71,6 +72,46 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void hypfind_page(DOCUMENT *doc, OBJECT *tree)
+{
+	WINDOW_DATA *win = doc->window;
+	char *name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
+	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	g_free(name);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hypfind_text(DOCUMENT *doc, OBJECT *tree)
+{
+	WINDOW_DATA *win = doc->window;
+	long line = win->docsize.y;
+	char *search = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
+	doc->autolocator_dir = 1;
+	if (!empty(search))
+	{
+		graf_mouse(BUSY_BEE, NULL);
+		line = doc->autolocProc(doc, line, search);
+		graf_mouse(ARROW, NULL);
+	}
+	g_free(search);
+	if (line >= 0)
+	{
+		if (line != win->docsize.y)
+		{
+			can_search_again = TRUE;
+			win->docsize.y = line;
+			SendRedraw(win);
+			SetWindowSlider(win);
+		}
+	} else
+	{
+		Cconout(7);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 {
 	OBJECT *tree;
@@ -78,7 +119,6 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 	WINDOW_DATA *win;
 	DOCUMENT *doc;
 	GRECT r;
-	char *name;
 	
 	dial = wdlg_get_udata(args.dialog);
 	doc = dial->data;
@@ -88,6 +128,7 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 	if (args.obj > 0)
 		tree[args.obj].ob_state &= ~OS_SELECTED;
 
+	can_search_again = FALSE;
 	switch (args.obj)
 	{
 	case HNDL_CLSD:
@@ -96,11 +137,10 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 		SpecialMessageEvents(args.dialog, args.events);
 		break;
 	case HYPFIND_TEXT:
+		hypfind_text(doc, tree);
 		return 0;
 	case HYPFIND_PAGES:
-		name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-		OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
-		g_free(name);
+		hypfind_page(doc, tree);
 		return 0;
 	case HYPFIND_ABORT:
 		return 0;
@@ -117,12 +157,11 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Hypfind(DOCUMENT *doc)
+void Hypfind(DOCUMENT *doc, gboolean again)
 {
 	static short first = 0;
 	OBJECT *tree = rs_tree(HYPFIND);
 	WINDOW_DATA *win = doc->window;
-	char *name;
 	
 	if (!first)
 	{
@@ -133,6 +172,12 @@ void Hypfind(DOCUMENT *doc)
 
 	if (HypfindID != -1)
 		return;
+
+	if (again && can_search_again)
+	{
+		hypfind_text(doc, tree);
+		return;
+	}
 
 	if (has_window_dialogs())
 	{
@@ -151,6 +196,7 @@ void Hypfind(DOCUMENT *doc)
 			tree[obj].ob_state &= ~OS_SELECTED;
 		form_dial_grect(FMD_FINISH, &little, &big);
 
+		can_search_again = FALSE;
 		switch (obj)
 		{
 		case HYPFIND_ABORT:
@@ -158,10 +204,11 @@ void Hypfind(DOCUMENT *doc)
 		case HYPFIND_REF:
 			hypfind_search_allref(win, tree);
 			break;
+		case HYPFIND_TEXT:
+			hypfind_text(doc, tree);
+			break;
 		case HYPFIND_PAGES:
-			name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-			OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
-			g_free(name);
+			hypfind_page(doc, tree);
 			break;
 		case HYPFIND_ALL_PAGE:
 			hypfind_run_hypfind(tree, doc);

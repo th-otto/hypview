@@ -33,6 +33,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	doc->buttons.memory = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
+	doc->buttons.save = TRUE;
 	
 	if (CountWindowHistoryEntries(win) == 0)
 	{

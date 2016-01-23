@@ -184,7 +184,7 @@ _WORD appl_locate(const char *pathlist, _BOOL startit)
 		app_name[8] = '\0';
 		id = appl_find(app_name);
 	}
-	if (id < 0 && startit && _AESnumapps != 1)
+	if (id < 0 && startit && (_AESnumapps != 1 || !_app))
 	{
 		pend = pathlist;
 		while (pend != NULL && id < 0)
@@ -201,6 +201,8 @@ _WORD appl_locate(const char *pathlist, _BOOL startit)
 				path = g_strndup(pend, p - pend);
 				pend = p + 1;
 			}
+			if (path[0] == '*' && path[1] == ':')
+				path[0] = GetBootDrive();
 			if (__magix)
 			{
 				id = shel_xwrite(SHW_EXEC, 1, SHW_PARALLEL, path, "\0");

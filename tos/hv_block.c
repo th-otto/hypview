@@ -29,6 +29,28 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+void StartRemarker(gboolean quiet)
+{
+	if (empty(gl_profile.remarker.path))
+	{
+		if (!quiet)
+			form_alert(1, rs_string(HV_ERR_NO_REMARKER));
+	} else
+	{
+		_WORD id = appl_locate(gl_profile.remarker.path, TRUE);
+		if (id < 0 && !quiet)
+		{
+			char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), gl_profile.remarker.path);
+			form_alert(1, str);
+			g_free(str);
+		}
+	}
+}
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void BlockOperation(DOCUMENT *doc, short num)
 {
 	WINDOW_DATA *win = doc->window;
@@ -45,16 +67,19 @@ void BlockOperation(DOCUMENT *doc, short num)
 		BlockCopy(doc);
 		break;
 	case CO_PASTE:
-		BlockPaste(win, gl_profile.viewer.clipbrd_new_window);
+		if (doc->buttons.searchbox)
+			AutoLocatorPaste(doc);
+		else
+			BlockPaste(win, gl_profile.viewer.clipbrd_new_window);
 		break;
 	case CO_SELECT_ALL:
 		SelectAll(doc);
 		break;
 	case CO_SEARCH:
-		Hypfind(doc);
+		Hypfind(doc, FALSE);
 		break;
 	case CO_SEARCH_AGAIN:
-		/* NYI */
+		Hypfind(doc, TRUE);
 		break;
 	case CO_DELETE_STACK:
 		RemoveAllHistoryEntries(win);
@@ -67,7 +92,7 @@ void BlockOperation(DOCUMENT *doc, short num)
 		SelectFont(doc);
 		break;
 	case CO_REMARKER:
-		form_alert(1, rs_string(HV_ERR_NOT_IMPLEMENTED));
+		StartRemarker(FALSE);
 		break;
 	case CO_PRINT:
 		break;
@@ -132,7 +157,7 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 		ret = open(scrap_file, O_RDONLY);
 		if (ret >= 0)
 		{
-			close((short) ret);
+			close(ret);
 			if (new_window)
 				win = NULL;
 			OpenFileInWindow(win, scrap_file, NULL, HYP_NOINDEX, FALSE, new_window, FALSE);
@@ -154,10 +179,11 @@ void BlockAsciiSave(DOCUMENT *doc, const char *path)
 	}
 
 	/* path is from fileselector here and already in local encoding */
-	handle = open(path, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	handle = open(path, O_WRONLY | O_TRUNC | O_CREAT, HYP_DEFAULT_FILEMODE);
 	if (handle < 0)
+	{
 		FileErrorErrno(path);
-	else
+	} else
 	{
 		BLOCK b = doc->selection;
 

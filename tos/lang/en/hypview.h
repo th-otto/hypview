@@ -5,19 +5,19 @@
  */
 
 /*
- * Number of Strings:        162
+ * Number of Strings:        164
  * Number of Bitblks:        0
  * Number of Iconblks:       0
  * Number of Color Iconblks: 15
  * Number of Color Icons:    29
  * Number of Tedinfos:       28
- * Number of Free Strings:   17
+ * Number of Free Strings:   19
  * Number of Free Images:    0
  * Number of Objects:        103
  * Number of Trees:          7
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          27362
+ * Total file size:          27464
  */
 
 #undef RSC_NAME
@@ -30,8 +30,8 @@
 #endif
 
 #if !defined(RSC_STATIC_FILE) || !RSC_STATIC_FILE
-#define NUM_STRINGS 162
-#define NUM_FRSTR 17
+#define NUM_STRINGS 164
+#define NUM_FRSTR 19
 #define NUM_UD 0
 #define NUM_IMAGES 0
 #define NUM_BB 0
@@ -197,6 +197,12 @@
 
 #define PROGINFO_TITLE                    16 /* Free string */
 /* Programinfo... */
+
+#define HV_ERR_NO_REMARKER                17 /* Alert string */
+/* [1][No path to REMARKER configured|in HYPVIEW.INI.][Cancel] */
+
+#define HV_ERR_EXEC                       18 /* Alert string */
+/* [1][Can not execute|<%s>][Cancel] */
 
 
 

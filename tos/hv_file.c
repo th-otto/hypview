@@ -145,6 +145,8 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	
 	if (doc != NULL)
 	{
+		gboolean found = FALSE;
+		
 		if (!doc->data)
 		{
 			int ret;
@@ -158,12 +160,14 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			} else
 			{
 				FileErrorErrno(hyp_basename(doc->path));
+				found = TRUE; /* do not issue another error */
 			}
 		}
 
 		new_window = 0;
 		if (doc->gotoNodeProc(doc, chapter, node))
 		{
+			found = TRUE;
 			/* no window already? */
 			if (!win)
 			{
@@ -193,24 +197,26 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 				ReInitWindow(doc);
 				wind_set_int(win->whandle, WF_TOP, 0);
 			}
-			if (!no_message)
-			{
-				char *str;
-				char *name;
-				gboolean converror = FALSE;
-				
-				if (chapter)
-					name = hyp_utf8_to_charset(hyp_get_current_charset(), chapter, STR0TERM, &converror);
-				else
-					name = g_strdup(hyp_default_main_node_name);
-				str = g_strdup_printf(rs_string(WARN_NORESULT), name);
-				form_alert(1, str);
-				g_free(name);
-				g_free(str);
-			}
 		} else
 		{
+			if (win)
+				win->data = doc;
 			win = NULL;
+		}
+		if (!found && !no_message)
+		{
+			char *str;
+			char *name;
+			gboolean converror = FALSE;
+			
+			if (chapter)
+				name = hyp_utf8_to_charset(hyp_get_current_charset(), chapter, STR0TERM, &converror);
+			else
+				name = g_strdup(hyp_default_main_node_name);
+			str = g_strdup_printf(rs_string(WARN_NORESULT), name);
+			form_alert(1, str);
+			g_free(name);
+			g_free(str);
 		}
 	} else
 	{

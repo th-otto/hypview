@@ -103,6 +103,12 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 			char *dir = g_strndup(*name, base - *name);
 			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(selector), dir);
 			g_free(dir);
+		} else if (save)
+		{
+			char *dir = g_strndup(*name, base - *name);
+			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(selector), dir);
+			g_free(dir);
+			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(selector), base);
 		} else
 		{
 			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(selector), *name);
@@ -207,13 +213,9 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 
 void SelectFileSave(DOCUMENT *doc)
 {
-	char **paths;
 	char *filepath;
-	char *subst;
 	GtkWidget *parent = doc ? ((WINDOW_DATA *)(doc->window))->hwnd : NULL;
 
-	subst = path_subst(gl_profile.general.path_list);
-	paths = g_strsplit(subst, G_SEARCHPATH_SEPARATOR_S, 0);
 	filepath = replace_ext(doc->path, NULL, ".txt");
 
 	if (choose_file(parent, &filepath, FALSE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
@@ -231,6 +233,4 @@ void SelectFileSave(DOCUMENT *doc)
 			BlockAsciiSave(doc, filepath);
 	}
 	g_free(filepath);
-	g_strfreev(paths);
-	g_free(subst);
 }

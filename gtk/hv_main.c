@@ -274,8 +274,8 @@ int main(int argc, char **argv)
 		} else
 		{
 			hv_recent_add(win->data->path);
-			if (gl_profile.remarker.run_on_startup && !empty(gl_profile.remarker.path))
-				BlockOperation(win->data, CO_REMARKER);
+			if (gl_profile.remarker.run_on_startup)
+				StartRemarker(FALSE);
 			hv_win_open(win);
 		}
 	}

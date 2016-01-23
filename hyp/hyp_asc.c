@@ -163,7 +163,7 @@ gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void 
 	case BLK_ASCIISAVE:
 		{
 			long line;
-			ssize_t ret;
+			size_t ret;
 			size_t len;
 			unsigned char *line_buffer;
 			const unsigned char *src;
@@ -193,7 +193,7 @@ gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void 
 
 					len = ustrlen(src);
 					ret = write(*handle, src, len);
-					if (ret != (ssize_t) len)
+					if (ret != len)
 					{
 						HYP_DBG(("Error %s writing file. Abort.", strerror(errno)));
 						return FALSE;

@@ -288,8 +288,8 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	doc->type = HYP_FT_UNKNOWN;
 #ifdef WITH_GUI_GEM
 	doc->autolocator = NULL;
-#endif
 	doc->selection.valid = FALSE;
+#endif
 
 	/* type-spezific loading follows */
 	if (LoadFile(doc, handle, return_if_ref) < 0)

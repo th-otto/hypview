@@ -330,6 +330,14 @@ static void on_select_source(GtkAction *action, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void on_save(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	SelectFileSave(win->data);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void on_font_select(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
@@ -1341,7 +1349,7 @@ static GtkActionEntry const action_entries[] = {
 	 * name,                stock id,                label                                  accelerator    tooltip                                              callback
 	 */
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
-	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_select_source) },
+	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_save) },
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
 	{ "remarker",           NULL,                    N_("_Run Remarker"),                   "<Alt>R",      NULL,                                                G_CALLBACK(on_remarker) },
 	{ "close",              "gtk-close",             N_("_Close"),                          "<Ctrl>U",     NULL,                                                G_CALLBACK(on_close) },
@@ -1798,7 +1806,6 @@ void ReInitWindow(DOCUMENT *doc)
 	win->data = doc;
 	win->title = doc->window_title;
 	hv_set_title(win, win->title);
-	doc->selection.valid = FALSE;
 	win->hovering_over_link = FALSE;
 	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
 	if (window)

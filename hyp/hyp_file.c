@@ -74,6 +74,27 @@ int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 
 /*** ---------------------------------------------------------------------- ***/
 
+ssize_t hyp_utf8_write(int fd, const void *buf, size_t len)
+{
+	char *str;
+	HYP_CHARSET charset;
+	size_t slen, ret;
+	gboolean converror = FALSE;
+	
+	charset = hyp_get_current_charset();
+	if (charset == HYP_CHARSET_UTF8)
+		return write(fd, buf, len);
+	str = hyp_utf8_to_charset(charset, buf, len, &converror);
+	slen = str ? strlen(str) : 0;
+	ret = write(fd, str, slen);
+	g_free(str);
+	if (ret == slen)
+		ret = len;
+	return ret;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 {
 	char *str;

@@ -245,7 +245,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 /*
  * hv_hfind.c
  */
-void Hypfind(DOCUMENT *doc, gboolean first);
+void Hypfind(DOCUMENT *doc, gboolean again);
 
 
 /*
@@ -303,6 +303,7 @@ void BlockSelectAll(DOCUMENT *doc, BLOCK *b);
 void BlockCopy(DOCUMENT *doc);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(DOCUMENT *doc, const char *path);
+void StartRemarker(gboolean quiet);
 
 
 /*
