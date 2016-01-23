@@ -26,7 +26,7 @@
 #include "hypview.h"
 
 static DIALOG *Hypfind_Dialog;
-static short HypfindID;
+static short HypfindID = -1;
 static gboolean can_search_again;
 
 /******************************************************************************/
@@ -44,7 +44,7 @@ static void hypfind_search_allref(WINDOW_DATA *win, OBJECT *tree)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc)
+static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 {
 	char ZStr[1024];
 	char *name;
@@ -54,7 +54,7 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc)
 	strcat(ZStr, name);
 	strcat(ZStr, "'");
 	g_free(name);
-	if ((tree[HYPFIND_ALL_HYP].ob_state & OS_SELECTED) == 0)
+	if (!all_hyp)
 	{
 		strcat(ZStr, " ");
 		strcat(ZStr, doc->path);
@@ -148,7 +148,10 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 		hypfind_search_allref(win, tree);
 		return 0;
 	case HYPFIND_ALL_PAGE:
-		hypfind_run_hypfind(tree, doc);
+		hypfind_run_hypfind(tree, doc, FALSE);
+		return 0;
+	case HYPFIND_ALL_HYP:
+		hypfind_run_hypfind(tree, doc, TRUE);
 		return 0;
 	}
 
@@ -159,17 +162,9 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 
 void Hypfind(DOCUMENT *doc, gboolean again)
 {
-	static short first = 0;
 	OBJECT *tree = rs_tree(HYPFIND);
 	WINDOW_DATA *win = doc->window;
 	
-	if (!first)
-	{
-		strcpy(tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, "");
-		first = 1;
-		HypfindID = -1;
-	}
-
 	if (HypfindID != -1)
 		return;
 
@@ -211,7 +206,10 @@ void Hypfind(DOCUMENT *doc, gboolean again)
 			hypfind_page(doc, tree);
 			break;
 		case HYPFIND_ALL_PAGE:
-			hypfind_run_hypfind(tree, doc);
+			hypfind_run_hypfind(tree, doc, FALSE);
+			break;
+		case HYPFIND_ALL_HYP:
+			hypfind_run_hypfind(tree, doc, TRUE);
 			break;
 		}
 	}

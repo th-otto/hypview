@@ -31,7 +31,7 @@ static void print_results(RESULT_ENTRY *ptr)
 
 /*----------------------------------------------------------------------------------------*/
 
-void search_allref(void *w, const char *string, gboolean no_message)
+void *search_allref(void *w, const char *string, gboolean no_message)
 {
 	int ret;
 	long results = 0;
@@ -41,7 +41,7 @@ void search_allref(void *w, const char *string, gboolean no_message)
 	if (empty(gl_profile.general.all_ref))
 	{
 		HYP_DBG(("No ref file defined"));
-		return;
+		return win;
 	}
 
 	if (allref == NULL)
@@ -67,7 +67,7 @@ void search_allref(void *w, const char *string, gboolean no_message)
 	/* error loading file? */
 	if (allref == NULL)
 	{
-		return;
+		return win;
 	}
 	
 	print_results(Result_List);
@@ -113,4 +113,5 @@ void search_allref(void *w, const char *string, gboolean no_message)
 		ref_close(allref);
 		allref = NULL;
 	}
+	return win;
 }

@@ -235,11 +235,15 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 				ReInitWindow(doc);
 		} else
 		{
-			search_allref(win, chapter, FALSE);
+			win = search_allref(win, chapter, FALSE);
 		}
 	} else
 	{
 		chapter = cptr;
+		/*
+		 * "Main" from external references always means default page,
+		 * regardless of the actual name
+		 */
 		if (strcmp(chapter, hyp_default_main_node_name) == 0)
 			chapter = NULL;
 		win = OpenFileInWindow(win, path, chapter, HYP_NOINDEX, FALSE, new_window ? 2 : 0, FALSE);

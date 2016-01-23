@@ -262,8 +262,14 @@ int main(int argc, char **argv)
 			}
 		} else
 		{
-			/* ...load this file (incl. chapter) */
-			win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
+			if (argc == 2 && hyp_guess_filetype(argv[1]) != HYP_FT_HYP)
+			{
+				win = search_allref(win, argv[1], FALSE);
+			} else
+			{
+				/* ...load this file (incl. chapter) */
+				win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
+			}
 		}
 		if (win == NULL)
 			win = SelectFileLoad(NULL);						/* use file selector */

@@ -195,7 +195,7 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 				ReInitWindow(doc);
 		} else
 		{
-			search_allref(win, chapter, FALSE);
+			win = search_allref(win, chapter, FALSE);
 		}
 	} else
 	{

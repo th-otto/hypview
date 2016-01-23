@@ -108,7 +108,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter);
 /*
  *		Search.c
  */
-void search_allref(void /* WINDOW_DATA */ *win, const char *string, gboolean no_message);
+void *search_allref(void /* WINDOW_DATA */ *win, const char *string, gboolean no_message);
 
 
 /*
