@@ -454,7 +454,7 @@ void HypPrepNode(DOCUMENT *doc)
 						default:
 							tagtype = "red";
 							g_free(tip);
-							tip = g_strdup_printf(_("Link to node of type %u not Implemented."), dst_type);
+							tip = g_strdup_printf(_("Link to node of type %u not implemented."), dst_type);
 							break;
 						}
 					} else

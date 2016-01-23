@@ -139,7 +139,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 		case HYP_NODE_EOF:
 		default:
 			{
-				char *str = g_strdup_printf(_("Link to node of type %u not Implemented."), info->dest_page);
+				char *str = g_strdup_printf(_("Link to node of type %u not implemented."), info->dest_page);
 				show_message(_("Error"), str, FALSE);
 				g_free(str);
 			}

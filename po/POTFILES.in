@@ -1,7 +1,21 @@
-# Auto-generated: Mon Aug 18 19:57:03 CEST 2014
+# Auto-generated: Sa 23. Jan 12:39:40 CET 2016
+gtk/gtk_comp.h
+gtk/hv_about.c
+gtk/hv_block.c
+gtk/hv_click.c
+gtk/hv_disp.c
+gtk/hv_eref.c
+gtk/hv_error.c
+gtk/hv_file.c
+gtk/hv_fsel.c
 gtk/hv_help.c
+gtk/hv_info.c
 gtk/hv_main.c
+gtk/hv_mark.c
 gtk/hv_misc.c
+gtk/hv_nav.c
+gtk/hv_srch.c
+gtk/hv_win.c
 hyp/bmp2gif.c
 hyp/bmp2img.c
 hyp/gif2bmp.c
@@ -12,8 +26,9 @@ hyp/hyp.c
 hyp/hyp_asc.c
 hyp/hyp_cset.c
 hyp/hyp_err.c
-hyp/hyp_file.c
+hyp/hypdoc.c
 hyp/hypfind.c
+hyp/icn2ico.c
 hyp/icn2img.c
 hyp/img2bmp.c
 hyp/picinfo.c
@@ -26,12 +41,12 @@ hyp/utl_prof.c
 hyp/win32.c
 hyp/xgetopt.c
 tools/help_rc.c
-tos/dl_help.c
 tos/dl_init.c
+tos/hv_curs.c
+tos/hv_disp.c
 tos/hv_eref.c
 tos/hv_error.c
 tos/hv_file.c
-tos/hv_info.c
 tos/hv_mark.c
 tos/hv_nav.c
 tos/hv_srch.c

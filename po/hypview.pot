@@ -1,19 +1,22 @@
-# French translation for hypview.
-# Copyright (C) 2001-2013 Thorsten Otto.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid  ""
 msgstr ""
-"Project-Id-Version: hypview HEAD\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-23 12:50+0100\n"
-"PO-Revision-Date: 2011-05-30 02:03+0200\n"
-"Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
-"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
-"Language: fr\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: gtk/gtk_comp.h:310
 msgid  "Close"
@@ -215,7 +218,7 @@ msgstr ""
 
 #: gtk/hv_help.c:312
 msgid  "hypview_en.chm"
-msgstr "hypview_fr.chm"
+msgstr ""
 
 #: gtk/hv_info.c:49
 msgid  "Programinfo..."
@@ -3208,7 +3211,7 @@ msgstr ""
 #: tos/dl_init.c:159
 #, c-format
 msgid  "[1][Error while loading |'%s'.][Cancel]"
-msgstr "[1][Impossible de trouver '%s'.][Annuler]"
+msgstr ""
 
 #: tos/hv_error.c:13
 #, c-format
