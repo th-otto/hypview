@@ -13,16 +13,16 @@ typedef FMT_ASCII FMT_BINARY;
 /*
  *		Ascii.c
  */
-void AsciiDisplayPage(DOCUMENT *doc);
-void AsciiGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
-gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
-long AsciiAutolocator(DOCUMENT *doc, long line, const char *search);
+void AsciiDisplayPage(WINDOW_DATA *win);
+void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
+gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
+long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search);
 unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *end);
 
 /*
  *		Binary.c
  */
-void BinaryDisplayPage(DOCUMENT *doc);
-void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
-gboolean BinaryBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
-long BinaryAutolocator(DOCUMENT *doc, long line, const char *search);
+void BinaryDisplayPage(WINDOW_DATA *win);
+void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
+gboolean BinaryBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
+long BinaryAutolocator(WINDOW_DATA *win, long line, const char *search);

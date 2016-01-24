@@ -1,5 +1,4 @@
-#include "hypdefs.h"
-#include "diallib.h"
+#include "hv_defs.h"
 #include "tos/mem.h"
 
 /******************************************************************************/

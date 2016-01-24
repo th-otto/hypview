@@ -27,19 +27,17 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void SelectAll(DOCUMENT *doc)
+void SelectAll(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
-
-	BlockSelectAll(doc, &doc->selection);
+	BlockSelectAll(win, &win->selection);
 	SendRedraw(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
+void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	GRECT work;
 	_WORD clip_rect[4];
 	short x, y;
@@ -65,10 +63,10 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 	vs_clip(vdi_handle, TRUE, clip_rect);	/* clipping ON */
 
 	/* shift pressed? -> extend selection */
-	if ((m_data->kstate & KbSHIFT) && doc->selection.valid)
+	if ((m_data->kstate & KbSHIFT) && win->selection.valid)
 	{
-		start = doc->selection.start;
-		end = doc->selection.end;
+		start = win->selection.start;
+		end = win->selection.end;
 #if 1
 		if (end.y < (win->docsize.y * win->y_raster))
 			oy = -win->y_raster;
@@ -91,14 +89,14 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 	} else
 	{
 		/* removes old selection */
-		if (doc->selection.valid)
-			DrawSelection(doc);
+		if (win->selection.valid)
+			DrawSelection(win);
 
 		x = m_data->x - work.g_x;
 		y = m_data->y - work.g_y - win->y_offset;
 		y -= y % font_ch;
 
-		doc->getCursorProc(doc, x, y, &start);
+		doc->getCursorProc(win, x, y, &start);
 		end = start;
 	}
 
@@ -187,7 +185,7 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 		}
 
 		/* calculate cursor position in text */
-		doc->getCursorProc(doc, x, y, &new);
+		doc->getCursorProc(win, x, y, &new);
 
 		x = (short)(new.x - win->docsize.x * font_cw);
 		y = new.y - (win->docsize.y * font_ch);
@@ -283,49 +281,49 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 
 		if ((start.line == end.line) && (start.offset == end.offset))
 		{
-			doc->selection.valid = FALSE;
+			win->selection.valid = FALSE;
 		} else
 		{
-			doc->selection.valid = TRUE;
+			win->selection.valid = TRUE;
 			if (start.line < end.line)
 			{
-				doc->selection.start.line = start.line;
-				doc->selection.start.y = start.y;
-				doc->selection.start.offset = start.offset;
-				doc->selection.start.x = start.x;
-				doc->selection.end.line = end.line;
-				doc->selection.end.y = end.y;
-				doc->selection.end.offset = end.offset;
-				doc->selection.end.x = end.x;
+				win->selection.start.line = start.line;
+				win->selection.start.y = start.y;
+				win->selection.start.offset = start.offset;
+				win->selection.start.x = start.x;
+				win->selection.end.line = end.line;
+				win->selection.end.y = end.y;
+				win->selection.end.offset = end.offset;
+				win->selection.end.x = end.x;
 			} else if (start.line > end.line)
 			{
-				doc->selection.start.line = end.line;
-				doc->selection.start.y = end.y;
-				doc->selection.start.offset = end.offset;
-				doc->selection.start.x = end.x;
-				doc->selection.end.line = start.line;
-				doc->selection.end.y = start.y;
-				doc->selection.end.offset = start.offset;
-				doc->selection.end.x = start.x;
+				win->selection.start.line = end.line;
+				win->selection.start.y = end.y;
+				win->selection.start.offset = end.offset;
+				win->selection.start.x = end.x;
+				win->selection.end.line = start.line;
+				win->selection.end.y = start.y;
+				win->selection.end.offset = start.offset;
+				win->selection.end.x = start.x;
 			} else
 			{
-				doc->selection.start.line = start.line;
-				doc->selection.start.y = start.y;
-				doc->selection.end.line = start.line;
-				doc->selection.end.y = start.y;
+				win->selection.start.line = start.line;
+				win->selection.start.y = start.y;
+				win->selection.end.line = start.line;
+				win->selection.end.y = start.y;
 
 				if (start.x < end.x)
 				{
-					doc->selection.start.offset = start.offset;
-					doc->selection.start.x = start.x;
-					doc->selection.end.offset = end.offset;
-					doc->selection.end.x = end.x;
+					win->selection.start.offset = start.offset;
+					win->selection.start.x = start.x;
+					win->selection.end.offset = end.offset;
+					win->selection.end.x = end.x;
 				} else
 				{
-					doc->selection.start.offset = end.offset;
-					doc->selection.start.x = end.x;
-					doc->selection.end.offset = start.offset;
-					doc->selection.end.x = start.x;
+					win->selection.start.offset = end.offset;
+					win->selection.start.x = end.x;
+					win->selection.end.offset = start.offset;
+					win->selection.end.x = start.x;
 				}
 			}
 		}
@@ -338,19 +336,16 @@ void MouseSelection(DOCUMENT *doc, EVNTDATA *m_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void RemoveSelection(DOCUMENT *doc)
+void RemoveSelection(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
-
-	doc->selection.valid = FALSE;				/* invalidate selection */
+	win->selection.valid = FALSE;				/* invalidate selection */
 	SendRedraw(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void DrawSelection(DOCUMENT *doc)
+void DrawSelection(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
 	GRECT work;
 	_WORD xy[4], x1, y1, x2, y2;
 	short vis_height;
@@ -361,16 +356,16 @@ void DrawSelection(DOCUMENT *doc)
 	vsf_perimeter(vdi_handle, FALSE);
 	vswr_mode(vdi_handle, MD_XOR);
 
-	if (!doc->selection.valid)				/* is something selected? */
+	if (!win->selection.valid)				/* is something selected? */
 		return;
 
 	wind_get_grect(win->whandle, WF_WORKXYWH, &work);
 
 	/* calculate window-relative coordinates of selection */
-	x1 = doc->selection.start.x - (short)(win->docsize.x * font_cw);
-	y1 = (_WORD) (doc->selection.start.y - (win->docsize.y * font_ch));
-	x2 = doc->selection.end.x - (short)(win->docsize.x * font_cw);
-	y2 = (_WORD) (doc->selection.end.y - (win->docsize.y * font_ch));
+	x1 = win->selection.start.x - (short)(win->docsize.x * font_cw);
+	y1 = (_WORD) (win->selection.start.y - (win->docsize.y * font_ch));
+	x2 = win->selection.end.x - (short)(win->docsize.x * font_cw);
+	y2 = (_WORD) (win->selection.end.y - (win->docsize.y * font_ch));
 
 	vis_height = work.g_h - win->y_offset;
 	if ((y1 >= vis_height) || (y2 < 0))

@@ -5,13 +5,13 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-char *HypGetTextLine(DOCUMENT *doc, HYP_NODE *node, long line)
+char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 {
-	WINDOW_DATA *win;
+	DOCUMENT *doc;
 	GtkTextIter start, end;
 	char *txt;
 	
-	if (doc == NULL || doc->data == NULL || (win = doc->window) == NULL || node == NULL || line < 0 || line >= node->lines)
+	if (win == NULL || (doc = win->data) == NULL || doc->data == NULL || node == NULL || line < 0 || line >= node->lines)
 		return NULL;
 
 	gtk_text_buffer_get_iter_at_line(win->text_buffer, &start, line);
@@ -28,8 +28,9 @@ char *HypGetTextLine(DOCUMENT *doc, HYP_NODE *node, long line)
 
 /*** ---------------------------------------------------------------------- ***/
 
-long HypAutolocator(DOCUMENT *doc, long line, const char *search)
+long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 {
+	DOCUMENT *doc = hypwin_doc(win);
 	const char *src;
 	HYP_NODE *node;
 	char *temp;
@@ -53,7 +54,7 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 	{
 		while (line < node->lines)
 		{
-			temp = HypGetTextLine(doc, node, line);
+			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
 				src = temp;
@@ -74,7 +75,7 @@ long HypAutolocator(DOCUMENT *doc, long line, const char *search)
 	{
 		while (line > 0)
 		{
-			temp = HypGetTextLine(doc, node, line);
+			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
 				src = temp;

@@ -179,7 +179,6 @@ int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *heig
 					return NoValue;
 				strind = nextCharacter;
 				mask |= YNegative;
-
 			} else
 			{
 				strind++;
@@ -280,13 +279,13 @@ static void NOINLINE hv_win_delete(WINDOW_DATA *win)
 	if (win != NULL)
 	{
 		doc = win->data;
-		if (doc->popup)
+		if (win->popup)
 		{
-			WINDOW_DATA *pop = (WINDOW_DATA *)(doc->popup);
-			doc->popup = NULL;
+			WINDOW_DATA *pop = win->popup;
+			win->popup = NULL;
 			gtk_widget_destroy(pop->hwnd);
 		}
-		HypCloseFile(doc);
+		hypdoc_unref(doc);
 		RemoveAllHistoryEntries(win);
 		all_list = g_slist_remove(all_list, win);
 		g_free(win->m_geometry);
@@ -333,7 +332,7 @@ static void on_select_source(GtkAction *action, WINDOW_DATA *win)
 static void on_save(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	SelectFileSave(win->data);
+	SelectFileSave(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -341,7 +340,7 @@ static void on_save(GtkAction *action, WINDOW_DATA *win)
 static void on_font_select(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	SelectFont(win->data);
+	SelectFont(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -367,7 +366,7 @@ static void on_output_settings(GtkAction *action, WINDOW_DATA *win)
 static void on_switch_font(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	SwitchFont(win->data);
+	SwitchFont(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -381,7 +380,7 @@ static void on_expand_spaces(GtkAction *action, WINDOW_DATA *win)
 		if (doc && doc->prepNode)
 		{
 			doc->start_line = hv_win_topline(win);
-			ReInitWindow(doc);
+			ReInitWindow(win);
 		}
 	}
 }
@@ -443,27 +442,24 @@ static void on_about(GtkAction *action, WINDOW_DATA *win)
 
 static void on_back(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoBack(doc);
+	GoBack(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_clearstack(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	BlockOperation(doc, CO_DELETE_STACK);
+	BlockOperation(win, CO_DELETE_STACK);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_history(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	ToolbarClick(doc, TO_HISTORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
+	ToolbarClick(win, TO_HISTORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -486,18 +482,16 @@ static void on_defaultfile(GtkAction *action, WINDOW_DATA *win)
 
 static void on_help(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GotoHelp(doc);
+	GotoHelp(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_bookmarks(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	ToolbarClick(doc, TO_MEMORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
+	ToolbarClick(win, TO_MEMORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -512,81 +506,72 @@ static void on_bookmarks_menu(GtkAction *action, WINDOW_DATA *win)
 
 static void on_next(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_NEXT);
+	GoThisButton(win, TO_NEXT);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_nextphys(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_NEXT_PHYS);
+	GoThisButton(win, TO_NEXT_PHYS);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_prev(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_PREV);
+	GoThisButton(win, TO_PREV);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_prevphys(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_PREV_PHYS);
+	GoThisButton(win, TO_PREV_PHYS);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_toc(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_HOME);
+	GoThisButton(win, TO_HOME);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_first(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_FIRST);
+	GoThisButton(win, TO_FIRST);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_last(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GoThisButton(doc, TO_LAST);
+	GoThisButton(win, TO_LAST);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_index(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	GotoIndex(doc);
+	GotoIndex(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void on_xref(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	UNUSED(action);
-	HypExtRefPopup(doc, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
+	HypExtRefPopup(win, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -603,7 +588,7 @@ static void on_quit(GtkAction *action, WINDOW_DATA *win)
 static void on_info(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	ProgrammInfos(win->data);
+	DocumentInfos(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -619,7 +604,7 @@ static void on_close(GtkAction *action, WINDOW_DATA *win)
 static void on_remarker(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	BlockOperation(win->data, CO_REMARKER);
+	BlockOperation(win, CO_REMARKER);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -691,7 +676,7 @@ static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer 
 		WINDOW_DATA *win = (WINDOW_DATA *)user_data;
 		void *pbutton = g_object_get_data(G_OBJECT(w), "buttonnumber");
 		enum toolbutton button_num = (enum toolbutton)(int)(intptr_t)pbutton;
-		ToolbarClick(win->data, button_num, event->button, event->time);
+		ToolbarClick(win, button_num, event->button, event->time);
 		return TRUE;
 	}
 	return FALSE;
@@ -815,7 +800,7 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 	if (event->button != GDK_BUTTON_PRIMARY)
 		return FALSE;
 
-	CheckFiledate(win->data);
+	CheckFiledate(win);
 	
 	buffer = win->text_buffer;
 
@@ -888,27 +873,27 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 		break;
 	case GDK_KEY_Left:
 		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
-			GoThisButton(doc, TO_PREV);
+			GoThisButton(win, TO_PREV);
 		else if ((event->state & GDK_SHIFT_MASK))
 			hv_scroll_window(win, -win_w, 0);
 		else if ((event->state & GDK_CONTROL_MASK))
-			GoThisButton(doc, TO_PREV);
+			GoThisButton(win, TO_PREV);
 		else
 			hv_scroll_window(win, -win->x_raster, 0);
 		break;
 	case GDK_KEY_Right:
 		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
-			GoThisButton(doc, TO_NEXT);
+			GoThisButton(win, TO_NEXT);
 		else if ((event->state & GDK_SHIFT_MASK))
 			hv_scroll_window(win, win_w, 0);
 		else if ((event->state & GDK_CONTROL_MASK))
-			GoThisButton(doc, TO_NEXT);
+			GoThisButton(win, TO_NEXT);
 		else
 			hv_scroll_window(win, win->x_raster, 0);
 		break;
 	case GDK_KEY_Up:
 		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
-			GoThisButton(doc, TO_PREV);
+			GoThisButton(win, TO_PREV);
 		else if ((event->state & GDK_SHIFT_MASK))
 			hv_scroll_window(win, 0, -win_h);
 		else if ((event->state & GDK_CONTROL_MASK))
@@ -918,7 +903,7 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 		break;
 	case GDK_KEY_Down:
 		if ((event->state & GDK_SHIFT_MASK) && (event->state & GDK_CONTROL_MASK))
-			GoThisButton(doc, TO_NEXT);
+			GoThisButton(win, TO_NEXT);
 		else if ((event->state & GDK_SHIFT_MASK))
 			hv_scroll_window(win, 0, win_h);
 		else if ((event->state & GDK_CONTROL_MASK))
@@ -927,29 +912,29 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 			hv_scroll_window(win, 0, win->y_raster);
 		break;
 	case GDK_KEY_KP_Subtract:
-		GoThisButton(doc, TO_PREV);
+		GoThisButton(win, TO_PREV);
 		break;
 	case GDK_KEY_KP_Add:
-		GoThisButton(doc, TO_NEXT);
+		GoThisButton(win, TO_NEXT);
 		break;
 	case GDK_KEY_KP_Divide:
-		GoThisButton(doc, TO_PREV_PHYS);
+		GoThisButton(win, TO_PREV_PHYS);
 		break;
 	case GDK_KEY_KP_Multiply:
-		GoThisButton(doc, TO_NEXT_PHYS);
+		GoThisButton(win, TO_NEXT_PHYS);
 		break;
 	case GDK_KEY_Help:
-		GotoHelp(doc);
+		GotoHelp(win);
 		break;
 	case GDK_KEY_Escape:
 	case GDK_KEY_BackSpace:
 		if (!(doc->buttons.searchbox))
-			GoThisButton(doc, TO_BACK);
+			GoThisButton(win, TO_BACK);
 		else
 			handled = FALSE;
 		break;
 	case GDK_KEY_Undo:
-		GoThisButton(doc, TO_BACK);
+		GoThisButton(win, TO_BACK);
 		break;
 	case GDK_KEY_Page_Up:			/* already handled by GtkTextView */
 	case GDK_KEY_Page_Down:			/* already handled by GtkTextView */
@@ -970,8 +955,15 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 		break;
 	}
 	if (!handled)
-		handled = AutolocatorKey(doc, event);
+		handled = AutolocatorKey(win, event);
 	return handled;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+DOCUMENT *hypwin_doc(WINDOW_DATA *win)
+{
+	return win->data;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1018,7 +1010,7 @@ static void populate_popup(GtkWidget *text_view, GtkMenu *menu, WINDOW_DATA *win
 static void paste_clipboard(GtkWidget *text_view, WINDOW_DATA *win)
 {
 	UNUSED(text_view);
-	BlockOperation(win->data, CO_PASTE);
+	BlockOperation(win, CO_PASTE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1026,7 +1018,7 @@ static void paste_clipboard(GtkWidget *text_view, WINDOW_DATA *win)
 static void on_select_all(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	BlockOperation(win->data, CO_SELECT_ALL);
+	BlockOperation(win, CO_SELECT_ALL);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1034,7 +1026,7 @@ static void on_select_all(GtkAction *action, WINDOW_DATA *win)
 static void on_paste_clipboard(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	BlockOperation(win->data, CO_PASTE);
+	BlockOperation(win, CO_PASTE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1042,7 +1034,7 @@ static void on_paste_clipboard(GtkAction *action, WINDOW_DATA *win)
 static void copy_clipboard(GtkWidget *text_view, WINDOW_DATA *win)
 {
 	UNUSED(text_view);
-	BlockOperation(win->data, CO_COPY);
+	BlockOperation(win, CO_COPY);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1050,7 +1042,7 @@ static void copy_clipboard(GtkWidget *text_view, WINDOW_DATA *win)
 static void on_copy_clipboard(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	BlockOperation(win->data, CO_COPY);
+	BlockOperation(win, CO_COPY);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1058,7 +1050,7 @@ static void on_copy_clipboard(GtkAction *action, WINDOW_DATA *win)
 static void on_search(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	BlockOperation(win->data, CO_SEARCH);
+	BlockOperation(win, CO_SEARCH);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1066,7 +1058,7 @@ static void on_search(GtkAction *action, WINDOW_DATA *win)
 static void on_search_again(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	BlockOperation(win->data, CO_SEARCH_AGAIN);
+	BlockOperation(win, CO_SEARCH_AGAIN);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1524,7 +1516,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	
 	register_stock_icons();
 	
-	win->hwnd = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	win->hwnd = gtk_window_new(popup ? GTK_WINDOW_POPUP : GTK_WINDOW_TOPLEVEL);
 	g_object_set_data(G_OBJECT(win->hwnd), "shell-dialog", win);
 	g_object_set_data(G_OBJECT(win->hwnd), "hypview_window_type", NO_CONST("shell-window"));
 	win->title = doc->window_title;
@@ -1652,6 +1644,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_widget_show(win->text_view);
 	gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(win->text_view), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(win->text_view), GTK_WRAP_NONE); 
 	gtk_widget_set_can_focus(win->text_view, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
@@ -1667,7 +1660,6 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 			g_object_set(settings, "gtk-error-bell", FALSE, NULL);
 	}
 	
-	g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->hwnd), "window-state-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->hwnd), "frame-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
@@ -1679,15 +1671,14 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	
     set_font_attributes(win);
 	
-	all_list = g_slist_prepend(all_list, win);
-
 	if (!popup)
 	{
+		all_list = g_slist_prepend(all_list, win);
+
+		g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
 		g_signal_connect(G_OBJECT(win->hwnd), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) win);
 
-		doc->window = win;
-	
-		ToolbarUpdate(doc, FALSE);
+		ToolbarUpdate(win, FALSE);
 	}
 	
 	return win;
@@ -1798,9 +1789,9 @@ void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ReInitWindow(DOCUMENT *doc)
+void ReInitWindow(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	GdkWindow *window;
 	
 	win->data = doc;
@@ -1812,7 +1803,7 @@ void ReInitWindow(DOCUMENT *doc)
 		gdk_window_set_cursor(window, regular_cursor);
 	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
 	set_font_attributes(win);
-	doc->prepNode(doc);
+	doc->prepNode(win);
 	
 	/* adjust window size to new dimensions */
 	if (gl_profile.viewer.adjust_winsize)
@@ -1824,6 +1815,6 @@ void ReInitWindow(DOCUMENT *doc)
 		hv_win_scroll_to_line(win, doc->start_line);
 	}
 	
-	ToolbarUpdate(doc, FALSE);
+	ToolbarUpdate(win, FALSE);
 	SendRedraw(win);
 }

@@ -39,9 +39,9 @@ static void AutolocatorInit(DOCUMENT *doc)
 /*** ---------------------------------------------------------------------- ***/
 
 /* Update the autolocator and start a search */
-static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
+static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	long line = start_line;
 	const char *search;
 	
@@ -54,7 +54,7 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 	search = gtk_entry_get_text(GTK_ENTRY(win->searchentry));
 	if (!empty(search))
 	{
-		line = doc->autolocProc(doc, start_line, search);
+		line = doc->autolocProc(win, start_line, search);
 	}
 
 	if (line >= 0)
@@ -74,9 +74,9 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 /*** ---------------------------------------------------------------------- ***/
 
 /* add a new character to the Autolocator and start search */
-gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
+gboolean AutolocatorKey(WINDOW_DATA *win, GdkEventKey *event)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	long line = hv_win_topline(win);
 	gint len;
 	
@@ -117,7 +117,7 @@ gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 			gtk_entry_set_text(GTK_ENTRY(win->searchentry), "");
 		} else
 		{
-			RemoveSearchBox(doc);
+			RemoveSearchBox(win);
 		}
 		break;
 	case GDK_KEY_space:
@@ -144,8 +144,8 @@ gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 		break;
 	}
 
-	ToolbarUpdate(doc, FALSE);
-	AutolocatorUpdate(doc, line);
+	ToolbarUpdate(win, FALSE);
+	AutolocatorUpdate(win, line);
 
 	return TRUE;
 }
@@ -153,9 +153,9 @@ gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event)
 /*** ---------------------------------------------------------------------- ***/
 
 /* insert contents of clipboard in autolocator. */
-void AutoLocatorPaste(DOCUMENT *doc)
+void AutoLocatorPaste(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	
 	if (!doc->buttons.searchbox)
 		return;

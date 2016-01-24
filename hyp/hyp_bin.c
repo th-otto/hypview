@@ -2,13 +2,18 @@
 #include "hv_ascii.h"
 #include "hypdebug.h"
 
+#ifdef __PUREC__
+struct _window_data_ { int dummy; };
+#endif
+
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-long BinaryAutolocator(DOCUMENT *doc, long line, const char *search)
+long BinaryAutolocator(WINDOW_DATA *win, long line, const char *search)
 {
+	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
 	const unsigned char *src, *end;
 	size_t len = strlen(search);
@@ -44,8 +49,9 @@ long BinaryAutolocator(DOCUMENT *doc, long line, const char *search)
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean BinaryBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
+gboolean BinaryBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param)
 {
+	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
 
 	if (!block->valid)

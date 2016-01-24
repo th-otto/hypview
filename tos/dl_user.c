@@ -31,14 +31,13 @@
 #define AC_HELP		1025				/* PureC Hilfe-Protokoll */
 
 static hyp_nodenr last_node;
-static char last_path[DL_PATHMAX];
-static HISTORY *last_history = NULL;
+static char *last_path;
 
 /*******************************************************/
 /****** Events                                    ******/
 /*******************************************************/
 
-void DoButton(EVNT * event)
+void DoButton(EVNT *event)
 {
 	UNUSED(event);
 
@@ -59,16 +58,11 @@ void DoUserEvents(EVNT *event)
 			{
 				WINDOW_DATA *win = NULL;
 				
-				if (count_window() == 0 && last_path[0] != '\0')
+				if (count_window() == 0 && !empty(last_path))
 				{
 					win = OpenFileInWindow(NULL, last_path, NULL, last_node, FALSE, TRUE, FALSE);
 					if (win)
 					{
-#if 0
-						SetLastHistory(win, last_history);
-	 					DeleteLastHistory(last_history);
-	 					last_history = NULL;
-#endif
 					}
 				}
 	
@@ -101,6 +95,12 @@ void DoUserEvents(EVNT *event)
 
 		case AC_CLOSE:
 			event->mwhich &= ~MU_MESAG;
+			{
+				/* window handles are no longer valid when we receive this message */
+				CHAIN_DATA *ptr;
+				for (ptr = all_list; ptr; ptr = ptr->next)
+					ptr->whandle = -1;
+			}
 			RemoveItems();
 			va_proto_init();
 			break;
@@ -128,27 +128,20 @@ void DoUserEvents(EVNT *event)
 				 * MU_MESAG must not be removed otherwise
 				 * the window will not be closed
 				 */
-				CHAIN_DATA *ptr;
+				WINDOW_DATA *win;
 	
-				ptr = find_ptr_by_whandle(event->msg[3]);
-				if (ptr && (ptr->status & WIS_OPEN) && ptr->type == WIN_WINDOW)
+				win = find_window_by_whandle(event->msg[3]);
+				if (win && (win->status & WIS_OPEN) && win->owner == gl_apid)
 				{
 					if (count_window() == 1)
 					{
-						WINDOW_DATA *data;
+						DOCUMENT *doc;
 	
-						data = find_window_by_whandle(event->msg[3]);
-						if (data != NULL && data->owner == gl_apid)
-						{
-							DOCUMENT *doc;
-	
-							doc = (DOCUMENT *) data->data;
-							last_node = doc->getNodeProc(doc);
-							strcpy(last_path, doc->path);
-							last_history = GetLastHistory();
-						}
+						doc = (DOCUMENT *) win->data;
+						last_node = doc->getNodeProc(doc);
+						g_free(last_path);
+						last_path = g_strdup(doc->path);
 					}
-	
 				}
 			}
 			break;
@@ -317,11 +310,6 @@ void DoVA_START(_WORD msg[8])
 
 			if (count == 0 && win != NULL)
 			{
-#if 0
-				SetLastHistory(win, last_history);
-				DeleteLastHistory(last_history);
-				last_history = NULL;
-#endif
 			}
 			g_free(filename);
 			g_free(arg);

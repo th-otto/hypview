@@ -7,9 +7,9 @@ static int HypfindID = -1;
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_text(DOCUMENT *doc)
+static void hypfind_text(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	long line = hv_win_topline(win);
 	long start_line = line;
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
@@ -17,7 +17,7 @@ static void hypfind_text(DOCUMENT *doc)
 	doc->autolocator_dir = 1;
 	if (!empty(search))
 	{
-		line = doc->autolocProc(doc, start_line, search);
+		line = doc->autolocProc(win, start_line, search);
 	}
 	if (line >= 0)
 	{
@@ -34,9 +34,9 @@ static void hypfind_text(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_page(DOCUMENT *doc)
+static void hypfind_page(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *name = gtk_entry_get_text(GTK_ENTRY(entry));
 	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
@@ -78,8 +78,9 @@ static gboolean check_hypfind(void *userdata)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_run_hypfind(DOCUMENT *doc, gboolean all_hyp)
+static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 {
+	DOCUMENT *doc = win->data;
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *argv[5];
 	int argc = 0;
@@ -103,12 +104,12 @@ static void hypfind_run_hypfind(DOCUMENT *doc, gboolean all_hyp)
 	HypfindID = hyp_utf8_spawnvp(P_NOWAIT, argc, argv);
 	g_free(filename);
 	if (HypfindID > 0)
-		g_timeout_add(20, check_hypfind, doc->window);
+		g_timeout_add(20, check_hypfind, win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Hypfind(DOCUMENT *doc, gboolean again)
+void Hypfind(WINDOW_DATA *win, gboolean again)
 {
 	gint resp;
 	
@@ -174,7 +175,7 @@ void Hypfind(DOCUMENT *doc, gboolean again)
 
 	if (again && can_search_again)
 	{
-		hypfind_text(doc);
+		hypfind_text(win);
 		return;
 	}
 
@@ -186,19 +187,19 @@ void Hypfind(DOCUMENT *doc, gboolean again)
 	switch (resp)
 	{
 	case 1:
-		hypfind_text(doc);
+		hypfind_text(win);
 		break;
 	case 2:
-		hypfind_page(doc);
+		hypfind_page(win);
 		break;
 	case 3:
-		hypfind_search_allref(doc->window);
+		hypfind_search_allref(win);
 		break;
 	case 4:
-		hypfind_run_hypfind(doc, FALSE);
+		hypfind_run_hypfind(win, FALSE);
 		break;
 	case 5:
-		hypfind_run_hypfind(doc, TRUE);
+		hypfind_run_hypfind(win, TRUE);
 		break;
 	}
 }

@@ -36,9 +36,9 @@ static void MarkerDelete(short num)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerSave(DOCUMENT *doc, short num)
+void MarkerSave(WINDOW_DATA *win, short num)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	const char *src;
 	char *dst, *end;
 
@@ -87,9 +87,9 @@ void MarkerSave(DOCUMENT *doc, short num)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
+void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 
 	/* avoid illegal parameters */
 	if (num < 0 || num >= MAX_MARKEN)
@@ -101,7 +101,7 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 		if (win != NULL)
 		{
 			doc = win->data;
-			GotoPage(doc, marken[num].node_num, marken[num].line, FALSE);
+			GotoPage(win, marken[num].node_num, marken[num].line, FALSE);
 		}
 	}
 }
@@ -124,14 +124,14 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 	{
 		if (mask & GDK_SHIFT_MASK)
 		{
-			MarkerSave(doc, sel);
+			MarkerSave(win, sel);
 		} else if (marken[sel].node_num == HYP_NOINDEX)
 		{
 			char *buff;
 
 			buff = g_strdup_printf(_("Do you want to add\n%s\nto your bookmarks?"), doc->window_title);
 			if (ask_yesno(GTK_WINDOW(win->hwnd), buff))
-				MarkerSave(doc, sel);
+				MarkerSave(win, sel);
 			g_free(buff);
 		} else
 		{
@@ -148,7 +148,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 				g_free(buff);
 			} else
 			{
-				MarkerShow(doc, sel, (mask & GDK_CONTROL_MASK) != 0);
+				MarkerShow(win, sel, (mask & GDK_CONTROL_MASK) != 0);
 			}
 		}
 	}
@@ -179,9 +179,8 @@ void MarkerUpdate(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time)
+void MarkerPopup(WINDOW_DATA *win, int button, guint32 event_time)
 {
-	WINDOW_DATA *win = doc->window;
 	GtkWidget *menu;
 	struct popup_pos popup_pos;
 	
@@ -191,7 +190,7 @@ void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time)
 	MarkerUpdate(win);
 	menu = win->bookmarks_menu;
 	
-	popup_pos.doc = doc;
+	popup_pos.window = win;
 	popup_pos.obj = TO_MEMORY;
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
 }

@@ -36,12 +36,13 @@
  * Initialize and activate the autolocator.
  * Returns position of next character
  */
-static char *AutolocatorInit(DOCUMENT * doc)
+static char *AutolocatorInit(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	char *ptr;
-
+	
 	/* memory already allocated? */
-	if (doc->autolocator == NULL)
+	if (win->autolocator == NULL)
 	{
 		ptr = g_new(char, AUTOLOC_SIZE);
 		if (ptr == NULL)
@@ -49,13 +50,13 @@ static char *AutolocatorInit(DOCUMENT * doc)
 			form_alert(1, rs_string(DI_MEMORY_ERROR));
 			return NULL;
 		}
-		doc->autolocator = ptr;
+		win->autolocator = ptr;
 		ptr[AUTOLOC_SIZE - 1] = 0;
 		*ptr = 0;
 	} else
 	{
 		/* to end of string */
-		ptr = doc->autolocator;
+		ptr = win->autolocator;
 		while (*ptr)
 			ptr++;
 	}
@@ -88,11 +89,10 @@ static void autolocator_redraw(WINDOW_DATA *win, _WORD obj, GRECT *tbar)
 /*** ---------------------------------------------------------------------- ***/
 
 /* Update the autolocator and start a search */
-static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
+static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	GRECT tbar;
-
 	long line = start_line;
 
 	if (!doc->buttons.searchbox)
@@ -110,10 +110,10 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 	autolocator_redraw(win, TO_BACKGRND, &tbar);
 
 	/* if autolocator is not empty... */
-	if (*doc->autolocator)
+	if (*win->autolocator)
 	{
 		graf_mouse(BUSY_BEE, NULL);
-		line = doc->autolocProc(doc, start_line, doc->autolocator);
+		line = doc->autolocProc(win, start_line, win->autolocator);
 		graf_mouse(ARROW, NULL);
 	}
 
@@ -136,21 +136,21 @@ static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
 /*** ---------------------------------------------------------------------- ***/
 
 /* add a new character to the Autolocator and start search */
-gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
+gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	char *ptr;
 	long line = win->docsize.y;
 
 	if (!ascii)
 		return FALSE;
 
-	ptr = AutolocatorInit(doc);
+	ptr = AutolocatorInit(win);
 	doc->autolocator_dir = 1;
 
 	if (ascii == 8)						/* Backspace */
 	{
-		if (ptr > doc->autolocator)
+		if (ptr > win->autolocator)
 			ptr--;
 		*ptr = 0;
 	} else if (ascii == 13)				/* Return */
@@ -163,23 +163,23 @@ gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 			line++;
 	} else if (ascii == 27)				/* Escape */
 	{
-		if (ptr > doc->autolocator)
+		if (ptr > win->autolocator)
 		{
-			ptr = doc->autolocator;
+			ptr = win->autolocator;
 			*ptr = 0;
 		} else
 		{
-			RemoveSearchBox(doc);
+			RemoveSearchBox(win);
 		}
 	} else if (ascii == ' ')
 	{
 		/* ignore space at start of string */
-		if (ptr != doc->autolocator)
+		if (ptr != win->autolocator)
 			*ptr++ = ' ';
 		*ptr = 0;
 	} else if (ascii > ' ')
 	{
-		if (ptr - doc->autolocator < AUTOLOC_SIZE)
+		if (ptr - win->autolocator < AUTOLOC_SIZE)
 		{
 			*ptr++ = ascii;
 			*ptr = 0;
@@ -190,8 +190,8 @@ gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 		}
 	}
 
-	ToolbarUpdate(doc, FALSE);
-	AutolocatorUpdate(doc, line);
+	ToolbarUpdate(win, FALSE);
+	AutolocatorUpdate(win, line);
 
 	return TRUE;
 }
@@ -199,9 +199,8 @@ gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
 /*** ---------------------------------------------------------------------- ***/
 
 /* insert contents of clipboard in autolocator. */
-void AutoLocatorPaste(DOCUMENT *doc)
+void AutoLocatorPaste(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
 	int ret;
 	char *scrap_file;
 
@@ -218,7 +217,7 @@ void AutoLocatorPaste(DOCUMENT *doc)
 		ssize_t error;
 		char c, *ptr;
 
-		ptr = AutolocatorInit(doc);
+		ptr = AutolocatorInit(win);
 
 		error = read(ret, &c, 1);
 		while (error == 1)
@@ -226,12 +225,12 @@ void AutoLocatorPaste(DOCUMENT *doc)
 			if (c == ' ')
 			{
 				/* ignore spaces at start */
-				if (ptr != doc->autolocator)
+				if (ptr != win->autolocator)
 					*ptr++ = c;
 				*ptr = 0;
 			} else if (c > ' ')
 			{
-				if ((ptr - doc->autolocator) >= (AUTOLOC_SIZE - 1))
+				if ((ptr - win->autolocator) >= (AUTOLOC_SIZE - 1))
 					break;
 				*ptr++ = c;
 				*ptr = 0;
@@ -240,7 +239,7 @@ void AutoLocatorPaste(DOCUMENT *doc)
 		}
 		close(ret);
 
-		ToolbarUpdate(doc, FALSE);
-		AutolocatorUpdate(doc, win->docsize.y);
+		ToolbarUpdate(win, FALSE);
+		AutolocatorUpdate(win, win->docsize.y);
 	}
 }

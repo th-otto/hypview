@@ -44,6 +44,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 {
 	DOCUMENT *doc = NULL;
 	char *real_path;
+	gboolean add_to_hist = TRUE;
 	
 	/* done if we don't have a name */
 	if (empty(path))
@@ -63,62 +64,57 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	if (new_window > 1)
 	{
 		win = NULL;
-	} else if (new_window)
+	} else if (new_window || win == NULL)
 	{
 		DOCUMENT *doc2;
 		GSList *l;
+		WINDOW_DATA *win2;
 		
 		/* is there a window for that file already? */
 		win = NULL;
 		for (l = all_list; l; l = l->next)
 		{
-			win = (WINDOW_DATA *)l->data;
-			doc2 = win->data;
+			win2 = (WINDOW_DATA *)l->data;
+			doc2 = win2->data;
 			if (filename_cmp(doc2->path, real_path) == 0)
 			{
-				AddHistoryEntry(win);
-				doc = doc2;
+				if (win == NULL)
+					win = win2;
+				doc = hypdoc_ref(doc2);
 				break;
 			}
 		}
 	} else if (win != NULL)
 	{
-		DOCUMENT *prev_doc = win->data;
-
-		AddHistoryEntry(win);
-
-		/* is that file already loaded in this window? */
-		if (filename_cmp(prev_doc->path, real_path) == 0)
+		DOCUMENT *doc2;
+		GSList *l;
+		WINDOW_DATA *win2;
+		
+		/* is there a window for that file already? */
+		for (l = all_list; l; l = l->next)
 		{
-			doc = prev_doc;
-			win->data = prev_doc->next;
-			prev_doc->next = NULL;
-		} else
-		{
-			prev_doc->closeProc(prev_doc);
-
-			doc = prev_doc->next;
-			while (doc)
+			win2 = (WINDOW_DATA *)l->data;
+			doc2 = win2->data;
+			if (filename_cmp(doc2->path, real_path) == 0)
 			{
-				if (filename_cmp(doc->path, real_path) == 0)
-				{
-					prev_doc->next = doc->next;
-					doc->next = NULL;
-					break;
-				}
-				prev_doc = doc;
-				doc = doc->next;
+				doc = hypdoc_ref(doc2);
+				break;
 			}
 		}
 	}
 
 	/* load and initialize hypertext file if neccessary */
 	if (doc == NULL)
+	{
 		doc = HypOpenFile(real_path, FALSE);
+	}
 	g_free(real_path);
 	
 	if (doc != NULL)
 	{
+		gboolean found = FALSE;
+		DOCUMENT *prev_doc;
+		
 		if (!doc->data)
 		{
 			int ret;
@@ -132,6 +128,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			} else
 			{
 				FileErrorErrno(hyp_basename(doc->path));
+				found = TRUE; /* do not issue another error */
 			}
 		}
 
@@ -140,49 +137,50 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		{
 			win = hv_win_new(doc, FALSE);
 			new_window = 1;
+			add_to_hist = FALSE;
+			prev_doc = NULL;
 		} else
 		{
-			doc->next = win->data;
+			prev_doc = win->data;
 			win->data = doc;
 		}
-		doc->window = win;
 		doc->start_line = 0;
-		if (doc->gotoNodeProc(doc, chapter, node))
+		if (add_to_hist)
+			AddHistoryEntry(win, prev_doc);
+		if (doc->gotoNodeProc(win, chapter, node))
 		{
-			ReInitWindow(doc);
+			found = TRUE;
+			ReInitWindow(win);
 			hv_win_open(win);
 		} else if (find_default)
 		{
-			doc->gotoNodeProc(doc, NULL, HYP_NOINDEX);
-			ReInitWindow(doc);
+			doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
+			ReInitWindow(win);
 			hv_win_open(win);
-			if (!no_message)
-			{
-				char *str;
-				char *name;
-				gboolean converror = FALSE;
-				
-				if (chapter)
-					name = hyp_utf8_to_charset(hyp_get_current_charset(), chapter, STR0TERM, &converror);
-				else
-					name = g_strdup(hyp_default_main_node_name);
-				str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, name);
-				show_message(_("Error"), str, FALSE);
-				g_free(name);
-				g_free(str);
-			}
 		} else
 		{
 			if (new_window)
 			{
 				gtk_widget_destroy(win->hwnd);
-			} else
-			{
-				win->data = doc->next;
-				doc->next = NULL;
 			}
 			win = NULL;
 		}
+		if (!found && !no_message)
+		{
+			char *str;
+			char *name;
+			gboolean converror = FALSE;
+			
+			if (chapter)
+				name = hyp_utf8_to_charset(hyp_get_current_charset(), chapter, STR0TERM, &converror);
+			else
+				name = g_strdup(hyp_default_main_node_name);
+			str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, name);
+			show_message(_("Error"), str, FALSE);
+			g_free(name);
+			g_free(str);
+		}
+		hypdoc_unref(prev_doc);
 	} else
 	{
 		win = NULL;
@@ -195,8 +193,9 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 
 /* Verifies the current documents file modification time/date and reloads the
  * document if necessary. This behaviour is enabled by the CHECK_TIME option. */
-void CheckFiledate(DOCUMENT *doc)
+void CheckFiledate(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	struct stat st;
 	int ret;
 	
@@ -210,49 +209,42 @@ void CheckFiledate(DOCUMENT *doc)
 		{
 			hyp_nodenr node;
 			long lineno = 0;
+			int ref_count = 0;
 			
 			node = doc->getNodeProc(doc);	/* Remember current node */
-			if (doc->window)
-				lineno = hv_win_topline(doc->window);
-			doc->closeProc(doc);			/* Close document */
-
+			lineno = hv_win_topline(win);
+			if (doc->data && doc->type == HYP_FT_HYP)
+			{
+				HYP_DOCUMENT *hyp = doc->data;
+				ref_count = hyp->ref_count;
+				hyp->ref_count = 1;
+				doc->data = hyp_unref(hyp);
+			} else
+			{
+				doc->closeProc(doc);			/* Close document */
+			}
+							
 			/* Reload file */
 			ret = hyp_utf8_open(doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 			if (ret >= 0)
 			{
 				LoadFile(doc, ret, FALSE);
 				hyp_utf8_close(ret);
+				if (doc->data && doc->type == HYP_FT_HYP)
+				{
+					HYP_DOCUMENT *hyp = doc->data;
+					hyp->ref_count = ref_count;
+				}
 			} else
 			{
 				FileErrorErrno(hyp_basename(doc->path));
 			}
 
 			/* jump to previously active node */
-			doc->gotoNodeProc(doc, NULL, node);
+			doc->gotoNodeProc(win, NULL, node);
 			
 			doc->start_line = lineno;
-			ReInitWindow(doc);
+			ReInitWindow(win);
 		}
 	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp)
-{
-	WINDOW_DATA *ptr;
-	GSList *l;
-	
-	/*
-	 * check if file is still in use by another window
-	 */
-	for (l = all_list; l; l = l->next)
-	{
-		ptr = (WINDOW_DATA *)l->data;
-		if (ptr->data &&
-			ptr->data != doc &&
-			((DOCUMENT *)ptr->data)->data == hyp)
-			return;
-	}
-	hyp_delete(hyp);
 }

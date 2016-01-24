@@ -5,6 +5,7 @@
 
 /* Anonymous document type specific functions */
 typedef struct _document_ DOCUMENT;
+typedef struct _window_data_ WINDOW_DATA;
 
 
 typedef struct {
@@ -27,13 +28,24 @@ typedef enum {
 } hyp_blockop;
 
 
-typedef	void (*DOC_PROC1)(DOCUMENT *doc);
+typedef struct _history_  HISTORY;
+struct _history_
+{
+	HISTORY *next;               /* Pointer to next history entry */
+	DOCUMENT *doc;               /* Pointer to document */
+	long line;                   /* First visible line */
+	hyp_nodenr node;             /* Document node (=chapter) number */
+	char *title;                 /* history title */
+};
+
+typedef	void (*DOC_DISPLAYPROC)(WINDOW_DATA *win);
+typedef	void (*DOC_CLOSEPROC)(DOCUMENT *doc);
 typedef	hyp_nodenr (*DOC_GETNODEPROC)(DOCUMENT *doc);
-typedef	gboolean (*DOC_GOTOPROC)(DOCUMENT *doc, const char *chapter, hyp_nodenr node);
-typedef	long (*DOC_AUTOLOCPROC)(DOCUMENT *doc, long line, const char *search);
-typedef	void (*DOC_GETCURSORPROC)(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
-typedef	gboolean (*DOC_BLOCKPROC)(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
-typedef	void (*DOC_PREPNODEPROC)(DOCUMENT *doc);
+typedef	gboolean (*DOC_GOTOPROC)(WINDOW_DATA *win, const char *chapter, hyp_nodenr node);
+typedef	long (*DOC_AUTOLOCPROC)(WINDOW_DATA *win, long line, const char *search);
+typedef	void (*DOC_GETCURSORPROC)(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
+typedef	gboolean (*DOC_BLOCKPROC)(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
+typedef	void (*DOC_PREPNODEPROC)(WINDOW_DATA *win);
 
 typedef struct _hyp_nav_buttons
 {
@@ -60,13 +72,13 @@ typedef struct _hyp_nav_buttons
 
 struct _document_
 {
-	DOCUMENT *next;             /* Pointer to next document */
 	hyp_filetype type;          /* Document type see F_xy constants */
+	int ref_count;				/* usage count */
 	char *path;                 /* Full file access path */
 	char *window_title;         /* Window title, in utf8 encoding */
 	long start_line;            /* First visible line of document */
 	long lines;                 /* Number of lines (in window lines) */
-	long height;                /* heoght of document (in pixel) */
+	long height;                /* height of document (in pixel) */
 	long columns;               /* Number of window columns */
 	
 	/* Toolbar button configuration (bit vector) */
@@ -74,17 +86,11 @@ struct _document_
 	void *data;                 /* File format specific data */
 	HYP_NODE *displayed_node;   /* Currently displayed node */
 	time_t mtime;    	        /* File modification time and date */
-	void /* WINDOW_DATA */ *window;        /* Window associated with this file */
-	void /* WINDOW_DATA */ *popup;			/* Currently activ popup window */
-	DOC_PROC1 displayProc;      /* Document display function */
-	DOC_PROC1 closeProc;        /* Document close function */
+	DOC_DISPLAYPROC displayProc;      /* Document display function */
+	DOC_CLOSEPROC closeProc;    /* Document close function */
 	DOC_GOTOPROC gotoNodeProc;  /* Document navigation function */
 	DOC_GETNODEPROC getNodeProc;/* Function to determine current node number */
 	DOC_AUTOLOCPROC autolocProc;/* Autolocator search function */
-#ifdef WITH_GUI_GEM
-	BLOCK selection;            /* Content of  selection */
-	char *autolocator;          /* Autolocator search string */
-#endif
 	int autolocator_dir;        /* Autolocator direction (1 = down, else up) */
 	DOC_GETCURSORPROC getCursorProc;/* Cursor position function */
 	DOC_BLOCKPROC blockProc;    /* Block operation function */
@@ -95,20 +101,23 @@ struct _document_
 /*
  *		Block.c
  */
-gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param);
+gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
 
 
 /*
- *	hypdco.c
+ *	hypdoc.c
  */
 hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref);
 hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter);
+DOCUMENT *hypdoc_unref(DOCUMENT *doc);
+DOCUMENT *hypdoc_ref(DOCUMENT *doc);
+DOCUMENT *hypwin_doc(WINDOW_DATA *win);
 
 
 /*
  *		Search.c
  */
-void *search_allref(void /* WINDOW_DATA */ *win, const char *string, gboolean no_message);
+void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message);
 
 
 /*
@@ -117,15 +126,14 @@ void *search_allref(void /* WINDOW_DATA */ *win, const char *string, gboolean no
 hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref);
 void HypCloseFile(DOCUMENT *doc);
 DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref);
-void CheckFiledate(DOCUMENT *doc);
-void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp);
+void CheckFiledate(WINDOW_DATA *win);
 
 
 /*
  *		Display.c
  */
-void HypDisplayPage(DOCUMENT *doc);
-void HypPrepNode(DOCUMENT *doc);
+void HypDisplayPage(WINDOW_DATA *win);
+void HypPrepNode(WINDOW_DATA *win);
 
 /*
  *		Ascii.c
@@ -136,13 +144,13 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle);
 /*
  *		Autoloc.c
  */
-char *HypGetTextLine(DOCUMENT *doc, HYP_NODE *node, long line);
-long HypAutolocator(DOCUMENT *doc, long line, const char *search);
+char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line);
+long HypAutolocator(WINDOW_DATA *win, long line, const char *search);
 
 
 /*
  *		Cursor.c
  */
-void HypGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos);
+void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
 
 #endif /* __HYPDOC_H__ */

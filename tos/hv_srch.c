@@ -65,10 +65,10 @@ static void __CDECL select_item(struct SLCT_ITEM_args args)
 				doc = (DOCUMENT *)win->data;
 
 				graf_mouse(BUSY_BEE, NULL);
-				if (doc->gotoNodeProc(doc, my_item->node_name, 0))
+				if (doc->gotoNodeProc(win, my_item->node_name, 0))
 					doc->start_line = my_item->lineno;
 				graf_mouse(ARROW, NULL);
-				ReInitWindow(doc);
+				ReInitWindow(win);
 			}
 		}
 		SendCloseDialog(SearchResult_Dialog);
@@ -262,11 +262,10 @@ static void print_results(RESULT_ENTRY *ptr)
 
 /*----------------------------------------------------------------------------------------*/
 
-void *search_allref(void *w, const char *string, gboolean no_message)
+void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
 {
 	int ret;
 	long results = 0;
-	WINDOW_DATA *win = w;
 	
 	/* abort if no all.ref is defined */
 	if (empty(gl_profile.general.all_ref))

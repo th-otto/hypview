@@ -662,7 +662,7 @@ static gboolean maybe_load_hypfile(const char *filename, void *data)
 		fix_subject(&l->subject);
 		l->version = g_strdup(hyp->version);
 		l->available = TRUE;
-		hyp_delete(hyp);
+		hyp_unref(hyp);
 		hyp_utf8_close(handle);
 	}
 	return TRUE;

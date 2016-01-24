@@ -152,9 +152,9 @@ void WindowCalcScroll(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ReInitWindow(DOCUMENT *doc)
+void ReInitWindow(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	_WORD visible_lines;
 	GRECT curr;
 	
@@ -163,7 +163,7 @@ void ReInitWindow(DOCUMENT *doc)
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
 	hv_set_title(win, win->title);
-	doc->selection.valid = FALSE;
+	win->selection.valid = FALSE;
 
 	/* window size: at least 5 columns and 1 line */
 	ResizeWindow(win, max(doc->columns, 5), max(doc->lines, 1));
@@ -193,8 +193,15 @@ void ReInitWindow(DOCUMENT *doc)
 		wind_get_grect(0, WF_WORKXYWH, &win->full);
 
 	SetWindowSlider(win);
-	ToolbarUpdate(doc, FALSE);
+	ToolbarUpdate(win, FALSE);
 	SendRedraw(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+DOCUMENT *hypwin_doc(WINDOW_DATA *win)
+{
+	return win->data;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -231,9 +238,9 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_EXIT:
-		if (doc->popup)					/* if a popup is still open... */
-			RemoveWindow(doc->popup);	/* ... close it */
-		HypCloseFile(doc);
+		if (win->popup)					/* if a popup is still open... */
+			RemoveWindow(win->popup);	/* ... close it */
+		hypdoc_unref(doc);
 		RemoveAllHistoryEntries(win);
 		win = NULL;
 		break;
@@ -308,8 +315,8 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			vs_clip(vdi_handle, TRUE, pxy);	/* clipping ON */
 			vr_recfl(vdi_handle, pxy);		/* clear beackground */
 	
-			doc->displayProc(doc);
-			DrawSelection(doc);
+			doc->displayProc(win);
+			DrawSelection(win);
 	
 			vs_clip(vdi_handle, FALSE, pxy);	/* clipping OFF */
 		}
@@ -382,9 +389,9 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			if ((event->kstate & KbSHIFT) && (event->kstate & KbCTRL))
 			{
 				if (scan == KbUP || scan == KbLEFT)
-					ToolbarClick(doc, TO_PREV);
+					ToolbarClick(win, TO_PREV);
 				else if (scan == KbDOWN || scan == KbRIGHT)
-					ToolbarClick(doc, TO_NEXT);
+					ToolbarClick(win, TO_NEXT);
 				else if (ascii == 'V')
 					BlockPaste(win, !gl_profile.viewer.clipbrd_new_window);
 				else
@@ -436,7 +443,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				case KbF18:
 				case KbF19:
 				case KbF20:
-					MarkerSave(doc, scan - KbF11);
+					MarkerSave(win, scan - KbF11);
 					break;
 				default:
 					event->mwhich |= MU_KEYBD;
@@ -447,65 +454,57 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				switch (ascii)
 				{
 				case 'D':
-					{
-						char *filename = path_subst(gl_profile.viewer.default_file);
-						OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
-						g_free(filename);
-					}
+					GotoDefaultFile(win);
 					break;
 				case 'E':
 					RemoveAllHistoryEntries(win);
-					ToolbarUpdate(doc, TRUE);
+					ToolbarUpdate(win, TRUE);
 					break;
 				case 'K':
-					{
-						char *filename = path_subst(gl_profile.viewer.catalog_file);
-						OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
-						g_free(filename);
-					}
+					GotoCatalog(win);
 					break;
 				case 'R':
-					BlockOperation(doc, CO_REMARKER);
+					BlockOperation(win, CO_REMARKER);
 					break;
 				case 'T':
-					GoThisButton(doc, TO_HOME);
+					GoThisButton(win, TO_HOME);
 					break;
 				case 'X':
-					GotoIndex(doc);
+					GotoIndex(win);
 					break;
 				case 'Z':
-					BlockOperation(doc, CO_SELECT_FONT);
+					BlockOperation(win, CO_SELECT_FONT);
 					break;
 				}	
 			} else if (event->kstate & KbCTRL)
 			{
 				if (ascii == 'A')
 				{
-					BlockOperation(doc, CO_SELECT_ALL);
+					BlockOperation(win, CO_SELECT_ALL);
 				} else if (ascii == 'C')
 				{
-					BlockOperation(doc, CO_COPY);
+					BlockOperation(win, CO_COPY);
 				} else if (ascii == 'I')
 				{
-					ProgrammInfos(doc);
+					DocumentInfos(win);
 				} else if (ascii == 'F')
 				{
-					BlockOperation(doc, CO_SEARCH);
+					BlockOperation(win, CO_SEARCH);
 				} else if (ascii == 'G')
 				{
-					BlockOperation(doc, CO_SEARCH_AGAIN);
+					BlockOperation(win, CO_SEARCH_AGAIN);
 				} else if (ascii == 'O')
 				{
-					ToolbarClick(doc, TO_LOAD);
+					ToolbarClick(win, TO_LOAD);
 				} else if (ascii == 'V')
 				{
 					if (doc->buttons.searchbox)
-						AutoLocatorPaste(doc);
+						AutoLocatorPaste(win);
 					else
-						BlockOperation(doc, CO_PASTE);
+						BlockOperation(win, CO_PASTE);
 				} else if (ascii == 'Z')
 				{
-					BlockOperation(doc, CO_SWITCH_FONT);
+					BlockOperation(win, CO_SWITCH_FONT);
 				} else if (scan == KbUP)
 				{
 					_WORD val = -win->scroll.g_h / win->y_raster;
@@ -518,13 +517,13 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					ScrollWindow(win, NULL, &val);
 				} else if (scan == KbLEFT)
 				{
-					ToolbarClick(doc, TO_PREV);
+					ToolbarClick(win, TO_PREV);
 				} else if (scan == KbRIGHT)
 				{
-					ToolbarClick(doc, TO_NEXT);
+					ToolbarClick(win, TO_NEXT);
 				} else if (scan >= KbF1 && scan <= KbF10)
 				{
-					MarkerShow(doc, scan - KbF1, TRUE);
+					MarkerShow(win, scan - KbF1, TRUE);
 				} else
 				{
 					event->mwhich |= MU_KEYBD;
@@ -532,9 +531,9 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			} else if (event->kstate & KbNUM)
 			{
 				if (ascii == '-')
-					ToolbarClick(doc, TO_PREV);
+					ToolbarClick(win, TO_PREV);
 				else if (ascii == '+')
-					ToolbarClick(doc, TO_NEXT);
+					ToolbarClick(win, TO_NEXT);
 				else
 					event->mwhich |= MU_KEYBD;
 			} else if (event->kstate == 0)
@@ -583,10 +582,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					SendRedraw(win);
 					break;
 				case KbHELP:
-					ToolbarClick(doc, TO_HELP);
+					ToolbarClick(win, TO_HELP);
 					break;
 				case KbUNDO:
-					ToolbarClick(doc, TO_BACK);
+					ToolbarClick(win, TO_BACK);
 					break;
 				case KbF1:
 				case KbF2:
@@ -598,11 +597,11 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				case KbF8:
 				case KbF9:
 				case KbF10:
-					MarkerShow(doc, scan - KbF1, FALSE);
+					MarkerShow(win, scan - KbF1, FALSE);
 					break;
 				default:
 					if ((ascii == 27 || ascii == 8) && !(doc->buttons.searchbox))
-						ToolbarClick(doc, TO_BACK);
+						ToolbarClick(win, TO_BACK);
 					else
 						event->mwhich |= MU_KEYBD;
 					break;
@@ -614,7 +613,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	
 			if (event->mwhich & MU_KEYBD)
 			{
-				if (AutolocatorKey(doc, event->kstate, ascii))
+				if (AutolocatorKey(win, event->kstate, ascii))
 					event->mwhich &= ~MU_KEYBD;
 			}
 		}
@@ -649,10 +648,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			EVNT *event = (EVNT *) data;
 	
-			if (doc->popup)					/* Popup active? */
-				SendCloseWindow(doc->popup);
+			if (win->popup)					/* Popup active? */
+				SendCloseWindow(win->popup);
 	
-			RemoveSearchBox(doc);
+			RemoveSearchBox(win);
 	
 			if (event->mbutton & 1)			/* left button */
 			{
@@ -660,7 +659,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 
 				graf_mkstate(&event->mx, &event->my, &event->mbutton, &event->kstate);
 	
-				CheckFiledate(doc);
+				CheckFiledate(win);
 	
 				d.x = event->mx;
 				d.y = event->my;
@@ -669,12 +668,12 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				if ((event->mbutton & 1) ||		/* button still pressed? */
 					(event->kstate & KbSHIFT))	/* or shift pressee? */
 				{
-					MouseSelection(doc, &d);
+					MouseSelection(win, &d);
 				} else
 				{
-					RemoveSelection(doc);
+					RemoveSelection(win);
 					if (doc->type == HYP_FT_HYP)
-						HypClick(doc, &d);
+						HypClick(win, &d);
 				}
 			} else if (event->mbutton & 2)	/* right button */
 			{
@@ -682,17 +681,17 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				OBJECT *tree = rs_tree(CONTEXT);
 				
 				num = popup_select(tree, event->mx, event->my);
-				BlockOperation(doc, num);
+				BlockOperation(win, num);
 			}
 		}
 		break;
 		
 	case WIND_TBUPDATE:
-		ToolbarUpdate(doc, FALSE);
+		ToolbarUpdate(win, FALSE);
 		break;
 		
 	case WIND_TBCLICK:
-		ToolbarClick(doc, *(_WORD *) data);
+		ToolbarClick(win, *(_WORD *) data);
 		break;
 		
 	case WIND_ICONIFY:
@@ -704,10 +703,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_TOPPED:
-		if (doc->popup != NULL)					/* popup active? */
+		if (win->popup != NULL)					/* popup active? */
 		{
 			_WORD top;
-			WINDOW_DATA *popup = doc->popup;
+			WINDOW_DATA *popup = win->popup;
 			
 			wind_get_int(DESK, WF_TOP, &top);
 
@@ -724,7 +723,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			wind_set_int(win->whandle, WF_TOP, 0);
 		}
-		CheckFiledate(doc);
+		CheckFiledate(win);
 		return FALSE;
 	}
 	return TRUE;

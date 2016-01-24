@@ -29,9 +29,9 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void AsciiDisplayPage(DOCUMENT *doc)
+void AsciiDisplayPage(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
 	long line = win->docsize.y;
 	_WORD x, y;
@@ -64,9 +64,9 @@ void AsciiDisplayPage(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void AsciiGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
+void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
 	long line = y / win->y_raster + win->docsize.y;
 	size_t i;

@@ -28,12 +28,12 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
+void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 
 	graf_mouse(BUSY_BEE, NULL);
-	if (doc->gotoNodeProc(doc, NULL, num))
+	if (doc->gotoNodeProc(win, NULL, num))
 	{
 		if (calc)
 		{
@@ -52,58 +52,45 @@ void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
 		doc->start_line = line;
 	}
 	graf_mouse(ARROW, NULL);
-	ReInitWindow(doc);
+	ReInitWindow(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GoBack(DOCUMENT *old_doc)
+void GoBack(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = old_doc->window;
+	DOCUMENT *old_doc = win->data;
 	DOCUMENT *new_doc;
 	hyp_nodenr page;
 	long line;
 
-	new_doc = old_doc;
-	if (RemoveHistoryEntry(&new_doc, &page, &line))
+	if ((new_doc = RemoveHistoryEntry(win, &page, &line)) != NULL)
 	{
 		/* changing file? */
-		if (new_doc != old_doc)
 		{
 			int ret;
 
 			/* if old document is not used anymore... */
-			if (!CountDocumentHistoryEntries(old_doc))
-			{
-				win->data = old_doc->next;
-				HypCloseFile(old_doc);		/* ...close document */
-			} else
-			{
-				DOCUMENT *prev_doc = old_doc;
-
-				old_doc->closeProc(old_doc);
-
-				/* place new document at top of list */
-				while (prev_doc->next != new_doc)
-					prev_doc = prev_doc->next;
-				prev_doc->next = new_doc->next;
-				new_doc->next = old_doc;
-			}
-
+			hypdoc_unref(old_doc);		/* ...close document */
+			win->data = new_doc;
+			
 			/* load new file */
-			ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-			if (ret >= 0)
+			if (new_doc->data == NULL)
 			{
-				LoadFile(new_doc, ret, FALSE);
-				hyp_utf8_close(ret);
-			} else
-			{
-				FileErrorErrno(hyp_basename(new_doc->path));
+				ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+				if (ret >= 0)
+				{
+					LoadFile(new_doc, ret, FALSE);
+					hyp_utf8_close(ret);
+				} else
+				{
+					FileErrorErrno(hyp_basename(new_doc->path));
+				}
 			}
 		}
 
 		if (new_doc->type >= 0)			/* known filetype? */
-			GotoPage(new_doc, page, line, FALSE);	/* switch to requested page */
+			GotoPage(win, page, line, FALSE);	/* switch to requested page */
 		else
 			FileError(hyp_basename(new_doc->path), _("format not recognized"));
 	}
@@ -111,27 +98,24 @@ void GoBack(DOCUMENT *old_doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HistoryPopup(DOCUMENT *old_doc, short x, short y)
+void HistoryPopup(WINDOW_DATA *win, short x, short y)
 {
-	WINDOW_DATA *win = old_doc->window;
+	DOCUMENT *old_doc = win->data;
 	OBJECT *tree = rs_tree(EMPTYPOPUP);
 	short i, h;
 	short sel;
 	size_t len = 0;
-	HISTORY *entry = history;
+	HISTORY *entry = win->history;
 
 	i = tree[ROOT].ob_head;
 	h = 0;
 	while (entry && i != ROOT)
 	{
-		if (entry->win == win)
-		{
-			tree[i].ob_flags = OF_SELECTABLE | OF_TOUCHEXIT;
-			tree[i].ob_spec.free_string = entry->title;
-			len = max(strlen(entry->title) + 1, len);
-			h = max(h, tree[i].ob_y + tree[i].ob_height);
-			i = tree[i].ob_next;
-		}
+		tree[i].ob_flags = OF_SELECTABLE | OF_TOUCHEXIT;
+		tree[i].ob_spec.free_string = entry->title;
+		len = max(strlen(entry->title) + 1, len);
+		h = max(h, tree[i].ob_y + tree[i].ob_height);
+		i = tree[i].ob_next;
 		entry = entry->next;
 	}
 
@@ -176,64 +160,22 @@ void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 
 	if (sel > 0)
 	{
-		HISTORY *selected_entry = history;
-		DOCUMENT *new_doc = old_doc;
+		DOCUMENT *new_doc;
 		hyp_nodenr page;
 		long line;
 
 		/* Find selected entry */
 		i = tree[ROOT].ob_head;
-		while (selected_entry && i != ROOT)
+		while ((new_doc = RemoveHistoryEntry(win, &page, &line)) != NULL && i != ROOT)
 		{
-			if (selected_entry->win == win)
-			{
-				if (sel == i)
-					break;
-				i = tree[i].ob_next;
-			}
-			selected_entry = selected_entry->next;
+			hypdoc_unref(old_doc);
+			win->data = old_doc = new_doc;
+			if (sel == i)
+				break;
+			i = tree[i].ob_next;
 		}
 
-		/* Release previous document */
-		old_doc->closeProc(old_doc);
-
-		/* Remove unnecessary history entries */
-		entry = history;
-		for (;;)
-		{
-			if (entry->win == win)
-			{
-				RemoveHistoryEntry(&new_doc, &page, &line);
-
-				/* Switch document? -> close old document */
-				if (new_doc != old_doc)
-				{
-					if (!CountDocumentHistoryEntries(old_doc))
-					{
-						win->data = old_doc->next;
-						HypCloseFile(old_doc);	/* close document */
-					} else
-					{
-						DOCUMENT *prev_doc = old_doc;
-
-						/* add new document at the beginning */
-						while (prev_doc->next != new_doc)
-							prev_doc = prev_doc->next;
-						prev_doc->next = new_doc->next;
-						new_doc->next = old_doc;
-					}
-					old_doc = new_doc;
-				}
-
-				if (entry == selected_entry)
-					break;
-				entry = history;
-			} else
-			{
-				entry = entry->next;
-			}
-		}
-
+		new_doc = win->data;
 		if (!new_doc->data)
 		{
 			int ret;
@@ -251,7 +193,7 @@ void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 		}
 
 		if (new_doc->type >= 0)			/* known file type ? */
-			GotoPage(new_doc, page, line, FALSE);	/* jump to page */
+			GotoPage(win, page, line, FALSE);	/* jump to page */
 		else
 			FileError(hyp_basename(new_doc->path), _("format not recognized"));
 	}
@@ -263,17 +205,17 @@ void HistoryPopup(DOCUMENT *old_doc, short x, short y)
 
 /****** Module dependend	****/
 
-static void GotoDocPage(DOCUMENT *doc, hyp_nodenr page)
+static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 
 	if (hypnode_valid(hyp, page) &&
 		(doc->displayed_node == NULL ||
 		 page != doc->displayed_node->number))
 	{
-		AddHistoryEntry(win);
-		GotoPage(doc, page, 0, FALSE);
+		AddHistoryEntry(win, doc);
+		GotoPage(win, page, 0, FALSE);
 	} else
 	{
 		/* short visual feedback */
@@ -285,25 +227,27 @@ static void GotoDocPage(DOCUMENT *doc, hyp_nodenr page)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GotoHelp(DOCUMENT *doc)
+void GotoHelp(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	GotoDocPage(doc, hyp->help_page);
+	GotoDocPage(win, hyp->help_page);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GotoIndex(DOCUMENT *doc)
+void GotoIndex(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	GotoDocPage(doc, hyp->index_page);
+	GotoDocPage(win, hyp->index_page);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GoThisButton(DOCUMENT *doc, short obj)
+void GoThisButton(WINDOW_DATA *win, short obj)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 	hyp_nodenr new_node = HYP_NOINDEX;
 	hyp_nodenr current_node = doc->getNodeProc(doc);
@@ -362,6 +306,24 @@ void GoThisButton(DOCUMENT *doc, short obj)
 		return;
 
 	if (add_to_hist)
-		AddHistoryEntry(win);
-	GotoPage(doc, new_node, 0, FALSE);
+		AddHistoryEntry(win, doc);
+	GotoPage(win, new_node, 0, FALSE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GotoDefaultFile(WINDOW_DATA *win)
+{
+	char *filename = path_subst(gl_profile.viewer.default_file);
+	OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	g_free(filename);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GotoCatalog(WINDOW_DATA *win)
+{
+	char *filename = path_subst(gl_profile.viewer.catalog_file);
+	OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	g_free(filename);
 }

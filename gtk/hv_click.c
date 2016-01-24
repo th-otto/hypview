@@ -26,12 +26,12 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				g_free(name);
 			} else
 			{
-				AddHistoryEntry(win);
-				GotoPage(doc, info->dest_page, info->line_nr, TRUE);
+				AddHistoryEntry(win, doc);
+				GotoPage(win, info->dest_page, info->line_nr, TRUE);
 			}
 			break;
 		case HYP_NODE_POPUP:
-			OpenPopup(doc, info->dest_page, x, y);
+			OpenPopup(win, info->dest_page, x, y);
 			break;
 		case HYP_NODE_EXTERNAL_REF:
 			{
@@ -56,7 +56,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				for (h = hyp->hostname; h != NULL && tool == NULL; h = h->next)
 					if (Profile_ReadString(gl_profile.profile, "TOOLS", h->name, &tool))
 						break;
-				if (tool == NULL)	/* host application found? */
+				if (empty(tool))	/* host application found? */
 				{
 					char *str = g_strdup_printf(_("No application defined to handle %s."), hyp->hostname->name);
 					show_message(_("Error"), str, FALSE);

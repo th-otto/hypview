@@ -62,11 +62,11 @@ static void ApplyFont(void)
 				RemoveNodes(doc->data);
 
 				/* reload page */
-				ret = doc->gotoNodeProc(doc, NULL, node);
+				ret = doc->gotoNodeProc(win, NULL, node);
 			} else
 			{
 				/* reload file */
-				ret = doc->gotoNodeProc(doc, NULL, doc->getNodeProc(doc));
+				ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(doc));
 			}
 			
 			if (ret)
@@ -77,7 +77,7 @@ static void ApplyFont(void)
 				win->status &= ~WIS_FULL;
 
 				/* re-init window*/
-				ReInitWindow(doc);
+				ReInitWindow(win);
 			}
 			graf_mouse(ARROW, NULL);
 		}
@@ -105,11 +105,11 @@ static short FontSelected(FONTSEL_DATA *ptr)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SelectFont(DOCUMENT *doc)
+void SelectFont(WINDOW_DATA *win)
 {
 	FONTSEL_DATA *ptr;
 	
-	(void) doc;
+	UNUSED(win);
 	ptr = (FONTSEL_DATA *)find_ptr_by_type(WIN_FONTSEL);
 	if (ptr == NULL)
 	{
@@ -155,12 +155,12 @@ gboolean ProportionalFont(_WORD *width)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SwitchFont(DOCUMENT *doc)
+void SwitchFont(WINDOW_DATA *win)
 {
 	_WORD normal_font_id;
 	_WORD normal_font_size;
 	
-	UNUSED(doc);
+	UNUSED(win);
 	normal_font_id = gl_profile.viewer.font_id ? gl_profile.viewer.font_id : aes_fontid;
 	normal_font_size = gl_profile.viewer.font_pt ? gl_profile.viewer.font_pt : aes_fontsize;
 	if (sel_font_id == normal_font_id && gl_profile.viewer.xfont_id != 0)

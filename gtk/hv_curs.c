@@ -4,10 +4,10 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void HypGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
+void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	/* YYY */
-	UNUSED(doc);
+	UNUSED(win);
 	UNUSED(x);
 	UNUSED(y);
 	UNUSED(pos);

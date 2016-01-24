@@ -72,9 +72,9 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_page(DOCUMENT *doc, OBJECT *tree)
+static void hypfind_page(WINDOW_DATA *win, OBJECT *tree)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	char *name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
 	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
 	g_free(name);
@@ -82,16 +82,16 @@ static void hypfind_page(DOCUMENT *doc, OBJECT *tree)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_text(DOCUMENT *doc, OBJECT *tree)
+static void hypfind_text(WINDOW_DATA *win, OBJECT *tree)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	long line = win->docsize.y;
 	char *search = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
 	doc->autolocator_dir = 1;
 	if (!empty(search))
 	{
 		graf_mouse(BUSY_BEE, NULL);
-		line = doc->autolocProc(doc, line, search);
+		line = doc->autolocProc(win, line, search);
 		graf_mouse(ARROW, NULL);
 	}
 	g_free(search);
@@ -121,8 +121,8 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 	GRECT r;
 	
 	dial = wdlg_get_udata(args.dialog);
-	doc = dial->data;
-	win = doc->window;
+	win = dial->data;
+	doc = win->data;
 	wdlg_get_tree(args.dialog, &tree, &r);
 
 	if (args.obj > 0)
@@ -137,10 +137,10 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 		SpecialMessageEvents(args.dialog, args.events);
 		break;
 	case HYPFIND_TEXT:
-		hypfind_text(doc, tree);
+		hypfind_text(win, tree);
 		return 0;
 	case HYPFIND_PAGES:
-		hypfind_page(doc, tree);
+		hypfind_page(win, tree);
 		return 0;
 	case HYPFIND_ABORT:
 		return 0;
@@ -160,23 +160,23 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Hypfind(DOCUMENT *doc, gboolean again)
+void Hypfind(WINDOW_DATA *win, gboolean again)
 {
+	DOCUMENT *doc = win->data;
 	OBJECT *tree = rs_tree(HYPFIND);
-	WINDOW_DATA *win = doc->window;
 	
 	if (HypfindID != -1)
 		return;
 
 	if (again && can_search_again)
 	{
-		hypfind_text(doc, tree);
+		hypfind_text(win, tree);
 		return;
 	}
 
 	if (has_window_dialogs())
 	{
-		Hypfind_Dialog = OpenDialog(HypfindHandle, tree, rs_string(WDLG_SEARCH_PATTERN), -1, -1, doc);
+		Hypfind_Dialog = OpenDialog(HypfindHandle, tree, rs_string(WDLG_SEARCH_PATTERN), -1, -1, win);
 	} else
 	{
 		short obj;
@@ -200,10 +200,10 @@ void Hypfind(DOCUMENT *doc, gboolean again)
 			hypfind_search_allref(win, tree);
 			break;
 		case HYPFIND_TEXT:
-			hypfind_text(doc, tree);
+			hypfind_text(win, tree);
 			break;
 		case HYPFIND_PAGES:
-			hypfind_page(doc, tree);
+			hypfind_page(win, tree);
 			break;
 		case HYPFIND_ALL_PAGE:
 			hypfind_run_hypfind(tree, doc, FALSE);

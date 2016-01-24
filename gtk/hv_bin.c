@@ -6,17 +6,17 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void BinaryDisplayPage(DOCUMENT *doc)
+void BinaryDisplayPage(WINDOW_DATA *win)
 {
 	/* nothing to do */
-	UNUSED(doc);
+	UNUSED(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
+void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	long line = -1;
 
 	if (doc->type != HYP_FT_BINARY)

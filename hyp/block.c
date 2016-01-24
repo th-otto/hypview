@@ -1,14 +1,18 @@
 #include "hypdoc.h"
 #include "hypdebug.h"
 
+#ifdef __PUREC__
+struct _window_data_ { int dummy; };
+#endif
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
+gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param)
 {
 	HYP_NODE *node;
-	
+	DOCUMENT *doc = hypwin_doc(win);
 	node = doc->displayed_node;
 
 	switch (op)
@@ -32,7 +36,7 @@ gboolean HypBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *p
 
 			while ((line < doc->lines) && (line <= block->end.line))
 			{
-				line_buffer = HypGetTextLine(doc, node, line);
+				line_buffer = HypGetTextLine(win, node, line);
 
 				if (line_buffer != NULL)
 				{

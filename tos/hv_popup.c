@@ -27,10 +27,11 @@
 
 typedef struct
 {
-	DOCUMENT *doc;
+	DOCUMENT doc;
 	long lines, columns, height;
 	short x, y;
 	void *entry;
+	WINDOW_DATA *parentwin;
 } POPUP_INFO;
 
 /******************************************************************************/
@@ -39,7 +40,7 @@ typedef struct
 
 static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 {
-	POPUP_INFO *popup = win->data;
+	POPUP_INFO *popup = (POPUP_INFO *)win->data;
 
 	switch (obj)
 	{
@@ -52,7 +53,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		win->docsize.h = popup->lines;
 		break;
 	case WIND_EXIT:
-		popup->doc->popup = NULL;
+		popup->parentwin->popup = NULL;
 		g_free(popup);
 		break;
 	case WIND_OPEN:
@@ -78,7 +79,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			_WORD pxy[4];
 			GRECT *box = (GRECT *) data;
-			DOCUMENT *doc = popup->doc;
+			DOCUMENT *doc = &popup->doc;
 			HYP_NODE *old_entry = doc->displayed_node;
 			long old_lines = doc->lines;
 			long old_height = doc->height;
@@ -100,7 +101,7 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			doc->height = popup->height;
 			doc->columns = popup->columns;
 	
-			HypDisplayPage(doc);
+			HypDisplayPage(win);
 	
 			doc->displayed_node = old_entry;
 			doc->lines = old_lines;
@@ -143,9 +144,9 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y)
+void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	POPUP_INFO *popup;
 
 	graf_mouse(BUSY_BEE, NULL);
@@ -161,19 +162,20 @@ void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y)
 		long old_columns = doc->columns;
 		hyp_nav_buttons old_buttons = doc->buttons;
 		char *old_wtitle = doc->window_title;
-
-		if (doc->gotoNodeProc(doc, NULL, num))
+		
+		if (doc->gotoNodeProc(win, NULL, num))
 		{
 			wind_get_grect(win->whandle, WF_WORKXYWH, &work);
 	
-			popup->doc = doc;
+			popup->doc = *doc;
 			popup->lines = doc->height;
 			popup->columns = doc->columns;
 			popup->height = doc->height;
 			popup->x = x + work.g_x - (short) win->docsize.x * win->x_raster;
 			popup->y = y + work.g_y + win->y_offset;
 			popup->entry = doc->displayed_node;
-	
+			popup->parentwin = win;
+			
 			doc->displayed_node = old_entry;
 			doc->lines = old_lines;
 			doc->height = old_height;
@@ -181,8 +183,8 @@ void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y)
 			doc->buttons = old_buttons;
 			doc->window_title = old_wtitle;
 	
-			doc->popup = OpenWindow(PopupWindow, 0, NULL, -1, -1, popup);
-			if (doc->popup == NULL)
+			win->popup = OpenWindow(PopupWindow, 0, NULL, -1, -1, popup);
+			if (win->popup == NULL)
 				g_free(popup);
 		} else
 		{

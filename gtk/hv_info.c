@@ -35,8 +35,9 @@ static void help_clicked(GtkWidget *w, GtkWidget *dialog)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ProgrammInfos(DOCUMENT *doc)
+void DocumentInfos(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
 	GtkWidget *expander, *frame;

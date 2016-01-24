@@ -62,7 +62,6 @@ enum blockop {
 	CO_PRINT
 };
 
-typedef struct _window_data_ WINDOW_DATA;
 
 struct _window_data_
 {
@@ -88,6 +87,8 @@ struct _window_data_
 	GtkWidget *searchentry;				/* GtkEntry */
 	GtkWidget *strnotfound;				/* GtkLabel */
 	gboolean hovering_over_link;
+	WINDOW_DATA *popup;
+	HISTORY *history;
 };
 
 typedef struct _link_info {
@@ -154,8 +155,8 @@ void hv_exit(void);
 /*
  * hv_font.c
  */
-void SwitchFont(DOCUMENT *doc);
-void SelectFont(DOCUMENT *doc);
+void SwitchFont(WINDOW_DATA *win);
+void SelectFont(WINDOW_DATA *win);
 
 
 /*
@@ -166,7 +167,7 @@ extern GSList *all_list;
 void hv_win_set_geometry(WINDOW_DATA *win, const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
 WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
-void ReInitWindow(DOCUMENT *doc);
+void ReInitWindow(WINDOW_DATA *win);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
@@ -186,54 +187,35 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info);
  * hv_tbar.c
  */
 struct popup_pos {
-	DOCUMENT *doc;
+	WINDOW_DATA *window;
 	enum toolbutton obj;
 };
-void ToolbarUpdate(DOCUMENT *doc, gboolean redraw);
-void ToolbarClick(DOCUMENT *doc, enum toolbutton obj, int button, guint32 event_time);
-void RemoveSearchBox(DOCUMENT *doc);
+void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw);
+void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button, guint32 event_time);
+void RemoveSearchBox(WINDOW_DATA *win);
 void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, void *data);
 
 
 /*
  * hv_hist.c
  */
-typedef struct _history_  HISTORY;
-struct _history_
-{
-	HISTORY *next;               /* Pointer to next history entry */
-	WINDOW_DATA *win;            /* Associated window */
-	DOCUMENT *doc;               /* Pointer to document */
-	long line;                   /* First visible line */
-	hyp_nodenr node;             /* Document node (=chapter) number */
-	char *title;                 /* history title */
-};
-
-extern HISTORY *history;         /* Pointer to history data */
-
-void AddHistoryEntry(WINDOW_DATA *wind);
-gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line);
-void RemoveAllHistoryEntries(WINDOW_DATA *wind);
-short CountWindowHistoryEntries(WINDOW_DATA *wind);
-short CountDocumentHistoryEntries(DOCUMENT *doc);
-void DeleteLastHistory(HISTORY *entry);
-HISTORY *GetLastHistory(void);
-void SetLastHistory(WINDOW_DATA *the_win, HISTORY *last);
-void DeleteLastHistory(HISTORY *entry);
+void AddHistoryEntry(WINDOW_DATA *win, DOCUMENT *doc);
+DOCUMENT *RemoveHistoryEntry(WINDOW_DATA *win, hyp_nodenr *node, long *line);
+void RemoveAllHistoryEntries(WINDOW_DATA *win);
 
 
 /*
  * hv_autol.c
  */
-gboolean AutolocatorKey(DOCUMENT *doc, GdkEventKey *event);
-void AutoLocatorPaste(DOCUMENT *doc);
+gboolean AutolocatorKey(WINDOW_DATA *win, GdkEventKey *event);
+void AutoLocatorPaste(WINDOW_DATA *win);
 
 
 /*
  * hv_fsel.c
  */
 WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win);
-void SelectFileSave(DOCUMENT *doc);
+void SelectFileSave(WINDOW_DATA *win);
 
 
 /*
@@ -245,15 +227,15 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 /*
  * hv_hfind.c
  */
-void Hypfind(DOCUMENT *doc, gboolean again);
+void Hypfind(WINDOW_DATA *win, gboolean again);
 
 
 /*
  * hv_mark.c
  */
-void MarkerSave(DOCUMENT *doc, short num);
-void MarkerShow(DOCUMENT *doc, short num, gboolean new_window);
-void MarkerPopup(DOCUMENT *doc, int button, guint32 event_time);
+void MarkerSave(WINDOW_DATA *win, short num);
+void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window);
+void MarkerPopup(WINDOW_DATA *win, int button, guint32 event_time);
 void MarkerUpdate(WINDOW_DATA *win);
 void MarkerSaveToDisk(void);
 void MarkerInit(void);
@@ -263,12 +245,12 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win);
 /*
  * hv_nav.c
  */
-void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc);
-void GoBack(DOCUMENT *doc);
-void HistoryPopup(DOCUMENT *doc, int button, guint32 event_time);
-void GotoHelp(DOCUMENT *doc);
-void GotoIndex(DOCUMENT *doc);
-void GoThisButton(DOCUMENT *doc, enum toolbutton obj);
+void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc);
+void GoBack(WINDOW_DATA *win);
+void HistoryPopup(WINDOW_DATA *win, int button, guint32 event_time);
+void GotoHelp(WINDOW_DATA *win);
+void GotoIndex(WINDOW_DATA *win);
+void GoThisButton(WINDOW_DATA *win, enum toolbutton obj);
 void GotoCatalog(WINDOW_DATA *win);
 void GotoDefaultFile(WINDOW_DATA *win);
 
@@ -285,31 +267,31 @@ void hv_recent_add(const char *path);
 /*
  * hv_eref.c
  */
-void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time);
+void HypExtRefPopup(WINDOW_DATA *win, int button, guint32 event_time);
 void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window);
 
 
 /*
  * hv_popup.c
  */
-void OpenPopup(DOCUMENT *doc, hyp_nodenr num, int x, int y);
+void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, int x, int y);
 
 
 /*
  * hv_block.c
  */
-void BlockOperation(DOCUMENT *doc, enum blockop num);
-void BlockSelectAll(DOCUMENT *doc, BLOCK *b);
-void BlockCopy(DOCUMENT *doc);
+void BlockOperation(WINDOW_DATA *win, enum blockop num);
+void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
+void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
-void BlockAsciiSave(DOCUMENT *doc, const char *path);
+void BlockAsciiSave(WINDOW_DATA *win, const char *path, GtkTextIter *start, GtkTextIter *end);
 void StartRemarker(gboolean quiet);
 
 
 /*
  * hv_info.c
  */
-void ProgrammInfos(DOCUMENT *doc);
+void DocumentInfos(WINDOW_DATA *win);
 
 
 #endif /* __HV_GTK_H__ */

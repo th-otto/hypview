@@ -1192,7 +1192,7 @@ static void hcp_comp_exit(hcp_vars *vars)
 			vars->hyp->num_index = vars->p1_node_counter;
 			vars->hyp->indextable[vars->hyp->num_index] = NULL;
 		}
-		hyp_delete(vars->hyp);
+		hyp_unref(vars->hyp);
 		vars->hyp = NULL;
 	}
 	
@@ -2431,7 +2431,7 @@ static gboolean load_uses(hcp_vars *vars)
 			if (hyp->comp_vers > HCP_COMPILER_VERSION)
 				hcp_warning(vars, &u->source_location, _("%s created by compiler version %u"), hyp->file, hyp->comp_vers);
 			load_uses_from_hyp(vars, hyp);
-			hyp_delete(hyp);
+			hyp_unref(hyp);
 		} else
 		{
 			hcp_warning(vars, &u->source_location, _("%s is no hypertext- or reference-file. Command ignored"), path);

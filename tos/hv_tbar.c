@@ -28,9 +28,8 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void toolbar_redraw(DOCUMENT *doc)
+static void toolbar_redraw(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
 	GRECT tbar;
 	GRECT r;
 	_WORD ret;
@@ -50,17 +49,17 @@ static void toolbar_redraw(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
+void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	OBJECT *toolbar = win->toolbar;
 	
 	/* autolocator active? */
-	if (doc->buttons.searchbox && doc->autolocator != NULL)
+	if (doc->buttons.searchbox && win->autolocator != NULL)
 	{
 		toolbar[TO_BUTTONBOX].ob_flags |= OF_HIDETREE;
 		toolbar[TO_SEARCHBOX].ob_flags &= ~OF_HIDETREE;
-		toolbar[TO_SEARCH].ob_spec.tedinfo->te_ptext = doc->autolocator;
+		toolbar[TO_SEARCH].ob_spec.tedinfo->te_ptext = win->autolocator;
 		return;
 	}
 	toolbar[TO_SEARCHBOX].ob_flags |= OF_HIDETREE;
@@ -72,7 +71,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
 	
-	if (CountWindowHistoryEntries(win) == 0)
+	if (win->history == NULL)
 	{
 		doc->buttons.back = FALSE;
 		doc->buttons.history = FALSE;
@@ -157,7 +156,7 @@ void ToolbarUpdate(DOCUMENT *doc, gboolean redraw)
 
 	if (redraw)
 	{
-		toolbar_redraw(doc);
+		toolbar_redraw(win);
 	}	
 }
 
@@ -180,17 +179,16 @@ static void position_popup(WINDOW_DATA *win, _WORD obj, _WORD *x, _WORD *y)
 /*** ---------------------------------------------------------------------- ***/
 
 /* Handle mouse click on toolbar */
-void ToolbarClick(DOCUMENT *doc, short obj)
+void ToolbarClick(WINDOW_DATA *win, short obj)
 {
 	short redraw_button = FALSE;
-	WINDOW_DATA *win = doc->window;
 
 	if (!obj)
-		RemoveSearchBox(doc);
+		RemoveSearchBox(win);
 	else if (win->toolbar[obj].ob_state & OS_DISABLED)
 		return;
 
-	CheckFiledate(doc);		/* Check if file has changed */
+	CheckFiledate(win);		/* Check if file has changed */
 	
 	switch (obj)
 	{
@@ -198,55 +196,51 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 		SelectFileLoad(win);
 		break;
 	case TO_SAVE:
-		SelectFileSave(doc);
+		SelectFileSave(win);
 		break;
 	case TO_INDEX:
-		GotoIndex(doc);
+		GotoIndex(win);
 		break;
 	case TO_KATALOG:
-		{
-			char *filename = path_subst(gl_profile.viewer.catalog_file);
-			OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
-			g_free(filename);
-		}
+		GotoCatalog(win);
 		break;
 	case TO_REFERENCES:
 		{
 			_WORD x, y;
 			
 			position_popup(win, obj, &x, &y);
-			HypExtRefPopup(doc, x, y);
+			HypExtRefPopup(win, x, y);
 		}
 		break;
 	case TO_HELP:
-		GotoHelp(doc);
+		GotoHelp(win);
 		break;
 	case TO_HISTORY:
 		{
 			_WORD x, y;
 			
 			position_popup(win, obj, &x, &y);
-			HistoryPopup(doc, x, y);
+			HistoryPopup(win, x, y);
 		}
 		break;
 	case TO_BACK:
-		GoBack(doc);
+		GoBack(win);
 		break;
 	case TO_NEXT:
 	case TO_PREV:
 	case TO_HOME:
-		GoThisButton(doc, obj);
+		GoThisButton(win, obj);
 		break;
 	case TO_MEMORY:
 		{
 			_WORD x, y;
 			
 			position_popup(win, obj, &x, &y);
-			MarkerPopup(doc, x, y);
+			MarkerPopup(win, x, y);
 		}
 		break;
 	case TO_INFO:
-		ProgrammInfos(doc);
+		DocumentInfos(win);
 		break;
 	case TO_MENU:
 		{
@@ -258,7 +252,7 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 			tree[0].ob_y = y;
 
 			num = popup_select(tree, 0, 0);
-			BlockOperation(doc, num);
+			BlockOperation(win, num);
 		}
 		break;
 	default:
@@ -271,14 +265,16 @@ void ToolbarClick(DOCUMENT *doc, short obj)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void RemoveSearchBox(DOCUMENT *doc)
+void RemoveSearchBox(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
+	
 	/* Is the autolocator/search box displayed? */
 	if (doc->buttons.searchbox)
 	{
 		doc->buttons.searchbox = FALSE;	/* disable it */
-		*doc->autolocator = 0;			/* clear autolocator string */
+		*win->autolocator = 0;			/* clear autolocator string */
 
-		ToolbarUpdate(doc, TRUE);		/* update toolbar */
+		ToolbarUpdate(win, TRUE);		/* update toolbar */
 	}
 }

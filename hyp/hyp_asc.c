@@ -2,6 +2,10 @@
 #include "hv_ascii.h"
 #include "hypdebug.h"
 
+#ifdef __PUREC__
+struct _window_data_ { int dummy; };
+#endif
+
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -20,9 +24,9 @@ static void AsciiClose(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean AsciiGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node)
+static gboolean AsciiGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr node)
 {
-	UNUSED(doc);
+	UNUSED(win);
 	UNUSED(chapter);
 	UNUSED(node);
 	HYP_DBG(("AsciiGotoNode(Chapter: <%s> / <%u>)", printnull(chapter), node));
@@ -93,18 +97,19 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void AsciiPrep(DOCUMENT *doc)
+static void AsciiPrep(WINDOW_DATA *win)
 {
-	UNUSED(doc);
+	UNUSED(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-long AsciiAutolocator(DOCUMENT *doc, long line, const char *search)
+long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search)
 {
+	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
 	unsigned char *src;
-
+	
 	long len = strlen(search);
 
 	if (!ascii)							/* no file loaded */
@@ -148,8 +153,9 @@ long AsciiAutolocator(DOCUMENT *doc, long line, const char *search)
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean AsciiBlockOperations(DOCUMENT *doc, hyp_blockop op, BLOCK *block, void *param)
+gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param)
 {
+	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
 
 	if (!block->valid)

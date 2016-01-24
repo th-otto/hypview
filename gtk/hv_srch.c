@@ -31,11 +31,10 @@ static void print_results(RESULT_ENTRY *ptr)
 
 /*----------------------------------------------------------------------------------------*/
 
-void *search_allref(void *w, const char *string, gboolean no_message)
+void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
 {
 	int ret;
 	long results = 0;
-	WINDOW_DATA *win = w;
 	
 	/* abort if no all.ref is defined */
 	if (empty(gl_profile.general.all_ref))

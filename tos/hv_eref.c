@@ -29,8 +29,9 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void HypExtRefPopup(DOCUMENT *doc, short x, short y)
+void HypExtRefPopup(WINDOW_DATA *win, short x, short y)
 {
+	DOCUMENT *doc = win->data;
 	OBJECT *tree = rs_tree(EMPTYPOPUP);
 	const unsigned char *pos;
 	short i, sel, h;
@@ -158,15 +159,15 @@ void HypExtRefPopup(DOCUMENT *doc, short x, short y)
 						{
 						case HYP_NODE_EXTERNAL_REF:
 							name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, STR0TERM);
-							HypOpenExtRef(doc->window, name, FALSE);
+							HypOpenExtRef(win, name, FALSE);
 							g_free(name);
 							break;
 						case HYP_NODE_INTERNAL:
-							AddHistoryEntry(doc->window);
-							GotoPage(doc, dest_page, 0, TRUE);
+							AddHistoryEntry(win, doc);
+							GotoPage(win, dest_page, 0, TRUE);
 							break;
 						case HYP_NODE_POPUP:
-							OpenPopup(doc, dest_page, 0, 0);
+							OpenPopup(win, dest_page, 0, 0);
 							break;
 						default:
 							HYP_DBG(("Illegal External reference!"));
@@ -231,8 +232,8 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 		ret = HypFindNode(doc, name);
 		if (ret != HYP_NOINDEX)
 		{
-			if (doc->gotoNodeProc(doc, NULL, ret))
-				ReInitWindow(doc);
+			if (doc->gotoNodeProc(win, NULL, ret))
+				ReInitWindow(win);
 		} else
 		{
 			win = search_allref(win, chapter, FALSE);

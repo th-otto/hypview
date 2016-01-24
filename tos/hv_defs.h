@@ -29,7 +29,7 @@ void hv_exit(void);
  * hv_fsel.c
  */
 void SelectFileLoad(WINDOW_DATA *win);
-void SelectFileSave(DOCUMENT *doc);
+void SelectFileSave(WINDOW_DATA *win);
 
 
 /*
@@ -41,11 +41,11 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 /*
  * hv_win.c
  */
-void SendCloseWindow(WINDOW_DATA *wind);
+void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(_WORD whandle);
 void SendTopped(_WORD whandle);
 void SendRedraw(WINDOW_DATA *wind);
-void ReInitWindow(DOCUMENT *doc);
+void ReInitWindow(WINDOW_DATA *win);
 gboolean HelpWindow(WINDOW_DATA *ptr, _WORD obj, void *data);
 void WindowCalcScroll(WINDOW_DATA *win);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
@@ -54,87 +54,69 @@ void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 /*
  * hv_tbar.c
  */
-void ToolbarUpdate(DOCUMENT *doc, gboolean redraw);
-void ToolbarClick(DOCUMENT *doc, short obj);
-void RemoveSearchBox(DOCUMENT *doc);
+void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw);
+void ToolbarClick(WINDOW_DATA *win, short obj);
+void RemoveSearchBox(WINDOW_DATA *win);
 
 
 /*
  *	hv_click.c
  */
-void HypClick(DOCUMENT *doc, EVNTDATA *event);
+void HypClick(WINDOW_DATA *win, EVNTDATA *event);
 
 
 
 /*
  * hv_hist.c
  */
-typedef struct _history_  HISTORY;
-struct _history_
-{
-	HISTORY *next;               /* Pointer to next history entry */
-	WINDOW_DATA *win;            /* Associated window */
-	DOCUMENT *doc;               /* Pointer to document */
-	long line;                   /* First visible line */
-	hyp_nodenr node;             /* Document node (=chapter) number */
-	char *title;                 /* history title */
-};
-
-extern HISTORY *history;         /* Pointer to history data */
-
-void AddHistoryEntry(WINDOW_DATA *wind);
-gboolean RemoveHistoryEntry(DOCUMENT **doc, hyp_nodenr *node, long *line);
-void RemoveAllHistoryEntries(WINDOW_DATA *wind);
-short CountWindowHistoryEntries(WINDOW_DATA *wind);
-short CountDocumentHistoryEntries(DOCUMENT *doc);
-void DeleteLastHistory(HISTORY *entry);
-HISTORY *GetLastHistory(void);
-void SetLastHistory(WINDOW_DATA *the_win, HISTORY *last);
-void DeleteLastHistory(HISTORY *entry);
+void AddHistoryEntry(WINDOW_DATA *win, DOCUMENT *doc);
+DOCUMENT *RemoveHistoryEntry(WINDOW_DATA *win, hyp_nodenr *node, long *line);
+void RemoveAllHistoryEntries(WINDOW_DATA *win);
 
 
 /*
  * hv_autol.c
  */
-gboolean AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii);
-void AutoLocatorPaste(DOCUMENT *doc);
+gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii);
+void AutoLocatorPaste(WINDOW_DATA *win);
 
 
 /*
  * hv_selec.c
  */
-void SelectAll(DOCUMENT *doc);
-void MouseSelection(DOCUMENT *doc,EVNTDATA *m_data);
-void RemoveSelection(DOCUMENT *doc);
-void DrawSelection(DOCUMENT *doc);
+void SelectAll(WINDOW_DATA *win);
+void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data);
+void RemoveSelection(WINDOW_DATA *win);
+void DrawSelection(WINDOW_DATA *win);
 
 
 /*
  * hv_font.c
  */
 gboolean ProportionalFont(_WORD *width);
-void SwitchFont(DOCUMENT *doc);
-void SelectFont(DOCUMENT *doc);
+void SwitchFont(WINDOW_DATA *win);
+void SelectFont(WINDOW_DATA *win);
 
 
 /*
  * hv_block.c
  */
 char *GetScrapPath(gboolean clear);
-void BlockOperation(DOCUMENT *doc, short num);
-void BlockSelectAll(DOCUMENT *doc, BLOCK *b);
-void BlockCopy(DOCUMENT *doc);
+void BlockOperation(WINDOW_DATA *win, short num);
+void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
+void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
-void BlockAsciiSave(DOCUMENT *doc, const char *path);
+void BlockAsciiSave(WINDOW_DATA *win, const char *path);
 void StartRemarker(gboolean quiet);
 
 
 /*
  * hv_mark.c
  */
-void MarkerSave(DOCUMENT *doc, short num);
-void MarkerShow(DOCUMENT *doc, short num, gboolean new_window);
-void MarkerPopup(DOCUMENT *doc, short x, short y);
+void MarkerSave(WINDOW_DATA *win, short num);
+void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window);
+void MarkerPopup(WINDOW_DATA *win, short x, short y);
+void MarkerUpdate(WINDOW_DATA *win);
 void MarkerSaveToDisk(void);
 void MarkerInit(void);
 
@@ -142,13 +124,13 @@ void MarkerInit(void);
 /*
  * hv_info.c
  */
-void ProgrammInfos(DOCUMENT *doc);
+void DocumentInfos(WINDOW_DATA *win);
 
 
 /*
  * hv_hfind.c
  */
-void Hypfind(DOCUMENT *doc, gboolean again);
+void Hypfind(WINDOW_DATA *win, gboolean again);
 
 
 /*
@@ -160,12 +142,14 @@ WINDOW_DATA *get_first_window(void);
 /*
  * hv_nav.c
  */
-void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc);
-void GoBack(DOCUMENT *doc);
-void HistoryPopup(DOCUMENT *doc, short x, short y);
-void GotoHelp(DOCUMENT *doc);
-void GotoIndex(DOCUMENT *doc);
-void GoThisButton(DOCUMENT *doc, short obj);
+void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc);
+void GoBack(WINDOW_DATA *win);
+void HistoryPopup(WINDOW_DATA *win, short x, short y);
+void GotoHelp(WINDOW_DATA *win);
+void GotoIndex(WINDOW_DATA *win);
+void GoThisButton(WINDOW_DATA *win, short obj);
+void GotoCatalog(WINDOW_DATA *win);
+void GotoDefaultFile(WINDOW_DATA *win);
 
 
 /*
@@ -185,13 +169,13 @@ void HypfindFinish(short AppID, short ret);
 /*
  * hv_popup.c
  */
-void OpenPopup(DOCUMENT *doc, hyp_nodenr num, short x, short y);
+void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y);
 
 
 /*
  * hv_eref.c
  */
-void HypExtRefPopup(DOCUMENT *doc, short x, short y);
+void HypExtRefPopup(WINDOW_DATA *win, short x, short y);
 void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window);
 
 #endif /* __HV_DEFS_H__ */

@@ -5,9 +5,9 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void xref_selected(GtkWidget *w, void *user_data)
+static void xref_selected(GtkWidget *w, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = (DOCUMENT *)user_data;
+	DOCUMENT *doc = win->data;
 	void *psel = g_object_get_data(G_OBJECT(w), "item-num");
 	int sel = (int)(intptr_t)psel;
 	int i;
@@ -39,15 +39,15 @@ static void xref_selected(GtkWidget *w, void *user_data)
 						{
 						case HYP_NODE_EXTERNAL_REF:
 							name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, STR0TERM);
-							HypOpenExtRef(doc->window, name, FALSE);
+							HypOpenExtRef(win, name, FALSE);
 							g_free(name);
 							break;
 						case HYP_NODE_INTERNAL:
-							AddHistoryEntry(doc->window);
-							GotoPage(doc, dest_page, 0, TRUE);
+							AddHistoryEntry(win, doc);
+							GotoPage(win, dest_page, 0, TRUE);
 							break;
 						case HYP_NODE_POPUP:
-							OpenPopup(doc, dest_page, -1, -1);
+							OpenPopup(win, dest_page, -1, -1);
 							break;
 						default:
 							HYP_DBG(("Illegal External reference!"));
@@ -69,13 +69,13 @@ static void xref_selected(GtkWidget *w, void *user_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time)
+void HypExtRefPopup(WINDOW_DATA *win, int button, guint32 event_time)
 {
 	GtkWidget *menu;
 	const unsigned char *pos;
 	int i;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	WINDOW_DATA *win = doc->window;
 	const unsigned char *end;
 	struct popup_pos popup_pos;
 	
@@ -121,7 +121,7 @@ void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time)
 			}
 			item = gtk_menu_item_new_with_label(text);
 			g_object_set_data(G_OBJECT(item), "item-num", (void *)(intptr_t)i);
-			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(xref_selected), doc);
+			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(xref_selected), win);
 			gtk_widget_show(item);
 			gtk_menu_append(menu, item);
 			g_free(text);
@@ -140,7 +140,7 @@ void HypExtRefPopup(DOCUMENT *doc, int button, guint32 event_time)
 		return;
 	}
 	
-	popup_pos.doc = doc;
+	popup_pos.window = win;
 	popup_pos.obj = TO_REFERENCES;
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
 	gtk_widget_unref(menu);
@@ -191,8 +191,8 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 		ret = HypFindNode(doc, name);
 		if (ret != HYP_NOINDEX)
 		{
-			if (doc->gotoNodeProc(doc, NULL, ret))
-				ReInitWindow(doc);
+			if (doc->gotoNodeProc(win, NULL, ret))
+				ReInitWindow(win);
 		} else
 		{
 			win = search_allref(win, chapter, FALSE);

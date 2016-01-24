@@ -51,45 +51,45 @@ void StartRemarker(gboolean quiet)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void BlockOperation(DOCUMENT *doc, short num)
+void BlockOperation(WINDOW_DATA *win, short num)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 
 	switch (num)
 	{
 	case CO_SAVE:
-		SelectFileSave(doc);
+		SelectFileSave(win);
 		break;
 	case CO_BACK:
-		GoBack(doc);
+		GoBack(win);
 		break;
 	case CO_COPY:
-		BlockCopy(doc);
+		BlockCopy(win);
 		break;
 	case CO_PASTE:
 		if (doc->buttons.searchbox)
-			AutoLocatorPaste(doc);
+			AutoLocatorPaste(win);
 		else
 			BlockPaste(win, gl_profile.viewer.clipbrd_new_window);
 		break;
 	case CO_SELECT_ALL:
-		SelectAll(doc);
+		SelectAll(win);
 		break;
 	case CO_SEARCH:
-		Hypfind(doc, FALSE);
+		Hypfind(win, FALSE);
 		break;
 	case CO_SEARCH_AGAIN:
-		Hypfind(doc, TRUE);
+		Hypfind(win, TRUE);
 		break;
 	case CO_DELETE_STACK:
 		RemoveAllHistoryEntries(win);
-		ToolbarUpdate(doc, TRUE);
+		ToolbarUpdate(win, TRUE);
 		break;
 	case CO_SWITCH_FONT:
-		SwitchFont(doc);
+		SwitchFont(win);
 		break;
 	case CO_SELECT_FONT:
-		SelectFont(doc);
+		SelectFont(win);
 		break;
 	case CO_REMARKER:
 		StartRemarker(FALSE);
@@ -101,8 +101,10 @@ void BlockOperation(DOCUMENT *doc, short num)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
+void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 {
+	DOCUMENT *doc = win->data;
+	
 	b->start.line = 0;
 	b->start.y = 0;
 	b->start.offset = 0;
@@ -116,13 +118,13 @@ void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockCopy(DOCUMENT *doc)
+void BlockCopy(WINDOW_DATA *win)
 {
 	char *scrap_file;
-	BLOCK b = doc->selection;
+	BLOCK b = win->selection;
 
 	if (!b.valid)
-		BlockSelectAll(doc, &b);
+		BlockSelectAll(win, &b);
 
 	/* copy to clipboard */
 	graf_mouse(BUSY_BEE, NULL);
@@ -132,7 +134,7 @@ void BlockCopy(DOCUMENT *doc)
 	} else
 	{
 		_WORD msg[8] = { SC_CHANGED, 0, 0, 2, 0x2e54 /*'.T' */ , 0x5854 /*'XT' */ , 0, 0 };
-		BlockAsciiSave(doc, scrap_file);
+		BlockAsciiSave(win, scrap_file);
 		msg[1] = gl_apid;
 		Protokoll_Broadcast(msg, FALSE);
 		g_free(scrap_file);
@@ -168,8 +170,9 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockAsciiSave(DOCUMENT *doc, const char *path)
+void BlockAsciiSave(WINDOW_DATA *win, const char *path)
 {
+	DOCUMENT *doc = win->data;
 	int handle;
 
 	if (doc->blockProc == NULL)
@@ -185,12 +188,12 @@ void BlockAsciiSave(DOCUMENT *doc, const char *path)
 		FileErrorErrno(path);
 	} else
 	{
-		BLOCK b = doc->selection;
+		BLOCK b = win->selection;
 
 		if (!b.valid)					/* no block selected? */
-			BlockSelectAll(doc, &b);
+			BlockSelectAll(win, &b);
 
-		doc->blockProc(doc, BLK_ASCIISAVE, &b, &handle);
+		doc->blockProc(win, BLK_ASCIISAVE, &b, &handle);
 		close(handle);
 	}
 }

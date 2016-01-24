@@ -68,6 +68,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 {
 	DOCUMENT *doc = NULL;
 	char *real_path;
+	gboolean add_to_hist = TRUE;
 	
 	/* done if we don't have a name */
 	if (empty(path))
@@ -87,10 +88,10 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	if (new_window > 1)
 	{
 		win = NULL;
-	} else if (new_window)
+	} else if (new_window || win == NULL)
 	{
 		DOCUMENT *doc2;
-
+		
 		/* is there a window for that file already? */
 		win = (WINDOW_DATA *) all_list;
 		while (win != NULL)
@@ -100,8 +101,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 				doc2 = win->data;
 				if (filename_cmp(doc2->path, real_path) == 0)
 				{
-					AddHistoryEntry(win);
-					doc = doc2;
+					doc = hypdoc_ref(doc2);
 					break;
 				}
 			}
@@ -109,31 +109,20 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		}
 	} else if (win != NULL)
 	{
-		DOCUMENT *prev_doc = win->data;
-
-		AddHistoryEntry(win);
-
-		/* is that file already loaded in this window? */
-		if (filename_cmp(prev_doc->path, real_path) == 0)
+		DOCUMENT *doc2;
+		WINDOW_DATA *win2;
+		
+		for (win2 = (WINDOW_DATA *)all_list; win2; win2 = win2->next)
 		{
-			doc = prev_doc;
-			win->data = prev_doc->next;
-			prev_doc->next = NULL;
-		} else
-		{
-			prev_doc->closeProc(prev_doc);
-
-			doc = prev_doc->next;
-			while (doc)
+			if (win->type == WIN_WINDOW)
 			{
-				if (filename_cmp(doc->path, real_path) == 0)
+				doc2 = win->data;
+				/* is that file already loaded in this window? */
+				if (filename_cmp(doc2->path, real_path) == 0)
 				{
-					prev_doc->next = doc->next;
-					doc->next = NULL;
+					doc = hypdoc_ref(doc2);
 					break;
 				}
-				prev_doc = doc;
-				doc = doc->next;
 			}
 		}
 	}
@@ -146,6 +135,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	if (doc != NULL)
 	{
 		gboolean found = FALSE;
+		DOCUMENT *prev_doc = NULL;
 		
 		if (!doc->data)
 		{
@@ -165,42 +155,43 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		}
 
 		new_window = 0;
-		if (doc->gotoNodeProc(doc, chapter, node))
+		if (!win)
+			add_to_hist = FALSE;
+		if (add_to_hist)
+			AddHistoryEntry(win, prev_doc);
+		if (doc->gotoNodeProc(win, chapter, node))
 		{
 			found = TRUE;
 			/* no window already? */
 			if (!win)
 			{
-				win = doc->window = OpenWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER | UPARROW | DNARROW |
+				win = OpenWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER | UPARROW | DNARROW |
 						   VSLIDE | LFARROW | RTARROW | HSLIDE | SMALLER, doc->path, -1, -1, doc);
 				new_window = 1;
+				win->data = doc;
 			} else
 			{
-				doc->window = win;
+				prev_doc = win->data;
+				win->data = doc;
 				if (win->status & WIS_ICONIFY)
 					UniconifyWindow(win);
-				doc->next = win->data;
-				win->data = doc;
-				ReInitWindow(doc);
+				ReInitWindow(win);
 				wind_set_int(win->whandle, WF_TOP, 0);
 			}
 		} else if (find_default)
 		{
-			doc->gotoNodeProc(doc, NULL, HYP_NOINDEX);
+			doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
 			if (win)
 			{
-				doc->next = win->data;
+				prev_doc = win->data;
 				win->data = doc;
-				doc->window = win;
 				if (win->status & WIS_ICONIFY)
 					UniconifyWindow(win);
-				ReInitWindow(doc);
+				ReInitWindow(win);
 				wind_set_int(win->whandle, WF_TOP, 0);
 			}
 		} else
 		{
-			if (win)
-				win->data = doc;
 			win = NULL;
 		}
 		if (!found && !no_message)
@@ -218,6 +209,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			g_free(name);
 			g_free(str);
 		}
+		hypdoc_unref(prev_doc);
 	} else
 	{
 		win = NULL;
@@ -230,8 +222,9 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 
 /* Verifies the current documents file modification time/date and reloads the
  * document if necessary. This behaviour is enabled by the CHECK_TIME option. */
-void CheckFiledate(DOCUMENT *doc)
+void CheckFiledate(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	struct stat st;
 	int ret;
 	
@@ -244,51 +237,46 @@ void CheckFiledate(DOCUMENT *doc)
 		if (st.st_mtime != doc->mtime)
 		{
 			hyp_nodenr node;
+			long lineno = 0;
+			int ref_count = 0;
 
 			graf_mouse(BUSY_BEE, NULL);	/* We are busy... */
 
 			node = doc->getNodeProc(doc);	/* Remember current node */
-			doc->closeProc(doc);		/* Close document */
-
+			lineno = win->docsize.y;
+			if (doc->data && doc->type == HYP_FT_HYP)
+			{
+				HYP_DOCUMENT *hyp = doc->data;
+				ref_count = hyp->ref_count;
+				hyp->ref_count = 1;
+				doc->data = hyp_unref(hyp);
+			} else
+			{
+				doc->closeProc(doc);		/* Close document */
+			}
+			
 			/* Reload file */
 			ret = hyp_utf8_open(doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 			if (ret >= 0)
 			{
 				LoadFile(doc, ret, FALSE);
 				hyp_utf8_close(ret);
+				if (doc->data && doc->type == HYP_FT_HYP)
+				{
+					HYP_DOCUMENT *hyp = doc->data;
+					hyp->ref_count = ref_count;
+				}
 			} else
 			{
 				FileErrorErrno(hyp_basename(doc->path));
 			}
 
 			/* jump to previously active node */
-			doc->gotoNodeProc(doc, NULL, node);
+			doc->gotoNodeProc(win, NULL, node);
 
-			ReInitWindow(doc);
+			win->docsize.y = lineno;
+			ReInitWindow(win);
 			graf_mouse(ARROW, NULL);	/* We are done. */
 		}
 	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-void HypDeleteIfLast(DOCUMENT *doc, HYP_DOCUMENT *hyp)
-{
-	WINDOW_DATA *ptr;
-	
-	/*
-	 * check if file is still in use by another window
-	 */
-	ptr = (WINDOW_DATA *) all_list;
-	while (ptr)
-	{
-		if (ptr->type == WIN_WINDOW &&
-			ptr->proc == HelpWindow &&
-			ptr->data &&
-			ptr->data != doc &&
-			((DOCUMENT *)ptr->data)->data == hyp)
-			return;
-		ptr = ptr->next;
-	}
-	hyp_delete(hyp);
 }

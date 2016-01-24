@@ -2146,7 +2146,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 	
 	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
 	{
-		hyp_delete(hyp);
+		hyp_unref(hyp);
 		hyp_utf8_close(handle);
 		hyp_utf8_fprintf(opts->errorfile, _("%s: fatal: protected hypertext: %s\n"), gl_program_name, filename);
 		return FALSE;
@@ -2165,7 +2165,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 		opts->outfile = hyp_utf8_fopen(output_filename, "wb");
 		if (opts->outfile == NULL)
 		{
-			hyp_delete(hyp);
+			hyp_unref(hyp);
 			hyp_utf8_close(handle);
 			hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, output_filename, strerror(errno));
 			g_free(output_filename);
@@ -2196,7 +2196,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 	}
 	
 	retval = func(hyp, opts, argc, argv);
-	hyp_delete(hyp);
+	hyp_unref(hyp);
 	hyp_utf8_close(handle);
 	if (output_filename)
 	{
@@ -2561,7 +2561,7 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 	}
 	
 	hyp_utf8_close(handle);
-	hyp_delete(hyp);
+	hyp_unref(hyp);
 	return TRUE;
 }
 

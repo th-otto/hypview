@@ -211,12 +211,23 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SelectFileSave(DOCUMENT *doc)
+void SelectFileSave(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	char *filepath;
-	GtkWidget *parent = doc ? ((WINDOW_DATA *)(doc->window))->hwnd : NULL;
-
+	GtkWidget *parent = win ? win->hwnd : NULL;
+	GtkTextIter start, end;
+	
 	filepath = replace_ext(doc->path, NULL, ".txt");
+	
+	/*
+	 * the text widget will loose the selection when something gets selected
+	 * in the file chooser, so save the selection bound now
+	 */
+	if (gtk_text_buffer_get_has_selection(win->text_buffer))
+		gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
+	else
+		gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
 
 	if (choose_file(parent, &filepath, FALSE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
 	{
@@ -230,7 +241,7 @@ void SelectFileSave(DOCUMENT *doc)
 				ret = -1;
 		}
 		if (ret < 0)
-			BlockAsciiSave(doc, filepath);
+			BlockAsciiSave(win, filepath, &start, &end);
 	}
 	g_free(filepath);
 }

@@ -281,9 +281,9 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypDisplayPage(DOCUMENT *doc)
+void HypDisplayPage(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 	HYP_NODE *node = doc->displayed_node;
 	_UWORD len;
@@ -476,8 +476,8 @@ void HypDisplayPage(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypPrepNode(DOCUMENT *doc)
+void HypPrepNode(WINDOW_DATA *win)
 {
 	/* nothing to do */
-	UNUSED(doc);
+	UNUSED(win);
 }

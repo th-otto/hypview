@@ -62,9 +62,9 @@ static void get_word(const unsigned char *min, const unsigned char *src, unsigne
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypClick(DOCUMENT *doc, EVNTDATA *m)
+void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp;
 	HYP_NODE *node;
 	_WORD xy[8];
@@ -161,12 +161,12 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 								g_free(name);
 							} else
 							{
-								AddHistoryEntry(win);
-								GotoPage(doc, dst_page, line_nr, TRUE);
+								AddHistoryEntry(win, doc);
+								GotoPage(win, dst_page, line_nr, TRUE);
 							}
 							break;
 						case HYP_NODE_POPUP:
-							OpenPopup(doc, dst_page, x_pos - xy[2], y - y % font_ch);
+							OpenPopup(win, dst_page, x_pos - xy[2], y - y % font_ch);
 							break;
 						case HYP_NODE_EXTERNAL_REF:
 							{
@@ -303,8 +303,8 @@ void HypClick(DOCUMENT *doc, EVNTDATA *m)
 				ret = HypFindNode(doc, name);
 				if (ret != HYP_NOINDEX)
 				{
-					if (doc->gotoNodeProc(doc, NULL, ret))
-						ReInitWindow(doc);
+					if (doc->gotoNodeProc(win, NULL, ret))
+						ReInitWindow(win);
 				} else
 				{
 					search_allref(win, name, TRUE);

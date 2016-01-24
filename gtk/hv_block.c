@@ -32,56 +32,55 @@ void StartRemarker(gboolean quiet)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void gtk_text_view_select_all(GtkWidget *text_view)
+static void SelectAll(WINDOW_DATA *win)
 {
 	GtkTextIter start_iter, end_iter;
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
 	
-	gtk_text_buffer_get_bounds(buffer, &start_iter, &end_iter);
-    gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
+	gtk_text_buffer_get_bounds(win->text_buffer, &start_iter, &end_iter);
+    gtk_text_buffer_select_range(win->text_buffer, &start_iter, &end_iter);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockOperation(DOCUMENT *doc, enum blockop num)
+void BlockOperation(WINDOW_DATA *win, enum blockop num)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 
 	switch (num)
 	{
 	case CO_SAVE:
-		SelectFileSave(doc);
+		SelectFileSave(win);
 		break;
 	case CO_BACK:
-		GoBack(doc);
+		GoBack(win);
 		break;
 	case CO_COPY:
-		BlockCopy(doc);
+		BlockCopy(win);
 		break;
 	case CO_PASTE:
 		if (doc->buttons.searchbox)
-			AutoLocatorPaste(doc);
+			AutoLocatorPaste(win);
 		else
 			BlockPaste(win, gl_profile.viewer.clipbrd_new_window);
 		break;
 	case CO_SELECT_ALL:
-		gtk_text_view_select_all(win->text_view);
+		SelectAll(win);
 		break;
 	case CO_SEARCH:
-		Hypfind(doc, FALSE);
+		Hypfind(win, FALSE);
 		break;
 	case CO_SEARCH_AGAIN:
-		Hypfind(doc, TRUE);
+		Hypfind(win, TRUE);
 		break;
 	case CO_DELETE_STACK:
 		RemoveAllHistoryEntries(win);
-		ToolbarUpdate(doc, TRUE);
+		ToolbarUpdate(win, TRUE);
 		break;
 	case CO_SWITCH_FONT:
-		SwitchFont(doc);
+		SwitchFont(win);
 		break;
 	case CO_SELECT_FONT:
-		SelectFont(doc);
+		SelectFont(win);
 		break;
 	case CO_REMARKER:
 		StartRemarker(FALSE);
@@ -94,22 +93,27 @@ void BlockOperation(DOCUMENT *doc, enum blockop num)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockSelectAll(DOCUMENT *doc, BLOCK *b)
+void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 {
-	WINDOW_DATA *win = doc->window;
-	gtk_text_view_select_all(win->text_view);
+	SelectAll(win);
 	UNUSED(b);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockCopy(DOCUMENT *doc)
+void BlockCopy(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = doc->window;
 	GtkClipboard *clipboard = gtk_widget_get_clipboard(win->text_view, GDK_SELECTION_CLIPBOARD);
-	if (!gtk_text_buffer_get_has_selection(win->text_buffer))
-		gtk_text_view_select_all(win->text_view);
-	gtk_text_buffer_copy_clipboard(win->text_buffer, clipboard);
+	char *txt;
+	GtkTextIter start, end;
+	
+	if (gtk_text_buffer_get_has_selection(win->text_buffer))
+		gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
+	else
+		gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
+	txt = gtk_text_buffer_get_text(win->text_buffer, &start, &end, FALSE);
+	gtk_clipboard_set_text(clipboard, txt, -1);
+	g_free(txt);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -126,11 +130,9 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockAsciiSave(DOCUMENT *doc, const char *path)
+void BlockAsciiSave(WINDOW_DATA *win, const char *path, GtkTextIter *start, GtkTextIter *end)
 {
 	int handle;
-	WINDOW_DATA *win = doc->window;
-	GtkTextIter start, end;
 	char *txt;
 	size_t len, ret;
 	
@@ -140,10 +142,7 @@ void BlockAsciiSave(DOCUMENT *doc, const char *path)
 		FileErrorErrno(path);
 	} else
 	{
-		if (!gtk_text_buffer_get_has_selection(win->text_buffer))
-			gtk_text_view_select_all(win->text_view);
-		gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
-		txt = gtk_text_buffer_get_text(win->text_buffer, &start, &end, FALSE);
+		txt = gtk_text_buffer_get_text(win->text_buffer, start, end, FALSE);
 		len = txt ? strlen(txt) : 0;
 		ret = hyp_utf8_write(handle, txt, len);
 		if (ret != len)

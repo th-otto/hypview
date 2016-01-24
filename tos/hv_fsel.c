@@ -100,7 +100,7 @@ void SelectFileLoad(WINDOW_DATA *win)
 
 static void SaveFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 {
-	DOCUMENT *doc = fslx->data;
+	WINDOW_DATA *win = fslx->data;
 
 	UNUSED(nfiles);
 	if (fslx->button)
@@ -119,15 +119,16 @@ static void SaveFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 				return;
 			}
 		}
-		BlockAsciiSave(doc, path);
+		BlockAsciiSave(win, path);
 		g_free(path);
 	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SelectFileSave(DOCUMENT *doc)
+void SelectFileSave(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	char paths[550];
 	char *filepath;
 	char *subst;
@@ -136,7 +137,7 @@ void SelectFileSave(DOCUMENT *doc)
 	CreatePathList(paths, subst);
 	filepath = replace_ext(doc->path, NULL, ".txt");
 
-	OpenFileselector(SaveFile_FSLX, rs_string(FSLX_SAVE), filepath, paths, "*.txt\0", 0, doc);
+	OpenFileselector(SaveFile_FSLX, rs_string(FSLX_SAVE), filepath, paths, "*.txt\0", 0, win);
 	g_free(filepath);
 	g_free(subst);
 }

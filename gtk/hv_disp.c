@@ -4,10 +4,10 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void HypDisplayPage(DOCUMENT *doc)
+void HypDisplayPage(WINDOW_DATA *win)
 {
 	/* nothing to do */
-	UNUSED(doc);
+	UNUSED(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -258,10 +258,10 @@ static GtkTextTag *insert_str(struct prep_info *info, const char *str, const cha
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypPrepNode(DOCUMENT *doc)
+void HypPrepNode(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	HYP_NODE *node = doc->displayed_node;
-	WINDOW_DATA *win = doc->window;
 	HYP_DOCUMENT *hyp = doc->data;
 	const unsigned char *src, *end, *textstart;
 	WP_UNIT sx, sy;
@@ -280,8 +280,8 @@ void HypPrepNode(DOCUMENT *doc)
 		at_bol = FALSE; \
 	}
 
-	RemoveSearchBox(doc);
-	ToolbarUpdate(doc, FALSE);
+	RemoveSearchBox(win);
+	ToolbarUpdate(win, FALSE);
 	
 	end = node->end;
 	src = node->start;

@@ -61,9 +61,9 @@ static void MarkerDelete(short num)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerSave(DOCUMENT *doc, short num)
+void MarkerSave(WINDOW_DATA *win, short num)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	const char *src;
 	char *dst, *end;
 
@@ -113,10 +113,8 @@ void MarkerSave(DOCUMENT *doc, short num)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
+void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window)
 {
-	WINDOW_DATA *win = doc->window;
-
 	/* avoid illegal parameters */
 	if (num < 0 || num >= MAX_MARKEN)
 		return;
@@ -126,16 +124,16 @@ void MarkerShow(DOCUMENT *doc, short num, gboolean new_window)
 		win = OpenFileInWindow(win, marken[num].path, NULL, marken[num].node_num, TRUE, new_window, FALSE);
 		if (win != NULL)
 		{
-			doc = win->data;
-			GotoPage(doc, marken[num].node_num, marken[num].line, FALSE);
+			GotoPage(win, marken[num].node_num, marken[num].line, FALSE);
 		}
 	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerPopup(DOCUMENT *doc, short x, short y)
+void MarkerPopup(WINDOW_DATA *win, short x, short y)
 {
+	DOCUMENT *doc = win->data;
 	OBJECT *tree = rs_tree(EMPTYPOPUP);
 	short i, sel, ob, h;
 	EVNTDATA event;
@@ -194,14 +192,14 @@ void MarkerPopup(DOCUMENT *doc, short x, short y)
 			sel = i;
 			if (event.kstate & KbSHIFT)
 			{
-				MarkerSave(doc, sel);
+				MarkerSave(win, sel);
 			} else if (marken[sel].node_num == HYP_NOINDEX)
 			{
 				char *buff;
 	
 				buff = g_strdup_printf(rs_string(ASK_SETMARK), doc->window_title);
 				if (form_alert(1, buff) == 1)
-					MarkerSave(doc, sel);
+					MarkerSave(win, sel);
 				g_free(buff);
 			} else
 			{
@@ -218,7 +216,7 @@ void MarkerPopup(DOCUMENT *doc, short x, short y)
 					g_free(buff);
 				} else
 				{
-					MarkerShow(doc, sel, (event.kstate & KbCTRL) != 0);
+					MarkerShow(win, sel, (event.kstate & KbCTRL) != 0);
 				}
 			}
 		}

@@ -2,12 +2,17 @@
 #include "hypdebug.h"
 #include <stddef.h>
 
+#ifdef __PUREC__
+struct _window_data_ { int dummy; };
+#endif
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_num)
+static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr node_num)
 {
+	DOCUMENT *doc = hypwin_doc(win);
 	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *) doc->data;
 	HYP_NODE *node;
 	
@@ -87,7 +92,7 @@ static gboolean HypGotoNode(DOCUMENT *doc, const char *chapter, hyp_nodenr node_
 	{
 		doc->displayed_node = node;
 	
-		doc->prepNode(doc);
+		doc->prepNode(win);
 		/* update document with node data XXFIXME */
 		doc->lines = node->lines;
 		doc->height = node->height;
@@ -110,7 +115,7 @@ static void HypClose(DOCUMENT *doc)
 	
 	hyp = (HYP_DOCUMENT *) doc->data;
 	doc->data = NULL;
-	HypDeleteIfLast(doc, hyp);
+	hyp_unref(hyp);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -286,16 +291,13 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	doc->window_title = g_strdup(doc->path);
 	doc->buttons.load = TRUE;
 	doc->type = HYP_FT_UNKNOWN;
-#ifdef WITH_GUI_GEM
-	doc->autolocator = NULL;
-	doc->selection.valid = FALSE;
-#endif
-
+	doc->ref_count = 1;
+	
 	/* type-spezific loading follows */
 	if (LoadFile(doc, handle, return_if_ref) < 0)
 	{
 		FileError(hyp_basename(doc->path), _("format not recognized"));
-		HypCloseFile(doc);
+		hypdoc_unref(doc);
 		doc = NULL;
 	} else
 	{
@@ -316,6 +318,42 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	return doc;
 }
 
+/* ------------------------------------------------------------------------- */
+
+DOCUMENT *hypdoc_unref(DOCUMENT *doc)
+{
+	if (G_UNLIKELY(doc == NULL))
+		return doc;
+	ASSERT(doc->ref_count >= 1);
+	if (doc->data && doc->type == HYP_FT_HYP)
+	{
+		HYP_DOCUMENT *hyp = doc->data;
+		doc->data = hyp_unref(hyp);
+	}
+	if (--doc->ref_count == 0)
+	{
+		HypCloseFile(doc);
+		doc = NULL;
+	}
+	return doc;
+}
+
+/* ------------------------------------------------------------------------- */
+
+DOCUMENT *hypdoc_ref(DOCUMENT *doc)
+{
+	if (G_UNLIKELY(doc == NULL))
+		return doc;
+	++doc->ref_count;
+	ASSERT(doc->ref_count >= 2);
+	if (doc->data && doc->type == HYP_FT_HYP)
+	{
+		HYP_DOCUMENT *hyp = doc->data;
+		hyp_ref(hyp);
+	}
+	return doc;
+}
+
 /*** ---------------------------------------------------------------------- ***/
 
 /*
@@ -323,15 +361,13 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
  */
 void HypCloseFile(DOCUMENT *doc)
 {
-	if (doc == NULL)
+	if (G_UNLIKELY(doc == NULL))
 		return;
-	/* type-spezific clenaup follows */
+	ASSERT(doc->ref_count == 0);
+	/* type-specific cleanup follows */
 	if (doc->data)
 		doc->closeProc(doc);
 	g_free(doc->window_title);
-#ifdef WITH_GUI_GEM
-	g_free(doc->autolocator);
-#endif
 	g_free(doc->path);
 	g_free(doc);
 }

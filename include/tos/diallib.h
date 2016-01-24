@@ -82,38 +82,34 @@
 /* File maximum */
 #define	DL_PATHMAX              256
 
-typedef struct _chain_data_
-{
-	struct _chain_data_	*next;
-	struct _chain_data_	*previous;
-	_WORD	type;
-	_WORD	whandle;
-	_WORD	status;
-	GRECT last;
-	_WORD owner;
-} CHAIN_DATA;
+#define COMMON_CHAIN_DATA(linktype) \
+	linktype *next; \
+	linktype *previous; \
+	_WORD type; \
+	_WORD whandle; \
+	_WORD status; \
+	GRECT last; \
+	_WORD owner
 
-typedef struct _dialog_data_
+typedef struct _chain_data_ CHAIN_DATA;
+struct _chain_data_
 {
-	struct _dialog_data_	*next;
-	struct _dialog_data_	*previous;
-	_WORD	type;
-	_WORD	whandle;
-	_WORD	status;
-	GRECT last;
-	_WORD owner;
-	/* ^^ fields above here must match CHAIN_DATA */
+	COMMON_CHAIN_DATA(CHAIN_DATA);
+};
+
+typedef struct _dialog_data_ DIALOG_DATA;
+struct _dialog_data_
+{
+	COMMON_CHAIN_DATA(DIALOG_DATA);
 
 	DIALOG *dial;
 	OBJECT *obj;
 	const char *title;
 	void *data;
-} DIALOG_DATA;
+};
 
 
 typedef long WP_UNIT;
-
-typedef struct _window_data_ WINDOW_DATA;
 
 typedef	gboolean (*HNDL_WIN)(WINDOW_DATA *wptr, _WORD obj, void *data);
 
@@ -121,14 +117,7 @@ typedef	gboolean (*HNDL_WIN)(WINDOW_DATA *wptr, _WORD obj, void *data);
 
 struct _window_data_
 {
-	WINDOW_DATA	*next;
-	WINDOW_DATA	*previous;
-	_WORD	type;
-	_WORD	whandle;
-	_WORD	status;
-	GRECT last;
-	_WORD owner;
-	/* ^^ fields above here must match CHAIN_DATA */
+	COMMON_CHAIN_DATA(WINDOW_DATA);
 
 	GRECT full;
 	GRECT work;
@@ -161,22 +150,19 @@ struct _window_data_
 	short	x_offset;
 	short	y_offset;
 #endif
-	void	*data;
+	char *autolocator;          /* Autolocator search string */
+	BLOCK selection;            /* Contents of selection */
+	DOCUMENT *data;
+	WINDOW_DATA *popup;
+	HISTORY *history;
 };
 
-struct _filesel_data_;
-typedef	void (*HNDL_FSL)(struct _filesel_data_ *fslx,short nfiles);
+typedef struct _filesel_data_ FILESEL_DATA;
+typedef	void (*HNDL_FSL)(FILESEL_DATA *fslx,short nfiles);
 
-typedef struct _filesel_data_
+struct _filesel_data_
 {
-	struct _filesel_data_	*next;
-	struct _filesel_data_	*previous;
-	_WORD	type;
-	_WORD	whandle;
-	_WORD	status;
-	GRECT last;
-	_WORD owner;
-	/* ^^ fields above here must match CHAIN_DATA */
+	COMMON_CHAIN_DATA(FILESEL_DATA);
 
 	HNDL_FSL proc;
 	void *dialog;
@@ -186,21 +172,14 @@ typedef struct _filesel_data_
 	_WORD	sort_mode;
 	_WORD	nfiles;
 	void *data;
-} FILESEL_DATA;
+};
 
-struct _fontsel_data_;
-typedef	short (*HNDL_FONT)(struct _fontsel_data_ *fnts_data);
+typedef struct _fontsel_data_ FONTSEL_DATA;
+typedef	short (*HNDL_FONT)(FONTSEL_DATA *fnts_data);
 
-typedef struct _fontsel_data_
+struct _fontsel_data_
 {
-	struct _fontsel_data_	*next;
-	struct _fontsel_data_	*previous;
-	_WORD	type;
-	_WORD	whandle;
-	_WORD	status;
-	GRECT last;
-	_WORD owner;
-	/* ^^ fields above here must match CHAIN_DATA */
+	COMMON_CHAIN_DATA(FONTSEL_DATA);
 
 	HNDL_FONT proc;
 	FNT_DIALOG *dialog;
@@ -211,7 +190,7 @@ typedef struct _fontsel_data_
 	long	id,pt,ratio;
 	_WORD	vdi_handle;
 	void *data;
-} FONTSEL_DATA;
+};
 
 
 /*

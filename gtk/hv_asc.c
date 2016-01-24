@@ -6,18 +6,18 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void AsciiDisplayPage(DOCUMENT *doc)
+void AsciiDisplayPage(WINDOW_DATA *win)
 {
-	UNUSED(doc);
+	UNUSED(win);
 	/* nothing to do */
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void AsciiGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
+void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	long line = -1;
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	
 	if (doc->type != HYP_FT_ASCII)
 	{

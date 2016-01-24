@@ -148,8 +148,9 @@ static void set_text(OBJECT *tree, _WORD idx, const char *txt)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ProgrammInfos(DOCUMENT *doc)
+void DocumentInfos(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	GRECT big, little;
 	HYP_DOCUMENT *hyp = doc->data;
 	OBJECT *tree = rs_tree(PROGINFO);

@@ -30,14 +30,14 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void BinaryDisplayPage(DOCUMENT *doc)
+void BinaryDisplayPage(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
 	short x, y;
 	char line_buffer[1024];
 	const unsigned char *src = ascii->start;
 	const unsigned char *end = src + ascii->length;
-	WINDOW_DATA *win = doc->window;
 
 	wind_get_grect(win->whandle, WF_WORKXYWH, &win->work);
 
@@ -76,9 +76,9 @@ void BinaryDisplayPage(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BinaryGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
+void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
 	long line = y / win->y_raster + win->docsize.y;
 	_WORD i;

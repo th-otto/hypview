@@ -251,7 +251,7 @@ void CloseAllWindows(void)
 	}
 }
 
-void RemoveWindow(WINDOW_DATA * ptr)
+void RemoveWindow(WINDOW_DATA *ptr)
 {
 	GRECT big, small = { 0, 0, 0, 0 };
 	if (ptr)
@@ -260,20 +260,25 @@ void RemoveWindow(WINDOW_DATA * ptr)
 		{
 			if (ptr->status & WIS_OPEN)
 			{
-				wind_get_grect(ptr->whandle, WF_CURRXYWH, &big);
 				ptr->proc(ptr, WIND_CLOSE, NULL);
-				wind_close(ptr->whandle);
-				graf_shrinkbox_grect(&small, &big);
+				if (ptr->whandle > 0)
+				{
+					wind_get_grect(ptr->whandle, WF_CURRXYWH, &big);
+					wind_close(ptr->whandle);
+					graf_shrinkbox_grect(&small, &big);
+				}
 			}
 			ptr->proc(ptr, WIND_EXIT, NULL);
 #if OPEN_VDI_WORKSTATION
 			v_clsvwk(ptr->vdi_handle);
 #endif
-			wind_delete(ptr->whandle);
+			if (ptr->whandle > 0)
+				wind_delete(ptr->whandle);
 			if (modal_items >= 0)
 				modal_items--;
 		}
 		remove_item((CHAIN_DATA *) ptr);
+		g_free(ptr->autolocator);
 		g_free(ptr);
 	}
 }
@@ -1114,7 +1119,6 @@ WINDOW_DATA *find_window_by_data(void *data)
 int count_window(void)
 {
 	int i;
-
 	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
 
 	i = 0;

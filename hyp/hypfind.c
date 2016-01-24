@@ -888,14 +888,14 @@ static gboolean process_file(const char *filename, struct hypfind_opts *opts)
 	if (ftype != HYP_FT_HYP)
 	{
 		hyp_utf8_close(handle);
-		hyp_delete(hyp);
+		hyp_unref(hyp);
 		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
 		return FALSE;
 	}
 	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
 	{
 		hyp_utf8_close(handle);
-		hyp_delete(hyp);
+		hyp_unref(hyp);
 		hyp_utf8_fprintf(opts->errorfile, _("%s: fatal: protected hypertext: %s\n"), gl_program_name, filename);
 		return FALSE;
 	}
@@ -908,7 +908,7 @@ static gboolean process_file(const char *filename, struct hypfind_opts *opts)
 	
 	retval = search_hyp(hyp, opts);
 	hyp_utf8_close(handle);
-	hyp_delete(hyp);
+	hyp_unref(hyp);
 	opts->total_hits += opts->hits;
 	opts->filecount++;
 	

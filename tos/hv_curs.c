@@ -23,9 +23,9 @@ static char *invalid_page(hyp_nodenr page)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypGetCursorPosition(DOCUMENT *doc, int x, int y, TEXT_POS *pos)
+void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_NODE *node;
 	LINEPTR *line_ptr;
 	short line = 0;

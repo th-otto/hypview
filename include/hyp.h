@@ -438,6 +438,7 @@ typedef struct
 	REF_FILE *ref;              /* Pointer to REF file structure */
 	hyp_nodenr first_text_page; /* first node number with text */
 	hyp_nodenr last_text_page;  /* last node number with text */
+	int ref_count;				/* usage count */
 } HYP_DOCUMENT;
 
 /*
@@ -733,6 +734,8 @@ void hyp_image_free(HYP_IMAGE *image);
 HYP_DOCUMENT *hyp_new(void);
 void hyp_delete(HYP_DOCUMENT *hyp);
 HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err);
+HYP_DOCUMENT *hyp_ref(HYP_DOCUMENT *hyp);
+HYP_DOCUMENT *hyp_unref(HYP_DOCUMENT *hyp);
 
 const char *hyp_osname(HYP_OS os);
 HYP_OS hyp_os_from_name(const char *name);

@@ -4,67 +4,54 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void GotoPage(DOCUMENT *doc, hyp_nodenr num, long line, gboolean calc)
+void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
 {
-	if (doc->gotoNodeProc(doc, NULL, num))
+	DOCUMENT *doc = win->data;
+	if (doc->gotoNodeProc(win, NULL, num))
 	{
 		if (calc)
 		{
 		}
 		doc->start_line = line;
 	}
-	ReInitWindow(doc);
+	ReInitWindow(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GoBack(DOCUMENT *old_doc)
+void GoBack(WINDOW_DATA *win)
 {
-	WINDOW_DATA *win = old_doc->window;
+	DOCUMENT *old_doc = win->data;
 	DOCUMENT *new_doc;
 	hyp_nodenr page;
 	long line;
 
-	new_doc = old_doc;
-	if (RemoveHistoryEntry(&new_doc, &page, &line))
+	if ((new_doc = RemoveHistoryEntry(win, &page, &line)) != NULL)
 	{
 		/* changing file? */
-		if (new_doc != old_doc)
 		{
 			int ret;
 
-			/* if old document is not used anymore... */
-			if (!CountDocumentHistoryEntries(old_doc))
-			{
-				win->data = old_doc->next;
-				HypCloseFile(old_doc);		/* ...close document */
-			} else
-			{
-				DOCUMENT *prev_doc = old_doc;
-
-				old_doc->closeProc(old_doc);
-
-				/* place new document at top of list */
-				while (prev_doc->next != new_doc)
-					prev_doc = prev_doc->next;
-				prev_doc->next = new_doc->next;
-				new_doc->next = old_doc;
-			}
-
+			hypdoc_unref(old_doc);
+			win->data = new_doc;
+			
 			/* load new file */
-			ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-			if (ret >= 0)
+			if (new_doc->data == NULL)
 			{
-				LoadFile(new_doc, ret, FALSE);
-				hyp_utf8_close(ret);
-			} else
-			{
-				FileErrorErrno(hyp_basename(new_doc->path));
+				ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+				if (ret >= 0)
+				{
+					LoadFile(new_doc, ret, FALSE);
+					hyp_utf8_close(ret);
+				} else
+				{
+					FileErrorErrno(hyp_basename(new_doc->path));
+				}
 			}
 		}
 
 		if (new_doc->type >= 0)			/* known filetype? */
-			GotoPage(new_doc, page, line, FALSE);	/* switch to requested page */
+			GotoPage(win, page, line, FALSE);	/* switch to requested page */
 		else
 			FileError(hyp_basename(new_doc->path), _("format not recognized"));
 	}
@@ -72,75 +59,31 @@ void GoBack(DOCUMENT *old_doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void history_selected(GtkWidget *w, void *user_data)
+static void history_selected(GtkWidget *w, WINDOW_DATA *win)
 {
-	DOCUMENT *old_doc = (DOCUMENT *)user_data;
-	WINDOW_DATA *win = old_doc->window;
+	DOCUMENT *old_doc = win->data;
 	void *psel = g_object_get_data(G_OBJECT(w), "item-num");
 	int sel = (int)(intptr_t)psel;
 	int i;
-	HISTORY *entry;
 
 	if (sel >= 0)
 	{
-		HISTORY *selected_entry = history;
-		DOCUMENT *new_doc = old_doc;
+		DOCUMENT *new_doc;
 		hyp_nodenr page;
 		long line;
 
 		/* Find selected entry */
 		i = 0;
-		while (selected_entry)
+		while ((new_doc = RemoveHistoryEntry(win, &page, &line)) != NULL)
 		{
-			if (selected_entry->win == win)
-			{
-				if (sel == i)
-					break;
-				i++;
-			}
-			selected_entry = selected_entry->next;
+			hypdoc_unref(old_doc);
+			win->data = old_doc = new_doc;
+			if (sel == i)
+				break;
+			i++;
 		}
 
-		/* Release previous document */
-		old_doc->closeProc(old_doc);
-
-		/* Remove unnecessary history entries */
-		entry = history;
-		for (;;)
-		{
-			if (entry->win == win)
-			{
-				RemoveHistoryEntry(&new_doc, &page, &line);
-
-				/* Switch document? -> close old document */
-				if (new_doc != old_doc)
-				{
-					if (!CountDocumentHistoryEntries(old_doc))
-					{
-						win->data = old_doc->next;
-						HypCloseFile(old_doc);	/* close document */
-					} else
-					{
-						DOCUMENT *prev_doc = old_doc;
-
-						/* add new document at the beginning */
-						while (prev_doc->next != new_doc)
-							prev_doc = prev_doc->next;
-						prev_doc->next = new_doc->next;
-						new_doc->next = old_doc;
-					}
-					old_doc = new_doc;
-				}
-
-				if (entry == selected_entry)
-					break;
-				entry = history;
-			} else
-			{
-				entry = entry->next;
-			}
-		}
-
+		new_doc = win->data;
 		if (!new_doc->data)
 		{
 			int ret;
@@ -158,7 +101,7 @@ static void history_selected(GtkWidget *w, void *user_data)
 		}
 
 		if (new_doc->type >= 0)			/* known file type ? */
-			GotoPage(new_doc, page, line, FALSE);	/* jump to page */
+			GotoPage(win, page, line, FALSE);	/* jump to page */
 		else
 			FileError(hyp_basename(new_doc->path), _("format not recognized"));
 	}
@@ -166,13 +109,12 @@ static void history_selected(GtkWidget *w, void *user_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HistoryPopup(DOCUMENT *old_doc, int button, guint32 event_time)
+void HistoryPopup(WINDOW_DATA *win, int button, guint32 event_time)
 {
-	WINDOW_DATA *win = old_doc->window;
 	int i;
 	GtkWidget *menu;
 	struct popup_pos popup_pos;
-	HISTORY *entry = history;
+	HISTORY *entry = win->history;
 
 	if (!win->m_buttons[TO_HISTORY])
 		return;
@@ -184,15 +126,12 @@ void HistoryPopup(DOCUMENT *old_doc, int button, guint32 event_time)
 	i = 0;
 	while (entry)
 	{
-		if (entry->win == win)
-		{
-			GtkWidget *item = gtk_menu_item_new_with_label(entry->title);
-			g_object_set_data(G_OBJECT(item), "item-num", (void *)(intptr_t)i);
-			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(history_selected), old_doc);
-			gtk_widget_show(item);
-			gtk_menu_append(menu, item);
-			i++;
-		}
+		GtkWidget *item = gtk_menu_item_new_with_label(entry->title);
+		g_object_set_data(G_OBJECT(item), "item-num", (void *)(intptr_t)i);
+		g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(history_selected), win);
+		gtk_widget_show(item);
+		gtk_menu_append(menu, item);
+		i++;
 		entry = entry->next;
 	}
 	
@@ -206,7 +145,7 @@ void HistoryPopup(DOCUMENT *old_doc, int button, guint32 event_time)
 		return;
 	}
 	
-	popup_pos.doc = old_doc;
+	popup_pos.window = win;
 	popup_pos.obj = TO_HISTORY;
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
 	gtk_widget_unref(menu);
@@ -220,34 +159,36 @@ void HistoryPopup(DOCUMENT *old_doc, int button, guint32 event_time)
 
 /****** Module dependend	****/
 
-static void GotoDocPage(DOCUMENT *doc, hyp_nodenr page)
+static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 
 	if (hypnode_valid(hyp, page) &&
 		(doc->displayed_node == NULL ||
 		 page != doc->displayed_node->number))
 	{
-		AddHistoryEntry(win);
-		GotoPage(doc, page, 0, FALSE);
+		AddHistoryEntry(win, doc);
+		GotoPage(win, page, 0, FALSE);
 	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GotoHelp(DOCUMENT *doc)
+void GotoHelp(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	GotoDocPage(doc, hyp->help_page);
+	GotoDocPage(win, hyp->help_page);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GotoIndex(DOCUMENT *doc)
+void GotoIndex(WINDOW_DATA *win)
 {
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	GotoDocPage(doc, hyp->index_page);
+	GotoDocPage(win, hyp->index_page);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -270,9 +211,9 @@ void GotoDefaultFile(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GoThisButton(DOCUMENT *doc, enum toolbutton obj)
+void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 {
-	WINDOW_DATA *win = doc->window;
+	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 	hyp_nodenr new_node;
 	hyp_nodenr current_node = doc->getNodeProc(doc);
@@ -323,6 +264,6 @@ void GoThisButton(DOCUMENT *doc, enum toolbutton obj)
 		return;
 
 	if (add_to_hist)
-		AddHistoryEntry(win);
-	GotoPage(doc, new_node, 0, FALSE);
+		AddHistoryEntry(win, doc);
+	GotoPage(win, new_node, 0, FALSE);
 }

@@ -372,6 +372,7 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 
 	if (G_UNLIKELY(hyp == NULL))
 		return;
+	ASSERT(hyp->ref_count == 0);
 	ClearCache(hyp);
 	ref_close(hyp->ref);
 	g_free(hyp->database);
@@ -417,6 +418,32 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 
 /* ------------------------------------------------------------------------- */
 
+HYP_DOCUMENT *hyp_unref(HYP_DOCUMENT *hyp)
+{
+	if (G_UNLIKELY(hyp == NULL))
+		return hyp;
+	ASSERT(hyp->ref_count >= 1);
+	if (--hyp->ref_count == 0)
+	{
+		hyp_delete(hyp);
+		hyp = NULL;
+	}
+	return hyp;
+}
+
+/* ------------------------------------------------------------------------- */
+
+HYP_DOCUMENT *hyp_ref(HYP_DOCUMENT *hyp)
+{
+	if (G_UNLIKELY(hyp == NULL))
+		return hyp;
+	++hyp->ref_count;
+	ASSERT(hyp->ref_count >= 2);
+	return hyp;
+}
+
+/* ------------------------------------------------------------------------- */
+
 HYP_DOCUMENT *hyp_new(void)
 {
 	HYP_DOCUMENT *hyp = g_new0(HYP_DOCUMENT, 1);
@@ -437,6 +464,7 @@ HYP_DOCUMENT *hyp_new(void)
 	hyp->last_text_page = HYP_NOINDEX;
 
 	hyp->handle = -1;
+	hyp->ref_count = 1;
 	
 	return hyp;
 }
@@ -519,7 +547,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 		hyp->indextable = g_new0(INDEX_ENTRY *, hyp->num_index + 1);
 		if (hyp->indextable == NULL)
 		{
-			hyp_delete(hyp);
+			hyp_unref(hyp);
 			*err = HYP_FT_LOADERROR;
 			return NULL;
 		}
@@ -531,7 +559,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 		if (ret != head.itable_size)
 		{
 			g_free(idxent);
-			hyp_delete(hyp);
+			hyp_unref(hyp);
 			*err = HYP_FT_LOADERROR;
 			return NULL;
 		}
@@ -561,7 +589,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 				{
 					g_free(idxent);
 					hyp->indextable[0] = NULL;
-					hyp_delete(hyp);
+					hyp_unref(hyp);
 					*err = HYP_FT_LOADERROR;
 					return NULL;
 				}
@@ -580,7 +608,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 					(current_pos[0] & 1))
 				{
 					g_free(idxent);
-					hyp_delete(hyp);
+					hyp_unref(hyp);
 					*err = HYP_FT_LOADERROR;
 					return NULL;
 				}
@@ -616,7 +644,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 		hyp->indextable[hyp->num_index] = g_new0(INDEX_ENTRY, 1);
 		if (hyp->indextable[hyp->num_index] == NULL)
 		{
-			hyp_delete(hyp);
+			hyp_unref(hyp);
 			*err = HYP_FT_LOADERROR;
 			return NULL;
 		}
