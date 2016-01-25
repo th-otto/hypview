@@ -71,7 +71,7 @@ int main(int argc, const char **argv)
 			if (!empty(gl_profile.viewer.default_file))			/* default-Hypertext specified? */
 			{
 				char *filename = path_subst(gl_profile.viewer.default_file);
-				if (OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE) == NULL)
+				if (OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE) == NULL)
 					SelectFileLoad(NULL);						/* use file selector */
 				g_free(filename);
 			} else
@@ -82,7 +82,7 @@ int main(int argc, const char **argv)
 	} else
 	{
 		/* ...load this file (incl. chapter) */
-		OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
+		OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
 	}
 
 	while (!_app || (!doneFlag && all_list))

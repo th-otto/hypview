@@ -77,7 +77,7 @@ static void OpenFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 	{
 		WINDOW_DATA *win = fslx->data;
 		char *path = g_build_filename(fslx->path, fslx->name, NULL);
-		OpenFileInWindow(win, path, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
+		OpenFileInWindow(win, path, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
 		g_free(path);
 	}
 }

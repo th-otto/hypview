@@ -30,7 +30,7 @@ static void help_clicked(GtkWidget *w, GtkWidget *dialog)
 {
 	UNUSED(w);
 	UNUSED(dialog);
-	OpenFileInWindow(NULL, prghelp_name, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+	OpenFileInWindow(NULL, prghelp_name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -132,7 +132,7 @@ void DocumentInfos(WINDOW_DATA *win)
 		
 		for (h = hyp->hostname; h != NULL; h = h->next)
 		{
-			str = g_strdup_printf(_("@hostname   : %s\n"), h->name);
+			str = g_strdup_printf(_("@hostname   : %s"), h->name);
 			label = gtk_label_new(str);
 			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);

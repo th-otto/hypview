@@ -251,13 +251,13 @@ int main(int argc, char **argv)
 				!empty(gl_profile.viewer.default_file))			/* default-hypertext specified? */
 			{
 				char *filename = path_subst(gl_profile.viewer.default_file);
-				win = OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
 				g_free(filename);
 			} else if (gl_profile.viewer.startup == 2 &&
 				!empty(gl_profile.viewer.last_file))
 			{
 				char *filename = path_subst(gl_profile.viewer.last_file);
-				win = OpenFileInWindow(NULL, filename, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
 				g_free(filename);
 			}
 		} else
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
 			} else
 			{
 				/* ...load this file (incl. chapter) */
-				win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : NULL), HYP_NOINDEX, TRUE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
 			}
 		}
 		if (win == NULL)

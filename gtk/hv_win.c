@@ -980,6 +980,75 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data, guint info, guint time, WINDOW_DATA *win)
+{
+	UNUSED(widget);
+	UNUSED(info);
+	UNUSED(x);
+	UNUSED(y);
+	if (drag_context->action == GDK_ACTION_ASK)
+	{
+		drag_context->action = GDK_ACTION_COPY;
+	}
+	if (data->length > 0 && data->format == 8 && gtk_targets_include_uri(&data->target, 1))
+	{
+		char **names = g_strsplit((const char *)data->data, "\r\n", 0);
+		int i;
+		
+		for (i = 0; names[i] != 0; i++)
+		{
+			char *scheme = g_uri_parse_scheme(names[i]);
+			if (strcmp(scheme, "file") == 0)
+			{
+				char *filename = g_filename_from_uri(names[i], NULL, NULL);
+				OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, FALSE, gl_profile.viewer.va_start_newwin, TRUE);
+				g_free(filename);
+			}
+			g_free(scheme);
+		}
+		g_strfreev(names);
+	}
+	gtk_drag_finish(drag_context, TRUE, FALSE, time);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean drag_motion(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time, WINDOW_DATA *win)
+{
+	GdkAtom target;
+	
+	UNUSED(widget);
+	UNUSED(x);
+	UNUSED(y);
+	UNUSED(win);
+	target = gtk_drag_dest_find_target(widget, drag_context, NULL);
+	if (drag_context->action == GDK_ACTION_ASK)
+	{
+		drag_context->action = GDK_ACTION_COPY;
+	}
+	if (target == GDK_NONE)
+		gdk_drag_status(drag_context, 0, time);
+	else
+		gdk_drag_status(drag_context, GDK_ACTION_COPY, time);
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean drag_drop(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time, WINDOW_DATA *win)
+{
+	GdkAtom target;
+
+	UNUSED(x);
+	UNUSED(y);
+	UNUSED(win);
+	target = gtk_drag_dest_find_target(widget, drag_context, NULL);
+	gtk_drag_get_data(widget, drag_context, target, time);
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 DOCUMENT *hypwin_doc(WINDOW_DATA *win)
 {
 	return win->data;
@@ -1698,6 +1767,22 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		g_signal_connect(G_OBJECT(win->hwnd), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) win);
 
 		ToolbarUpdate(win, FALSE);
+
+		g_signal_connect(G_OBJECT(win->text_view), "drag-data-received", G_CALLBACK(drag_data_received), (gpointer) win);
+		g_signal_connect(G_OBJECT(win->text_view), "drag-motion", G_CALLBACK(drag_motion), (gpointer) win);
+		g_signal_connect(G_OBJECT(win->text_view), "drag-drop", G_CALLBACK(drag_drop), (gpointer) win);
+
+		/*
+		 * remove the plain text targets from the drag destion target list;
+		 * our view is not editable and we dont' want to accept them
+		 */
+		{
+			GtkTargetList *newlist;
+			
+			newlist = gtk_target_list_new(NULL, 0);
+			gtk_target_list_add_uri_targets(newlist, 0);
+			gtk_drag_dest_set_target_list(win->text_view, newlist);
+		}
 	}
 	
 	return win;

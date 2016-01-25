@@ -39,7 +39,7 @@ static void hypfind_page(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *name = gtk_entry_get_text(GTK_ENTRY(entry));
-	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, TRUE, FALSE, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/

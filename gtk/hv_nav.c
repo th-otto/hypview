@@ -205,7 +205,7 @@ void GotoCatalog(WINDOW_DATA *win)
 void GotoDefaultFile(WINDOW_DATA *win)
 {
 	char *filename = path_subst(gl_profile.viewer.default_file);
-	OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
 	g_free(filename);
 }
 

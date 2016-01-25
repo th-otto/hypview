@@ -149,6 +149,7 @@ struct prep_info {
 	GtkTextBuffer *text_buffer;
 	GtkTextTagTable *tag_table;
 	int last_was_space;
+	gboolean ignore_spaces;
 	int tab_id;
 	int target_link_id;
 	long lineno;
@@ -170,6 +171,7 @@ static void info_flush_spaces(struct prep_info *info)
 		gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);
 	}
 	info->last_was_space = 0;
+	info->ignore_spaces = FALSE;
 }
 
 
@@ -202,11 +204,17 @@ static GtkTextTag *insert_str(struct prep_info *info, const char *str, const cha
 				}
 			} else if (*scan == ' ' || *scan == '\t')
 			{
-				info->last_was_space++;
+				if (info->ignore_spaces)
+					gtk_text_buffer_insert(info->text_buffer, &info->iter, scan, next - scan);
+				else
+					info->last_was_space++;
 			} else
 			{
 				gtk_text_buffer_insert(info->text_buffer, &info->iter, scan, next - scan);
 				info->last_was_space = 0;
+				info->ignore_spaces = FALSE;
+				if (*scan == '.')
+					info->ignore_spaces = TRUE;
 			}
 			scan = next;
 			info->x++;
@@ -359,6 +367,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	info.x = info.maxx = sx = sy = 0;
 	at_bol = TRUE;
 	info.last_was_space = 0;
+	info.ignore_spaces = FALSE;
 	
 	info.tab_array_size = 0;
 	info.tab_array = pango_tab_array_new(info.tab_array_size, TRUE);
@@ -529,6 +538,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			src++;
 			textstart = src;
 			info.last_was_space = 0;
+			info.ignore_spaces = FALSE;
 			if (info.x > info.maxx)
 				info.maxx = info.x;
 			info.x = sx;

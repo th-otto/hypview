@@ -77,7 +77,7 @@ void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
 		/* only one result */
 		if (results == 1)
 		{
-			if ((win = OpenFileInWindow(win, Result_List->path, Result_List->node_name, HYP_NOINDEX, FALSE, FALSE, FALSE)) != NULL)
+			if ((win = OpenFileInWindow(win, Result_List->path, Result_List->node_name, HYP_NOINDEX, TRUE, FALSE, FALSE)) != NULL)
 			{
 				if (Result_List->lineno > 0)
 					hv_win_scroll_to_line(win, Result_List->lineno);
