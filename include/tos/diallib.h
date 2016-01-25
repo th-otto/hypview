@@ -123,7 +123,7 @@ struct _window_data_
 	GRECT work;
 	GRECT scroll;
 	HNDL_WIN proc;
-	const char *title;
+	char *title;
 	char titlebuf[80];
 	short	kind;
 #if OPEN_VDI_WORKSTATION
@@ -155,6 +155,7 @@ struct _window_data_
 	DOCUMENT *data;
 	WINDOW_DATA *popup;
 	HISTORY *history;
+	HYP_NODE *displayed_node;
 };
 
 typedef struct _filesel_data_ FILESEL_DATA;
@@ -286,8 +287,9 @@ void SpecialMessageEvents(DIALOG *dialog,EVNT *event);
 /*
  * dl_win.c
  */
-WINDOW_DATA *OpenWindow(HNDL_WIN proc, short kind, const char *title, 
+WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, 
 					WP_UNIT max_w, WP_UNIT max_h,void *user_data);
+void OpenWindow(WINDOW_DATA *win);
 void CloseWindow(WINDOW_DATA *ptr);
 void CloseAllWindows(void);
 void RemoveWindow(WINDOW_DATA *ptr);

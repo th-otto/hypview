@@ -44,7 +44,7 @@ void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
 			long y;
 			HYP_NODE *node;
 	
-			node = doc->displayed_node;
+			node = win->displayed_node;
 	
 			y = HypGetLineY(node, line);
 			line = y / win->y_raster;
@@ -211,8 +211,8 @@ static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 	HYP_DOCUMENT *hyp = doc->data;
 
 	if (hypnode_valid(hyp, page) &&
-		(doc->displayed_node == NULL ||
-		 page != doc->displayed_node->number))
+		(win->displayed_node == NULL ||
+		 page != win->displayed_node->number))
 	{
 		AddHistoryEntry(win, doc);
 		GotoPage(win, page, 0, FALSE);
@@ -250,7 +250,7 @@ void GoThisButton(WINDOW_DATA *win, short obj)
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 	hyp_nodenr new_node = HYP_NOINDEX;
-	hyp_nodenr current_node = doc->getNodeProc(doc);
+	hyp_nodenr current_node = doc->getNodeProc(win);
 	gboolean add_to_hist = FALSE;
 
 	switch (obj)

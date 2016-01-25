@@ -25,7 +25,7 @@ static void ApplyFont(void)
 			/* reload page or file */
 
 			topline = hv_win_topline(win);
-			ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(doc));
+			ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(win));
 			
 			if (ret)
 			{

@@ -66,7 +66,7 @@ enum blockop {
 struct _window_data_
 {
 	GRECT last;
-	const char *title;	/* copy of doc->window_title; do not free */
+	char *title;						/* Window title, in utf8 encoding */
 	int x_raster;
 	int y_raster;
 	DOCUMENT *data;
@@ -89,6 +89,7 @@ struct _window_data_
 	gboolean hovering_over_link;
 	WINDOW_DATA *popup;
 	HISTORY *history;
+	HYP_NODE *displayed_node;   /* Currently displayed node */
 };
 
 typedef struct _link_info {

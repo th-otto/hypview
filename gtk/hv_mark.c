@@ -46,13 +46,13 @@ void MarkerSave(WINDOW_DATA *win, short num)
 	if (num < 0 || num >= MAX_MARKEN)
 		return;
 
-	marken[num].node_num = doc->getNodeProc(doc);
+	marken[num].node_num = doc->getNodeProc(win);
 	marken[num].line = hv_win_topline(win);
 	strncpy(marken[num].path, doc->path, PATH_LEN - 1);
 	marken[num].path[PATH_LEN - 1] = 0;
 
 	/* copy marker title */
-	src = doc->window_title;
+	src = win->title;
 	dst = marken[num].node_name;
 	end = &marken[num].node_name[NODE_LEN - 1];
 	while (dst < end)
@@ -110,7 +110,6 @@ void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window)
 
 void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
 	const char *action_name = gtk_action_get_name(action);
 	int sel;
 	GdkModifierType mask;
@@ -129,7 +128,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 		{
 			char *buff;
 
-			buff = g_strdup_printf(_("Do you want to add\n%s\nto your bookmarks?"), doc->window_title);
+			buff = g_strdup_printf(_("Do you want to add\n%s\nto your bookmarks?"), win->title);
 			if (ask_yesno(GTK_WINDOW(win->hwnd), buff))
 				MarkerSave(win, sel);
 			g_free(buff);

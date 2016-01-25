@@ -28,7 +28,7 @@ static void hypfind_text(WINDOW_DATA *win)
 		}
 	} else
 	{
-		gtk_widget_error_bell(GTK_WIDGET(win));
+		gtk_widget_error_bell(win->hwnd);
 	}
 }
 
@@ -179,7 +179,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		return;
 	}
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), top_window());
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 

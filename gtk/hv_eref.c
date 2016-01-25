@@ -17,8 +17,8 @@ static void xref_selected(GtkWidget *w, WINDOW_DATA *win)
 
 	if (sel >= 0)
 	{
-		pos = doc->displayed_node->start;
-		end = doc->displayed_node->end;
+		pos = win->displayed_node->start;
+		end = win->displayed_node->end;
 		i = 0;
 		while (pos < end && *pos == HYP_ESC)
 		{
@@ -87,8 +87,8 @@ void HypExtRefPopup(WINDOW_DATA *win, int button, guint32 event_time)
 		g_object_ref_sink(menu);
 	
 	i = 0;
-	pos = doc->displayed_node->start;
-	end = doc->displayed_node->end;
+	pos = win->displayed_node->start;
+	end = win->displayed_node->end;
 	while (pos < end && *pos == HYP_ESC)
 	{
 		if (pos[1] == HYP_ESC_EXTERNAL_REFS)

@@ -90,18 +90,11 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 	
 	if (node != NULL)
 	{
-		doc->displayed_node = node;
-	
-		doc->prepNode(win);
+		doc->prepNode(win, node);
 		/* update document with node data XXFIXME */
 		doc->lines = node->lines;
 		doc->height = node->height;
 		doc->columns = node->columns;
-		g_free(doc->window_title);
-		doc->window_title = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
-	
-		if (doc->window_title == NULL)
-			doc->window_title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node_num]->name, STR0TERM);
 	}
 	
 	return node != NULL;
@@ -120,11 +113,12 @@ static void HypClose(DOCUMENT *doc)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static hyp_nodenr HypGetNode(DOCUMENT *doc)
+static hyp_nodenr HypGetNode(WINDOW_DATA *win)
 {
-	if (doc->displayed_node)
-		return doc->displayed_node->number;
-	HYP_DBG(("Document %s has no open page", printnull(doc->path)));
+	HYP_NODE *node = hypwin_node(win);
+	if (node)
+		return node->number;
+	HYP_DBG(("Document %s has no open page", printnull(hypwin_doc(win)->path)));
 	return HYP_NOINDEX;
 }
 
@@ -288,7 +282,6 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	doc = g_new0(DOCUMENT, 1);
 
 	doc->path = g_strdup(path);
-	doc->window_title = g_strdup(doc->path);
 	doc->buttons.load = TRUE;
 	doc->type = HYP_FT_UNKNOWN;
 	doc->ref_count = 1;
@@ -367,7 +360,6 @@ void HypCloseFile(DOCUMENT *doc)
 	/* type-specific cleanup follows */
 	if (doc->data)
 		doc->closeProc(doc);
-	g_free(doc->window_title);
 	g_free(doc->path);
 	g_free(doc);
 }

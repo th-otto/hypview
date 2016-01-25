@@ -43,8 +43,8 @@ void HypExtRefPopup(WINDOW_DATA *win, short x, short y)
 	hyp = doc->data;
 
 	i = tree[ROOT].ob_head;
-	pos = doc->displayed_node->start;
-	end = doc->displayed_node->end;
+	pos = win->displayed_node->start;
+	end = win->displayed_node->end;
 	h = 0;
 	while (pos < end && *pos == HYP_ESC)
 	{
@@ -138,7 +138,7 @@ void HypExtRefPopup(WINDOW_DATA *win, short x, short y)
 	
 	if (sel > 0)
 	{
-		pos = doc->displayed_node->start;
+		pos = win->displayed_node->start;
 		i = tree[ROOT].ob_head;
 		while (pos < end && *pos == HYP_ESC && i != ROOT)
 		{

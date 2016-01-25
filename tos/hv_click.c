@@ -82,7 +82,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 	x = m->x + win->docsize.x * win->x_raster - win->work.g_x;
 	y = m->y - win->work.g_y + win->y_offset;
 
-	node = doc->displayed_node;
+	node = win->displayed_node;
 
 	line_ptr = HypGetYLine(node, y + win->docsize.y * font_ch);
 	src = line_ptr ? line_ptr->txt : NULL;

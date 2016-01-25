@@ -211,7 +211,7 @@ void CheckFiledate(WINDOW_DATA *win)
 			long lineno = 0;
 			int ref_count = 0;
 			
-			node = doc->getNodeProc(doc);	/* Remember current node */
+			node = doc->getNodeProc(win);	/* Remember current node */
 			lineno = hv_win_topline(win);
 			if (doc->data && doc->type == HYP_FT_HYP)
 			{

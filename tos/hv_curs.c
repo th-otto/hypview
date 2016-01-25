@@ -47,7 +47,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 	}
 
 	hyp = doc->data;
-	node = doc->displayed_node;
+	node = win->displayed_node;
 
 	sy = -(win->docsize.y * win->y_raster);
 	line_ptr = node->line_ptr;

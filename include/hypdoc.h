@@ -40,12 +40,12 @@ struct _history_
 
 typedef	void (*DOC_DISPLAYPROC)(WINDOW_DATA *win);
 typedef	void (*DOC_CLOSEPROC)(DOCUMENT *doc);
-typedef	hyp_nodenr (*DOC_GETNODEPROC)(DOCUMENT *doc);
+typedef	hyp_nodenr (*DOC_GETNODEPROC)(WINDOW_DATA *win);
 typedef	gboolean (*DOC_GOTOPROC)(WINDOW_DATA *win, const char *chapter, hyp_nodenr node);
 typedef	long (*DOC_AUTOLOCPROC)(WINDOW_DATA *win, long line, const char *search);
 typedef	void (*DOC_GETCURSORPROC)(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
 typedef	gboolean (*DOC_BLOCKPROC)(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
-typedef	void (*DOC_PREPNODEPROC)(WINDOW_DATA *win);
+typedef	void (*DOC_PREPNODEPROC)(WINDOW_DATA *win, HYP_NODE *node);
 
 typedef struct _hyp_nav_buttons
 {
@@ -75,7 +75,6 @@ struct _document_
 	hyp_filetype type;          /* Document type see F_xy constants */
 	int ref_count;				/* usage count */
 	char *path;                 /* Full file access path */
-	char *window_title;         /* Window title, in utf8 encoding */
 	long start_line;            /* First visible line of document */
 	long lines;                 /* Number of lines (in window lines) */
 	long height;                /* height of document (in pixel) */
@@ -84,7 +83,6 @@ struct _document_
 	/* Toolbar button configuration (bit vector) */
 	hyp_nav_buttons buttons;             
 	void *data;                 /* File format specific data */
-	HYP_NODE *displayed_node;   /* Currently displayed node */
 	time_t mtime;    	        /* File modification time and date */
 	DOC_DISPLAYPROC displayProc;      /* Document display function */
 	DOC_CLOSEPROC closeProc;    /* Document close function */
@@ -112,6 +110,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter);
 DOCUMENT *hypdoc_unref(DOCUMENT *doc);
 DOCUMENT *hypdoc_ref(DOCUMENT *doc);
 DOCUMENT *hypwin_doc(WINDOW_DATA *win);
+HYP_NODE *hypwin_node(WINDOW_DATA *win);
 
 
 /*
@@ -133,7 +132,7 @@ void CheckFiledate(WINDOW_DATA *win);
  *		Display.c
  */
 void HypDisplayPage(WINDOW_DATA *win);
-void HypPrepNode(WINDOW_DATA *win);
+void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node);
 
 /*
  *		Ascii.c

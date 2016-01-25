@@ -38,7 +38,7 @@ typedef struct
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
+gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 {
 	POPUP_INFO *popup = (POPUP_INFO *)win->data;
 
@@ -80,7 +80,6 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			_WORD pxy[4];
 			GRECT *box = (GRECT *) data;
 			DOCUMENT *doc = &popup->doc;
-			HYP_NODE *old_entry = doc->displayed_node;
 			long old_lines = doc->lines;
 			long old_height = doc->height;
 			long old_columns = doc->columns;
@@ -96,14 +95,12 @@ static gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			vswr_mode(vdi_handle, MD_REPLACE);
 			vr_recfl(vdi_handle, pxy);		/* clear background */
 	
-			doc->displayed_node = popup->entry;
 			doc->lines = popup->lines;
 			doc->height = popup->height;
 			doc->columns = popup->columns;
 	
 			HypDisplayPage(win);
 	
-			doc->displayed_node = old_entry;
 			doc->lines = old_lines;
 			doc->height = old_height;
 			doc->columns = old_columns;
@@ -156,12 +153,11 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 	if (popup != NULL)
 	{
 		GRECT work;
-		HYP_NODE *old_entry = doc->displayed_node;
 		long old_lines = doc->lines;
 		long old_height = doc->height;
 		long old_columns = doc->columns;
 		hyp_nav_buttons old_buttons = doc->buttons;
-		char *old_wtitle = doc->window_title;
+		char *old_wtitle = win->title;
 		
 		if (doc->gotoNodeProc(win, NULL, num))
 		{
@@ -173,19 +169,24 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 			popup->height = doc->height;
 			popup->x = x + work.g_x - (short) win->docsize.x * win->x_raster;
 			popup->y = y + work.g_y + win->y_offset;
-			popup->entry = doc->displayed_node;
+			popup->entry = win->displayed_node;
 			popup->parentwin = win;
 			
-			doc->displayed_node = old_entry;
 			doc->lines = old_lines;
 			doc->height = old_height;
 			doc->columns = old_columns;
 			doc->buttons = old_buttons;
-			doc->window_title = old_wtitle;
-	
-			win->popup = OpenWindow(PopupWindow, 0, NULL, -1, -1, popup);
+			if (old_wtitle != win->title)
+			{
+				g_free(win->title);
+				win->title = old_wtitle;
+			}
+			
+			win->popup = hv_win_new(&popup->doc, TRUE);
 			if (win->popup == NULL)
 				g_free(popup);
+			else
+				hv_win_open(win->popup);
 		} else
 		{
 			g_free(popup);

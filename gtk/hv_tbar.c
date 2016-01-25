@@ -6,7 +6,8 @@
 
 static void toolbar_redraw(WINDOW_DATA *win)
 {
-	gtk_widget_queue_draw(win->toolbar);
+	if (win->toolbar)
+		gtk_widget_queue_draw(win->toolbar);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -16,7 +17,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	DOCUMENT *doc = win->data;
 	
 	/* autolocator active? */
-	if (doc->buttons.searchbox)
+	if (doc->buttons.searchbox && win->searchbox)
 	{
 		const char *search = gtk_entry_get_text(GTK_ENTRY(win->searchentry));
 		if (!empty(search))
@@ -25,7 +26,8 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 			return;
 		}
 	}
-	gtk_widget_hide(win->searchbox);
+	if (win->searchbox)
+		gtk_widget_hide(win->searchbox);
 	
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;

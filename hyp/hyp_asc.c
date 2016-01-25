@@ -35,9 +35,9 @@ static gboolean AsciiGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr 
 
 /*** ---------------------------------------------------------------------- ***/
 
-static hyp_nodenr AsciiGetNode(DOCUMENT *doc)
+static hyp_nodenr AsciiGetNode(WINDOW_DATA *win)
 {
-	UNUSED(doc);
+	UNUSED(win);
 	HYP_DBG(("AsciiGetNode not implemented."));
 	return HYP_NOINDEX;
 }
@@ -97,9 +97,10 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void AsciiPrep(WINDOW_DATA *win)
+static void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 {
 	UNUSED(win);
+	UNUSED(node);
 }
 
 /*** ---------------------------------------------------------------------- ***/

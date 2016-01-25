@@ -151,7 +151,7 @@ static void DoMessage(EVNT *event)
 		}
 	}
 
-	switch ((unsigned short)event->msg[0])
+	switch (event->msg[0])
 	{
 #if USE_MENU
 	case MN_SELECTED:

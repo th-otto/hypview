@@ -13,7 +13,7 @@ gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void
 {
 	HYP_NODE *node;
 	DOCUMENT *doc = hypwin_doc(win);
-	node = doc->displayed_node;
+	node = hypwin_node(win);
 
 	switch (op)
 	{

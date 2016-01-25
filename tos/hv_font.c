@@ -56,7 +56,7 @@ static void ApplyFont(void)
 
 			if (doc->type == HYP_FT_HYP)
 			{
-				hyp_nodenr node = doc->getNodeProc(doc);
+				hyp_nodenr node = doc->getNodeProc(win);
 
 				/* remove all nodes from cache */
 				RemoveNodes(doc->data);
@@ -66,7 +66,7 @@ static void ApplyFont(void)
 			} else
 			{
 				/* reload file */
-				ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(doc));
+				ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(win));
 			}
 			
 			if (ret)

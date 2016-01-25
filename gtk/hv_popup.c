@@ -1,8 +1,6 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
-/* YYY */
-
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -32,8 +30,11 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 {
 	DOCUMENT *doc = parentwin->data;
 	DOCUMENT *newdoc = hypdoc_ref(doc);
-	WINDOW_DATA *win = hv_win_new(newdoc, TRUE);
+	WINDOW_DATA *win;
 	
+	if (parentwin->popup)
+		gtk_widget_destroy(parentwin->popup->hwnd);
+	win = hv_win_new(newdoc, TRUE);
 	if (win != NULL)
 	{
 		g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(popup_destroyed), (gpointer) parentwin);
@@ -44,10 +45,19 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 			char *geom;
 			
 			parentwin->popup = win;
-			geom = g_strdup_printf("%dx%ld+%d+%d", gl_profile.viewer.win_w, win->y_raster * newdoc->displayed_node->lines, x, y);
+			geom = g_strdup_printf("+%d+%d", x, y);
 			hv_win_set_geometry(win, geom);
 			g_free(geom);
+#if 1
+			{
+				WP_UNIT w, h;
+				w = gl_profile.viewer.win_w;
+				h = win->y_raster * (win->displayed_node->lines + 1);
+				gtk_widget_set_size_request(win->text_view, w, h);
+			}
+#endif
 			hv_win_open(win);
+			gtk_grab_add(win->hwnd);
 		} else
 		{
 			gtk_widget_destroy(win->hwnd);

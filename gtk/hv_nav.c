@@ -165,8 +165,8 @@ static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 	HYP_DOCUMENT *hyp = doc->data;
 
 	if (hypnode_valid(hyp, page) &&
-		(doc->displayed_node == NULL ||
-		 page != doc->displayed_node->number))
+		(win->displayed_node == NULL ||
+		 page != win->displayed_node->number))
 	{
 		AddHistoryEntry(win, doc);
 		GotoPage(win, page, 0, FALSE);
@@ -216,7 +216,7 @@ void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 	hyp_nodenr new_node;
-	hyp_nodenr current_node = doc->getNodeProc(doc);
+	hyp_nodenr current_node = doc->getNodeProc(win);
 	gboolean add_to_hist = FALSE;
 	
 	switch (obj)

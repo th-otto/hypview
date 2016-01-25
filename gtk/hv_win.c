@@ -288,6 +288,7 @@ static void NOINLINE hv_win_delete(WINDOW_DATA *win)
 		hypdoc_unref(doc);
 		RemoveAllHistoryEntries(win);
 		all_list = g_slist_remove(all_list, win);
+		g_free(win->title);
 		g_free(win->m_geometry);
 		g_free(win);
 	}
@@ -314,7 +315,7 @@ static gboolean state_changed(GtkWidget *w, GdkEvent *event, WINDOW_DATA *win)
 		if (event->window_state.new_window_state & GDK_WINDOW_STATE_ICONIFIED)
 			hv_set_title(win, hyp_basename(doc->path));
 		else
-			hv_set_title(win, doc->window_title);
+			hv_set_title(win, win->title);
 	}
 	return TRUE;
 }
@@ -797,6 +798,12 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 	if (event->type != GDK_BUTTON_RELEASE)
 		return FALSE;
 
+	if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
+	{
+		gtk_widget_destroy(win->hwnd);
+		return TRUE;
+	}
+	
 	if (event->button != GDK_BUTTON_PRIMARY)
 		return FALSE;
 
@@ -861,6 +868,12 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 	GtkTextIter iter;
 	DOCUMENT *doc = win->data;
 	gint win_w, win_h;
+	
+	if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
+	{
+		gtk_widget_destroy(win->hwnd);
+		return TRUE;
+	}
 	
 	gdk_drawable_get_size(gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT), &win_w, &win_h);
 	UNUSED(text_view);
@@ -1519,7 +1532,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	win->hwnd = gtk_window_new(popup ? GTK_WINDOW_POPUP : GTK_WINDOW_TOPLEVEL);
 	g_object_set_data(G_OBJECT(win->hwnd), "shell-dialog", win);
 	g_object_set_data(G_OBJECT(win->hwnd), "hypview_window_type", NO_CONST("shell-window"));
-	win->title = doc->window_title;
+	win->title = g_strdup(doc->path);
 	gtk_window_set_title(GTK_WINDOW(win->hwnd), win->title);
 	{
 	GdkPixbuf *icon;
@@ -1688,7 +1701,6 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 
 void hv_set_title(WINDOW_DATA *win, const char *title)
 {
-	win->title = title;
 	gtk_window_set_title(GTK_WINDOW(win->hwnd), title);
 }
 
@@ -1795,15 +1807,14 @@ void ReInitWindow(WINDOW_DATA *win)
 	GdkWindow *window;
 	
 	win->data = doc;
-	win->title = doc->window_title;
-	hv_set_title(win, win->title);
 	win->hovering_over_link = FALSE;
 	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
 	if (window)
 		gdk_window_set_cursor(window, regular_cursor);
 	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
 	set_font_attributes(win);
-	doc->prepNode(win);
+	doc->prepNode(win, win->displayed_node);
+	hv_set_title(win, win->title);
 	
 	/* adjust window size to new dimensions */
 	if (gl_profile.viewer.adjust_winsize)

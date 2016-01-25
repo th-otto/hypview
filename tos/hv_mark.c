@@ -71,13 +71,13 @@ void MarkerSave(WINDOW_DATA *win, short num)
 	if (num < 0 || num >= MAX_MARKEN)
 		return;
 
-	marken[num].node_num = doc->getNodeProc(doc);
+	marken[num].node_num = doc->getNodeProc(win);
 	marken[num].line = (short) win->docsize.y;
 	strncpy(marken[num].path, doc->path, PATH_LEN - 1);
 	marken[num].path[PATH_LEN - 1] = 0;
 
 	/* copy marker title */
-	src = doc->window_title;
+	src = win->title;
 	dst = marken[num].node_name;
 	end = &marken[num].node_name[NODE_LEN - 1];
 	*dst++ = ' ';
@@ -133,7 +133,6 @@ void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window)
 
 void MarkerPopup(WINDOW_DATA *win, short x, short y)
 {
-	DOCUMENT *doc = win->data;
 	OBJECT *tree = rs_tree(EMPTYPOPUP);
 	short i, sel, ob, h;
 	EVNTDATA event;
@@ -197,7 +196,7 @@ void MarkerPopup(WINDOW_DATA *win, short x, short y)
 			{
 				char *buff;
 	
-				buff = g_strdup_printf(rs_string(ASK_SETMARK), doc->window_title);
+				buff = g_strdup_printf(rs_string(ASK_SETMARK), win->title);
 				if (form_alert(1, buff) == 1)
 					MarkerSave(win, sel);
 				g_free(buff);

@@ -258,10 +258,16 @@ static GtkTextTag *insert_str(struct prep_info *info, const char *str, const cha
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypPrepNode(WINDOW_DATA *win)
+HYP_NODE *hypwin_node(WINDOW_DATA *win)
+{
+	return win->displayed_node;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 {
 	DOCUMENT *doc = win->data;
-	HYP_NODE *node = doc->displayed_node;
 	HYP_DOCUMENT *hyp = doc->data;
 	const unsigned char *src, *end, *textstart;
 	WP_UNIT sx, sy;
@@ -280,6 +286,8 @@ void HypPrepNode(WINDOW_DATA *win)
 		at_bol = FALSE; \
 	}
 
+	win->displayed_node = node;
+	
 	RemoveSearchBox(win);
 	ToolbarUpdate(win, FALSE);
 	
@@ -557,4 +565,10 @@ void HypPrepNode(WINDOW_DATA *win)
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
 	node->lines = info.lineno;
+
+	g_free(win->title);
+	if (node->window_title)
+		win->title = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
+	else
+		win->title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
 }

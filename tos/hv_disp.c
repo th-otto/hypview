@@ -285,7 +285,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	HYP_NODE *node = doc->displayed_node;
+	HYP_NODE *node = win->displayed_node;
 	_UWORD len;
 	long lineno;
 	WP_UNIT x, sx, sy;
@@ -476,8 +476,15 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypPrepNode(WINDOW_DATA *win)
+void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 {
-	/* nothing to do */
-	UNUSED(win);
+	DOCUMENT *doc = win->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+	win->displayed_node = node;
+
+	g_free(win->title);
+	if (node->window_title)
+		win->title = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
+	else
+		win->title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
 }

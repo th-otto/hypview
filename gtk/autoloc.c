@@ -40,7 +40,7 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 	hyp = (HYP_DOCUMENT *) doc->data;
 	if (hyp == NULL)
 		return -1;
-	node = doc->displayed_node;
+	node = win->displayed_node;
 	
 	if (node == NULL)						/* no node loaded */
 		return -1;

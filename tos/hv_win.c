@@ -67,6 +67,9 @@ void SendTopped(_WORD whandle)
 void SendRedraw(WINDOW_DATA *win)
 {
 	_WORD msg[8];
+	
+	if (!(win->status & WIS_OPEN))
+		return;
 	msg[0] = WM_REDRAW;
 	msg[1] = gl_apid;
 	msg[2] = 0;
@@ -81,6 +84,8 @@ void hv_set_title(WINDOW_DATA *win, const char *wintitle)
 {
 	char *title;
 
+	if (!(win->kind & NAME))
+		return;
 	title = hyp_utf8_to_charset(hyp_get_current_charset(), wintitle, STR0TERM, NULL);
 	strncpy(win->titlebuf, title ? title : "", sizeof(win->titlebuf));
 	win->titlebuf[sizeof(win->titlebuf) - 1] = '\0';
@@ -158,12 +163,15 @@ void ReInitWindow(WINDOW_DATA *win)
 	_WORD visible_lines;
 	GRECT curr;
 	
-	win->data = doc;
-	win->title = doc->window_title;
+	g_free(win->title);
+	win->title = g_strdup(doc->path);
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
 	hv_set_title(win, win->title);
 	win->selection.valid = FALSE;
+
+	if (!(win->status & WIS_OPEN))
+		return;
 
 	/* window size: at least 5 columns and 1 line */
 	ResizeWindow(win, max(doc->columns, 5), max(doc->lines, 1));
@@ -206,6 +214,13 @@ DOCUMENT *hypwin_doc(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+HYP_NODE *hypwin_node(WINDOW_DATA *win)
+{
+	return win->displayed_node;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 {
 	DOCUMENT *doc = (DOCUMENT *) win->data;
@@ -224,8 +239,6 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		win->toolbar = toolbar_tree;
 		win->x_offset = 0;
 		win->y_offset = toolbar_tree[0].ob_height + 2;
-
-		win->title = doc->window_title;
 
 		/* window size: at least 5 columns and 1 line */
 		win->docsize.w = max(doc->columns, 5);
@@ -727,4 +740,32 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		return FALSE;
 	}
 	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
+{
+	WINDOW_DATA *win;
+	
+	if (popup)
+	{
+		win = CreateWindow(PopupWindow, 0, NULL, -1, -1, doc);
+	} else
+	{
+		win = CreateWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER | UPARROW | DNARROW |
+						   VSLIDE | LFARROW | RTARROW | HSLIDE | SMALLER, doc->path, -1, -1, doc);
+	}
+	return win;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_win_open(WINDOW_DATA *win)
+{
+	if (win->status & WIS_ICONIFY)
+		UniconifyWindow(win);
+	if (!(win->status & WIS_OPEN))
+		OpenWindow(win);
+	wind_set_int(win->whandle, WF_TOP, 0);
 }

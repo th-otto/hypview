@@ -20,7 +20,7 @@ void AddHistoryEntry(WINDOW_DATA *win, DOCUMENT *doc)
 		return;
 	}
 	new_entry->doc = hypdoc_ref(doc);
-	new_entry->node = doc->getNodeProc(doc);
+	new_entry->node = doc->getNodeProc(win);
 	new_entry->line = hv_win_topline(win);
 	new_entry->next = win->history;
 	new_entry->title = g_strdup(win->title);

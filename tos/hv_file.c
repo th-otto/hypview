@@ -155,43 +155,23 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		}
 
 		new_window = 0;
-		if (!win)
-			add_to_hist = FALSE;
-		if (add_to_hist)
+		if (!win)		{			win = hv_win_new(doc, FALSE);			new_window = 1;			add_to_hist = FALSE;			prev_doc = NULL;		} else		{			prev_doc = win->data;			win->data = doc;		}		if (add_to_hist)
 			AddHistoryEntry(win, prev_doc);
 		if (doc->gotoNodeProc(win, chapter, node))
 		{
 			found = TRUE;
 			/* no window already? */
-			if (!win)
-			{
-				win = OpenWindow(HelpWindow, NAME | CLOSER | FULLER | MOVER | SIZER | UPARROW | DNARROW |
-						   VSLIDE | LFARROW | RTARROW | HSLIDE | SMALLER, doc->path, -1, -1, doc);
-				new_window = 1;
-				win->data = doc;
-			} else
-			{
-				prev_doc = win->data;
-				win->data = doc;
-				if (win->status & WIS_ICONIFY)
-					UniconifyWindow(win);
-				ReInitWindow(win);
-				wind_set_int(win->whandle, WF_TOP, 0);
-			}
+			ReInitWindow(win);
+			hv_win_open(win);
 		} else if (find_default)
 		{
 			doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
-			if (win)
-			{
-				prev_doc = win->data;
-				win->data = doc;
-				if (win->status & WIS_ICONIFY)
-					UniconifyWindow(win);
-				ReInitWindow(win);
-				wind_set_int(win->whandle, WF_TOP, 0);
-			}
+			ReInitWindow(win);
+			hv_win_open(win);
 		} else
 		{
+			if (new_window)
+				RemoveWindow(win);
 			win = NULL;
 		}
 		if (!found && !no_message)
@@ -242,7 +222,7 @@ void CheckFiledate(WINDOW_DATA *win)
 
 			graf_mouse(BUSY_BEE, NULL);	/* We are busy... */
 
-			node = doc->getNodeProc(doc);	/* Remember current node */
+			node = doc->getNodeProc(win);	/* Remember current node */
 			lineno = win->docsize.y;
 			if (doc->data && doc->type == HYP_FT_HYP)
 			{

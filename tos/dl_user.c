@@ -123,6 +123,14 @@ void DoUserEvents(EVNT *event)
 			break;
 
 		case WM_CLOSED:
+			/*
+			 * save the path of the last window closed,
+			 * so it can be reopenend again on receive of AC_OPEN.
+			 * Only need to do this when running as accessory,
+			 * since a regular application will exit when all
+			 * windows are closed.
+			 */
+			if (!_app)
 			{								/* find the last window */
 				/*
 				 * MU_MESAG must not be removed otherwise
@@ -138,7 +146,7 @@ void DoUserEvents(EVNT *event)
 						DOCUMENT *doc;
 	
 						doc = (DOCUMENT *) win->data;
-						last_node = doc->getNodeProc(doc);
+						last_node = doc->getNodeProc(win);
 						g_free(last_path);
 						last_path = g_strdup(doc->path);
 					}
