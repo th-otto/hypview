@@ -152,7 +152,7 @@ struct prep_info {
 	int tab_id;
 	int target_link_id;
 	long lineno;
-	WP_UNIT x;
+	WP_UNIT x, maxx;
 	WP_UNIT x_raster;
 	GtkTextIter iter;
 	unsigned char textattr;
@@ -356,7 +356,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	textstart = src;
 	info.textattr = 0;
 	info.lineno = 0;
-	info.x = sx = sy = 0;
+	info.x = info.maxx = sx = sy = 0;
 	at_bol = TRUE;
 	info.last_was_space = 0;
 	
@@ -529,6 +529,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			src++;
 			textstart = src;
 			info.last_was_space = 0;
+			if (info.x > info.maxx)
+				info.maxx = info.x;
 			info.x = sx;
 			at_bol = TRUE;
 			gtk_text_buffer_insert(info.text_buffer, &info.iter, "\n", 1);
@@ -558,6 +560,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			info.tab_array_size = 0;
 			info.tab_array = NULL;
 		}
+		if (info.x > info.maxx)
+			info.maxx = info.x;
 		++info.lineno;
 		sy += win->y_raster;
 		sy = draw_graphics(win, node->gfx, info.lineno, sx, sy);
@@ -565,7 +569,9 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
 	node->lines = info.lineno;
-
+	node->columns = info.maxx;
+	printf("%ldx%ld\n", node->columns, node->lines);
+	
 	g_free(win->title);
 	if (node->window_title)
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
