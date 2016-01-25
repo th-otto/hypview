@@ -289,6 +289,18 @@ void GoThisButton(WINDOW_DATA *win, short obj)
 		add_to_hist = TRUE;
 		new_node = hyp->indextable[current_node]->toc_index;
 		break;
+	case TO_BACK:
+		GoBack(win);
+		break;
+	case TO_KATALOG:
+		GotoCatalog(win);
+		break;
+	case TO_INDEX:
+		GotoIndex(win);
+		break;
+	case TO_HELP:
+		GotoHelp(win);
+		break;
 	default:
 		new_node = HYP_NOINDEX;
 		break;

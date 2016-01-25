@@ -215,7 +215,7 @@ void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 {
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
-	hyp_nodenr new_node;
+	hyp_nodenr new_node = HYP_NOINDEX;
 	hyp_nodenr current_node = doc->getNodeProc(win);
 	gboolean add_to_hist = FALSE;
 	
@@ -246,6 +246,18 @@ void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 	case TO_HOME:
 		add_to_hist = TRUE;
 		new_node = hyp->indextable[current_node]->toc_index;
+		break;
+	case TO_BACK:
+		GoBack(win);
+		break;
+	case TO_KATALOG:
+		GotoCatalog(win);
+		break;
+	case TO_INDEX:
+		GotoIndex(win);
+		break;
+	case TO_HELP:
+		GotoHelp(win);
 		break;
 	default:
 		new_node = HYP_NOINDEX;
