@@ -26,6 +26,29 @@ static void delete_me(GtkWidget *w, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#if 0
+static gboolean popup_grab_on_window(GdkWindow *window, guint32 activate_time, gboolean grab_keyboard)
+{
+	if ((gdk_pointer_grab(window, TRUE,
+						  GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+						  GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK |
+						  GDK_POINTER_MOTION_MASK, NULL, NULL, activate_time) == 0))
+	{
+		if (!grab_keyboard || gdk_keyboard_grab(window, TRUE, activate_time) == 0)
+			return TRUE;
+		else
+		{
+			gdk_display_pointer_ungrab(gdk_window_get_display(window), activate_time);
+			return FALSE;
+		}
+	}
+
+	return FALSE;
+}
+#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
 void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 {
 	DOCUMENT *doc = parentwin->data;
@@ -48,7 +71,6 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 			geom = g_strdup_printf("+%d+%d", x, y);
 			hv_win_set_geometry(win, geom);
 			g_free(geom);
-#if 1
 			{
 				WP_UNIT w, h;
 				
@@ -56,9 +78,12 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 				h = win->y_raster * (win->displayed_node->lines + 1);
 				gtk_widget_set_size_request(win->text_view, w, h);
 			}
-#endif
+			gtk_window_set_transient_for(GTK_WINDOW(win->hwnd), GTK_WINDOW(parentwin->hwnd));
 			hv_win_open(win);
+#if 0
+			popup_grab_on_window(gtk_widget_get_window(win->hwnd), gtk_get_current_event_time(), TRUE);
 			gtk_grab_add(win->hwnd);
+#endif
 		} else
 		{
 			gtk_widget_destroy(win->hwnd);

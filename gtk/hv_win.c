@@ -795,6 +795,12 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 	GtkTextBuffer *buffer;
 	gint x, y;
 
+	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_KEY_PRESS)
+	{
+		if (win->popup)
+			gtk_widget_destroy(win->popup->hwnd);
+	}
+	
 	if (event->type != GDK_BUTTON_RELEASE)
 		return FALSE;
 

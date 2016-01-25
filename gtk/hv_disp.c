@@ -570,7 +570,6 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		pango_tab_array_free(info.tab_array);
 	node->lines = info.lineno;
 	node->columns = info.maxx;
-	printf("%ldx%ld\n", node->columns, node->lines);
 	
 	g_free(win->title);
 	if (node->window_title)
