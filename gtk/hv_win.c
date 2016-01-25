@@ -66,6 +66,7 @@ static const char *const colornames[16] = {
 	"dark-magenta"
 };
 static GdkColor gdk_colors[16];
+static char *default_geometry;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -210,26 +211,16 @@ int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *heig
 
 /*** ---------------------------------------------------------------------- ***/
 
-void hv_win_set_geometry(WINDOW_DATA *win, const char *geometry)
+void hv_win_set_geometry(const char *geometry)
 {
-	g_free(win->m_geometry);
-	win->m_geometry = g_strdup(geometry);
+	g_free(default_geometry);
+	default_geometry = g_strdup(geometry);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void hv_win_open(WINDOW_DATA *win)
 {
-	if (win->m_geometry == NULL)
-	{
-		win->m_geometry = g_strdup_printf("%dx%d+%d+%d",
-			gl_profile.viewer.win_w,
-			gl_profile.viewer.win_h,
-			gl_profile.viewer.win_x,
-			gl_profile.viewer.win_y);
-	}
-	gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), win->m_geometry);
-		
 	gtk_window_present(GTK_WINDOW(win->hwnd));
 }
 
@@ -289,7 +280,6 @@ static void NOINLINE hv_win_delete(WINDOW_DATA *win)
 		RemoveAllHistoryEntries(win);
 		all_list = g_slist_remove(all_list, win);
 		g_free(win->title);
-		g_free(win->m_geometry);
 		g_free(win);
 	}
 }
@@ -1783,6 +1773,10 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 			gtk_target_list_add_uri_targets(newlist, 0);
 			gtk_drag_dest_set_target_list(win->text_view, newlist);
 		}
+		if (default_geometry != NULL)
+		{
+			gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), default_geometry);
+		}	
 	}
 	
 	return win;

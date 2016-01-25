@@ -74,7 +74,6 @@ struct _window_data_
 	GtkActionGroup *action_group;
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
 
-	char *m_geometry;
 	GtkWidget *hwnd;					/* GtkWindow */
 	GtkWidget *history_menu;			/* GtkMenu */
 	GtkWidget *bookmarks_menu;			/* GtkMenu */
@@ -165,7 +164,7 @@ void SelectFont(WINDOW_DATA *win);
  */
 extern GSList *all_list;
 
-void hv_win_set_geometry(WINDOW_DATA *win, const char *geometry);
+void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
 WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(WINDOW_DATA *win);

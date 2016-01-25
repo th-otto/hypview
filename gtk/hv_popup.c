@@ -20,7 +20,6 @@ static void delete_me(GtkWidget *w, WINDOW_DATA *win)
 	UNUSED(w);
 	
 	hypdoc_unref(doc);
-	g_free(win->m_geometry);
 	g_free(win);
 }
 
@@ -69,7 +68,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 			
 			parentwin->popup = win;
 			geom = g_strdup_printf("+%d+%d", x, y);
-			hv_win_set_geometry(win, geom);
+			gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), geom);
 			g_free(geom);
 			{
 				WP_UNIT w, h;

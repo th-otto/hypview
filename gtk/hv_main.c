@@ -244,6 +244,15 @@ int main(int argc, char **argv)
 		
 		if (!empty(geom_arg))
 			gtk_XParseGeometry(geom_arg, &gl_profile.viewer.win_x, &gl_profile.viewer.win_y, &gl_profile.viewer.win_w, &gl_profile.viewer.win_h);
+		{
+			char *str= g_strdup_printf("%dx%d+%d+%d",
+				gl_profile.viewer.win_w,
+				gl_profile.viewer.win_h,
+				gl_profile.viewer.win_x,
+				gl_profile.viewer.win_y);
+			hv_win_set_geometry(str);
+			g_free(str);
+		}
 		
 		if (argc <= 1)
 		{
