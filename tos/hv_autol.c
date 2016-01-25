@@ -26,8 +26,6 @@
 #include "hypview.h"
 
 
-#define AUTOLOC_SIZE		26
-
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -44,14 +42,15 @@ static char *AutolocatorInit(WINDOW_DATA *win)
 	/* memory already allocated? */
 	if (win->autolocator == NULL)
 	{
-		ptr = g_new(char, AUTOLOC_SIZE);
+		int maxlen = win->toolbar[TO_SEARCH].ob_spec.tedinfo->te_txtlen;
+		ptr = g_new(char, maxlen);
 		if (ptr == NULL)
 		{
 			form_alert(1, rs_string(DI_MEMORY_ERROR));
 			return NULL;
 		}
 		win->autolocator = ptr;
-		ptr[AUTOLOC_SIZE - 1] = 0;
+		ptr[maxlen - 1] = 0;
 		*ptr = 0;
 	} else
 	{
@@ -179,7 +178,8 @@ gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii)
 		*ptr = 0;
 	} else if (ascii > ' ')
 	{
-		if (ptr - win->autolocator < AUTOLOC_SIZE)
+		int maxlen = win->toolbar[TO_SEARCH].ob_spec.tedinfo->te_txtlen;
+		if (ptr - win->autolocator < (maxlen - 1))
 		{
 			*ptr++ = ascii;
 			*ptr = 0;
@@ -230,7 +230,8 @@ void AutoLocatorPaste(WINDOW_DATA *win)
 				*ptr = 0;
 			} else if (c > ' ')
 			{
-				if ((ptr - win->autolocator) >= (AUTOLOC_SIZE - 1))
+				int maxlen = win->toolbar[TO_SEARCH].ob_spec.tedinfo->te_txtlen;
+				if ((ptr - win->autolocator) >= (maxlen - 1))
 					break;
 				*ptr++ = c;
 				*ptr = 0;
