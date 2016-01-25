@@ -7,7 +7,7 @@
 /******************************************************************************/
 
 /*
- * set uncompressed size of index entry <num>
+ * set compressed size of index entry <num>
  */
 void SetCompressedSize(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned long prev_pos, unsigned long curr_pos)
 {
@@ -19,7 +19,7 @@ void SetCompressedSize(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned long prev_pos
 /*** ---------------------------------------------------------------------- ***/
 
 /*
- * return uncompressed size of index entry <num>
+ * set uncompressed size of index entry <num>
  */
 gboolean SetDataSize(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned long datasize)
 {
@@ -70,47 +70,3 @@ gboolean WriteEntryBytes(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned char *src, 
 	
 	return TRUE;
 }
-
-/*** ---------------------------------------------------------------------- ***/
-
-#if 0
-static gboolean SaveAsAscii(DOCUMENT *doc, int handle)
-{
-	HYP_NODE *node;
-	char *temp;
-	ssize_t ret;
-	size_t len;
-	long line;
-	HYP_DOCUMENT *hyp;
-
-	hyp = doc->data;
-
-	node = hyp->entry;
-	if (node == NULL)
-	{
-		HYP_DBG(("Error: Can't save, no page loaded"));
-		return TRUE;
-	}
-
-	for (line = 0; line < node->lines; line++)
-	{
-		temp = HypGetTextLine(doc, node, line);
-
-		if (temp != NULL)
-		{
-			len = strlen(temp);
-			ret = write(handle, temp, len);
-			if (ret != len)
-			{
-				HYP_DBG(("Error %s while writing file. Abort.", strerror(errno)));
-				return FALSE;
-			}
-			g_free(temp);
-		}
-		write(handle, "\n", 1);
-		line++;
-	}
-
-	return FALSE;
-}
-#endif
