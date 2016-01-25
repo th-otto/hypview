@@ -6,7 +6,7 @@ static RESULT_ENTRY *Result_List;
 
 static gboolean SearchResult(WINDOW_DATA *win, RESULT_ENTRY **result_list)
 {
-	/* YYY */
+	HYP_DBG(("NYI: list search results"));
 	UNUSED(win);
 	UNUSED(result_list);
 	return FALSE;
@@ -39,7 +39,8 @@ void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
 	/* abort if no all.ref is defined */
 	if (empty(gl_profile.general.all_ref))
 	{
-		HYP_DBG(("No ref file defined"));
+		if (!no_message)
+			show_message(_("Error"), _("No all.ref file defined"), FALSE);
 		return win;
 	}
 
@@ -52,7 +53,8 @@ void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
 		ret = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 		if (ret < 0)
 		{
-			HYP_DBG(("Error %s in %s", strerror(errno), filename));
+			if (!no_message)
+				FileErrorErrno(filename);
 		} else
 		{
 			allref = ref_load(filename, ret, FALSE);

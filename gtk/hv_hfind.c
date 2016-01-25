@@ -100,7 +100,7 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 	
 	if (empty(gl_profile.general.hypfind_path))
 	{
-		show_message(_("Error"), _("No path"), FALSE);
+		show_message(_("Error"), _("No path to HypFind configured"), FALSE);
 		return;
 	}
 	filename = path_subst(gl_profile.general.hypfind_path);

@@ -1,4 +1,5 @@
 #include "hv_gtk.h"
+#include "hypdebug.h"
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -57,5 +58,5 @@ void SwitchFont(WINDOW_DATA *win)
 void SelectFont(WINDOW_DATA *win)
 {
 	UNUSED(win);
-	printf("NYI: SelectFont\n");
+	HYP_DBG(("NYI: SelectFont"));
 }

@@ -155,7 +155,18 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		}
 
 		new_window = 0;
-		if (!win)		{			win = hv_win_new(doc, FALSE);			new_window = 1;			add_to_hist = FALSE;			prev_doc = NULL;		} else		{			prev_doc = win->data;			win->data = doc;		}		if (add_to_hist)
+		if (!win)
+		{
+			win = hv_win_new(doc, FALSE);
+			new_window = 1;
+			add_to_hist = FALSE;
+			prev_doc = NULL;
+		} else
+		{
+			prev_doc = win->data;
+			win->data = doc;
+		}
+		if (add_to_hist)
 			AddHistoryEntry(win, prev_doc);
 		if (doc->gotoNodeProc(win, chapter, node))
 		{
@@ -166,6 +177,8 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		} else if (find_default)
 		{
 			doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
+			if (chapter && strcmp(chapter, hyp_default_main_node_name) == 0)
+				found = TRUE;
 			ReInitWindow(win);
 			hv_win_open(win);
 		} else

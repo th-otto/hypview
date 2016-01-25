@@ -86,7 +86,7 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 		StartRemarker(FALSE);
 		break;
 	case CO_PRINT:
-		printf("NYI: print\n");
+		HYP_DBG(("NYI: print"));
 		break;
 	}
 }
@@ -120,12 +120,11 @@ void BlockCopy(WINDOW_DATA *win)
 
 void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 {
-	/* YYY */
 	GtkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win->text_view), GDK_SELECTION_CLIPBOARD);
 
 	UNUSED(clipboard);
 	UNUSED(new_window);
-	printf("NYI: paste\n");
+	HYP_DBG(("NYI: paste"));
 }
 
 /*** ---------------------------------------------------------------------- ***/

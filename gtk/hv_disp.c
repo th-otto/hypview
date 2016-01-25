@@ -1,4 +1,5 @@
 #include "hv_gtk.h"
+#include "hypdebug.h"
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -14,10 +15,10 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
-	/* YYY */
 	UNUSED(win);
 	UNUSED(gfx);
 	UNUSED(x);
+	HYP_DBG(("NYI: DrawPicture"));
 	return y;
 }
 
@@ -25,22 +26,22 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 
 static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
-	/* YYY */
 	UNUSED(win);
 	UNUSED(gfx);
 	UNUSED(x);
 	UNUSED(y);
+	HYP_DBG(("NYI: DrawLine"));
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
-	/* YYY */
 	UNUSED(win);
 	UNUSED(gfx);
 	UNUSED(x);
 	UNUSED(y);
+	HYP_DBG(("NYI: DrawBox"));
 }
 
 /*** ---------------------------------------------------------------------- ***/

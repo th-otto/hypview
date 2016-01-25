@@ -42,7 +42,7 @@ void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		pos->x = 0;
 		return;
 	}
-	/* YYY */
+	/* not needed in GTK */
 	UNUSED(x);
 	UNUSED(y);
 }

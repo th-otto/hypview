@@ -1,5 +1,6 @@
 #define GDK_DISABLE_DEPRECATION_WARNINGS
 #include "hv_gtk.h"
+#include "hypdebug.h"
 
 
 /******************************************************************************/
@@ -216,6 +217,6 @@ void g_object_list_properties(const char *name, void *_obj)
 
 void hv_recent_add(const char *path)
 {
-	/* YYY */
+	HYP_DBG(("NYI: recent add"));
 	UNUSED(path);
 }

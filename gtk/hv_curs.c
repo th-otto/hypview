@@ -6,7 +6,7 @@
 
 void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
-	/* YYY */
+	/* not needed in GTK */
 	UNUSED(win);
 	UNUSED(x);
 	UNUSED(y);

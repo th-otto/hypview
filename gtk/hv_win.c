@@ -1,6 +1,7 @@
 #define GDK_DISABLE_DEPRECATION_WARNINGS
 
 #include "hv_gtk.h"
+#include "hypdebug.h"
 #include "gdkkeysyms.h"
 
 #include "../icons/back.h"
@@ -340,7 +341,7 @@ static void on_color_select(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
 	UNUSED(win);
-	printf("NYI: on_color_select\n");
+	HYP_DBG(("NYI: on_color_select"));
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -349,7 +350,7 @@ static void on_output_settings(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
 	UNUSED(win);
-	printf("NYI: on_output_settings\n");
+	HYP_DBG(("NYI: on_output_settings"));
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -382,7 +383,7 @@ static void on_scale_bitmaps(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
 	UNUSED(win);
-	printf("NYI: on_scale_bitmaps\n");
+	HYP_DBG(("NYI: on_scale_bitmaps"));
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -391,7 +392,7 @@ static void on_preferences(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
 	UNUSED(win);
-	printf("NYI: on_preferences\n");
+	HYP_DBG(("NYI: on_preferences"));
 }
 
 /*** ---------------------------------------------------------------------- ***/
