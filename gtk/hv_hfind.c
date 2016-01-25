@@ -65,9 +65,20 @@ static gboolean check_hypfind(void *userdata)
 		
 		if (waitpid(HypfindID, &retval, 0) > 0 && WIFEXITED(retval))
 		{
+			int retcode;
+			
 			HypfindID = -1;
 			GDK_THREADS_ENTER();
-			OpenFileInWindow(NULL, HYP_FILENAME_HYPFIND, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+			retcode = WEXITSTATUS(retval);
+			if (retcode == 0)
+			{
+				OpenFileInWindow(NULL, HYP_FILENAME_HYPFIND, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+			} else
+			{
+				char *str = g_strdup_printf(_("HypFind exited with code %d"), retcode);
+				show_message(_("Error"), str, FALSE);
+				g_free(str);
+			}
 			GDK_THREADS_LEAVE();
 		}
 	}
@@ -102,9 +113,24 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 		argv[argc++] = doc->path;
 	}
 	HypfindID = hyp_utf8_spawnvp(P_NOWAIT, argc, argv);
-	g_free(filename);
 	if (HypfindID > 0)
+	{
 		g_timeout_add(20, check_hypfind, win);
+	} else
+	{
+		char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), filename, hyp_utf8_strerror(errno));
+		show_message(_("Error"), str, FALSE);
+		g_free(str);
+	}
+	g_free(filename);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void enter_pressed(GtkWidget *w, GtkWidget *dialog)
+{
+	UNUSED(w);
+	gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -117,7 +143,9 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 	{
 		GtkWidget *vbox, *label, *hbox, *entry;
 		GtkWidget *button;
-
+		GtkWidget *bbox;
+		GtkWidget *bbox_parent;
+		
 		dialog = gtk_dialog_new();
 		g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("search-dialog"));
 		g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(gtk_widget_destroyed), &dialog);
@@ -138,6 +166,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		entry = gtk_entry_new();
 		gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 		g_object_set_data(G_OBJECT(dialog), "entry", entry);
+		g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(enter_pressed), dialog);
 		
 		button = gtk_button_new_with_label(_("in page"));
 		gtk_widget_set_can_default(button, TRUE);
@@ -146,23 +175,33 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		button = gtk_button_new_with_label(_("as page"));
 		gtk_widget_set_can_default(button, TRUE);
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 2);
-		gtk_widget_grab_default(button);
 		
 		button = gtk_button_new_with_label(_("as reference"));
 		gtk_widget_set_can_default(button, TRUE);
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 3);
 		
+		bbox = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
+		bbox_parent = gtk_widget_get_parent(bbox);
+		vbox = gtk_vbox_new(FALSE, 0);
+		hbox = gtk_hbutton_box_new();
+		gtk_widget_reparent(bbox, vbox);
+		gtk_container_add(GTK_CONTAINER(bbox_parent), vbox);
+		gtk_container_add(GTK_CONTAINER(vbox), hbox);
+		
 		button = gtk_button_new_with_label(_("in all pages"));
 		gtk_widget_set_can_default(button, TRUE);
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 4);
+		gtk_widget_reparent(button, hbox);
 		
 		button = gtk_button_new_with_label(_("... of all Hypertexts"));
 		gtk_widget_set_can_default(button, TRUE);
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 5);
+		gtk_widget_reparent(button, hbox);
 		
 		button = gtk_button_new_cancel();
 		gtk_widget_set_can_default(button, TRUE);
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
+		gtk_widget_reparent(button, hbox);
 		
 		can_search_again = FALSE;
 	}
@@ -180,6 +219,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 	}
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), 2);
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -190,6 +230,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		hypfind_text(win);
 		break;
 	case 2:
+	case GTK_RESPONSE_OK:
 		hypfind_page(win);
 		break;
 	case 3:
