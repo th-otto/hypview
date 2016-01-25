@@ -3428,8 +3428,9 @@ static void c_version(hcp_vars *vars, int argc, char **argv)
 	while ((p = strchr(vars->hyp->version, '@')) != NULL && p[1] == ':')
 	{
 		HCP_DEFINE *d;
-
-		char *name = parse_1arg(vars, p + 2, '\0', &end);
+		char eos = p > vars->hyp->version && p[-1] == '(' ? ')' : '\0';
+		
+		char *name = parse_1arg(vars, p + 2, eos, &end);
 		if (name == NULL)
 			break;
 		if (empty(name))
