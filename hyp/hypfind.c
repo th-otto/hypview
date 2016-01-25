@@ -598,6 +598,7 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 	const char *match;
 	const char *scan = text;
 	size_t scanlen = textlen;
+	const char *target;
 	
 	for (;;)
 	{
@@ -634,7 +635,8 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 	{
 		linktext = nodename;
 	}
-	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\" %ld}%s", hyp_basename(hyp->file), linktext, hypfind_hyp, nodename, nodeptr->lines, stg_nl);
+	target = hyp_basename(hyp->file);
+	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\" %ld}%s", target, linktext, target, nodename, nodeptr->lines, stg_nl);
 	fputs(": ", opts->outfile);
 	stg_out_str(opts->outfile, opts->output_charset, text, match, match + opts->pattern_len);
 	fputs(stg_nl, opts->outfile);
