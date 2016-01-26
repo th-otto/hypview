@@ -14,6 +14,9 @@ static void hypfind_text(WINDOW_DATA *win)
 	long start_line = line;
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *search = gtk_entry_get_text(GTK_ENTRY(entry));
+	
+	if (empty(search))
+		return;
 	doc->autolocator_dir = 1;
 	if (!empty(search))
 	{
@@ -39,6 +42,8 @@ static void hypfind_page(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *name = gtk_entry_get_text(GTK_ENTRY(entry));
+	if (empty(name))
+		return;
 	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, TRUE, FALSE, FALSE);
 }
 
@@ -48,6 +53,8 @@ static void hypfind_search_allref(WINDOW_DATA *win)
 {
 	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *name = gtk_entry_get_text(GTK_ENTRY(entry));
+	if (empty(name))
+		return;
 	search_allref(win, name, FALSE);
 }
 
@@ -103,10 +110,12 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 		show_message(_("Error"), _("No path to HypFind configured"), FALSE);
 		return;
 	}
+	name = gtk_entry_get_text(GTK_ENTRY(entry));
+	if (empty(name))
+		return;
 	filename = path_subst(gl_profile.general.hypfind_path);
 	argv[argc++] = filename;
 	argv[argc++] = "-p";
-	name = gtk_entry_get_text(GTK_ENTRY(entry));
 	argv[argc++] = name;
 	if (!all_hyp)
 	{
@@ -170,14 +179,17 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		
 		button = gtk_button_new_with_label(_("in page"));
 		gtk_widget_set_can_default(button, TRUE);
+		gtk_widget_set_tooltip_text(button, _("Search in the text of the current page"));
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 1);
 		
 		button = gtk_button_new_with_label(_("as page"));
 		gtk_widget_set_can_default(button, TRUE);
+		gtk_widget_set_tooltip_text(button, _("Search for a node with this name"));
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 2);
 		
 		button = gtk_button_new_with_label(_("as reference"));
 		gtk_widget_set_can_default(button, TRUE);
+		gtk_widget_set_tooltip_text(button, _("Search for a node with this name in all hypertexts\n(using the entries in ALL.REF)"));
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 3);
 		
 		bbox = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
@@ -190,16 +202,19 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		
 		button = gtk_button_new_with_label(_("in all pages"));
 		gtk_widget_set_can_default(button, TRUE);
+		gtk_widget_set_tooltip_text(button, _("Search in the text of all pages of the current file"));
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 4);
 		gtk_widget_reparent(button, hbox);
 		
 		button = gtk_button_new_with_label(_("... of all Hypertexts"));
 		gtk_widget_set_can_default(button, TRUE);
+		gtk_widget_set_tooltip_text(button, _("Search in the text of all pages of all hypertext files"));
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, 5);
 		gtk_widget_reparent(button, hbox);
 		
 		button = gtk_button_new_cancel();
 		gtk_widget_set_can_default(button, TRUE);
+		gtk_widget_set_tooltip_text(button, _(""));
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 		gtk_widget_reparent(button, hbox);
 		

@@ -851,8 +851,8 @@ typedef struct _result_entry_
 	const char *dbase_description;
 	char *node_name;
 	hyp_lineno lineno;
-	gboolean is_label;
-	gboolean is_alias;
+	char *label_name;
+	char *alias_name;
 } RESULT_ENTRY;
 
 REF_FILE *ref_load(const char *filename, int handle, gboolean verbose);
@@ -966,5 +966,8 @@ gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, voi
 #define P_OVERLAY	2
 #endif
 int hyp_utf8_spawnvp(int mode, int argc, const char *const argv[]);
+#ifdef __TOS__
+char *make_argv(char cmd[128], const char *const argv[]);
+#endif
 
 #endif /* __HYP_H__ */

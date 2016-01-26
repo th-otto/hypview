@@ -116,7 +116,7 @@ HYP_NODE *hypwin_node(WINDOW_DATA *win);
 /*
  *		Search.c
  */
-void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message);
+WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message);
 
 
 /*

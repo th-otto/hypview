@@ -63,7 +63,7 @@ static void xref_selected(GtkWidget *w, WINDOW_DATA *win)
 			}
 			pos = hyp_skip_esc(pos);
 		}
-		nf_debugprintf("openext: selection %d not found\n", sel);
+		HYP_DBG(("openext: selection %d not found", sel));
 	}
 }
 

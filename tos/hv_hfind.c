@@ -38,7 +38,8 @@ static void hypfind_search_allref(WINDOW_DATA *win, OBJECT *tree)
 	char *name;
 
 	name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-	search_allref(win, name, FALSE);
+	if (!empty(name))
+		search_allref(win, name, FALSE);
 	g_free(name);
 }
 
@@ -46,28 +47,61 @@ static void hypfind_search_allref(WINDOW_DATA *win, OBJECT *tree)
 
 static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 {
-	char ZStr[1024];
+	char cmd[128];
 	char *name;
-	
-	strcpy(ZStr, " -p '");
-	name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-	strcat(ZStr, name);
-	strcat(ZStr, "'");
+	const char *argv[5];
+	char *filename;
+	int argc = 0;
+	char *env;
+	filename = path_subst(gl_profile.general.hypfind_path);
+	if (!empty(filename))
+	{
+		argv[argc++] = filename;
+		argv[argc++] = "-p";
+		
+		name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
+		if (!empty(name))
+		{
+			argv[argc++] = name;
+			if (!all_hyp)
+			{
+				argv[argc++] = doc->path;
+			}
+			argv[argc] = NULL;
+			env = make_argv(cmd, argv);
+			if (env != NULL)
+			{
+				struct {
+					const char *newcmd;
+					long psetlimit;
+					long prenice;
+					const char *defdir;
+					char *env;
+					short uid;
+					short gid;
+				} x_shell;
+				
+				x_shell.newcmd = filename;
+				x_shell.psetlimit = 0;
+				x_shell.prenice = 0;
+				x_shell.defdir = 0;
+				x_shell.env = env;
+				x_shell.uid = 0;
+				x_shell.gid = 0;
+				HypfindID = shel_write(SHW_EXEC|SHD_ENVIRON, 0, SHW_PARALLEL, filename, (void *)&x_shell);
+				(void) Mfree(env);
+			}
+			if (HypfindID <= 0)
+			{
+				cmd[0] = (char) strlen(cmd + 1);
+				HypfindID = shel_write(SHW_EXEC, 0, SHW_PARALLEL, filename, cmd);
+			}
+			if (HypfindID == 0)
+				HypfindID = -1;
+		}
+	}
+	g_free(filename);
 	g_free(name);
-	if (!all_hyp)
-	{
-		strcat(ZStr, " ");
-		strcat(ZStr, doc->path);
-	}
-	ZStr[0] = (char)strlen(ZStr + 1);
-	if (!empty(gl_profile.general.hypfind_path))
-	{
-		char *filename = path_subst(gl_profile.general.hypfind_path);
-		HypfindID = shel_write(SHW_EXEC, 0, SHW_PARALLEL, filename, ZStr);
-		if (HypfindID == 0)
-			HypfindID = -1;
-		g_free(filename);
-	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -76,7 +110,8 @@ static void hypfind_page(WINDOW_DATA *win, OBJECT *tree)
 {
 	DOCUMENT *doc = win->data;
 	char *name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	if (!empty(name))
+		OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
 	g_free(name);
 }
 
@@ -87,27 +122,31 @@ static void hypfind_text(WINDOW_DATA *win, OBJECT *tree)
 	DOCUMENT *doc = win->data;
 	long line = win->docsize.y;
 	char *search = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
-	doc->autolocator_dir = 1;
+	
 	if (!empty(search))
 	{
-		graf_mouse(BUSY_BEE, NULL);
-		line = doc->autolocProc(win, line, search);
-		graf_mouse(ARROW, NULL);
+		doc->autolocator_dir = 1;
+		if (!empty(search))
+		{
+			graf_mouse(BUSY_BEE, NULL);
+			line = doc->autolocProc(win, line, search);
+			graf_mouse(ARROW, NULL);
+		}
+		if (line >= 0)
+		{
+			if (line != win->docsize.y)
+			{
+				can_search_again = TRUE;
+				win->docsize.y = line;
+				SendRedraw(win);
+				SetWindowSlider(win);
+			}
+		} else
+		{
+			Cconout(7);
+		}
 	}
 	g_free(search);
-	if (line >= 0)
-	{
-		if (line != win->docsize.y)
-		{
-			can_search_again = TRUE;
-			win->docsize.y = line;
-			SendRedraw(win);
-			SetWindowSlider(win);
-		}
-	} else
-	{
-		Cconout(7);
-	}
 }
 
 /*** ---------------------------------------------------------------------- ***/

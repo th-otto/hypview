@@ -183,7 +183,7 @@ void HypExtRefPopup(WINDOW_DATA *win, short x, short y)
 			}
 			pos = hyp_skip_esc(pos);
 		}
-		nf_debugprintf("openext: selection %d not found\n", sel);
+		HYP_DBG(("openext: selection %d not found", sel));
 	}
 }
 

@@ -615,6 +615,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 	long num;
 	int res;
 	char *name;
+	gboolean foundone;
 	
 	*num_results = 0;
 	
@@ -631,23 +632,33 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 		prototype.dbase_description = mod->database;
 		for (num = 0; num < mod->num_entries; num++)
 		{
+			foundone = FALSE;
 			switch (mod->entries[num].type)
 			{
 			case REF_FILENAME:
 				break;
 			case REF_NODENAME:
+				name = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+				g_free(prototype.node_name);
+				prototype.node_name = name;
+				res = strcmp(name, string);
+				foundone = res == 0;
+				break;
 			case REF_ALIASNAME:
 			case REF_LABELNAME:
 				name = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
 				res = strcmp(name, string);
-				g_free(name);
 				if (res == 0)
 				{
-					prototype.is_label = mod->entries[num].type == REF_LABELNAME;
-					prototype.is_alias = mod->entries[num].type == REF_ALIASNAME;
-					prototype.node_name = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+					foundone = TRUE;
+					if (mod->entries[num].type == REF_LABELNAME)
+						prototype.label_name = name;
+					else
+						prototype.alias_name = name;
+					name = NULL;
 					prototype.lineno = mod->entries[num].lineno;
 				}
+				g_free(name);
 				break;
 			case REF_DATABASE:
 			case REF_OS:
@@ -658,7 +669,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 			default:
 				break;
 			}
-			if (prototype.node_name != NULL)
+			if (foundone)
 			{
 				RESULT_ENTRY *entry;
 
@@ -669,13 +680,16 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 					return list;
 				}
 				*entry = prototype;
+				entry->node_name = g_strdup(prototype.node_name);
 				(*num_results)++;
 
 				*last = entry;
 				last = (RESULT_ENTRY **)(&(*last)->item.next);
-				prototype.node_name = NULL;
+				prototype.alias_name = NULL;
+				prototype.label_name = NULL;
 			}
 		}
+		g_free(prototype.node_name);
 	}
 	
 	return list;
@@ -694,6 +708,8 @@ void ref_freeresults(RESULT_ENTRY **result_list)
 	{
 		next = (RESULT_ENTRY *)ptr->item.next;
 		g_free(ptr->node_name);
+		g_free(ptr->alias_name);
+		g_free(ptr->label_name);
 		g_free(ptr);
 		ptr = next;
 	}

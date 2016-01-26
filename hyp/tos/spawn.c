@@ -234,32 +234,17 @@ static int interpret_script(int mode, const char *path, const char *_path, int a
 #endif /* HASH_BANG */
 
 
-static int _spawnvp(int mode, const char *_path, int argc, const char *const *argv)
+char *make_argv(char cmd[128], const char *const *argv)
 {
-	char pathbuf[PATH_MAX];
-	char *path;
-	char cmd[TOS_ARGS + 1];
 	size_t cmlen;
 	size_t enlen = 0;
 	size_t left, min_left;
 	const char *p;
-	char *s,*t;
+	char *s, *t;
 	char *env;
-	long rval;
 	const char *const *envp;
-	int execmode;
-	
-#if HASH_BANG
-	const char *const *_argv;
-#endif
 
-	path = pathbuf;
-	(void) _unx2dos(_path, path, sizeof(pathbuf));	/* convert filename, if necessary */
 	envp = (const char *const *)environ;
-
-#ifdef HASH_BANG
-	_argv = argv;
-#endif
 
 /* count up space needed for environment */
 	for (cmlen = 0; argv[cmlen]; cmlen++)
@@ -275,9 +260,9 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
   try_again:
 	if ((env = (char *) Malloc((long) enlen)) == NULL)
 	{
-		__set_errno(ENOMEM);
-		return -1;
+		return NULL;
 	}
+
 	left = enlen;
 	s = env;
 
@@ -387,7 +372,7 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 	}
 
 	t = cmd;
-	memset(t, 0, sizeof(cmd));
+	memset(t, 0, TOS_ARGS + 2);
 
 /* s points at the environment's copy of the args */
 /* t points at the command line copy to be put in the basepage */
@@ -441,6 +426,35 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 
 	/* signal Extended Argument Passing */
 	*cmd = 0x7f;
+	
+	return env;
+}
+
+
+static int _spawnvp(int mode, const char *_path, int argc, const char *const *argv)
+{
+	char pathbuf[PATH_MAX];
+	char *path;
+	long rval;
+	int execmode;
+	char cmd[TOS_ARGS + 2];
+#if HASH_BANG
+	const char *const *_argv;
+#endif
+	char *env;
+	
+	path = pathbuf;
+	(void) _unx2dos(_path, path, sizeof(pathbuf));	/* convert filename, if necessary */
+
+#ifdef HASH_BANG
+	_argv = argv;
+#endif
+
+	if ((env = make_argv(cmd, argv)) == NULL)
+	{
+		__set_errno(ENOMEM);
+		return -1;
+	}
 
 	if (mode == P_WAIT)
 		execmode = 0;

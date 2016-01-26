@@ -140,10 +140,20 @@ static void make_results(RESULT_ENTRY *ptr)
 
 	while (ptr)
 	{
-		char *name = hyp_utf8_to_charset(hyp_get_current_charset(), ptr->node_name, STR0TERM, NULL);
+		char *name;
+		char *str;
+		
+		if (ptr->label_name)
+			str = g_strdup_printf("%s \xe2\x88\x99 %s", ptr->node_name, ptr->label_name);
+		else if (ptr->alias_name)
+			str = g_strdup_printf("%s \xe2\x88\x99 %s", ptr->node_name, ptr->alias_name);
+		else
+			str = g_strdup(ptr->node_name);
+		name = hyp_utf8_to_charset(hyp_get_current_charset(), str, STR0TERM, NULL);
 		strncpy(ptr->str, name, 30);
 		ptr->str[30] = 0;
 		g_free(name);
+		g_free(str);
 		i = (int)strlen(ptr->str);
 		if (i < 30)
 			memset(ptr->str + i, ' ', 30 - i);
@@ -254,7 +264,7 @@ static void print_results(RESULT_ENTRY *ptr)
 		HYP_DBG(("Path=%s", printnull(ptr->path)));
 		HYP_DBG(("Node:%s", printnull(ptr->node_name)));
 		HYP_DBG(("Label:%d", ptr->is_label));
-		HYP_DBG(("Line:%d", ptr->line));
+		HYP_DBG(("Line:%d", ptr->lineno));
 		HYP_DBG(("Descr:%s", printnull(ptr->dbase_description)));
 		ptr = (RESULT_ENTRY *)ptr->item.next;
 	}
@@ -262,7 +272,7 @@ static void print_results(RESULT_ENTRY *ptr)
 
 /*----------------------------------------------------------------------------------------*/
 
-void *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
+WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message)
 {
 	int ret;
 	long results = 0;

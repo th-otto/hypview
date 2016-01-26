@@ -10,9 +10,13 @@ void hyp_debug(const char *fmt, ...)
 	va_list args;
 
 	va_start(args, fmt);
-	vfprintf(stderr, fmt, args);
-	nf_debugvprintf(fmt, args);
+	if (nf_debugvprintf(fmt, args) >= 0)
+	{
+		(void) nf_debugprintf("\n");
+	} else
+	{
+		vfprintf(stderr, fmt, args);
+		fputs("\n", stderr);
+	}
 	va_end(args);
-	fputs("\n", stderr);
-	nf_debugprintf("\n");
 }

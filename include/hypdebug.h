@@ -18,8 +18,8 @@ void hyp_debug(const char *str, ...) __attribute__((format(printf, 1, 2)));
 #ifdef __TOS__
 #include <mint/arch/nf_ops.h>
 #else
-#define nf_debugprintf printf
-#define nf_debugvprintf vprintf
+#define nf_debugprintf(fmt, ...) (-1)
+#define nf_debugvprintf(fmt, args) (-1)
 #endif
 
 #define unreachable() abort()
