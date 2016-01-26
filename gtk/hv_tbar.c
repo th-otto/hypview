@@ -161,7 +161,7 @@ void RemoveSearchBox(WINDOW_DATA *win)
 	if (doc->buttons.searchbox)
 	{
 		doc->buttons.searchbox = FALSE;	/* disable it */
-		gtk_entry_set_text(GTK_ENTRY(win->searchbox), "");			/* clear autolocator string */
+		gtk_entry_set_text(GTK_ENTRY(win->searchentry), "");			/* clear autolocator string */
 
 		ToolbarUpdate(win, TRUE);	/* update toolbar */
 	}

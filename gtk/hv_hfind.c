@@ -12,8 +12,8 @@ static void hypfind_text(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	long line = hv_win_topline(win);
 	long start_line = line;
-	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
-	const char *search = gtk_entry_get_text(GTK_ENTRY(entry));
+	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	const char *search = gtk_entry_get_text(entry);
 	
 	if (empty(search))
 		return;
@@ -40,8 +40,8 @@ static void hypfind_text(WINDOW_DATA *win)
 static void hypfind_page(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
-	const char *name = gtk_entry_get_text(GTK_ENTRY(entry));
+	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	const char *name = gtk_entry_get_text(entry);
 	if (empty(name))
 		return;
 	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, TRUE, FALSE, FALSE);
@@ -51,8 +51,8 @@ static void hypfind_page(WINDOW_DATA *win)
 
 static void hypfind_search_allref(WINDOW_DATA *win)
 {
-	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
-	const char *name = gtk_entry_get_text(GTK_ENTRY(entry));
+	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	const char *name = gtk_entry_get_text(entry);
 	if (empty(name))
 		return;
 	search_allref(win, name, FALSE);
@@ -99,7 +99,7 @@ static gboolean check_hypfind(void *userdata)
 static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 {
 	DOCUMENT *doc = win->data;
-	GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *argv[5];
 	int argc = 0;
 	const char *name;
@@ -110,7 +110,7 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 		show_message(_("Error"), _("No path to HypFind configured"), FALSE);
 		return;
 	}
-	name = gtk_entry_get_text(GTK_ENTRY(entry));
+	name = gtk_entry_get_text(entry);
 	if (empty(name))
 		return;
 	filename = path_subst(gl_profile.general.hypfind_path);
