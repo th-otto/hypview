@@ -857,7 +857,7 @@ typedef struct _result_entry_
 
 REF_FILE *ref_load(const char *filename, int handle, gboolean verbose);
 int ref_num_modules(REF_FILE *ref);
-gboolean ref_findnode(REF_FILE *ref, const char *string, hyp_nodenr *node, hyp_lineno *line, gboolean only_first);
+char *ref_findnode(REF_FILE *ref, const char *string, hyp_lineno *line, gboolean only_first);
 RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results);
 void ref_close(REF_FILE *ref);
 void ref_freeresults(RESULT_ENTRY **list);

@@ -555,7 +555,7 @@ char *ref_hyp_basename(const char *filename)
 /*
  * Find node by name in (first module of) REF file.
  */
-gboolean ref_findnode(REF_FILE *ref, const char *string, hyp_nodenr *node, hyp_lineno *line, gboolean only_first)
+char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean only_first)
 {
 	hyp_nodenr node_num;
 	REF_MODULE *mod;
@@ -574,14 +574,24 @@ gboolean ref_findnode(REF_FILE *ref, const char *string, hyp_nodenr *node, hyp_l
 			case REF_ALIASNAME:
 			case REF_LABELNAME:
 				name = hyp_conv_to_utf8(mod->charset, mod->entries[node_num].name, STR0TERM);
-				res = strcmp(name, string);
-				g_free(name);
+				res = strcmp(name, search);
 				if (res == 0)
 				{
 					*line = mod->entries[node_num].lineno;
-					*node = node_num;
-					return TRUE;
+					if (mod->entries[node_num].type != REF_NODENAME)
+					{
+						while (node_num > 0)
+						{
+							--node_num;
+							if (mod->entries[node_num].type == REF_NODENAME)
+								break;
+						}
+						g_free(name);
+						name = hyp_conv_to_utf8(mod->charset, mod->entries[node_num].name, STR0TERM);
+					}
+					return name;
 				}
+				g_free(name);
 				break;
 			case REF_FILENAME:
 			case REF_DATABASE:
@@ -597,7 +607,7 @@ gboolean ref_findnode(REF_FILE *ref, const char *string, hyp_nodenr *node, hyp_l
 		if (only_first)
 			break;
 	}
-	return FALSE;
+	return NULL;
 }
 
 /* ------------------------------------------------------------------------- */

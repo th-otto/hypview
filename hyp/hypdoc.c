@@ -219,7 +219,8 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 {
 	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *) doc->data;
 	hyp_nodenr node_num;
-
+	char *nodename;
+	
 	/* try to find in node names first */
 	node_num = find_nr_by_title(hyp, chapter);
 
@@ -244,8 +245,12 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 			g_free(filename);
 		}
 
-		if (ref_findnode(hyp->ref, chapter, &node_num, &line, TRUE))
+		if ((nodename = ref_findnode(hyp->ref, chapter, &line, TRUE)) != NULL)
+		{
+			node_num = find_nr_by_title(hyp, nodename);
+			g_free(nodename);
 			doc->start_line = line;
+		}
 	}
 	return node_num;
 }
