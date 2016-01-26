@@ -117,7 +117,6 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 	if (action_name == NULL || strncmp(action_name, "bookmark-", 9) != 0)
 		return;
 	sel = (int)strtol(action_name + 9, NULL, 10) - 1;
-	printf("action %d %s\n", sel, action_name);
 	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
 	if (sel >= 0 && sel < MAX_MARKEN)
 	{
