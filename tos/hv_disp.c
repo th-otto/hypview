@@ -140,7 +140,7 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	vsl_ends(vdi_handle, 0, 0);
 	vsl_type(vdi_handle, SOLID);
 
-#if 1
+#if 0
 	{
 	_WORD dummy;
 	v_get_pixel(vdi_handle, 999, 999, &dummy, &dummy);
