@@ -2178,7 +2178,7 @@ static OBJECT rs_object[] = {
 	{ 6, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_141), 26,4, 15,1 }, /* HYPFIND_REF */
 	{ 7, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_142), 42,4, 11,1 }, /* HYPFIND_ABORT */
 	{ 8, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_143), 2,6, 23,1 }, /* HYPFIND_ALL_PAGE */
-	{ 0, -1, -1, G_BUTTON, 0x621, OS_NORMAL, C_UNION(hypview_string_144), 26,6, 27,1 } /* HYPFIND_ALL_HYP */
+	{ 0, -1, -1, G_BUTTON, 0x625, OS_NORMAL, C_UNION(hypview_string_144), 26,6, 27,1 } /* HYPFIND_ALL_HYP */
 };
 
 

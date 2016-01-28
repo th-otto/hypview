@@ -53,6 +53,9 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 	char *filename;
 	int argc = 0;
 	char *env;
+	
+	if (_AESnumapps == 1 && _app)
+		return;
 	filename = path_subst(gl_profile.general.hypfind_path);
 	if (!empty(filename))
 	{
@@ -213,6 +216,12 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		return;
 	}
 
+	if (_AESnumapps == 1 && _app)
+	{
+		tree[HYPFIND_ALL_PAGE].ob_state |= OS_DISABLED;
+		tree[HYPFIND_ALL_HYP].ob_state |= OS_DISABLED;
+	}
+	
 	if (has_window_dialogs())
 	{
 		Hypfind_Dialog = OpenDialog(HypfindHandle, tree, rs_string(WDLG_SEARCH_PATTERN), -1, -1, win);
