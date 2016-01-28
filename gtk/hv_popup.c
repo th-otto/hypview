@@ -72,6 +72,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 			geom = g_strdup_printf("+%d+%d", x, y);
 			gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), geom);
 			g_free(geom);
+#if 0
 			{
 				WP_UNIT w, h;
 				
@@ -81,6 +82,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 				h += 2 * gl_profile.viewer.text_yoffset;
 				gtk_widget_set_size_request(win->text_view, w, h);
 			}
+#endif
 			gtk_window_set_transient_for(GTK_WINDOW(win->hwnd), GTK_WINDOW(parentwin->hwnd));
 			ReInitWindow(win, FALSE);
 			hv_win_open(win);

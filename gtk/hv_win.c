@@ -388,7 +388,7 @@ static void on_expand_spaces(GtkAction *action, WINDOW_DATA *win)
 {
 	gl_profile.viewer.expand_spaces = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action));
 	HypProfile_SetChanged();
-	if (win->text_window)
+	if (win->text_view)
 	{
 		DOCUMENT *doc = win->data;
 		if (doc && doc->prepNode)
@@ -1765,10 +1765,6 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	win->text_buffer = gtk_text_buffer_new(tagtable);
 	g_object_unref(tagtable);
 	
-	win->text_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(win->text_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(win->text_window), GTK_SHADOW_IN);
-	gtk_widget_show(win->text_window);
 	win->text_view = gtk_text_view_new_with_buffer(win->text_buffer);
 	g_object_unref(win->text_buffer);
 	gtk_widget_set_can_default(win->text_view, TRUE);
@@ -1778,13 +1774,27 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TOP, gl_profile.viewer.text_yoffset);
 	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_BOTTOM, gl_profile.viewer.text_yoffset);
 	gtk_widget_show(win->text_view);
-	gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(win->text_view), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(win->text_view), GTK_WRAP_NONE); 
 	gtk_widget_set_can_focus(win->text_view, TRUE);
-	gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
 
+	if (popup)
+	{
+		win->text_window = gtk_frame_new(NULL);
+		gtk_widget_show(win->text_window);
+		gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
+		gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
+	} else
+	{
+		win->text_window = gtk_scrolled_window_new(NULL, NULL);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(win->text_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(win->text_window), GTK_SHADOW_IN);
+		gtk_widget_show(win->text_window);
+		gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
+		gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
+	}
+	
 	/*
 	 * we don't want error beeps from unhandled key presses
 	 */
