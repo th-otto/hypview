@@ -14,12 +14,6 @@
 #endif
 
 /*
- * Global.c
- */
-extern short sel_font_id, sel_font_pt;
-
-
-/*
  * hv_init.c
  */
 void hv_init(void);

@@ -32,9 +32,18 @@ static void ApplyFont(void)
 	WINDOW_DATA *win;
 	DOCUMENT *doc;
 	_WORD font_w, font_h;
+	_WORD fid, pt;
 
-	vst_font(vdi_handle, sel_font_id);
-	vst_point(vdi_handle, sel_font_pt, &font_w, &font_h, &font_cw, &font_ch);
+	fid = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_id : gl_profile.viewer.font_id;
+	pt = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_pt : gl_profile.viewer.font_pt;
+	if (fid == 0)
+	{
+		fid = aes_fontid;
+		pt = aes_fontsize;
+	}
+	
+	vst_font(vdi_handle, fid);
+	vst_point(vdi_handle, pt, &font_w, &font_h, &font_cw, &font_ch);
 
 	if (ProportionalFont(&font_w))
 	{
@@ -91,9 +100,17 @@ static short FontSelected(FONTSEL_DATA *ptr)
 {
 	if (ptr->button == FNTS_OK || ptr->button == FNTS_SET)
 	{
-		sel_font_id = ptr->id;
-		sel_font_pt = fix31_to_point(ptr->pt);
+		if (gl_profile.viewer.use_xfont)
+		{
+			gl_profile.viewer.xfont_id = (int)ptr->id;
+			gl_profile.viewer.xfont_pt = fix31_to_point(ptr->pt);
+		} else
+		{
+			gl_profile.viewer.font_id = (int)ptr->id;
+			gl_profile.viewer.font_pt = fix31_to_point(ptr->pt);
+		}
 		ApplyFont();
+		HypProfile_SetChanged();
 	}
 	if (ptr->button == FNTS_CANCEL || ptr->button == FNTS_OK)
 	{
@@ -115,7 +132,11 @@ void SelectFont(WINDOW_DATA *win)
 	{
 		ptr = CreateFontselector(FontSelected, FNTS_ALL, "The quick brown...", NULL);
 		if (ptr)
-			OpenFontselector(ptr, FNTS_SNAME|FNTS_SSIZE|FNTS_CHNAME|FNTS_CHSIZE|FNTS_BSET, sel_font_id, point_to_fix31(sel_font_pt), 0);
+		{
+			_WORD fid = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_id : gl_profile.viewer.font_id;
+			_WORD pt = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_pt : gl_profile.viewer.font_pt;
+			OpenFontselector(ptr, FNTS_SNAME|FNTS_SSIZE|FNTS_CHNAME|FNTS_CHSIZE|FNTS_BSET, fid, point_to_fix31(pt), 0);
+		}
 	} else
 	{
 		wind_set_int(ptr->whandle, WF_TOP, 0);
@@ -157,20 +178,8 @@ gboolean ProportionalFont(_WORD *width)
 
 void SwitchFont(WINDOW_DATA *win)
 {
-	_WORD normal_font_id;
-	_WORD normal_font_size;
-	
 	UNUSED(win);
-	normal_font_id = gl_profile.viewer.font_id ? gl_profile.viewer.font_id : aes_fontid;
-	normal_font_size = gl_profile.viewer.font_pt ? gl_profile.viewer.font_pt : aes_fontsize;
-	if (sel_font_id == normal_font_id && gl_profile.viewer.xfont_id != 0)
-	{
-		sel_font_id = gl_profile.viewer.xfont_id;
-		sel_font_pt = gl_profile.viewer.xfont_pt;
-	} else
-	{
-		sel_font_id = normal_font_id;
-		sel_font_pt = normal_font_size;
-	}
+	gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_id != 0 && gl_profile.viewer.xfont_id != gl_profile.viewer.font_id;
+	HypProfile_SetChanged();
 	ApplyFont();
 }

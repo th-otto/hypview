@@ -37,6 +37,7 @@ void hv_init(void)
 	_WORD dummy;
 	_WORD font_w, font_h;
 	char *skin;
+	_WORD fid, pt;
 	
 	/*
 	 * initialize VDI
@@ -48,11 +49,16 @@ void hv_init(void)
 	if (vq_gdos())						/* GDOS avaiablable? */
 		vst_load_fonts(vdi_handle, 0);	/* load fonts */
 
-	sel_font_id = gl_profile.viewer.font_id ? gl_profile.viewer.font_id : aes_fontid;
-	sel_font_pt = gl_profile.viewer.font_pt ? gl_profile.viewer.font_pt : aes_fontsize;
+	fid = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_id : gl_profile.viewer.font_id;
+	pt = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_pt : gl_profile.viewer.font_pt;
+	if (fid == 0)
+	{
+		fid = aes_fontid;
+		pt = aes_fontsize;
+	}
 	
-	vst_font(vdi_handle, sel_font_id);		/* select font */
-	vst_point(vdi_handle, sel_font_pt, &font_w, &font_h, &font_cw, &font_ch);
+	vst_font(vdi_handle, fid);		/* select font */
+	vst_point(vdi_handle, pt, &font_w, &font_h, &font_cw, &font_ch);
 
 	if (ProportionalFont(&font_w))
 		font_cw = font_w;

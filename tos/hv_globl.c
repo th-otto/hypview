@@ -5,7 +5,6 @@ extern const char *_argv0;
 extern const char *__env_argv;
 
 /* selected font */
-short sel_font_id, sel_font_pt;
 _WORD font_cw, font_ch;
 
 /******************************************************************************/
