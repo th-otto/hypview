@@ -2227,8 +2227,10 @@ void HypProfile_Load(void)
 		setdefault("HypView.WINSIZE.H", gl_profile.viewer.win_h = 0);
 	if (!Profile_ReadBool(profile, "HypView", "WINADJUST", &gl_profile.viewer.adjust_winsize))
 		setdefault("HypView.WINADJUST", gl_profile.viewer.adjust_winsize = FALSE);
-	if (!Profile_ReadInt(profile, "HypView", "TXTOFFSET", &gl_profile.viewer.text_offset))
-		setdefault("HypView.TXTOFFSET", gl_profile.viewer.text_offset = 6);
+	if (!Profile_ReadInt(profile, "HypView", "TXTXOFFSET", &gl_profile.viewer.text_xoffset))
+		setdefault("HypView.TXTXOFFSET", gl_profile.viewer.text_xoffset = 8);
+	if (!Profile_ReadInt(profile, "HypView", "TXTYOFFSET", &gl_profile.viewer.text_yoffset))
+		setdefault("HypView.TXTYOFFSET", gl_profile.viewer.text_yoffset = 6);
 #ifdef WITH_GUI_GEM
 	if (!Profile_ReadInt(profile, "HypView", "FONT.ID", &gl_profile.viewer.font_id))
 		setdefault("HypView.FONT.ID", gl_profile.viewer.font_id = 0);
@@ -2473,7 +2475,8 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteInt(profile, "HypView", "WINSIZE.H", gl_profile.viewer.win_h);
 	Profile_WriteString(profile, "HypView", "SKIN", gl_profile.viewer.skin_path);
 	Profile_WriteBool(profile, "HypView", "WINADJUST", gl_profile.viewer.adjust_winsize);
-	Profile_WriteInt(profile, "HypView", "TXTOFFSET", gl_profile.viewer.text_offset);
+	Profile_WriteInt(profile, "HypView", "TXTXOFFSET", gl_profile.viewer.text_xoffset);
+	Profile_WriteInt(profile, "HypView", "TXTYOFFSET", gl_profile.viewer.text_yoffset);
 #ifdef WITH_GUI_GEM
 	Profile_WriteInt(profile, "HypView", "FONT.ID", gl_profile.viewer.font_id);
 	Profile_WriteInt(profile, "HypView", "FONT.SIZE", gl_profile.viewer.font_pt);

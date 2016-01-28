@@ -1426,9 +1426,10 @@ static void set_font_attributes(WINDOW_DATA *win)
 	PangoContext *context;
 	GdkScreen *screen;
 	PangoFontMetrics *metrics = NULL;
-	
+		
 	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
 	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
+	gtk_widget_modify_bg(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
 	gtk_widget_modify_font(win->text_view, desc);
 	screen = gtk_widget_get_screen(win->hwnd);
 	context = gdk_pango_context_get_for_screen(screen);
@@ -1772,6 +1773,10 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	g_object_unref(win->text_buffer);
 	gtk_widget_set_can_default(win->text_view, TRUE);
 	gtk_widget_set_receives_default(win->text_view, TRUE);
+	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_LEFT, gl_profile.viewer.text_xoffset);
+	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_RIGHT, gl_profile.viewer.text_xoffset);
+	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TOP, gl_profile.viewer.text_yoffset);
+	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_BOTTOM, gl_profile.viewer.text_yoffset);
 	gtk_widget_show(win->text_view);
 	gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);

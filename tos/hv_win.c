@@ -234,8 +234,9 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		win->x_raster = font_cw;
 		win->y_raster = font_ch;
 
-		win->y_margin_top = gl_profile.viewer.text_offset;
-		win->x_margin_left = font_cw;
+		win->y_margin_top = gl_profile.viewer.text_yoffset;
+		win->x_margin_left = gl_profile.viewer.text_xoffset;
+		win->x_margin_right = gl_profile.viewer.text_xoffset;
 		
 		/* install toolbar */
 		win->toolbar = toolbar_tree;

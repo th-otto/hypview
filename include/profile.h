@@ -52,7 +52,8 @@ typedef struct {
 #endif
 		gboolean use_xfont;
 		int win_x, win_y, win_w, win_h; /* initial window position */
-		int text_offset;            /* vertical separation in pixels of the window contents */
+		int text_xoffset;           /* horizontal separation in pixels of the window contents */
+		int text_yoffset;           /* vertical separation in pixels of the window contents */
 		int binary_columns;         /* # of calumns to show for binary data */
 		gboolean expand_spaces;		/* wether to expand multiple spaces when using proportional font */
 		int ascii_tab_size;         /* The number of spaces a tab will be expanded to */
