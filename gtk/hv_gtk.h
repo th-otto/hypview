@@ -135,6 +135,7 @@ void check_toplevels(GtkWidget *toplevel);
 void show_message(const char *title, const char *text, gboolean big);
 gboolean ask_yesno(GtkWindow *parent, const char *text);
 GtkWindow *top_window(void);
+gboolean IsResponseOk(int resp);
 
 
 /*

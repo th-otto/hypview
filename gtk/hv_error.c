@@ -94,7 +94,7 @@ void check_console(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean IsResponseOk(int resp)
+gboolean IsResponseOk(int resp)
 {
 	return resp == GTK_RESPONSE_ACCEPT ||
 		   resp == GTK_RESPONSE_OK ||

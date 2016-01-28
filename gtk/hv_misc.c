@@ -89,10 +89,7 @@ gboolean show_dialog(GtkWidget *parent, const char *type, const char *message, g
 	gtk_window_present(GTK_WINDOW(dialog));
 	g_free(msg);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
-	return resp == GTK_RESPONSE_ACCEPT ||
-		   resp == GTK_RESPONSE_OK ||
-		   resp == GTK_RESPONSE_YES ||
-		   resp == GTK_RESPONSE_APPLY;
+	return IsResponseOk(resp);
 }
 
 /******************************************************************************/

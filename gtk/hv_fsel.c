@@ -162,10 +162,7 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 	gtk_window_set_transient_for(GTK_WINDOW(selector), GTK_WINDOW(parent));
 	gtk_widget_show(GTK_WIDGET(selector));
 	resp = gtk_dialog_run(GTK_DIALOG(selector));
-	if (resp == GTK_RESPONSE_ACCEPT ||
-		resp == GTK_RESPONSE_OK ||
-		resp == GTK_RESPONSE_YES ||
-		resp == GTK_RESPONSE_APPLY)
+	if (IsResponseOk(resp))
 	{
 		g_free(*name);
 		*name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(selector));
