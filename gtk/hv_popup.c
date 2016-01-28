@@ -76,7 +76,9 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 				WP_UNIT w, h;
 				
 				w = win->x_raster * (win->displayed_node->columns + (gl_profile.viewer.use_xfont ? 3 : 7));
+				w += 2 * gl_profile.viewer.text_xoffset;
 				h = win->y_raster * (win->displayed_node->lines + 1);
+				h += 2 * gl_profile.viewer.text_yoffset;
 				gtk_widget_set_size_request(win->text_view, w, h);
 			}
 			gtk_window_set_transient_for(GTK_WINDOW(win->hwnd), GTK_WINDOW(parentwin->hwnd));
