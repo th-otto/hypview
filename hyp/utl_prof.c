@@ -2251,6 +2251,8 @@ void HypProfile_Load(void)
 	if (!Profile_ReadString(profile, "HypView", "XFONT", &gl_profile.viewer.xfont_name))
 		setdefault("HypView.XFONT", gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
 #endif
+	if (!Profile_ReadBool(profile, "HypView", "USE_XFONT", &gl_profile.viewer.use_xfont))
+		setdefault("HypView.USE_XFONT", gl_profile.viewer.use_xfont = FALSE);
 #if defined(WITH_GUI_GTK) || defined(WITH_GUI_WIN32)
 	if (!Profile_ReadString(profile, "Colors", "COLOR0", &gl_profile.viewer.color[G_WHITE]))
 		setdefault("HypView.COLOR0", gl_profile.viewer.color[G_WHITE] = g_strdup("#ffffff"));
@@ -2492,6 +2494,7 @@ gboolean HypProfile_Save(gboolean report_error)
 		}
 	}
 #endif
+	Profile_WriteBool(profile, "HypView", "USE_XFONT", gl_profile.viewer.use_xfont);
 	Profile_WriteInt(profile, "HypView", "BGRND_COLOR", gl_profile.viewer.background_color);
 	Profile_WriteInt(profile, "HypView", "TEXT_COLOR", gl_profile.viewer.text_color);
 	Profile_WriteInt(profile, "HypView", "LINK_COLOR", gl_profile.viewer.link_color);

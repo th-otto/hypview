@@ -377,9 +377,9 @@ static void on_output_settings(GtkAction *action, WINDOW_DATA *win)
 
 static void on_switch_font(GtkAction *action, WINDOW_DATA *win)
 {
-	UNUSED(action);
-	SwitchFont(win);
+	gl_profile.viewer.use_xfont = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action)) && gl_profile.viewer.xfont_name != NULL;
 	HypProfile_SetChanged();
+	SwitchFont(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1420,7 +1420,7 @@ static GtkTextTagTable *create_tags(void)
 
 static void set_font_attributes(WINDOW_DATA *win)
 {
-	PangoFontDescription *desc = pango_font_description_from_string(sel_font_name);
+	PangoFontDescription *desc = pango_font_description_from_string(gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name);
 	PangoFontMap *font_map;
 	PangoFont *font;
 	PangoContext *context;
@@ -1678,7 +1678,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		
 		gtk_action_group_add_action(win->action_group, recent_action);
 		
-		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), sel_font_name != gl_profile.viewer.font_name);
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), gl_profile.viewer.use_xfont);
+		gtk_action_set_sensitive(GTK_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), gl_profile.viewer.xfont_name != NULL);
 		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "expandspaces")), gl_profile.viewer.expand_spaces);
 		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "scalebitmaps")), gl_profile.viewer.scale_bitmaps);
 		

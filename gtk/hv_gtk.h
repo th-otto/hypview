@@ -150,8 +150,6 @@ cairo_surface_t *convert_pixbuf_to_cairo(GdkPixbuf *pixbuf);
 /*
  * hv_init.c
  */
-extern const char *sel_font_name;
-
 void hv_init(void);
 void hv_exit(void);
 

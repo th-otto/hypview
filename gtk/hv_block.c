@@ -77,7 +77,8 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 		ToolbarUpdate(win, TRUE);
 		break;
 	case CO_SWITCH_FONT:
-		SwitchFont(win);
+		gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_name != NULL;
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), gl_profile.viewer.use_xfont);
 		break;
 	case CO_SELECT_FONT:
 		SelectFont(win);

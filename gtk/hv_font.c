@@ -43,13 +43,7 @@ static void ApplyFont(void)
 void SwitchFont(WINDOW_DATA *win)
 {
 	UNUSED(win);
-	if (sel_font_name == gl_profile.viewer.font_name && gl_profile.viewer.xfont_name != 0)
-	{
-		sel_font_name = gl_profile.viewer.xfont_name;
-	} else
-	{
-		sel_font_name = gl_profile.viewer.font_name;
-	}
+	gl_profile.viewer.use_xfont = gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_name != NULL;
 	ApplyFont();
 }
 

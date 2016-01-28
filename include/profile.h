@@ -50,6 +50,7 @@ typedef struct {
 		char *xfont_name;
 		char *color[16];			/* actual color values for the first 16 GEM colors (any format understood by gdk_color_parse()) */
 #endif
+		gboolean use_xfont;
 		int win_x, win_y, win_w, win_h; /* initial window position */
 		int text_offset;            /* vertical separation in pixels of the window contents */
 		int binary_columns;         /* # of calumns to show for binary data */
