@@ -68,7 +68,7 @@ static void __CDECL select_item(struct SLCT_ITEM_args args)
 				if (doc->gotoNodeProc(win, my_item->node_name, 0))
 					doc->start_line = my_item->lineno;
 				graf_mouse(ARROW, NULL);
-				ReInitWindow(win);
+				ReInitWindow(win, FALSE);
 			}
 		}
 		SendCloseDialog(SearchResult_Dialog);

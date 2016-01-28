@@ -172,14 +172,14 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		{
 			found = TRUE;
 			/* no window already? */
-			ReInitWindow(win);
+			ReInitWindow(win, FALSE);
 			hv_win_open(win);
 		} else if (find_default)
 		{
 			doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
 			if (chapter && strcmp(chapter, hyp_default_main_node_name) == 0)
 				found = TRUE;
-			ReInitWindow(win);
+			ReInitWindow(win, FALSE);
 			hv_win_open(win);
 		} else
 		{
@@ -268,7 +268,7 @@ void CheckFiledate(WINDOW_DATA *win)
 			doc->gotoNodeProc(win, NULL, node);
 
 			win->docsize.y = lineno;
-			ReInitWindow(win);
+			ReInitWindow(win, FALSE);
 			graf_mouse(ARROW, NULL);	/* We are done. */
 		}
 	}

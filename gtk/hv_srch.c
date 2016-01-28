@@ -47,16 +47,14 @@ static void list_activated_cb(GtkTreeView *list, GtkTreePath *path, GtkTreeViewC
 	gtk_tree_model_get(model, &iter, COL_PATH, &filename, COL_NAME, &name, COL_LINENO, &lineno, -1);
 	if (filename && name)
 	{
-		GtkWidget *parent;
+		GtkWidget *dialog;
 		
 		if ((win = OpenFileInWindow(win, filename, name, HYP_NOINDEX, TRUE, FALSE, FALSE)) != NULL)
 		{
 			if (lineno > 0)
 				hv_win_scroll_to_line(win, lineno);
-			parent = GTK_WIDGET(list);
-			while (parent && !GTK_IS_WINDOW(parent))
-				parent = gtk_widget_get_parent(parent);
-			gtk_dialog_response(GTK_DIALOG(parent), GTK_RESPONSE_OK);
+			dialog = gtk_widget_get_toplevel(GTK_WIDGET(list));
+			gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 		}
 	}
 	g_free(filename);

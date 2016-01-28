@@ -52,7 +52,7 @@ void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
 		doc->start_line = line;
 	}
 	graf_mouse(ARROW, NULL);
-	ReInitWindow(win);
+	ReInitWindow(win, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/

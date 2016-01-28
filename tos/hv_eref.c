@@ -233,7 +233,7 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 		if (ret != HYP_NOINDEX)
 		{
 			if (doc->gotoNodeProc(win, NULL, ret))
-				ReInitWindow(win);
+				ReInitWindow(win, FALSE);
 		} else
 		{
 			win = search_allref(win, chapter, FALSE);

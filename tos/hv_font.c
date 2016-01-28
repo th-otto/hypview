@@ -76,8 +76,8 @@ static void ApplyFont(void)
 				/* forget about "fulled" state */
 				win->status &= ~WIS_FULL;
 
-				/* re-init window*/
-				ReInitWindow(win);
+				/* re-init window */
+				ReInitWindow(win, FALSE);
 			}
 			graf_mouse(ARROW, NULL);
 		}

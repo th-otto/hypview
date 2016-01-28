@@ -32,7 +32,7 @@ static void ApplyFont(void)
 			{
 				doc->start_line = topline;
 
-				ReInitWindow(win);
+				ReInitWindow(win, TRUE);
 			}
 		}
 	}

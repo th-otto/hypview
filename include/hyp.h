@@ -694,15 +694,25 @@ struct hyp_gfx
  	FILE_ID id;
 
 	/*
+	 * for images: values read from header of picture node
+	 * for other graphics commands: scaled dimensions of command
+	 */
+	int pixwidth;				/* width in pixels */
+	int pixheight;				/* height in pixel */
+	/*
 	 * for images only: values read from header of picture node
 	 */
-	unsigned short pixwidth;		/* width in pixels */
-	unsigned short pixheight;		/* height in pixel */
-	unsigned char planes;			/* number of planes (1..8) */
+	unsigned char planes;		/* number of planes (1..8) */
 	hyp_pic_format format;
 	
 	/* for decompiler only: */
 	gboolean used;
+	
+#ifdef WITH_GUI_GTK
+	int window_x, window_y;
+	int window_margin;
+	void /* cairo_surface_t */ *surf;
+#endif
 };
 
 

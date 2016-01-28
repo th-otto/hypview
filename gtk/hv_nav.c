@@ -14,7 +14,7 @@ void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
 		}
 		doc->start_line = line;
 	}
-	ReInitWindow(win);
+	ReInitWindow(win, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/

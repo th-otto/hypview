@@ -45,7 +45,7 @@ void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(_WORD whandle);
 void SendTopped(_WORD whandle);
 void SendRedraw(WINDOW_DATA *wind);
-void ReInitWindow(WINDOW_DATA *win);
+void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 gboolean HelpWindow(WINDOW_DATA *ptr, _WORD obj, void *data);
 gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data);
 void WindowCalcScroll(WINDOW_DATA *win);

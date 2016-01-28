@@ -88,7 +88,8 @@ struct _window_data_
 	gboolean hovering_over_link;
 	WINDOW_DATA *popup;
 	HISTORY *history;
-	HYP_NODE *displayed_node;   /* Currently displayed node */
+	HYP_NODE *displayed_node;           /* Currently displayed node */
+	GSList *image_childs;               /* list of child widget to implement graphic commands */
 };
 
 typedef struct _link_info {
@@ -141,6 +142,9 @@ GtkWindow *top_window(void);
  */
 _WORD GetNumColors(void);
 _WORD GetNumPlanes(void);
+void gdk_pixbuf_make_transparent(GdkPixbuf *pixbuf);
+void gdk_pixbuf_make_opaque(GdkPixbuf *pixbuf);
+cairo_surface_t *convert_pixbuf_to_cairo(GdkPixbuf *pixbuf);
 
 
 /*
@@ -163,17 +167,20 @@ void SelectFont(WINDOW_DATA *win);
  * hv_win.c
  */
 extern GSList *all_list;
+extern GdkColor gdk_colors[16];
 
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
 WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
-void ReInitWindow(WINDOW_DATA *win);
+void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(GtkWidget *w);
 long hv_win_topline(WINDOW_DATA *win);
 void hv_win_scroll_to_line(WINDOW_DATA *win, long line);
+GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_name, const gchar *first_property_name, ...);
+void hv_win_destroy_images(WINDOW_DATA *win);
 
 
 /*

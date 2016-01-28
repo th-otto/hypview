@@ -184,9 +184,13 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 			
 			win->popup = hv_win_new(&popup->doc, TRUE);
 			if (win->popup == NULL)
+			{
 				g_free(popup);
-			else
+			} else
+			{
+				ReInitWindow(win->popup, FALSE);
 				hv_win_open(win->popup);
+			}
 		} else
 		{
 			g_free(popup);

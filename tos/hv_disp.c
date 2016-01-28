@@ -134,7 +134,7 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	if (h)
 		xy[3]--;
 
-	vsl_ends(vdi_handle, gfx->attr & ARROWED, (gfx->attr >> 1) & ARROWED);
+	vsl_ends(vdi_handle, gfx->begend & ARROWED, (gfx->begend >> 1) & ARROWED);
 	vsl_type(vdi_handle, gfx->style);
 	v_pline(vdi_handle, 2, xy);
 	vsl_ends(vdi_handle, 0, 0);
@@ -305,6 +305,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 	/* standard text color */
 	vst_color(vdi_handle, gl_profile.viewer.text_color);
+	vsl_color(vdi_handle, gl_profile.viewer.text_color);
 	vst_effects(vdi_handle, 0);
 
 #define TEXTOUT(str) \

@@ -183,5 +183,6 @@ void HypProfile_Load(void);
 gboolean HypProfile_Save(gboolean report_error);
 void HypProfile_Delete(void);
 void Profile_ValidateColors(_WORD display_colors);
+void HypProfile_SetChanged(void);
 
 #endif

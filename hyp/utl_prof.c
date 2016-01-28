@@ -2411,6 +2411,16 @@ void HypProfile_Load(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void HypProfile_SetChanged(void)
+{
+	Profile *profile = gl_profile.profile;
+	
+	if (profile != NULL)
+		profile->changed = TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 gboolean HypProfile_Save(gboolean report_error)
 {
 	Profile *profile = gl_profile.profile;

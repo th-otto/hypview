@@ -1,0 +1,66 @@
+@options "+g -i -s +z -t4 -d12"
+@os Atari
+@charset atarist
+@inputenc atarist
+@subject "Keins"
+@width 75
+
+
+@node "Main"
+rounded box
+@rbox 32 10 5 1
+@rbox 52 10 5 0
+
+
+
+
+
+normal box
+@box 32 10 5 1
+@box 52 10 5 0
+
+
+
+
+
+horizontal line left to right
+@line 5 20 0
+
+horizontal line right to left
+@line 25 -20 0
+
+horizontal line left to right arrow end
+@line 5 20 0 2
+
+horizontal line right to left arrow end
+@line 25 -20 0 2
+
+horizontal line left to right arrow start
+@line 5 20 0 1
+
+horizontal line right to left arrow start
+@line 25 -20 0 1
+
+horizontal line left to right both arrows
+@line 5 20 0 3
+
+horizontal line right to left both arrows
+@line 25 -20 0 3
+
+
+
+diagonal line left to right
+@line 5 20 5 2
+
+
+
+
+
+diagonal line right to left
+@line 25 -20 5 2
+
+
+
+
+
+@endnode

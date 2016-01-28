@@ -304,7 +304,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				if (ret != HYP_NOINDEX)
 				{
 					if (doc->gotoNodeProc(win, NULL, ret))
-						ReInitWindow(win);
+						ReInitWindow(win, FALSE);
 				} else
 				{
 					search_allref(win, name, TRUE);

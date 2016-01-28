@@ -66,7 +66,7 @@ static const char *const colornames[16] = {
 	"dark-yellow",
 	"dark-magenta"
 };
-static GdkColor gdk_colors[16];
+GdkColor gdk_colors[16];
 static char *default_geometry;
 
 /******************************************************************************/
@@ -264,6 +264,25 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+void hv_win_destroy_images(WINDOW_DATA *win)
+{
+	GSList *l;
+	
+	for (l = win->image_childs; l; l = l->next)
+	{
+		struct hyp_gfx *gfx = l->data;
+		if (gfx->surf)
+		{
+			cairo_surface_destroy(gfx->surf);
+			gfx->surf = NULL;
+		}
+	}
+	g_slist_free(win->image_childs);
+	win->image_childs = NULL;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void NOINLINE hv_win_delete(WINDOW_DATA *win)
 {
 	DOCUMENT *doc;
@@ -280,6 +299,7 @@ static void NOINLINE hv_win_delete(WINDOW_DATA *win)
 		hypdoc_unref(doc);
 		RemoveAllHistoryEntries(win);
 		all_list = g_slist_remove(all_list, win);
+		hv_win_destroy_images(win);
 		g_free(win->title);
 		g_free(win);
 	}
@@ -359,6 +379,7 @@ static void on_switch_font(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
 	SwitchFont(win);
+	HypProfile_SetChanged();
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -366,13 +387,14 @@ static void on_switch_font(GtkAction *action, WINDOW_DATA *win)
 static void on_expand_spaces(GtkAction *action, WINDOW_DATA *win)
 {
 	gl_profile.viewer.expand_spaces = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action));
+	HypProfile_SetChanged();
 	if (win->text_window)
 	{
 		DOCUMENT *doc = win->data;
 		if (doc && doc->prepNode)
 		{
 			doc->start_line = hv_win_topline(win);
-			ReInitWindow(win);
+			ReInitWindow(win, TRUE);
 		}
 	}
 }
@@ -568,11 +590,22 @@ static void on_xref(GtkAction *action, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void on_quit(GtkAction *action, WINDOW_DATA *win)
+static gboolean on_quit(GtkAction *action, WINDOW_DATA *win)
 {
+	{
+		gint x, y, width, height;
+		gdk_window_get_root_origin(gtk_widget_get_window(win->hwnd), &x, &y);
+		gdk_drawable_get_size(gtk_widget_get_window(win->hwnd), &width, &height);
+		gl_profile.viewer.win_x = x;
+		gl_profile.viewer.win_y = y;
+		gl_profile.viewer.win_w = width;
+		gl_profile.viewer.win_h = height;
+		HypProfile_SetChanged();
+	}
 	if (!WriteProfile(win))
-		return;
+		return TRUE;
 	quit_force(action, win);
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -605,8 +638,7 @@ static gboolean wm_toplevel_close_cb(GtkWidget *widget, GdkEvent *event, WINDOW_
 {
 	UNUSED(widget);
 	UNUSED(event);
-	on_quit(NULL, win);
-	return TRUE;
+	return on_quit(NULL, win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -780,7 +812,19 @@ static gboolean follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_DATA *win)
+static gboolean draw_images(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
+{
+	DOCUMENT *doc = win->data;
+
+	UNUSED(text_view);
+	UNUSED(event);
+	doc->displayProc(win);
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean event_after(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
 {
 	GtkTextIter start, end, iter;
 	GtkTextBuffer *buffer;
@@ -792,33 +836,37 @@ static gboolean event_after(GtkWidget *text_view, GdkEventButton *event, WINDOW_
 			gtk_widget_destroy(win->popup->hwnd);
 	}
 	
-	if (event->type != GDK_BUTTON_RELEASE)
-		return FALSE;
-
-	if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
+	if (event->type == GDK_EXPOSE)
 	{
-		gtk_widget_destroy(win->hwnd);
-		return TRUE;
+		/* draw_images(text_view, event, win); */
 	}
 	
-	if (event->button != GDK_BUTTON_PRIMARY)
-		return FALSE;
-
-	CheckFiledate(win);
+	if (event->type == GDK_BUTTON_RELEASE)
+	{
+		if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
+		{
+			gtk_widget_destroy(win->hwnd);
+			return TRUE;
+		}
+		
+		if (event->button.button != GDK_BUTTON_PRIMARY)
+			return FALSE;
 	
-	buffer = win->text_buffer;
-
-	/* we shouldn't follow a link if the user has selected something */
-	gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
-	if (gtk_text_iter_get_offset(&start) != gtk_text_iter_get_offset(&end))
-		return FALSE;
-
-	gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->x, event->y, &x, &y);
-
-	gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
-
-	follow_if_link(win, &iter);
-
+		CheckFiledate(win);
+		
+		buffer = win->text_buffer;
+	
+		/* we shouldn't follow a link if the user has selected something */
+		gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+		if (gtk_text_iter_get_offset(&start) != gtk_text_iter_get_offset(&end))
+			return FALSE;
+	
+		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->button.x, event->button.y, &x, &y);
+	
+		gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
+	
+		follow_if_link(win, &iter);
+	}
 	return FALSE;
 }
 
@@ -1283,7 +1331,7 @@ static void register_stock_icons(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_name, const gchar *first_property_name, ...)
+GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_name, const gchar *first_property_name, ...)
 {
 	GtkTextTag *tag;
 	va_list list;
@@ -1348,6 +1396,9 @@ static GtkTextTagTable *create_tags(void)
 		gtk_text_table_create_tag(table, colornames[i], "foreground", gl_profile.viewer.color[i], NULL);
 	}
 	
+	gtk_text_table_create_tag(table, "center", "justification", GTK_JUSTIFY_CENTER, NULL);
+	gtk_text_table_create_tag(table, "right_justify", "justification", GTK_JUSTIFY_RIGHT, NULL);
+
 	gtk_text_table_create_tag(table, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
 	gtk_text_table_create_tag(table, "ghosted", "foreground", "#cccccc", NULL);
 	gtk_text_table_create_tag(table, "italic", "style", PANGO_STYLE_ITALIC, NULL);
@@ -1747,6 +1798,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	g_signal_connect(G_OBJECT(win->text_view), "populate-popup", G_CALLBACK(populate_popup), win);
 	g_signal_connect(G_OBJECT(win->text_view), "paste-clipboard", G_CALLBACK(paste_clipboard), win);
 	g_signal_connect(G_OBJECT(win->text_view), "copy-clipboard", G_CALLBACK(copy_clipboard), win);
+	g_signal_connect_after(G_OBJECT(win->text_view), "expose_event", G_CALLBACK(draw_images), win);
 	
     set_font_attributes(win);
 	
@@ -1887,19 +1939,19 @@ void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ReInitWindow(WINDOW_DATA *win)
+void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 {
 	DOCUMENT *doc = win->data;
 	GdkWindow *window;
 	
-	win->data = doc;
 	win->hovering_over_link = FALSE;
 	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
 	if (window)
 		gdk_window_set_cursor(window, regular_cursor);
 	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
 	set_font_attributes(win);
-	doc->prepNode(win, win->displayed_node);
+	if (prep)
+		doc->prepNode(win, win->displayed_node);
 	hv_set_title(win, win->title);
 	
 	/* adjust window size to new dimensions */

@@ -1,0 +1,16 @@
+@options "+g -i -s +z -t4 -d12"
+@os Atari
+@charset atarist
+@inputenc atarist
+@subject "Keins"
+@width 75
+
+
+@node "Main"
+center
+@limage "st-guide.img" 0
+left, at offset 4
+@limage "st-guide.img" 5
+right
+@limage "st-guide.img" 12
+@endnode

@@ -157,7 +157,7 @@ void WindowCalcScroll(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void ReInitWindow(WINDOW_DATA *win)
+void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 {
 	DOCUMENT *doc = win->data;
 	_WORD visible_lines;
@@ -167,6 +167,8 @@ void ReInitWindow(WINDOW_DATA *win)
 	win->title = g_strdup(doc->path);
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
+	if (prep)
+		doc->prepNode(win, win->displayed_node);
 	hv_set_title(win, win->title);
 	win->selection.valid = FALSE;
 

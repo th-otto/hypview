@@ -20,6 +20,8 @@ static void delete_me(GtkWidget *w, WINDOW_DATA *win)
 	UNUSED(w);
 	
 	hypdoc_unref(doc);
+	hv_win_destroy_images(win);
+	g_free(win->title);
 	g_free(win);
 }
 
@@ -78,6 +80,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 				gtk_widget_set_size_request(win->text_view, w, h);
 			}
 			gtk_window_set_transient_for(GTK_WINDOW(win->hwnd), GTK_WINDOW(parentwin->hwnd));
+			ReInitWindow(win, FALSE);
 			hv_win_open(win);
 #if 0
 			popup_grab_on_window(gtk_widget_get_window(win->hwnd), gtk_get_current_event_time(), TRUE);
