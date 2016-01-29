@@ -359,16 +359,16 @@ void HypDisplayPage(WINDOW_DATA *win)
 			case HYP_ESC_ALINK_LINE:
 				{
 					hyp_nodenr dest_page;	/* index of destination page */
+					unsigned char link_type = *src;	/* remember link type */
+					_WORD color;
+					hyp_indextype dst_type = HYP_NODE_EOF;
 					
-					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)	/* skip destination line number */
+					src++;
+					if (link_type == HYP_ESC_LINK_LINE || link_type == HYP_ESC_ALINK_LINE)	/* skip destination line number */
 						src += 2;
 
-					dest_page = DEC_255(&src[1]);
-					src += 3;
-
-					/* set text effects for link text */
-					vst_color(vdi_handle, viewer_colors.link);
-					vst_effects(vdi_handle, gl_profile.colors.link_effect | textattr);
+					dest_page = DEC_255(src);
+					src += 2;
 
 					/* get link text for output */
 					if (*src <= HYP_STRLEN_OFFSET)	/* no text in link: use nodename */
@@ -389,6 +389,52 @@ void HypDisplayPage(WINDOW_DATA *win)
 						str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, len, NULL);
 						src += len;
 					}
+					
+					color = viewer_colors.link;
+					if (hypnode_valid(hyp, dest_page))
+					{
+						dst_type = hyp->indextable[dest_page]->type;
+						switch (dst_type)
+						{
+						case HYP_NODE_INTERNAL:
+							color = viewer_colors.link;
+							break;
+						case HYP_NODE_POPUP:
+							color = viewer_colors.popup;
+							break;
+						case HYP_NODE_EXTERNAL_REF:
+							color = viewer_colors.xref;
+							break;
+						case HYP_NODE_REXX_COMMAND:
+							color = viewer_colors.rx;
+							break;
+						case HYP_NODE_REXX_SCRIPT:
+							color = viewer_colors.rxs;
+							break;
+						case HYP_NODE_QUIT:
+							color = viewer_colors.quit;
+							break;
+						case HYP_NODE_CLOSE:
+							color = viewer_colors.close;
+							break;
+						case HYP_NODE_SYSTEM_ARGUMENT:
+							color = viewer_colors.system;
+							break;
+						case HYP_NODE_IMAGE:
+						case HYP_NODE_EOF:
+						default:
+							color = viewer_colors.error;
+							break;
+						}
+					} else
+					{
+						color = viewer_colors.error;
+					}
+					
+					/* set text effects for link text */
+					vst_color(vdi_handle, color);
+					vst_effects(vdi_handle, gl_profile.colors.link_effect | textattr);
+
 					TEXTOUT(str);
 					g_free(str);
 

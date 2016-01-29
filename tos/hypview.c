@@ -117,6 +117,7 @@ static void ValidateColors(void)
 	viewer_colors.rxs = get_color(gl_profile.colors.rxs);
 	viewer_colors.quit = get_color(gl_profile.colors.quit);
 	viewer_colors.close = get_color(gl_profile.colors.close);
+	viewer_colors.error = get_color("#ff0000"); /* used to display invalid links in hypertext files */
 	
 	if (viewer_colors.background == viewer_colors.text)
 		viewer_colors.background = viewer_colors.text ^ 1;
@@ -128,7 +129,8 @@ static void ValidateColors(void)
 		viewer_colors.rx =
 		viewer_colors.rxs =
 		viewer_colors.quit =
-		viewer_colors.close = viewer_colors.text;
+		viewer_colors.close =
+		viewer_colors.error = viewer_colors.text;
 }
 
 /*** ---------------------------------------------------------------------- ***/

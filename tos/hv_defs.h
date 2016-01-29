@@ -24,6 +24,7 @@ struct _viewer_colors {
 	_WORD rxs;              /* Displays references to {@ rxs } in the specified color */
 	_WORD quit;             /* Displays references to {@ quit } in the specified color */
 	_WORD close;            /* Displays references to {@ close } in the specified color */
+	_WORD error;            /* used to display invalid links in hypertext files */
 };
 
 /*
