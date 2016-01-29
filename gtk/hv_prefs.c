@@ -102,7 +102,8 @@ static void dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
 	WINDOW_DATA *win;
 	DOCUMENT *doc;
 	GSList *l;
-
+	GtkToggleButton *toggle;
+	int effect;
 	UNUSED(w);
 
 	switch (response_id)
@@ -124,7 +125,22 @@ static void dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
 		set_color(dialog, "quit-button", &gl_profile.colors.quit);
 		set_color(dialog, "close-button", &gl_profile.colors.close);
 		set_color(dialog, "ghosted-button", &gl_profile.colors.ghosted);
+		effect = 0;
+		toggle = g_object_get_data(G_OBJECT(dialog), "bold-toggle");
+		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_BOLD;
+		toggle = g_object_get_data(G_OBJECT(dialog), "light-toggle");
+		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_LIGHT;
+		toggle = g_object_get_data(G_OBJECT(dialog), "italic-toggle");
+		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_ITALIC;
+		toggle = g_object_get_data(G_OBJECT(dialog), "underlined-toggle");
+		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_UNDERLINED;
+		toggle = g_object_get_data(G_OBJECT(dialog), "outlined-toggle");
+		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_OUTLINED;
+		toggle = g_object_get_data(G_OBJECT(dialog), "shadowed-toggle");
+		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_SHADOWED;
+		gl_profile.colors.link_effect = effect;
 		HypProfile_SetChanged();
+		
 		for (l = all_list; l; l = l->next)
 		{
 			win = l->data;
@@ -151,7 +167,7 @@ static void dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
 
 void hv_config_colors(WINDOW_DATA *win)
 {
-	GtkWidget *dialog, *vbox, *hbox, *entry;
+	GtkWidget *dialog, *vbox, *hbox, *entry, *frame, *toggle;
 	GtkWidget *button;
 	GtkWidget *color_button;
 	gint resp;
@@ -331,6 +347,42 @@ void hv_config_colors(WINDOW_DATA *win)
 	g_object_set_data(G_OBJECT(dialog), "close-entry", entry);
 	g_object_set_data(G_OBJECT(dialog), "close-button", color_button);
 	g_signal_connect(G_OBJECT(color_button), "color-set", G_CALLBACK(color_set), dialog);
+	
+	frame = gtk_frame_new(_("Effects for links"));
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_container_add(GTK_CONTAINER(frame), hbox);
+	
+	toggle = gtk_toggle_button_new_with_label(_("Bold"));
+	gtk_box_pack_start(GTK_BOX(hbox), toggle, TRUE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gl_profile.colors.link_effect & HYP_TXT_BOLD) != 0);
+	g_object_set_data(G_OBJECT(dialog), "bold-toggle", toggle);
+
+	toggle = gtk_toggle_button_new_with_label(_("Light"));
+	gtk_box_pack_start(GTK_BOX(hbox), toggle, TRUE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gl_profile.colors.link_effect & HYP_TXT_LIGHT) != 0);
+	g_object_set_data(G_OBJECT(dialog), "light-toggle", toggle);
+
+	toggle = gtk_toggle_button_new_with_label(_("Italic"));
+	gtk_box_pack_start(GTK_BOX(hbox), toggle, TRUE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gl_profile.colors.link_effect & HYP_TXT_ITALIC) != 0);
+	g_object_set_data(G_OBJECT(dialog), "italic-toggle", toggle);
+
+	toggle = gtk_toggle_button_new_with_label(_("Underlined"));
+	gtk_box_pack_start(GTK_BOX(hbox), toggle, TRUE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gl_profile.colors.link_effect & HYP_TXT_UNDERLINED) != 0);
+	g_object_set_data(G_OBJECT(dialog), "underlined-toggle", toggle);
+
+	toggle = gtk_toggle_button_new_with_label(_("Outlined"));
+	gtk_box_pack_start(GTK_BOX(hbox), toggle, TRUE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gl_profile.colors.link_effect & HYP_TXT_OUTLINED) != 0);
+	g_object_set_data(G_OBJECT(dialog), "outlined-toggle", toggle);
+
+	toggle = gtk_toggle_button_new_with_label(_("Shadowed"));
+	gtk_box_pack_start(GTK_BOX(hbox), toggle, TRUE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gl_profile.colors.link_effect & HYP_TXT_SHADOWED) != 0);
+	g_object_set_data(G_OBJECT(dialog), "shadowed-toggle", toggle);
 	
 	button = gtk_button_new_ok();
 	gtk_widget_set_can_default(button, TRUE);
