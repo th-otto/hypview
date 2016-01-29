@@ -4917,6 +4917,8 @@ static gboolean finish_pass1(hcp_vars *vars)
 				hcp_warning(vars, &node->source_location, _("%s node-name not found: %s"), "@next", node->next_name);
 			} else
 			{
+				if (link->is_popup)
+					hcp_warning(vars, &node->source_location, _("%s-link in %s is a popup"), "@next", vars->label_table[node->labindex]->name);
 				node->next_index = link->node_index;
 			}
 		}
@@ -4934,6 +4936,8 @@ static gboolean finish_pass1(hcp_vars *vars)
 				hcp_warning(vars, &node->source_location, _("%s node-name not found: %s"), "@prev", node->prev_name);
 			} else
 			{
+				if (link->is_popup)
+					hcp_warning(vars, &node->source_location, _("%s-link in %s is a popup"), "@prev", vars->label_table[node->labindex]->name);
 				node->prev_index = link->node_index;
 			}
 		}
@@ -4947,6 +4951,8 @@ static gboolean finish_pass1(hcp_vars *vars)
 				hcp_warning(vars, &node->source_location, _("%s node-name not found: %s"), "@toc", node->toc_name);
 			} else
 			{
+				if (link->is_popup)
+					hcp_warning(vars, &node->source_location, _("%s-link in %s is a popup"), "@toc", vars->label_table[node->labindex]->name);
 				node->toc_index = link->node_index;
 			}
 		}
