@@ -4924,7 +4924,7 @@ static gboolean finish_pass1(hcp_vars *vars)
 		node->prev_index = i == 0 ? i : i - 1;
 		while (node->prev_index > 0 && vars->node_table[node->prev_index]->is_popup)
 			node->prev_index--;
-		if (node->prev_index == 0)
+		if (node->prev_index == 0 && i != 1)
 			node->prev_index = i;
 		if (node->prev_name)
 		{
