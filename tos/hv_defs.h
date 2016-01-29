@@ -13,9 +13,24 @@
 #define filename_cmp strcmp
 #endif
 
+struct _viewer_colors {
+	_WORD background;       /* window background color */
+	_WORD text;             /* Displays text in the specified color */
+	_WORD link;             /* Displays references in the specified color */
+	_WORD popup;            /* Displays references to popups in the specified color */
+	_WORD xref;             /* Displays external references in the specified color */
+	_WORD system;           /* Displays references to {@ system } in the specified color */
+	_WORD rx;               /* Displays references to {@ rx } in the specified color */
+	_WORD rxs;              /* Displays references to {@ rxs } in the specified color */
+	_WORD quit;             /* Displays references to {@ quit } in the specified color */
+	_WORD close;            /* Displays references to {@ close } in the specified color */
+};
+
 /*
  * hv_init.c
  */
+extern struct _viewer_colors viewer_colors;
+
 void hv_init(void);
 void hv_exit(void);
 

@@ -1,0 +1,35 @@
+@options "+g -i -s +z -t4 -d12"
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@endif
+@subject "Keins"
+@width 75
+
+
+@node "Main"
+Link to @{"internal Page" link "Page 1"}
+Link to @{"Popup" link "popup"}
+Link to @{"external Page" link "hcp.hyp/Main"}
+Say @{"hello" system "echo hello"}
+Link to @{"REXX command" rx "echo rexx command"}
+Link to @{"REXX script" rxs "echo rexx script"}
+@rem St-Guide does not understand "close"
+@if VERSION >= 6
+@{"Close" close} this window
+@endif
+@{"Exit" quit} quit application
+@endnode
+
+@node "Page 1"
+Dies ist Seite 1
+@endnode
+
+@node "Page 2"
+Dies ist Seite 2
+@endnode
+
+@pnode popup
+This is a popup.
+@endnode

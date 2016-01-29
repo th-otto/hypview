@@ -90,7 +90,7 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			pxy[3] = box->g_y + box->g_h - 1;
 			vs_clip(vdi_handle, TRUE, pxy);	/* clipping ON */
 	
-			vsf_color(vdi_handle, gl_profile.viewer.background_color);
+			vsf_color(vdi_handle, viewer_colors.background);
 			vsf_interior(vdi_handle, FIS_SOLID);
 			vswr_mode(vdi_handle, MD_REPLACE);
 			vr_recfl(vdi_handle, pxy);		/* clear background */

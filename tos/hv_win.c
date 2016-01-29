@@ -324,7 +324,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			pxy[2] = box->g_x + box->g_w - 1;
 			pxy[3] = box->g_y + box->g_h - 1;
 	
-			vsf_color(vdi_handle, gl_profile.viewer.background_color);
+			vsf_color(vdi_handle, viewer_colors.background);
 			vsf_interior(vdi_handle, FIS_SOLID);
 			vswr_mode(vdi_handle, MD_REPLACE);
 	

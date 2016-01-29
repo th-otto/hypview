@@ -2171,242 +2171,251 @@ void HypProfile_Load(void)
 		gl_profile.general.bindir = g_get_package_bindir();
 	}
 
-#define setdefault(what, act) \
+#define setdefault(act) \
 	act, \
 	profile->changed = TRUE
 	
 	if (!Profile_ReadString(profile, "PATH", "HYPFOLD", &gl_profile.general.hypfold))
 	{
 #ifdef G_OS_TOS
-		setdefault("PATH.HYPFOLD", gl_profile.general.hypfold = g_strdup("*:\\GUIDES"));
+		setdefault(gl_profile.general.hypfold = g_strdup("*:\\GUIDES"));
 #else
-		setdefault("PATH.HYPFOLD", gl_profile.general.hypfold = g_strdup("$APPDATA/guides"));
+		setdefault(gl_profile.general.hypfold = g_strdup("$APPDATA/guides"));
 #endif
 	}
 	if (!Profile_ReadString(profile, "PATH", "Pathlist", &gl_profile.general.path_list))
 	{
 #ifdef G_OS_TOS
-		setdefault("PATH.Pathlist", gl_profile.general.path_list = g_strdup("$HYPFOLD;*:\\GEMSYS\\GUIDES"));
+		setdefault(gl_profile.general.path_list = g_strdup("$HYPFOLD;*:\\GEMSYS\\GUIDES"));
 #else
-		setdefault("PATH.Pathlist", gl_profile.general.path_list = g_strdup("$HYPFOLD"));
+		setdefault(gl_profile.general.path_list = g_strdup("$HYPFOLD"));
 #endif
 	}
 	if (g_getenv("REF"))
 		gl_profile.general.all_ref = g_strdup(g_getenv("REF"));
 	else if (!Profile_ReadString(profile, "PATH", "REF", &gl_profile.general.all_ref))
-		setdefault("PATH.REF", gl_profile.general.all_ref = g_strdup("$HYPFOLD/all.ref"));
+		setdefault(gl_profile.general.all_ref = g_strdup("$HYPFOLD/all.ref"));
 	if (!Profile_ReadString(profile, "PATH", "HYPFIND", &gl_profile.general.hypfind_path))
-		setdefault("PATH.HYPFIND", gl_profile.general.hypfind_path = g_strdup("$BINDIR/hypfind" EXT_TTP));
+		setdefault(gl_profile.general.hypfind_path = g_strdup("$BINDIR/hypfind" EXT_TTP));
 	if (!Profile_ReadString(profile, "PATH", "HCP", &gl_profile.general.hcp_path))
-		setdefault("PATH.HCP", gl_profile.general.hcp_path = g_strdup("$BINDIR/hcp" EXT_TTP));
+		setdefault(gl_profile.general.hcp_path = g_strdup("$BINDIR/hcp" EXT_TTP));
 	
 	if (!Profile_ReadString(profile, "HypView", "DEFAULT", &gl_profile.viewer.default_file))
-		setdefault("HypView.DEFAULT", gl_profile.viewer.default_file = g_strdup("$HYPFOLD/hypview.hyp"));
+		setdefault(gl_profile.viewer.default_file = g_strdup("$HYPFOLD/hypview.hyp"));
 	if (!Profile_ReadString(profile, "HypView", "CATALOG", &gl_profile.viewer.catalog_file))
-		setdefault("HypView.CATALOG", gl_profile.viewer.catalog_file = g_strdup("$HYPFOLD/catalog.hyp"));
+		setdefault(gl_profile.viewer.catalog_file = g_strdup("$HYPFOLD/catalog.hyp"));
 	if (!Profile_ReadString(profile, "HypView", "HYPTOP", &gl_profile.viewer.hyptop_file))
-		setdefault("HypView.HYPTOP", gl_profile.viewer.hyptop_file = g_strdup("$CATALOG"));
+		setdefault(gl_profile.viewer.hyptop_file = g_strdup("$CATALOG"));
 	if (!Profile_ReadString(profile, "HypView", "PRINTER", &gl_profile.viewer.printer))
-		setdefault("HypView.ILIST", gl_profile.viewer.printer = g_strdup(PRINTER_DEFAULT));
+		setdefault(gl_profile.viewer.printer = g_strdup(PRINTER_DEFAULT));
 	if (!Profile_ReadString(profile, "HypView", "EXTVIEW", &gl_profile.viewer.extview))
-		setdefault("HypView.EXTVIEW", gl_profile.viewer.extview = g_strdup(VIEWER_DEFAULT));
+		setdefault(gl_profile.viewer.extview = g_strdup(VIEWER_DEFAULT));
 	if (!Profile_ReadString(profile, "HypView", "SKIN", &gl_profile.viewer.skin_path))
 		{}
 	if (!Profile_ReadString(profile, "HypView", "LASTFILE", &gl_profile.viewer.last_file))
-		setdefault("HypView.LASTFILE", gl_profile.viewer.last_file = NULL);
+		setdefault(gl_profile.viewer.last_file = NULL);
 	if (!Profile_ReadInt(profile, "HypView", "STARTUP", &gl_profile.viewer.startup))
-		setdefault("HypView.STARTUP", gl_profile.viewer.startup = 0);
+		setdefault(gl_profile.viewer.startup = 0);
 	
 	if (!Profile_ReadInt(profile, "HypView", "WINSIZE.X", &gl_profile.viewer.win_x))
-		setdefault("HypView.WINSIZE.X", gl_profile.viewer.win_x = 0);
+		setdefault(gl_profile.viewer.win_x = 0);
 	if (!Profile_ReadInt(profile, "HypView", "WINSIZE.Y", &gl_profile.viewer.win_y))
-		setdefault("HypView.WINSIZE.Y", gl_profile.viewer.win_y = 0);
+		setdefault(gl_profile.viewer.win_y = 0);
 	if (!Profile_ReadInt(profile, "HypView", "WINSIZE.W", &gl_profile.viewer.win_w))
-		setdefault("HypView.WINSIZE.W", gl_profile.viewer.win_w = 0);
+		setdefault(gl_profile.viewer.win_w = 0);
 	if (!Profile_ReadInt(profile, "HypView", "WINSIZE.H", &gl_profile.viewer.win_h))
-		setdefault("HypView.WINSIZE.H", gl_profile.viewer.win_h = 0);
+		setdefault(gl_profile.viewer.win_h = 0);
 	if (!Profile_ReadBool(profile, "HypView", "WINADJUST", &gl_profile.viewer.adjust_winsize))
-		setdefault("HypView.WINADJUST", gl_profile.viewer.adjust_winsize = FALSE);
+		setdefault(gl_profile.viewer.adjust_winsize = FALSE);
 	if (!Profile_ReadInt(profile, "HypView", "TXTXOFFSET", &gl_profile.viewer.text_xoffset))
-		setdefault("HypView.TXTXOFFSET", gl_profile.viewer.text_xoffset = 8);
+		setdefault(gl_profile.viewer.text_xoffset = 8);
 	if (!Profile_ReadInt(profile, "HypView", "TXTYOFFSET", &gl_profile.viewer.text_yoffset))
-		setdefault("HypView.TXTYOFFSET", gl_profile.viewer.text_yoffset = 6);
+		setdefault(gl_profile.viewer.text_yoffset = 6);
 #ifdef WITH_GUI_GEM
 	if (!Profile_ReadInt(profile, "HypView", "FONT.ID", &gl_profile.viewer.font_id))
-		setdefault("HypView.FONT.ID", gl_profile.viewer.font_id = 0);
+		setdefault(gl_profile.viewer.font_id = 0);
 	if (!Profile_ReadInt(profile, "HypView", "FONT.SIZE", &gl_profile.viewer.font_pt))
-		setdefault("HypView.FONT.SIZE", gl_profile.viewer.font_pt = 0);
+		setdefault(gl_profile.viewer.font_pt = 0);
 	if (!Profile_ReadInt(profile, "HypView", "XFONT.ID", &gl_profile.viewer.xfont_id))
-		setdefault("HypView.XFONT.ID", gl_profile.viewer.xfont_id = 0);
+		setdefault(gl_profile.viewer.xfont_id = 0);
 	if (!Profile_ReadInt(profile, "HypView", "XFONT.SIZE", &gl_profile.viewer.xfont_pt))
-		setdefault("HypView.XFONT.SIZE", gl_profile.viewer.xfont_pt = gl_profile.viewer.font_pt);
+		setdefault(gl_profile.viewer.xfont_pt = gl_profile.viewer.font_pt);
 #endif
 #ifdef WITH_GUI_GTK
 	if (!Profile_ReadString(profile, "HypView", "FONT", &gl_profile.viewer.font_name))
-		setdefault("HypView.FONT", gl_profile.viewer.font_name = g_strdup("Sans Serif 12"));
+		setdefault(gl_profile.viewer.font_name = g_strdup("Sans Serif 12"));
 	if (!Profile_ReadString(profile, "HypView", "XFONT", &gl_profile.viewer.xfont_name))
-		setdefault("HypView.XFONT", gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
+		setdefault(gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
 #endif
 #ifdef WITH_GUI_WIN32
 	if (!Profile_ReadString(profile, "HypView", "FONT", &gl_profile.viewer.font_name))
-		setdefault("HypView.FONT", gl_profile.viewer.font_name = g_strdup("Arial 12"));
+		setdefault(gl_profile.viewer.font_name = g_strdup("Arial 12"));
 	if (!Profile_ReadString(profile, "HypView", "XFONT", &gl_profile.viewer.xfont_name))
-		setdefault("HypView.XFONT", gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
+		setdefault(gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
 #endif
 	if (!Profile_ReadBool(profile, "HypView", "USE_XFONT", &gl_profile.viewer.use_xfont))
-		setdefault("HypView.USE_XFONT", gl_profile.viewer.use_xfont = FALSE);
-#if defined(WITH_GUI_GTK) || defined(WITH_GUI_WIN32)
-	if (!Profile_ReadString(profile, "Colors", "COLOR0", &gl_profile.viewer.color[G_WHITE]))
-		setdefault("HypView.COLOR0", gl_profile.viewer.color[G_WHITE] = g_strdup("#ffffff"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR1", &gl_profile.viewer.color[G_BLACK]))
-		setdefault("HypView.COLOR1", gl_profile.viewer.color[G_BLACK] = g_strdup("#000000"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR2", &gl_profile.viewer.color[G_RED]))
-		setdefault("HypView.COLOR2", gl_profile.viewer.color[G_RED] = g_strdup("#ff0000"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR3", &gl_profile.viewer.color[G_GREEN]))
-		setdefault("HypView.COLOR3", gl_profile.viewer.color[G_GREEN] = g_strdup("#00ff00"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR4", &gl_profile.viewer.color[G_BLUE]))
-		setdefault("HypView.COLOR4", gl_profile.viewer.color[G_BLUE] = g_strdup("#0000ff"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR5", &gl_profile.viewer.color[G_CYAN]))
-		setdefault("HypView.COLOR5", gl_profile.viewer.color[G_CYAN] = g_strdup("#00ffff"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR6", &gl_profile.viewer.color[G_YELLOW]))
-		setdefault("HypView.COLOR6", gl_profile.viewer.color[G_YELLOW] = g_strdup("#ffff00"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR7", &gl_profile.viewer.color[G_MAGENTA]))
-		setdefault("HypView.COLOR7", gl_profile.viewer.color[G_MAGENTA] = g_strdup("#ff00ff"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR8", &gl_profile.viewer.color[G_LWHITE]))
-		setdefault("HypView.COLOR8", gl_profile.viewer.color[G_LWHITE] = g_strdup("#cccccc"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR9", &gl_profile.viewer.color[G_LBLACK]))
-		setdefault("HypView.COLOR9", gl_profile.viewer.color[G_LBLACK] = g_strdup("#888888"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR10", &gl_profile.viewer.color[G_LRED]))
-		setdefault("HypView.COLOR10", gl_profile.viewer.color[G_LRED] = g_strdup("#880000"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR11", &gl_profile.viewer.color[G_LGREEN]))
-		setdefault("HypView.COLOR11", gl_profile.viewer.color[G_LGREEN] = g_strdup("#008800"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR12", &gl_profile.viewer.color[G_LBLUE]))
-		setdefault("HypView.COLOR12", gl_profile.viewer.color[G_LBLUE] = g_strdup("#000088"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR13", &gl_profile.viewer.color[G_LCYAN]))
-		setdefault("HypView.COLOR13", gl_profile.viewer.color[G_LCYAN] = g_strdup("#008888"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR14", &gl_profile.viewer.color[G_LYELLOW]))
-		setdefault("HypView.COLOR14", gl_profile.viewer.color[G_LYELLOW] = g_strdup("#888800"));
-	if (!Profile_ReadString(profile, "Colors", "COLOR15", &gl_profile.viewer.color[G_LMAGENTA]))
-		setdefault("HypView.COLOR15", gl_profile.viewer.color[G_LMAGENTA] = g_strdup("#880088"));
+		setdefault(gl_profile.viewer.use_xfont = FALSE);
+
+#if 0
+	if (!Profile_ReadString(profile, "Colors", "COLOR0", &gl_profile.colors.color[G_WHITE]))
+		setdefault(gl_profile.colors.color[G_WHITE] = g_strdup("#ffffff"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR1", &gl_profile.colors.color[G_BLACK]))
+		setdefault(gl_profile.colors.color[G_BLACK] = g_strdup("#000000"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR2", &gl_profile.colors.color[G_RED]))
+		setdefault(gl_profile.colors.color[G_RED] = g_strdup("#ff0000"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR3", &gl_profile.colors.color[G_GREEN]))
+		setdefault(gl_profile.colors.color[G_GREEN] = g_strdup("#00ff00"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR4", &gl_profile.colors.color[G_BLUE]))
+		setdefault(gl_profile.colors.color[G_BLUE] = g_strdup("#0000ff"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR5", &gl_profile.colors.color[G_CYAN]))
+		setdefault(gl_profile.colors.color[G_CYAN] = g_strdup("#00ffff"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR6", &gl_profile.colors.color[G_YELLOW]))
+		setdefault(gl_profile.colors.color[G_YELLOW] = g_strdup("#ffff00"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR7", &gl_profile.colors.color[G_MAGENTA]))
+		setdefault(gl_profile.colors.color[G_MAGENTA] = g_strdup("#ff00ff"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR8", &gl_profile.colors.color[G_LWHITE]))
+		setdefault(gl_profile.colors.color[G_LWHITE] = g_strdup("#cccccc"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR9", &gl_profile.colors.color[G_LBLACK]))
+		setdefault(gl_profile.colors.color[G_LBLACK] = g_strdup("#888888"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR10", &gl_profile.colors.color[G_LRED]))
+		setdefault(gl_profile.colors.color[G_LRED] = g_strdup("#880000"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR11", &gl_profile.colors.color[G_LGREEN]))
+		setdefault(gl_profile.colors.color[G_LGREEN] = g_strdup("#008800"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR12", &gl_profile.colors.color[G_LBLUE]))
+		setdefault(gl_profile.colors.color[G_LBLUE] = g_strdup("#000088"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR13", &gl_profile.colors.color[G_LCYAN]))
+		setdefault(gl_profile.colors.color[G_LCYAN] = g_strdup("#008888"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR14", &gl_profile.colors.color[G_LYELLOW]))
+		setdefault(gl_profile.colors.color[G_LYELLOW] = g_strdup("#888800"));
+	if (!Profile_ReadString(profile, "Colors", "COLOR15", &gl_profile.colors.color[G_LMAGENTA]))
+		setdefault(gl_profile.colors.color[G_LMAGENTA] = g_strdup("#880088"));
 #endif
-	if (!Profile_ReadInt(profile, "HypView", "BGRND_COLOR", &gl_profile.viewer.background_color))
-		setdefault("HypView.BGRND_COLOR", gl_profile.viewer.background_color = G_WHITE);
-	if (!Profile_ReadInt(profile, "HypView", "TEXT_COLOR", &gl_profile.viewer.text_color))
-		setdefault("HypView.TEXT_COLOR", gl_profile.viewer.text_color = G_BLACK);
-	if (!Profile_ReadInt(profile, "HypView", "LINK_COLOR", &gl_profile.viewer.link_color))
-		setdefault("HypView.LINK_COLOR", gl_profile.viewer.link_color = G_BLUE);
-	if (!Profile_ReadInt(profile, "HypView", "LINK_EFFECT", &gl_profile.viewer.link_effect))
-		setdefault("HypView.LINK_EFFECT", gl_profile.viewer.link_effect = HYP_TXT_BOLD | HYP_TXT_UNDERLINED);
-	if (!Profile_ReadInt(profile, "HypView", "XREF_COLOR", &gl_profile.viewer.xref_color))
-		setdefault("HypView.XREF_COLOR", gl_profile.viewer.xref_color = G_RED);
-	if (!Profile_ReadInt(profile, "HypView", "POPUP_COLOR", &gl_profile.viewer.popup_color))
-		setdefault("HypView.POPUP_COLOR", gl_profile.viewer.popup_color = G_GREEN);
-	if (!Profile_ReadInt(profile, "HypView", "SYSTEM_COLOR", &gl_profile.viewer.system_color))
-		setdefault("HypView.SYSTEM_COLOR", gl_profile.viewer.system_color = G_MAGENTA);
-	if (!Profile_ReadInt(profile, "HypView", "REXX_COLOR", &gl_profile.viewer.rexx_color))
-		setdefault("HypView.REXX_COLOR", gl_profile.viewer.rexx_color = G_MAGENTA);
-	if (!Profile_ReadInt(profile, "HypView", "QUIT_COLOR", &gl_profile.viewer.quit_color))
-		setdefault("HypView.QUIT_COLOR", gl_profile.viewer.quit_color = G_RED);
+
 	if (!Profile_ReadBool(profile, "HypView", "TRANSPARENT_PICS", &gl_profile.viewer.transparent_pics))
-		setdefault("HypView.TRANSPARENT_PICS", gl_profile.viewer.transparent_pics = TRUE);
+		setdefault(gl_profile.viewer.transparent_pics = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "SCALE_BITMAPS", &gl_profile.viewer.scale_bitmaps))
-		setdefault("HypView.SCALE_BITMAPS", gl_profile.viewer.scale_bitmaps = FALSE);
+		setdefault(gl_profile.viewer.scale_bitmaps = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "EXPAND_SPACES", &gl_profile.viewer.expand_spaces))
-		setdefault("HypView.EXPAND_SPACES", gl_profile.viewer.expand_spaces = TRUE);
+		setdefault(gl_profile.viewer.expand_spaces = TRUE);
 	if (!Profile_ReadInt(profile, "HypView", "BIN_COLUMNS", &gl_profile.viewer.binary_columns))
-		setdefault("HypView.BIN_COLUMNS", gl_profile.viewer.binary_columns = 76);
+		setdefault(gl_profile.viewer.binary_columns = 76);
 	if (!Profile_ReadInt(profile, "HypView", "TABSIZE", &gl_profile.viewer.ascii_tab_size))
-		setdefault("HypView.TABSIZE", gl_profile.viewer.ascii_tab_size = 4);
+		setdefault(gl_profile.viewer.ascii_tab_size = 4);
 	if (!Profile_ReadInt(profile, "HypView", "ASCII_BREAK", &gl_profile.viewer.ascii_break_len))
-		setdefault("HypView.ASCII_BREAK", gl_profile.viewer.ascii_break_len = 127);
+		setdefault(gl_profile.viewer.ascii_break_len = 127);
 	if (!Profile_ReadInt(profile, "HypView", "VA_START_NEWWIN", &gl_profile.viewer.va_start_newwin))
-		setdefault("HypView.VA_START_NEWWIN", gl_profile.viewer.va_start_newwin = FALSE);
+		setdefault(gl_profile.viewer.va_start_newwin = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "ALINK_NEWWIN", &gl_profile.viewer.alink_newwin))
-		setdefault("HypView.ALINK_NEWWIN", gl_profile.viewer.alink_newwin = TRUE);
+		setdefault(gl_profile.viewer.alink_newwin = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "CHECK_TIME", &gl_profile.viewer.check_time))
-		setdefault("HypView.CHECK_TIME", gl_profile.viewer.check_time = FALSE);
+		setdefault(gl_profile.viewer.check_time = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "INTELLIGENT_FULLER", &gl_profile.viewer.intelligent_fuller))
-		setdefault("HypView.INTELLIGENT_FULLER", gl_profile.viewer.intelligent_fuller = TRUE);
+		setdefault(gl_profile.viewer.intelligent_fuller = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "CLIPBRD_NEW_WINDOW", &gl_profile.viewer.clipbrd_new_window))
-		setdefault("HypView.CLIPBRD_NEW_WINDOW", gl_profile.viewer.clipbrd_new_window = FALSE);
+		setdefault(gl_profile.viewer.clipbrd_new_window = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "AV_WINDOW_CYCLE", &gl_profile.viewer.av_window_cycle))
-		setdefault("HypView.AV_WINDOW_CYCLE", gl_profile.viewer.av_window_cycle = FALSE);
+		setdefault(gl_profile.viewer.av_window_cycle = FALSE);
 	if (!Profile_ReadString(profile, "HypView", "MARKFILE", &gl_profile.viewer.marker_path))
 	{
 #ifdef RESOURCES_PROFILE_DIR
-		setdefault("HypView.MARKFILE", gl_profile.viewer.marker_path = g_strdup("$APPDATA/marks.dat"));
+		setdefault(gl_profile.viewer.marker_path = g_strdup("$APPDATA/marks.dat"));
 #else
-		setdefault("HypView.MARKFILE", gl_profile.viewer.marker_path = g_strdup("$HYPFOLD/marks.dat"));
+		setdefault(gl_profile.viewer.marker_path = g_strdup("$HYPFOLD/marks.dat"));
 #endif
 	}
 	if (!Profile_ReadBool(profile, "HypView", "MARKFILE_SAVE_ASK", &gl_profile.viewer.marken_save_ask))
-		setdefault("HypView.MARKFILE_SAVE_ASK", gl_profile.viewer.marken_save_ask = TRUE);
+		setdefault(gl_profile.viewer.marken_save_ask = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "REFONLY", &gl_profile.viewer.refonly))
-		setdefault("HypView.REFONLY", gl_profile.viewer.refonly = FALSE);
+		setdefault(gl_profile.viewer.refonly = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "RIGHTBACK", &gl_profile.viewer.rightback))
-		setdefault("HypView.RIGHTBACK", gl_profile.viewer.rightback = FALSE);
+		setdefault(gl_profile.viewer.rightback = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "BACKWIND", &gl_profile.viewer.backwind))
-		setdefault("HypView.BACKWIND", gl_profile.viewer.backwind = FALSE);
+		setdefault(gl_profile.viewer.backwind = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "ARROWPATCH", &gl_profile.viewer.arrowpatch))
-		setdefault("HypView.ARROWPATCH", gl_profile.viewer.arrowpatch = FALSE);
+		setdefault(gl_profile.viewer.arrowpatch = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "NOREFBOX", &gl_profile.viewer.norefbox))
-		setdefault("HypView.NOREFBOX", gl_profile.viewer.norefbox = FALSE);
+		setdefault(gl_profile.viewer.norefbox = FALSE);
+
+	if (!Profile_ReadString(profile, "Colors", "background", &gl_profile.colors.background))
+		setdefault(gl_profile.colors.background = g_strdup("#ffffff"));
+	if (!Profile_ReadString(profile, "Colors", "text", &gl_profile.colors.text))
+		setdefault(gl_profile.colors.text = g_strdup("#000000"));
+	if (!Profile_ReadString(profile, "Colors", "link", &gl_profile.colors.link))
+		setdefault(gl_profile.colors.link = g_strdup("#0000ff"));
+	if (!Profile_ReadInt(profile, "Colors", "link_effect", &gl_profile.colors.link_effect))
+		setdefault(gl_profile.colors.link_effect = HYP_TXT_BOLD | HYP_TXT_UNDERLINED);
+	if (!Profile_ReadString(profile, "Colors", "popup", &gl_profile.colors.popup))
+		setdefault(gl_profile.colors.popup = g_strdup("#00ff00"));
+	if (!Profile_ReadString(profile, "Colors", "xref", &gl_profile.colors.xref))
+		setdefault(gl_profile.colors.xref = g_strdup("#ff0000"));
+	if (!Profile_ReadString(profile, "Colors", "system", &gl_profile.colors.system))
+		setdefault(gl_profile.colors.system = g_strdup("#ff00ff"));
+	if (!Profile_ReadString(profile, "Colors", "rx", &gl_profile.colors.rx))
+		setdefault(gl_profile.colors.rx = g_strdup("#ff00ff"));
+	if (!Profile_ReadString(profile, "Colors", "rxs", &gl_profile.colors.rxs))
+		setdefault(gl_profile.colors.rxs = g_strdup("#ff00ff"));
+	if (!Profile_ReadString(profile, "Colors", "quit", &gl_profile.colors.quit))
+		setdefault(gl_profile.colors.quit = g_strdup("#ff0000"));
+	if (!Profile_ReadString(profile, "Colors", "close", &gl_profile.colors.close))
+		setdefault(gl_profile.colors.close = g_strdup("#ff0000"));
+	if (!Profile_ReadString(profile, "Colors", "ghosted", &gl_profile.colors.ghosted))
+		setdefault(gl_profile.colors.ghosted = g_strdup("#cccccc"));
 
 	if (!Profile_ReadString(profile, "HCP", "Options", &gl_profile.hcp.options))
-		setdefault("HCP.Options", gl_profile.hcp.options = g_strdup(""));
+		setdefault(gl_profile.hcp.options = g_strdup(""));
 
 	if (!Profile_ReadString(profile, "Remarker", "REMARKER", &gl_profile.remarker.path))
-		setdefault("Remarker.REMARKER", gl_profile.remarker.path = g_strdup("*:/remarker/remarker" EXT_PRG));
+		setdefault(gl_profile.remarker.path = g_strdup("*:/remarker/remarker" EXT_PRG));
 	if (!Profile_ReadBool(profile, "Remarker", "RunOnStartup", &gl_profile.remarker.run_on_startup))
-		setdefault("Remarker.RunOnStartup", gl_profile.remarker.run_on_startup = FALSE);
+		setdefault(gl_profile.remarker.run_on_startup = FALSE);
 	
 	if (!Profile_ReadString(profile, "HypTree", "Options", &gl_profile.hyptree.options))
-		setdefault("HypTree.Options", gl_profile.hyptree.options = g_strdup(""));
+		setdefault(gl_profile.hyptree.options = g_strdup(""));
 	if (!Profile_ReadInt(profile, "HypTree", "WINSIZE.X", &gl_profile.hyptree.win_x))
-		setdefault("HypTree.WINSIZE.X", gl_profile.hyptree.win_x = 40);
+		setdefault(gl_profile.hyptree.win_x = 40);
 	if (!Profile_ReadInt(profile, "HypTree", "WINSIZE.Y", &gl_profile.hyptree.win_y))
-		setdefault("HypTree.WINSIZE.Y", gl_profile.hyptree.win_y = 40);
+		setdefault(gl_profile.hyptree.win_y = 40);
 	if (!Profile_ReadInt(profile, "HypTree", "WINSIZE.W", &gl_profile.hyptree.win_w))
-		setdefault("HypTree.WINSIZE.W", gl_profile.hyptree.win_w = 100);
+		setdefault(gl_profile.hyptree.win_w = 100);
 	if (!Profile_ReadInt(profile, "HypTree", "WINSIZE.H", &gl_profile.hyptree.win_h))
-		setdefault("HypTree.WINSIZE.H", gl_profile.hyptree.win_h = 200);
+		setdefault(gl_profile.hyptree.win_h = 200);
 	if (!Profile_ReadBool(profile, "HypTree", "OPENALL", &gl_profile.hyptree.openall))
-		setdefault("HypTree.OPENALL", gl_profile.hyptree.openall = TRUE);
+		setdefault(gl_profile.hyptree.openall = TRUE);
 	if (!Profile_ReadBool(profile, "HypTree", "MACLIKE", &gl_profile.hyptree.maclike))
-		setdefault("HypTree.MACLIKE", gl_profile.hyptree.maclike = FALSE);
+		setdefault(gl_profile.hyptree.maclike = FALSE);
 	if (!Profile_ReadString(profile, "HypTree", "CALLSTG", &gl_profile.hyptree.stg_start))
-		setdefault("HypTree.CALLSTG", gl_profile.hyptree.stg_start = g_strdup("-s1 %p %s"));
+		setdefault(gl_profile.hyptree.stg_start = g_strdup("-s1 %p %s"));
 	if (!Profile_ReadString(profile, "HypTree", "STOPSTG", &gl_profile.hyptree.stg_stop))
-		setdefault("HypTree.STOPSTG", gl_profile.hyptree.stg_stop = g_strdup("-s0"));
+		setdefault(gl_profile.hyptree.stg_stop = g_strdup("-s0"));
 	if (!Profile_ReadBool(profile, "HypTree", "UseQuotes", &gl_profile.hyptree.usequotes))
-		setdefault("HypTree.UseQuotes", gl_profile.hyptree.usequotes = TRUE);
+		setdefault(gl_profile.hyptree.usequotes = TRUE);
 	if (!Profile_ReadInt(profile, "HypTree", "Debug", &gl_profile.hyptree.debug))
-		setdefault("HypTree.Debug", gl_profile.hyptree.debug = 0);
+		setdefault(gl_profile.hyptree.debug = 0);
 
 	if (!Profile_ReadBool(profile, "KatMaker", "ShortFilenames", &gl_profile.katmaker.short_filenames))
-		setdefault("KatMaker.ShortFilenames", gl_profile.katmaker.short_filenames = TRUE);
+		setdefault(gl_profile.katmaker.short_filenames = TRUE);
 	if (!Profile_ReadBool(profile, "KatMaker", "LowercaseFilenames", &gl_profile.katmaker.lower_filenames))
-		setdefault("KatMaker.LowercaseFilenames", gl_profile.katmaker.lower_filenames = TRUE);
+		setdefault(gl_profile.katmaker.lower_filenames = TRUE);
 
 	if (!Profile_ReadString(profile, "RefCheck", "Options", &gl_profile.refcheck.options))
-		setdefault("RefCheck.Options", gl_profile.refcheck.options = g_strdup("-a -d -s"));
+		setdefault(gl_profile.refcheck.options = g_strdup("-a -d -s"));
 	if (!Profile_ReadString(profile, "RefCheck", "Pathlist", &gl_profile.refcheck.path_list) || empty(gl_profile.refcheck.path_list))
 	{
 		g_free(gl_profile.refcheck.path_list);
-		setdefault("RefCheck.Pathlist", gl_profile.refcheck.path_list = g_strdup(gl_profile.general.path_list));
+		setdefault(gl_profile.refcheck.path_list = g_strdup(gl_profile.general.path_list));
 	}
 	
 	if (!Profile_ReadString(profile, "HypFind", "Database", &gl_profile.hypfind.database))
-		setdefault("HypFind.Database", gl_profile.hypfind.database = g_strdup(_("HypFind Hit List")));
+		setdefault(gl_profile.hypfind.database = g_strdup(_("HypFind Hit List")));
 	if (!Profile_ReadString(profile, "HypFind", "Subject", &gl_profile.hypfind.subject))
-		setdefault("HypFind.Subject", gl_profile.hypfind.subject = g_strdup(_("Personal")));
+		setdefault(gl_profile.hypfind.subject = g_strdup(_("Personal")));
 	if (!Profile_ReadString(profile, "HypFind", "Title", &gl_profile.hypfind.title))
-		setdefault("HypFind.Title", gl_profile.hypfind.title = g_strdup(_("Hit List: ")));
+		setdefault(gl_profile.hypfind.title = g_strdup(_("Hit List: ")));
 	if (!Profile_ReadString(profile, "HypFind", "Wordchars", &gl_profile.hypfind.wordchars))
-		setdefault("HypFind.Wordchars", gl_profile.hypfind.wordchars = g_strdup("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"));
+		setdefault(gl_profile.hypfind.wordchars = g_strdup("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"));
 
 	if (!Profile_ReadString(profile, "TOOLS", "STOOL", &gl_profile.tools.stool_path))
-		setdefault("TOOLS.STOOL", gl_profile.tools.stool_path = g_strdup("$BINDIR/stool" EXT_TOS));
+		setdefault(gl_profile.tools.stool_path = g_strdup("$BINDIR/stool" EXT_TOS));
 
 #undef setdefault
 
@@ -2482,31 +2491,11 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteInt(profile, "HypView", "FONT.SIZE", gl_profile.viewer.font_pt);
 	Profile_WriteInt(profile, "HypView", "XFONT.ID", gl_profile.viewer.xfont_id);
 	Profile_WriteInt(profile, "HypView", "XFONT.SIZE", gl_profile.viewer.xfont_pt);
-#endif
-#if defined(WITH_GUI_GTK) || defined(WITH_GUI_WIN32)
+#else
 	Profile_WriteString(profile, "HypView", "FONT", gl_profile.viewer.font_name);
 	Profile_WriteString(profile, "HypView", "XFONT", gl_profile.viewer.xfont_name);
-	{
-		int i;
-		char key[20];
-		
-		for (i = 0; i < 16; i++)
-		{
-			sprintf(key, "COLOR%d", i);
-			Profile_WriteString(profile, "Colors", key, gl_profile.viewer.color[i]);
-		}
-	}
 #endif
 	Profile_WriteBool(profile, "HypView", "USE_XFONT", gl_profile.viewer.use_xfont);
-	Profile_WriteInt(profile, "HypView", "BGRND_COLOR", gl_profile.viewer.background_color);
-	Profile_WriteInt(profile, "HypView", "TEXT_COLOR", gl_profile.viewer.text_color);
-	Profile_WriteInt(profile, "HypView", "LINK_COLOR", gl_profile.viewer.link_color);
-	Profile_WriteInt(profile, "HypView", "LINK_EFFECT", gl_profile.viewer.link_effect);
-	Profile_WriteInt(profile, "HypView", "XREF_COLOR", gl_profile.viewer.xref_color);
-	Profile_WriteInt(profile, "HypView", "POPUP_COLOR", gl_profile.viewer.popup_color);
-	Profile_WriteInt(profile, "HypView", "SYSTEM_COLOR", gl_profile.viewer.system_color);
-	Profile_WriteInt(profile, "HypView", "REXX_COLOR", gl_profile.viewer.rexx_color);
-	Profile_WriteInt(profile, "HypView", "QUIT_COLOR", gl_profile.viewer.quit_color);
 	Profile_WriteBool(profile, "HypView", "TRANSPARENT_PICS", gl_profile.viewer.transparent_pics);
 	Profile_WriteBool(profile, "HypView", "SCALE_BITMAPS", gl_profile.viewer.scale_bitmaps);
 	Profile_WriteBool(profile, "HypView", "EXPAND_SPACES", gl_profile.viewer.expand_spaces);
@@ -2527,6 +2516,19 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteBool(profile, "HypView", "ARROWPATCH", gl_profile.viewer.arrowpatch);
 	Profile_WriteBool(profile, "HypView", "NOREFBOX", gl_profile.viewer.norefbox);
 	
+	Profile_WriteString(profile, "Colors", "background", gl_profile.colors.background);
+	Profile_WriteString(profile, "Colors", "text", gl_profile.colors.text);
+	Profile_WriteString(profile, "Colors", "link", gl_profile.colors.link);
+	Profile_WriteInt(profile, "Colors", "link_effect", gl_profile.colors.link_effect);
+	Profile_WriteString(profile, "Colors", "popup", gl_profile.colors.popup);
+	Profile_WriteString(profile, "Colors", "xref", gl_profile.colors.xref);
+	Profile_WriteString(profile, "Colors", "system", gl_profile.colors.system);
+	Profile_WriteString(profile, "Colors", "rx", gl_profile.colors.rx);
+	Profile_WriteString(profile, "Colors", "rxs", gl_profile.colors.rxs);
+	Profile_WriteString(profile, "Colors", "quit", gl_profile.colors.quit);
+	Profile_WriteString(profile, "Colors", "close", gl_profile.colors.close);
+	Profile_WriteString(profile, "Colors", "ghosted", gl_profile.colors.ghosted);
+
 	Profile_WriteString(profile, "Remarker", "REMARKER", gl_profile.remarker.path);
 	Profile_WriteBool(profile, "Remarker", "RunOnStartup", gl_profile.remarker.run_on_startup);
 
@@ -2562,37 +2564,6 @@ gboolean HypProfile_Save(gboolean report_error)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void Profile_ValidateColors(_WORD display_colors)
-{
-	if (display_colors < 16 || gl_profile.viewer.background_color >= 16)
-		gl_profile.viewer.background_color = G_WHITE;
-	if (display_colors < 16 || gl_profile.viewer.text_color >= 16)
-		gl_profile.viewer.text_color = G_BLACK;
-	if (gl_profile.viewer.background_color == gl_profile.viewer.text_color)
-		gl_profile.viewer.background_color = gl_profile.viewer.text_color ^ 1;
-	if (gl_profile.viewer.link_color < 0 || gl_profile.viewer.link_color >= 16)
-		gl_profile.viewer.link_color = G_BLACK;
-	if (gl_profile.viewer.xref_color < 0 || gl_profile.viewer.xref_color >= 16)
-		gl_profile.viewer.xref_color = G_BLACK;
-	if (gl_profile.viewer.popup_color < 0 || gl_profile.viewer.popup_color >= 16)
-		gl_profile.viewer.popup_color = G_BLACK;
-	if (gl_profile.viewer.system_color < 0 || gl_profile.viewer.system_color >= 16)
-		gl_profile.viewer.system_color = G_BLACK;
-	if (gl_profile.viewer.rexx_color < 0 || gl_profile.viewer.rexx_color >= 16)
-		gl_profile.viewer.rexx_color = G_BLACK;
-	if (gl_profile.viewer.quit_color < 0 || gl_profile.viewer.quit_color >= 16)
-		gl_profile.viewer.quit_color = G_BLACK;
-	if (display_colors < 16)
-		gl_profile.viewer.link_color =
-		gl_profile.viewer.popup_color =
-		gl_profile.viewer.xref_color =
-		gl_profile.viewer.system_color =
-		gl_profile.viewer.rexx_color =
-		gl_profile.viewer.quit_color = gl_profile.viewer.text_color;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 void HypProfile_Delete(void)
 {
 	g_freep(&gl_profile.general.bindir);
@@ -2610,15 +2581,22 @@ void HypProfile_Delete(void)
 	g_freep(&gl_profile.viewer.extview);
 	g_freep(&gl_profile.viewer.skin_path);
 	g_freep(&gl_profile.viewer.marker_path);
-#if defined(WITH_GUI_GTK) || defined(WITH_GUI_WIN32)
+#ifndef WITH_GUI_GEM
 	g_freep(&gl_profile.viewer.font_name);
 	g_freep(&gl_profile.viewer.xfont_name);
-	{
-		int i;
-		for (i = 0; i < 16; i++)
-			g_freep(&gl_profile.viewer.color[i]);
-	}
 #endif
+
+	g_freep(&gl_profile.colors.background);
+	g_freep(&gl_profile.colors.text);
+	g_freep(&gl_profile.colors.link);
+	g_freep(&gl_profile.colors.popup);
+	g_freep(&gl_profile.colors.xref);
+	g_freep(&gl_profile.colors.system);
+	g_freep(&gl_profile.colors.rx);
+	g_freep(&gl_profile.colors.rxs);
+	g_freep(&gl_profile.colors.quit);
+	g_freep(&gl_profile.colors.close);
+	g_freep(&gl_profile.colors.ghosted);
 
 	g_freep(&gl_profile.hcp.options);
 

@@ -304,8 +304,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	sy = -win->docsize.y * win->y_raster;
 
 	/* standard text color */
-	vst_color(vdi_handle, gl_profile.viewer.text_color);
-	vsl_color(vdi_handle, gl_profile.viewer.text_color);
+	vst_color(vdi_handle, viewer_colors.text);
+	vsl_color(vdi_handle, viewer_colors.text);
 	vst_effects(vdi_handle, 0);
 
 #define TEXTOUT(str) \
@@ -367,8 +367,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 					src += 3;
 
 					/* set text effects for link text */
-					vst_color(vdi_handle, gl_profile.viewer.link_color);
-					vst_effects(vdi_handle, gl_profile.viewer.link_effect | textattr);
+					vst_color(vdi_handle, viewer_colors.link);
+					vst_effects(vdi_handle, gl_profile.colors.link_effect | textattr);
 
 					/* get link text for output */
 					if (*src <= HYP_STRLEN_OFFSET)	/* no text in link: use nodename */
@@ -392,7 +392,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 					TEXTOUT(str);
 					g_free(str);
 
-					vst_color(vdi_handle, gl_profile.viewer.text_color);
+					vst_color(vdi_handle, viewer_colors.text);
 					vst_effects(vdi_handle, textattr);
 					textstart = src;
 				}
@@ -457,7 +457,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 		pxy[1] = win->scroll.g_y - win->y_margin_top;
 		pxy[2] = win->scroll.g_x - 1;
 		pxy[3] = win->scroll.g_y + win->scroll.g_h + win->y_margin_bottom - 1;
-		vsf_color(vdi_handle, gl_profile.viewer.background_color);
+		vsf_color(vdi_handle, viewer_colors.background);
 		vsf_interior(vdi_handle, FIS_SOLID);
 		vr_recfl(vdi_handle, pxy);
 	}
@@ -469,7 +469,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 		pxy[1] = win->scroll.g_y - win->y_margin_top;
 		pxy[2] = win->scroll.g_x + win->scroll.g_w + win->x_margin_right - 1;
 		pxy[3] = win->scroll.g_y - 1;
-		vsf_color(vdi_handle, gl_profile.viewer.background_color);
+		vsf_color(vdi_handle, viewer_colors.background);
 		vsf_interior(vdi_handle, FIS_SOLID);
 		vr_recfl(vdi_handle, pxy);
 	}

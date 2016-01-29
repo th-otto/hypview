@@ -45,28 +45,6 @@ static const char *const tb_action_names[TO_MAX] = {
 	[TO_SAVE] = "save",
 };
 
-/*
- * colornames used for tags; the actual color is configurable
- */
-static const char *const colornames[16] = {
-	"white",
-	"black",
-	"red",
-	"green",
-	"blue",
-	"cyan",
-	"yellow",
-	"magenta",
-	"light-gray",
-	"dark-gray",
-	"dark-red",
-	"dark-green",
-	"dark-blue",
-	"dark-cyan",
-	"dark-yellow",
-	"dark-magenta"
-};
-GdkColor gdk_colors[16];
 static char *default_geometry;
 
 /******************************************************************************/
@@ -360,8 +338,7 @@ static void on_font_select(GtkAction *action, WINDOW_DATA *win)
 static void on_color_select(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	UNUSED(win);
-	HYP_DBG(("NYI: on_color_select"));
+	hv_config_colors(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1354,7 +1331,38 @@ GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_n
 
 /*** ---------------------------------------------------------------------- ***/
 
-static GtkTextTag *create_link_tag(GtkTextTagTable *table, const gchar *tag_name, int color)
+static void update_link_tag(GtkTextTag *tag, const char *color)
+{
+	g_object_set(G_OBJECT(tag), "foreground", color, NULL);
+	if (gl_profile.colors.link_effect & HYP_TXT_BOLD)
+		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_BOLD, NULL);
+	else
+		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_NORMAL, NULL);
+	if (gl_profile.colors.link_effect & HYP_TXT_LIGHT)
+		g_object_set(G_OBJECT(tag), "foreground", gl_profile.colors.ghosted, NULL);
+	if (gl_profile.colors.link_effect & HYP_TXT_ITALIC)
+		g_object_set(G_OBJECT(tag), "style", PANGO_STYLE_ITALIC, NULL);
+	else
+		g_object_set(G_OBJECT(tag), "style", PANGO_STYLE_NORMAL, NULL);
+	if (gl_profile.colors.link_effect & HYP_TXT_UNDERLINED)
+		g_object_set(G_OBJECT(tag), "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	else
+		g_object_set(G_OBJECT(tag), "underline", PANGO_UNDERLINE_NONE, NULL);
+	
+	/*
+	 * TODO:
+	 */
+	if (gl_profile.colors.link_effect & HYP_TXT_OUTLINED)
+		g_object_set(G_OBJECT(tag), "strikethrough", TRUE, NULL);
+	else
+		g_object_set(G_OBJECT(tag), "strikethrough", FALSE, NULL);
+	if (gl_profile.colors.link_effect & HYP_TXT_SHADOWED)
+		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_HEAVY, NULL);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static GtkTextTag *create_link_tag(GtkTextTagTable *table, const gchar *tag_name, const char *color)
 {
 	GtkTextTag *tag;
 
@@ -1362,19 +1370,7 @@ static GtkTextTag *create_link_tag(GtkTextTagTable *table, const gchar *tag_name
 
 	gtk_text_tag_table_add(table, tag);
 
-	g_object_set(G_OBJECT(tag), "foreground", gl_profile.viewer.color[color], NULL);
-	if (gl_profile.viewer.link_effect & HYP_TXT_BOLD)
-		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_BOLD, NULL);
-	if (gl_profile.viewer.link_effect & HYP_TXT_LIGHT)
-		g_object_set(G_OBJECT(tag), "foreground", "#cccccc", NULL);
-	if (gl_profile.viewer.link_effect & HYP_TXT_ITALIC)
-		g_object_set(G_OBJECT(tag), "style", PANGO_STYLE_ITALIC, NULL);
-	if (gl_profile.viewer.link_effect & HYP_TXT_UNDERLINED)
-		g_object_set(G_OBJECT(tag), "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	if (gl_profile.viewer.link_effect & HYP_TXT_SHADOWED)
-		g_object_set(G_OBJECT(tag), "weight", PANGO_WEIGHT_HEAVY, NULL);
-	if (gl_profile.viewer.link_effect & HYP_TXT_OUTLINED)
-		g_object_set(G_OBJECT(tag), "strikethrough", TRUE, NULL);
+	update_link_tag(tag, color);
 	
 	g_object_unref(tag);
 
@@ -1386,34 +1382,56 @@ static GtkTextTag *create_link_tag(GtkTextTagTable *table, const gchar *tag_name
 static GtkTextTagTable *create_tags(void)
 {
 	GtkTextTagTable *table;
-	int i;
 	
 	table = gtk_text_tag_table_new();
 	
-	for (i = 0; i < 16; i++)
-	{
-		gdk_color_parse(gl_profile.viewer.color[i], &gdk_colors[i]);
-		gtk_text_table_create_tag(table, colornames[i], "foreground", gl_profile.viewer.color[i], NULL);
-	}
+	gtk_text_table_create_tag(table, "error", "foreground", "#ff0000", NULL); /* used to display invalid links in hypertext files */
 	
 	gtk_text_table_create_tag(table, "center", "justification", GTK_JUSTIFY_CENTER, NULL);
 	gtk_text_table_create_tag(table, "right_justify", "justification", GTK_JUSTIFY_RIGHT, NULL);
 
 	gtk_text_table_create_tag(table, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
-	gtk_text_table_create_tag(table, "ghosted", "foreground", "#cccccc", NULL);
+	gtk_text_table_create_tag(table, "ghosted", "foreground", gl_profile.colors.ghosted, NULL);
 	gtk_text_table_create_tag(table, "italic", "style", PANGO_STYLE_ITALIC, NULL);
 	gtk_text_table_create_tag(table, "underlined", "underline", PANGO_UNDERLINE_SINGLE, NULL);
 	gtk_text_table_create_tag(table, "outlined", "strikethrough", TRUE, NULL); /* TODO */
 	gtk_text_table_create_tag(table, "shadowed", "weight", PANGO_WEIGHT_HEAVY, NULL); /* TODO */
 
-	create_link_tag(table, "link", gl_profile.viewer.link_color);
-	create_link_tag(table, "popup", gl_profile.viewer.popup_color);
-	create_link_tag(table, "xref", gl_profile.viewer.xref_color);
-	create_link_tag(table, "system", gl_profile.viewer.system_color);
-	create_link_tag(table, "rexx", gl_profile.viewer.rexx_color);
-	create_link_tag(table, "quit", gl_profile.viewer.quit_color);
+	create_link_tag(table, "link", gl_profile.colors.link);
+	create_link_tag(table, "popup", gl_profile.colors.popup);
+	create_link_tag(table, "xref", gl_profile.colors.xref);
+	create_link_tag(table, "system", gl_profile.colors.system);
+	create_link_tag(table, "rx", gl_profile.colors.rx);
+	create_link_tag(table, "rxs", gl_profile.colors.rxs);
+	create_link_tag(table, "quit", gl_profile.colors.quit);
+	create_link_tag(table, "close", gl_profile.colors.quit);
 
 	return table;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_win_update_attributes(WINDOW_DATA *win)
+{
+	GtkTextTagTable *table = gtk_text_buffer_get_tag_table(win->text_buffer);
+	GtkTextTag *tag;
+	
+	tag = gtk_text_tag_table_lookup(table, "link");
+	update_link_tag(tag, gl_profile.colors.link);
+	tag = gtk_text_tag_table_lookup(table, "popup");
+	update_link_tag(tag, gl_profile.colors.popup);
+	tag = gtk_text_tag_table_lookup(table, "xref");
+	update_link_tag(tag, gl_profile.colors.xref);
+	tag = gtk_text_tag_table_lookup(table, "system");
+	update_link_tag(tag, gl_profile.colors.system);
+	tag = gtk_text_tag_table_lookup(table, "rx");
+	update_link_tag(tag, gl_profile.colors.rx);
+	tag = gtk_text_tag_table_lookup(table, "rxs");
+	update_link_tag(tag, gl_profile.colors.rxs);
+	tag = gtk_text_tag_table_lookup(table, "quit");
+	update_link_tag(tag, gl_profile.colors.quit);
+	tag = gtk_text_tag_table_lookup(table, "close");
+	update_link_tag(tag, gl_profile.colors.close);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1426,10 +1444,13 @@ static void set_font_attributes(WINDOW_DATA *win)
 	PangoContext *context;
 	GdkScreen *screen;
 	PangoFontMetrics *metrics = NULL;
-		
-	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
-	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
-	gtk_widget_modify_bg(win->text_view, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
+	GdkColor color;
+	
+	gdk_color_parse(gl_profile.colors.text, &color);
+	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &color);
+	gdk_color_parse(gl_profile.colors.background, &color);
+	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &color);
+	gtk_widget_modify_bg(win->text_view, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_font(win->text_view, desc);
 	screen = gtk_widget_get_screen(win->hwnd);
 	context = gdk_pango_context_get_for_screen(screen);

@@ -44,7 +44,7 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 	y = win->scroll.g_y;
 
 	vswr_mode(vdi_handle, MD_TRANS);
-	vst_color(vdi_handle, gl_profile.viewer.text_color);
+	vst_color(vdi_handle, viewer_colors.text);
 	vst_effects(vdi_handle, 0);
 
 	end_y = y + min((unsigned short) (doc->lines - win->docsize.y) * win->y_raster, win->scroll.g_h);

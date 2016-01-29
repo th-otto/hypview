@@ -215,9 +215,12 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void set_source_color(cairo_t *cr, int color)
+static void set_source_color(cairo_t *cr, const char *colorname)
 {
-	return cairo_set_source_rgba(cr, gdk_colors[color].red / 65535.0, gdk_colors[color].green / 65535.0, gdk_colors[color].blue / 65535.0, 1.0);
+	GdkColor color;
+	
+	gdk_color_parse(colorname, &color);
+	return cairo_set_source_rgba(cr, color.red / 65535.0, color.green / 65535.0, color.blue / 65535.0, 1.0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -237,7 +240,7 @@ static cairo_t *gfx_create_surface(struct hyp_gfx *gfx)
 	cairo_paint(cr);
 
 	cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
-	set_source_color(cr, gl_profile.viewer.text_color);
+	set_source_color(cr, gl_profile.colors.text);
 	cairo_set_line_width(cr, 1.0);
 	
 	return cr;
@@ -633,7 +636,7 @@ static void rounded_box(cairo_t *cr, struct hyp_gfx *gfx)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static cairo_surface_t *create_pattern(int w, int h, const unsigned char *pattern_bits, unsigned char **pdata, int color)
+static cairo_surface_t *create_pattern(int w, int h, const unsigned char *pattern_bits, unsigned char **pdata, const char *colorname)
 {
 	int x, y;
 	int px, py;
@@ -641,12 +644,16 @@ static cairo_surface_t *create_pattern(int w, int h, const unsigned char *patter
 	int dst_stride;
 	cairo_format_t format = CAIRO_FORMAT_ARGB32;
 	cairo_surface_t *surf;
-	unsigned char r = gdk_colors[color].red >> 8;
-	unsigned char g = gdk_colors[color].green >> 8;
-	unsigned char b = gdk_colors[color].blue >> 8;
-	unsigned char a = ALPHA_OPAQUE;
+	unsigned char r, g, b, a;
 	const unsigned char *pbits;
 	cairo_pixel_t *dst;
+	GdkColor color;
+	
+	gdk_color_parse(colorname, &color);
+	r = color.red >> 8;
+	g = color.green >> 8;
+	b = color.blue >> 8;
+	a = ALPHA_OPAQUE;
 	
 	dst_stride = cairo_format_stride_for_width(format, w);
 	data = g_new(unsigned char, h * dst_stride);
@@ -717,7 +724,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struc
 			cairo_surface_t *pattern;
 			
 			cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-			pattern = create_pattern(w, h, &pattern_bits[(gfx->style - 1) * PATTERN_SIZE], &data, gl_profile.viewer.text_color);
+			pattern = create_pattern(w, h, &pattern_bits[(gfx->style - 1) * PATTERN_SIZE], &data, gl_profile.colors.text);
 			cairo_set_source_surface(cr, pattern, gfx->window_margin + 0.5, gfx->window_margin + 0.5);
 			cairo_fill_preserve(cr);
 			cairo_surface_destroy(pattern);
@@ -1160,10 +1167,14 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 							tagtype = "xref";
 							break;
 						case HYP_NODE_REXX_COMMAND:
+							tagtype = "rx";
+							break;
 						case HYP_NODE_REXX_SCRIPT:
-							tagtype = "rexx";
+							tagtype = "rxs";
 							break;
 						case HYP_NODE_QUIT:
+							tagtype = "quit";
+							break;
 						case HYP_NODE_CLOSE:
 							tagtype = "close";
 							break;
@@ -1173,7 +1184,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 						case HYP_NODE_IMAGE:
 						case HYP_NODE_EOF:
 						default:
-							tagtype = "red";
+							tagtype = "error";
 							g_free(tip);
 							tip = g_strdup_printf(_("Link to node of type %u not implemented."), dst_type);
 							break;

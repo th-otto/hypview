@@ -135,8 +135,8 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 					src += 3;
 
 					/* calculate width of link text honoring text effects */
-					vst_color(vdi_handle, gl_profile.viewer.link_color);
-					vst_effects(vdi_handle, gl_profile.viewer.link_effect | curr_txt_effect);
+					vst_color(vdi_handle, viewer_colors.link);
+					vst_effects(vdi_handle, gl_profile.colors.link_effect | curr_txt_effect);
 
 					/* get link text */
 					if (*src <= HYP_STRLEN_OFFSET)		/* Kein Text angegeben */
@@ -169,7 +169,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 
 					x_pos += width;
 
-					vst_color(vdi_handle, gl_profile.viewer.text_color);
+					vst_color(vdi_handle, viewer_colors.text);
 					vst_effects(vdi_handle, curr_txt_effect);
 					textstart = src;
 				}

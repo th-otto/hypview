@@ -1,7 +1,9 @@
 @options "+g -i -s +z -t4 -d12"
+@if VERSION >= 6
 @os Atari
 @charset atarist
 @inputenc atarist
+@endif
 @subject "Keins"
 @width 75
 

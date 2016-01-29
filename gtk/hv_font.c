@@ -12,8 +12,6 @@ static void ApplyFont(void)
 	GSList *l;
 	
 	/* adjust all open documents and windows */
-	win = (WINDOW_DATA *) all_list;
-
 	for (l = all_list; l; l = l->next)
 	{
 		win = l->data;
@@ -72,10 +70,10 @@ void SelectFont(WINDOW_DATA *win)
 	int resp;
 	PangoFontDescription *desc;
 	const char *fontname;
+	GdkColor color, bg;
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("font-dialog"));
-	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(gtk_widget_destroyed), &dialog);
 	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_hide), dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Select Fonts"));
 
@@ -105,8 +103,11 @@ void SelectFont(WINDOW_DATA *win)
 	desc = pango_font_description_from_string(gl_profile.viewer.font_name);
 	gtk_widget_modify_font(entry, desc);
 	pango_font_description_free(desc);
-	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
-	gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
+	gdk_color_parse(gl_profile.colors.background, &bg);
+	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &bg);
+	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &bg);
+	gdk_color_parse(gl_profile.colors.text, &color);
+	gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &color);
 	
 	font_button = gtk_font_button_new_with_font(gl_profile.viewer.font_name);
 	gtk_box_pack_start(GTK_BOX(hbox), font_button, FALSE, TRUE, 0);
@@ -136,8 +137,9 @@ void SelectFont(WINDOW_DATA *win)
 	desc = pango_font_description_from_string(gl_profile.viewer.xfont_name);
 	gtk_widget_modify_font(entry, desc);
 	pango_font_description_free(desc);
-	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.background_color]);
-	gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &gdk_colors[gl_profile.viewer.text_color]);
+	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &bg);
+	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &bg);
+	gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &color);
 
 	xfont_button = gtk_font_button_new_with_font(gl_profile.viewer.xfont_name);
 	gtk_box_pack_start(GTK_BOX(hbox), xfont_button, FALSE, TRUE, 0);

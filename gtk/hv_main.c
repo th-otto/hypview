@@ -235,8 +235,6 @@ int main(int argc, char **argv)
 		if (!init_gtk())
 			return EXIT_FAILURE;
 
-		Profile_ValidateColors(GetNumColors());
-		
 		GDK_THREADS_ENTER();
 		threads_entered = TRUE;
 		

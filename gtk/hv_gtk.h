@@ -166,7 +166,6 @@ void SelectFont(WINDOW_DATA *win);
  * hv_win.c
  */
 extern GSList *all_list;
-extern GdkColor gdk_colors[16];
 
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
@@ -180,6 +179,7 @@ long hv_win_topline(WINDOW_DATA *win);
 void hv_win_scroll_to_line(WINDOW_DATA *win, long line);
 GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_name, const gchar *first_property_name, ...);
 void hv_win_destroy_images(WINDOW_DATA *win);
+void hv_win_update_attributes(WINDOW_DATA *win);
 
 
 /*
@@ -298,6 +298,12 @@ void StartRemarker(gboolean quiet);
  * hv_info.c
  */
 void DocumentInfos(WINDOW_DATA *win);
+
+
+/*
+ * hv_prefs.c
+ */
+void hv_config_colors(WINDOW_DATA *win);
 
 
 #endif /* __HV_GTK_H__ */

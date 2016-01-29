@@ -122,7 +122,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				dst_page = DEC_255(src);
 				src += 2;
 
-				vst_effects(vdi_handle, gl_profile.viewer.link_effect);
+				vst_effects(vdi_handle, gl_profile.colors.link_effect);
 
 				link_len = *src;
 				src++;
