@@ -287,9 +287,20 @@ gboolean init_gtk(void)
 		} else
 		{
 			gtk_inited = 1;
+			GDK_THREADS_ENTER();
 		}
 	}
 	return gtk_inited == 1;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void exit_gtk(void)
+{
+	if (gtk_inited == 1)
+	{
+		GDK_THREADS_LEAVE();
+	}
 }
 
 /******************************************************************************/

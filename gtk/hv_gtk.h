@@ -130,6 +130,7 @@ void Help_Init(void);
 void check_console(void);
 void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean big);
 gboolean init_gtk(void);
+void exit_gtk(void);
 int toplevels_open_except(GtkWidget *top);
 void check_toplevels(GtkWidget *toplevel);
 void show_message(const char *title, const char *text, gboolean big);

@@ -96,7 +96,7 @@ static gboolean NOINLINE ParseCommandLine(int *argc, char ***argv)
 	
 	if (retval == FALSE)
 	{
-		char *msg = g_strdup_printf("%s: %s\n", gl_program_name, error && error->message ? error->message : _("error parsing command line"));
+		char *msg = g_strdup_printf("%s: %s", gl_program_name, error && error->message ? error->message : _("error parsing command line"));
 		write_console(msg, TRUE, TRUE, FALSE);
 		g_free(msg);
 		g_clear_error(&error);
@@ -190,7 +190,6 @@ static void myInvalidParameterHandler(const wchar_t *expression,
 int main(int argc, char **argv)
 {
 	int exit_status = EXIT_SUCCESS;
-	gboolean threads_entered = FALSE;
 	
 	check_console();
 	fix_fds();
@@ -235,9 +234,6 @@ int main(int argc, char **argv)
 		if (!init_gtk())
 			return EXIT_FAILURE;
 
-		GDK_THREADS_ENTER();
-		threads_entered = TRUE;
-		
 		Help_Init();
 		
 		if (!empty(geom_arg))
@@ -304,10 +300,7 @@ int main(int argc, char **argv)
 	hv_exit();
 	HypProfile_Delete();
 
-	if (threads_entered)
-	{
-		GDK_THREADS_LEAVE();
-	}	
+	exit_gtk();
 	
 	x_free_resources();
 
