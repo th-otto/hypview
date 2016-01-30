@@ -286,7 +286,6 @@ void HypDisplayPage(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
 	HYP_NODE *node = win->displayed_node;
-	_UWORD len;
 	long lineno;
 	WP_UNIT x, sx, sy;
 	const unsigned char *src, *end, *textstart;
@@ -323,7 +322,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 	{ \
 		/* draw remaining text */ \
 		char *s; \
-		len = (_UWORD)(src - textstart); \
+		_UWORD len = (_UWORD)(src - textstart); \
 		s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL); \
 		TEXTOUT(s); \
 		g_free(s); \
@@ -380,11 +379,10 @@ void HypDisplayPage(WINDOW_DATA *win)
 						{
 							str = invalid_page(dest_page);
 						}
-						len = (_UWORD)strlen(str);
 						src++;
 					} else
 					{
-						len = *src - HYP_STRLEN_OFFSET;
+						_UWORD len = *src - HYP_STRLEN_OFFSET;
 						src++;
 						str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, len, NULL);
 						src += len;
@@ -534,4 +532,5 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
 	else
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
+	hv_set_title(win, win->title);
 }

@@ -338,8 +338,11 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 
 void RemoveSelection(WINDOW_DATA *win)
 {
-	win->selection.valid = FALSE;				/* invalidate selection */
-	SendRedraw(win);
+	if (win->selection.valid)
+	{
+		win->selection.valid = FALSE;				/* invalidate selection */
+		SendRedraw(win);
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/

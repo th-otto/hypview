@@ -167,8 +167,8 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 			popup->lines = doc->height;
 			popup->columns = doc->columns;
 			popup->height = doc->height;
-			popup->x = x + work.g_x - (short) win->docsize.x * win->x_raster;
-			popup->y = y + work.g_y + win->y_offset;
+			popup->x = x + win->scroll.g_x;
+			popup->y = y + win->scroll.g_y;
 			popup->entry = win->displayed_node;
 			popup->parentwin = win;
 			

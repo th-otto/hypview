@@ -55,9 +55,60 @@ static void get_word(const unsigned char *min, const unsigned char *src, unsigne
 		{
 			*dst++ = *ptr++;
 		} while (isword(*ptr));
-	} else
-		*dst++ = *ptr;
+	}
 	*dst = 0;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
+{
+	DOCUMENT *doc = win->data;
+	HYP_DOCUMENT *hyp = doc->data;
+	HYP_IMAGE *pic;
+	
+	pic = (HYP_IMAGE *)AskCache(hyp, gfx->extern_node_index);
+	UNUSED(x);
+	
+	if (pic && pic->decompressed)
+	{
+		if (gfx->islimage)
+		{
+			/* maybe FIXME: ST-Guide seems to leave an empty line below the image */
+			y += gfx->pixheight;
+		}
+	}
+	return y;
+}
+
+static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
+{
+	while (gfx != NULL)
+	{
+		if (gfx->y_offset == lineno)
+		{
+			switch (gfx->type)
+			{
+			case HYP_ESC_PIC:
+				sy = SkipPicture(win, gfx, sx, sy);
+				break;
+			case HYP_ESC_LINE:
+				break;
+			case HYP_ESC_BOX:
+			case HYP_ESC_RBOX:
+				break;
+			}
+		}
+		gfx = gfx->next;
+	}
+	return sy;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static char *invalid_page(hyp_nodenr page)
+{
+	return g_strdup_printf(_("<invalid destination page %u>"), page);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -68,34 +119,45 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 	HYP_DOCUMENT *hyp;
 	HYP_NODE *node;
 	_WORD xy[8];
-	short curr_txt_effect = 0;
+	short textattr = 0;
 	char test_mem[2];
-	const unsigned char *src;
+	const unsigned char *src, *end;
 	const unsigned char *last_esc;
-	LINEPTR *line_ptr;
-	WP_UNIT x, y;
-	WP_UNIT x_pos = font_cw;
+	long lineno;
+	WP_UNIT mx, my;
+	WP_UNIT x, sx, sy;
 	
 	hyp = doc->data;
 
-	wind_get_grect(win->whandle, WF_WORKXYWH, &win->work);
-	x = m->x + win->docsize.x * win->x_raster - win->work.g_x;
-	y = m->y - win->work.g_y + win->y_offset;
-
 	node = win->displayed_node;
 
-	line_ptr = HypGetYLine(node, y + win->docsize.y * font_ch);
-	src = line_ptr ? line_ptr->txt : NULL;
-
-	if (src == NULL)
+	if (node == NULL)					/* stop if no page loaded */
 		return;
+
+	WindowCalcScroll(win);
+
+	mx = m->x - win->scroll.g_x;
+	my = m->y - win->scroll.g_y;
+	
+	sx = -win->docsize.x * win->x_raster;
+	sy = -win->docsize.y * win->y_raster;
+
+	src = node->start;
+	end = node->end;
 
 	last_esc = src;
 	test_mem[1] = 0;
-	vst_effects(vdi_handle, curr_txt_effect);
+	vst_effects(vdi_handle, textattr);
+	lineno = 0;
+	x = sx;
+	sy = skip_graphics(win, node->gfx, lineno, sx, sy);
 
-	while (*src)
+	while (src < end)
 	{
+		_WORD link_w;
+		gboolean target_line = my >= sy && my < (sy + win->y_raster);
+		gboolean target_col = FALSE;
+		
 		if (*src == HYP_ESC)
 		{
 			src++;
@@ -107,7 +169,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 			{
 				unsigned char link_type = *src;	/* remember link type */
 				hyp_lineno line_nr = 0;	/* line number to go to */
-				hyp_nodenr dst_page;	/* index of target node */
+				hyp_nodenr dest_page;	/* index of target node */
 				unsigned short link_len;
 				char *str;
 				
@@ -119,10 +181,10 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 					src += 2;
 				}
 
-				dst_page = DEC_255(src);
+				dest_page = DEC_255(src);
 				src += 2;
 
-				vst_effects(vdi_handle, gl_profile.colors.link_effect);
+				vst_effects(vdi_handle, gl_profile.colors.link_effect | textattr);
 
 				link_len = *src;
 				src++;
@@ -131,46 +193,47 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				{
 					size_t len = link_len - HYP_STRLEN_OFFSET;
 					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, len, NULL);
-					vqt_extent(vdi_handle, str, xy);
-					g_free(str);
 					src += len;
-				} else if (hypnode_valid(hyp, dst_page))
+				} else if (hypnode_valid(hyp, dest_page))
 				{
-					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dst_page]->name, STR0TERM, NULL);
-					vqt_extent(vdi_handle, str, xy);
-					g_free(str);
+					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dest_page]->name, STR0TERM, NULL);
+				} else
+				{
+					str = invalid_page(dest_page);
 				}
+				vqt_extent(vdi_handle, str, xy);
+				g_free(str);
 				
-				vst_effects(vdi_handle, curr_txt_effect);
+				vst_effects(vdi_handle, textattr);
 
-				x_pos += xy[0] + xy[2];
-
-				if (x_pos > x)
+				link_w = xy[0] + xy[2];
+				target_col = mx >= x && mx < (x + link_w);
+				if (target_line && target_col)
 				{
-					if (hypnode_valid(hyp, dst_page))
+					if (hypnode_valid(hyp, dest_page))
 					{
-						hyp_indextype dst_type = hyp->indextable[dst_page]->type;
+						hyp_indextype dst_type = hyp->indextable[dest_page]->type;
 	
 						switch (dst_type)
 						{
 						case HYP_NODE_INTERNAL:
 							if ((m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin))
 							{
-								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dst_page]->name, STR0TERM);
+								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest_page]->name, STR0TERM);
 								OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, 2, FALSE);
 								g_free(name);
 							} else
 							{
 								AddHistoryEntry(win, doc);
-								GotoPage(win, dst_page, line_nr, TRUE);
+								GotoPage(win, dest_page, line_nr, TRUE);
 							}
 							break;
 						case HYP_NODE_POPUP:
-							OpenPopup(win, dst_page, x_pos - xy[2], y - y % font_ch);
+							OpenPopup(win, dest_page, x, sy);
 							break;
 						case HYP_NODE_EXTERNAL_REF:
 							{
-								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dst_page]->name, STR0TERM);
+								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest_page]->name, STR0TERM);
 								HypOpenExtRef(win, name, (m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin));
 								g_free(name);
 							}
@@ -196,7 +259,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 		
 								/* use VA_START to send parameter to host application */
 								{
-									char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dst_page]->name, STR0TERM, NULL);
+									char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dest_page]->name, STR0TERM, NULL);
 									char *dir;
 									char *dfn;
 		
@@ -224,7 +287,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 						case HYP_NODE_REXX_SCRIPT:
 							/* ask server to start parameter using AV_STARTPROG */
 							{
-								char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dst_page]->name, STR0TERM, NULL);
+								char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dest_page]->name, STR0TERM, NULL);
 								char *dir;
 								char *dfn;
 	
@@ -264,16 +327,17 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 						}
 					} else
 					{
-						HYP_DBG(("Link to invalid node %u", dst_page));
+						HYP_DBG(("Link to invalid node %u", dest_page));
 					}
 					break;
 				}
 			} else
 			{
+				link_w = 0;
 				if (HYP_ESC_IS_TEXATTR(*src))	/* text attributes */
 				{
-					curr_txt_effect = *src - HYP_ESC_TEXTATTR_FIRST;
-					vst_effects(vdi_handle, curr_txt_effect);
+					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+					vst_effects(vdi_handle, textattr);
 					src++;
 				} else
 				{
@@ -281,16 +345,26 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				}
 			}
 			last_esc = src;
+		} else if (*src == HYP_EOL)
+		{
+			link_w = 0;
+			++lineno;
+			src++;
+			last_esc = src;
+			x = sx;
+			sy += win->y_raster;
+			sy = skip_graphics(win, node->gfx, lineno, sx, sy);
 		} else
 		{
 			*test_mem = *src;
 		  check_char:
 			vqt_extentn(vdi_handle, test_mem, 1, xy);
-			x_pos += xy[0] + xy[2];
+			link_w = xy[0] + xy[2];
 			src++;
+			target_col = mx >= x && mx < (x + link_w);
 		}
 
-		if (x_pos > x)
+		if (target_line && target_col)
 		{
 			if (!gl_profile.viewer.refonly)
 			{
@@ -299,19 +373,23 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				char *name;
 				
 				get_word(last_esc, src - 1, buffer);
-				name = hyp_conv_to_utf8(hyp_get_current_charset(), buffer, STR0TERM);
-				ret = HypFindNode(doc, name);
-				if (ret != HYP_NOINDEX)
+				if (*buffer)
 				{
-					if (doc->gotoNodeProc(win, NULL, ret))
-						ReInitWindow(win, FALSE);
-				} else
-				{
-					search_allref(win, name, TRUE);
+					name = hyp_conv_to_utf8(hyp_get_current_charset(), buffer, STR0TERM);
+					ret = HypFindNode(doc, name);
+					if (ret != HYP_NOINDEX)
+					{
+						if (doc->gotoNodeProc(win, NULL, ret))
+							ReInitWindow(win, FALSE);
+					} else
+					{
+						search_allref(win, name, FALSE);
+					}
+					g_free(name);
 				}
-				g_free(name);
 			}
 			break;
 		}
+		x += link_w;
 	}
 }
