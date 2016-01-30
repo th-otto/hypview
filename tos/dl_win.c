@@ -961,8 +961,8 @@ void ResizeWindow(WINDOW_DATA *ptr, WP_UNIT max_w, WP_UNIT max_h)
 
 void IconifyWindow(WINDOW_DATA * ptr, GRECT * r)
 {
-	GRECT current_size,
-	 new_pos;
+	GRECT current_size;
+	GRECT new_pos;
 
 	if (ptr->status & WIS_ICONIFY)
 		return;
@@ -971,9 +971,6 @@ void IconifyWindow(WINDOW_DATA * ptr, GRECT * r)
 	wind_close(ptr->whandle);
 	wind_set_grect(ptr->whandle, WF_ICONIFY, r);
 	wind_set_grect(ptr->whandle, WF_UNICONIFYXYWH, &current_size);
-#if SET_ICONIFY_NAME
-	wind_set_string(ptr->whandle, WF_NAME, iconified_name);
-#endif
 	wind_get_grect(ptr->whandle, WF_CURRXYWH, &new_pos);
 	if (new_pos.g_x != -1)
 		graf_shrinkbox_grect(&new_pos, &current_size);
@@ -1018,9 +1015,6 @@ void UniconifyWindow(WINDOW_DATA *ptr)
 	wind_get_grect(ptr->whandle, WF_UNICONIFY, &current_size);
 	graf_growbox_grect(&small, &current_size);
 	wind_set_int(ptr->whandle, WF_TOP, 0);
-#if SET_ICONIFY_NAME
-	hv_set_title(ptr, ptr->title);
-#endif
 	wind_set_grect(ptr->whandle, WF_UNICONIFY, &current_size);
 	ptr->status &= ~WIS_ICONIFY;
 }

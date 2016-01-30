@@ -37,8 +37,6 @@
 /* Use window dialog management routines? (Based on WDialog) */
 #define	USE_DIALOG		1
 
-/* Automatically set the title when iconifying according to RSC file */
-#define	SET_ICONIFY_NAME	0
 /* Open a separate VDI workstation for each new window */
 #define	OPEN_VDI_WORKSTATION	0
 /* Use a logical raster for computations (=not the pixel raster) */

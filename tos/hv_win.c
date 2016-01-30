@@ -23,6 +23,7 @@
 
 #include "hv_defs.h"
 #include "hypview.h"
+#include "hypdebug.h"
 
 
 #define setmsg(a,b,c,d,e,f,g,h) \
@@ -163,8 +164,6 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	_WORD visible_lines;
 	GRECT curr;
 	
-	g_free(win->title);
-	win->title = g_strdup(doc->path);
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
 	if (prep)
