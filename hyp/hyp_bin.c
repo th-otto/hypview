@@ -3,7 +3,7 @@
 #include "hypdebug.h"
 
 #ifdef __PUREC__
-struct _window_data_ { int dummy; };
+#include "hv_defs.h" /* Pure-C does not like anonymous struct _window_data_ */
 #endif
 
 
