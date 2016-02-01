@@ -91,10 +91,6 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 	if (node != NULL)
 	{
 		doc->prepNode(win, node);
-		/* update document with node data XXFIXME */
-		doc->lines = node->lines;
-		doc->height = node->height;
-		doc->columns = node->columns;
 	}
 	
 	return node != NULL;
@@ -203,9 +199,6 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	doc->prepNode = HypPrepNode;
 	
 	doc->start_line = 0;
-	doc->lines = 0;
-	doc->height = 0;
-	doc->columns = 0;
 
 	if (ref != NULL)
 		hyp_utf8_close(handle);

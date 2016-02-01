@@ -281,10 +281,57 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypDisplayPage(WINDOW_DATA *win)
+static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = doc->data;
+	HYP_IMAGE *pic;
+	
+	pic = (HYP_IMAGE *)AskCache(hyp, gfx->extern_node_index);
+	UNUSED(x);
+	
+	if (pic && pic->decompressed)
+	{
+		if (gfx->islimage)
+		{
+			/* maybe FIXME: ST-Guide seems to leave an empty line below the image */
+			y += gfx->pixheight;
+		}
+	}
+	return y;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
+{
+	while (gfx != NULL)
+	{
+		if (gfx->y_offset == lineno)
+		{
+			switch (gfx->type)
+			{
+			case HYP_ESC_PIC:
+				sy = SkipPicture(win, gfx, sx, sy);
+				break;
+			case HYP_ESC_LINE:
+				break;
+			case HYP_ESC_BOX:
+			case HYP_ESC_RBOX:
+				break;
+			}
+		}
+		gfx = gfx->next;
+	}
+	return sy;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void HypDisplayPage(WINDOW_DATA *win)
+{
+	DOCUMENT *doc = win->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	HYP_NODE *node = win->displayed_node;
 	long lineno;
 	WP_UNIT x, sx, sy;
@@ -299,8 +346,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	
 	WindowCalcScroll(win);
 
-	sx = -win->docsize.x * win->x_raster;
-	sy = -win->docsize.y * win->y_raster;
+	sx = -win->docsize.x;
+	sy = -win->docsize.y;
 
 	/* standard text color */
 	vst_color(vdi_handle, viewer_colors.text);
@@ -388,7 +435,6 @@ void HypDisplayPage(WINDOW_DATA *win)
 						src += len;
 					}
 					
-					color = viewer_colors.link;
 					if (hypnode_valid(hyp, dest_page))
 					{
 						dst_type = hyp->indextable[dest_page]->type;
@@ -431,12 +477,14 @@ void HypDisplayPage(WINDOW_DATA *win)
 					
 					/* set text effects for link text */
 					vst_color(vdi_handle, color);
+					vsl_color(vdi_handle, color);
 					vst_effects(vdi_handle, gl_profile.colors.link_effect | textattr);
 
 					TEXTOUT(str);
 					g_free(str);
 
 					vst_color(vdi_handle, viewer_colors.text);
+					vsl_color(vdi_handle, viewer_colors.text);
 					vst_effects(vdi_handle, textattr);
 					textstart = src;
 				}
@@ -486,37 +534,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	
 	vst_effects(vdi_handle, 0);
 	vswr_mode(vdi_handle, MD_REPLACE);
-	
-	/*
-	 * clear out the margins again
-	 * (at least at the top and left);
-	 * they may have been overwritten by starting a
-	 * drawing operation outside of a scrolled window
-	 */
-	if (win->x_margin_left != 0)
-	{
-		_WORD pxy[4];
-		
-		pxy[0] = win->scroll.g_x - win->x_margin_left;
-		pxy[1] = win->scroll.g_y - win->y_margin_top;
-		pxy[2] = win->scroll.g_x - 1;
-		pxy[3] = win->scroll.g_y + win->scroll.g_h + win->y_margin_bottom - 1;
-		vsf_color(vdi_handle, viewer_colors.background);
-		vsf_interior(vdi_handle, FIS_SOLID);
-		vr_recfl(vdi_handle, pxy);
-	}
-	if (win->y_margin_top != 0)
-	{
-		_WORD pxy[4];
-		
-		pxy[0] = win->scroll.g_x - win->x_margin_left;
-		pxy[1] = win->scroll.g_y - win->y_margin_top;
-		pxy[2] = win->scroll.g_x + win->scroll.g_w + win->x_margin_right - 1;
-		pxy[3] = win->scroll.g_y - 1;
-		vsf_color(vdi_handle, viewer_colors.background);
-		vsf_interior(vdi_handle, FIS_SOLID);
-		vr_recfl(vdi_handle, pxy);
-	}
+#undef TEXTOUT
+#undef DUMPTEXT
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -525,7 +544,16 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 {
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+	long lineno;
+	WP_UNIT x, sx, sy;
+	WP_UNIT max_w;
+	const unsigned char *src, *end, *textstart;
+	unsigned char textattr;
+	char *str;
+
 	win->displayed_node = node;
+	if (node == NULL)					/* stop if no page loaded */
+		return;
 
 	g_free(win->title);
 	if (node->window_title)
@@ -533,4 +561,152 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	else
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
 	hv_set_title(win, win->title);
+	
+	sx = sy = 0;
+
+	vst_effects(vdi_handle, 0);
+
+#define TEXTOUT(str) \
+	{ \
+	_WORD ext[8], w; \
+	vqt_extent(vdi_handle, str, ext); \
+	w = (ext[2] + ext[4]) >> 1; \
+	x += w; \
+	}
+
+#define DUMPTEXT() \
+	if (src > textstart) \
+	{ \
+		/* draw remaining text */ \
+		char *s; \
+		_UWORD len = (_UWORD)(src - textstart); \
+		s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL); \
+		TEXTOUT(s); \
+		g_free(s); \
+	}
+
+	src = node->start;
+	end = node->end;
+	textstart = src;
+	textattr = 0;
+	lineno = 0;
+	x = sx;
+	max_w = x;
+	sy = skip_graphics(win, node->gfx, lineno, sx, sy);
+	vst_effects(vdi_handle, 0);
+	
+	while (src < end)
+	{
+		if (*src == HYP_ESC)		/* ESC-sequence */
+		{
+			/* unwritten data? */
+			DUMPTEXT();
+			src++;
+
+			switch (*src)
+			{
+			case HYP_ESC_ESC:		/* ESC */
+				textstart = src;
+				src++;
+				break;
+
+			case HYP_ESC_LINK:
+			case HYP_ESC_LINK_LINE:
+			case HYP_ESC_ALINK:
+			case HYP_ESC_ALINK_LINE:
+				{
+					hyp_nodenr dest_page;	/* index of destination page */
+					unsigned char link_type = *src;	/* remember link type */
+					
+					src++;
+					if (link_type == HYP_ESC_LINK_LINE || link_type == HYP_ESC_ALINK_LINE)	/* skip destination line number */
+						src += 2;
+
+					dest_page = DEC_255(src);
+					src += 2;
+
+					/* get link text for output */
+					if (*src <= HYP_STRLEN_OFFSET)	/* no text in link: use nodename */
+					{
+						if (hypnode_valid(hyp, dest_page))
+						{
+							str = pagename(hyp, dest_page);
+						} else
+						{
+							str = invalid_page(dest_page);
+						}
+						src++;
+					} else
+					{
+						_UWORD len = *src - HYP_STRLEN_OFFSET;
+						src++;
+						str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), src, len, NULL);
+						src += len;
+					}
+					
+					/* set text effects for link text */
+					vst_effects(vdi_handle, gl_profile.colors.link_effect | textattr);
+
+					TEXTOUT(str);
+					g_free(str);
+
+					vst_effects(vdi_handle, textattr);
+					textstart = src;
+				}
+				break;
+				
+			case HYP_ESC_CASE_TEXTATTR:
+				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+				vst_effects(vdi_handle, textattr);
+				src++;
+				textstart = src;
+				break;
+			
+			case HYP_ESC_WINDOWTITLE:
+			case HYP_ESC_CASE_DATA:
+			case HYP_ESC_EXTERNAL_REFS:
+			case HYP_ESC_OBJTABLE:
+			case HYP_ESC_PIC:
+			case HYP_ESC_LINE:
+			case HYP_ESC_BOX:
+			case HYP_ESC_RBOX:
+			default:
+				src = hyp_skip_esc(--src);
+				textstart = src;
+				break;
+			}
+		} else if (*src == HYP_EOL)
+		{
+			DUMPTEXT();
+			++lineno;
+			if (x > max_w)
+				max_w = x;
+			src++;
+			textstart = src;
+			x = sx;
+			sy += win->y_raster;
+			sy = skip_graphics(win, node->gfx, lineno, sx, sy);
+		} else
+		{
+			src++;
+		}
+	}
+	DUMPTEXT();
+	if (x != sx)
+	{
+		if (x > max_w)
+			max_w = x;
+		++lineno;
+		sy += win->y_raster;
+		sy = skip_graphics(win, node->gfx, lineno, sx, sy);
+	}
+	
+	vst_effects(vdi_handle, 0);
+
+	node->width = max_w;
+	node->height = sy;
+	win->docsize.w = node->width;
+	win->docsize.h = node->height;
+#undef TEXTOUT
+#undef DUMPTEXT
 }

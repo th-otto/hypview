@@ -123,7 +123,7 @@ static void hypfind_page(WINDOW_DATA *win, OBJECT *tree)
 static void hypfind_text(WINDOW_DATA *win, OBJECT *tree)
 {
 	DOCUMENT *doc = win->data;
-	long line = win->docsize.y;
+	long line = win->docsize.y / win->y_raster;
 	char *search = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
 	
 	if (!empty(search))
@@ -137,10 +137,10 @@ static void hypfind_text(WINDOW_DATA *win, OBJECT *tree)
 		}
 		if (line >= 0)
 		{
-			if (line != win->docsize.y)
+			if (line != win->docsize.y / win->y_raster)
 			{
 				can_search_again = TRUE;
-				win->docsize.y = line;
+				win->docsize.y = line * win->y_raster;
 				SendRedraw(win);
 				SetWindowSlider(win);
 			}

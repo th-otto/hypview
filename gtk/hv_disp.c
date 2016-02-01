@@ -1293,8 +1293,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	}
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
-	node->lines = info.lineno;
-	node->columns = info.maxx;
+	node->height = info.lineno * win->y_raster;
+	node->width = info.maxx * win->x_raster;
 	
 	g_free(win->title);
 	if (node->window_title)

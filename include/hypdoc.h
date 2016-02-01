@@ -76,9 +76,6 @@ struct _document_
 	int ref_count;				/* usage count */
 	char *path;                 /* Full file access path */
 	long start_line;            /* First visible line of document */
-	long lines;                 /* Number of lines (in window lines) */
-	long height;                /* height of document (in pixel) */
-	long columns;               /* Number of window columns */
 	
 	/* Toolbar button configuration (bit vector) */
 	hyp_nav_buttons buttons;             

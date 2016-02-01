@@ -97,7 +97,6 @@ static _WORD get_color(const char *name)
 			closest = i;
 		}
 	}
-	nf_debugprintf("%s %d/%d/%d -> %d\n", name, rgb[0], rgb[1], rgb[2], closest);
 	return closest;
 }
 

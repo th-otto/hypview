@@ -73,7 +73,7 @@ char *g_get_package_bindir(void)
 		if ((p = strrchr(retval, '\\')) != NULL)
 		{
 			*p = '\0';
-			retval = g_realloc(retval, sizeof(char) * (strlen(retval) + 1));
+			retval = g_renew(char, retval, strlen(retval) + 1);
 		} else
 		{
 			g_free(retval);

@@ -41,13 +41,14 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 	GRECT work;
 	_WORD clip_rect[4];
 	short x, y;
-	short ox, oy;
+	WP_UNIT ox, oy;
 	TEXT_POS start, end, new;
-	_WORD scroll_x = 0, scroll_y = 0;
+	WP_UNIT scroll_x = 0, scroll_y = 0;
 
 	wind_update(BEG_UPDATE);
 	wind_update(BEG_MCTRL);
-	wind_get_grect(win->whandle, WF_WORKXYWH, &work);
+	WindowCalcScroll(win);
+	work = win->scroll;
 
 	/* set VDI fill attributes for XOR mode */
 	vsf_interior(vdi_handle, FIS_SOLID);
@@ -57,7 +58,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 
 	/* set clipping rectangle */
 	clip_rect[0] = work.g_x;
-	clip_rect[1] = work.g_y + win->y_offset;
+	clip_rect[1] = work.g_y;
 	clip_rect[2] = work.g_x + work.g_w - 1;
 	clip_rect[3] = work.g_y + work.g_h - 1;
 	vs_clip(vdi_handle, TRUE, clip_rect);	/* clipping ON */
@@ -67,24 +68,13 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 	{
 		start = win->selection.start;
 		end = win->selection.end;
-#if 1
-		if (end.y < (win->docsize.y * win->y_raster))
+		if (end.y < win->docsize.y)
 			oy = -win->y_raster;
-		else if (end.y > (win->docsize.y * win->y_raster) + (work.g_h - win->y_offset))
+		else if (end.y > win->docsize.y + work.g_h)
 			oy = work.g_h + win->y_raster;
 		else
-			oy = end.y - (win->docsize.y * win->y_raster);
-		ox = end.x - (short)(win->docsize.x * font_cw);
-#else
-		if (end.line < win->docsize.y)
-			oy = -font_ch;
-		else if (end.line > win->docsize.y + (work.g_h - win->y_offset) / font_ch)
-			oy = work.g_h + font_ch;
-		else
-			oy = (short)(end.line - win->docsize.y) * font_ch;
-
-		ox = end.x - (short)(win->docsize.x * font_cw);
-#endif
+			oy = end.y - win->docsize.y;
+		ox = end.x - win->docsize.x;
 		goto shift_entry;
 	} else
 	{
@@ -93,7 +83,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			DrawSelection(win);
 
 		x = m_data->x - work.g_x;
-		y = m_data->y - work.g_y - win->y_offset;
+		y = m_data->y - work.g_y;
 		y -= y % font_ch;
 
 		doc->getCursorProc(win, x, y, &start);
@@ -102,8 +92,8 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 
 	for (;;)
 	{
-		ox = end.x - (short)(win->docsize.x * font_cw);
-		oy = end.y - (short)(win->docsize.y * font_ch);
+		ox = end.x - win->docsize.x;
+		oy = end.y - win->docsize.y;
 
 		graf_mkstate(&m_data->x, &m_data->y, &m_data->bstate, &m_data->kstate);
 
@@ -113,7 +103,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			graf_mkstate(&nmx, &nmy, &nbs, &m_data->kstate);
 			while (m_data->x == nmx && m_data->y == nmy && m_data->bstate == nbs)
 			{
-				if (nmy > work.g_y + work.g_h || nmy < work.g_y + win->y_offset ||
+				if (nmy > work.g_y + work.g_h || nmy < work.g_y ||
 					nmx > work.g_x + work.g_w || nmx < work.g_x)
 					break;
 				graf_mkstate(&nmx, &nmy, &nbs, &m_data->kstate);
@@ -129,17 +119,17 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 	  shift_entry:
 		/* mouse coordinates relative to actual working area */
 		x = m_data->x - work.g_x;
-		y = m_data->y - work.g_y - win->y_offset;
+		y = m_data->y - work.g_y;
 
 		/* mouse in work area? */
 		if (x < 0)
 		{
 			x = -1;
-			scroll_x = -1;
+			scroll_x = -win->x_speed;
 		} else if (x >= work.g_w)
 		{
 			x = work.g_w;
-			scroll_x = 1;
+			scroll_x = win->x_speed;
 		} else
 		{
 			scroll_x = 0;
@@ -147,13 +137,12 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 
 		if (y < 0)
 		{
-			y = -font_ch;
-
+			y = -win->y_raster;
 			scroll_y = -win->y_speed;
-			scroll_y *= 1 - ((m_data->y - work.g_y - win->y_offset) >> 6);
-		} else if (y >= work.g_h - win->y_offset)
+			scroll_y *= 1 - ((m_data->y - work.g_y) >> 6);
+		} else if (y >= work.g_h)
 		{
-			y = work.g_h - win->y_offset;
+			y = work.g_h;
 			scroll_y = win->y_speed;
 			scroll_y *= 1 + ((m_data->y - work.g_y - work.g_h) >> 6);
 		} else
@@ -165,8 +154,12 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 		if (scroll_x || scroll_y)
 		{
 			/* try to scroll inside window */
-			if (ScrollWindow(win, &scroll_x, &scroll_y))
+			WP_UNIT scrolled_x = win->docsize.x;
+			WP_UNIT scrolled_y = win->docsize.y;
+			if (ScrollWindow(win, scroll_x, scroll_y))
 			{
+				scrolled_x = win->docsize.x - scrolled_x;
+				scrolled_y = win->docsize.y - scrolled_y;
 				/* re-initialize VDI fill attributes */
 				vsf_interior(vdi_handle, FIS_SOLID);
 				vsf_color(vdi_handle, G_BLACK);
@@ -174,13 +167,8 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 				vswr_mode(vdi_handle, MD_XOR);
 				vs_clip(vdi_handle, TRUE, clip_rect);
 
-				if (scroll_y)			/* did we scroll in y-direction? */
-				{
-					oy -= scroll_y * font_ch;
-				}
-
-				if (scroll_x)			/* did we scroll in x-direction? */
-					ox -= scroll_x * font_cw;
+				oy -= scrolled_y;			/* did we scroll in y-direction? */
+				ox -= scrolled_x;			/* did we scroll in x-direction? */
 			}
 		}
 
@@ -215,9 +203,9 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			if (px1 < work.g_w - 1)
 			{
 				xy[0] = work.g_x + px1;
-				xy[1] = work.g_y + win->y_offset + py1;
+				xy[1] = work.g_y + py1;
 				xy[2] = work.g_x + work.g_w - 1;
-				xy[3] = work.g_y + font_ch + win->y_offset + py1 - 1;
+				xy[3] = work.g_y + font_ch + py1 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
 
@@ -227,18 +215,18 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			if (py1 < py2)
 			{
 				xy[0] = work.g_x;
-				xy[1] = work.g_y + win->y_offset + py1;
+				xy[1] = work.g_y + py1;
 				xy[2] = work.g_x + work.g_w - 1;
-				xy[3] = work.g_y + win->y_offset + py2 - 1;
+				xy[3] = work.g_y + py2 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
 			if (px2 >= 0)
 			{
 				/* draw from beginning of line */
 				xy[0] = work.g_x;
-				xy[1] = work.g_y + win->y_offset + py2;
+				xy[1] = work.g_y + py2;
 				xy[2] = work.g_x + px2 - 1;
-				xy[3] = work.g_y + font_ch + win->y_offset + py2 - 1;
+				xy[3] = work.g_y + font_ch + py2 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
 			graf_mouse(M_ON, NULL);
@@ -260,9 +248,9 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			graf_mouse(M_OFF, NULL);
 			/* draw only changes */
 			xy[0] = work.g_x + px1;
-			xy[1] = work.g_y + win->y_offset + oy;
+			xy[1] = work.g_y + (_WORD)oy;
 			xy[2] = work.g_x + px2 - 1;
-			xy[3] = work.g_y + win->y_offset + oy + font_ch - 1;
+			xy[3] = work.g_y + (_WORD)oy + font_ch - 1;
 			vr_recfl(vdi_handle, xy);
 			graf_mouse(M_ON, NULL);
 		}
@@ -362,15 +350,16 @@ void DrawSelection(WINDOW_DATA *win)
 	if (!win->selection.valid)				/* is something selected? */
 		return;
 
-	wind_get_grect(win->whandle, WF_WORKXYWH, &work);
+	WindowCalcScroll(win);
+	work = win->scroll;
 
 	/* calculate window-relative coordinates of selection */
-	x1 = win->selection.start.x - (short)(win->docsize.x * font_cw);
-	y1 = (_WORD) (win->selection.start.y - (win->docsize.y * font_ch));
-	x2 = win->selection.end.x - (short)(win->docsize.x * font_cw);
-	y2 = (_WORD) (win->selection.end.y - (win->docsize.y * font_ch));
+	x1 = (_WORD)(win->selection.start.x - win->docsize.x);
+	y1 = (_WORD)(win->selection.start.y - win->docsize.y);
+	x2 = (_WORD)(win->selection.end.x - win->docsize.x);
+	y2 = (_WORD)(win->selection.end.y - win->docsize.y);
 
-	vis_height = work.g_h - win->y_offset;
+	vis_height = work.g_h;
 	if ((y1 >= vis_height) || (y2 < 0))
 		return;
 
@@ -387,7 +376,7 @@ void DrawSelection(WINDOW_DATA *win)
 		{
 			/* draw from start of block to lineend */
 			xy[0] = work.g_x + x1;
-			xy[1] = work.g_y + win->y_offset + y1;
+			xy[1] = work.g_y + y1;
 			xy[2] = work.g_x + work.g_w - 1;
 			xy[3] = xy[1] + font_ch - 1;
 			vr_recfl(vdi_handle, xy);
@@ -395,13 +384,13 @@ void DrawSelection(WINDOW_DATA *win)
 		
 		if (y2 > vis_height)
 		{
-			y2 = work.g_h - win->y_offset;
+			y2 = work.g_h;
 			x2 = work.g_w;
 		} else if (x2 > 0)
 		{
 			/* draw from start of line to blockend */
 			xy[0] = work.g_x;
-			xy[1] = work.g_y + win->y_offset + y2;
+			xy[1] = work.g_y + y2;
 			xy[2] = work.g_x + x2 - 1;
 			xy[3] = xy[1] + font_ch - 1;
 			vr_recfl(vdi_handle, xy);
@@ -411,18 +400,18 @@ void DrawSelection(WINDOW_DATA *win)
 		if (y2 > y1 + font_ch)
 		{
 			xy[0] = work.g_x;
-			xy[1] = work.g_y + win->y_offset + y1 + font_ch;
+			xy[1] = work.g_y + y1 + font_ch;
 			xy[2] = work.g_x + work.g_w - 1;
-			xy[3] = work.g_y + win->y_offset + y2 - 1;
+			xy[3] = work.g_y + y2 - 1;
 			vr_recfl(vdi_handle, xy);
 		}
 	} else	/* start and end on same line */
 	{
 		/* Nur die Aenderung zeichnen */
 		xy[0] = work.g_x + x1;
-		xy[1] = work.g_y + win->y_offset + y1;
+		xy[1] = work.g_y + y1;
 		xy[2] = work.g_x + x2 - 1;
-		xy[3] = work.g_y + font_ch + win->y_offset + y1 - 1;
+		xy[3] = work.g_y + font_ch + y1 - 1;
 		vr_recfl(vdi_handle, xy);
 	}
 

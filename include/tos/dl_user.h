@@ -39,8 +39,6 @@
 
 /* Open a separate VDI workstation for each new window */
 #define	OPEN_VDI_WORKSTATION	0
-/* Use a logical raster for computations (=not the pixel raster) */
-#define	USE_LOGICALRASTER	1
 /* Use toolbar routines */
 #define	USE_TOOLBAR		1
 

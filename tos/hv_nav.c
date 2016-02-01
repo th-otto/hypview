@@ -42,11 +42,8 @@ void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
 			 * Important if page contains images.
 			 */
 			long y;
-			HYP_NODE *node;
 	
-			node = win->displayed_node;
-	
-			y = HypGetLineY(node, line);
+			y = line * win->y_raster;
 			line = y / win->y_raster;
 		}
 		doc->start_line = line;

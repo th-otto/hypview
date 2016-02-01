@@ -807,7 +807,7 @@ gboolean Profile_Read(Profile *profile)
 			fseek(fp, 0l, SEEK_END);
 			profile->alloc_len = ftell(fp);
 			fseek(fp, 0l, SEEK_SET);
-			profile->buf = (char *)g_malloc((profile->alloc_len + 1) * sizeof(*profile->buf));
+			profile->buf = g_new(char, (profile->alloc_len + 1));
 			if (profile->buf == NULL)
 				return FALSE;
 			profile->leng = fread(profile->buf, 1, profile->alloc_len, fp);
@@ -1261,14 +1261,11 @@ static gboolean Profile_GetLongValue(Profile *profile, const char *section, cons
 static gboolean Profile_Realloc(Profile *profile, size_t newsize)
 {
 	char *newbuf;
-
-	if (profile->buf == NULL)
-		newbuf = (char *)g_malloc((newsize + 1) * sizeof(*profile->buf));
-	else
-		newbuf = (char *)g_realloc(profile->buf, (newsize + 1) * sizeof(*profile->buf));
+	
+	newbuf = g_renew(char, profile->buf, (newsize + 1));
 	if (newbuf == NULL)
 	{
-		newbuf = (char *)g_malloc((newsize + 1) * sizeof(*profile->buf));
+		newbuf = g_new(char, (newsize + 1));
 		if (newbuf == NULL)
 		{
 			return FALSE;
@@ -1638,7 +1635,7 @@ void Profile_WriteString(Profile *profile, const char *section, const char *key,
 			}
 			p++;
 		}
-		newstr = (char *)g_malloc((len + 1) * sizeof(*newstr));
+		newstr = g_new(char, (len + 1));
 		if (newstr != NULL)
 		{
 			dest = newstr;
@@ -2213,7 +2210,7 @@ void HypProfile_Load(void)
 	if (!Profile_ReadString(profile, "HypView", "SKIN", &gl_profile.viewer.skin_path))
 		{}
 	if (!Profile_ReadString(profile, "HypView", "LASTFILE", &gl_profile.viewer.last_file))
-		setdefault(gl_profile.viewer.last_file = NULL);
+		gl_profile.viewer.last_file = NULL;
 	if (!Profile_ReadInt(profile, "HypView", "STARTUP", &gl_profile.viewer.startup))
 		setdefault(gl_profile.viewer.startup = 0);
 	
@@ -2420,6 +2417,9 @@ void HypProfile_Load(void)
 #undef setdefault
 
 	gl_profile.viewer.ascii_break_len = min(LINE_BUF - 1, max(0, gl_profile.viewer.ascii_break_len));
+	
+	if (profile->changed)
+		HypProfile_Save(FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/

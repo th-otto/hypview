@@ -118,9 +118,9 @@ static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 
 	if (line >= 0)
 	{
-		if (line != win->docsize.y)
+		if (line != win->docsize.y / win->y_raster)
 		{
-			win->docsize.y = line;
+			win->docsize.y = line * win->y_raster;
 			SendRedraw(win);
 			SetWindowSlider(win);
 		}
@@ -139,7 +139,7 @@ gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii)
 {
 	DOCUMENT *doc = win->data;
 	char *ptr;
-	long line = win->docsize.y;
+	long line = win->docsize.y / win->y_raster;
 
 	if (!ascii)
 		return FALSE;
@@ -159,7 +159,9 @@ gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii)
 			doc->autolocator_dir = 0;
 			line--;
 		} else
+		{
 			line++;
+		}
 	} else if (ascii == 27)				/* Escape */
 	{
 		if (ptr > win->autolocator)
@@ -241,6 +243,6 @@ void AutoLocatorPaste(WINDOW_DATA *win)
 		close(ret);
 
 		ToolbarUpdate(win, FALSE);
-		AutolocatorUpdate(win, win->docsize.y);
+		AutolocatorUpdate(win, win->docsize.y / win->y_raster);
 	}
 }

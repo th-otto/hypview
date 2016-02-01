@@ -173,7 +173,7 @@ char *g_strdup_vprintf(const char *format, va_list args)
 	{
 		unreachable();
 	}
-	res = g_realloc(res, (len + 1) * sizeof(char));
+	res = g_renew(char, res, (len + 1));
 #else
 	va_list args2;
 
@@ -189,7 +189,7 @@ char *g_strdup_vprintf(const char *format, va_list args)
 	if ((size_t)len >= initsize)
 	{
 		initsize = len + 1;
-		res = (char *)g_realloc(res, initsize * sizeof(char));
+		res = g_renew(char, res, initsize);
 		if (res != NULL)
 		{
 			len = vsnprintf(res, initsize, format, args2);

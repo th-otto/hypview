@@ -33,21 +33,21 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
-	long line = win->docsize.y;
+	long line = win->docsize.y / win->y_raster;
 	_WORD x, y;
 	_WORD end_y;
 	unsigned char *line_buffer;
 
 	WindowCalcScroll(win);
 
-	x = (_WORD)(win->scroll.g_x - win->docsize.x * win->y_raster);
+	x = (_WORD)(win->scroll.g_x - win->docsize.x);
 	y = win->scroll.g_y;
 
 	vswr_mode(vdi_handle, MD_TRANS);
 	vst_color(vdi_handle, viewer_colors.text);
 	vst_effects(vdi_handle, 0);
 
-	end_y = y + min((unsigned short) (doc->lines - win->docsize.y) * win->y_raster, win->scroll.g_h);
+	end_y = y + min((unsigned short) (win->docsize.h - win->docsize.y), win->scroll.g_h);
 	while (y < end_y)
 	{
 		line_buffer = AsciiGetTextLine(ascii->line_ptr[line], ascii->line_ptr[line + 1]);
@@ -68,7 +68,7 @@ void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
-	long line = y / win->y_raster + win->docsize.y;
+	long line = (y + win->docsize.y) / win->y_raster;
 	size_t i;
 	unsigned char *temp;
 	const unsigned char *src;
@@ -89,10 +89,10 @@ void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		pos->x = 0;
 		return;
 	}
-	if (line >= doc->lines)
+	if (line * win->y_raster >= win->docsize.h)
 	{
-		pos->line = doc->lines;
-		pos->y = doc->lines * win->y_raster;
+		pos->line = win->docsize.h / win->y_raster;
+		pos->y = win->docsize.h;
 		pos->offset = 0;
 		pos->x = 0;
 		return;

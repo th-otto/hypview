@@ -397,8 +397,7 @@ typedef struct
 	hyp_nodenr number;          /* Page number of this entry */
 	unsigned char *start;       /* Pointer to start of data */
 	unsigned char *end;         /* Pointer to end of data */
-	long lines, columns;        /* Number of lines and columns */
-	long height;
+	long width, height;
 	const unsigned char *window_title; /* Pointer to window title, in encoding of HYP */
 	LINEPTR *line_ptr;
 	struct hyp_gfx *gfx;		/* graphics commands */

@@ -11,11 +11,15 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 	GtkTextIter start, end;
 	char *txt;
 	
-	if (win == NULL || (doc = win->data) == NULL || doc->data == NULL || node == NULL || line < 0 || line >= node->lines)
+	if (win == NULL || (doc = win->data) == NULL || doc->data == NULL || node == NULL)
 		return NULL;
 
 	gtk_text_buffer_get_iter_at_line(win->text_buffer, &start, line);
-	gtk_text_buffer_get_iter_at_line(win->text_buffer, &end, line + 1);
+	if (gtk_text_iter_is_end(&start))
+		return NULL;
+	end = start;
+	if (!gtk_text_iter_forward_line(&end))
+		return NULL;
 	txt = gtk_text_buffer_get_text(win->text_buffer, &start, &end, FALSE);
 	if (txt && *txt)
 	{
@@ -31,7 +35,6 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 {
 	DOCUMENT *doc = hypwin_doc(win);
-	const char *src;
 	HYP_NODE *node;
 	char *temp;
 	size_t len;
@@ -52,23 +55,14 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 
 	if (doc->autolocator_dir > 0)
 	{
-		while (line < node->lines)
+		while ((temp = HypGetTextLine(win, node, line)) != NULL)
 		{
-			temp = HypGetTextLine(win, node, line);
-			if (temp != NULL)
+			if (g_utf8_strcasestr(temp, search) != NULL)
 			{
-				src = temp;
-				while (*src)
-				{
-					if (g_utf8_strncasecmp(src, search, len) == 0)
-					{
-						g_free(temp);
-						return line;
-					}
-					src++;
-				}
 				g_free(temp);
+				return line;
 			}
+			g_free(temp);
 			line++;
 		}
 	} else
@@ -78,15 +72,10 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
-				src = temp;
-				while (*src)
+				if (g_utf8_strcasestr(temp, search) != NULL)
 				{
-					if (g_utf8_strncasecmp(src, search, len) == 0)
-					{
-						g_free(temp);
-						return line;
-					}
-					src++;
+					g_free(temp);
+					return line;
 				}
 				g_free(temp);
 			}

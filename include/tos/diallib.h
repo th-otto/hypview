@@ -141,10 +141,8 @@ struct _window_data_
 	short	y_speed;
 	short	x_margin_left, x_margin_right;
 	short	y_margin_top, y_margin_bottom;
-#if USE_LOGICALRASTER
 	short	x_raster;
 	short	y_raster;
-#endif
 #if USE_TOOLBAR
 	OBJECT *toolbar;
 	short	x_offset;
@@ -293,7 +291,7 @@ void OpenWindow(WINDOW_DATA *win);
 void CloseWindow(WINDOW_DATA *ptr);
 void CloseAllWindows(void);
 void RemoveWindow(WINDOW_DATA *ptr);
-gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *rel_x, _WORD *rel_y);
+gboolean ScrollWindow(WINDOW_DATA *ptr, WP_UNIT rel_x, WP_UNIT rel_y);
 void WindowEvents(WINDOW_DATA *ptr, EVNT *event);
 void SetWindowSlider(WINDOW_DATA *ptr);
 void ResizeWindow(WINDOW_DATA *ptr, WP_UNIT max_w, WP_UNIT max_h);

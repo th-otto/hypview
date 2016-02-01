@@ -2,8 +2,8 @@ typedef struct
 {
 	long length;
 	unsigned char **line_ptr;
-	long line_height;			/* copy of win->y_raster */
-	long char_width;			/* copy of win->x_raster */
+	long lines;
+	long columns;
 	unsigned char start[1];
 } FMT_ASCII;
 

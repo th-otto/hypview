@@ -23,6 +23,7 @@
 
 #include "hv_defs.h"
 #include "hypview.h"
+#include "hypdebug.h"
 
 
 #if USE_TOOLBAR
@@ -76,10 +77,8 @@ WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT 
 	ptr->x_margin_right = 0;
 	ptr->y_margin_top = 0;
 	ptr->y_margin_bottom = 0;
-#if USE_LOGICALRASTER
 	ptr->x_raster = 1;
 	ptr->y_raster = 1;
-#endif
 #if USE_TOOLBAR
 	ptr->toolbar = NULL;
 	ptr->x_offset = 0;
@@ -116,17 +115,12 @@ WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT 
 
 			wind_calc_grect(WC_WORK, ptr->kind, &screen, &winsize);
 
-#if USE_LOGICALRASTER
 			winsize.g_w =
-				(short) min(DL_WIN_XADD(ptr) + ptr->docsize.w * ptr->x_raster,
+				(short) min(DL_WIN_XADD(ptr) + ptr->docsize.w,
 							winsize.g_w - (winsize.g_w - DL_WIN_XADD(ptr)) % ptr->x_raster);
 			winsize.g_h =
-				(short) min(DL_WIN_YADD(ptr) + ptr->docsize.h * ptr->y_raster,
+				(short) min(DL_WIN_YADD(ptr) + ptr->docsize.h,
 							winsize.g_h - (winsize.g_h - DL_WIN_YADD(ptr)) % ptr->y_raster);
-#else
-			winsize.g_w = min(DL_WIN_XADD(ptr) + ptr->docsize.w, winsize.g_w);
-			winsize.g_h = min(DL_WIN_YADD(ptr) + ptr->docsize.h, winsize.g_h);
-#endif
 
 			wind_calc_grect(WC_BORDER, ptr->kind, &winsize, &ptr->full);
 		}
@@ -162,7 +156,6 @@ void OpenWindow(WINDOW_DATA *win)
 	if (win->whandle < 0)
 		return;
 	
-#if USE_LOGICALRASTER
 	if (win->proc(win, WIND_OPENSIZE, &open_size))
 	{
 		GRECT real_worksize;
@@ -171,14 +164,11 @@ void OpenWindow(WINDOW_DATA *win)
 		wind_calc_grect(WC_WORK, win->kind, &open_size, &winsize);
 		real_worksize.g_x = winsize.g_x;
 		real_worksize.g_y = winsize.g_y;
-		real_worksize.g_w = (short) min(32000L, win->docsize.w * win->x_raster + DL_WIN_XADD(win));
-		real_worksize.g_h = (short) min(32000L, win->docsize.h * win->y_raster + DL_WIN_YADD(win));
+		real_worksize.g_w = (short) min(32000L, win->docsize.w + DL_WIN_XADD(win));
+		real_worksize.g_h = (short) min(32000L, win->docsize.h + DL_WIN_YADD(win));
 		rc_intersect(&real_worksize, &winsize);
 		wind_calc_grect(WC_BORDER, win->kind, &winsize, &open_size);
 	}
-#else
-	win->proc(win, WIND_OPENSIZE, &open_size);
-#endif
 
 	graf_growbox_grect(&small, &open_size);
 	if (wind_open_grect(win->whandle, &open_size))
@@ -291,112 +281,70 @@ void RemoveWindow(WINDOW_DATA *ptr)
 }
 
 
-gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
+gboolean ScrollWindow(WINDOW_DATA *win, WP_UNIT rel_x, WP_UNIT rel_y)
 {
-	WP_UNIT oy = ptr->docsize.y;
-	WP_UNIT ox = ptr->docsize.x;
+	WP_UNIT oy = win->docsize.y;
+	WP_UNIT ox = win->docsize.x;
 	MFDB screen = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	_WORD pxy[8] = { -99 };
-	_WORD rel_x, rel_y;
-	_WORD abs_rel_x, abs_rel_y, move_screen = TRUE;
+	_WORD pxy[8];
+	WP_UNIT abs_rel_x, abs_rel_y;
+	gboolean move_screen = TRUE;
 	GRECT work, box, redraw;
 	_WORD ret;
 	
-#if USE_LOGICALRASTER
-	short lines_width,
-	 lines_height;
-#endif
+	WP_UNIT lines_width;
+	WP_UNIT lines_height;
 
-	if (r_x)
-		rel_x = *r_x;
-	else
-		rel_x = 0;
-
-	if (r_y)
-		rel_y = *r_y;
-	else
-		rel_y = 0;
-
-	WindowCalcScroll(ptr);
-	work = ptr->scroll;
+	work = win->scroll;
 	
 	/* restrict rectangle to screen */
 	wind_get_grect(DESK, WF_WORKXYWH, &box);
 	rc_intersect(&box, &work);
 
-#if USE_LOGICALRASTER
-	lines_width = work.g_w / ptr->x_raster;
-	lines_height = work.g_h / ptr->y_raster;
-
+	lines_width = (win->scroll.g_w / win->x_raster) * win->x_raster;
+	lines_height = (win->scroll.g_h / win->y_raster) * win->y_raster;
+	
+	rel_x *= win->x_raster;
+	rel_y *= win->y_raster;
+	
 	if (rel_x < 0)
-		ptr->docsize.x = max(ptr->docsize.x + rel_x, 0);
-	else
 	{
-		ptr->docsize.x = min(ptr->docsize.x + rel_x, ptr->docsize.w - lines_width);
-		ptr->docsize.x = max(0, ptr->docsize.x);
+		win->docsize.x = max(win->docsize.x + rel_x, 0);
+	} else
+	{
+		win->docsize.x = min(win->docsize.x + rel_x, win->docsize.w - lines_width);
+		win->docsize.x = max(0, win->docsize.x);
 	}
 
 	if (rel_y < 0)
-		ptr->docsize.y = max(ptr->docsize.y + rel_y, 0);
-	else
 	{
-		ptr->docsize.y = min(ptr->docsize.y + rel_y, ptr->docsize.h - lines_height);
-		ptr->docsize.y = max(0, ptr->docsize.y);
+		win->docsize.y = max(win->docsize.y + rel_y, 0);
+	} else
+	{
+		win->docsize.y = min(win->docsize.y + rel_y, win->docsize.h - lines_height);
+		win->docsize.y = max(0, win->docsize.y);
 	}
-#else
-	if (rel_x < 0)
-		ptr->docsize.x = max(ptr->docsize.x + rel_x, 0);
-	else
+	
+	if (ox == win->docsize.x && oy == win->docsize.y)
 	{
-		ptr->docsize.x = min(ptr->docsize.x + rel_x, ptr->docsize.w - work.g_w);
-		ptr->docsize.x = max(0, ptr->docsize.x);
-	}
-
-	if (rel_y < 0)
-		ptr->docsize.y = max(ptr->docsize.y + rel_y, 0);
-	else
-	{
-		ptr->docsize.y = min(ptr->docsize.y + rel_y, ptr->docsize.h - work.g_h);
-		ptr->docsize.y = max(0, ptr->docsize.y);
-	}
-#endif
-
-	if ((ox == ptr->docsize.x) && (oy == ptr->docsize.y))
-	{
-		SetWindowSlider(ptr);
+		SetWindowSlider(win);
 		return FALSE;
 	}
 
-	rel_x = (short) (ptr->docsize.x - ox);
-	rel_y = (short) (ptr->docsize.y - oy);
-	if (r_x)
-		*r_x = rel_x;
-	if (r_y)
-		*r_y = rel_y;
+	rel_x = win->docsize.x - ox;
+	rel_y = win->docsize.y - oy;
 
-#if USE_LOGICALRASTER
-	if ((abs(ptr->docsize.x - ox) >= lines_width) || (abs(ptr->docsize.y - oy) >= lines_height))
-	{
-		move_screen = FALSE;
-		abs_rel_x = abs(rel_x);
-		abs_rel_y = abs(rel_y);
-	} else
-	{
-		rel_x = rel_x * ptr->x_raster;
-		rel_y = rel_y * ptr->y_raster;
-		abs_rel_x = abs(rel_x);
-		abs_rel_y = abs(rel_y);
-	}
-#else
 	abs_rel_x = abs(rel_x);
 	abs_rel_y = abs(rel_y);
-	if (abs_rel_x >= work.g_w || abs_rel_y >= work.g_h)
+	if (abs_rel_x >= lines_width || abs_rel_y >= lines_height)
+	{
 		move_screen = FALSE;
-#endif
+	}
 
 	graf_mouse(M_OFF, NULL);
 	wind_update(BEG_UPDATE);
-	ret = wind_get_grect(ptr->whandle, WF_FIRSTXYWH, &box);
+	work = win->scroll;
+	ret = wind_get_grect(win->whandle, WF_FIRSTXYWH, &box);
 
 	while (ret != 0 && box.g_w && box.g_h)
 	{
@@ -404,7 +352,7 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 		{
 			if (!move_screen || abs_rel_x >= box.g_w || abs_rel_y >= box.g_h)
 			{
-				ptr->proc(ptr, WIND_REDRAW, (void *) &box);
+				win->proc(win, WIND_REDRAW, (void *) &box);
 			} else
 			{
 				pxy[0] = box.g_x;
@@ -414,12 +362,12 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 
 				if (rel_x > 0)
 				{
-					pxy[0] += rel_x;
-					pxy[6] -= rel_x;
+					pxy[0] += (_WORD)rel_x;
+					pxy[6] -= (_WORD)rel_x;
 				} else if (rel_x < 0)
 				{
-					pxy[2] += rel_x;
-					pxy[4] -= rel_x;
+					pxy[2] += (_WORD)rel_x;
+					pxy[4] -= (_WORD)rel_x;
 				}
 
 				pxy[1] = box.g_y;
@@ -428,15 +376,15 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 				pxy[7] = box.g_y + box.g_h - 1;
 				if (rel_y > 0)
 				{
-					pxy[1] += rel_y;
-					pxy[7] -= rel_y;
+					pxy[1] += (_WORD)rel_y;
+					pxy[7] -= (_WORD)rel_y;
 				} else if (rel_y < 0)
 				{
-					pxy[3] += rel_y;
-					pxy[5] -= rel_y;
+					pxy[3] += (_WORD)rel_y;
+					pxy[5] -= (_WORD)rel_y;
 				}
 #if OPEN_VDI_WORKSTATION
-				vro_cpyfm(ptr->vdi_handle, 3, pxy, &screen, &screen);
+				vro_cpyfm(win->vdi_handle, 3, pxy, &screen, &screen);
 #elif USE_GLOBAL_VDI
 				vro_cpyfm(vdi_handle, 3, pxy, &screen, &screen);
 #endif
@@ -445,38 +393,38 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 
 				if (rel_x > 0)
 				{
-					redraw.g_x += box.g_w - rel_x;
-					redraw.g_w = rel_x;
-					box.g_w -= rel_x;
+					redraw.g_x += box.g_w - (_WORD)rel_x;
+					redraw.g_w = (_WORD)rel_x;
+					box.g_w -= (_WORD)rel_x;
 				} else if (rel_x < 0)
 				{
-					redraw.g_w = -rel_x;
-					box.g_x -= rel_x;
-					box.g_w += rel_x;
+					redraw.g_w = -(_WORD)rel_x;
+					box.g_x -= (_WORD)rel_x;
+					box.g_w += (_WORD)rel_x;
 				}
 
 				if (rel_x)
-					ptr->proc(ptr, WIND_REDRAW, (void *) &redraw);
+					win->proc(win, WIND_REDRAW, (void *) &redraw);
 
 				redraw = box;
 
 				if (rel_y > 0)
 				{
-					redraw.g_y += box.g_h - rel_y;
-					redraw.g_h = rel_y;
+					redraw.g_y += box.g_h - (_WORD)rel_y;
+					redraw.g_h = (_WORD)rel_y;
 				} else if (rel_y < 0)
 				{
-					redraw.g_h = -rel_y;
+					redraw.g_h = -(_WORD)rel_y;
 				}
 
 				if (rel_y)
-					ptr->proc(ptr, WIND_REDRAW, (void *) &redraw);
+					win->proc(win, WIND_REDRAW, (void *) &redraw);
 			}
 		}
 
-		ret = wind_get_grect(ptr->whandle, WF_NEXTXYWH, &box);
+		ret = wind_get_grect(win->whandle, WF_NEXTXYWH, &box);
 	}
-	SetWindowSlider(ptr);
+	SetWindowSlider(win);
 	wind_update(END_UPDATE);
 	graf_mouse(M_ON, NULL);
 
@@ -484,9 +432,9 @@ gboolean ScrollWindow(WINDOW_DATA *ptr, _WORD *r_x, _WORD *r_y)
 }
 
 
-void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
+void WindowEvents(WINDOW_DATA *win, EVNT *event)
 {
-	if (ptr->status & WIS_ICONIFY)
+	if (win->status & WIS_ICONIFY)
 	{
 		if (event->mwhich & MU_KEYBD)
 			event->mwhich &= ~MU_KEYBD;
@@ -514,24 +462,24 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 #if USE_TOOLBAR
 		GRECT toolbar;
 
-		wind_get_grect(ptr->whandle, WF_WORKXYWH, &toolbar);
+		wind_get_grect(win->whandle, WF_WORKXYWH, &toolbar);
 
-		if (ptr->toolbar)
+		if (win->toolbar)
 		{
-			ptr->toolbar->ob_x = toolbar.g_x;
-			ptr->toolbar->ob_y = toolbar.g_y;
+			win->toolbar->ob_x = toolbar.g_x;
+			win->toolbar->ob_y = toolbar.g_y;
 
-			if (ptr->y_offset)
+			if (win->y_offset)
 			{
-				ptr->toolbar->ob_width = toolbar.g_w;
-				toolbar.g_h = DL_WIN_YADD(ptr);
-			} else if (ptr->x_offset)
+				win->toolbar->ob_width = toolbar.g_w;
+				toolbar.g_h = DL_WIN_YADD(win);
+			} else if (win->x_offset)
 			{
-				ptr->toolbar->ob_height = toolbar.g_h;
-				toolbar.g_h = DL_WIN_XADD(ptr);
+				win->toolbar->ob_height = toolbar.g_h;
+				toolbar.g_h = DL_WIN_XADD(win);
 			}
 
-			ptr->proc(ptr, WIND_TBUPDATE, &toolbar);
+			win->proc(win, WIND_TBUPDATE, &toolbar);
 
 			/* click i toolbar? */
 			if ((event->mx >= toolbar.g_x) && (event->my >= toolbar.g_y) &&
@@ -540,43 +488,43 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 				_WORD num;
 
 				/* which object? */
-				num = objc_find(ptr->toolbar, 0, MAX_DEPTH, event->mx, event->my);
+				num = objc_find(win->toolbar, 0, MAX_DEPTH, event->mx, event->my);
 
 				/*
 				 * check for legal (>=0), selectable, and active object
 				 * with exit or touchexit flag
 				 */
-				if ((num >= 0) && (ptr->toolbar[num].ob_flags & OF_SELECTABLE) &&
-					!(ptr->toolbar[num].ob_state & OS_DISABLED) &&
-					(ptr->toolbar[num].ob_flags & (OF_EXIT | OF_TOUCHEXIT)))
+				if ((num >= 0) && (win->toolbar[num].ob_flags & OF_SELECTABLE) &&
+					!(win->toolbar[num].ob_state & OS_DISABLED) &&
+					(win->toolbar[num].ob_flags & (OF_EXIT | OF_TOUCHEXIT)))
 				{
-					if ((ptr->toolbar[num].ob_flags & OF_TOUCHEXIT) ||
-						((ptr->toolbar[num].ob_flags & OF_EXIT) && graf_watchbox(ptr->toolbar, num, OS_SELECTED, 0)))
+					if ((win->toolbar[num].ob_flags & OF_TOUCHEXIT) ||
+						((win->toolbar[num].ob_flags & OF_EXIT) && graf_watchbox(win->toolbar, num, OS_SELECTED, 0)))
 					{
 						evnt_timer_gemlib(10);
-						ptr->proc(ptr, WIND_TBCLICK, &num);
+						win->proc(win, WIND_TBCLICK, &num);
 					}
 				}
 			} else
 			{
-				ptr->proc(ptr, WIND_CLICK, event);
+				win->proc(win, WIND_CLICK, event);
 			}
 		} else
 		{
-			ptr->proc(ptr, WIND_CLICK, event);
+			win->proc(win, WIND_CLICK, event);
 		}
 #else
-		ptr->proc(ptr, WIND_CLICK, event);
+		win->proc(win, WIND_CLICK, event);
 #endif
 	}
 	if (event->mwhich & MU_KEYBD)
 	{
 		ConvertKeypress(&event->key, &event->kstate);
-		ptr->proc(ptr, WIND_KEYPRESS, event);
+		win->proc(win, WIND_KEYPRESS, event);
 	}
 	if (event->mwhich & MU_MESAG)
 	{
-		if (event->msg[3] != ptr->whandle)	/* message for a different window?*/
+		if (event->msg[3] != win->whandle)	/* message for a different window?*/
 			return;
 
 		event->mwhich &= ~MU_MESAG;
@@ -588,9 +536,10 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 				_WORD ret;
 				
 				wind_update(BEG_UPDATE);
-				if (ptr->status & WIS_ICONIFY)
+				WindowCalcScroll(win);
+				if (win->status & WIS_ICONIFY)
 				{
-					wind_get_grect(event->msg[3], WF_WORKXYWH, &box);
+					box = win->work;
 					dial_library_tree[0].ob_x = box.g_x;
 					dial_library_tree[0].ob_y = box.g_y;
 					ret = wind_get_grect(event->msg[3], WF_FIRSTXYWH, &box);
@@ -607,23 +556,23 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 #if USE_TOOLBAR
 					GRECT toolbar;
 
-					wind_get_grect(event->msg[3], WF_WORKXYWH, &toolbar);
-					if (ptr->toolbar)
+					toolbar = win->work;
+					if (win->toolbar)
 					{
-						ptr->toolbar->ob_x = toolbar.g_x;
-						ptr->toolbar->ob_y = toolbar.g_y;
-						if (ptr->y_offset)	/* horizontal toolbar? */
+						win->toolbar->ob_x = toolbar.g_x;
+						win->toolbar->ob_y = toolbar.g_y;
+						if (win->y_offset)	/* horizontal toolbar? */
 						{
-							ptr->toolbar->ob_width = toolbar.g_w;	/* adjust object width */
-							toolbar.g_h = ptr->y_offset;
+							win->toolbar->ob_width = toolbar.g_w;	/* adjust object width */
+							toolbar.g_h = win->y_offset;
 						}
-						if (ptr->x_offset)	/* vertical toolbar? */
+						if (win->x_offset)	/* vertical toolbar? */
 						{
-							ptr->toolbar->ob_height = toolbar.g_h;	/* adjust object height */
-							toolbar.g_w = ptr->x_offset;
+							win->toolbar->ob_height = toolbar.g_h;	/* adjust object height */
+							toolbar.g_w = win->x_offset;
 						}
 
-						ptr->proc(ptr, WIND_TBUPDATE, &toolbar);
+						win->proc(win, WIND_TBUPDATE, &toolbar);
 					} else
 					{
 						toolbar.g_w = 0;
@@ -641,22 +590,22 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 						temp_tbar = toolbar;
 						if (rc_intersect(&box, &temp_tbar))
 						{
-							if (ptr->x_offset)	/* vertical toolbar? */
+							if (win->x_offset)	/* vertical toolbar? */
 							{
 								box.g_x += temp_tbar.g_w;
 								box.g_w -= temp_tbar.g_w;
 							}
-							if (ptr->y_offset)	/* horizontall Toolbar? */
+							if (win->y_offset)	/* horizontal toolbar? */
 							{
 								box.g_y += temp_tbar.g_h;
 								box.g_h -= temp_tbar.g_h;
 							}
 						}
 						if (rc_intersect((GRECT *) & event->msg[4], &temp_tbar))
-							objc_draw_grect(ptr->toolbar, 0, MAX_DEPTH, &temp_tbar);
+							objc_draw_grect(win->toolbar, 0, MAX_DEPTH, &temp_tbar);
 #endif
 						if (rc_intersect((GRECT *) & event->msg[4], &box))
-							ptr->proc(ptr, WIND_REDRAW, (void *) &box);
+							win->proc(win, WIND_REDRAW, (void *) &box);
 						ret = wind_get_grect(event->msg[3], WF_NEXTXYWH, &box);
 					}
 					graf_mouse(M_ON, NULL);
@@ -666,57 +615,51 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 			break;
 			
 		case WM_TOPPED:
-			if (ptr->proc(ptr, WIND_TOPPED, event))
+			if (win->proc(win, WIND_TOPPED, event))
 				wind_set_int(event->msg[3], WF_TOP, 0);
 			break;
 			
 		case WM_CLOSED:
-			RemoveWindow(ptr);
+			RemoveWindow(win);
 			break;
 
 		case WM_FULLED:
 			{
 				GRECT big;
 
-				if (ptr->status & WIS_FULL)
+				if (win->status & WIS_FULL)
 				{
 					wind_get_grect(event->msg[3], WF_CURRXYWH, &big);
 
-					ptr->proc(ptr, WIND_FULLED, &ptr->last);
-					graf_shrinkbox_grect(&ptr->last, &big);
-					wind_set_grect(event->msg[3], WF_CURRXYWH, &ptr->last);
+					win->proc(win, WIND_FULLED, &win->last);
+					graf_shrinkbox_grect(&win->last, &big);
+					wind_set_grect(event->msg[3], WF_CURRXYWH, &win->last);
 
-					ptr->status &= ~WIS_FULL;
-					SetWindowSlider(ptr);
+					win->status &= ~WIS_FULL;
+					SetWindowSlider(win);
 				} else
 				{
-					GRECT win;
-					_WORD rel_x, rel_y;
+					WP_UNIT rel_x, rel_y;
 
-					wind_get_grect(event->msg[3], WF_CURRXYWH, &ptr->last);
+					wind_get_grect(event->msg[3], WF_CURRXYWH, &win->last);
 
-					ptr->proc(ptr, WIND_FULLED, &ptr->full);
-					graf_growbox_grect(&ptr->last, &ptr->full);
-					wind_set_grect(event->msg[3], WF_CURRXYWH, &ptr->full);
+					win->proc(win, WIND_FULLED, &win->full);
+					graf_growbox_grect(&win->last, &win->full);
+					wind_set_grect(event->msg[3], WF_CURRXYWH, &win->full);
 
-					ptr->status |= WIS_FULL;
+					win->status |= WIS_FULL;
 
-					wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-#if USE_LOGICALRASTER
-					rel_x = (short) ((ptr->docsize.w - ptr->docsize.x) - (win.g_w - DL_WIN_XADD(ptr)) / ptr->x_raster);
-					rel_y = (short) ((ptr->docsize.h - ptr->docsize.y) - (win.g_h - DL_WIN_YADD(ptr)) / ptr->y_raster);
-#else
-					rel_x = ptr->docsize.w - ptr->docsize.x - (win.g_w - DL_WIN_XADD(ptr));
-					rel_y = ptr->docsize.h - ptr->docsize.y - (win.g_h - DL_WIN_YADD(ptr));
-#endif
+					WindowCalcScroll(win);
+					rel_x = ((win->docsize.w - win->docsize.x) - (win->scroll.g_w - DL_WIN_XADD(win)) / win->x_raster);
+					rel_y = ((win->docsize.h - win->docsize.y) - (win->scroll.g_h - DL_WIN_YADD(win)) / win->y_raster);
 					if ((rel_x < 0) || (rel_y < 0))
 					{
 						rel_x = min(rel_x, 0);
 						rel_y = min(rel_y, 0);
-						ScrollWindow(ptr, &rel_x, &rel_y);
+						ScrollWindow(win, rel_x, rel_y);
 					} else
 					{
-						SetWindowSlider(ptr);
+						SetWindowSlider(win);
 					}
 				}
 			}
@@ -724,163 +667,164 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 			
 		case WM_ARROWED:
 			{
-				_WORD rel_x = 0, rel_y = 0;
-				GRECT win;
+				WP_UNIT rel_x = 0, rel_y = 0;
 
-				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-
-#if USE_TOOLBAR
-				/* take toolbar into account */
-				win.g_w -= DL_WIN_XADD(ptr);
-				win.g_h -= DL_WIN_YADD(ptr);
-#endif
+				WindowCalcScroll(win);
 
 				switch (event->msg[4])
 				{
-#if USE_LOGICALRASTER
 				case WA_UPPAGE:
-					rel_y = -win.g_h / ptr->y_raster;
+					rel_y = -win->scroll.g_h / win->y_raster;
 					break;
 				case WA_DNPAGE:
-					rel_y = win.g_h / ptr->y_raster;
+					rel_y = win->scroll.g_h / win->y_raster;
 					break;
 				case WA_LFPAGE:
-					rel_x = -win.g_w / ptr->x_raster;
+					rel_x = -win->scroll.g_w / win->x_raster;
 					break;
 				case WA_RTPAGE:
-					rel_x = win.g_w / ptr->x_raster;
+					rel_x = win->scroll.g_w / win->x_raster;
 					break;
-#else
-				case WA_UPPAGE:
-					rel_y = -win.g_h;
-					break;
-				case WA_DNPAGE:
-					rel_y = win.g_h;
-					break;
-				case WA_LFPAGE:
-					rel_x = -win.g_w;
-					break;
-				case WA_RTPAGE:
-					rel_x = win.g_w;
-					break;
-#endif
 				case WA_UPLINE:
-					rel_y = -ptr->y_speed;
+					rel_y = -win->y_speed;
 					break;
 				case WA_DNLINE:
-					rel_y = ptr->y_speed;
+					rel_y = win->y_speed;
 					break;
 				case WA_LFLINE:
-					rel_x = -ptr->x_speed;
+					rel_x = -win->x_speed;
 					break;
 				case WA_RTLINE:
-					rel_x = ptr->x_speed;
+					rel_x = win->x_speed;
 					break;
 				}
-				ScrollWindow(ptr, &rel_x, &rel_y);
+				ScrollWindow(win, rel_x, rel_y);
 			}
 			break;
 
 		case WM_HSLID:
 			{
 				_WORD rel_x;
-				GRECT win;
 
-				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-#if USE_LOGICALRASTER
+				WindowCalcScroll(win);
 				rel_x =
-					(short) ((event->msg[4] * (ptr->docsize.w - (win.g_w - DL_WIN_XADD(ptr)) / ptr->x_raster)) / 1000 -
-							 ptr->docsize.x);
-#else
-				rel_x =
-					(short) (((long) event->msg[4] * (ptr->docsize.w - win.g_w + DL_WIN_XADD(ptr))) / 1000L - ptr->docsize.x);
-#endif
-				ScrollWindow(ptr, &rel_x, NULL);
+					(short) (((event->msg[4] * (win->docsize.w - win->scroll.g_w) / 1000) - win->docsize.x) / win->x_raster);
+				ScrollWindow(win, rel_x, 0);
 			}
 			break;
 
 		case WM_VSLID:
 			{
 				_WORD rel_y;
-				GRECT win;
 
-				wind_get_grect(event->msg[3], WF_WORKXYWH, &win);
-#if USE_LOGICALRASTER
+				WindowCalcScroll(win);
 				rel_y =
-					(short) ((event->msg[4] * (ptr->docsize.h - (win.g_h - DL_WIN_YADD(ptr)) / ptr->y_raster)) / 1000 - ptr->docsize.y);
-#else
-				rel_y =
-					(short) (((long) event->msg[4] * (ptr->docsize.h - win.g_h + DL_WIN_YADD(ptr))) / 1000L - ptr->docsize.y);
-#endif
-				ScrollWindow(ptr, NULL, &rel_y);
+					(short) (((event->msg[4] * (win->docsize.h - win->scroll.g_h) / 1000) - win->docsize.y) / win->y_raster);
+				ScrollWindow(win, 0, rel_y);
 			}
 			break;
 
 		case WM_SIZED:
 			{
-				_WORD rel_x, rel_y;
+				GRECT area;
+				GRECT old_scroll;
+				
+				WindowCalcScroll(win);
+				old_scroll = win->scroll;
+				win->proc(win, WIND_SIZED, &event->msg[4]);
+				wind_set_grect(event->msg[3], WF_CURRXYWH, (GRECT *) &event->msg[4]);
+				win->status &= ~WIS_FULL;
 
-				ptr->proc(ptr, WIND_SIZED, &event->msg[4]);
-				wind_set_grect(event->msg[3], WF_CURRXYWH, (GRECT *) & event->msg[4]);
-				ptr->status &= ~WIS_FULL;
-
-				WindowCalcScroll(ptr);
-#if USE_LOGICALRASTER
-				rel_x = (short) ((ptr->docsize.w - ptr->docsize.x) - ptr->scroll.g_w / ptr->x_raster);
-				rel_y = (short) ((ptr->docsize.h - ptr->docsize.y) - ptr->scroll.g_h / ptr->y_raster);
-#else
-				rel_x = ptr->docsize.w - ptr->docsize.x - ptr->scroll.g_w;
-				rel_y = ptr->docsize.h - ptr->docsize.y - ptr->scroll.g_h;
+				WindowCalcScroll(win);
+				SetWindowSlider(win);
+				/*
+				 * the window manager might optimize away redraw events
+				 * if the window was made smaller, or send us only newly visible
+				 * areas. But we may need to clear the margins at the right/left,
+				 * and text might become visible that was previously cleared out
+				 * by the margins.
+				 * Send redraws for the affected areas.
+				 */
+#if 0
+				/* left */
+				area.g_x = win->scroll.g_x - win->x_margin_left;
+				area.g_y = win->scroll.g_y - win->y_margin_top;
+				area.g_w = win->x_margin_left * 2;
+				area.g_h = win->scroll.g_h + win->y_margin_top + win->y_margin_bottom;
+				SendRedrawArea(win, &area);
 #endif
-				if (rel_x < 0 || rel_y < 0)
+				/* right */
+				area.g_x = win->scroll.g_x + win->scroll.g_w;
+				area.g_y = win->scroll.g_y - win->y_margin_top;
+				area.g_w = win->x_margin_right;
+				area.g_h = win->scroll.g_h + win->y_margin_top + win->y_margin_bottom;
+				SendRedrawArea(win, &area);
+				if (win->scroll.g_w > old_scroll.g_w)
 				{
-					rel_x = min(rel_x, 0);
-					rel_y = min(rel_y, 0);
-					ScrollWindow(ptr, &rel_x, &rel_y);
-				} else
+					area.g_x = old_scroll.g_x + old_scroll.g_w - win->x_margin_right;
+					area.g_y = old_scroll.g_y - win->y_margin_top;
+					SendRedrawArea(win, &area);
+				}
+#if 0
+				/* top */
+				area.g_x = win->scroll.g_x - win->x_margin_left;
+				area.g_y = win->scroll.g_y - win->y_margin_top;
+				area.g_w = win->scroll.g_w + win->x_margin_left + win->x_margin_right;
+				area.g_h = win->y_margin_top * 2;
+				SendRedrawArea(win, &area);
+#endif
+				/* bottom */
+				area.g_x = win->scroll.g_x - win->x_margin_left;
+				area.g_y = win->scroll.g_y + win->scroll.g_h;
+				area.g_w = win->scroll.g_w + win->x_margin_left + win->x_margin_right;
+				area.g_h = win->y_margin_bottom;
+				SendRedrawArea(win, &area);
+				if (win->scroll.g_h > old_scroll.g_h)
 				{
-					SetWindowSlider(ptr);
+					area.g_x = old_scroll.g_x - win->x_margin_left;
+					area.g_y = old_scroll.g_y + old_scroll.g_h - win->y_margin_bottom;
+					SendRedrawArea(win, &area);
 				}
 			}
 			break;
 
 		case WM_MOVED:
-			ptr->proc(ptr, WIND_MOVED, &event->msg[4]);
+			win->proc(win, WIND_MOVED, &event->msg[4]);
 			wind_set_grect(event->msg[3], WF_CURRXYWH, (GRECT *) & event->msg[4]);
-			ptr->status &= ~WIS_FULL;
-			SetWindowSlider(ptr);
+			win->status &= ~WIS_FULL;
+			SetWindowSlider(win);
 			break;
 
 		case WM_NEWTOP:
-			ptr->proc(ptr, WIND_NEWTOP, NULL);
+			win->proc(win, WIND_NEWTOP, NULL);
 			break;
 
 		case WM_UNTOPPED:
-			ptr->proc(ptr, WIND_UNTOPPED, NULL);
+			win->proc(win, WIND_UNTOPPED, NULL);
 			break;
 
 		case WM_ONTOP:
-			ptr->proc(ptr, WIND_ONTOP, NULL);
+			win->proc(win, WIND_ONTOP, NULL);
 			break;
 
 		case WM_BOTTOMED:
-			if (ptr->proc(ptr, WIND_BOTTOM, event))
+			if (win->proc(win, WIND_BOTTOM, event))
 				wind_set_int(event->msg[3], WF_BOTTOM, 0);
 			break;
 
 		case WM_ICONIFY:
-			IconifyWindow(ptr, (GRECT *) & event->msg[4]);
-			ptr->proc(ptr, WIND_ICONIFY, (void *) &event->msg[4]);
+			IconifyWindow(win, (GRECT *) & event->msg[4]);
+			win->proc(win, WIND_ICONIFY, (void *) &event->msg[4]);
 			break;
 
 		case WM_UNICONIFY:
-			UniconifyWindow(ptr);
-			ptr->proc(ptr, WIND_UNICONIFY, (void *) &event->msg[4]);
+			UniconifyWindow(win);
+			win->proc(win, WIND_UNICONIFY, (void *) &event->msg[4]);
 			break;
 
 		case WM_ALLICONIFY:
 			AllIconify(event->msg[3], (GRECT *) & event->msg[4]);
-			ptr->proc(ptr, WIND_ALLICONIFY, (void *) &event->msg[4]);
+			win->proc(win, WIND_ALLICONIFY, (void *) &event->msg[4]);
 			break;
 
 		default:
@@ -890,112 +834,91 @@ void WindowEvents(WINDOW_DATA *ptr, EVNT *event)
 	}
 }
 
-void SetWindowSlider(WINDOW_DATA * ptr)
+void SetWindowSlider(WINDOW_DATA *win)
 {
-	GRECT win;
+	GRECT winsize;
 	long temp;
 
-	if (ptr->status & WIS_ICONIFY)
+	if (win->status & WIS_ICONIFY)
 		return;
 
-	wind_get_grect(ptr->whandle, WF_WORKXYWH, &win);
+	wind_get_grect(win->whandle, WF_WORKXYWH, &winsize);
 
-#if USE_LOGICALRASTER
-	temp = ptr->docsize.w - (win.g_w - DL_WIN_XADD(ptr)) / ptr->x_raster;
-#else
-	temp = ptr->docsize.w - (win.g_w - DL_WIN_XADD(ptr));
-#endif
+	temp = win->docsize.w - (winsize.g_w - DL_WIN_XADD(win));
 	if (temp > 0)
 	{
-		wind_set_int(ptr->whandle, WF_HSLIDE, (short) (ptr->docsize.x * 1000L / temp));
-#if USE_LOGICALRASTER
-		wind_set_int(ptr->whandle, WF_HSLSIZE, (short) ((win.g_w - DL_WIN_XADD(ptr)) / ptr->x_raster * 1000L / ptr->docsize.w));
-#else
-		wind_set_int(ptr->whandle, WF_HSLSIZE, (short) ((win.g_w - DL_WIN_XADD(ptr)) * 1000L / ptr->docsize.w));
-#endif
+		wind_set_int(win->whandle, WF_HSLIDE, (short) (win->docsize.x * 1000L / temp));
+		wind_set_int(win->whandle, WF_HSLSIZE, (short) ((winsize.g_w - DL_WIN_XADD(win)) * 1000L / win->docsize.w));
 	} else
 	{
-		wind_set_int(ptr->whandle, WF_HSLIDE, 1000);
-		wind_set_int(ptr->whandle, WF_HSLSIZE, 1000);
+		wind_set_int(win->whandle, WF_HSLIDE, 1000);
+		wind_set_int(win->whandle, WF_HSLSIZE, 1000);
 	}
-#if USE_LOGICALRASTER
-	temp = ptr->docsize.h - (win.g_h - DL_WIN_YADD(ptr)) / ptr->y_raster;
-#else
-	temp = ptr->docsize.h - (win.g_h - DL_WIN_YADD(ptr));
-#endif
+	temp = win->docsize.h - (winsize.g_h - DL_WIN_YADD(win));
 	if (temp > 0)
 	{
-		wind_set_int(ptr->whandle, WF_VSLIDE, (short) (ptr->docsize.y * 1000L / temp));
-#if USE_LOGICALRASTER
-		wind_set_int(ptr->whandle, WF_VSLSIZE, (short) ((win.g_h - DL_WIN_YADD(ptr)) * 1000L / ptr->y_raster / ptr->docsize.h));
-#else
-		wind_set_int(ptr->whandle, WF_VSLSIZE, (short) ((win.g_h - DL_WIN_YADD(ptr)) * 1000L / ptr->docsize.h));
-#endif
+		wind_set_int(win->whandle, WF_VSLIDE, (short) (win->docsize.y * 1000L / temp));
+		wind_set_int(win->whandle, WF_VSLSIZE, (short) ((winsize.g_h - DL_WIN_YADD(win)) * 1000L / win->docsize.h));
 	} else
 	{
-		wind_set_int(ptr->whandle, WF_VSLIDE, 1000);
-		wind_set_int(ptr->whandle, WF_VSLSIZE, 1000);
+		wind_set_int(win->whandle, WF_VSLIDE, 1000);
+		wind_set_int(win->whandle, WF_VSLSIZE, 1000);
 	}
 }
 
 
-void ResizeWindow(WINDOW_DATA *ptr, WP_UNIT max_w, WP_UNIT max_h)
+void ResizeWindow(WINDOW_DATA *win, WP_UNIT max_w, WP_UNIT max_h)
 {
 	GRECT wind;
 
 	wind_get_grect(DESK, WF_WORKXYWH, &wind);
-	wind_calc_grect(WC_WORK, ptr->kind, &wind, &wind);
-#if USE_LOGICALRASTER
-	wind.g_w = (short) min(DL_WIN_XADD(ptr) + max_w * ptr->x_raster, wind.g_w - (wind.g_w - DL_WIN_XADD(ptr)) % ptr->x_raster);
-	wind.g_h = (short) min(DL_WIN_YADD(ptr) + max_h * ptr->y_raster, wind.g_h - (wind.g_h - DL_WIN_YADD(ptr)) % ptr->y_raster);
-#else
-	wind.g_w = min(DL_WIN_XADD(ptr) + max_w, wind.g_w);
-	wind.g_h = min(DL_WIN_YADD(ptr) + max_h, wind.g_h);
-#endif
-	ptr->docsize.w = max_w;
-	ptr->docsize.h = max_h;
+	wind_calc_grect(WC_WORK, win->kind, &wind, &wind);
+	wind.g_w = (_WORD)min(DL_WIN_XADD(win) + max_w, wind.g_w);
+	wind.g_h = (_WORD)min(DL_WIN_YADD(win) + max_h, wind.g_h);
+	win->docsize.w = max_w;
+	win->docsize.h = max_h;
 
-	wind_calc_grect(WC_BORDER, ptr->kind, &wind, &ptr->full);
+	wind_calc_grect(WC_BORDER, win->kind, &wind, &win->full);
 }
 
 
-void IconifyWindow(WINDOW_DATA * ptr, GRECT * r)
+void IconifyWindow(WINDOW_DATA *win, GRECT *r)
 {
 	GRECT current_size;
 	GRECT new_pos;
 
-	if (ptr->status & WIS_ICONIFY)
+	if (win->status & WIS_ICONIFY)
 		return;
 
-	wind_get_grect(ptr->whandle, WF_CURRXYWH, &current_size);
-	wind_close(ptr->whandle);
-	wind_set_grect(ptr->whandle, WF_ICONIFY, r);
-	wind_set_grect(ptr->whandle, WF_UNICONIFYXYWH, &current_size);
-	wind_get_grect(ptr->whandle, WF_CURRXYWH, &new_pos);
+	wind_get_grect(win->whandle, WF_CURRXYWH, &current_size);
+	wind_close(win->whandle);
+	wind_set_grect(win->whandle, WF_ICONIFY, r);
+	wind_set_grect(win->whandle, WF_UNICONIFYXYWH, &current_size);
+	wind_get_grect(win->whandle, WF_CURRXYWH, &new_pos);
 	if (new_pos.g_x != -1)
 		graf_shrinkbox_grect(&new_pos, &current_size);
 
-	wind_get_grect(ptr->whandle, WF_WORKXYWH, &new_pos);
+	wind_get_grect(win->whandle, WF_WORKXYWH, &new_pos);
 	dial_library_tree[DI_ICON].ob_x = (new_pos.g_w - dial_library_tree[DI_ICON].ob_width) >> 1;
 	dial_library_tree[DI_ICON].ob_y = (new_pos.g_h - dial_library_tree[DI_ICON].ob_height) >> 1;
 
-	wind_open_grect(ptr->whandle, r);
-	ptr->status |= WIS_ICONIFY;
+	wind_open_grect(win->whandle, r);
+	win->status |= WIS_ICONIFY;
 	CycleItems();
 }
 
 
-void UniconifyWindow(WINDOW_DATA *ptr)
+void UniconifyWindow(WINDOW_DATA *win)
 {
 	GRECT small;
 	GRECT current_size;
 
-	if (!(ptr->status & WIS_ICONIFY))
+	if (!(win->status & WIS_ICONIFY))
 		return;
 
-	wind_get_grect(ptr->whandle, WF_CURRXYWH, &small);
+	wind_get_grect(win->whandle, WF_CURRXYWH, &small);
 
-	if ((CHAIN_DATA *) ptr == iconified_list[0])
+	if ((CHAIN_DATA *) win == iconified_list[0])
 	{
 		CHAIN_DATA *ptr2;
 
@@ -1009,14 +932,14 @@ void UniconifyWindow(WINDOW_DATA *ptr)
 		};
 		iconified_list[0] = NULL;
 		iconified_count = 0;
-		ptr->status &= ~WIS_ALLICONIFY;
+		win->status &= ~WIS_ALLICONIFY;
 	}
 
-	wind_get_grect(ptr->whandle, WF_UNICONIFY, &current_size);
+	wind_get_grect(win->whandle, WF_UNICONIFY, &current_size);
 	graf_growbox_grect(&small, &current_size);
-	wind_set_int(ptr->whandle, WF_TOP, 0);
-	wind_set_grect(ptr->whandle, WF_UNICONIFY, &current_size);
-	ptr->status &= ~WIS_ICONIFY;
+	wind_set_int(win->whandle, WF_TOP, 0);
+	wind_set_grect(win->whandle, WF_UNICONIFY, &current_size);
+	win->status &= ~WIS_ICONIFY;
 }
 
 #if USE_TOOLBAR
@@ -1068,52 +991,52 @@ void DrawToolbar(WINDOW_DATA * win)
 
 WINDOW_DATA *find_openwindow_by_whandle(short handle)
 {
-	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
+	WINDOW_DATA *win = (WINDOW_DATA *) all_list;
 
-	while (ptr)
+	while (win)
 	{
-		if ((ptr->type == WIN_WINDOW) && (ptr->whandle == handle) && (ptr->status & WIS_OPEN))
-			return (ptr);
-		ptr = ptr->next;
+		if ((win->type == WIN_WINDOW) && (win->whandle == handle) && (win->status & WIS_OPEN))
+			return win;
+		win = win->next;
 	}
 	return NULL;
 }
 
 WINDOW_DATA *find_window_by_whandle(short handle)
 {
-	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
+	WINDOW_DATA *win = (WINDOW_DATA *) all_list;
 
-	while (ptr)
+	while (win)
 	{
-		if ((ptr->type == WIN_WINDOW) && (ptr->whandle == handle))
-			return ptr;
-		ptr = ptr->next;
+		if ((win->type == WIN_WINDOW) && (win->whandle == handle))
+			return win;
+		win = win->next;
 	}
 	return NULL;
 }
 
 WINDOW_DATA *find_window_by_proc(HNDL_WIN proc)
 {
-	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
+	WINDOW_DATA *win = (WINDOW_DATA *) all_list;
 
-	while (ptr)
+	while (win)
 	{
-		if ((ptr->type == WIN_WINDOW) && (ptr->proc == proc))
-			return (ptr);
-		ptr = ptr->next;
+		if ((win->type == WIN_WINDOW) && (win->proc == proc))
+			return win;
+		win = win->next;
 	}
 	return NULL;
 }
 
 WINDOW_DATA *find_window_by_data(void *data)
 {
-	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
+	WINDOW_DATA *win = (WINDOW_DATA *) all_list;
 
-	while (ptr)
+	while (win)
 	{
-		if ((ptr->type == WIN_WINDOW) && (ptr->data == data))
-			return (ptr);
-		ptr = ptr->next;
+		if ((win->type == WIN_WINDOW) && (win->data == data))
+			return win;
+		win = win->next;
 	}
 	return NULL;
 }
@@ -1121,14 +1044,14 @@ WINDOW_DATA *find_window_by_data(void *data)
 int count_window(void)
 {
 	int i;
-	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
+	WINDOW_DATA *win = (WINDOW_DATA *) all_list;
 
 	i = 0;
-	while (ptr)
+	while (win)
 	{
-		if (ptr->type == WIN_WINDOW && ptr->owner == gl_apid)
+		if (win->type == WIN_WINDOW && win->owner == gl_apid)
 			i++;
-		ptr = ptr->next;
+		win = win->next;
 	}
 	return i;
 }

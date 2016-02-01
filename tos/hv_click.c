@@ -81,6 +81,8 @@ static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	return y;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
 static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
 {
 	while (gfx != NULL)

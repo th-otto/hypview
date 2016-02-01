@@ -157,7 +157,7 @@ static char *readline(FILE *fp)
 		if (sl >= linebuf_size)
 		{
 			linebuf_size += 1020;
-			linebuf = (char *) g_realloc(linebuf, linebuf_size + 1);
+			linebuf = g_renew(char, linebuf, linebuf_size + 1);
 			memassert(linebuf);
 		}
 		linebuf[sl++] = c;
@@ -165,7 +165,7 @@ static char *readline(FILE *fp)
 	if (sl >= linebuf_size)
 	{
 		linebuf_size += 1020;
-		linebuf = (char *) g_realloc(linebuf, linebuf_size + 1);
+		linebuf = g_renew(char, linebuf, linebuf_size + 1);
 		memassert(linebuf);
 	}
 	linebuf[sl] = '\0';

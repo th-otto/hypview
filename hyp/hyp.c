@@ -74,9 +74,8 @@ HYP_NODE *hyp_node_alloc(long size)
 		node->number = HYP_NOINDEX;
 		node->start = (unsigned char *)node + sizeof(*node);
 		node->end = &node->start[size];
-		node->lines = 0;
 		node->height = 0;
-		node->columns = 0;
+		node->width = 0;
 		node->window_title = NULL;
 		node->line_ptr = NULL;
 		node->gfx = NULL;

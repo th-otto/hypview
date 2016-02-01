@@ -495,7 +495,7 @@ char *hyp_conv_to_utf8(HYP_CHARSET charset, const void *src, size_t len)
 				hyp_put_unichar(p, wc);
 			}
 			*p++ = '\0';
-			dst = g_realloc(dst, p - dst);
+			dst = g_renew(char, dst, p - dst);
 		}
 	} else
 	{
@@ -636,7 +636,7 @@ char *hyp_utf8_casefold(const char *str, size_t len)
 	}
 	
 	*dst++ = '\0';
-	return g_realloc(result, dst - result);
+	return g_renew(char, result, dst - result);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1334,7 +1334,7 @@ char *hyp_wchar_to_utf8(const wchar_t *str, size_t wlen)
 		wlen--;
 	}
 	*p++ = '\0';
-	return g_realloc(dst, p - dst);
+	return g_renew(char, dst, p - dst);
 }
 
 /******************************************************************************/

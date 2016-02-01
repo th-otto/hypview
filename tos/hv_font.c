@@ -80,7 +80,7 @@ static void ApplyFont(void)
 			
 			if (ret)
 			{
-				doc->start_line = win->docsize.y;
+				doc->start_line = win->docsize.y / win->y_raster;
 
 				/* forget about "fulled" state */
 				win->status &= ~WIS_FULL;

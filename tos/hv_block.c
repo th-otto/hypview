@@ -103,14 +103,12 @@ void BlockOperation(WINDOW_DATA *win, short num)
 
 void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 {
-	DOCUMENT *doc = win->data;
-	
 	b->start.line = 0;
 	b->start.y = 0;
 	b->start.offset = 0;
 	b->start.x = 0;
-	b->end.line = doc->lines;
-	b->end.y = doc->height;
+	b->end.line = win->docsize.h / win->y_raster;
+	b->end.y = win->docsize.h;
 	b->end.offset = 0;
 	b->end.x = 0;
 	b->valid = TRUE;

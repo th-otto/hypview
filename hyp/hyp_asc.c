@@ -118,7 +118,7 @@ long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search)
 
 	if (doc->autolocator_dir > 0)
 	{
-		while (line < doc->lines)
+		while (line < ascii->lines)
 		{
 			src = ascii->line_ptr[line];
 			if (src)
@@ -178,7 +178,7 @@ gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, vo
 
 			line = block->start.line;
 
-			while ((line < doc->lines) && (line <= block->end.line))
+			while ((line < ascii->lines) && (line <= block->end.line))
 			{
 				line_buffer = AsciiGetTextLine(ascii->line_ptr[line], ascii->line_ptr[line + 1]);
 
@@ -244,8 +244,6 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 	{
 		ascii->length = file_len;
 		ascii->line_ptr = NULL;
-		ascii->line_height = font_ch;
-		ascii->char_width = font_cw;
 		
 		/* load file into memory */
 		ret = read(handle, ascii->start, file_len);
@@ -263,8 +261,8 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 			hyp_filetype type = HYP_FT_ASCII;
 
 			/* init lines and columns */
-			doc->lines = 1;
-			doc->columns = 0;
+			ascii->lines = 1;
+			ascii->columns = 0;
 			*end = 0;
 
 			/*
@@ -280,7 +278,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				{
 					unsigned char *old_ptr = ptr;
 
-					doc->lines++;		/* count lines */
+					ascii->lines++;		/* count lines */
 
 					/* search for beginning of word */
 					while (columns)
@@ -296,17 +294,17 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 					if (columns)
 					{
 						*ptr++ = '\n';	/* insert line break */
-						doc->columns = max(doc->columns, columns);
+						ascii->columns = max(ascii->columns, columns);
 					} else
 					{
 						ptr = old_ptr;
-						doc->columns = max(doc->columns, gl_profile.viewer.ascii_break_len);
+						ascii->columns = max(ascii->columns, gl_profile.viewer.ascii_break_len);
 					}
 					columns = 0;
 				} else if ((val == 0x0d) || (val == 0x0a))	/* CR or LF? */
 				{
-					doc->lines++;		/* count lines */
-					doc->columns = max(doc->columns, columns);
+					ascii->lines++;		/* count lines */
+					ascii->columns = max(ascii->columns, columns);
 					columns = 0;
 					ptr++;				/* skip line ending */
 					if (val == 0x0d && *ptr == 0x0a)
@@ -322,15 +320,14 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				} else
 				{
 					/* ... it is a binary file */
-					doc->lines = (file_len + gl_profile.viewer.binary_columns) / gl_profile.viewer.binary_columns;
-					doc->columns = gl_profile.viewer.binary_columns;
+					ascii->lines = (file_len + gl_profile.viewer.binary_columns) / gl_profile.viewer.binary_columns;
+					ascii->columns = gl_profile.viewer.binary_columns;
 					columns = 0;
 					type = HYP_FT_BINARY;
 					break;
 				}
 			}
 
-			doc->height = doc->lines * ascii->line_height;
 			doc->data = ascii;
 			doc->start_line = 0;
 			doc->type = type;
@@ -344,11 +341,11 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 			{
 				long line = 0;
 
-				doc->columns = max(doc->columns, columns);
+				ascii->columns = max(ascii->columns, columns);
 				ptr = (unsigned char *) &ascii->start;
 
 				/* allocate table of lines */
-				ascii->line_ptr = g_new(unsigned char *, doc->lines + 2);
+				ascii->line_ptr = g_new(unsigned char *, ascii->lines + 2);
 				if (ascii->line_ptr == NULL)
 				{
 					g_free(ascii);

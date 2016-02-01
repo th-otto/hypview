@@ -103,12 +103,4 @@ void FileErrorNr(const char *path, int err_no);
 void FileErrorErrno(const char *path);
 
 
-
-/*
- *		Autoloc.c
- */
-LINEPTR *HypGetYLine(HYP_NODE *node, long y);
-long HypGetLineY(HYP_NODE *node, long line);
-long HypGetRealTextLine(HYP_NODE *node, long y);
-
 #endif /* __HYPDEFS_H__ */

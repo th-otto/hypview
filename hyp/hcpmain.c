@@ -589,7 +589,7 @@ static char *stg_quote_name(HYP_CHARSET charset, const unsigned char *name, size
 			len--;
 		}
 		*str++ = '\0';
-		ret = (char *)g_realloc(ret, str - ret);
+		ret = g_renew(char, ret, str - ret);
 	}
 	g_free(buf);
 	return ret;

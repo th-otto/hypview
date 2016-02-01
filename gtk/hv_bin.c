@@ -17,7 +17,6 @@ void BinaryDisplayPage(WINDOW_DATA *win)
 void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
-	long line = -1;
 
 	if (doc->type != HYP_FT_BINARY)
 	{
@@ -25,24 +24,8 @@ void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	/* if line was not found in document... */
-	if (line < 0)
-	{
-		pos->line = 0;
-		pos->y = 0;
-		pos->offset = 0;
-		pos->x = 0;
-		return;
-	}
-	if (line >= doc->lines)
-	{
-		pos->line = doc->lines;
-		pos->y = doc->lines * win->y_raster;
-		pos->offset = 0;
-		pos->x = 0;
-		return;
-	}
 	/* not needed in GTK */
 	UNUSED(x);
 	UNUSED(y);
+	UNUSED(pos);
 }

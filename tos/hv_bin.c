@@ -39,25 +39,25 @@ void BinaryDisplayPage(WINDOW_DATA *win)
 	const unsigned char *src = ascii->start;
 	const unsigned char *end = src + ascii->length;
 
-	wind_get_grect(win->whandle, WF_WORKXYWH, &win->work);
+	WindowCalcScroll(win);
 
-	x = win->work.g_x - (short) (win->docsize.x) * font_cw;
-	y = win->work.g_y + win->y_offset;
+	x = (_WORD)(win->scroll.g_x - win->docsize.x);
+	y = win->scroll.g_y;
 
-	src += win->docsize.y * gl_profile.viewer.binary_columns;
-	end = min(end, src + ((unsigned long) win->work.g_h / win->y_raster) * gl_profile.viewer.binary_columns);
+	src += (win->docsize.y / win->y_raster) * gl_profile.viewer.binary_columns;
+	end = min(end, src + ((unsigned long) win->scroll.g_h / win->y_raster) * gl_profile.viewer.binary_columns);
 
 	vswr_mode(vdi_handle, MD_TRANS);
-	vst_color(vdi_handle, G_BLACK);
+	vst_color(vdi_handle, viewer_colors.text);
 	vst_effects(vdi_handle, 0);
 
 	while (src < end)
 	{
-		short i;
+		short i, n;
 		char *dst;
 
 		dst = line_buffer;
-		i = (short) min(gl_profile.viewer.binary_columns, end - src + 1);
+		n = i = (short) min(gl_profile.viewer.binary_columns, end - src);
 		while (i--)
 		{
 			if (*src)
@@ -69,7 +69,7 @@ void BinaryDisplayPage(WINDOW_DATA *win)
 			}
 		}
 		*dst = 0;
-		v_gtext(vdi_handle, x, y, line_buffer);
+		v_gtextn(vdi_handle, x, y, line_buffer, n);
 		y += win->y_raster;
 	}
 }
@@ -80,7 +80,7 @@ void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
-	long line = y / win->y_raster + win->docsize.y;
+	long line = (y + win->docsize.y) / win->y_raster;
 	_WORD i;
 	const unsigned char *start;
 	_WORD ext[8];
@@ -101,10 +101,10 @@ void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		pos->x = 0;
 		return;
 	}
-	if (line >= doc->lines)
+	if (line * win->y_raster >= win->docsize.h)
 	{
-		pos->line = doc->lines;
-		pos->y = doc->lines * win->y_raster;
+		pos->line = win->docsize.h / win->y_raster;
+		pos->y = win->docsize.h;
 		pos->offset = 0;
 		pos->x = 0;
 		return;

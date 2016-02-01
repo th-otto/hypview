@@ -12,7 +12,6 @@ struct _window_data_ { int dummy; };
 gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param)
 {
 	HYP_NODE *node;
-	DOCUMENT *doc = hypwin_doc(win);
 	node = hypwin_node(win);
 
 	switch (op)
@@ -33,8 +32,7 @@ gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void
 			}
 
 			line = block->start.line;
-
-			while ((line < doc->lines) && (line <= block->end.line))
+			while (line <= block->end.line)
 			{
 				line_buffer = HypGetTextLine(win, node, line);
 

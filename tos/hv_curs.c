@@ -49,10 +49,10 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 	hyp = doc->data;
 	node = win->displayed_node;
 
-	sy = -(win->docsize.y * win->y_raster);
+	sy = -win->docsize.y;
 	line_ptr = node->line_ptr;
 
-	while (line < node->lines)
+	while (sy < win->docsize.h)
 	{
 		long y2;
 
@@ -67,7 +67,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		line++;
 	}
 
-	if (line >= node->lines)
+	if (sy >= win->docsize.h)
 		return;
 
 	src = line_ptr->txt;
@@ -135,7 +135,6 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 					src += 3;
 
 					/* calculate width of link text honoring text effects */
-					vst_color(vdi_handle, viewer_colors.link);
 					vst_effects(vdi_handle, gl_profile.colors.link_effect | curr_txt_effect);
 
 					/* get link text */
@@ -169,7 +168,6 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 
 					x_pos += width;
 
-					vst_color(vdi_handle, viewer_colors.text);
 					vst_effects(vdi_handle, curr_txt_effect);
 					textstart = src;
 				}

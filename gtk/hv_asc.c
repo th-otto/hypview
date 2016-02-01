@@ -16,7 +16,6 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 
 void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
-	long line = -1;
 	DOCUMENT *doc = win->data;
 	
 	if (doc->type != HYP_FT_ASCII)
@@ -25,23 +24,8 @@ void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	if (line < 0)
-	{
-		pos->line = 0;
-		pos->y = 0;
-		pos->offset = 0;
-		pos->x = 0;
-		return;
-	}
-	if (line >= doc->lines)
-	{
-		pos->line = doc->lines;
-		pos->y = doc->lines * win->y_raster;
-		pos->offset = 0;
-		pos->x = 0;
-		return;
-	}
 	/* not needed in GTK */
 	UNUSED(x);
 	UNUSED(y);
+	UNUSED(pos);
 }

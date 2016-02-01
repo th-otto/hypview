@@ -72,7 +72,7 @@ void MarkerSave(WINDOW_DATA *win, short num)
 		return;
 
 	marken[num].node_num = doc->getNodeProc(win);
-	marken[num].line = (short) win->docsize.y;
+	marken[num].line = (short) win->docsize.y / win->y_raster;
 	strncpy(marken[num].path, doc->path, PATH_LEN - 1);
 	marken[num].path[PATH_LEN - 1] = 0;
 

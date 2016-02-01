@@ -67,6 +67,18 @@ void SendTopped(_WORD whandle)
 
 void SendRedraw(WINDOW_DATA *win)
 {
+	GRECT work;
+	
+	if (!(win->status & WIS_OPEN))
+		return;
+	wind_get_grect(win->whandle, WF_WORKXYWH, &work);
+	SendRedrawArea(win, &work);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void SendRedrawArea(WINDOW_DATA *win, const GRECT *area)
+{
 	_WORD msg[8];
 	
 	if (!(win->status & WIS_OPEN))
@@ -75,7 +87,10 @@ void SendRedraw(WINDOW_DATA *win)
 	msg[1] = gl_apid;
 	msg[2] = 0;
 	msg[3] = win->whandle;
-	wind_get_grect(win->whandle, WF_WORKXYWH, (GRECT *)&msg[4]);
+	msg[4] = area->g_x;
+	msg[5] = area->g_y;
+	msg[6] = area->g_w;
+	msg[7] = area->g_h;
 	appl_write(gl_apid, 16, msg);
 }
 
@@ -153,7 +168,7 @@ void WindowCalcScroll(WINDOW_DATA *win)
 	win->scroll.g_x = win->work.g_x + win->x_offset + win->x_margin_left;
 	win->scroll.g_y = win->work.g_y + win->y_offset + win->y_margin_top;
 	win->scroll.g_w = win->work.g_w - win->x_offset - win->x_margin_left - win->x_margin_right;
-	win->scroll.g_h = win->work.g_h - win->y_offset - win->y_margin_top - win->y_margin_top;
+	win->scroll.g_h = win->work.g_h - win->y_offset - win->y_margin_top - win->y_margin_bottom;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -175,7 +190,7 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 		return;
 
 	/* window size: at least 5 columns and 1 line */
-	ResizeWindow(win, max(doc->columns, 5), max(doc->lines, 1));
+	ResizeWindow(win, max(win->displayed_node->width, 5 * win->x_raster), max(win->displayed_node->height, 1 * win->y_raster));
 
 	wind_get_grect(win->whandle, WF_CURRXYWH, &curr);
 
@@ -194,7 +209,7 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	WindowCalcScroll(win);
 	visible_lines = (win->scroll.g_h + win->y_raster - 1) / win->y_raster;
 
-	win->docsize.y = min(doc->lines - visible_lines, doc->start_line);
+	win->docsize.y = min(win->docsize.h - visible_lines * win->y_raster, doc->start_line * win->y_raster);
 	win->docsize.y = max(0, win->docsize.y);
 	win->docsize.x = 0;
 
@@ -225,7 +240,7 @@ HYP_NODE *hypwin_node(WINDOW_DATA *win)
 gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 {
 	DOCUMENT *doc = (DOCUMENT *) win->data;
-
+	
 	switch (obj)
 	{
 	case WIND_INIT:
@@ -243,11 +258,11 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		win->y_offset = toolbar_tree[0].ob_height + 2;
 
 		/* window size: at least 5 columns and 1 line */
-		win->docsize.w = max(doc->columns, 5);
-		win->docsize.h = max(doc->lines, 1);
+		win->docsize.w = max(win->docsize.w, 5 * win->x_raster);
+		win->docsize.h = max(win->docsize.h, 1 * win->y_raster);
 
 		win->docsize.x = 0;
-		win->docsize.y = doc->start_line;
+		win->docsize.y = doc->start_line * win->y_raster;
 
 		DhstAddFile(doc->path);
 		break;
@@ -317,12 +332,12 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			_WORD pxy[4];
 			GRECT *box = (GRECT *) data;
-	
+			GRECT scroll;
+			
 			pxy[0] = box->g_x;
 			pxy[1] = box->g_y;
 			pxy[2] = box->g_x + box->g_w - 1;
 			pxy[3] = box->g_y + box->g_h - 1;
-	
 			vsf_color(vdi_handle, viewer_colors.background);
 			vsf_interior(vdi_handle, FIS_SOLID);
 			vswr_mode(vdi_handle, MD_REPLACE);
@@ -330,9 +345,17 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			vs_clip(vdi_handle, TRUE, pxy);	/* clipping ON */
 			vr_recfl(vdi_handle, pxy);		/* clear beackground */
 	
-			doc->displayProc(win);
-			DrawSelection(win);
-	
+			scroll = win->scroll;
+			if (rc_intersect(box, &scroll))
+			{
+				pxy[0] = scroll.g_x;
+				pxy[1] = scroll.g_y;
+				pxy[2] = scroll.g_x + scroll.g_w - 1;
+				pxy[3] = scroll.g_y + scroll.g_h - 1;
+				vs_clip(vdi_handle, TRUE, pxy);	/* clipping ON */
+				doc->displayProc(win);
+				DrawSelection(win);
+			}
 			vs_clip(vdi_handle, FALSE, pxy);	/* clipping OFF */
 		}
 		break;
@@ -413,40 +436,33 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					event->mwhich |= MU_KEYBD;
 			} else if (event->kstate & KbSHIFT)
 			{
-				_WORD val;
-				
+				WindowCalcScroll(win);
 				switch (scan)
 				{
 				case KbLEFT:
-					val = -win->scroll.g_w / win->x_raster;
-					ScrollWindow(win, &val, NULL);
+					ScrollWindow(win, -win->scroll.g_w / win->x_raster, 0);
 					break;
 				case KbRIGHT:
-					val = win->scroll.g_w / win->x_raster;
-					ScrollWindow(win, &val, NULL);
+					ScrollWindow(win, win->scroll.g_w / win->x_raster, 0);
 					break;
 				case KbUP:
-					val = -win->scroll.g_h / win->y_raster;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, -win->scroll.g_h / win->y_raster);
 					break;
 				case KbDOWN:
-					val = win->scroll.g_h / win->y_raster;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, win->scroll.g_h / win->y_raster);
 					break;
 				case KbHOME:
 				case KbEND:
 					win->docsize.x = 0;
-					win->docsize.y = win->docsize.h - win->scroll.g_h / win->y_raster;
+					win->docsize.y = win->docsize.h - win->scroll.g_h;
 					SetWindowSlider(win);
 					SendRedraw(win);
 					break;
 				case KbPAGEUP:
-					val = -(win->scroll.g_h) / win->y_raster;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, -win->scroll.g_h / win->y_raster);
 					break;
 				case KbPAGEDOWN:
-					val = (win->scroll.g_h) / win->y_raster;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, win->scroll.g_h / win->y_raster);
 					break;
 				case KbF11:
 				case KbF12:
@@ -522,14 +538,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					BlockOperation(win, CO_SWITCH_FONT);
 				} else if (scan == KbUP)
 				{
-					_WORD val = -win->scroll.g_h / win->y_raster;
-	
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, -win->scroll.g_h / win->y_raster);
 				} else if (scan == KbDOWN)
 				{
-					_WORD val = win->scroll.g_h / win->y_raster;
-	
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, win->scroll.g_h / win->y_raster);
 				} else if (scan == KbLEFT)
 				{
 					ToolbarClick(win, TO_PREV);
@@ -553,33 +565,26 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					event->mwhich |= MU_KEYBD;
 			} else if (event->kstate == 0)
 			{
-				_WORD val;
-				
+				WindowCalcScroll(win);
 				switch (scan)
 				{
 				case KbLEFT:
-					val = -win->x_speed;
-					ScrollWindow(win, &val, NULL);
+					ScrollWindow(win, -win->x_speed, 0);
 					break;
 				case KbRIGHT:
-					val = win->x_speed;
-					ScrollWindow(win, &val, NULL);
+					ScrollWindow(win, win->x_speed, 0);
 					break;
 				case KbUP:
-					val = -win->y_speed;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, -win->y_speed);
 					break;
 				case KbDOWN:
-					val = win->y_speed;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, win->y_speed);
 					break;
 				case KbPAGEUP:
-					val = -(win->scroll.g_h) / win->y_raster;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, -win->scroll.g_h / win->y_raster);
 					break;
 				case KbPAGEDOWN:
-					val = (win->scroll.g_h) / win->y_raster;
-					ScrollWindow(win, NULL, &val);
+					ScrollWindow(win, 0, win->scroll.g_h / win->y_raster);
 					break;
 				case KbHOME:
 					if (win->docsize.y)
@@ -592,7 +597,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					break;
 				case KbEND:
 					win->docsize.x = 0;
-					win->docsize.y = win->docsize.h - (win->scroll.g_h) / win->y_raster;
+					win->docsize.y = win->docsize.h - win->scroll.g_h;
 					SetWindowSlider(win);
 					SendRedraw(win);
 					break;

@@ -28,7 +28,6 @@
 typedef struct
 {
 	DOCUMENT doc;
-	long lines, columns, height;
 	short x, y;
 	void *entry;
 	WINDOW_DATA *parentwin;
@@ -49,8 +48,11 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		win->x_raster = font_cw;
 		win->y_raster = font_ch;
 
-		win->docsize.w = popup->columns;
-		win->docsize.h = popup->lines;
+		win->y_margin_top = gl_profile.viewer.text_yoffset;
+		win->y_margin_bottom = gl_profile.viewer.text_yoffset;
+		win->x_margin_left = gl_profile.viewer.text_xoffset;
+		win->x_margin_right = gl_profile.viewer.text_xoffset;
+		
 		break;
 	case WIND_EXIT:
 		popup->parentwin->popup = NULL;
@@ -71,6 +73,8 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			if (popup->y + osize->g_h > screen.g_y + screen.g_h)
 				popup->y = screen.g_y + screen.g_h - osize->g_h;
 			osize->g_y = max(screen.g_y, popup->y);
+			osize->g_w = screen.g_w;
+			osize->g_h = screen.g_h;
 		}
 		break;
 	case WIND_CLOSE:
@@ -79,10 +83,6 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		{
 			_WORD pxy[4];
 			GRECT *box = (GRECT *) data;
-			DOCUMENT *doc = &popup->doc;
-			long old_lines = doc->lines;
-			long old_height = doc->height;
-			long old_columns = doc->columns;
 	
 			pxy[0] = box->g_x;
 			pxy[1] = box->g_y;
@@ -95,15 +95,7 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			vswr_mode(vdi_handle, MD_REPLACE);
 			vr_recfl(vdi_handle, pxy);		/* clear background */
 	
-			doc->lines = popup->lines;
-			doc->height = popup->height;
-			doc->columns = popup->columns;
-	
 			HypDisplayPage(win);
-	
-			doc->lines = old_lines;
-			doc->height = old_height;
-			doc->columns = old_columns;
 	
 			vs_clip(vdi_handle, FALSE, pxy);	/* clipping OFF */
 		}
@@ -153,47 +145,38 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 	if (popup != NULL)
 	{
 		GRECT work;
-		long old_lines = doc->lines;
-		long old_height = doc->height;
-		long old_columns = doc->columns;
-		hyp_nav_buttons old_buttons = doc->buttons;
 		char *old_wtitle = win->title;
+		gboolean ret;
 		
-		if (doc->gotoNodeProc(win, NULL, num))
-		{
-			wind_get_grect(win->whandle, WF_WORKXYWH, &work);
-	
-			popup->doc = *doc;
-			popup->lines = doc->height;
-			popup->columns = doc->columns;
-			popup->height = doc->height;
-			popup->x = x + win->scroll.g_x;
-			popup->y = y + win->scroll.g_y;
-			popup->entry = win->displayed_node;
-			popup->parentwin = win;
-			
-			doc->lines = old_lines;
-			doc->height = old_height;
-			doc->columns = old_columns;
-			doc->buttons = old_buttons;
-			if (old_wtitle != win->title)
-			{
-				g_free(win->title);
-				win->title = old_wtitle;
-			}
-			
-			win->popup = hv_win_new(&popup->doc, TRUE);
-			if (win->popup == NULL)
-			{
-				g_free(popup);
-			} else
-			{
-				ReInitWindow(win->popup, FALSE);
-				hv_win_open(win->popup);
-			}
-		} else
+		popup->doc = *doc;
+		popup->parentwin = win;
+		win->popup = hv_win_new(&popup->doc, TRUE);
+		if (win->popup == NULL)
 		{
 			g_free(popup);
+		} else
+		{
+			ret = doc->gotoNodeProc(win->popup, NULL, num);
+			if (ret)
+			{
+				wind_get_grect(win->whandle, WF_WORKXYWH, &work);
+		
+				popup->x = x + win->scroll.g_x;
+				popup->y = y + win->scroll.g_y;
+				popup->entry = win->displayed_node;
+				
+				if (old_wtitle != win->title)
+				{
+					g_free(win->title);
+					win->title = old_wtitle;
+				}
+				
+				ReInitWindow(win->popup, FALSE);
+				hv_win_open(win->popup);
+			} else
+			{
+				RemoveWindow(win->popup);
+			}
 		}
 	}
 	

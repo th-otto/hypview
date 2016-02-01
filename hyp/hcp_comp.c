@@ -878,7 +878,7 @@ static char *readline(hcp_vars *vars, FILE *fp)
 		if (sl >= vars->linebuf_size)
 		{
 			vars->linebuf_size += 1020;
-			vars->linebuf = (char *) g_realloc(vars->linebuf, vars->linebuf_size + 1);
+			vars->linebuf = g_renew(char, vars->linebuf, vars->linebuf_size + 1);
 			if (G_UNLIKELY(vars->linebuf == NULL))
 			{
 				oom(vars);
@@ -890,7 +890,7 @@ static char *readline(hcp_vars *vars, FILE *fp)
 	if (sl >= vars->linebuf_size)
 	{
 		vars->linebuf_size += 1020;
-		vars->linebuf = (char *) g_realloc(vars->linebuf, vars->linebuf_size + 1);
+		vars->linebuf = g_renew(char, vars->linebuf, vars->linebuf_size + 1);
 		if (G_UNLIKELY(vars->linebuf == NULL))
 		{
 			oom(vars);
@@ -921,7 +921,7 @@ static LABEL *add_label(hcp_vars *vars, const char *name, labeltype type)
 	{
 		LABIDX new_size = vars->p1_lab_alloc + 1024;
 		
-		vars->label_table = (LABEL **)g_realloc(vars->label_table, new_size * sizeof(LABEL *));
+		vars->label_table = g_renew(LABEL *, vars->label_table, new_size);
 		if (vars->label_table == NULL)
 		{
 			oom(vars);
@@ -1027,7 +1027,7 @@ static NODEITEM *add_node(hcp_vars *vars, const char *name)
 		if (new_size > HYP_NODE_MAX)
 			new_size = HYP_NODE_MAX;
 		
-		vars->node_table = (NODEITEM **)g_realloc(vars->node_table, new_size * sizeof(NODEITEM *));
+		vars->node_table = g_renew(NODEITEM *, vars->node_table, new_size);
 		if (vars->node_table == NULL)
 		{
 			oom(vars);
@@ -1093,7 +1093,7 @@ static INDEX_ENTRY *add_external_node(hcp_vars *vars, hyp_indextype type, const 
 		if (new_size > HYP_NODE_MAX)
 			new_size = HYP_NODE_MAX;
 		
-		vars->extern_table = (INDEX_ENTRY **)g_realloc(vars->extern_table, new_size * sizeof(INDEX_ENTRY *));
+		vars->extern_table = g_renew(INDEX_ENTRY *, vars->extern_table, new_size);
 		if (vars->extern_table == NULL)
 		{
 			oom(vars);
@@ -1798,7 +1798,7 @@ static char *replace_define(hcp_vars *vars, HCP_DEFINE *d, char *line, char *end
 		 */
 		size_t start = line - *linep;
 		
-		*linep = (char *)g_realloc(*linep, strlen(*linep) + 1 + (vallen - namelen));
+		*linep = g_renew(char, *linep, strlen(*linep) + 1 + (vallen - namelen));
 		if (G_UNLIKELY(*linep == NULL))
 		{
 			oom(vars);
@@ -2089,7 +2089,7 @@ static void addbyte(hcp_vars *vars, unsigned char ch)
 		{
 			size_t newsize = vars->page_alloced + 1024 * 4;
 			
-			vars->page_buf = (unsigned char *)g_realloc(vars->page_buf, newsize * sizeof(*vars->page_buf));
+			vars->page_buf = g_renew(unsigned char, vars->page_buf, newsize);
 			if (vars->page_buf == NULL)
 			{
 				oom(vars);
@@ -7090,7 +7090,7 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 	newsize = vars->page_used + pic.pi_picsize;
 	if (newsize > vars->page_alloced)
 	{
-		vars->page_buf = (unsigned char *)g_realloc(vars->page_buf, newsize * sizeof(*vars->page_buf));
+		vars->page_buf = g_renew(unsigned char, vars->page_buf, newsize);
 		if (vars->page_buf == NULL)
 		{
 			oom(vars);
