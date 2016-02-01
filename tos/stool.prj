@@ -51,6 +51,7 @@ h:\src\udo\tools\hypview\tos\nf_stder.c
 h:\src\udo\tools\hypview\tos\nf_vers.c
 
 h:\src\udo\tools\hypview\tos\dirent.c
+h:\src\udo\tools\hypview\hyp\tos\malloc.c
 
 pcgemlib.lib
 pctoslib.lib

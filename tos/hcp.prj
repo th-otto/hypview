@@ -73,6 +73,9 @@ h:\src\udo\tools\hypview\hyp\utl_err.c
 h:\src\udo\tools\hypview\hyp\xgetopt.c
 h:\src\udo\tools\hypview\hyp\str2imax.c
 
+h:\src\udo\tools\hypview\hyp\tos\mkdir.c
+h:\src\udo\tools\hypview\hyp\tos\malloc.c
 
 pctoslib.lib
 pcstdlib.lib
+pcextlib.lib ; for sleep()

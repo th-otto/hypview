@@ -15,6 +15,7 @@ help_rc.ttp
 cstartv.o
 
 h:\src\udo\tools\hypview\tools\help_rc.c
+h:\src\udo\tools\hypview\hyp\tos\malloc.c
 
 pcgemlib.lib
 pctoslib.lib
