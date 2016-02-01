@@ -5750,6 +5750,10 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		entry = add_external_node(vars, HYP_NODE_XLINK, dest);
 		if (G_UNLIKELY(entry == NULL))
 			return len;
+		/*
+		 * lineno will be resolved in finish_pass1(),
+		 * since it can also be label name
+		 */
 		entry->xlink_lineno = lineno;
 
 		/* check for RSC link */
@@ -5828,7 +5832,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		entry = vars->extern_table[vars->p2_external_node_counter];
 		vars->p2_external_node_counter++;
 		lineno = entry->xlink_lineno;
-		have_lineno = lineno != HYP_NOINDEX;
+		have_lineno = lineno != HYP_NOINDEX && lineno > 0;
 		if (entry->type == HYP_NODE_INTERNAL || entry->type == HYP_NODE_POPUP)
 		{
 			/*
