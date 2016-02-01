@@ -140,6 +140,7 @@ void _mallocChunkSize(size_t chunksize)
 
 #define MEM_MAGIC_NEW_ALLOCATED 0xbb
 #define MEM_MAGIC_FREED         0x99
+#define MEM_MAGIC_END			0xaa
 
 #if DEBUG_ALLOC >= 3
 static unsigned long cur_mallocs;
@@ -150,6 +151,8 @@ static unsigned long total_frees;
 
 
 /* definitions needed in malloc.c and realloc.c */
+
+#define MEM_MAGIC_SIZE 4
 
 struct mem_chunk 
 {
@@ -165,30 +168,124 @@ struct mem_chunk
 	const char *file;
 	long line;
 #endif
+#if DEBUG_ALLOC >= 1
+	struct mem_chunk *next_alloc;
+	unsigned char checker[MEM_MAGIC_SIZE];
+#endif
 	/* size_t alloc_size; */
 };
 
 #define MALLOC_ALIGNMENT 4
 #define SBRK_SIZE(ch) (*(size_t *)((char *)(ch) + sizeof(*(ch))))
-#define ALLOC_EXTRA ((sizeof(struct mem_chunk) + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1))
+#define SIZEOF_MEM_CONTROL ((sizeof(struct mem_chunk) + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1))
 #define SBRK_EXTRA ((sizeof(struct mem_chunk) + sizeof(size_t) + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1))
+
+#if DEBUG_ALLOC
+#define EXTRA_MEM (SIZEOF_MEM_CONTROL + sizeof(unsigned char) * MEM_MAGIC_SIZE)
+#else
+#define EXTRA_MEM (SIZEOF_MEM_CONTROL)
+#endif
+
 
 /* flag to control zero'ing of malloc'ed chunks */
 #define ZeroMallocs 0
 
 /* linked list of free blocks struct defined in lib.h */
 static struct mem_chunk _mchunk_free_list = { VAL_FREE, &_mchunk_free_list, &_mchunk_free_list, 0
+#if DEBUG_ALLOC >= 1
+, 0
+#endif
 #if DEBUG_ALLOC >= 2
 , 0, 0
 #endif
 };
 #if DEBUG_ALLOC >= 1
-static struct mem_chunk _mchunk_alloc_list = { VAL_ALLOC, &_mchunk_alloc_list, &_mchunk_alloc_list, 0
+static struct mem_chunk *alloc_list;
+static int got_errors;
+
+/*** ---------------------------------------------------------------------- ***/
+
+static const char *dbg_basename(const char *filename)
+{
+	char *slash;
+	char *backslash;
+
+	if (filename == NULL)
+		return "(null)";
+	slash = strrchr(filename, '/');
+	backslash = strrchr(filename, '\\');
+
+	if (slash > backslash)
+		return slash + 1;
+	if (backslash != NULL)
+		return backslash + 1;
+	return filename;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+__attribute__((format(printf, 3, 4)))
+static void dbg_trace(const char *file, long line, const char *fmt, ...)
+{
+	va_list args;
+	
+	va_start(args, fmt);
 #if DEBUG_ALLOC >= 2
-, 0, 0
+	if (file)
+		fprintf(stderr, "%s:%ld: ", dbg_basename(file), line);
 #endif
-};
+	vfprintf(stderr, fmt, args);
+	va_end(args);
+	va_start(args, fmt);
+#if DEBUG_ALLOC >= 2
+	if (file)
+		nf_debugprintf("%s:%ld: ", dbg_basename(file), line);
 #endif
+	nf_debugvprintf(fmt, args);
+	va_end(args);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static int delete_alloc_list(const char *file, long line, struct mem_chunk *block)
+{
+	struct mem_chunk *search = alloc_list;
+
+	if (block == search)
+	{
+		alloc_list = search->next_alloc;
+	} else
+	{
+		while (search && search->next_alloc != block)
+			search = search->next_alloc;
+		if (search && search->next_alloc == block)
+		{
+			search->next_alloc = search->next_alloc->next_alloc;
+		} else
+		{
+			dbg_trace(file, line, "Memory Block not found: %p\n", (void *)((char *)block + SIZEOF_MEM_CONTROL));
+			got_errors = TRUE;
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+static gboolean in_alloc_list(struct mem_chunk *block)
+{
+	struct mem_chunk *search = alloc_list;
+
+	while (search)
+	{
+		if (search == block)
+			return TRUE;
+		search = search->next_alloc;
+	}
+	got_errors = TRUE;
+	return FALSE;
+}
+
+#endif /* DEBUG_ALLOC >= 1 */
 
 
 #define DEF_PAGESIZE 8192				/* default page size for TOS */
@@ -200,6 +297,34 @@ int getpagesize(void)
 
 
 #if DEBUG_ALLOC >= 2
+static void dbg_check_all(const char *file, long line)
+{
+	struct mem_chunk *head, *q, *s;
+	
+	head = &_mchunk_free_list;
+	q = head->next;
+	while (q != head)
+	{
+		if (q->valid != VAL_SBRK && q->valid != VAL_FREE && q->valid != VAL_ALLOC)
+			dbg_trace(file, line, "invalid block %p\n", q);
+		s = (struct mem_chunk *)(((char *) q) + q->size);
+		if (q->next != head && q->next < q)
+		{
+			dbg_trace(file, line, "unordered block %p %s:%ld\n", q, q->file ? q->file : "", q->line);
+		} else if (q->valid != VAL_ALLOC && q->next != head && s != q->next)
+		{
+			dbg_trace(file, line, "%p size mismatch: %lu should be %lu\n", q, (unsigned long)q->size, (unsigned long)((char *)q->next - (char *)q));
+		}
+		q = q->next;
+	}
+}
+#else
+#define dbg_check_all(file, line)
+#endif
+
+
+
+#if DEBUG_ALLOC >= 2
 void *dbg_malloc(size_t n, const char *file, long line)
 #else
 void *malloc(size_t n)
@@ -207,9 +332,9 @@ void *malloc(size_t n)
 {
 	struct mem_chunk *head, *q, *p, *s;
 	size_t sz;
-
+	
 	/* add a mem_chunk to required size and round up */
-	n = ALLOC_EXTRA + ((n + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1));
+	n = ((EXTRA_MEM + n + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1));
 
 	/* look for first block big enough in free list */
 	head = &_mchunk_free_list;
@@ -273,11 +398,11 @@ void *malloc(size_t n)
 		q = s;
 	}
 
-	if (q->size > (n + ALLOC_EXTRA))
+	if (q->size > (n + EXTRA_MEM))
 	{
 		/* split, leave part of free list */
 		q->size -= n;
-		q = (struct mem_chunk * )(((char *) q) + q->size);
+		q = (struct mem_chunk *)(((char *) q) + q->size);
 		q->size = n;
 		q->valid = VAL_ALLOC;
 	} else
@@ -289,11 +414,14 @@ void *malloc(size_t n)
 	}
 
 #if DEBUG_ALLOC >= 1
-	head = &_mchunk_alloc_list;
-	q->next = head->next;
-	q->prev = head;
-	q->next->prev = q;
-	q->prev->next = q;
+	q->next_alloc = alloc_list;
+	alloc_list = q;
+	{
+		size_t i;
+		
+		for (i = 0; i < SIZEOF_MEM_CONTROL - offsetof(struct mem_chunk, checker); i++)
+			q->checker[i] = MEM_MAGIC_END;
+	}
 #endif
 
 #if DEBUG_ALLOC >= 2
@@ -302,12 +430,23 @@ void *malloc(size_t n)
 #endif
 
 	/* hand back ptr to after chunk desc */
-	s = (struct mem_chunk * )(((char *) q) + ALLOC_EXTRA);
+	s = (struct mem_chunk * )(((char *) q) + SIZEOF_MEM_CONTROL);
 
 #if DEBUG_ALLOC >= 5
-	memset(s, MEM_MAGIC_NEW_ALLOCATED, n - ALLOC_EXTRA);
+	memset(s, MEM_MAGIC_NEW_ALLOCATED, n - EXTRA_MEM);
 #elif ZeroMallocs
-	memset(s, 0, n - ALLOC_EXTRA);
+	memset(s, 0, n - EXTRA_MEM);
+#endif
+
+#if DEBUG_ALLOC >= 1
+	{
+		unsigned char *test;
+		size_t i;
+		
+		test = (unsigned char *) q + q->size - MEM_MAGIC_SIZE;
+		for (i = 0; i < MEM_MAGIC_SIZE; i++)
+			test[i] = MEM_MAGIC_END;
+	}
 #endif
 
 	return (void *) s;
@@ -350,24 +489,53 @@ void free(void *param)
 		return;
 
 	/* move back to uncover the mem_chunk */
-	r = (struct mem_chunk * )(((char *) r) - ALLOC_EXTRA);
+	r = (struct mem_chunk * )(((char *) r) - SIZEOF_MEM_CONTROL);
 
 	if (r->valid != VAL_ALLOC)
 	{
 #if DEBUG_ALLOC >= 1
-		fprintf(stderr, "Memory Block not found %s:%ld\n", file, line);
-		nf_debugprintf("free: Memory Block not found %s:%ld\n", file, line);
+		dbg_trace(file, line, "Memory Block invalid: p\n", param);
 #endif
 		return;
 	}
 	
-	r->valid = VAL_FREE;
-
-#if DEBUG_ALLOC >= 1
+#if DEBUG_ALLOC >= 2
 	/* remove it from the alloc_list */
-	r->next->prev = r->prev;
-	r->prev->next = r->next;
+	if (!delete_alloc_list(file, line, r))
+		return;
 #endif
+
+#if DEBUG_ALLOC
+	{
+		size_t i;
+		gboolean defect;
+		unsigned char *test = ((unsigned char *)r) + r->size - MEM_MAGIC_SIZE;
+
+		defect = FALSE;
+		for (i = 0; i < SIZEOF_MEM_CONTROL - offsetof(struct mem_chunk, checker); i++)
+			if (r->checker[i] != MEM_MAGIC_END)
+				defect = TRUE;
+		if (defect)
+		{
+			got_errors = TRUE;
+			dbg_trace(file, line, "MemStart defekt (%lu).\n", (unsigned long)r->size - EXTRA_MEM);
+			return;
+		}
+		defect = FALSE;
+		for (i = 0; i < MEM_MAGIC_SIZE; i++)
+			if (test[i] != MEM_MAGIC_END)
+				defect = TRUE;
+		if (defect)
+		{
+			got_errors = TRUE;
+			/* assumes MAGIC_SIZE >= 4 */
+			dbg_trace(file, line, "MemEnd defekt %ld. %02x %02x %02x %02x\n", (unsigned long)r->size - EXTRA_MEM,
+				test[0], test[1], test[2], test[3]);
+		}
+	}
+#endif
+
+	r->valid = VAL_FREE;
 
 	/* stick it into free list, preserving ascending address order */
 	head = &_mchunk_free_list;
@@ -413,7 +581,7 @@ void free(void *param)
 	} else
 	{
 #if DEBUG_ALLOC >= 5
-		memset((((char *) r) + ALLOC_EXTRA), MEM_MAGIC_FREED, r->size - ALLOC_EXTRA);
+		memset((((char *) r) + SIZEOF_MEM_CONTROL), MEM_MAGIC_FREED, r->size - EXTRA_MEM);
 #endif
 	}
 }
@@ -450,21 +618,58 @@ void *realloc(void *r, size_t n)
 		return NULL;
 	}
 
-	p = (struct mem_chunk * )(((char *) r) - ALLOC_EXTRA);
+	p = (struct mem_chunk * )(((char *) r) - SIZEOF_MEM_CONTROL);
 
 	if (p->valid != VAL_ALLOC)
 	{
 #if DEBUG_ALLOC >= 1
-		fprintf(stderr, "Memory Block not found %s:%ld\n", file, line);
-		nf_debugprintf("realloc: Memory Block not found %s:%ld\n", file, line);
+		dbg_trace(file, line, "realloc: Memory Block invalid: p\n", r);
 #endif
 		__set_errno(EINVAL);
 		return NULL;
 	}
 
-	sz = ALLOC_EXTRA + ((n + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1));
+#if DEBUG_ALLOC >= 2
+	if (!in_alloc_list(p))
+	{
+		dbg_trace(file, line, "Memory Block not found: %p\n", r);
+		return NULL;
+	}
+#endif
+	
+#if DEBUG_ALLOC
+	{
+		size_t i;
+		gboolean defect;
+		unsigned char *test = ((unsigned char *)p) + p->size - MEM_MAGIC_SIZE;
 
-	if (p->size > (sz + 2 * ALLOC_EXTRA))
+		defect = FALSE;
+		for (i = 0; i < SIZEOF_MEM_CONTROL - offsetof(struct mem_chunk, checker); i++)
+			if (p->checker[i] != MEM_MAGIC_END)
+				defect = TRUE;
+		if (defect)
+		{
+			got_errors = TRUE;
+			dbg_trace(file, line, "MemStart defekt (%lu).\n", (unsigned long)p->size - EXTRA_MEM);
+			return NULL;
+		}
+		defect = FALSE;
+		for (i = 0; i < MEM_MAGIC_SIZE; i++)
+			if (test[i] != MEM_MAGIC_END)
+				defect = TRUE;
+		if (defect)
+		{
+			got_errors = TRUE;
+			/* assumes MAGIC_SIZE >= 4 */
+			dbg_trace(file, line, "MemEnd defekt %ld. %02x %02x %02x %02x\n", (unsigned long)p->size - EXTRA_MEM,
+				test[0], test[1], test[2], test[3]);
+		}
+	}
+#endif
+
+	sz = ((EXTRA_MEM + n + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1));
+
+	if (p->size > (sz + 2 * EXTRA_MEM))
 	{
 		/* resize down */
 		void *newr;
@@ -482,7 +687,6 @@ void *realloc(void *r, size_t n)
 #else
 		    free(r);
 #endif
-
 			r = newr;
 		}
 		/* else
@@ -505,13 +709,21 @@ void *realloc(void *r, size_t n)
 		s = (struct mem_chunk * )(((char *) p) + p->size);
 		if (s == next && (p->size + next->size) >= sz && next->valid == VAL_FREE)
 		{
+			struct mem_chunk *prev;
+
 			p->size += next->size;
-			p->next = next->next;
-			next->next->prev = p;
+			/*
+			 * disconnect 'next' from free list.
+			 * remember that 'p' is currently alloced
+			 * and therefore not on the free list
+			 */
+			prev = next->prev;
+			prev->next = next->next;
+			next->next->prev = prev;
 		} else
 		{
 			void *newr;
-
+			
 #if DEBUG_ALLOC >= 2
 			newr = dbg_malloc(n, file, line);
 #else
@@ -519,7 +731,7 @@ void *realloc(void *r, size_t n)
 #endif
 			if (newr)
 			{
-				memcpy(newr, r, p->size - ALLOC_EXTRA);
+				memcpy(newr, r, p->size - EXTRA_MEM);
 #if DEBUG_ALLOC >= 2
 			    dbg_free(r, file, line);
 #else
@@ -595,21 +807,17 @@ void _crtexit(void)
 #endif
 #if DEBUG_ALLOC >= 1
 	{
-		struct mem_chunk *head, *p;
-		head = &_mchunk_alloc_list;
-		p = head->next;
-		if (p != head)
+		struct mem_chunk *p;
+		p = alloc_list;
+		if (p != NULL)
 		{
-			fprintf(stderr, "still allocated:\n");
-			nf_debugprintf("still allocated:\n");
-			for (; p != head; p = p->next)
+			dbg_trace(NULL, 0, "still allocated:\n");
+			for (; p != NULL; p = p->next_alloc)
 			{
 #if DEBUG_ALLOC >= 2
-				fprintf(stderr, "-> %lu %s:%ld\n", p->size - ALLOC_EXTRA, p->file, p->line);
-				nf_debugprintf("-> %lu %s:%ld\n", p->size - ALLOC_EXTRA, p->file, p->line);
+				dbg_trace(p->file, p->line, "-> %lu %p\n", p->size - EXTRA_MEM, (char *)p + SIZEOF_MEM_CONTROL);
 #else
-				fprintf(stderr, "-> %lu %p\n", p->size - ALLOC_EXTRA, (char *)p + ALLOC_EXTRA);
-				nf_debugprintf("-> %lu %p\n", p->size - ALLOC_EXTRA, (char *)p + ALLOC_EXTRA);
+				dbg_trace(NULL, 0, "-> %lu %p\n", p->size - EXTRA_MEM, (char *)p + SIZEOF_MEM_CONTROL);
 #endif
 			}
 		}

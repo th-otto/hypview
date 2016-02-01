@@ -35,7 +35,7 @@ char *g_gem_get_bindir(void)
 	} else
 #endif
 	{
-		size_t allocsize = 65536ul;
+		size_t allocsize = 65400ul;
 		_WORD res;
 		char *cmd, *tail;
 		

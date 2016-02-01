@@ -76,7 +76,7 @@ int main(int argc, const char **argv)
 	Fsetdta(&mydta);
 	
 	Pdomain(1); /* DOM_MINT */
-	_crtinit();
+	_mallocChunkSize(0);
 	
 	__argc = argc;
 	__argv = g_new(char *, argc + 1);

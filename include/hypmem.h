@@ -20,6 +20,15 @@
 #  include <glib.h>
 #endif
 
+#if DEBUG_ALLOC >= 2
+void *dbg_malloc(size_t n, const char *file, long line);
+void *dbg_calloc(size_t n, size_t s, const char *file, long line);
+char *dbg_strdup(const char *s, const char *file, long line);
+char *dbg_strndup(const char *s, size_t len, const char *file, long line);
+void dbg_free(void *p, const char *file, long line);
+void *dbg_realloc(void *p, size_t s, const char *file, long line);
+#endif
+
 #ifdef HAVE_GLIB
 #include <glib.h>
 #else
@@ -97,6 +106,8 @@
 
 #undef g_new
 #define g_new(t, n) ((t *)g_malloc(sizeof(t) * (n)))
+#undef g_renew
+#define g_renew(t, p, n) ((t *)g_realloc(p, sizeof(t) * (n)))
 #undef g_new0
 #define g_new0(t, n) ((t *)g_calloc((n), sizeof(t)))
 
@@ -122,16 +133,10 @@ void g_strfreev(char **str_array);
 #define malloc(n) dbg_malloc(n, __FILE__, __LINE__)
 #define calloc(n, s) dbg_calloc(n, s, __FILE__, __LINE__)
 #define g_strdup(s) dbg_strdup(s, __FILE__, __LINE__)
-void *dbg_malloc(size_t n, const char *file, long line);
-void *dbg_calloc(size_t n, size_t s, const char *file, long line);
-char *dbg_strdup(const char *s, const char *file, long line);
-char *dbg_strndup(const char *s, size_t len, const char *file, long line);
 #endif
 #if DEBUG_ALLOC >= 1
 #define free(p) dbg_free(p, __FILE__, __LINE__)
 #define realloc(p, n) dbg_realloc(p, n, __FILE__, __LINE__)
-void dbg_free(void *p, const char *file, long line);
-void *dbg_realloc(void *p, size_t s, const char *file, long line);
 #endif
 
 #ifndef G_LOCK_DEFINE_STATIC
