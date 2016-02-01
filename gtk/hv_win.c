@@ -495,6 +495,14 @@ static void on_bookmarks_menu(GtkAction *action, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void on_recent_menu(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	RecentUpdate(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void on_next(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
@@ -579,6 +587,7 @@ static gboolean on_quit(GtkAction *action, WINDOW_DATA *win)
 		gl_profile.viewer.win_h = height;
 		HypProfile_SetChanged();
 	}
+	RecentSaveToDisk();
 	if (!WriteProfile(win))
 		return TRUE;
 	quit_force(action, win);
@@ -1486,7 +1495,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "NavigateMenu",       NULL,      N_("_Navigate"), 0, 0, 0 },
 	{ "OptionsMenu",        NULL,      N_("_Options"), 0, 0, 0 },
 	{ "HelpMenu",           NULL,      N_("_Help"), 0, 0, 0 },
-	{ "RecentMenu",         NULL,      N_("Open _Recent"), 0, 0, 0 },
+	{ "RecentMenu",         NULL,                    N_("Open _Recent"),                    NULL,          0,                                                   G_CALLBACK(on_recent_menu) },
 	{ "BookmarksMenu",      "hv-bookmarks",          N_("Bookmarks"),                       NULL,          N_("Show list of bookmarks"),                        G_CALLBACK(on_bookmarks_menu) },
 	/*
 	 * menu entries
@@ -1533,6 +1542,17 @@ static GtkActionEntry const action_entries[] = {
 	{ "bookmark-9",         NULL,                    N_("free"),                            "F9",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
 	{ "bookmark-10",        NULL,                    N_("free"),                            "F10",         N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
 
+	{ "recent-1",           NULL,                    NULL,                                  "<Ctrl>1",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-2",           NULL,                    NULL,                                  "<Ctrl>2",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-3",           NULL,                    NULL,                                  "<Ctrl>3",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-4",           NULL,                    NULL,                                  "<Ctrl>4",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-5",           NULL,                    NULL,                                  "<Ctrl>5",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-6",           NULL,                    NULL,                                  "<Ctrl>6",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-7",           NULL,                    NULL,                                  "<Ctrl>7",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-8",           NULL,                    NULL,                                  "<Ctrl>8",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-9",           NULL,                    NULL,                                  "<Ctrl>9",     NULL,                                                G_CALLBACK(on_recent_selected) },
+	{ "recent-10",          NULL,                    NULL,                                  "<Ctrl>0",     NULL,                                                G_CALLBACK(on_recent_selected) },
+
 	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Alt>Z",      NULL,                                                G_CALLBACK(on_font_select) },
 	{ "selectcolors",       NULL,                    N_("_Colors..."),                      NULL,          NULL,                                                G_CALLBACK(on_color_select) },
 	{ "outputconfig",       NULL,                    N_("_Output..."),                      NULL,          NULL,                                                G_CALLBACK(on_output_settings) },
@@ -1561,7 +1581,18 @@ static char const ui_info[] =
 "      <menuitem action='defaultfile' />\n"
 "      <menuitem action='remarker' />\n"
 "      <separator/>\n"
-"      <menuitem action='recent' />\n"
+"      <menu action='RecentMenu'>\n"
+"        <menuitem action='recent-1'/>\n"
+"        <menuitem action='recent-2'/>\n"
+"        <menuitem action='recent-3'/>\n"
+"        <menuitem action='recent-4'/>\n"
+"        <menuitem action='recent-5'/>\n"
+"        <menuitem action='recent-6'/>\n"
+"        <menuitem action='recent-7'/>\n"
+"        <menuitem action='recent-8'/>\n"
+"        <menuitem action='recent-9'/>\n"
+"        <menuitem action='recent-10'/>\n"
+"      </menu>\n"
 "      <separator/>\n"
 "      <menuitem action='info'/>\n"
 "      <separator/>\n"
@@ -1687,18 +1718,9 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
  	
  	if (!popup)
  	{
- 		GtkAction *recent_action;
- 		static GtkRecentManager *recent_manager;
- 		
 		win->action_group = gtk_action_group_new("AppWindowActions");
 		gtk_action_group_add_actions(win->action_group, action_entries, G_N_ELEMENTS(action_entries), win);
 		gtk_action_group_add_toggle_actions(win->action_group, toggle_action_entries, G_N_ELEMENTS(toggle_action_entries), win);
-		if (!recent_manager)
-			recent_manager = gtk_recent_manager_new();
-		recent_action = gtk_recent_action_new_for_manager("recent", _("Open _Recent"), NULL, NULL, recent_manager);
-		/* g_signal_connect(G_OBJECT(recent_action), "activate", G_CALLBACK(on_recent), win); */
-		
-		gtk_action_group_add_action(win->action_group, recent_action);
 		
 		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), gl_profile.viewer.use_xfont);
 		gtk_action_set_sensitive(GTK_ACTION(gtk_action_group_get_action(win->action_group, "altfont")), gl_profile.viewer.xfont_name != NULL);
@@ -1721,8 +1743,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		gtk_widget_show(menubar);
 		gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
 	
-		win->history_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/recent");
-		win->history_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->history_menu));
+		win->recent_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/FileMenu/RecentMenu");
+		win->recent_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->recent_menu));
 		
 		win->bookmarks_menu = gtk_ui_manager_get_widget(ui_manager, "/MenuBar/NavigateMenu/BookmarksMenu");
 		win->bookmarks_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(win->bookmarks_menu));

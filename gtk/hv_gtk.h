@@ -75,7 +75,7 @@ struct _window_data_
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
 
 	GtkWidget *hwnd;					/* GtkWindow */
-	GtkWidget *history_menu;			/* GtkMenu */
+	GtkWidget *recent_menu;				/* GtkMenu */
 	GtkWidget *bookmarks_menu;			/* GtkMenu */
 	GtkTextBuffer *text_buffer;
 	GtkWidget *text_window;				/* GtkScrolledWindow */
@@ -269,6 +269,10 @@ gboolean show_dialog(GtkWidget *parent, const char *type, const char *message, g
 void CenterWindow(GtkWidget *hwnd);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
 void hv_recent_add(const char *path);
+void RecentUpdate(WINDOW_DATA *win);
+void on_recent_selected(GtkAction *action, WINDOW_DATA *win);
+void RecentInit(void);
+void RecentSaveToDisk(void);
 
 
 /*

@@ -17,6 +17,7 @@ void hv_init(void)
 
 	/* load markers */
 	MarkerInit();
+	RecentInit();
 }	
 
 /*** ---------------------------------------------------------------------- ***/
@@ -24,4 +25,5 @@ void hv_init(void)
 void hv_exit(void)
 {
 	MarkerSaveToDisk();
+	/* RecentSaveToDisk(); */
 }

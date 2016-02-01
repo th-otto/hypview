@@ -2,6 +2,9 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
+#define MAX_RECENT 10
+
+static GSList *recent_list;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -212,8 +215,142 @@ void g_object_list_properties(const char *name, void *_obj)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void RecentUpdate(WINDOW_DATA *win)
+{
+	GtkWidget *menu = win->recent_menu;
+	GList *children, *child;
+	GSList *l;
+	
+	children = gtk_container_get_children(GTK_CONTAINER(menu));
+	l = recent_list;
+	for (child = children; child; child = child->next)
+	{
+		GtkMenuItem *item = child->data;
+		const char *name = gtk_widget_get_name(GTK_WIDGET(item));
+		if (strncmp(name, "recent-", 7) == 0)
+		{
+			if (l)
+			{
+				const char *path = l->data;
+				gtk_menu_item_set_label(item, hyp_basename(path));
+				gtk_widget_set_tooltip_text(GTK_WIDGET(item), path);
+				gtk_widget_show(GTK_WIDGET(item));
+				l = l->next;
+			} else
+			{
+				gtk_widget_hide(GTK_WIDGET(item));
+			}
+		}
+	}
+	g_list_free(children);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void on_recent_selected(GtkAction *action, WINDOW_DATA *win)
+{
+	const char *action_name = gtk_action_get_name(action);
+	int sel;
+	GdkModifierType mask;
+	GSList *l;
+	
+	if (action_name == NULL || strncmp(action_name, "recent-", 7) != 0)
+		return;
+	sel = (int)strtol(action_name + 7, NULL, 10) - 1;
+	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
+	for (l = recent_list; l; l = l->next)
+	{
+		if (sel == 0)
+		{
+			const char *path = l->data;
+			hv_recent_add(path); /* move it to top of list */
+			OpenFileInWindow(win, path, NULL, HYP_NOINDEX, TRUE, FALSE, FALSE);
+			return;
+		}
+		sel--;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void hv_recent_add(const char *path)
 {
-	HYP_DBG(("NYI: recent add"));
-	UNUSED(path);
+	GSList *l, *last;
+	int count;
+	
+	last = NULL;
+	for (l = recent_list, count = 0; l; l = l->next, count++)
+	{
+		const char *oldpath = l->data;
+		if (filename_cmp(path, oldpath) == 0)
+		{
+			recent_list = g_slist_remove_link(recent_list, l);
+			recent_list = g_slist_prepend(recent_list, l->data);
+			g_slist_free_1(l);
+			return;
+		}
+		last = l;
+	}
+	if (count >= MAX_RECENT && last)
+	{
+		g_free(last->data);
+		recent_list = g_slist_delete_link(recent_list, last);
+	}
+	recent_list = g_slist_prepend(recent_list, g_strdup(path));
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void RecentInit(void)
+{
+	int i;
+	char *name;
+	gboolean found;
+	Profile *profile = gl_profile.profile;
+	char *path;
+	
+	g_slist_free_full(recent_list, g_free);
+	recent_list = NULL;
+	i = 0;
+	for (;;)
+	{
+		if (i >= MAX_RECENT)
+			break;
+		name = g_strdup_printf("recent-%d", i);
+		path = NULL;
+		found = Profile_ReadString(profile, "Recent", name, &path);
+		g_free(name);
+		if (!found)
+			break;
+		recent_list = g_slist_append(recent_list, path);
+		i++;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void RecentSaveToDisk(void)
+{
+	int i;
+	char *name;
+	gboolean done;
+	Profile *profile = gl_profile.profile;
+	GSList *l;
+	
+	i = 0;
+	do
+	{
+		name = g_strdup_printf("recent-%d", i);
+		done = Profile_DeleteKey(profile, "Recent", name);
+		g_free(name);
+		i++;
+	} while (done);
+	i = 0;
+	for (l = recent_list; l; l = l->next)
+	{
+		name = g_strdup_printf("recent-%d", i);
+		Profile_WriteString(profile, "Recent", name, l->data);
+		g_free(name);
+		i++;
+	}
 }
