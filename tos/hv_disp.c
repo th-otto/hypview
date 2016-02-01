@@ -210,7 +210,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	xy[1] = (_WORD) (ty + win->scroll.g_y);
 	xy[2] = xy[0] + w - 1;
 	xy[3] = xy[1] + h - 1;
-
+	
 	if (gfx->style != 0)
 	{
 		vsf_interior(vdi_handle, FIS_PATTERN);
@@ -221,12 +221,17 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	}
 
 	vsf_perimeter(vdi_handle, TRUE);
+	vsf_color(vdi_handle, viewer_colors.text);
+	vsl_color(vdi_handle, viewer_colors.text);
 	if (gfx->type == HYP_ESC_BOX)
 	{
 		v_bar(vdi_handle, xy);
 	} else
 	{
-		v_rfbox(vdi_handle, xy);
+		if (gfx->style != 0)
+			v_rfbox(vdi_handle, xy);
+		else
+			v_rbox(vdi_handle, xy);
 	}
 	vsf_interior(vdi_handle, FIS_SOLID);
 	vsf_style(vdi_handle, 0);
