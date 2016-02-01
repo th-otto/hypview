@@ -196,7 +196,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 	if (empty(gl_profile.general.all_ref))
 	{
 		if (!no_message)
-			show_message(_("Error"), _("No all.ref file defined"), FALSE);
+			show_message(_("Error"), _("No ALL.REF file defined"), FALSE);
 		return win;
 	}
 
