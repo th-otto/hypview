@@ -107,6 +107,22 @@ void x_subst_homedir(char **dirp)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void x_unsubst_homedir(char **dirp)
+{
+	char *dir, *newdir;
+	const char *home = x_get_home_dir();
+	size_t len = strlen(home);
+	
+	if ((dir = *dirp) != NULL && filename_ncmp(dir, home, len) == 0 && (G_IS_DIR_SEPARATOR(dir[len]) || dir[len] == '\0'))
+	{
+		newdir = g_build_filename("~", dir + len, NULL);
+		g_free(*dirp);
+		*dirp = newdir;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 /*
  * like strtod(), but always run in "C" locale
  */
@@ -214,6 +230,7 @@ const char *x_get_tmp_dir(void)
 static void x_init_home_dir(void)
 {
 	struct stat st;
+	size_t len;
 	
 	/* We check $HOME first for Win32, though it is a last resort for Unix
 	 * where we prefer the results of getpwuid().
@@ -267,9 +284,16 @@ static void x_init_home_dir(void)
 		if (g_secure_getenv("HOMEDRIVE") != NULL && g_secure_getenv("HOMEPATH") != NULL)
 			x_home_dir = g_strconcat(g_secure_getenv("HOMEDRIVE"), g_secure_getenv("HOMEPATH"), NULL);
 	}
-	if (!x_home_dir)
+	if (empty(x_home_dir))
+	{
+		g_free(x_home_dir);
 		x_home_dir = g_strdup(".");
-
+	}
+	len = strlen(x_home_dir);
+	if (G_IS_DIR_SEPARATOR(x_home_dir[len - 1]))
+		x_home_dir[--len] = '\0';
+	
+	
 	{
 		DWORD len = UNLEN + 1;
 		wchar_t buffer[UNLEN + 1];
@@ -392,6 +416,8 @@ const char *x_get_tmp_dir(void)
 
 static void x_init_home_dir(void)
 {
+	size_t len;
+	
 #if defined(HAVE_PWD_H)
 	{
 		struct passwd *pw = NULL;
@@ -425,9 +451,15 @@ static void x_init_home_dir(void)
 
 	if (!x_home_dir)
 		x_home_dir = g_strdup(g_secure_getenv("HOME"));
-	if (!x_home_dir)
+	if (empty(x_home_dir))
+	{
+		g_free(x_home_dir);
 		x_home_dir = g_strdup(".");
-
+	}
+	len = strlen(x_home_dir);
+	if (G_IS_DIR_SEPARATOR(x_home_dir[len - 1]))
+		x_home_dir[--len] = '\0';
+	
 	if (!x_user_name)
 		x_user_name = g_strdup("nobody");
 	if (!x_real_name)
@@ -538,6 +570,8 @@ const char *x_get_tmp_dir(void)
 
 static void x_init_home_dir(void)
 {
+	size_t len;
+	
 #if defined(HAVE_PWD_H)
 	{
 		struct passwd *pw = NULL;
@@ -571,9 +605,15 @@ static void x_init_home_dir(void)
 
 	if (!x_home_dir)
 		x_home_dir = g_strdup(g_secure_getenv("HOME"));
-	if (!x_home_dir)
+	if (empty(x_home_dir))
+	{
+		g_free(x_home_dir);
 		x_home_dir = g_strdup(".");
-
+	}
+	len = strlen(x_home_dir);
+	if (G_IS_DIR_SEPARATOR(x_home_dir[len - 1]))
+		x_home_dir[--len] = '\0';
+	
 	if (!x_user_name)
 		x_user_name = g_strdup("nobody");
 	if (!x_real_name)
@@ -2119,6 +2159,31 @@ static void subst_var(char **str, const char *name, const char *value)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void unsubst_var(char **str, const char *name, const char *value)
+{
+	char *p;
+	size_t vallen;
+	const char *p2;
+	char *res;
+	
+	if (value == NULL || empty(*str))
+		return;
+	p = *str;
+	vallen = strlen(value);
+	p2 = p + vallen;
+	if (filename_ncmp(p, value, vallen) == 0 && (*p2 == '\0' || G_IS_DIR_SEPARATOR(*p2)))
+	{
+		if (*p2 != '\0')
+			p2++;
+		res = g_strconcat(name, "/", p2, NULL);
+		g_free(*str);
+		convslash(res);
+		*str = res;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 char *path_subst(const char *path)
 {
 	char *filename = g_strdup(path);
@@ -2145,6 +2210,36 @@ char *path_subst(const char *path)
 	if (filename && filename[0] == '*' && filename[1] == ':' && G_IS_DIR_SEPARATOR(filename[2]))
 		 filename[0] = GetBootDrive();
 #endif
+	return filename;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+char *path_unsubst(const char *path, gboolean subst_hypfold)
+{
+	char *filename = g_strdup(path);
+
+	convslash(filename);
+	unsubst_var(&filename, "$HOME", x_get_home_dir());
+#ifdef RESOURCES_PROFILE_DIR
+	{
+		char *tmp = g_strconcat("$HOME", "/", RESOURCES_PROFILE_DIR, NULL);
+		convslash(tmp);
+		unsubst_var(&filename, "$APPDATA", tmp);
+		g_free(tmp);
+	}
+#else
+	unsubst_var(&filename, "$APPDATA", "$HOME");
+#endif
+	if (subst_hypfold)
+		unsubst_var(&filename, "$HYPFOLD", "$APPDATA/guides");
+
+	x_unsubst_homedir(&filename);
+#ifdef G_OS_TOS
+	if (filename && isupper(filename[0]) == GetBootDrive() && filename[1] == ':' && G_IS_DIR_SEPARATOR(filename[2]))
+		 filename[0] = '*';
+#endif
+	convslash(filename);
 	return filename;
 }
 

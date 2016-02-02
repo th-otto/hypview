@@ -18,11 +18,6 @@
 #define HYPVIEW_VERSION_MICRO "0"
 #define HYPVIEW_VERSION HYPVIEW_VERSION_MAJOR "." HYPVIEW_VERSION_MINOR "." HYPVIEW_VERSION_MICRO
 
-#if defined(__WIN32__) || defined(__TOS__)
-#define filename_cmp strcasecmp
-#else
-#define filename_cmp strcmp
-#endif
 
 typedef long WP_UNIT;
 
@@ -223,6 +218,8 @@ void AutoLocatorPaste(WINDOW_DATA *win);
  */
 WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win);
 void SelectFileSave(WINDOW_DATA *win);
+void hv_file_selector_add_filter(GtkWidget *selector, const char *filter);
+void hv_file_selector_add_hypfilter(GtkWidget *selector);
 
 
 /*

@@ -7,12 +7,6 @@
 #define HYPVIEW_VERSION "1.0"
 
 
-#if defined(__WIN32__) || defined(__TOS__)
-#define filename_cmp strcasecmp
-#else
-#define filename_cmp strcmp
-#endif
-
 struct _viewer_colors {
 	_WORD background;       /* window background color */
 	_WORD text;             /* Displays text in the specified color */

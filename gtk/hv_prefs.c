@@ -97,7 +97,7 @@ static void set_color(GtkWidget *dialog, const char *buttonname, char **valp)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
+static void color_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
 {
 	WINDOW_DATA *win;
 	DOCUMENT *doc;
@@ -393,7 +393,7 @@ void hv_config_colors(WINDOW_DATA *win)
 	gtk_widget_set_can_default(button, TRUE);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 	
-	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(dialog_response), dialog);
+	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(color_dialog_response), dialog);
 	
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
 	gtk_widget_show_all(dialog);
@@ -409,13 +409,70 @@ void hv_config_colors(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+static void prefs_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
+{
+ 	GtkFileChooser *selector;
+ 	GtkToggleButton *button;
+	char *path;
+	char *val;
+	
+	UNUSED(w);
+	switch (response_id)
+	{
+	case GTK_RESPONSE_HELP:
+		break;
+	case GTK_RESPONSE_APPLY:
+	case GTK_RESPONSE_ACCEPT:
+	case GTK_RESPONSE_OK:
+	case GTK_RESPONSE_YES:
+		selector = g_object_get_data(G_OBJECT(dialog), "hypfold");
+		path = gtk_file_chooser_get_current_folder(selector);
+		val = path_unsubst(path, FALSE);
+		g_free(gl_profile.general.hypfold);
+		gl_profile.general.hypfold = val;
+		g_free(path);
+
+		selector = g_object_get_data(G_OBJECT(dialog), "defaultfile");
+		path = gtk_file_chooser_get_filename(selector);
+		val = path_unsubst(path, TRUE);
+		g_free(gl_profile.viewer.default_file);
+		gl_profile.viewer.default_file = val;
+		g_free(path);
+
+		selector = g_object_get_data(G_OBJECT(dialog), "catalogfile");
+		path = gtk_file_chooser_get_filename(selector);
+		val = path_unsubst(path, TRUE);
+		g_free(gl_profile.viewer.catalog_file);
+		gl_profile.viewer.catalog_file = val;
+		g_free(path);
+
+		button = g_object_get_data(G_OBJECT(dialog), "startup-selector");
+		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 0;
+		button = g_object_get_data(G_OBJECT(dialog), "startup-default");
+		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 1;
+		button = g_object_get_data(G_OBJECT(dialog), "startup-last");
+		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 2;
+		HypProfile_SetChanged();
+		break;
+	case GTK_RESPONSE_DELETE_EVENT:
+	case GTK_RESPONSE_CANCEL:
+	case GTK_RESPONSE_CLOSE:
+	case GTK_RESPONSE_NO:
+		break;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void hv_preferences(WINDOW_DATA *win)
 {
-	GtkWidget *dialog, *vbox, *hbox;
+	GtkWidget *dialog, *vbox, *hbox, *label, *frame;
 	GtkWidget *button;
-	GtkWidget *selector;
+ 	GtkWidget *selector;
 	gint resp;
-	char *dir;
+	char *path;
+	const char *title;
+	GSList *radio_group;
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("preference-dialog"));
@@ -430,12 +487,91 @@ void hv_preferences(WINDOW_DATA *win)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
-	selector = gtk_file_chooser_button_new(_("Path for Hypertexts"), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+	title = _("Path for Hypertexts");
+	label = gtk_label_new(title);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 5);
+	selector = gtk_file_chooser_button_new(title, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 	gtk_box_pack_start(GTK_BOX(hbox), selector, TRUE, TRUE, 0);
 	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
-	dir = path_subst(gl_profile.general.hypfold);
-	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(selector), dir);
-	g_free(dir);
+	path = path_subst(gl_profile.general.hypfold);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(selector), path);
+	g_free(path);
+	g_object_set_data(G_OBJECT(dialog), "hypfold", selector);
+	gtk_widget_set_tooltip_text(selector, _(
+		"The default directory that will be shown when opening\n"
+		"a Hypertext.\n"
+		"It is also used by HCP to write compiled hypertexts when\n"
+		"no output file is explicitly specified."));
+	
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	title = _("Default-Hypertext");
+	label = gtk_label_new(title);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 5);
+	selector = gtk_file_chooser_button_new(title, GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_box_pack_start(GTK_BOX(hbox), selector, TRUE, TRUE, 0);
+	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
+	path = path_subst(gl_profile.viewer.default_file);
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(selector), path);
+	g_free(path);
+	hv_file_selector_add_hypfilter(selector);
+	g_object_set_data(G_OBJECT(dialog), "defaultfile", selector);
+	gtk_widget_set_tooltip_text(selector, _(
+		"Default filename of hypertext automatically loaded by HypView\n"
+		"if called without parameters (typically HYPVIEW.HYP or CATALOG.HYP)"));
+	
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	title = _("Catalog file");
+	label = gtk_label_new(title);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 5);
+	selector = gtk_file_chooser_button_new(title, GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_box_pack_start(GTK_BOX(hbox), selector, TRUE, TRUE, 0);
+	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
+	path = path_subst(gl_profile.viewer.catalog_file);
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(selector), path);
+	g_free(path);
+	hv_file_selector_add_hypfilter(selector);
+	g_object_set_data(G_OBJECT(dialog), "catalogfile", selector);
+	gtk_widget_set_tooltip_text(selector, _(
+		"The hypertext file to be loaded via the HypView 'Catalog' option"));
+	
+	frame = gtk_frame_new(_("At Programstart"));
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+
+	hbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_container_add(GTK_CONTAINER(frame), hbox);
+
+	radio_group = NULL;
+	button = gtk_radio_button_new_with_mnemonic(NULL, _("Show File Selector"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_radio_button_set_group(GTK_RADIO_BUTTON(button), radio_group);
+	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.startup == 0);
+	g_object_set_data(G_OBJECT(dialog), "startup-selector", button);
+
+	button = gtk_radio_button_new_with_mnemonic(NULL, _("Load default hypertext"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_radio_button_set_group(GTK_RADIO_BUTTON(button), radio_group);
+	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.startup == 1);
+	g_object_set_data(G_OBJECT(dialog), "startup-default", button);
+
+	button = gtk_radio_button_new_with_mnemonic(NULL, _("Load last file"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_radio_button_set_group(GTK_RADIO_BUTTON(button), radio_group);
+	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.startup == 2);
+	g_object_set_data(G_OBJECT(dialog), "startup-last", button);
 	
 	button = gtk_button_new_ok();
 	gtk_widget_set_can_default(button, TRUE);
@@ -446,7 +582,7 @@ void hv_preferences(WINDOW_DATA *win)
 	gtk_widget_set_can_default(button, TRUE);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 	
-	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(dialog_response), dialog);
+	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(prefs_dialog_response), dialog);
 	
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
 	gtk_widget_show_all(dialog);

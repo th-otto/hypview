@@ -74,9 +74,56 @@ static gboolean filter_exe(const GtkFileFilterInfo *filter_info, gpointer userda
 
 /*** ---------------------------------------------------------------------- ***/
 
+void hv_file_selector_add_filter(GtkWidget *selector, const char *filter)
+{
+	char **filterlist = g_strsplit(filter, "\n", 0);
+	int i, j;
+	char *displayname;
+	GtkFileFilter *filefilter;
+	char **patterns;
+	
+	for (i = 0; filterlist != NULL && filterlist[i] != NULL; i++)
+	{
+		if (empty(filterlist[i]))
+			continue;
+		filefilter = gtk_file_filter_new();
+		displayname = strchr(filterlist[i], '|');
+		if (displayname != NULL)
+		{
+			*displayname++ = '\0';
+			gtk_file_filter_set_name(filefilter, displayname);
+		} else
+		{
+			gtk_file_filter_set_name(filefilter, filterlist[i]);
+		}
+		patterns = g_strsplit(filterlist[i], " ", 0);
+		for (j = 0; patterns != NULL && patterns[j] != NULL; j++)
+		{
+			if (strcmp(patterns[j], "*.*") == 0)
+				strcpy(patterns[j], "*");
+			if (strcmp(patterns[j], "*.exe") == 0)
+				gtk_file_filter_add_custom(filefilter, GTK_FILE_FILTER_FILENAME, filter_exe, selector, NULL);
+			else
+				gtk_file_filter_add_pattern(filefilter, patterns[j]);
+		}
+		g_strfreev(patterns);
+		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(selector), filefilter);
+	}
+	g_strfreev(filterlist);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_file_selector_add_hypfilter(GtkWidget *selector)
+{
+	hv_file_selector_add_filter(selector, IDS_SELECT_HYPERTEXT);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist, const char *title, const char *filter)
 {
-	GtkFileChooserDialog *selector;
+	GtkWidget *selector;
 	int resp;
 	gboolean save = !must_exist;
 	gboolean res = FALSE;
@@ -84,13 +131,12 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 	if (parent)
 		parent = gtk_widget_get_toplevel(parent);
 
-	selector = GTK_FILE_CHOOSER_DIALOG(
-		gtk_file_chooser_dialog_new(title,
+	selector = gtk_file_chooser_dialog_new(title,
 		GTK_WINDOW(parent),
 		save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-		NULL));
+		NULL);
 	g_object_set_data(G_OBJECT(selector), "hypview_window_type", NO_CONST("fileselector"));
 	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(selector), save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN);
 	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
@@ -119,42 +165,7 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 	 * create list of filters
 	 */
 	if (!empty(filter))
-	{
-		char **filterlist = g_strsplit(filter, "\n", 0);
-		int i, j;
-		char *displayname;
-		GtkFileFilter *filefilter;
-		char **patterns;
-		
-		for (i = 0; filterlist != NULL && filterlist[i] != NULL; i++)
-		{
-			if (empty(filterlist[i]))
-				continue;
-			filefilter = gtk_file_filter_new();
-			displayname = strchr(filterlist[i], '|');
-			if (displayname != NULL)
-			{
-				*displayname++ = '\0';
-				gtk_file_filter_set_name(filefilter, displayname);
-			} else
-			{
-				gtk_file_filter_set_name(filefilter, filterlist[i]);
-			}
-			patterns = g_strsplit(filterlist[i], " ", 0);
-			for (j = 0; patterns != NULL && patterns[j] != NULL; j++)
-			{
-				if (strcmp(patterns[j], "*.*") == 0)
-					strcpy(patterns[j], "*");
-				if (strcmp(patterns[j], "*.exe") == 0)
-					gtk_file_filter_add_custom(filefilter, GTK_FILE_FILTER_FILENAME, filter_exe, selector, NULL);
-				else
-					gtk_file_filter_add_pattern(filefilter, patterns[j]);
-			}
-			g_strfreev(patterns);
-			gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(selector), filefilter);
-		}
-		g_strfreev(filterlist);
-	}
+		hv_file_selector_add_filter(selector, filter);
 	
 	g_signal_connect(G_OBJECT(selector), "response", G_CALLBACK(choose_file_response), NULL);
 	gtk_window_set_modal(GTK_WINDOW(selector), TRUE);

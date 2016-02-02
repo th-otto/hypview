@@ -887,11 +887,14 @@ char *strrslash(const char *str)
 void convslash(char *str)
 {
 	char *p = str;
-	while (*p)
+	if (p != NULL)
 	{
-		if (G_IS_DIR_SEPARATOR(*p))
-			*p = G_DIR_SEPARATOR;
-		p++;
+		while (*p)
+		{
+			if (G_IS_DIR_SEPARATOR(*p))
+				*p = G_DIR_SEPARATOR;
+			p++;
+		}
 	}
 }
 

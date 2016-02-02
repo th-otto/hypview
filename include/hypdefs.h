@@ -75,6 +75,15 @@ typedef unsigned short wchar_t;
 
 #include "hyp.h"
 
+#if defined(__WIN32__) || defined(__TOS__)
+#define filename_cmp strcasecmp
+#define filename_ncmp strncasecmp
+#else
+#define filename_cmp strcmp
+#define filename_ncmp strncmp
+#endif
+
+
 extern char const gl_program_name[];
 extern char const gl_compile_date[12];
 

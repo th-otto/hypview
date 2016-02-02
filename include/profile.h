@@ -139,6 +139,7 @@ const char *x_get_user_appdata(void);
 const char *x_get_system_appdata(void);
 
 void x_subst_homedir(char **dirp);
+void x_unsubst_homedir(char **dirp);
 void x_free_resources(void);
 
 #ifdef G_PLATFORM_WIN32
@@ -184,6 +185,7 @@ void Profile_WriteChar(Profile *profile, const char *section, const char *key, c
 extern HypProfile gl_profile;
 
 char *path_subst(const char *path);
+char *path_unsubst(const char *path, gboolean subst_hypfold);
 
 void HypProfile_Load(void);
 gboolean HypProfile_Save(gboolean report_error);
