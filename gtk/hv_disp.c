@@ -113,6 +113,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 	yoffset = gtk_adjustment_get_value(adj);
 	adj = gtk_text_view_get_hadjustment(GTK_TEXT_VIEW(win->text_view));
 	xoffset = gtk_adjustment_get_value(adj);
+	cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
 	for (l = win->image_childs; l; l = l->next)
 	{
 		struct hyp_gfx *gfx = l->data;
