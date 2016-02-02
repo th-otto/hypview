@@ -435,14 +435,14 @@ static char *find_include_file(hcp_vars *vars, const char *filename)
 	/*
 	 * try in directory of current file
 	 */
-	dir = g_path_get_dirname(filename);
+	dir = hyp_path_get_dirname(filename);
 	if (empty(dir))
 	{
 		g_free(dir);
 		dir = g_strdup(".");
 	}
 	includer = vars->include_stack;
-	include_dir = g_path_get_dirname(file_lookup_name(vars, includer->loc.id));
+	include_dir = hyp_path_get_dirname(file_lookup_name(vars, includer->loc.id));
 	if (empty(include_dir))
 	{
 		g_free(include_dir);
@@ -462,7 +462,7 @@ static char *find_include_file(hcp_vars *vars, const char *filename)
 	 */
 	while (includer->next != NULL)
 		includer = includer->next;
-	include_dir = g_path_get_dirname(file_lookup_name(vars, includer->loc.id));
+	include_dir = hyp_path_get_dirname(file_lookup_name(vars, includer->loc.id));
 	if (empty(include_dir))
 	{
 		g_free(include_dir);
@@ -2199,7 +2199,7 @@ static char *find_uses_file(hcp_vars *vars, const char *filename)
 	/*
 	 * try in directory of output file
 	 */
-	output_dir = g_path_get_dirname(vars->hyp->file);
+	output_dir = hyp_path_get_dirname(vars->hyp->file);
 	if (empty(output_dir))
 	{
 		g_free(output_dir);

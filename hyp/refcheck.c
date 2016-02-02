@@ -431,7 +431,7 @@ static gboolean check_entries(const char *refname, const struct refcheck_opts *o
 		goto done;
 	
 	{
-		char *dirname = g_path_get_dirname(refname);
+		char *dirname = hyp_path_get_dirname(refname);
 		tmp = g_strdup_printf("hy(%u).ref", (int)getpid());
 		tmpname = g_build_filename(dirname, tmp, NULL);
 		g_free(tmp);

@@ -521,7 +521,7 @@ char *g_build_filename(const char *first, ...)
 
 /*** ---------------------------------------------------------------------- ***/
 
-char *g_path_get_dirname(const char *path)
+char *hyp_path_get_dirname(const char *path)
 {
 	const char *base;
 	char *dir;

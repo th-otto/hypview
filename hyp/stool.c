@@ -1663,7 +1663,7 @@ static gboolean create_output(char **outfile_name)
 		config = fopen(config_name, "rb");
 	}
 	
-	dirname = g_path_get_dirname(hyptop);
+	dirname = hyp_path_get_dirname(hyptop);
 	catalogtxt_name = g_build_filename(dirname, CATALOG_TXT, NULL);
 	catalogtxt = fopen(catalogtxt_name, "rb");
 	if (catalogtxt == NULL)

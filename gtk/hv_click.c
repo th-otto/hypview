@@ -71,7 +71,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 					struct stat s;
 					
 					/* search for file in directory of hypertext */
-					dir = g_path_get_dirname(hyp->file);
+					dir = hyp_path_get_dirname(hyp->file);
 					dfn = g_build_filename(dir, prog, NULL);
 					g_free(dir);
 
@@ -103,7 +103,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				const char *argv[4];
 
 				/* search for file in directory of hypertext */
-				dir = g_path_get_dirname(hyp->file);
+				dir = hyp_path_get_dirname(hyp->file);
 				dfn = g_build_filename(dir, prog, NULL);
 				g_free(dir);
 				

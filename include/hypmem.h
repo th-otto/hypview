@@ -121,7 +121,6 @@ char **g_strsplit(const char *string, const char *delimiter, int max_tokens);
 char *g_strjoinv(const char *separator, char **str_array);
 char *g_stpcpy(char *dest, const char *src);
 
-char *g_path_get_dirname(const char *path);
 char *g_build_filename(const char *, ...);
 char *g_get_current_dir(void);
 gboolean g_path_is_absolute(const char *path);
@@ -194,6 +193,7 @@ double g_ascii_strtodouble(const char *nptr, const char **endptr);
 
 const char *hyp_basename(const char *path);
 char *hyp_path_get_basename(const char *path);
+char *hyp_path_get_dirname(const char *path);
 
 extern const char *g_secure_getenv(const char *name);
 gboolean is_allupper(const char *str);

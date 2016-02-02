@@ -266,7 +266,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 									char *dfn;
 		
 									/* search for file in directory of hypertext */
-									dir = g_path_get_dirname(hyp->file);
+									dir = hyp_path_get_dirname(hyp->file);
 									dfn = g_build_filename(dir, prog, NULL);
 									g_free(dir);
 		
@@ -294,7 +294,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 								char *dfn;
 	
 								/* search for file in directory of hypertext */
-								dir = g_path_get_dirname(hyp->file);
+								dir = hyp_path_get_dirname(hyp->file);
 								dfn = g_build_filename(dir, prog, NULL);
 								g_free(dir);
 								

@@ -154,7 +154,7 @@ gboolean ref_del_entries(const char *refname, int argc, const char **argv, FILE 
 	hyp_utf8_close(ref_handle);
 	ref_handle = -1;
 	
-	dir = g_path_get_dirname(refname);
+	dir = hyp_path_get_dirname(refname);
 	tmp = g_strdup_printf("hy(%u).ref", (int)getpid());
 	tmpname = g_build_filename(dir, tmp, NULL);
 	g_free(tmp);
@@ -433,7 +433,7 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 		goto error;
 	}
 	
-	dir = g_path_get_dirname(refname);
+	dir = hyp_path_get_dirname(refname);
 	lckname = g_build_filename(dir, "hypview.lck", NULL);
 	while ((lck_handle = hyp_utf8_open(lckname, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, HYP_DEFAULT_FILEMODE)) < 0 && errno == EEXIST)
 	{

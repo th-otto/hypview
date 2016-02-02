@@ -2171,7 +2171,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 			g_free(output_filename);
 			return FALSE;
 		}
-		dir = g_path_get_dirname(output_filename);
+		dir = hyp_path_get_dirname(output_filename);
 	} else
 	{
 		dir = NULL;

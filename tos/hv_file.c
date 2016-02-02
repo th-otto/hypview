@@ -43,7 +43,7 @@ static char *find_file(WINDOW_DATA *win, const char *path)
 		DOCUMENT *doc = win->data;
 
 		/* ...search for file in path of window */
-		dir = g_path_get_dirname(doc->path);
+		dir = hyp_path_get_dirname(doc->path);
 		real_path = g_build_filename(dir, filename, NULL);
 		g_free(dir);
 		
