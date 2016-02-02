@@ -404,3 +404,56 @@ void hv_config_colors(WINDOW_DATA *win)
 	}
 	gtk_widget_destroy(dialog);
 }
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+void hv_preferences(WINDOW_DATA *win)
+{
+	GtkWidget *dialog, *vbox, *hbox;
+	GtkWidget *button;
+	GtkWidget *selector;
+	gint resp;
+	char *dir;
+	
+	dialog = gtk_dialog_new();
+	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("preference-dialog"));
+	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_hide), dialog);
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox, TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	selector = gtk_file_chooser_button_new(_("Path for Hypertexts"), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+	gtk_box_pack_start(GTK_BOX(hbox), selector, TRUE, TRUE, 0);
+	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
+	dir = path_subst(gl_profile.general.hypfold);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(selector), dir);
+	g_free(dir);
+	
+	button = gtk_button_new_ok();
+	gtk_widget_set_can_default(button, TRUE);
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_OK);
+	gtk_widget_grab_default(button);
+	
+	button = gtk_button_new_cancel();
+	gtk_widget_set_can_default(button, TRUE);
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
+	
+	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(dialog_response), dialog);
+	
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_widget_show_all(dialog);
+	resp = gtk_dialog_run(GTK_DIALOG(dialog));
+	
+	if (IsResponseOk(resp))
+	{
+	}
+	gtk_widget_destroy(dialog);
+}

@@ -309,6 +309,7 @@ void DocumentInfos(WINDOW_DATA *win);
  * hv_prefs.c
  */
 void hv_config_colors(WINDOW_DATA *win);
+void hv_preferences(WINDOW_DATA *win);
 
 
 #endif /* __HV_GTK_H__ */

@@ -382,6 +382,7 @@ static void on_scale_bitmaps(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
 	UNUSED(win);
+	HypProfile_SetChanged();
 	HYP_DBG(("NYI: on_scale_bitmaps"));
 }
 
@@ -390,8 +391,7 @@ static void on_scale_bitmaps(GtkAction *action, WINDOW_DATA *win)
 static void on_preferences(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	UNUSED(win);
-	HYP_DBG(("NYI: on_preferences"));
+	hv_preferences(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1564,7 +1564,7 @@ static GtkActionEntry const action_entries[] = {
 };
 
 static GtkToggleActionEntry const toggle_action_entries[] = {
-	{ "altfont",            NULL,                    N_("_Alternative font"),               "<Ctrl>Z",     NULL,                                             G_CALLBACK(on_switch_font), FALSE },
+	{ "altfont",            NULL,                    N_("_Alternative font"),               "<Ctrl>Z",     NULL,                                                G_CALLBACK(on_switch_font), FALSE },
 	{ "expandspaces",       NULL,                    N_("_Expand multiple spaces"),         "<Ctrl>L",     NULL,                                                G_CALLBACK(on_expand_spaces), FALSE },
 	{ "scalebitmaps",       NULL,                    N_("_Scale bitmaps"),                  "<Ctrl>B",     NULL,                                                G_CALLBACK(on_scale_bitmaps), FALSE },
 };
