@@ -2,6 +2,7 @@ include ../Makefile.common
 
 if WITH_GUI_GTK
 bin_PROGRAMS = hypview
+noinst_PROGRAMS = gfilesel
 endif
 
 INCLUDES = -I$(hyp_srcdir)/include
@@ -48,6 +49,9 @@ hypview_SOURCES = \
 
 hypview_DEPENDENCIES = $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
 hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(LIBINTL)
+
+gfilesel_SOURCES = gfilesel.c
+gfilesel_LDADD = $(GTK_LIBS)
 
 icons: $(srcdir)/../icons/hypview.h
 
