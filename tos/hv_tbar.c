@@ -270,7 +270,7 @@ void RemoveSearchBox(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	
 	/* Is the autolocator/search box displayed? */
-	if (doc->buttons.searchbox)
+	if (doc->buttons.searchbox && win->autolocator)
 	{
 		doc->buttons.searchbox = FALSE;	/* disable it */
 		*win->autolocator = 0;			/* clear autolocator string */

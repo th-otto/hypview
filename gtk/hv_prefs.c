@@ -452,6 +452,10 @@ static void prefs_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dia
 		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 1;
 		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "startup-last");
 		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 2;
+
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "rightback");
+		gl_profile.viewer.rightback = gtk_toggle_button_get_active(button);
+		
 		HypProfile_SetChanged();
 		break;
 	case GTK_RESPONSE_DELETE_EVENT:
@@ -572,6 +576,21 @@ void hv_preferences(WINDOW_DATA *win)
 	radio_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.startup == 2);
 	g_object_set_data(G_OBJECT(dialog), "startup-last", button);
+	
+	frame = gtk_frame_new(_("Miscellaneous"));
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+
+	hbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_container_add(GTK_CONTAINER(frame), hbox);
+
+	button = gtk_check_button_new_with_mnemonic(_("Right mouse button is 'back'"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.rightback);
+	g_object_set_data(G_OBJECT(dialog), "rightback", button);
+	gtk_widget_set_tooltip_text(button, _(
+		"If set, a right mouse click is interpreted as a click on the Back icon"));
 	
 	button = gtk_button_new_ok();
 	gtk_widget_set_can_default(button, TRUE);

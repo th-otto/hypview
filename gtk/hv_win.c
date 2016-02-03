@@ -434,7 +434,7 @@ static void on_about(GtkAction *action, WINDOW_DATA *win)
 static void on_back(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	GoBack(win);
+	GoThisButton(win, TO_BACK);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -458,7 +458,7 @@ static void on_history(GtkAction *action, WINDOW_DATA *win)
 static void on_catalog(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	GotoCatalog(win);
+	GoThisButton(win, TO_KATALOG);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -810,23 +810,33 @@ static gboolean draw_images(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean event_after(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
+static gboolean on_button_press(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
+{
+	UNUSED(text_view);
+	if (event->type == GDK_BUTTON_PRESS)
+	{
+		if (win->popup)
+		{
+			gtk_widget_destroy(win->popup->hwnd);
+			return TRUE;
+		}
+		if (event->button.button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
+		{
+			GoThisButton(win, TO_BACK);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean on_button_release(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
 {
 	GtkTextIter start, end, iter;
 	GtkTextBuffer *buffer;
 	gint x, y;
 
-	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_KEY_PRESS)
-	{
-		if (win->popup)
-			gtk_widget_destroy(win->popup->hwnd);
-	}
-	
-	if (event->type == GDK_EXPOSE)
-	{
-		/* draw_images(text_view, event, win); */
-	}
-	
 	if (event->type == GDK_BUTTON_RELEASE)
 	{
 		if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
@@ -835,23 +845,23 @@ static gboolean event_after(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *
 			return TRUE;
 		}
 		
-		if (event->button.button != GDK_BUTTON_PRIMARY)
-			return FALSE;
-	
-		CheckFiledate(win);
+		if (event->button.button == GDK_BUTTON_PRIMARY)
+		{
+			CheckFiledate(win);
+			
+			buffer = win->text_buffer;
 		
-		buffer = win->text_buffer;
-	
-		/* we shouldn't follow a link if the user has selected something */
-		gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
-		if (gtk_text_iter_get_offset(&start) != gtk_text_iter_get_offset(&end))
-			return FALSE;
-	
-		gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->button.x, event->button.y, &x, &y);
-	
-		gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
-	
-		follow_if_link(win, &iter);
+			/* we shouldn't follow a link if the user has selected something */
+			gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+			if (gtk_text_iter_get_offset(&start) != gtk_text_iter_get_offset(&end))
+				return FALSE;
+		
+			gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->button.x, event->button.y, &x, &y);
+		
+			gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
+		
+			follow_if_link(win, &iter);
+		}
 	}
 	return FALSE;
 }
@@ -903,6 +913,11 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 	if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
 	{
 		gtk_widget_destroy(win->hwnd);
+		return TRUE;
+	}
+	if (win->popup)
+	{
+		gtk_widget_destroy(win->popup->hwnd);
 		return TRUE;
 	}
 	
@@ -972,7 +987,7 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 		break;
 	case GDK_KEY_Escape:
 	case GDK_KEY_BackSpace:
-		if (!(doc->buttons.searchbox))
+		if (!win->searchentry || !(doc->buttons.searchbox))
 			GoThisButton(win, TO_BACK);
 		else
 			handled = FALSE;
@@ -998,7 +1013,7 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 		handled = FALSE;
 		break;
 	}
-	if (!handled)
+	if (!handled && win->searchentry)
 		handled = AutolocatorKey(win, event);
 	return handled;
 }
@@ -1852,7 +1867,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	g_signal_connect(G_OBJECT(win->hwnd), "window-state-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->hwnd), "frame-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
-	g_signal_connect(G_OBJECT(win->text_view), "event-after", G_CALLBACK(event_after), win);
+	g_signal_connect(G_OBJECT(win->text_view), "button-press-event", G_CALLBACK(on_button_press), win);
+	g_signal_connect(G_OBJECT(win->text_view), "button-release-event", G_CALLBACK(on_button_release), win);
 	g_signal_connect(G_OBJECT(win->text_view), "key-press-event", G_CALLBACK(key_press_event), win);
 	g_signal_connect(G_OBJECT(win->text_view), "populate-popup", G_CALLBACK(populate_popup), win);
 	g_signal_connect(G_OBJECT(win->text_view), "paste-clipboard", G_CALLBACK(paste_clipboard), win);

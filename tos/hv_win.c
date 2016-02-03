@@ -697,11 +697,19 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				}
 			} else if (event->mbutton & 2)	/* right button */
 			{
-				_WORD num;
-				OBJECT *tree = rs_tree(CONTEXT);
-				
-				num = popup_select(tree, event->mx, event->my);
-				BlockOperation(win, num);
+				if (gl_profile.viewer.backwind)
+					wind_set_int(win->whandle, WF_TOP, 0);
+				if (gl_profile.viewer.rightback)
+				{
+					GoThisButton(win, TO_BACK);
+				} else
+				{
+					_WORD num;
+					OBJECT *tree = rs_tree(CONTEXT);
+					
+					num = popup_select(tree, event->mx, event->my);
+					BlockOperation(win, num);
+				}
 			}
 		}
 		break;
