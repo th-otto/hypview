@@ -585,6 +585,11 @@ static gboolean on_quit(GtkAction *action, WINDOW_DATA *win)
 		gl_profile.viewer.win_y = y;
 		gl_profile.viewer.win_w = width;
 		gl_profile.viewer.win_h = height;
+		if (win->data && win->data->path)
+		{
+			g_free(gl_profile.viewer.last_file);
+			gl_profile.viewer.last_file = g_strdup(win->data->path);
+		}
 		HypProfile_SetChanged();
 	}
 	RecentSaveToDisk();

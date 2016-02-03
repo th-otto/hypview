@@ -455,6 +455,14 @@ static void prefs_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dia
 
 		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "rightback");
 		gl_profile.viewer.rightback = gtk_toggle_button_get_active(button);
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "transparent_pics");
+		gl_profile.viewer.transparent_pics = gtk_toggle_button_get_active(button);
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "check_time");
+		gl_profile.viewer.check_time = gtk_toggle_button_get_active(button);
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "alink_newwin");
+		gl_profile.viewer.alink_newwin = gtk_toggle_button_get_active(button);
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "marken_save_ask");
+		gl_profile.viewer.marken_save_ask = gtk_toggle_button_get_active(button);
 		
 		HypProfile_SetChanged();
 		break;
@@ -591,6 +599,35 @@ void hv_preferences(WINDOW_DATA *win)
 	g_object_set_data(G_OBJECT(dialog), "rightback", button);
 	gtk_widget_set_tooltip_text(button, _(
 		"If set, a right mouse click is interpreted as a click on the Back icon"));
+	
+	button = gtk_check_button_new_with_mnemonic(_("Display pictures transparent"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.transparent_pics);
+	g_object_set_data(G_OBJECT(dialog), "transparent_pics", button);
+	gtk_widget_set_tooltip_text(button, _(
+		"Draw pictures transparently"));
+	
+	button = gtk_check_button_new_with_mnemonic(_("Watch modification times of files"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.check_time);
+	g_object_set_data(G_OBJECT(dialog), "check_time", button);
+	gtk_widget_set_tooltip_text(button, _(
+		"Check file modification time and date before access"));
+	
+	button = gtk_check_button_new_with_mnemonic(_("Open ALINKs in a new window"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.alink_newwin);
+	g_object_set_data(G_OBJECT(dialog), "alink_newwin", button);
+	gtk_widget_set_tooltip_text(button, _(
+		"If set, ALINKS are opened in a new window\n"
+		"If not set, ALINKS are opened in the current window (as ST-Guide)"));
+	
+	button = gtk_check_button_new_with_mnemonic(_("Ask before saving bookmarks"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.marken_save_ask);
+	g_object_set_data(G_OBJECT(dialog), "marken_save_ask", button);
+	gtk_widget_set_tooltip_text(button, _(
+		"Ask before saving bookmarks"));
 	
 	button = gtk_button_new_ok();
 	gtk_widget_set_can_default(button, TRUE);
