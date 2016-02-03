@@ -2427,6 +2427,8 @@ void HypProfile_Load(void)
 		setdefault(gl_profile.viewer.arrowpatch = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "NOREFBOX", &gl_profile.viewer.norefbox))
 		setdefault(gl_profile.viewer.norefbox = FALSE);
+	if (!Profile_ReadBool(profile, "HypView", "DETAIL_INFO", &gl_profile.viewer.detail_info))
+		setdefault(gl_profile.viewer.detail_info = FALSE);
 
 	if (!Profile_ReadString(profile, "Colors", "background", &gl_profile.colors.background))
 		setdefault(gl_profile.colors.background = g_strdup("#ffffff"));
@@ -2610,7 +2612,8 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteBool(profile, "HypView", "BACKWIND", gl_profile.viewer.backwind);
 	Profile_WriteBool(profile, "HypView", "ARROWPATCH", gl_profile.viewer.arrowpatch);
 	Profile_WriteBool(profile, "HypView", "NOREFBOX", gl_profile.viewer.norefbox);
-	
+	Profile_WriteBool(profile, "HypView", "DETAIL_INFO", gl_profile.viewer.detail_info);
+
 	Profile_WriteString(profile, "Colors", "background", gl_profile.colors.background);
 	Profile_WriteString(profile, "Colors", "text", gl_profile.colors.text);
 	Profile_WriteString(profile, "Colors", "link", gl_profile.colors.link);

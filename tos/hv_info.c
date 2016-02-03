@@ -80,6 +80,8 @@ static void toggle_morebox(OBJECT *tree, _WORD box)
 		show_morebox(tree, box);
 	else
 		hide_morebox(tree, box);
+	gl_profile.viewer.detail_info = !gl_profile.viewer.detail_info;
+	HypProfile_SetChanged();
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -160,7 +162,8 @@ void DocumentInfos(WINDOW_DATA *win)
 	static gboolean first = TRUE;
 	if (first)
 	{
-		hide_morebox(tree, INFO_MORE_BOX);
+		if (!gl_profile.viewer.detail_info)
+			hide_morebox(tree, INFO_MORE_BOX);
 		first = FALSE;
 	}
 	
@@ -171,6 +174,8 @@ void DocumentInfos(WINDOW_DATA *win)
 	set_text(tree, PROG_FILE, hyp_basename(doc->path));
 	if (doc->type == HYP_FT_HYP)
 	{
+		if (gl_profile.viewer.detail_info)
+			show_morebox(tree, INFO_MORE_BOX);
 		set_text(tree, PROG_DATABASE, hyp->database);
 		tree[PROG_DATABASE].ob_flags &= ~OF_HIDETREE;
 		set_text(tree, PROG_AUTHOR, hyp->author);
@@ -218,7 +223,11 @@ void DocumentInfos(WINDOW_DATA *win)
 			objc_draw_grect(tree, ROOT, MAX_DEPTH, &big);
 			obj = form_do(tree, 0);
 			if (obj > 0)
+			{
 				tree[obj].ob_state &= ~OS_SELECTED;
+				if (obj == INFO_LESS || obj == INFO_MORE)
+					toggle_morebox(tree, INFO_MORE_BOX);
+			}
 			form_dial_grect(FMD_FINISH, &little, &big);
 		} while (obj > 0 && obj != PROG_HELP && obj != PROG_OK);
 		switch (obj)

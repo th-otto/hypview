@@ -3,8 +3,6 @@
 
 static char const prghelp_name[] = "hypview.hyp";
 
-static gboolean expanded = FALSE;
-
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -21,7 +19,8 @@ static void expander_toggled(GtkWidget *w, GtkWidget *dialog)
 {
 	UNUSED(w);
 	UNUSED(dialog);
-	expanded = !expanded;
+	gl_profile.viewer.detail_info = !gl_profile.viewer.detail_info;
+	HypProfile_SetChanged();
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -105,7 +104,7 @@ void DocumentInfos(WINDOW_DATA *win)
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
 		gtk_container_add(GTK_CONTAINER(frame), vbox);
 		g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(expander_toggled), dialog);
-		gtk_expander_set_expanded(GTK_EXPANDER(expander), expanded);
+		gtk_expander_set_expanded(GTK_EXPANDER(expander), gl_profile.viewer.detail_info);
 		
 		str = g_strdup_printf(_("Nodes       : %7d\n"
 		                        "Index Size  : %7ld\n"
