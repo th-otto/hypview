@@ -975,6 +975,24 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 		else
 			hv_scroll_window(win, 0, win->y_raster);
 		break;
+	case GDK_KEY_Page_Up:
+		hv_scroll_window(win, 0, -win_h);
+		break;
+	case GDK_KEY_Page_Down:
+		hv_scroll_window(win, 0, win_h);
+		break;
+	case GDK_KEY_Home:
+		if ((event->state & GDK_SHIFT_MASK) || (event->state & GDK_CONTROL_MASK))
+			hv_scroll_window(win, -INT_MAX, -INT_MAX);
+		else
+			hv_scroll_window(win, -INT_MAX, 0);
+		break;
+	case GDK_KEY_End:
+		if ((event->state & GDK_SHIFT_MASK) || (event->state & GDK_CONTROL_MASK))
+			hv_scroll_window(win, -INT_MAX, INT_MAX);
+		else
+			hv_scroll_window(win, INT_MAX, 0);
+		break;
 	case GDK_KEY_KP_Subtract:
 		GoThisButton(win, TO_PREV);
 		break;
@@ -1000,10 +1018,6 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 	case GDK_KEY_Undo:
 		GoThisButton(win, TO_BACK);
 		break;
-	case GDK_KEY_Page_Up:			/* already handled by GtkTextView */
-	case GDK_KEY_Page_Down:			/* already handled by GtkTextView */
-	case GDK_KEY_End:				/* already handled by GtkTextView */
-	case GDK_KEY_Home:				/* already handled by GtkTextView */
 	case GDK_KEY_F1:				/* already handled by actions */
 	case GDK_KEY_F2:				/* already handled by actions */
 	case GDK_KEY_F3:				/* already handled by actions */
