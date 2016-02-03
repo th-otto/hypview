@@ -4,6 +4,7 @@ typedef struct
 	unsigned char **line_ptr;
 	long lines;
 	long columns;
+	HYP_CHARSET charset;
 	unsigned char start[1];
 } FMT_ASCII;
 
@@ -18,6 +19,7 @@ void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
 gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
 long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search);
 unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *end);
+void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node);
 
 /*
  *		Binary.c

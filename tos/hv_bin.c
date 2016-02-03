@@ -35,12 +35,15 @@ void BinaryDisplayPage(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	FMT_ASCII *ascii = doc->data;
 	short x, y;
-	char line_buffer[1024];
+	char *line_buffer;
 	const unsigned char *src = ascii->start;
 	const unsigned char *end = src + ascii->length;
 
 	WindowCalcScroll(win);
 
+	line_buffer = g_new(char, gl_profile.viewer.binary_columns + 1);
+	if (line_buffer == NULL)
+		return;
 	x = (_WORD)(win->scroll.g_x - win->docsize.x);
 	y = win->scroll.g_y;
 
@@ -72,6 +75,7 @@ void BinaryDisplayPage(WINDOW_DATA *win)
 		v_gtextn(vdi_handle, x, y, line_buffer, n);
 		y += win->y_raster;
 	}
+	g_free(line_buffer);
 }
 
 /*** ---------------------------------------------------------------------- ***/

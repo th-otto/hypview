@@ -26,11 +26,12 @@ static void AsciiClose(DOCUMENT *doc)
 
 static gboolean AsciiGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr node)
 {
-	UNUSED(win);
+	DOCUMENT *doc = hypwin_doc(win);
 	UNUSED(chapter);
 	UNUSED(node);
 	HYP_DBG(("AsciiGotoNode(Chapter: <%s> / <%u>)", printnull(chapter), node));
-	return FALSE;
+	doc->prepNode(win, NULL);
+	return TRUE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -60,7 +61,7 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 		if ((val == '\t') && (gl_profile.viewer.ascii_tab_size))
 		{
 			len += gl_profile.viewer.ascii_tab_size - len % gl_profile.viewer.ascii_tab_size;
-		} else if (val)
+		} else if (val != 0 && val != 0x0d && val != 0x0a)
 		{
 			len++;
 		} else
@@ -82,7 +83,7 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 			val = gl_profile.viewer.ascii_tab_size - (dst - ret) % gl_profile.viewer.ascii_tab_size;
 			while (val--)
 				*dst++ = ' ';
-		} else if (val)
+		} else if (val != 0 && val != 0x0d && val != 0x0a)
 		{
 			*dst++ = val;
 		} else
@@ -93,14 +94,6 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 	ASSERT((size_t)(dst - ret) == len);
 	*dst = '\0';
 	return ret;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
-{
-	UNUSED(win);
-	UNUSED(node);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -231,8 +224,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 	FMT_ASCII *ascii;
 
 	/* determine file size */
-	if (lseek(handle, 0, SEEK_END) != 0)
-		return HYP_FT_LOADERROR;
+	lseek(handle, 0, SEEK_END);
 	file_len = lseek(handle, 0, SEEK_CUR);
 	lseek(handle, 0, SEEK_SET);
 	if (file_len < 0)
@@ -244,6 +236,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 	{
 		ascii->length = file_len;
 		ascii->line_ptr = NULL;
+		ascii->charset = hyp_get_current_charset();
 		
 		/* load file into memory */
 		ret = read(handle, ascii->start, file_len);
@@ -255,135 +248,141 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 		{
 			unsigned char *start = ascii->start;
 			unsigned char *end = start + file_len;
-			unsigned char *ptr = start;
+			unsigned char *ptr;
 			unsigned char val;
 			long columns = 0;
+			long wordend_columns = 0;
+			long line = 0;
+			unsigned char *wordend = NULL;
 			hyp_filetype type = HYP_FT_ASCII;
 
 			/* init lines and columns */
-			ascii->lines = 1;
+			ascii->lines = 0;
 			ascii->columns = 0;
 			*end = 0;
 
-			/*
-			 * this loop determines wether file is really ASCII text
-			 * or wether it contain null bytes.
-			 * Also determine number of lines and columns
-			 */
-			while (ptr < end)
+			if (memchr(start, 0, file_len))
 			{
-				val = *ptr;
-
-				if (columns >= gl_profile.viewer.ascii_break_len)
+				type = HYP_FT_BINARY;
+			} else
+			{
+				if (ascii->charset == HYP_CHARSET_UTF8 && !g_utf8_validate((const char *)start, file_len, NULL))
+					ascii->charset = HYP_CHARSET_BINARY_TABS;
+				if (ascii->charset == HYP_CHARSET_BINARY_TABS)
 				{
-					unsigned char *old_ptr = ptr;
-
-					ascii->lines++;		/* count lines */
-
-					/* search for beginning of word */
-					while (columns)
+					/*
+					 * Heuristic to check for Atari character set.
+					 * 0x81 is not defined in iso-8859-1.
+					 * The others are defined, but rather uncommon in ascii text files
+					 */
+					if (memchr(start, 0x81, file_len) ||
+						memchr(start, 0x84, file_len) ||
+						memchr(start, 0x90, file_len) ||
+						memchr(start, 0x94, file_len))
 					{
-						ptr--;
-						columns--;
-						if ((*ptr == ' ') || (*ptr == '\t'))
-						{
-							break;
-						}
+						ascii->charset = HYP_CHARSET_ATARI;
 					}
-
-					if (columns)
-					{
-						*ptr++ = '\n';	/* insert line break */
-						ascii->columns = max(ascii->columns, columns);
-					} else
-					{
-						ptr = old_ptr;
-						ascii->columns = max(ascii->columns, gl_profile.viewer.ascii_break_len);
-					}
-					columns = 0;
-				} else if ((val == 0x0d) || (val == 0x0a))	/* CR or LF? */
-				{
-					ascii->lines++;		/* count lines */
-					ascii->columns = max(ascii->columns, columns);
-					columns = 0;
-					ptr++;				/* skip line ending */
-					if (val == 0x0d && *ptr == 0x0a)
-						ptr++;
-				} else if (val == '\t')	/* tab-stop?... */
-				{
-					columns += gl_profile.viewer.ascii_tab_size - columns % gl_profile.viewer.ascii_tab_size;
-					ptr++;				/* skip tab */
-				} else if (val)
-				{
-					ptr++;				/* skip regular character */
-					columns++;
-				} else
-				{
-					/* ... it is a binary file */
-					ascii->lines = (file_len + gl_profile.viewer.binary_columns) / gl_profile.viewer.binary_columns;
-					ascii->columns = gl_profile.viewer.binary_columns;
-					columns = 0;
-					type = HYP_FT_BINARY;
-					break;
 				}
-			}
-
-			doc->data = ascii;
-			doc->start_line = 0;
-			doc->type = type;
-			doc->closeProc = AsciiClose;
-			doc->gotoNodeProc = AsciiGotoNode;
-			doc->getNodeProc = AsciiGetNode;
-			doc->prepNode = AsciiPrep;
-			
-			/* is it an ASCII file? */
-			if (type == HYP_FT_ASCII)
-			{
-				long line = 0;
-
-				ascii->columns = max(ascii->columns, columns);
-				ptr = (unsigned char *) &ascii->start;
-
+				
 				/* allocate table of lines */
-				ascii->line_ptr = g_new(unsigned char *, ascii->lines + 2);
+				ascii->line_ptr = g_new(unsigned char *, line + 2);
 				if (ascii->line_ptr == NULL)
 				{
 					g_free(ascii);
 					return HYP_FT_LOADERROR;
 				}
 
-				ascii->line_ptr[line++] = ptr;
 				/*
-				 * convert all CR/LF and store line pointers
+				 * this loop determines wether file is really ASCII text
+				 * or wether it contain null bytes.
+				 * Also determine number of lines and columns
 				 */
 				ptr = start;
-				columns = 0;
+				ascii->line_ptr[line++] = ptr;
 				while (ptr < end)
 				{
 					val = *ptr;
-
+	
 					if (columns >= gl_profile.viewer.ascii_break_len)
 					{
+						if (wordend)
+						{
+							ptr = wordend;
+							ptr++;	/* insert line break */
+							ascii->columns = max(ascii->columns, wordend_columns);
+						} else
+						{
+							ascii->columns = max(ascii->columns, gl_profile.viewer.ascii_break_len);
+						}
 						columns = 0;
+						wordend_columns = 0;
+						wordend = NULL;
+						ascii->line_ptr = g_renew(unsigned char *, ascii->line_ptr, line + 2);
+						if (ascii->line_ptr == NULL)
+							break;
 						ascii->line_ptr[line++] = ptr;
-					} else if ((val == 0x0d) || (val == 0x0a))	/* CR or LF? */
+					} else if (val == 0x0d || val == 0x0a)	/* CR or LF? */
 					{
+						ascii->columns = max(ascii->columns, columns);
 						columns = 0;
-						*ptr++ = 0;
-						if ((val == 0x0d) && (*ptr == 0x0a))
+						wordend_columns = 0;
+						wordend = NULL;
+						ptr++;				/* skip line ending */
+						if (val == 0x0d && *ptr == 0x0a)
 							ptr++;
+						ascii->line_ptr = g_renew(unsigned char *, ascii->line_ptr, line + 2);
+						if (ascii->line_ptr == NULL)
+							break;
 						ascii->line_ptr[line++] = ptr;
 					} else if (val == '\t')	/* tab-stop?... */
 					{
+						if (!wordend)
+							wordend_columns = columns;
+						wordend = ptr;
 						columns += gl_profile.viewer.ascii_tab_size - columns % gl_profile.viewer.ascii_tab_size;
-						ptr++;			/* skip tab */
+						ptr++;				/* skip tab */
+					} else if (val == ' ')
+					{
+						if (!wordend)
+							wordend_columns = columns;
+						wordend = ptr;
+						ptr++;				/* skip regular character */
+						columns++;
+					} else if (val)
+					{
+						if (ascii->charset == HYP_CHARSET_UTF8)
+						{
+							ptr = g_utf8_next_char(ptr);
+						} else
+						{
+							ptr++;				/* skip regular character */
+						}
+						columns++;
 					} else
 					{
-						ptr++;			/* skip regular character */
-						columns++;
+						/* ... it is a binary file */
+						columns = 0;
+						type = HYP_FT_BINARY;
+						break;
 					}
 				}
-				ascii->line_ptr[line] = end;
+			}
+			
+			if (type == HYP_FT_ASCII)
+			{
+				if (ascii->line_ptr == NULL)
+				{
+					g_free(ascii);
+					return HYP_FT_LOADERROR;
+				}
+				
+				if (columns != 0)
+				{
+					line++;
+					ascii->columns = max(ascii->columns, columns);
+				}
+				ascii->line_ptr[line] = ptr;
+				ascii->lines = line;
 
 				doc->displayProc = AsciiDisplayPage;
 				doc->autolocProc = AsciiAutolocator;
@@ -394,12 +393,23 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				doc->buttons.save = TRUE;
 			} else
 			{
+				ascii->charset = HYP_CHARSET_BINARY;
+				ascii->lines = (file_len + gl_profile.viewer.binary_columns - 1) / gl_profile.viewer.binary_columns;
+				ascii->columns = gl_profile.viewer.binary_columns;
 				doc->displayProc = BinaryDisplayPage;
 				doc->autolocProc = BinaryAutolocator;
 				doc->getCursorProc = BinaryGetCursorPosition;
 				doc->blockProc = BinaryBlockOperations;
 			}
 
+			doc->data = ascii;
+			doc->start_line = 0;
+			doc->type = type;
+			doc->closeProc = AsciiClose;
+			doc->gotoNodeProc = AsciiGotoNode;
+			doc->getNodeProc = AsciiGetNode;
+			doc->prepNode = AsciiPrep;
+			
 			return type;
 		}
 	} else

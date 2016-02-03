@@ -1465,6 +1465,27 @@ void hv_win_update_attributes(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void set_default_tabs(WINDOW_DATA *win)
+{
+	if (gl_profile.viewer.ascii_tab_size == 8)
+	{
+		gtk_text_view_set_tabs(GTK_TEXT_VIEW(win->text_view), NULL);
+	} else
+	{
+		int n = 100;
+		PangoTabArray *tab_array;
+		int i;
+		
+		tab_array = pango_tab_array_new(n, TRUE);
+		for (i = 0; i < n; i++)
+			pango_tab_array_set_tab(tab_array, i, PANGO_TAB_LEFT, i * gl_profile.viewer.ascii_tab_size * win->x_raster);
+		gtk_text_view_set_tabs(GTK_TEXT_VIEW(win->text_view), tab_array);
+		pango_tab_array_free(tab_array);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void set_font_attributes(WINDOW_DATA *win)
 {
 	PangoFontDescription *desc = pango_font_description_from_string(gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name);
@@ -1501,6 +1522,7 @@ static void set_font_attributes(WINDOW_DATA *win)
 		win->y_raster = font_ch;
 	}
 	pango_font_description_free(desc);
+	set_default_tabs(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/

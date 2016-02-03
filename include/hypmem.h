@@ -155,6 +155,11 @@ char *g_ascii_formatd(char *buffer, int buf_len, const char *format, double d);
 
 #endif /* HAVE_GLIB */
 
+#undef g_utf8_next_char
+#define g_utf8_next_char(p) ((p) + _hyp_utf8_skip_data[*(const unsigned char *)(p)])
+extern const char _hyp_utf8_skip_data[256];
+gboolean g_utf8_validate(const char *str, ssize_t max_len, const char **end);
+
 
 #if MEM_GARBAGE_FRIENDLY
 #define mem_garbage_clear(p) p = NULL

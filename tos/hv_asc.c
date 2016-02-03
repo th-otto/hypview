@@ -64,6 +64,15 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
+{
+	UNUSED(win);
+	UNUSED(node);
+	/* nothing to do */
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;

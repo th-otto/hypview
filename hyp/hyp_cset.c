@@ -15,6 +15,18 @@
 #include "cp_850.h"
 #include "cp_mac.h"
 #include "cp_1252.h"
+#include "cp_binary.h"
+
+const char _hyp_utf8_skip_data[256] = {
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,6,6,1,1
+};
 
 #ifndef HAVE_GLIB
 #include "gunichar.h"
@@ -394,6 +406,10 @@ static const h_unichar_t *get_cset(HYP_CHARSET charset)
 		return macroman_to_unicode;
 	case HYP_CHARSET_CP1252:
 		return cp1252_to_unicode;
+	case HYP_CHARSET_BINARY:
+		return binary_to_unicode;
+	case HYP_CHARSET_BINARY_TABS:
+		return binarytabs_to_unicode;
 	case HYP_CHARSET_UTF8:
 		/* not an error, we use utf8 here directly */
 		return NULL;
@@ -1116,6 +1132,8 @@ char *hyp_utf8_to_charset(HYP_CHARSET charset, const void *src, size_t len, gboo
 	case HYP_CHARSET_CP1252:
 		return hyp_conv_to_cp1252((const char *)src, len, converror);
 	case HYP_CHARSET_NONE:
+	case HYP_CHARSET_BINARY:
+	case HYP_CHARSET_BINARY_TABS:
 		break;
 	}
 	return g_strndup((const char *)src, len);
@@ -1169,6 +1187,22 @@ const char *hyp_utf8_conv_char(HYP_CHARSET charset, const char *src, char *buf, 
 				*converror = TRUE;
 		buf[1] = '\0';
 		return end;
+	case HYP_CHARSET_BINARY:
+		end = hyp_utf8_getchar(src, &ch);
+		buf[0] = (*utf16_to_binary[ch >> 8])[ch & 0xff];
+		if ((unsigned char)buf[0] == 0xff && binary_to_unicode[0xff] != ch)
+			if (converror)
+				*converror = TRUE;
+		buf[1] = '\0';
+		return end;
+	case HYP_CHARSET_BINARY_TABS:
+		end = hyp_utf8_getchar(src, &ch);
+		buf[0] = (*utf16_to_binary[ch >> 8])[ch & 0xff];
+		if ((unsigned char)buf[0] == 0xff && binarytabs_to_unicode[0xff] != ch)
+			if (converror)
+				*converror = TRUE;
+		buf[1] = '\0';
+		return end;
 	case HYP_CHARSET_NONE:
 		break;
 	}
@@ -1203,6 +1237,8 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP850:
 		case HYP_CHARSET_MACROMAN:
 		case HYP_CHARSET_CP1252:
+		case HYP_CHARSET_BINARY:
+		case HYP_CHARSET_BINARY_TABS:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
 			g_free(tmp);
@@ -1221,6 +1257,8 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_ATARI:
 		case HYP_CHARSET_MACROMAN:
 		case HYP_CHARSET_CP1252:
+		case HYP_CHARSET_BINARY:
+		case HYP_CHARSET_BINARY_TABS:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
 			g_free(tmp);
@@ -1239,6 +1277,8 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP850:
 		case HYP_CHARSET_ATARI:
 		case HYP_CHARSET_CP1252:
+		case HYP_CHARSET_BINARY:
+		case HYP_CHARSET_BINARY_TABS:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
 			g_free(tmp);
@@ -1257,6 +1297,8 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_MACROMAN:
 		case HYP_CHARSET_CP850:
 		case HYP_CHARSET_ATARI:
+		case HYP_CHARSET_BINARY:
+		case HYP_CHARSET_BINARY_TABS:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
 			g_free(tmp);
@@ -1266,6 +1308,8 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		}
 		break;
 	case HYP_CHARSET_NONE:
+	case HYP_CHARSET_BINARY:
+	case HYP_CHARSET_BINARY_TABS:
 		break;
 	}
 	return g_strndup((const char *)src, len);
@@ -1517,3 +1561,207 @@ int hyp_utf8_printf(const char *format, ...)
 	va_end(args);
 	return res;
 }
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+#ifndef HAVE_GLIB
+
+#define VALIDATE_BYTE(mask, expect)                      \
+    if (G_UNLIKELY((*p & (mask)) != (expect))) \
+      goto error
+
+/* see IETF RFC 3629 Section 4 */
+
+static const unsigned char *fast_validate(const unsigned char *str)
+{
+	const unsigned char *p = str;
+
+	for (; *p; p++)
+	{
+		if (*p < 0x80)
+			/* done */ ;
+		else
+		{
+			const unsigned char *last;
+
+			last = p;
+			if (*p < 0xe0)	/* 110xxxxx */
+			{
+				if (G_UNLIKELY(*p < 0xc2))
+					goto error;
+			} else
+			{
+				if (*p < 0xf0)	/* 1110xxxx */
+				{
+					switch (*p++ & 0x0f)
+					{
+					case 0:
+						VALIDATE_BYTE(0xe0, 0xa0);	/* 0xa0 ... 0xbf */
+						break;
+					case 0x0d:
+						VALIDATE_BYTE(0xe0, 0x80);	/* 0x80 ... 0x9f */
+						break;
+					default:
+						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+						break;
+					}
+				} else if (*p < 0xf5)	/* 11110xxx excluding out-of-range */
+				{
+					switch (*p++ & 0x07)
+					{
+					case 0:
+						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+						if (G_UNLIKELY((*p & 0x30) == 0))
+							goto error;
+						break;
+					case 4:
+						VALIDATE_BYTE(0xf0, 0x80);	/* 0x80 ... 0x8f */
+						break;
+					default:
+						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+						break;
+					}
+					p++;
+					VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+				} else
+					goto error;
+			}
+
+			p++;
+			VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+
+			continue;
+
+		  error:
+			return last;
+		}
+	}
+
+	return p;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static const unsigned char *fast_validate_len(const unsigned char *str, ssize_t max_len)
+{
+	const unsigned char *p = str;
+
+	for (; ((p - str) < max_len) && *p; p++)
+	{
+		if (*p < 0x80)
+			/* done */ ;
+		else
+		{
+			const unsigned char *last;
+
+			last = p;
+			if (*p < 0xe0)	/* 110xxxxx */
+			{
+				if (G_UNLIKELY(max_len - (p - str) < 2))
+					goto error;
+
+				if (G_UNLIKELY(*p < 0xc2))
+					goto error;
+			} else
+			{
+				if (*p < 0xf0)	/* 1110xxxx */
+				{
+					if (G_UNLIKELY(max_len - (p - str) < 3))
+						goto error;
+
+					switch (*p++ & 0x0f)
+					{
+					case 0:
+						VALIDATE_BYTE(0xe0, 0xa0);	/* 0xa0 ... 0xbf */
+						break;
+					case 0x0d:
+						VALIDATE_BYTE(0xe0, 0x80);	/* 0x80 ... 0x9f */
+						break;
+					default:
+						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+						break;
+					}
+				} else if (*p < 0xf5)	/* 11110xxx excluding out-of-range */
+				{
+					if (G_UNLIKELY(max_len - (p - str) < 4))
+						goto error;
+
+					switch (*p++ & 0x07)
+					{
+					case 0:
+						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+						if (G_UNLIKELY((*p & 0x30) == 0))
+							goto error;
+						break;
+					case 4:
+						VALIDATE_BYTE(0xf0, 0x80);	/* 0x80 ... 0x8f */
+						break;
+					default:
+						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+						break;
+					}
+					p++;
+					VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+				} else
+					goto error;
+			}
+
+			p++;
+			VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
+
+			continue;
+
+		  error:
+			return last;
+		}
+	}
+
+	return p;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/**
+ * g_utf8_validate:
+ * @str: (array length=max_len) (element-type guint8): a pointer to character data
+ * @max_len: max bytes to validate, or -1 to go until NUL
+ * @end: (allow-none) (out) (transfer none): return location for end of valid data
+ * 
+ * Validates UTF-8 encoded text. @str is the text to validate;
+ * if @str is nul-terminated, then @max_len can be -1, otherwise
+ * @max_len should be the number of bytes to validate.
+ * If @end is non-%NULL, then the end of the valid range
+ * will be stored there (i.e. the start of the first invalid 
+ * character if some bytes were invalid, or the end of the text 
+ * being validated otherwise).
+ *
+ * Note that g_utf8_validate() returns %FALSE if @max_len is 
+ * positive and any of the @max_len bytes are nul.
+ *
+ * Returns %TRUE if all of @str was valid. Many GLib and GTK+
+ * routines require valid UTF-8 as input; so data read from a file
+ * or the network should be checked with g_utf8_validate() before
+ * doing anything else with it.
+ * 
+ * Returns: %TRUE if the text was valid UTF-8
+ */
+gboolean g_utf8_validate(const char *str, ssize_t max_len, const char **end)
+{
+	const char *p;
+
+	if (max_len < 0)
+		p = (const char *)fast_validate((const unsigned char *)str);
+	else
+		p = (const char *)fast_validate_len((const unsigned char *)str, max_len);
+
+	if (end)
+		*end = p;
+
+	if ((max_len >= 0 && p != str + max_len) || (max_len < 0 && *p != '\0'))
+		return FALSE;
+	return TRUE;
+}
+
+#endif
