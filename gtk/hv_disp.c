@@ -971,7 +971,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		char *s; \
 		size_t len = src - textstart; \
 		/* draw remaining text */ \
-		s = hyp_conv_charset(hyp->comp_os, HYP_CHARSET_UTF8, textstart, len, NULL); \
+		s = hyp_conv_charset(hyp->comp_charset, HYP_CHARSET_UTF8, textstart, len, NULL); \
 		insert_str(&info, s, NULL, flush_spaces); \
 		g_free(s); \
 		at_bol = FALSE; \
