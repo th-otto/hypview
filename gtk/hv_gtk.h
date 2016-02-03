@@ -262,7 +262,6 @@ void GotoDefaultFile(WINDOW_DATA *win);
 /*
  * hv_misc.c
  */
-gboolean show_dialog(GtkWidget *parent, const char *type, const char *message, gboolean can_cancel);
 void CenterWindow(GtkWidget *hwnd);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
 void hv_recent_add(const char *path);

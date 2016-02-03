@@ -104,30 +104,6 @@ gboolean IsResponseOk(int resp)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void dialog_response(GtkWidget *w, gint response_id, gpointer user_data)
-{
-	UNUSED(w);
-	UNUSED(user_data);
-
-	switch (response_id)
-	{
-	case GTK_RESPONSE_HELP:
-		break;
-	case GTK_RESPONSE_APPLY:
-	case GTK_RESPONSE_ACCEPT:
-	case GTK_RESPONSE_OK:
-	case GTK_RESPONSE_YES:
-		break;
-	case GTK_RESPONSE_DELETE_EVENT:
-	case GTK_RESPONSE_CANCEL:
-	case GTK_RESPONSE_CLOSE:
-	case GTK_RESPONSE_NO:
-		break;
-	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 void show_message(const char *title, const char *text, gboolean big)
 {
 	GtkWidget *dialog, *vbox, *label;
@@ -168,7 +144,7 @@ void show_message(const char *title, const char *text, gboolean big)
 	
 	button = gtk_button_new_ok();
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
-	g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
+	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), dialog);
 	
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), GTK_BUTTONBOX_SPREAD);
 
@@ -224,7 +200,7 @@ gboolean ask_yesno(GtkWindow *parent, const char *text)
 
 	gtk_widget_grab_default(button);
 
-	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(dialog_response), dialog);
+	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_hide), dialog);
 	
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
 	gtk_widget_show_all(dialog);
