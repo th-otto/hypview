@@ -14,7 +14,7 @@ static void ApplyFont(void)
 	/* adjust all open documents and windows */
 	for (l = all_list; l; l = l->next)
 	{
-		win = l->data;
+		win = (WINDOW_DATA *)l->data;
 		/* if (win->type == WIN_WINDOW) */
 		{
 			gboolean ret;
@@ -51,7 +51,7 @@ void SwitchFont(WINDOW_DATA *win)
 static void font_set(GtkFontButton *w, WINDOW_DATA *win)
 {
 	const char *fontname = gtk_font_button_get_font_name(w);
-	GtkWidget *entry = g_object_get_data(G_OBJECT(w), "entry");
+	GtkWidget *entry = (GtkWidget *)g_object_get_data(G_OBJECT(w), "entry");
 	PangoFontDescription *desc;
 	
 	UNUSED(win);

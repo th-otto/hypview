@@ -225,13 +225,13 @@ void RecentUpdate(WINDOW_DATA *win)
 	l = recent_list;
 	for (child = children; child; child = child->next)
 	{
-		GtkMenuItem *item = child->data;
+		GtkMenuItem *item = (GtkMenuItem *)child->data;
 		const char *name = gtk_widget_get_name(GTK_WIDGET(item));
 		if (strncmp(name, "recent-", 7) == 0)
 		{
 			if (l)
 			{
-				const char *path = l->data;
+				const char *path = (const char *)l->data;
 				gtk_menu_item_set_label(item, hyp_basename(path));
 				gtk_widget_set_tooltip_text(GTK_WIDGET(item), path);
 				gtk_widget_show(GTK_WIDGET(item));
@@ -262,7 +262,7 @@ void on_recent_selected(GtkAction *action, WINDOW_DATA *win)
 	{
 		if (sel == 0)
 		{
-			const char *path = l->data;
+			const char *path = (const char *)l->data;
 			hv_recent_add(path); /* move it to top of list */
 			OpenFileInWindow(win, path, NULL, HYP_NOINDEX, TRUE, FALSE, FALSE);
 			return;
@@ -281,7 +281,7 @@ void hv_recent_add(const char *path)
 	last = NULL;
 	for (l = recent_list, count = 0; l; l = l->next, count++)
 	{
-		const char *oldpath = l->data;
+		const char *oldpath = (const char *)l->data;
 		if (filename_cmp(path, oldpath) == 0)
 		{
 			recent_list = g_slist_remove_link(recent_list, l);
@@ -349,7 +349,7 @@ void RecentSaveToDisk(void)
 	for (l = recent_list; l; l = l->next)
 	{
 		name = g_strdup_printf("recent-%d", i);
-		Profile_WriteString(profile, "Recent", name, l->data);
+		Profile_WriteString(profile, "Recent", name, (const char *)l->data);
 		g_free(name);
 		i++;
 	}

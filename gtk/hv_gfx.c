@@ -179,7 +179,7 @@ _WORD GetNumPlanes(void)
 
 void W_Release_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 {
-	GdkPixbuf *data = *pdata;
+	GdkPixbuf *data = (GdkPixbuf *)(*pdata);
 	
 	UNUSED(width);
 	UNUSED(height);
@@ -273,7 +273,7 @@ gboolean W_Fix_Bitmap(void **pdata, _WORD _width, _WORD _height, _WORD _planes)
 	int height = _height;
 	int planes = _planes;
 	GdkPixbuf *pixbuf;
-	guint8 *src = *pdata;
+	guint8 *src = (guint8 *)(*pdata);
 	guint8 *dst;
 	int dststride;
 	int srcstride;

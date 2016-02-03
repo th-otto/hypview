@@ -132,7 +132,7 @@ static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 		TellCache(hyp, node, NULL);
 		return FALSE;
 	}
-	if (!GetEntryBytes(hyp, node, pic->pic.fd_addr, buf, data_size))
+	if (!GetEntryBytes(hyp, node, (const unsigned char *)pic->pic.fd_addr, buf, data_size))
 	{
 		g_free(buf);
 		g_free(pic->pic.fd_addr);

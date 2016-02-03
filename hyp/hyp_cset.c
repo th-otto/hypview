@@ -975,7 +975,7 @@ static char *hyp_conv_to_atari(const char *src, size_t len, gboolean *converror)
 		p = g_utf8_skipchar(p);
 		dstlen++;
 	}
-	dst = g_malloc(dstlen);
+	dst = g_new(char, dstlen);
 	if (G_UNLIKELY(dst == NULL))
 		return NULL;
 	dstlen = 0;
@@ -1009,7 +1009,7 @@ static char *hyp_conv_to_cp850(const char *src, size_t len, gboolean *converror)
 		p = g_utf8_skipchar(p);
 		dstlen++;
 	}
-	dst = g_malloc(dstlen);
+	dst = g_new(char, dstlen);
 	if (G_UNLIKELY(dst == NULL))
 		return NULL;
 	dstlen = 0;
@@ -1043,7 +1043,7 @@ static char *hyp_conv_to_macroman(const char *src, size_t len, gboolean *converr
 		p = g_utf8_skipchar(p);
 		dstlen++;
 	}
-	dst = g_malloc(dstlen);
+	dst = g_new(char, dstlen);
 	if (G_UNLIKELY(dst == NULL))
 		return NULL;
 	dstlen = 0;
@@ -1077,7 +1077,7 @@ static char *hyp_conv_to_cp1252(const char *src, size_t len, gboolean *converror
 		p = g_utf8_skipchar(p);
 		dstlen++;
 	}
-	dst = g_malloc(dstlen);
+	dst = g_new(char, dstlen);
 	if (G_UNLIKELY(dst == NULL))
 		return NULL;
 	dstlen = 0;

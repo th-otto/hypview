@@ -116,9 +116,9 @@ void HypDisplayPage(WINDOW_DATA *win)
 	cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
 	for (l = win->image_childs; l; l = l->next)
 	{
-		struct hyp_gfx *gfx = l->data;
+		struct hyp_gfx *gfx = (struct hyp_gfx *)l->data;
 
-		cairo_set_source_surface(cr, gfx->surf, gfx->window_x - xoffset, gfx->window_y - yoffset);
+		cairo_set_source_surface(cr, (cairo_surface_t *)gfx->surf, gfx->window_x - xoffset, gfx->window_y - yoffset);
 		cairo_paint(cr);
 	}
 	cairo_destroy(cr);
@@ -128,7 +128,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 static void add_child_window(WINDOW_DATA *win, struct hyp_gfx *gfx)
 {
-	cairo_status_t status = cairo_surface_status(gfx->surf);
+	cairo_status_t status = cairo_surface_status((cairo_surface_t *)gfx->surf);
 	
 	if (status != CAIRO_STATUS_SUCCESS)
 	{
@@ -144,7 +144,7 @@ static void add_child_window(WINDOW_DATA *win, struct hyp_gfx *gfx)
 static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info)
 {
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	HYP_IMAGE *pic;
 	WP_UNIT tx;
 	
@@ -231,7 +231,7 @@ static cairo_t *gfx_create_surface(struct hyp_gfx *gfx)
 	cairo_t *cr;
 	
 	gfx->surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, gfx->pixwidth + gfx->window_margin * 2, gfx->pixheight + gfx->window_margin * 2);
-	cr = cairo_create(gfx->surf);
+	cr = cairo_create((cairo_surface_t *)gfx->surf);
 	
 	/*
 	 * make the surface background transparent
@@ -959,7 +959,7 @@ HYP_NODE *hypwin_node(WINDOW_DATA *win)
 void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 {
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	const unsigned char *src, *end, *textstart;
 	WP_UNIT sx, sy;
 	gboolean at_bol;
@@ -1154,7 +1154,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 
 					if (hypnode_valid(hyp, dest_page))
 					{
-						dst_type = hyp->indextable[dest_page]->type;
+						dst_type = (hyp_indextype)hyp->indextable[dest_page]->type;
 						tip = pagename(hyp, dest_page);
 						switch (dst_type)
 						{

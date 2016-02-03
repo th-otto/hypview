@@ -11,7 +11,7 @@ static void xref_selected(GtkWidget *w, WINDOW_DATA *win)
 	void *psel = g_object_get_data(G_OBJECT(w), "item-num");
 	int sel = (int)(intptr_t)psel;
 	int i;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	const unsigned char *pos;
 	const unsigned char *end;
 
@@ -75,7 +75,7 @@ void HypExtRefPopup(WINDOW_DATA *win, int button, guint32 event_time)
 	const unsigned char *pos;
 	int i;
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	const unsigned char *end;
 	struct popup_pos popup_pos;
 	

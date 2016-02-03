@@ -1862,7 +1862,7 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 			p++;
 		count++;
 	}
-	*pend = NO_CONST(p);
+	*pend = (char *)NO_CONST(p);
 	if (*p == '\0' && eos != '\0')
 	{
 		hcp_error(vars, NULL, _("missing terminating '%c'"), eos);
@@ -1977,7 +1977,7 @@ static char *parse_1arg(hcp_vars *vars, const char *line, char eos, char **pend)
 		while (*p != '\0' && *p != eos && !g_ascii_isspace(*p))
 			p++;
 	}
-	*pend = NO_CONST(p);
+	*pend = (char *)NO_CONST(p);
 	if (*p == '\0' && eos != '\0')
 	{
 		hcp_error(vars, NULL, _("missing terminating '%c'"), eos);
@@ -4570,7 +4570,7 @@ static void c_xref(hcp_vars *vars, int argc, char **argv)
 		if (count >= 12 && vars->opts->warn_compat)
 			hcp_warning(vars, NULL, _("ST-Guide may not be able to display more than 12 @xref items"));
 		
-		entry = add_external_node(vars, HYP_NODE_XREF, argv[1]);
+		entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XREF, argv[1]);
 		if (G_UNLIKELY(entry == NULL))
 			return;
 		/*
@@ -4724,7 +4724,7 @@ static gboolean build_index_table(hcp_vars *vars)
 		namelen++;
 		if (namelen & 1)
 			namelen++;
-		entry = g_malloc(sizeof(INDEX_ENTRY) + namelen);
+		entry = (INDEX_ENTRY *)g_malloc(sizeof(INDEX_ENTRY) + namelen);
 		if (G_UNLIKELY(entry == NULL))
 		{
 			oom(vars);
@@ -5404,7 +5404,12 @@ static int comp_lab(const void *_l1, const void *_l2)
 
 static gboolean autogen_index(hcp_vars *vars)
 {
-	static char const index_chars[N_INDEX_CHARS] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
+	static char const index_chars[N_INDEX_CHARS] = {
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+		'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+		'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+		'Y', 'Z', '*'
+	};
 	size_t used[N_INDEX_CHARS];
 	LABIDX i;
 	int c, c2;
@@ -5747,7 +5752,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		
 		target = vars->p1_external_node_counter;
 
-		entry = add_external_node(vars, HYP_NODE_XLINK, dest);
+		entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XLINK, dest);
 		if (G_UNLIKELY(entry == NULL))
 			return len;
 		/*
@@ -6493,19 +6498,19 @@ static void process_text(hcp_vars *vars, char **linep)
 					line++;
 					break;
 				default:
-					line = NO_CONST(g_utf8_skipchar(line));
+					line = (char *)NO_CONST(g_utf8_skipchar(line));
 					break;
 				}
 			} else
 			{
-				line = NO_CONST(g_utf8_skipchar(line));
+				line = (char *)NO_CONST(g_utf8_skipchar(line));
 			}
 			break;
 		default:
 			/*
 			 * plain text
 			 */
-			line = NO_CONST(g_utf8_skipchar(line));
+			line = (char *)NO_CONST(g_utf8_skipchar(line));
 			break;
 		}
 	}

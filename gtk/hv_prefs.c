@@ -33,38 +33,38 @@ static void bg_color_set(GtkColorButton *button, GtkWidget *dialog)
 	
 	gtk_color_button_get_color(button, &color);
 	
-	entry = g_object_get_data(G_OBJECT(button), "entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(button), "entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
 
-	entry  = g_object_get_data(G_OBJECT(dialog), "text-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "text-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "ghosted-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "ghosted-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "link-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "link-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "popup-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "popup-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "xref-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "xref-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "system-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "system-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "rx-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "rx-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "rxs-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "rxs-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "quit-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "quit-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
-	entry  = g_object_get_data(G_OBJECT(dialog), "close-entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "close-entry");
 	gtk_widget_modify_bg(entry, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &color);
 }
@@ -79,7 +79,7 @@ static void color_set(GtkColorButton *button, GtkWidget *dialog)
 	UNUSED(dialog);
 	gtk_color_button_get_color(button, &color);
 	
-	entry = g_object_get_data(G_OBJECT(button), "entry");
+	entry = (GtkWidget *)g_object_get_data(G_OBJECT(button), "entry");
 	gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &color);
 }
 
@@ -87,7 +87,7 @@ static void color_set(GtkColorButton *button, GtkWidget *dialog)
 
 static void set_color(GtkWidget *dialog, const char *buttonname, char **valp)
 {
-	GtkColorButton *button = g_object_get_data(G_OBJECT(dialog), buttonname);
+	GtkColorButton *button = (GtkColorButton *)g_object_get_data(G_OBJECT(dialog), buttonname);
 	GdkColor color;
 	
 	gtk_color_button_get_color(button, &color);
@@ -126,24 +126,24 @@ static void color_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dia
 		set_color(dialog, "close-button", &gl_profile.colors.close);
 		set_color(dialog, "ghosted-button", &gl_profile.colors.ghosted);
 		effect = 0;
-		toggle = g_object_get_data(G_OBJECT(dialog), "bold-toggle");
+		toggle = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "bold-toggle");
 		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_BOLD;
-		toggle = g_object_get_data(G_OBJECT(dialog), "light-toggle");
+		toggle = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "light-toggle");
 		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_LIGHT;
-		toggle = g_object_get_data(G_OBJECT(dialog), "italic-toggle");
+		toggle = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "italic-toggle");
 		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_ITALIC;
-		toggle = g_object_get_data(G_OBJECT(dialog), "underlined-toggle");
+		toggle = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "underlined-toggle");
 		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_UNDERLINED;
-		toggle = g_object_get_data(G_OBJECT(dialog), "outlined-toggle");
+		toggle = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "outlined-toggle");
 		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_OUTLINED;
-		toggle = g_object_get_data(G_OBJECT(dialog), "shadowed-toggle");
+		toggle = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "shadowed-toggle");
 		if (gtk_toggle_button_get_active(toggle)) effect |= HYP_TXT_SHADOWED;
 		gl_profile.colors.link_effect = effect;
 		HypProfile_SetChanged();
 		
 		for (l = all_list; l; l = l->next)
 		{
-			win = l->data;
+			win = (WINDOW_DATA *)l->data;
 			/* if (win->type == WIN_WINDOW) */
 			{
 				doc = win->data;
@@ -425,32 +425,32 @@ static void prefs_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dia
 	case GTK_RESPONSE_ACCEPT:
 	case GTK_RESPONSE_OK:
 	case GTK_RESPONSE_YES:
-		selector = g_object_get_data(G_OBJECT(dialog), "hypfold");
+		selector = (GtkFileChooser *)g_object_get_data(G_OBJECT(dialog), "hypfold");
 		path = gtk_file_chooser_get_current_folder(selector);
 		val = path_unsubst(path, FALSE);
 		g_free(gl_profile.general.hypfold);
 		gl_profile.general.hypfold = val;
 		g_free(path);
 
-		selector = g_object_get_data(G_OBJECT(dialog), "defaultfile");
+		selector = (GtkFileChooser *)g_object_get_data(G_OBJECT(dialog), "defaultfile");
 		path = gtk_file_chooser_get_filename(selector);
 		val = path_unsubst(path, TRUE);
 		g_free(gl_profile.viewer.default_file);
 		gl_profile.viewer.default_file = val;
 		g_free(path);
 
-		selector = g_object_get_data(G_OBJECT(dialog), "catalogfile");
+		selector = (GtkFileChooser *)g_object_get_data(G_OBJECT(dialog), "catalogfile");
 		path = gtk_file_chooser_get_filename(selector);
 		val = path_unsubst(path, TRUE);
 		g_free(gl_profile.viewer.catalog_file);
 		gl_profile.viewer.catalog_file = val;
 		g_free(path);
 
-		button = g_object_get_data(G_OBJECT(dialog), "startup-selector");
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "startup-selector");
 		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 0;
-		button = g_object_get_data(G_OBJECT(dialog), "startup-default");
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "startup-default");
 		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 1;
-		button = g_object_get_data(G_OBJECT(dialog), "startup-last");
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "startup-last");
 		if (gtk_toggle_button_get_active(button)) gl_profile.viewer.startup = 2;
 		HypProfile_SetChanged();
 		break;

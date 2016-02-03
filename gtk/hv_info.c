@@ -40,7 +40,7 @@ void DocumentInfos(WINDOW_DATA *win)
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
 	GtkWidget *expander, *frame;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	char *str;
 	
 	dialog = gtk_dialog_new();

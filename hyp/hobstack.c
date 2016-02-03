@@ -74,7 +74,7 @@ gboolean _hyp_obstack_begin(struct obstack *h, PTR_INT_TYPE size, PTR_INT_TYPE a
 	h->chunk_size = size;
 	h->alignment_mask = alignment - 1;
 
-	chunk = h->chunk = CALL_CHUNKFUN(h, h->chunk_size);
+	chunk = h->chunk = (struct _obstack_chunk *)CALL_CHUNKFUN(h, h->chunk_size);
 	if (!chunk)
 		return FALSE;
 	h->next_free = h->object_base = chunk->contents;
@@ -107,7 +107,7 @@ gboolean _hyp_obstack_newchunk(struct obstack *h, PTR_INT_TYPE length)
 		new_size = h->chunk_size;
 
 	/* Allocate and initialize the new chunk. */
-	new_chunk = CALL_CHUNKFUN(h, new_size);
+	new_chunk = (struct _obstack_chunk *)CALL_CHUNKFUN(h, new_size);
 	if (!new_chunk)
 		return FALSE;
 	h->chunk = new_chunk;

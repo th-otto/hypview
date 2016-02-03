@@ -883,10 +883,10 @@ char *g_strdup(const char *str)
 /*-----------------------------------------------*/
 void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, unsigned char attr, _UWORD lnk_idx)
 {
-	NAME_ENTRY *new;
+	NAME_ENTRY *newentry;
 
-	new = g_new(NAME_ENTRY, 1);
-	if (!new)
+	newentry = g_new(NAME_ENTRY, 1);
+	if (!newentry)
 	{
 		sprintf(msg, "%s\n", no_ram_msg);
 		wr_msg(msg, TO_ALL);
@@ -895,13 +895,13 @@ void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, u
 		exit(1);
 	}
 	/* Insert at start of list */
-	new->next = *namelist;
-	new->name_attr = attr;
-	new->scr_code = code;
-	new->name = g_strdup(sname);
+	newentry->next = *namelist;
+	newentry->name_attr = attr;
+	newentry->scr_code = code;
+	newentry->name = g_strdup(sname);
 	if (attr == LINK)
-		new->link_index = lnk_idx;
-	*namelist = new;
+		newentry->link_index = lnk_idx;
+	*namelist = newentry;
 	(*name_cnt)++;
 }
 

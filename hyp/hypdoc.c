@@ -318,7 +318,7 @@ DOCUMENT *hypdoc_unref(DOCUMENT *doc)
 	ASSERT(doc->ref_count >= 1);
 	if (doc->data && doc->type == HYP_FT_HYP)
 	{
-		HYP_DOCUMENT *hyp = doc->data;
+		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 		doc->data = hyp_unref(hyp);
 	}
 	if (--doc->ref_count == 0)
@@ -339,7 +339,7 @@ DOCUMENT *hypdoc_ref(DOCUMENT *doc)
 	ASSERT(doc->ref_count >= 2);
 	if (doc->data && doc->type == HYP_FT_HYP)
 	{
-		HYP_DOCUMENT *hyp = doc->data;
+		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 		hyp_ref(hyp);
 	}
 	return doc;

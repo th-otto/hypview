@@ -163,7 +163,7 @@ void MarkerUpdate(WINDOW_DATA *win)
 	children = gtk_container_get_children(GTK_CONTAINER(menu));
 	for (child = children, i = 0; child; child = child->next)
 	{
-		GtkMenuItem *item = child->data;
+		GtkMenuItem *item = (GtkMenuItem *)child->data;
 		const char *name = gtk_widget_get_name(GTK_WIDGET(item));
 		if (strncmp(name, "bookmark-", 9) == 0)
 		{

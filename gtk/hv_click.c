@@ -9,7 +9,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 {
 	GdkModifierType mask;
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	gint x, y;
 	
 	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, &x, &y, &mask);
@@ -129,7 +129,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				GSList *l;
 				
 				for (l = all_list; l; l = l->next)
-					SendCloseWindow(l->data);
+					SendCloseWindow((WINDOW_DATA *)l->data);
 			}
 			break;
 		case HYP_NODE_CLOSE:	/* close window */

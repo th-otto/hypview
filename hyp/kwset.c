@@ -408,7 +408,7 @@ int kwsprep(kwset_t kws)
 	if (kwset->words == 1 && kwset->trans == 0)
 	{
 		/* Looking for just one string.  Extract it from the trie. */
-		kwset->target = hyp_obstack_alloc(&kwset->obstack, kwset->mind);
+		kwset->target = (char *)hyp_obstack_alloc(&kwset->obstack, kwset->mind);
 		for (i = kwset->mind - 1, curr = kwset->trie; i >= 0; --i)
 		{
 			kwset->target[i] = curr->links->label;
@@ -516,7 +516,7 @@ static size_t bmexec(kwset_t kws, char const *text, size_t size)
 		return -1;
 	if (len == 1)
 	{
-		tp = memchr(text, kwset->target[0], size);
+		tp = (const char *)memchr(text, kwset->target[0], size);
 		return tp ? tp - text : -1;
 	}
 	d1 = kwset->delta;

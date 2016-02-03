@@ -384,7 +384,7 @@ int main (int argc, char* argv[])
 		didOutput = FALSE;
 		for (l = filenames; l; l = l->next)
 		{
-			str = l->data;
+			str = (char *)l->data;
 			if (str && *str)
 			{
 				if (donull)

@@ -248,10 +248,10 @@ void hv_win_destroy_images(WINDOW_DATA *win)
 	
 	for (l = win->image_childs; l; l = l->next)
 	{
-		struct hyp_gfx *gfx = l->data;
+		struct hyp_gfx *gfx = (struct hyp_gfx *)l->data;
 		if (gfx->surf)
 		{
-			cairo_surface_destroy(gfx->surf);
+			cairo_surface_destroy((cairo_surface_t *)gfx->surf);
 			gfx->surf = NULL;
 		}
 	}
@@ -716,8 +716,8 @@ static void set_cursor_if_appropriate(WINDOW_DATA *win, gint x, gint y)
 	tags = gtk_text_iter_get_tags(&iter);
 	for (tagp = tags; tagp != NULL; tagp = tagp->next)
 	{
-		GtkTextTag *tag = tagp->data;
-		LINK_INFO *info = g_object_get_data(G_OBJECT(tag), "hv-linkinfo");
+		GtkTextTag *tag = (GtkTextTag *)tagp->data;
+		LINK_INFO *info = (LINK_INFO *)g_object_get_data(G_OBJECT(tag), "hv-linkinfo");
 
 		if (info)
 		{
@@ -780,8 +780,8 @@ static gboolean follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 	tags = gtk_text_iter_get_tags(iter);
 	for (tagp = tags; tagp != NULL; tagp = tagp->next)
 	{
-		GtkTextTag *tag = tagp->data;
-		LINK_INFO *info = g_object_get_data(G_OBJECT(tag), "hv-linkinfo");
+		GtkTextTag *tag = (GtkTextTag *)tagp->data;
+		LINK_INFO *info = (LINK_INFO *)g_object_get_data(G_OBJECT(tag), "hv-linkinfo");
 		
 		if (info)
 		{
@@ -1052,7 +1052,7 @@ static gboolean drag_motion(GtkWidget *widget, GdkDragContext *drag_context, gin
 		drag_context->action = GDK_ACTION_COPY;
 	}
 	if (target == GDK_NONE)
-		gdk_drag_status(drag_context, 0, time);
+		gdk_drag_status(drag_context, (GdkDragAction)0, time);
 	else
 		gdk_drag_status(drag_context, GDK_ACTION_COPY, time);
 	return TRUE;
@@ -1090,8 +1090,8 @@ static void populate_popup(GtkWidget *text_view, GtkMenu *menu, WINDOW_DATA *win
 	children = gtk_container_get_children(GTK_CONTAINER(menu));
 	for (child = children; child; child = child->next)
 	{
-		GtkMenuItem *item = child->data;
-		const char *signal = g_object_get_data(G_OBJECT(item), "gtk-signal");
+		GtkMenuItem *item = (GtkMenuItem *)child->data;
+		const char *signal = (const char *)g_object_get_data(G_OBJECT(item), "gtk-signal");
 		
 		if (signal && strcmp(signal, "paste-clipboard") == 0)
 		{
@@ -1193,7 +1193,7 @@ static GtkWidget *AppendButton(WINDOW_DATA *win, int button_num)
 	
 	gtk_stock_lookup(gtk_action_get_stock_id(action), &stock_item);
 	gtk_widget_set_name(button, gtk_action_get_name(action));
-	pixbuf = gtk_widget_render_icon(win->toolbar, stock_item.stock_id, -1, NULL);
+	pixbuf = gtk_widget_render_icon(win->toolbar, stock_item.stock_id, (GtkIconSize)-1, NULL);
 	icon = gtk_image_new_from_pixbuf(pixbuf);
 	gdk_pixbuf_unref(pixbuf);
 	gtk_container_add(GTK_CONTAINER(event_box), icon);
@@ -1261,23 +1261,23 @@ static void register_stock_icons(void)
 	/* verify(sizeof(struct ConstGtkStockItem) == sizeof(GtkStockItem)); */
 
 	static struct ConstGtkStockItem const items[] = {
-		{ "hv-back", N_("Back"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-history", N_("History"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-bookmarks", N_("Bookmarks"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-prev", N_("Previous logical page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-prevphys", N_("Previous physical page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-toc", N_("Contents"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-next", N_("Next logical page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-nextphys", N_("Next physical page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-first", N_("First page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-last", N_("Last page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-index", N_("Index"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-catalog", N_("Catalog"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-xref", N_("References"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-help", N_("Show help page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-info", N_("Show info page"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-load", N_("_Open Hypertext"), 0, 0, GETTEXT_PACKAGE },
-		{ "hv-save", N_("_Save text"), 0, 0, GETTEXT_PACKAGE },
+		{ "hv-back", N_("Back"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-history", N_("History"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-bookmarks", N_("Bookmarks"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-prev", N_("Previous logical page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-prevphys", N_("Previous physical page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-toc", N_("Contents"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-next", N_("Next logical page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-nextphys", N_("Next physical page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-first", N_("First page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-last", N_("Last page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-index", N_("Index"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-catalog", N_("Catalog"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-xref", N_("References"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-help", N_("Show help page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-info", N_("Show info page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-load", N_("_Open Hypertext"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-save", N_("_Save text"), (GdkModifierType)0, 0, GETTEXT_PACKAGE }
 	};
 	static gboolean registered = FALSE;
 	GtkIconFactory *factory;

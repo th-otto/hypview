@@ -273,7 +273,7 @@ gboolean init_gtk(void)
 #endif
 		gdk_threads_init();
 		argc = 0;
-		argv[argc++] = NO_CONST(gl_program_name);
+		argv[argc++] = (char *)NO_CONST(gl_program_name);
 		argv[argc] = NULL;
 		argvp = argv;
 		if (!gtk_init_check(&argc, &argvp))

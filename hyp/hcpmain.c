@@ -1346,7 +1346,7 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 	} else
 	{
 		ASSERT(!image->decompressed);
-		data = image->pic.fd_addr;
+		data = (unsigned char *)image->pic.fd_addr;
 	}
 	data_size = GetDataSize(hyp, node);
 	buf = g_new(unsigned char, data_size);

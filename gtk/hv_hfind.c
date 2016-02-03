@@ -12,7 +12,7 @@ static void hypfind_text(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	long line = hv_win_topline(win);
 	long start_line = line;
-	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	GtkEntry *entry = (GtkEntry *)g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *search = gtk_entry_get_text(entry);
 	
 	if (empty(search))
@@ -40,7 +40,7 @@ static void hypfind_text(WINDOW_DATA *win)
 static void hypfind_page(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	GtkEntry *entry = (GtkEntry *)g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *name = gtk_entry_get_text(entry);
 	if (empty(name))
 		return;
@@ -51,7 +51,7 @@ static void hypfind_page(WINDOW_DATA *win)
 
 static void hypfind_search_allref(WINDOW_DATA *win)
 {
-	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	GtkEntry *entry = (GtkEntry *)g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *name = gtk_entry_get_text(entry);
 	if (empty(name))
 		return;
@@ -99,7 +99,7 @@ static gboolean check_hypfind(void *userdata)
 static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 {
 	DOCUMENT *doc = win->data;
-	GtkEntry *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+	GtkEntry *entry = (GtkEntry *)g_object_get_data(G_OBJECT(dialog), "entry");
 	const char *argv[5];
 	int argc = 0;
 	const char *name;
