@@ -234,7 +234,7 @@ static int interpret_script(int mode, const char *path, const char *_path, int a
 #endif /* HASH_BANG */
 
 
-char *make_argv(char cmd[128], const char *const *argv)
+char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 {
 	size_t cmlen;
 	size_t enlen = 0;
@@ -249,6 +249,8 @@ char *make_argv(char cmd[128], const char *const *argv)
 /* count up space needed for environment */
 	for (cmlen = 0; argv[cmlen]; cmlen++)
 		enlen += strlen(argv[cmlen]) + 1;
+	if (tosrun)
+		enlen += strlen(tosrun) + 1;
 	enlen += 64;						/* filler for stuff like ARGV= and zeros, 
 										 * minibuffer for empty param index conversion 
 										 */
@@ -357,7 +359,10 @@ char *make_argv(char cmd[128], const char *const *argv)
 		/* copy argv[0] first (because it doesn't go into 
 		 * the command line)
 		 */
-		p = *argv;
+		if (tosrun)
+			p = tosrun;
+		else
+			p = *argv;
 		if (!*p)
 		{								/* if empty argument */
 			*s++ = ' ';					/* replace by space */
@@ -381,6 +386,8 @@ char *make_argv(char cmd[128], const char *const *argv)
 	if (argv && *argv)
 	{
 		t++;
+		if (tosrun)
+			--argv;
 		while (*++argv)
 		{
 			p = *argv;
@@ -450,7 +457,7 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 	_argv = argv;
 #endif
 
-	if ((env = make_argv(cmd, argv)) == NULL)
+	if ((env = make_argv(cmd, argv, NULL)) == NULL)
 	{
 		__set_errno(ENOMEM);
 		return -1;

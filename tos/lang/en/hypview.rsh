@@ -408,6 +408,7 @@ static char hypview_string_160[] = "from: %s";
 static char hypview_string_161[] = "Programinfo...";
 static char hypview_string_162[] = "[1][No path to REMARKER configured|in HYPVIEW.INI.][Cancel]";
 static char hypview_string_163[] = "[1][Can not execute|<%s>][Cancel]";
+static char hypview_string_164[] = "[1][HypFind exited with code %d][Cancel]";
 
 
 /* mask of DI_ICON */
@@ -1967,7 +1968,8 @@ static char *rs_frstr[] = {
 	hypview_string_160,
 	hypview_string_161,
 	hypview_string_162,
-	hypview_string_163
+	hypview_string_163,
+	hypview_string_164
 };
 
 
@@ -2207,13 +2209,13 @@ static OBJECT *rs_trindex[] = {
 #undef NUM_OBS
 #undef NUM_TREE
 #undef NUM_UD
-#define NUM_STRINGS 164
+#define NUM_STRINGS 165
 #define NUM_BB		0
 #define NUM_IB		0
 #define NUM_CIB     15
 #define NUM_CIC     29
 #define NUM_TI		28
-#define NUM_FRSTR	19
+#define NUM_FRSTR	20
 #define NUM_FRIMG	0
 #define NUM_OBS     103
 #define NUM_TREE	7
@@ -2408,8 +2410,8 @@ _WORD hypview_rsc_free()
 #endif /* RSC_NAMED_FUNCTIONS */
 
 #else /* !RSC_STATIC_FILE */
-int rs_numstrings = 164;
-int rs_numfrstr = 19;
+int rs_numstrings = 165;
+int rs_numfrstr = 20;
 
 int rs_nuser = 0;
 int rs_numimages = 0;

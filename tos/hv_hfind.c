@@ -49,7 +49,7 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 {
 	char cmd[128];
 	char *name;
-	const char *argv[5];
+	const char *argv[6];
 	char *filename;
 	int argc = 0;
 	char *env;
@@ -59,6 +59,8 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 	filename = path_subst(gl_profile.general.hypfind_path);
 	if (!empty(filename))
 	{
+		const char *tosrun = getenv("TOSRUN");
+		
 		argv[argc++] = filename;
 		argv[argc++] = "-p";
 		
@@ -71,9 +73,10 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				argv[argc++] = doc->path;
 			}
 			argv[argc] = NULL;
-			env = make_argv(cmd, argv);
+			env = make_argv(cmd, argv, tosrun);
 			if (env != NULL)
 			{
+#if 1 /* does not seem to work yet: tw-call will get our ARGV environment */
 				struct {
 					const char *newcmd;
 					long psetlimit;
@@ -91,7 +94,8 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				x_shell.env = env;
 				x_shell.uid = 0;
 				x_shell.gid = 0;
-				HypfindID = shel_write(SHW_EXEC|SHD_ENVIRON, 0, SHW_PARALLEL, filename, (void *)&x_shell);
+				HypfindID = shel_write(SHW_EXEC|SHD_ENVIRON, 0, SHW_PARALLEL, (void *)&x_shell, cmd);
+#endif
 				(void) Mfree(env);
 			}
 			if (HypfindID <= 0)
@@ -99,8 +103,13 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				cmd[0] = (char) strlen(cmd + 1);
 				HypfindID = shel_write(SHW_EXEC, 0, SHW_PARALLEL, filename, cmd);
 			}
-			if (HypfindID == 0)
+			if (HypfindID <= 0)
+			{
+				char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), filename);
+				form_alert(1, str);
+				g_free(str);
 				HypfindID = -1;
+			}
 		}
 	}
 	g_free(filename);
@@ -267,10 +276,18 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 
 void HypfindFinish(short AppID, short ret)
 {
-	UNUSED(ret);
 	if (AppID == HypfindID)
 	{
 		HypfindID = -1;
-		OpenFileInWindow(NULL, HYP_FILENAME_HYPFIND, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+		/* FIXME: at least XaAES seems to always send 223 as return code */
+		if (ret != 0)
+		{
+			char *str = g_strdup_printf(rs_string(HV_ERR_HYPFIND), ret);
+			form_alert(1, str);
+			g_free(str);
+		} else
+		{
+			OpenFileInWindow(NULL, HYP_FILENAME_HYPFIND, NULL, HYP_NOINDEX, FALSE, TRUE, FALSE);
+		}
 	}
 }

@@ -2209,6 +2209,7 @@ char *path_subst(const char *path)
 	if (filename && filename[0] == '*' && filename[1] == ':' && G_IS_DIR_SEPARATOR(filename[2]))
 		 filename[0] = GetBootDrive();
 #endif
+	convslash(filename);
 	return filename;
 }
 
