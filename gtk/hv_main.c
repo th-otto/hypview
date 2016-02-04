@@ -250,10 +250,11 @@ int main(int argc, char **argv)
 		
 		if (argc <= 1)
 		{
+			/* default-hypertext specified? */
 			if (gl_profile.viewer.startup == 1 &&
-				!empty(gl_profile.viewer.default_file))			/* default-hypertext specified? */
+				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
 			{
-				char *filename = path_subst(gl_profile.viewer.default_file);
+				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
 				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
 				g_free(filename);
 			} else if (gl_profile.viewer.startup == 2 &&

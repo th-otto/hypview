@@ -31,7 +31,6 @@
 #define AC_HELP		1025				/* PureC Hilfe-Protokoll */
 
 static hyp_nodenr last_node;
-static char *last_path;
 
 /*******************************************************/
 /****** Events                                    ******/
@@ -58,9 +57,9 @@ void DoUserEvents(EVNT *event)
 			{
 				WINDOW_DATA *win = NULL;
 				
-				if (count_window() == 0 && !empty(last_path))
+				if (count_window() == 0 && !empty(gl_profile.viewer.last_file))
 				{
-					win = OpenFileInWindow(NULL, last_path, NULL, last_node, FALSE, TRUE, FALSE);
+					win = OpenFileInWindow(NULL, gl_profile.viewer.last_file, NULL, last_node, FALSE, TRUE, FALSE);
 					if (win)
 					{
 					}
@@ -147,8 +146,8 @@ void DoUserEvents(EVNT *event)
 	
 						doc = (DOCUMENT *) win->data;
 						last_node = doc->getNodeProc(win);
-						g_free(last_path);
-						last_path = g_strdup(doc->path);
+						g_free(gl_profile.viewer.last_file);
+						gl_profile.viewer.last_file = g_strdup(doc->path);
 					}
 				}
 			}
@@ -313,7 +312,15 @@ void DoVA_START(_WORD msg[8])
 			filename = path_subst(arg);
 			
 			win = get_first_window();
-
+			
+			if (empty(filename))
+			{
+				g_free(filename);
+				filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
+				chapter = NULL;
+			}
+			if (chapter == arg || empty(chapter))
+				chapter = NULL;
 			win = OpenFileInWindow(win, filename, chapter, HYP_NOINDEX, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
 
 			if (count == 0 && win != NULL)

@@ -2192,7 +2192,6 @@ char *path_subst(const char *path)
 	subst_var(&filename, "$REF", gl_profile.general.all_ref);
 	subst_var(&filename, "$STOOL", gl_profile.tools.stool_path);
 	subst_var(&filename, "$BINDIR", gl_profile.general.bindir);
-	subst_var(&filename, "$HYPTOP", gl_profile.viewer.hyptop_file);
 	subst_var(&filename, "$CATALOG", gl_profile.viewer.catalog_file);
 	subst_var(&filename, "$HYPFOLD", gl_profile.general.hypfold);
 #ifdef RESOURCES_PROFILE_DIR
@@ -2296,8 +2295,6 @@ void HypProfile_Load(void)
 		setdefault(gl_profile.viewer.default_file = g_strdup("$HYPFOLD/hypview.hyp"));
 	if (!Profile_ReadString(profile, "HypView", "CATALOG", &gl_profile.viewer.catalog_file))
 		setdefault(gl_profile.viewer.catalog_file = g_strdup("$HYPFOLD/catalog.hyp"));
-	if (!Profile_ReadString(profile, "HypView", "HYPTOP", &gl_profile.viewer.hyptop_file))
-		setdefault(gl_profile.viewer.hyptop_file = g_strdup("$CATALOG"));
 	if (!Profile_ReadString(profile, "HypView", "PRINTER", &gl_profile.viewer.printer))
 		setdefault(gl_profile.viewer.printer = g_strdup(PRINTER_DEFAULT));
 	if (!Profile_ReadString(profile, "HypView", "EXTVIEW", &gl_profile.viewer.extview))
@@ -2307,7 +2304,7 @@ void HypProfile_Load(void)
 	if (!Profile_ReadString(profile, "HypView", "LASTFILE", &gl_profile.viewer.last_file))
 		gl_profile.viewer.last_file = NULL;
 	if (!Profile_ReadInt(profile, "HypView", "STARTUP", &gl_profile.viewer.startup))
-		setdefault(gl_profile.viewer.startup = 0);
+		setdefault(gl_profile.viewer.startup = 1);
 	
 	if (!Profile_ReadInt(profile, "HypView", "WINSIZE.X", &gl_profile.viewer.win_x))
 		setdefault(gl_profile.viewer.win_x = 0);
@@ -2570,7 +2567,6 @@ gboolean HypProfile_Save(gboolean report_error)
 	
 	Profile_WriteString(profile, "HypView", "DEFAULT", gl_profile.viewer.default_file);
 	Profile_WriteString(profile, "HypView", "CATALOG", gl_profile.viewer.catalog_file);
-	Profile_WriteString(profile, "HypView", "HYPTOP", gl_profile.viewer.hyptop_file);
 	Profile_WriteString(profile, "HypView", "PRINTER", gl_profile.viewer.printer);
 	Profile_WriteString(profile, "HypView", "EXTVIEW", gl_profile.viewer.extview);
 	Profile_WriteString(profile, "HypView", "LASTFILE", gl_profile.viewer.last_file);
@@ -2673,7 +2669,6 @@ void HypProfile_Delete(void)
 	
 	g_freep(&gl_profile.viewer.default_file);
 	g_freep(&gl_profile.viewer.catalog_file);
-	g_freep(&gl_profile.viewer.hyptop_file);
 	g_freep(&gl_profile.viewer.last_file);
 	g_freep(&gl_profile.viewer.printer);
 	g_freep(&gl_profile.viewer.extview);

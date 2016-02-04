@@ -25,7 +25,6 @@ typedef struct {
 		char *skin_path;            /* custom skin RSC for toolbar */
 		char *default_file;         /* default filename if called without parameters */
 		char *catalog_file;         /* The hypertext file to be loaded via the 'Catalog' option */
-		char *hyptop_file;
 		char *marker_path;          /* Default file to save mark files to */
 		int startup;				/* 0=show selector, 1=load default_file, 2=load last file */
 		char *last_file;

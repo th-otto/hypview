@@ -155,6 +155,8 @@ const char *_argv0;
 
 int main(int argc, const char **argv)
 {
+	WINDOW_DATA *win = NULL;
+	
 	if (DoAesInit() == FALSE)
 		return 1;
 
@@ -164,34 +166,46 @@ int main(int argc, const char **argv)
 		return 1;
 	}
 	
-	LoadConfig();						/* Konfiguration laden */
+	LoadConfig();						/* load configuration */
 
-	hv_init();							/* restliche Initialisierung */
+	hv_init();							/* remaining initialization */
 	ValidateColors();
 
-	if (!_app)							/* Als ACC gestartet? */
-		menu_register(gl_apid, "  " PROGRAM_NAME);	/* ...im Menu anmelden */
+	if (!_app)							/* running as ACC? */
+		menu_register(gl_apid, "  " PROGRAM_NAME);	/* ...register to menu */
 	
-	if (argc <= 1)						/* Keine Parameter bergeben? */
+	if (argc <= 1)						/* parameters specified? */
 	{
-		if (_app)						/* Als Programm gestartet? */
+		if (_app)						/* running as program? */
 		{
-			if (!empty(gl_profile.viewer.default_file))			/* default-Hypertext specified? */
+			/* default-Hypertext specified? */
+			if (gl_profile.viewer.startup == 1 &&
+				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
 			{
-				char *filename = path_subst(gl_profile.viewer.default_file);
-				if (OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE) == NULL)
-					SelectFileLoad(NULL);						/* use file selector */
+				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
+				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
 				g_free(filename);
-			} else
+			} else if (gl_profile.viewer.startup == 2 &&
+				!empty(gl_profile.viewer.last_file))
 			{
-				SelectFileLoad(NULL);							/* use file selector */
+				char *filename = path_subst(gl_profile.viewer.last_file);
+				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
+				g_free(filename);
 			}
 		}
 	} else
 	{
-		/* ...load this file (incl. chapter) */
-		OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
+		if (argc == 2 && hyp_guess_filetype(argv[1]) != HYP_FT_HYP)
+		{
+			win = search_allref(win, argv[1], FALSE);
+		} else
+		{
+			/* ...load this file (incl. chapter) */
+			win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
+		}
 	}
+	if (win == NULL && _app)
+		SelectFileLoad(NULL);						/* use file selector */
 
 	while (!_app || (!doneFlag && all_list))
 	{
