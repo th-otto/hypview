@@ -176,6 +176,7 @@ void hv_win_scroll_to_line(WINDOW_DATA *win, long line);
 GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_name, const gchar *first_property_name, ...);
 void hv_win_destroy_images(WINDOW_DATA *win);
 void hv_win_update_attributes(WINDOW_DATA *win);
+void hv_win_reset_text(WINDOW_DATA *win);
 
 
 /*

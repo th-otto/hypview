@@ -956,6 +956,95 @@ HYP_NODE *hypwin_node(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void hv_win_reset_text(WINDOW_DATA *win)
+{
+	GtkTextBuffer *text_buffer = win->text_buffer;
+	GtkTextIter iter;
+	GtkTextMark *mark;
+	int id;
+	GtkTextTagTable *tag_table = gtk_text_buffer_get_tag_table(text_buffer);
+	
+	gtk_text_buffer_set_text(text_buffer, "", 0);
+	gtk_text_buffer_get_iter_at_offset(text_buffer, &iter, 0);
+
+	mark = gtk_text_buffer_get_mark(text_buffer, "hv-linestart");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark(text_buffer, "hv-linestart", &iter, TRUE);
+	gtk_text_buffer_move_mark(text_buffer, mark, &iter);
+	mark = gtk_text_buffer_get_mark(text_buffer, "hv-tagstart");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark(text_buffer, "hv-tagstart", &iter, TRUE);
+	gtk_text_buffer_move_mark(text_buffer, mark, &iter);
+	mark = gtk_text_buffer_get_mark(text_buffer, "hv-attrstart");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark(text_buffer, "hv-attrstart", &iter, TRUE);
+	gtk_text_buffer_move_mark(text_buffer, mark, &iter);
+	mark = gtk_text_buffer_get_mark(text_buffer, "hv-curlink");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark(text_buffer, "hv-curlink", &iter, TRUE);
+	else
+		gtk_text_buffer_move_mark(text_buffer, mark, &iter);
+	win->curlink_mark = mark;
+	mark = gtk_text_buffer_get_mark(text_buffer, "hv-picstart");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark(text_buffer, "hv-picstart", &iter, TRUE);
+	mark = gtk_text_buffer_get_mark(text_buffer, "hv-picend");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark(text_buffer, "hv-picend", &iter, FALSE);
+
+	/*
+	 * remove old tabulator tags
+	 */
+	id = 0;
+	for (;;)
+	{
+		char *tag_name = g_strdup_printf("hv-tabtag-%d", id);
+		GtkTextTag *tag = gtk_text_tag_table_lookup(tag_table, tag_name);
+		g_free(tag_name);
+		if (tag == 0)
+			break;
+		gtk_text_tag_table_remove(tag_table, tag);
+		id++;
+	}
+
+	/*
+	 * remove old target links
+	 */
+	id = 0;
+	for (;;)
+	{
+		char *tag_name = g_strdup_printf("hv-link-%d", id);
+		GtkTextTag *tag = gtk_text_tag_table_lookup(tag_table, tag_name);
+		g_free(tag_name);
+		if (tag == 0)
+			break;
+		gtk_text_tag_table_remove(tag_table, tag);
+		id++;
+	}
+	
+	/*
+	 * remove old indent tags
+	 */
+	id = 0;
+	for (;;)
+	{
+		char *tag_name = g_strdup_printf("hv-indent-%d", id);
+		GtkTextTag *tag = gtk_text_tag_table_lookup(tag_table, tag_name);
+		g_free(tag_name);
+		if (tag == 0)
+			break;
+		gtk_text_tag_table_remove(tag_table, tag);
+		id++;
+	}
+	
+	/*
+	 * remove old images
+	 */
+	hv_win_destroy_images(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 {
 	DOCUMENT *doc = win->data;
@@ -1004,83 +1093,15 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	/*
 	 * clear buffer
 	 */
-	gtk_text_buffer_set_text(info.text_buffer, "", 0);
-
+	hv_win_reset_text(win);
 	gtk_text_buffer_get_iter_at_offset(info.text_buffer, &info.iter, 0);
 
 	info.linestart = gtk_text_buffer_get_mark(info.text_buffer, "hv-linestart");
-	if (info.linestart == NULL)
-		info.linestart = gtk_text_buffer_create_mark(info.text_buffer, "hv-linestart", &info.iter, TRUE);
 	info.tagstart = gtk_text_buffer_get_mark(info.text_buffer, "hv-tagstart");
-	if (info.tagstart == NULL)
-		info.tagstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-tagstart", &info.iter, TRUE);
-	gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
 	info.attrstart = gtk_text_buffer_get_mark(info.text_buffer, "hv-attrstart");
-	if (info.attrstart == NULL)
-		info.attrstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-attrstart", &info.iter, TRUE);
-	gtk_text_buffer_move_mark(info.text_buffer, info.attrstart, &info.iter);
-	win->curlink_mark = gtk_text_buffer_get_mark(info.text_buffer, "hv-curlink");
-	if (win->curlink_mark == NULL)
-		win->curlink_mark = gtk_text_buffer_create_mark(info.text_buffer, "hv-curlink", &info.iter, TRUE);
-	else
-		gtk_text_buffer_move_mark(info.text_buffer, win->curlink_mark, &info.iter);
 	info.picstart = gtk_text_buffer_get_mark(info.text_buffer, "hv-picstart");
-	if (info.picstart == NULL)
-		info.picstart = gtk_text_buffer_create_mark(info.text_buffer, "hv-picstart", &info.iter, TRUE);
 	info.picend = gtk_text_buffer_get_mark(info.text_buffer, "hv-picend");
-	if (info.picend == NULL)
-		info.picend = gtk_text_buffer_create_mark(info.text_buffer, "hv-picend", &info.iter, FALSE);
 
-	/*
-	 * remove old tabulator tags
-	 */
-	for (;;)
-	{
-		char *tag_name = g_strdup_printf("hv-tabtag-%d", info.tab_id);
-		GtkTextTag *tag = gtk_text_tag_table_lookup(info.tag_table, tag_name);
-		g_free(tag_name);
-		if (tag == 0)
-			break;
-		gtk_text_tag_table_remove(info.tag_table, tag);
-		info.tab_id++;
-	}
-	info.tab_id = 0;
-
-	/*
-	 * remove old target links
-	 */
-	for (;;)
-	{
-		char *tag_name = g_strdup_printf("hv-link-%d", info.target_link_id);
-		GtkTextTag *tag = gtk_text_tag_table_lookup(info.tag_table, tag_name);
-		g_free(tag_name);
-		if (tag == 0)
-			break;
-		gtk_text_tag_table_remove(info.tag_table, tag);
-		info.target_link_id++;
-	}
-	info.target_link_id = 0;
-	
-	/*
-	 * remove old indent tags
-	 */
-	for (;;)
-	{
-		char *tag_name = g_strdup_printf("hv-indent-%d", info.indent_id);
-		GtkTextTag *tag = gtk_text_tag_table_lookup(info.tag_table, tag_name);
-		g_free(tag_name);
-		if (tag == 0)
-			break;
-		gtk_text_tag_table_remove(info.tag_table, tag);
-		info.indent_id++;
-	}
-	info.indent_id = 0;
-	
-	/*
-	 * remove old images
-	 */
-	hv_win_destroy_images(win);
-	
 	textstart = src;
 	at_bol = TRUE;
 

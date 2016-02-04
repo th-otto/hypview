@@ -20,32 +20,14 @@ void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 	FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
 	long line;
 	GtkTextBuffer *text_buffer = win->text_buffer;
-	GtkTextTagTable *tag_table = gtk_text_buffer_get_tag_table(text_buffer);
-	int tab_id;
 	GtkTextIter iter;
 	
 	UNUSED(node);
 	/*
 	 * clear buffer
 	 */
-	gtk_text_buffer_set_text(text_buffer, "", 0);
+	hv_win_reset_text(win);
 	gtk_text_buffer_get_iter_at_offset(text_buffer, &iter, 0);
-
-	/*
-	 * remove old tabulator tags
-	 */
-	tab_id = 0;
-	for (;;)
-	{
-		char *tag_name = g_strdup_printf("hv-tabtag-%d", tab_id);
-		GtkTextTag *tag = gtk_text_tag_table_lookup(tag_table, tag_name);
-		g_free(tag_name);
-		if (tag == 0)
-			break;
-		gtk_text_tag_table_remove(tag_table, tag);
-		tab_id++;
-	}
-	tab_id = 0;
 
 	if (doc->type == HYP_FT_ASCII)
 	{
