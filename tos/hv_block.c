@@ -208,7 +208,7 @@ char *GetScrapPath(gboolean clear)
 
 	if (clear)							/* empty clipboard? */
 	{
-		if (!scrp_clear())				/* scrp_clear() available? */
+		if (!__magix || !scrp_clear())				/* scrp_clear() available? */
 		{
 			DIR *dir;
 			struct dirent *entry;
