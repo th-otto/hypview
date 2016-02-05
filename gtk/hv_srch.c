@@ -192,6 +192,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 	long results = 0;
 	RESULT_ENTRY *Result_List;
 	gboolean aborted;
+	GtkWidget *splash = NULL;
 	
 	/* abort if no all.ref is defined */
 	if (empty(gl_profile.general.all_ref))
@@ -201,6 +202,30 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 		return win;
 	}
 
+	if (!gl_profile.viewer.norefbox)
+	{
+		GtkWidget *hbox;
+		GtkWidget *label;
+		char *str;
+		
+		splash = gtk_window_new(GTK_WINDOW_POPUP);
+		hbox = gtk_hbox_new(FALSE, 10);
+		gtk_container_add(GTK_CONTAINER(splash), hbox);
+		gtk_widget_show(hbox);
+		str = g_strdup_printf("Search: %s", string);
+		label = gtk_label_new(str);
+		g_free(str);
+		gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 10);
+		gtk_widget_show(label);
+		gtk_window_set_type_hint(GTK_WINDOW(splash), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
+		gtk_window_set_transient_for(GTK_WINDOW(splash), GTK_WINDOW(win->hwnd));
+		gtk_window_set_position(GTK_WINDOW(splash), GTK_WIN_POS_CENTER_ON_PARENT);
+		gtk_widget_show(splash);
+		gtk_window_present(GTK_WINDOW(splash));
+		gdk_display_flush(gtk_widget_get_display(splash));
+		gdk_window_process_all_updates();
+	}
+	
 	if (allref == NULL)
 	{
 		char *filename;
@@ -222,6 +247,9 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 
 	Result_List = ref_findall(allref, string, &results, &aborted);
 
+	if (splash)
+		gtk_widget_destroy(splash);
+	
 	/* error loading file? */
 	if (allref == NULL)
 	{

@@ -94,7 +94,7 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				x_shell.env = env;
 				x_shell.uid = 0;
 				x_shell.gid = 0;
-				HypfindID = shel_write(SHW_EXEC|SHD_ENVIRON, 0, SHW_PARALLEL, (void *)&x_shell, cmd);
+				HypfindID = shel_write(SHW_EXEC|SW_ENVIRON, 0, SHW_PARALLEL, (void *)&x_shell, cmd);
 #endif
 				(void) Mfree(env);
 			}

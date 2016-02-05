@@ -201,7 +201,8 @@ static _WORD __CDECL SearchResultHandle(struct HNDL_OBJ_args args)
 	case HNDL_CLSD:
 		lbox_free_items(entrie_box);
 		lbox_delete(entrie_box);
-		ref_freeresults(&Result_List);
+		ref_freeresults(Result_List);
+		Result_List = NULL;
 		ref_close(allref);
 		allref = NULL;
 		return 0;
@@ -246,7 +247,8 @@ static gboolean SearchResult(WINDOW_DATA *win, RESULT_ENTRY **result_list)
 	SearchResult_Dialog = OpenDialog(SearchResultHandle, rs_tree(SEARCH_RESULT), _("Search Result..."), -1, -1, win);
 	if (SearchResult_Dialog == NULL)
 	{
-		ref_freeresults(result_list);
+		ref_freeresults(*result_list);
+		*result_list = NULL;
 		return FALSE;
 	}
 	return TRUE;
@@ -276,6 +278,9 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 {
 	int ret;
 	long results = 0;
+	OBJECT *tree = NULL;
+	GRECT big;
+	gboolean aborted;
 	
 	/* abort if no all.ref is defined */
 	if (empty(gl_profile.general.all_ref))
@@ -285,7 +290,17 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 	}
 
 	graf_mouse(BUSY_BEE, NULL);
-
+	
+	if (!gl_profile.viewer.norefbox)
+	{
+		tree = rs_tree(REFBOX);
+		memset(tree[REFBOX_STRING].ob_spec.tedinfo->te_ptext, 0, tree[REFBOX_STRING].ob_spec.tedinfo->te_txtlen);
+		strncpy(tree[REFBOX_STRING].ob_spec.tedinfo->te_ptext, string, tree[REFBOX_STRING].ob_spec.tedinfo->te_txtlen - 1);
+		form_center_grect(tree, &big);
+		form_dial_grect(FMD_START, &big, &big);
+		objc_draw_grect(tree, ROOT, MAX_DEPTH, &big);
+	}
+	
 	if (allref == NULL)
 	{
 		char *filename;
@@ -304,8 +319,11 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 		g_free(filename);
 	}
 
-	Result_List = ref_findall(allref, string, &results);
+	Result_List = ref_findall(allref, string, &results, &aborted);
 
+	if (tree)
+		form_dial_grect(FMD_FINISH, &big, &big);
+	
 	graf_mouse(ARROW, NULL);
 
 	/* error loading file? */
@@ -327,14 +345,16 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 				if (Result_List->lineno > 0)
 					win->data->start_line = Result_List->lineno;
 			}
-			ref_freeresults(&Result_List);
+			ref_freeresults(Result_List);
+			Result_List = NULL;
 		} else
 		{
 			if (has_listbox_dialog())
 			{
 				if (!SearchResult(win, &Result_List))
 				{
-					ref_freeresults(&Result_List);
+					ref_freeresults(Result_List);
+					Result_List = NULL;
 					ref_close(allref);
 					allref = NULL;
 				}
@@ -346,14 +366,15 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 					if (Result_List->lineno > 0)
 						win->data->start_line = Result_List->lineno;
 				}
-				ref_freeresults(&Result_List);
+				ref_freeresults(Result_List);
+				Result_List = NULL;
 				ref_close(allref);
 				allref = NULL;
 			}
 		}
 	} else
 	{
-		if (!no_message)
+		if (!no_message && !aborted)
 		{
 			char *str;
 			char *name;

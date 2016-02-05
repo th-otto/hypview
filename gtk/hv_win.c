@@ -1702,7 +1702,7 @@ static char const ui_info[] =
 "      <separator/>\n"
 "      <menuitem action='altfont'/>\n"
 "      <menuitem action='expandspaces'/>\n"
-"      <menuitem action='scalebitmaps'/>\n"
+"      <!-- <menuitem action='scalebitmaps'/>\n -->"
 "      <separator/>\n"
 "      <menuitem action='preferences'/>\n"
 "    </menu>\n"

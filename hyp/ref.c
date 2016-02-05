@@ -616,7 +616,7 @@ char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean
  * Find node(s) by name in all modules of REF file.
  * Returns a linked list of entries found.
  */
-RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
+RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, gboolean *aborted)
 {
 	RESULT_ENTRY *list;
 	RESULT_ENTRY **last;
@@ -628,6 +628,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 	gboolean foundone;
 	
 	*num_results = 0;
+	*aborted = FALSE;
 	
 	if (ref == NULL)
 		return NULL;
@@ -643,6 +644,15 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 		for (num = 0; num < mod->num_entries; num++)
 		{
 			foundone = FALSE;
+#ifdef WITH_GUI_GEM
+			if ((Kbshift(-1) & (K_LSHIFT|K_CTRL)) == (K_LSHIFT|K_CTRL))
+			{
+				ref_freeresults(list);
+				g_free(prototype.node_name);
+				*aborted = TRUE;
+				return NULL;
+			}
+#endif
 			switch (mod->entries[num].type)
 			{
 			case REF_FILENAME:
@@ -707,12 +717,11 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results)
 
 /* ------------------------------------------------------------------------- */
 
-void ref_freeresults(RESULT_ENTRY **result_list)
+void ref_freeresults(RESULT_ENTRY *result_list)
 {
 	RESULT_ENTRY *ptr, *next;
 
-	ptr = *result_list;
-	*result_list = NULL;
+	ptr = result_list;
 
 	while (ptr != NULL)
 	{

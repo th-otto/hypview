@@ -53,9 +53,9 @@ typedef struct {
 		gboolean transparent_pics;  /* display pictures transparent */
 		gboolean scale_bitmaps;
 		gboolean check_time;        /* watch modification times of files */
-		int va_start_newwin;        /* AV_START opens a new window */
+		int va_start_newwin;        /* VA_START opens a new window */
 		gboolean alink_newwin;		/* ALINKs are opened in a new window */
-		gboolean intelligent_fuller; /* INTELLIGENT_FULLER                              INTELLIGENT_FULLER */
+		gboolean intelligent_fuller; /* Resize window to maximal document size when fuller is clicked */
 		gboolean clipbrd_new_window; /* if set, pasting a block opens new window */
 		gboolean av_window_cycle;   /* send window cycles to AV-Server */
 		gboolean marken_save_ask;   /* ask before saving "marks.dat" */
