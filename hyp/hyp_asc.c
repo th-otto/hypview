@@ -102,7 +102,7 @@ long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search)
 {
 	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
-	unsigned char *src;
+	const unsigned char *src;
 	
 	long len = strlen(search);
 
@@ -298,7 +298,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 				 * Also determine number of lines and columns
 				 */
 				ptr = start;
-				ascii->line_ptr[line++] = ptr;
+				ascii->line_ptr[line] = ptr;
 				while (ptr < end)
 				{
 					val = *ptr;
@@ -320,7 +320,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 						ascii->line_ptr = g_renew(unsigned char *, ascii->line_ptr, line + 2);
 						if (ascii->line_ptr == NULL)
 							break;
-						ascii->line_ptr[line++] = ptr;
+						ascii->line_ptr[++line] = ptr;
 					} else if (val == 0x0d || val == 0x0a)	/* CR or LF? */
 					{
 						ascii->columns = max(ascii->columns, columns);
@@ -333,7 +333,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 						ascii->line_ptr = g_renew(unsigned char *, ascii->line_ptr, line + 2);
 						if (ascii->line_ptr == NULL)
 							break;
-						ascii->line_ptr[line++] = ptr;
+						ascii->line_ptr[++line] = ptr;
 					} else if (val == '\t')	/* tab-stop?... */
 					{
 						if (!wordend)
