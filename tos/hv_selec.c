@@ -22,6 +22,7 @@
  */
 
 #include "hv_defs.h"
+#include "hypdebug.h"
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -84,7 +85,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 
 		x = m_data->x - work.g_x;
 		y = m_data->y - work.g_y;
-		y -= y % font_ch;
+		y -= y % win->y_raster;
 
 		doc->getCursorProc(win, x, y, &start);
 		end = start;
@@ -175,8 +176,8 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 		/* calculate cursor position in text */
 		doc->getCursorProc(win, x, y, &new);
 
-		x = (short)(new.x - win->docsize.x * font_cw);
-		y = new.y - (win->docsize.y * font_ch);
+		x = (short)(new.x - win->docsize.x * win->x_raster);
+		y = new.y - (win->docsize.y * win->y_raster);
 		if (y != oy)
 		{
 			_WORD xy[4];
@@ -205,12 +206,12 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 				xy[0] = work.g_x + px1;
 				xy[1] = work.g_y + py1;
 				xy[2] = work.g_x + work.g_w - 1;
-				xy[3] = work.g_y + font_ch + py1 - 1;
+				xy[3] = work.g_y + win->y_raster + py1 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
 
 			/* draw whole lines */
-			py1 += font_ch;
+			py1 += win->y_raster;
 
 			if (py1 < py2)
 			{
@@ -226,7 +227,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 				xy[0] = work.g_x;
 				xy[1] = work.g_y + py2;
 				xy[2] = work.g_x + px2 - 1;
-				xy[3] = work.g_y + font_ch + py2 - 1;
+				xy[3] = work.g_y + win->y_raster + py2 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
 			graf_mouse(M_ON, NULL);
@@ -250,7 +251,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			xy[0] = work.g_x + px1;
 			xy[1] = work.g_y + (_WORD)oy;
 			xy[2] = work.g_x + px2 - 1;
-			xy[3] = work.g_y + (_WORD)oy + font_ch - 1;
+			xy[3] = work.g_y + (_WORD)oy + win->y_raster - 1;
 			vr_recfl(vdi_handle, xy);
 			graf_mouse(M_ON, NULL);
 		}
@@ -370,7 +371,7 @@ void DrawSelection(WINDOW_DATA *win)
 	{
 		if (y1 < 0)
 		{
-			y1 = -font_ch;
+			y1 = -win->y_raster;
 			x1 = 0;
 		} else if (x1 <= work.g_w)
 		{
@@ -378,7 +379,7 @@ void DrawSelection(WINDOW_DATA *win)
 			xy[0] = work.g_x + x1;
 			xy[1] = work.g_y + y1;
 			xy[2] = work.g_x + work.g_w - 1;
-			xy[3] = xy[1] + font_ch - 1;
+			xy[3] = xy[1] + win->y_raster - 1;
 			vr_recfl(vdi_handle, xy);
 		}
 		
@@ -392,15 +393,15 @@ void DrawSelection(WINDOW_DATA *win)
 			xy[0] = work.g_x;
 			xy[1] = work.g_y + y2;
 			xy[2] = work.g_x + x2 - 1;
-			xy[3] = xy[1] + font_ch - 1;
+			xy[3] = xy[1] + win->y_raster - 1;
 			vr_recfl(vdi_handle, xy);
 		}
 
 		/* draw whole lines */
-		if (y2 > y1 + font_ch)
+		if (y2 > y1 + win->y_raster)
 		{
 			xy[0] = work.g_x;
-			xy[1] = work.g_y + y1 + font_ch;
+			xy[1] = work.g_y + y1 + win->y_raster;
 			xy[2] = work.g_x + work.g_w - 1;
 			xy[3] = work.g_y + y2 - 1;
 			vr_recfl(vdi_handle, xy);
@@ -411,7 +412,7 @@ void DrawSelection(WINDOW_DATA *win)
 		xy[0] = work.g_x + x1;
 		xy[1] = work.g_y + y1;
 		xy[2] = work.g_x + x2 - 1;
-		xy[3] = work.g_y + font_ch + y1 - 1;
+		xy[3] = work.g_y + win->y_raster + y1 - 1;
 		vr_recfl(vdi_handle, xy);
 	}
 

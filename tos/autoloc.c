@@ -11,18 +11,20 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp;
 	const unsigned char *src;
+	const unsigned char *end;
 	char *dst, *ret;
 	size_t len;
 	
 	if (doc == NULL || (hyp = doc->data) == NULL || node == NULL || node->line_ptr == NULL || line < 0 || (line * win->y_raster) >= win->docsize.h)
 		return NULL;
-	src = node->line_ptr[line].txt;
+	src = node->line_ptr[line];
+	end = node->line_ptr[line + 1];
 
 	if (src == NULL)
 		return NULL;
 
 	len = 0;
-	while (*src)
+	while (src < end && *src)
 	{
 		if (*src == HYP_ESC)					/* ESC-Sequence ?? */
 		{
@@ -71,9 +73,9 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 	}
 	
 	dst = ret = g_new(char, len + 1);
-	src = node->line_ptr[line].txt;
+	src = node->line_ptr[line];
 	
-	while (*src)
+	while (src < end && *src)
 	{
 		if (*src == HYP_ESC)					/* ESC-sequence ?? */
 		{
@@ -161,7 +163,7 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 
 	if (doc->autolocator_dir > 0)
 	{
-		while (y < win->docsize.y)
+		while (y < win->docsize.h)
 		{
 			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
@@ -171,8 +173,6 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 				{
 					if (g_utf8_strncasecmp(src, search, len) == 0)
 					{
-						y = line * win->y_raster;
-						line = y / win->y_raster;	/* get real llne of window */
 						g_free(temp);
 						return line;
 					}
@@ -195,8 +195,6 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 				{
 					if (g_utf8_strncasecmp(src, search, len) == 0)
 					{
-						y = line * win->y_raster;
-						line = y / win->y_raster;	/* get real line of window */
 						g_free(temp);
 						return line;
 					}

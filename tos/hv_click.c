@@ -74,8 +74,7 @@ static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		if (gfx->islimage)
 		{
-			/* maybe FIXME: ST-Guide seems to leave an empty line below the image */
-			y += gfx->pixheight;
+			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
 		}
 	}
 	return y;

@@ -44,8 +44,7 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		ty = y;
 		if (gfx->islimage)
 		{
-			/* maybe FIXME: ST-Guide seems to leave an empty line below the image */
-			y += gfx->pixheight;
+			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
 		}
 		if (tx >= win->scroll.g_w || (tx + gfx->pixwidth) <= 0)
 			return y;
@@ -292,8 +291,7 @@ static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		if (gfx->islimage)
 		{
-			/* maybe FIXME: ST-Guide seems to leave an empty line below the image */
-			y += gfx->pixheight;
+			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
 		}
 	}
 	return y;
@@ -546,9 +544,12 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	WP_UNIT x, sx, sy;
 	WP_UNIT max_w;
 	const unsigned char *src, *end, *textstart;
+	const unsigned char *linestart;
 	unsigned char textattr;
 	char *str;
-
+	long old_windowline;
+	long new_windowline;
+	
 	win->displayed_node = node;
 	if (node == NULL)					/* stop if no page loaded */
 		return;
@@ -582,7 +583,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		TEXTOUT(s); \
 		g_free(s); \
 	}
-
+	
 	src = node->start;
 	end = node->end;
 	textstart = src;
@@ -590,9 +591,19 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	lineno = 0;
 	x = sx;
 	max_w = x;
+	old_windowline = sy / win->y_raster;
 	sy = skip_graphics(win, node->gfx, lineno, sx, sy);
 	vst_effects(vdi_handle, 0);
+
+	g_free(node->line_ptr);
+	node->line_ptr = NULL;
+	linestart = src;
 	
+	new_windowline = sy / win->y_raster;
+	node->line_ptr = g_renew(const unsigned char *, node->line_ptr, new_windowline + 1);
+	while (old_windowline < new_windowline)
+		node->line_ptr[old_windowline++] = linestart;
+
 	while (src < end)
 	{
 		if (*src == HYP_ESC)		/* ESC-sequence */
@@ -675,6 +686,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			}
 		} else if (*src == HYP_EOL)
 		{
+			old_windowline = sy / win->y_raster;
+			
 			DUMPTEXT();
 			++lineno;
 			if (x > max_w)
@@ -684,12 +697,19 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			x = sx;
 			sy += win->y_raster;
 			sy = skip_graphics(win, node->gfx, lineno, sx, sy);
+			
+			new_windowline = sy / win->y_raster;
+			node->line_ptr = g_renew(const unsigned char *, node->line_ptr, new_windowline + 1);
+			while (old_windowline < new_windowline)
+				node->line_ptr[old_windowline++] = linestart;
+			linestart = src;
 		} else
 		{
 			src++;
 		}
 	}
 	DUMPTEXT();
+	old_windowline = sy / win->y_raster;
 	if (x != sx)
 	{
 		if (x > max_w)
@@ -698,6 +718,11 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		sy += win->y_raster;
 		sy = skip_graphics(win, node->gfx, lineno, sx, sy);
 	}
+	new_windowline = sy / win->y_raster;
+	node->line_ptr = g_renew(const unsigned char *, node->line_ptr, new_windowline + 1);
+	while (old_windowline < new_windowline)
+		node->line_ptr[old_windowline++] = linestart;
+	node->line_ptr[old_windowline] = src;
 	
 	vst_effects(vdi_handle, 0);
 

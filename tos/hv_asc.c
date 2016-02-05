@@ -47,8 +47,8 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 	vst_color(vdi_handle, viewer_colors.text);
 	vst_effects(vdi_handle, 0);
 
-	end_y = y + min((unsigned short) (win->docsize.h - win->docsize.y), win->scroll.g_h);
-	while (y < end_y)
+	end_y = y + win->scroll.g_h;
+	while (line < ascii->lines && y < end_y)
 	{
 		line_buffer = AsciiGetTextLine(ascii->line_ptr[line], ascii->line_ptr[line + 1]);
 		line++;
@@ -66,9 +66,11 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 
 void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 {
-	UNUSED(win);
+	DOCUMENT *doc = win->data;
+	FMT_ASCII *ascii = doc->data;
 	UNUSED(node);
-	/* nothing to do */
+	win->docsize.w = ascii->columns * win->x_raster;
+	win->docsize.h = ascii->lines * win->y_raster;
 }
 
 /*** ---------------------------------------------------------------------- ***/

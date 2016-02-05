@@ -388,12 +388,6 @@ typedef struct
 	unsigned char data[1];
 } REF_FILE;
 
-typedef struct lineptr
-{
-	short x, y, w, h;
-	const unsigned char *txt;
-} LINEPTR;
-
 typedef struct
 {
 	hyp_nodenr number;          /* Page number of this entry */
@@ -401,7 +395,7 @@ typedef struct
 	unsigned char *end;         /* Pointer to end of data */
 	long width, height;
 	const unsigned char *window_title; /* Pointer to window title, in encoding of HYP */
-	LINEPTR *line_ptr;
+	const unsigned char **line_ptr;
 	struct hyp_gfx *gfx;		/* graphics commands */
 } HYP_NODE;
 

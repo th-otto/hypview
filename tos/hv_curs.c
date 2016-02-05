@@ -20,12 +20,10 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
 	HYP_NODE *node;
-	LINEPTR *line_ptr;
-	short line = 0;
+	long line;
 	long i;
-	long sy;
 	short curr_txt_effect = 0;
-	short x_pos = win->x_raster;
+	short x_pos = 0;
 	short width = 0;
 	_WORD ext[8];
 	const unsigned char *src;
@@ -36,48 +34,41 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 	
 	if (doc->type != HYP_FT_HYP)
 	{
+		pos->line = 0;
+		pos->y = 0;
+		pos->offset = 0;
+		pos->x = 0;
 		return;
 	}
 
 	hyp = doc->data;
 	node = win->displayed_node;
 
-	sy = -win->docsize.y;
-	line_ptr = node->line_ptr;
-
-	while (sy < win->docsize.h)
+	line = (y + win->docsize.y) / win->y_raster;
+	if (node->line_ptr == NULL || line < 0)
 	{
-		long y2;
-
-		y2 = sy + line_ptr->y + line_ptr->h;
-		if ((sy + line_ptr->y) >= y || (y2 > y))
-		{
-			sy += line_ptr->y;
-			break;
-		}
-		sy = y2;
-		line_ptr++;
-		line++;
-	}
-
-	if (sy >= win->docsize.h)
-		return;
-
-	src = line_ptr->txt;
-
-	if (x < win->x_raster || !src)
-	{
-		pos->line = line;
-		pos->y = sy + (win->docsize.y * win->y_raster);
+		pos->line = 0;
+		pos->y = 0;
 		pos->offset = 0;
 		pos->x = 0;
 		return;
 	}
 
+	if (line >= (win->docsize.h / win->y_raster))
+	{
+		pos->line = line = win->docsize.h / win->y_raster;
+		pos->y = line * win->y_raster;
+		pos->offset = 0;
+		pos->x = 0;
+		return;
+	}
+
+	src = node->line_ptr[line];
+
 	/* reset text effects */
 	vst_effects(vdi_handle, 0);
 	textstart = src;
-	end = line_ptr[1].txt;
+	end = node->line_ptr[line + 1];
 	temp = g_strdup("");
 	
 	while (src < end && *src)
@@ -215,7 +206,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		{
 			i--;
 			*dst = 0;
-			vqt_extent(vdi_handle, (const char *)temp, ext);
+			vqt_extent(vdi_handle, temp, ext);
 			if (x_pos + ext[2] < x)
 			{
 				if (x - (x_pos + ext[2]) > (x_pos + width) - x)
@@ -243,6 +234,6 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		pos->x = 0;
 	pos->offset = i;
 	pos->line = line;
-	pos->y = sy + (win->docsize.y * win->y_raster);
+	pos->y = line * win->y_raster;
 	g_free(temp);
 }
