@@ -6,7 +6,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-01 15:03+0100\n"
+"POT-Creation-Date: 2016-02-05 14:26+0100\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -15,6 +15,103 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: gtk/gfilesel.c:50
+#: gtk/hv_main.c:47
+msgid  "Sets the client geometry of the main window"
+msgstr "Setzt die Geometrie des Hauptfensters"
+
+#: gtk/gfilesel.c:50
+#: gtk/hv_main.c:47
+msgid  "GEOMETRY"
+msgstr "GEOMETRY"
+
+#: gtk/gfilesel.c:51
+msgid  "The name of the application"
+msgstr "Der Name der Anwendung"
+
+#: gtk/gfilesel.c:52
+#: gtk/gfilesel.c:53
+msgid  "The caption of the dialog widget"
+msgstr "Der Titel des Dialogs"
+
+#: gtk/gfilesel.c:54
+msgid  "The application icon"
+msgstr "Das Anwendungs-Symbol"
+
+#: gtk/gfilesel.c:55
+msgid  "The directory to start in"
+msgstr "Das Startverzeichnis"
+
+#: gtk/gfilesel.c:56
+msgid  "Sets the filter(s) to be used"
+msgstr "Setzt die zu benutzenden Filter"
+
+#: gtk/gfilesel.c:57
+msgid  "Sets the filter to start with"
+msgstr "Setzt den Startfiler"
+
+#: gtk/gfilesel.c:58
+msgid  "ID of the parent window"
+msgstr "ID des übergeordneten Fensters"
+
+#: gtk/gfilesel.c:59
+msgid  "Allow multiple filenames to be selected"
+msgstr "Erlaube Auswahl mehrerer Dateien"
+
+#: gtk/gfilesel.c:60
+msgid  "create a \"Save As\" type dialog"
+msgstr "Erzeuge einen \"Speichern als\" Dialog"
+
+#: gtk/gfilesel.c:61
+msgid  "print filenames as URI"
+msgstr "Dateinamen als URI ausgeben"
+
+#: gtk/gfilesel.c:62
+msgid  "Sets whether the filename/url should be kept when changing directories"
+msgstr "Legt fest of Dateiname beim Verzeichniswechsel beibehalten wird"
+
+#: gtk/gfilesel.c:63
+msgid  "Use null character instead of newline to separate filenames"
+msgstr "Benutze Null-Byte statt Linefeed als Trennzeichen"
+
+#: gtk/gfilesel.c:64
+#: gtk/hv_main.c:48
+msgid  "Show version information and exit"
+msgstr "Versionsinformation anzeigen und beenden"
+
+#: gtk/gfilesel.c:65
+#: gtk/hv_main.c:49
+msgid  "Show help information and exit"
+msgstr "Diese Hilfe anzeigen und beenden"
+
+#: gtk/gfilesel.c:87
+#: gtk/hv_main.c:74
+msgid  "[FILE [CHAPTER]]"
+msgstr "[DATEI [KAPITEL]]"
+
+#: gtk/gfilesel.c:90
+msgid  "GTK Fileselector"
+msgstr "GTK Fileselector"
+
+#: gtk/gfilesel.c:107
+#: gtk/hv_main.c:99
+msgid  "error parsing command line"
+msgstr "Fehler in der Kommandozeile"
+
+#: gtk/gfilesel.c:140
+#, c-format
+msgid  "can't create GDK window for window-id %s\n"
+msgstr "Kann GDK_Fenster für ID %s nicht erzeugen\n"
+
+#: gtk/gfilesel.c:263
+msgid  "Save As"
+msgstr "Sichern Als"
+
+#: gtk/gfilesel.c:263
+#: gtk/gtk_comp.h:316
+msgid  "Open"
+msgstr "Öffnen"
 
 #: gtk/gtk_comp.h:310
 msgid  "Close"
@@ -39,10 +136,6 @@ msgstr "Löschen"
 #: gtk/gtk_comp.h:315
 msgid  "Apply"
 msgstr "Anwenden"
-
-#: gtk/gtk_comp.h:316
-msgid  "Open"
-msgstr "Öffnen"
 
 #: gtk/gtk_comp.h:317
 msgid  "Save"
@@ -119,13 +212,14 @@ msgstr ""
 #: gtk/hv_click.c:53
 #: gtk/hv_click.c:62
 #: gtk/hv_click.c:143
-#: gtk/hv_error.c:257
+#: gtk/hv_error.c:233
 #: gtk/hv_file.c:181
+#: gtk/hv_help.c:269
 #: gtk/hv_hfind.c:86
 #: gtk/hv_hfind.c:110
 #: gtk/hv_hfind.c:131
-#: gtk/hv_srch.c:199
-#: gtk/hv_srch.c:263
+#: gtk/hv_srch.c:201
+#: gtk/hv_srch.c:294
 msgid  "Error"
 msgstr "Fehler"
 
@@ -156,32 +250,28 @@ msgid  "No application defined to handle %s."
 msgstr "Keine Anwednung definiert für %s."
 
 #: gtk/hv_click.c:142
-#: gtk/hv_disp.c:1189
+#: gtk/hv_disp.c:1204
 #, c-format
 msgid  "Link to node of type %u not implemented."
 msgstr "Link zu Seiten vom Typ %u nicht implementiert."
 
-#: gtk/hv_disp.c:762
 #: gtk/hv_eref.c:111
-#: hyp/hcpmain.c:194
-#: tos/hv_click.c:113
-#: tos/hv_curs.c:21
-#: tos/hv_disp.c:257
+#: hyp/hyp.c:475
 #: tos/hv_eref.c:72
 #, c-format
 msgid  "<invalid destination page %u>"
 msgstr "<ungültige Seitennummer %u>"
 
-#: gtk/hv_error.c:257
+#: gtk/hv_error.c:233
 msgid  "Warning"
 msgstr "Warnung"
 
-#: gtk/hv_error.c:284
+#: gtk/hv_error.c:260
 #, c-format
 msgid  "%s: error initializing GTK (wrong display?)\n"
 msgstr "%s: kann GTK nicht initialisieren (falsche Anzeige?)\n"
 
-#: gtk/hv_error.c:316
+#: gtk/hv_error.c:292
 #, c-format
 msgid  ""
 "File '%s'\n"
@@ -196,7 +286,7 @@ msgid  "not found"
 msgstr "nicht gefunden"
 
 #: gtk/hv_file.c:180
-#: gtk/hv_srch.c:262
+#: gtk/hv_srch.c:293
 #, c-format
 msgid  ""
 "%s: could not find\n"
@@ -249,15 +339,15 @@ msgstr ""
 "*.txt|Text Dateien (*.txt)\n"
 "*.*|Alle Dateien (*.*)\n"
 
-#: gtk/hv_fsel.c:200
+#: gtk/hv_fsel.c:211
 msgid  "Open Hypertext..."
 msgstr "Hypertext Öffnen..."
 
-#: gtk/hv_fsel.c:229
+#: gtk/hv_fsel.c:240
 msgid  "Save ASCII text as"
 msgstr "ASCII Text sichern als"
 
-#: gtk/hv_fsel.c:237
+#: gtk/hv_fsel.c:248
 msgid  ""
 "This file exists already.\n"
 "Do you want to replace it?"
@@ -334,21 +424,21 @@ msgstr "... aller Hypertexte"
 msgid  "Search in the text of all pages of all hypertext files"
 msgstr "Suche nach dem Text in allen Seiten aller Hypertexte"
 
-#: gtk/hv_info.c:50
+#: gtk/hv_info.c:49
 msgid  "Programinfo..."
 msgstr "Programminformationen..."
 
-#: gtk/hv_info.c:69
+#: gtk/hv_info.c:68
 #, c-format
 msgid  "from: %s"
 msgstr "Von: %s"
 
-#: gtk/hv_info.c:77
+#: gtk/hv_info.c:76
 #, c-format
 msgid  "File: %s"
 msgstr "Datei: %s"
 
-#: gtk/hv_info.c:87
+#: gtk/hv_info.c:86
 #, c-format
 msgid  ""
 "Topic   : %s\n"
@@ -361,11 +451,11 @@ msgstr ""
 "Version : %s\n"
 "Subjekt : %s"
 
-#: gtk/hv_info.c:100
+#: gtk/hv_info.c:99
 msgid  "Details"
 msgstr "Details"
 
-#: gtk/hv_info.c:110
+#: gtk/hv_info.c:109
 #, c-format
 msgid  ""
 "Nodes       : %7d\n"
@@ -388,38 +478,14 @@ msgstr ""
 "@options    : %s\n"
 "@width      : %3u"
 
-#: gtk/hv_info.c:135
+#: gtk/hv_info.c:134
 #, c-format
 msgid  "@hostname   : %s"
 msgstr "@hostname   : %s"
 
-#: gtk/hv_main.c:47
-msgid  "Sets the client geometry of the main window"
-msgstr "Setzt die Geometrie des Hauptfensters"
-
-#: gtk/hv_main.c:47
-msgid  "GEOMETRY"
-msgstr "GEOMETRY"
-
-#: gtk/hv_main.c:48
-msgid  "Show version information and exit"
-msgstr "Versionsinformation anzeigen und beenden"
-
-#: gtk/hv_main.c:49
-msgid  "Show help information and exit"
-msgstr "Diese Hilfe anzeigen und beenden"
-
-#: gtk/hv_main.c:74
-msgid  "[FILE [CHAPTER]]"
-msgstr "[DATEI [KAPITEL]]"
-
 #: gtk/hv_main.c:77
 msgid  "GTK Shell for HypView"
 msgstr "GTK Shell für HypView"
-
-#: gtk/hv_main.c:99
-msgid  "error parsing command line"
-msgstr "Fehler in der Kommandozeile"
 
 #: gtk/hv_main.c:113
 #, c-format
@@ -427,16 +493,16 @@ msgid  "%s is Open Source (see %s for further information).\n"
 msgstr "%s ist Open Source (siehe %s für weitere Informationen).\n"
 
 #: gtk/hv_mark.c:34
-#: gtk/hv_win.c:1534
-#: gtk/hv_win.c:1535
-#: gtk/hv_win.c:1536
-#: gtk/hv_win.c:1537
-#: gtk/hv_win.c:1538
-#: gtk/hv_win.c:1539
-#: gtk/hv_win.c:1540
-#: gtk/hv_win.c:1541
-#: gtk/hv_win.c:1542
-#: gtk/hv_win.c:1543
+#: gtk/hv_win.c:1590
+#: gtk/hv_win.c:1591
+#: gtk/hv_win.c:1592
+#: gtk/hv_win.c:1593
+#: gtk/hv_win.c:1594
+#: gtk/hv_win.c:1595
+#: gtk/hv_win.c:1596
+#: gtk/hv_win.c:1597
+#: gtk/hv_win.c:1598
+#: gtk/hv_win.c:1599
 #: tos/hv_mark.c:59
 msgid  "free"
 msgstr "unbelegt"
@@ -466,11 +532,6 @@ msgstr ""
 #: gtk/hv_mark.c:211
 msgid  "Save bookmarks?"
 msgstr "Lesezeichen speichern?"
-
-#: gtk/hv_misc.c:30
-#, c-format
-msgid  "%s: too early for dialog?\n"
-msgstr "%s: zu früh für Dialoge?\n"
 
 #: gtk/hv_nav.c:56
 #: gtk/hv_nav.c:106
@@ -556,6 +617,107 @@ msgstr "Umrissen"
 msgid  "Shadowed"
 msgstr "Schattiert"
 
+#: gtk/hv_prefs.c:492
+msgid  "Preferences"
+msgstr "Einstellungen"
+
+#: gtk/hv_prefs.c:502
+msgid  "Path for Hypertexts"
+msgstr "Pfad für Hypertexte"
+
+#: gtk/hv_prefs.c:514
+msgid  ""
+"The default directory that will be shown when opening\n"
+"a Hypertext.\n"
+"It is also used by HCP to write compiled hypertexts when\n"
+"no output file is explicitly specified."
+msgstr ""
+"Das Standard-Verzeichnis das bei 'Öffnen' angezeigt wird.\n"
+"Dieses Verzeichnis wird auch von HCP benutzt wenn keine\n"
+"Ausgabe-Datei angegeben wurde."
+
+#: gtk/hv_prefs.c:523
+msgid  "Default-Hypertext"
+msgstr "Default-Hypertext"
+
+#: gtk/hv_prefs.c:536
+msgid  ""
+"Default filename of hypertext automatically loaded by HypView\n"
+"if called without parameters (typically HYPVIEW.HYP or CATALOG.HYP)"
+msgstr ""
+"Standard-Dateiname des Hypertexts der automatische von HypView\n"
+"geladen wird wenn keine Argumente übergeben wurden\n"
+"(typischerweise HYPVIEW.HYP oder KATALOG.HYP)"
+
+#: gtk/hv_prefs.c:543
+msgid  "Catalog file"
+msgstr "Katalog Datei"
+
+#: gtk/hv_prefs.c:556
+msgid  "The hypertext file to be loaded via the HypView 'Catalog' option"
+msgstr "Der Hypertext der bei Auswahl von 'Katalog' geladen wird"
+
+#: gtk/hv_prefs.c:558
+msgid  "At Programstart"
+msgstr "Bei Programmstart"
+
+#: gtk/hv_prefs.c:567
+msgid  "Show File Selector"
+msgstr "Dateiauswahl anzeigen"
+
+#: gtk/hv_prefs.c:574
+msgid  "Load default hypertext"
+msgstr "Standard-Hypertext laden"
+
+#: gtk/hv_prefs.c:581
+msgid  "Load last file"
+msgstr "Zuletzt verwendeten Hypertext laden"
+
+#: gtk/hv_prefs.c:588
+msgid  "Miscellaneous"
+msgstr "Veschiedenes"
+
+#: gtk/hv_prefs.c:596
+msgid  "Right mouse button is 'back'"
+msgstr "Rechte Maustaste ist 'Zurück'"
+
+#: gtk/hv_prefs.c:601
+msgid  "If set, a right mouse click is interpreted as a click on the Back icon"
+msgstr "Wenn gesetzt, wird die rechte Maustaste wie 'Zurück' behandelt"
+
+#: gtk/hv_prefs.c:603
+msgid  "Display pictures transparent"
+msgstr "Bilder transparent anzeigen"
+
+#: gtk/hv_prefs.c:608
+msgid  "Draw pictures transparently"
+msgstr "Bilder transparent anzeigen"
+
+#: gtk/hv_prefs.c:610
+msgid  "Watch modification times of files"
+msgstr "Änderungszeit von Dateien überwachen"
+
+#: gtk/hv_prefs.c:615
+msgid  "Check file modification time and date before access"
+msgstr "Änderungszeit von Dateien vor Zugriff überprüfen"
+
+#: gtk/hv_prefs.c:617
+msgid  "Open ALINKs in a new window"
+msgstr "ALINKs in einem neuen Fenster öffnen"
+
+#: gtk/hv_prefs.c:622
+msgid  ""
+"If set, ALINKS are opened in a new window\n"
+"If not set, ALINKS are opened in the current window (as ST-Guide)"
+msgstr ""
+"Wenn aktivieriert, werden ALINKS in einem neuen Fenster geöffnet\n"
+"Wenn nicht aktivieriert, werden ALINKS in selben Fenster geöffnet (wie ST-Guide)"
+
+#: gtk/hv_prefs.c:625
+#: gtk/hv_prefs.c:630
+msgid  "Ask before saving bookmarks"
+msgstr "Vor sichern der Lesezeichen nachfragen"
+
 #: gtk/hv_srch.c:78
 #, c-format
 msgid  "Search results: %s"
@@ -581,7 +743,7 @@ msgstr "Pfad"
 msgid  "Visible"
 msgstr "Sichtbar"
 
-#: gtk/hv_srch.c:199
+#: gtk/hv_srch.c:201
 msgid  "No ALL.REF file defined"
 msgstr "Pfad zu ALL.REF nicht definiert"
 
@@ -598,85 +760,85 @@ msgstr ""
 "%s\n"
 "Trotzdem beenden?"
 
-#: gtk/hv_win.c:1264
+#: gtk/hv_win.c:1298
 msgid  "Back"
 msgstr "Zurück"
 
-#: gtk/hv_win.c:1265
-#: gtk/hv_win.c:1519
+#: gtk/hv_win.c:1299
+#: gtk/hv_win.c:1575
 msgid  "History"
 msgstr "Chronik"
 
-#: gtk/hv_win.c:1266
-#: gtk/hv_win.c:1499
-#: gtk/hv_win.c:1520
+#: gtk/hv_win.c:1300
+#: gtk/hv_win.c:1555
+#: gtk/hv_win.c:1576
 msgid  "Bookmarks"
 msgstr "Lesezeichen"
 
-#: gtk/hv_win.c:1267
-#: gtk/hv_win.c:1522
+#: gtk/hv_win.c:1301
+#: gtk/hv_win.c:1578
 msgid  "Previous logical page"
 msgstr "Vorherige logische Seite"
 
-#: gtk/hv_win.c:1268
-#: gtk/hv_win.c:1521
+#: gtk/hv_win.c:1302
+#: gtk/hv_win.c:1577
 msgid  "Previous physical page"
 msgstr "Vorherige physikalische Seite"
 
-#: gtk/hv_win.c:1269
-#: gtk/hv_win.c:1523
+#: gtk/hv_win.c:1303
+#: gtk/hv_win.c:1579
 msgid  "Contents"
 msgstr "Inhalt"
 
-#: gtk/hv_win.c:1270
-#: gtk/hv_win.c:1524
+#: gtk/hv_win.c:1304
+#: gtk/hv_win.c:1580
 msgid  "Next logical page"
 msgstr "Nächste logische Seite"
 
-#: gtk/hv_win.c:1271
-#: gtk/hv_win.c:1525
+#: gtk/hv_win.c:1305
+#: gtk/hv_win.c:1581
 msgid  "Next physical page"
 msgstr "Nächste physikalische Seite"
 
-#: gtk/hv_win.c:1272
-#: gtk/hv_win.c:1526
+#: gtk/hv_win.c:1306
+#: gtk/hv_win.c:1582
 msgid  "First page"
 msgstr "Erste Seite"
 
-#: gtk/hv_win.c:1273
-#: gtk/hv_win.c:1527
+#: gtk/hv_win.c:1307
+#: gtk/hv_win.c:1583
 msgid  "Last page"
 msgstr "Letzte Seite"
 
-#: gtk/hv_win.c:1274
-#: gtk/hv_win.c:1528
+#: gtk/hv_win.c:1308
+#: gtk/hv_win.c:1584
 msgid  "Index"
 msgstr "Index"
 
-#: gtk/hv_win.c:1275
-#: gtk/hv_win.c:1529
+#: gtk/hv_win.c:1309
+#: gtk/hv_win.c:1585
 msgid  "Catalog"
 msgstr "Katalog"
 
-#: gtk/hv_win.c:1276
-#: gtk/hv_win.c:1531
+#: gtk/hv_win.c:1310
+#: gtk/hv_win.c:1587
 msgid  "References"
 msgstr "Querverweise"
 
-#: gtk/hv_win.c:1277
-#: gtk/hv_win.c:1532
+#: gtk/hv_win.c:1311
+#: gtk/hv_win.c:1588
 msgid  "Show help page"
 msgstr "Hilfe-Seite anzeigen"
 
-#: gtk/hv_win.c:1278
+#: gtk/hv_win.c:1312
 msgid  "Show info page"
 msgstr "Info-Seite anzeigen"
 
-#: gtk/hv_win.c:1279
+#: gtk/hv_win.c:1313
 msgid  "_Open Hypertext"
 msgstr "Hypertext öffnen"
 
-#: gtk/hv_win.c:1280
+#: gtk/hv_win.c:1314
 msgid  "_Save text"
 msgstr "Text _speichern"
 
@@ -684,32 +846,32 @@ msgstr "Text _speichern"
 #. * menu titles
 #. * name,                stock id,  label
 #.
-#: gtk/hv_win.c:1493
+#: gtk/hv_win.c:1549
 msgid  "_File"
 msgstr "_Datei"
 
-#: gtk/hv_win.c:1494
+#: gtk/hv_win.c:1550
 msgid  "_Edit"
 msgstr "_Bearbeiten"
 
-#: gtk/hv_win.c:1495
+#: gtk/hv_win.c:1551
 msgid  "_Navigate"
 msgstr "_Navigieren"
 
-#: gtk/hv_win.c:1496
+#: gtk/hv_win.c:1552
 msgid  "_Options"
 msgstr "_Optionen"
 
-#: gtk/hv_win.c:1497
+#: gtk/hv_win.c:1553
 msgid  "_Help"
 msgstr "_Hilfe"
 
-#: gtk/hv_win.c:1498
+#: gtk/hv_win.c:1554
 msgid  "Open _Recent"
 msgstr "Zuletzt verwendet"
 
-#: gtk/hv_win.c:1499
-#: gtk/hv_win.c:1520
+#: gtk/hv_win.c:1555
+#: gtk/hv_win.c:1576
 msgid  "Show list of bookmarks"
 msgstr "Lesezeichen anzeigen"
 
@@ -717,176 +879,176 @@ msgstr "Lesezeichen anzeigen"
 #. * menu entries
 #. * name,                stock id,                label                                  accelerator    tooltip                                              callback
 #.
-#: gtk/hv_win.c:1504
+#: gtk/hv_win.c:1560
 msgid  "_Open Hypertext..."
 msgstr "Hypertext öffnen..."
 
-#: gtk/hv_win.c:1504
+#: gtk/hv_win.c:1560
 msgid  "Load a file"
 msgstr "Datei laden"
 
-#: gtk/hv_win.c:1505
+#: gtk/hv_win.c:1561
 msgid  "_Save text..."
 msgstr "_Text speichern..."
 
-#: gtk/hv_win.c:1505
+#: gtk/hv_win.c:1561
 msgid  "Save page to file"
 msgstr "Seite in Datei speichern"
 
-#: gtk/hv_win.c:1506
+#: gtk/hv_win.c:1562
 msgid  "_File info..."
 msgstr "_Datei Information..."
 
-#: gtk/hv_win.c:1506
+#: gtk/hv_win.c:1562
 msgid  "Show info about hypertext"
 msgstr "Information über Hypertext anzeigen"
 
-#: gtk/hv_win.c:1507
+#: gtk/hv_win.c:1563
 msgid  "_Run Remarker"
 msgstr "_Remarker starten"
 
-#: gtk/hv_win.c:1508
+#: gtk/hv_win.c:1564
 msgid  "_Close"
 msgstr "_Schließen"
 
-#: gtk/hv_win.c:1509
+#: gtk/hv_win.c:1565
 msgid  "_Quit"
 msgstr "_Ende"
 
-#: gtk/hv_win.c:1511
+#: gtk/hv_win.c:1567
 msgid  "_Copy"
 msgstr "_Kopieren"
 
-#: gtk/hv_win.c:1512
+#: gtk/hv_win.c:1568
 msgid  "_Paste"
 msgstr "_Einfügen"
 
-#: gtk/hv_win.c:1513
+#: gtk/hv_win.c:1569
 msgid  "_Find"
 msgstr "_Suchen"
 
-#: gtk/hv_win.c:1514
+#: gtk/hv_win.c:1570
 msgid  "Find _Next"
 msgstr "_Nächstes suchen"
 
-#: gtk/hv_win.c:1515
+#: gtk/hv_win.c:1571
 msgid  "Select _All"
 msgstr "_Alles selektieren"
 
-#: gtk/hv_win.c:1517
+#: gtk/hv_win.c:1573
 msgid  "Back one page"
 msgstr "Eine Seite zurück"
 
-#: gtk/hv_win.c:1518
+#: gtk/hv_win.c:1574
 msgid  "Clear stack"
 msgstr "Chronik löschen"
 
-#: gtk/hv_win.c:1519
+#: gtk/hv_win.c:1575
 msgid  "Show history of pages"
 msgstr "Chronik der Seiten anzeigen"
 
-#: gtk/hv_win.c:1521
+#: gtk/hv_win.c:1577
 msgid  "Goto previous physical page"
 msgstr "Zur vorherigen physikalischen Seite gehen"
 
-#: gtk/hv_win.c:1522
+#: gtk/hv_win.c:1578
 msgid  "Goto previous page"
 msgstr "Zur vorherigen Seiten gehen"
 
-#: gtk/hv_win.c:1523
+#: gtk/hv_win.c:1579
 msgid  "Go up one page"
 msgstr "Zum Imhaltsverzeichnis gehen"
 
-#: gtk/hv_win.c:1524
+#: gtk/hv_win.c:1580
 msgid  "Goto next page"
 msgstr "Zur nächsten Seite gehen"
 
-#: gtk/hv_win.c:1525
+#: gtk/hv_win.c:1581
 msgid  "Goto next physical page"
 msgstr "Zur nächsten physikalischen Seite gehen"
 
-#: gtk/hv_win.c:1526
+#: gtk/hv_win.c:1582
 msgid  "Goto first page"
 msgstr "Zur ersten Seite gehen"
 
-#: gtk/hv_win.c:1527
+#: gtk/hv_win.c:1583
 msgid  "Goto last page"
 msgstr "Zur letzten Seite gehen"
 
-#: gtk/hv_win.c:1528
+#: gtk/hv_win.c:1584
 msgid  "Goto index page"
 msgstr "Zur Index-Seite gehen"
 
-#: gtk/hv_win.c:1529
+#: gtk/hv_win.c:1585
 msgid  "Show catalog of hypertexts"
 msgstr "Katalog der Hypertexte anzeigen"
 
-#: gtk/hv_win.c:1530
+#: gtk/hv_win.c:1586
 msgid  "Default file"
 msgstr "Standard-Hypertext"
 
-#: gtk/hv_win.c:1530
+#: gtk/hv_win.c:1586
 msgid  "Show default file"
 msgstr "Standard-Hypertext anzeigen"
 
-#: gtk/hv_win.c:1531
+#: gtk/hv_win.c:1587
 msgid  "Show list of cross references"
 msgstr "Liste der Querverweise anzeigen"
 
-#: gtk/hv_win.c:1534
-#: gtk/hv_win.c:1535
-#: gtk/hv_win.c:1536
-#: gtk/hv_win.c:1537
-#: gtk/hv_win.c:1538
-#: gtk/hv_win.c:1539
-#: gtk/hv_win.c:1540
-#: gtk/hv_win.c:1541
-#: gtk/hv_win.c:1542
-#: gtk/hv_win.c:1543
+#: gtk/hv_win.c:1590
+#: gtk/hv_win.c:1591
+#: gtk/hv_win.c:1592
+#: gtk/hv_win.c:1593
+#: gtk/hv_win.c:1594
+#: gtk/hv_win.c:1595
+#: gtk/hv_win.c:1596
+#: gtk/hv_win.c:1597
+#: gtk/hv_win.c:1598
+#: gtk/hv_win.c:1599
 msgid  "Open bookmark"
 msgstr "Lesezeichen öffnen"
 
-#: gtk/hv_win.c:1556
+#: gtk/hv_win.c:1612
 msgid  "_Font..."
 msgstr "_Zeichensatz..."
 
-#: gtk/hv_win.c:1557
+#: gtk/hv_win.c:1613
 msgid  "_Colors..."
 msgstr "_Farben..."
 
-#: gtk/hv_win.c:1558
+#: gtk/hv_win.c:1614
 msgid  "_Output..."
 msgstr "_Ausgabe..."
 
-#: gtk/hv_win.c:1559
+#: gtk/hv_win.c:1615
 msgid  "_Settings..."
 msgstr "_Einstellungen..."
 
-#: gtk/hv_win.c:1561
+#: gtk/hv_win.c:1617
 msgid  "_Contents"
 msgstr "In_halt"
 
-#: gtk/hv_win.c:1562
+#: gtk/hv_win.c:1618
 msgid  "_Index"
 msgstr "_Index"
 
-#: gtk/hv_win.c:1563
+#: gtk/hv_win.c:1619
 msgid  "_About"
 msgstr "Über"
 
-#: gtk/hv_win.c:1567
+#: gtk/hv_win.c:1623
 msgid  "_Alternative font"
 msgstr "_Alternativer Zeichensatz"
 
-#: gtk/hv_win.c:1568
+#: gtk/hv_win.c:1624
 msgid  "_Expand multiple spaces"
 msgstr "Mehrfache Leerzeichen _erweitern"
 
-#: gtk/hv_win.c:1569
+#: gtk/hv_win.c:1625
 msgid  "_Scale bitmaps"
 msgstr "Bilder _skalieen"
 
-#: gtk/hv_win.c:1791
+#: gtk/hv_win.c:1847
 msgid  "<span color=\"red\">not found!</span>"
 msgstr "<span color=\"red\">nicht gefunden!</span>"
 
@@ -942,7 +1104,7 @@ msgstr "unbekanntes Bildformat"
 #: hyp/bmp2gif.c:133
 #: hyp/bmp2img.c:132
 #: hyp/gif2bmp.c:134
-#: hyp/hcp_comp.c:7060
+#: hyp/hcp_comp.c:7065
 #: hyp/icn2ico.c:132
 #: hyp/icn2img.c:131
 #: hyp/img2bmp.c:132
@@ -992,7 +1154,7 @@ msgstr "erzeugt: %s %d x %d x %d\n"
 #: hyp/bmp2gif.c:265
 #: hyp/bmp2img.c:255
 #: hyp/gif2bmp.c:274
-#: hyp/hcpmain.c:2629
+#: hyp/hcpmain.c:2622
 #: hyp/icn2ico.c:266
 #: hyp/icn2img.c:262
 #: hyp/img2bmp.c:257
@@ -1082,7 +1244,7 @@ msgid  "%s redefined"
 msgstr "%s neu definiert"
 
 #: hyp/hcp_comp.c:1703
-#: hyp/hcp_comp.c:7031
+#: hyp/hcp_comp.c:7036
 #, c-format
 msgid  "%s: read error"
 msgstr "%s: Lesefehler"
@@ -1112,7 +1274,7 @@ msgstr "Seite zu groß zum komprimieren (Größenunterschied > 64KB)!"
 #: hyp/hcp_comp.c:2294
 #: hyp/hcp_comp.c:2368
 #: hyp/hcp_comp.c:4464
-#: hyp/hcp_comp.c:5806
+#: hyp/hcp_comp.c:5811
 #, c-format
 msgid  "too many labels (max. %lu)"
 msgstr "Zu viele Label (max. %lu)"
@@ -1231,16 +1393,16 @@ msgid  "symbol name"
 msgstr "Symbol Name"
 
 #: hyp/hcp_comp.c:3198
-#: hyp/hcp_comp.c:6636
+#: hyp/hcp_comp.c:6641
 #, c-format
 msgid  "%s ignored outside @node"
 msgstr "%s wird ignoriert ausserhalb @node"
 
 #: hyp/hcp_comp.c:3204
 #: hyp/hcp_comp.c:3874
-#: hyp/hcp_comp.c:6639
-#: hyp/hcp_comp.c:6652
-#: hyp/hcp_comp.c:6662
+#: hyp/hcp_comp.c:6644
+#: hyp/hcp_comp.c:6657
+#: hyp/hcp_comp.c:6667
 #, c-format
 msgid  "%s not allowed in @pnode"
 msgstr "%s in @pnode nicht erlaubt"
@@ -1258,7 +1420,7 @@ msgid  "version string"
 msgstr "Versions Text"
 
 #: hyp/hcp_comp.c:3445
-#: hyp/hcp_comp.c:6441
+#: hyp/hcp_comp.c:6446
 #, c-format
 msgid  "undefined variable %s"
 msgstr "Variable %s nicht definiert"
@@ -1360,7 +1522,7 @@ msgstr "Ungültiger Stil"
 
 #: hyp/hcp_comp.c:4189
 #: hyp/hcp_comp.c:4191
-#: hyp/hcp_comp.c:7201
+#: hyp/hcp_comp.c:7206
 #, c-format
 msgid  "can't open file '%s': %s"
 msgstr "Kann Datei '%s' nicht öffnen: %s"
@@ -1392,8 +1554,8 @@ msgid  "redefined extern name %s at %s:%lu"
 msgstr "Externer Name %s bei %s:%lu neu definiert"
 
 #: hyp/hcp_comp.c:4486
-#: hyp/hcp_comp.c:5816
-#: hyp/hcp_comp.c:6096
+#: hyp/hcp_comp.c:5821
+#: hyp/hcp_comp.c:6101
 msgid  "bad line number"
 msgstr "Ungültige Zeilennummer"
 
@@ -1453,7 +1615,7 @@ msgstr "Zeilen-Nummer %u ausserhalb der Seitengröße %u in %s"
 msgid  "text"
 msgstr "Text"
 
-#: hyp/hcp_comp.c:5452
+#: hyp/hcp_comp.c:5457
 msgid  "empty index page"
 msgstr "Leere Index-Seite"
 
@@ -1467,213 +1629,213 @@ msgstr "Leere Index-Seite"
 #.
 #. * @{ <attributes> }
 #.
-#: hyp/hcp_comp.c:5593
+#: hyp/hcp_comp.c:5598
 #, c-format
 msgid  "already active: %c"
 msgstr "Bereits aktiv: %c"
 
-#: hyp/hcp_comp.c:5602
+#: hyp/hcp_comp.c:5607
 #, c-format
 msgid  "not active: %c"
 msgstr "Nicht aktiv: %c"
 
-#: hyp/hcp_comp.c:5659
+#: hyp/hcp_comp.c:5664
 #, c-format
 msgid  "illegal textattribute %c"
 msgstr "Ungültiges Textattribut %c"
 
-#: hyp/hcp_comp.c:5730
+#: hyp/hcp_comp.c:5735
 msgid  "link"
 msgstr "Link"
 
-#: hyp/hcp_comp.c:5737
+#: hyp/hcp_comp.c:5742
 msgid  "link to current node"
 msgstr "Link auf aktuelle Seite"
 
-#: hyp/hcp_comp.c:5770
+#: hyp/hcp_comp.c:5775
 #, c-format
 msgid  "Define %s not found. Resource-Link ignored"
 msgstr "Define %s nicht gefunden. Resource-Link ignoriert"
 
-#: hyp/hcp_comp.c:5877
-#: hyp/hcp_comp.c:5997
+#: hyp/hcp_comp.c:5882
+#: hyp/hcp_comp.c:6002
 msgid  "command"
 msgstr "Kommando"
 
-#: hyp/hcp_comp.c:6085
+#: hyp/hcp_comp.c:6090
 #, c-format
 msgid  "Define %s not found (object ignored)"
 msgstr "Define %s nicht gefunden (Objekt ignoriert)"
 
-#: hyp/hcp_comp.c:6357
+#: hyp/hcp_comp.c:6362
 msgid  "missing command"
 msgstr "Fehlendes Kommando"
 
-#: hyp/hcp_comp.c:6377
-#: hyp/hcp_comp.c:6407
+#: hyp/hcp_comp.c:6382
+#: hyp/hcp_comp.c:6412
 #, c-format
 msgid  "@{%s} not implemented"
 msgstr "@{%s} nicht implementiert"
 
-#: hyp/hcp_comp.c:6380
-#: hyp/hcp_comp.c:6410
+#: hyp/hcp_comp.c:6385
+#: hyp/hcp_comp.c:6415
 #, c-format
 msgid  "unknown command '%s'"
 msgstr "Unbekanntes Kommando '%s'"
 
-#: hyp/hcp_comp.c:6551
+#: hyp/hcp_comp.c:6556
 msgid  "Recursive include detected"
 msgstr "Rekursives @include entdeckt"
 
-#: hyp/hcp_comp.c:6608
+#: hyp/hcp_comp.c:6613
 #, c-format
 msgid  "illegal command %s"
 msgstr "unbekanntes Kommando %s"
 
-#: hyp/hcp_comp.c:6626
+#: hyp/hcp_comp.c:6631
 #, c-format
 msgid  "%s command ignored after first @node"
 msgstr "%s Kommando wird ignoriert nach erster @node"
 
-#: hyp/hcp_comp.c:6649
+#: hyp/hcp_comp.c:6654
 #, c-format
 msgid  "%s not allowed here"
 msgstr "%s ist hier nicht erlaubt"
 
-#: hyp/hcp_comp.c:6680
+#: hyp/hcp_comp.c:6685
 msgid  "plain text outside node ignored"
 msgstr "gewöhnlicher Text ausserhalb @node ignoriert"
 
-#: hyp/hcp_comp.c:6701
+#: hyp/hcp_comp.c:6706
 msgid  "missing @endif"
 msgstr "Fehlendes @endif"
 
-#: hyp/hcp_comp.c:6702
+#: hyp/hcp_comp.c:6707
 #, c-format
 msgid  "last @if: %s line %lu\n"
 msgstr "letztes @if: %s Zeile %lu\n"
 
-#: hyp/hcp_comp.c:6756
+#: hyp/hcp_comp.c:6761
 msgid  "Pass 1: "
 msgstr "Pass 1: "
 
-#: hyp/hcp_comp.c:6756
+#: hyp/hcp_comp.c:6761
 msgid  "Pass 2: "
 msgstr "Pass 2: "
 
-#: hyp/hcp_comp.c:7013
+#: hyp/hcp_comp.c:7018
 #, c-format
 msgid  "%s: can't determine size: %s"
 msgstr "%s: kann Größe nicht ermitteln: %s"
 
-#: hyp/hcp_comp.c:7018
+#: hyp/hcp_comp.c:7023
 #, c-format
 msgid  "%s: empty file"
 msgstr "%s: Leere Dateu"
 
-#: hyp/hcp_comp.c:7055
+#: hyp/hcp_comp.c:7060
 #, c-format
 msgid  "%s: unknown file format"
 msgstr "%s: unbekanntes Dateiformat"
 
-#: hyp/hcp_comp.c:7062
+#: hyp/hcp_comp.c:7067
 #, c-format
 msgid  "%s: not a picture format"
 msgstr "%s: kein Bildformat"
 
-#: hyp/hcp_comp.c:7072
+#: hyp/hcp_comp.c:7077
 #, c-format
 msgid  "%d colors"
 msgstr "%d Farben"
 
-#: hyp/hcp_comp.c:7074
+#: hyp/hcp_comp.c:7079
 msgid  "hicolor"
 msgstr "Hicolor"
 
-#: hyp/hcp_comp.c:7076
+#: hyp/hcp_comp.c:7081
 msgid  "truecolor"
 msgstr "Truecolor"
 
-#: hyp/hcp_comp.c:7077
+#: hyp/hcp_comp.c:7082
 #, c-format
 msgid  "%s: unsupported number of colors (%d planes, %s)"
 msgstr "%s: nicht unterstützte Anzahl Farben (%d planes, %s)"
 
-#: hyp/hcp_comp.c:7151
+#: hyp/hcp_comp.c:7156
 #, c-format
 msgid  "%s: can't unpack"
 msgstr "%s: kann nicht entpackt werden"
 
-#: hyp/hcp_comp.c:7184
+#: hyp/hcp_comp.c:7189
 msgid  "Image : "
 msgstr "Bild  : "
 
-#: hyp/hcp_comp.c:7287
+#: hyp/hcp_comp.c:7292
 msgid  "Writing reference-file"
 msgstr "Schreibe Referenz-Datei"
 
-#: hyp/hcp_comp.c:7381
+#: hyp/hcp_comp.c:7386
 msgid  "error writing references file"
 msgstr "Fehler beim schreiben der Referenz-Datei"
 
-#: hyp/hcp_comp.c:7398
+#: hyp/hcp_comp.c:7403
 msgid  "Updating default-reference-file"
 msgstr "Aktualisiere Standard-REF-Datei"
 
-#: hyp/hcp_comp.c:7534
+#: hyp/hcp_comp.c:7539
 msgid  "would overwrite input file"
 msgstr "würde Eingabedatei überschreiben"
 
-#: hyp/hcp_comp.c:7542
+#: hyp/hcp_comp.c:7547
 #, c-format
 msgid  "compiling %s to %s\n"
 msgstr "Compiliere %s zu %s\n"
 
-#: hyp/hcp_comp.c:7577
+#: hyp/hcp_comp.c:7582
 msgid  "Please add a @subject-command to this text"
 msgstr "Bitte ein @subject-Kommando hinzufügen"
 
-#: hyp/hcp_comp.c:7615
+#: hyp/hcp_comp.c:7620
 #, c-format
 msgid  "internal nodes: %u\n"
 msgstr "interne Seiten: %u\n"
 
-#: hyp/hcp_comp.c:7616
+#: hyp/hcp_comp.c:7621
 #, c-format
 msgid  "external nodes: %u\n"
 msgstr "externe Seiten: %u\n"
 
-#: hyp/hcp_comp.c:7617
+#: hyp/hcp_comp.c:7622
 #, c-format
 msgid  "images        : %u\n"
 msgstr "Bilder        : %u\n"
 
-#: hyp/hcp_comp.c:7618
+#: hyp/hcp_comp.c:7623
 #, c-format
 msgid  "other nodes   : %u\n"
 msgstr "andere        : %u\n"
 
-#: hyp/hcp_comp.c:7619
+#: hyp/hcp_comp.c:7624
 #, c-format
 msgid  "autorefs      : %lu\n"
 msgstr "Auto. Ref.    : %lu\n"
 
-#: hyp/hcp_comp.c:7621
+#: hyp/hcp_comp.c:7626
 #, c-format
 msgid  "Refs generated: %lu\n"
 msgstr "Refs generiert: %lu\n"
 
-#: hyp/hcp_comp.c:7623
+#: hyp/hcp_comp.c:7628
 #, c-format
 msgid  "compression   : %lu (%lu%%)\n"
 msgstr "Komprimierung : %lu (%lu%%)\n"
 
-#: hyp/hcp_comp.c:7635
+#: hyp/hcp_comp.c:7640
 #, c-format
 msgid  "not referenced: %s"
 msgstr "nicht referenziert: %s"
 
-#: hyp/hcp_comp.c:7641
+#: hyp/hcp_comp.c:7646
 msgid  "cannot start pass2"
 msgstr "Kann Pass 2 nicht starten"
 
@@ -1864,491 +2026,491 @@ msgstr "  -h, --help                    Diese Hilfe anzeigen und beenden\n"
 msgid  "  -V, --version                 print version and exit\n"
 msgstr "  -V, --version                 Versionsinformation anzeigen und beenden\n"
 
-#: hyp/hcpmain.c:430
-#: hyp/hcpmain.c:1246
-#: hyp/hcpmain.c:1787
+#: hyp/hcpmain.c:423
+#: hyp/hcpmain.c:1239
+#: hyp/hcpmain.c:1780
 #: hyp/hypfind.c:772
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr "<unknown hex esc $%02x>\n"
 
-#: hyp/hcpmain.c:459
-#: hyp/hcpmain.c:1295
-#: hyp/hcpmain.c:1807
+#: hyp/hcpmain.c:452
+#: hyp/hcpmain.c:1288
+#: hyp/hcpmain.c:1800
 #, c-format
 msgid  "%s: Node %u: failed to decode\n"
 msgstr "%s: Node %u: Fehler beim dekomprimieren\n"
 
-#: hyp/hcpmain.c:557
-#: hyp/hcpmain.c:2035
+#: hyp/hcpmain.c:550
+#: hyp/hcpmain.c:2028
 #, c-format
 msgid  "'%s' not found.\n"
 msgstr "'%s' nicht gefunden.\n"
 
-#: hyp/hcpmain.c:670
+#: hyp/hcpmain.c:663
 #, c-format
 msgid  "ST-Guide flags: $%04x%s"
 msgstr "ST-Guide flags: $%04x%s"
 
-#: hyp/hcpmain.c:784
+#: hyp/hcpmain.c:777
 msgid  "unknown image source type, using IMG instead\n"
 msgstr "unbekanntes Original-Bildformat, benutze IMG stattdessen\n"
 
-#: hyp/hcpmain.c:803
+#: hyp/hcpmain.c:796
 #, c-format
 msgid  "<non-image node #%u>"
 msgstr "<nicht-Bild-Seite #%u>"
 
-#: hyp/hcpmain.c:1076
+#: hyp/hcpmain.c:1069
 #, c-format
 msgid  "link to unknown node type %u\n"
 msgstr "Link auf unbekannten Index-Typ %u\n"
 
-#: hyp/hcpmain.c:1328
+#: hyp/hcpmain.c:1321
 #, c-format
 msgid  "failed to load image node %u"
 msgstr "Kann Bilder-Seite %u nicht laden"
 
-#: hyp/hcpmain.c:1343
+#: hyp/hcpmain.c:1336
 #, c-format
 msgid  "failed to cache compressed image data for %u"
 msgstr "Kann komprimierte Bild-Daten für %u nicht zwischenspeichern"
 
-#: hyp/hcpmain.c:1358
+#: hyp/hcpmain.c:1351
 #, c-format
 msgid  "failed to decode image header for %u"
 msgstr "Kann Bild-Header für %u nicht dekodieren"
 
-#: hyp/hcpmain.c:1375
+#: hyp/hcpmain.c:1368
 #, c-format
 msgid  "format error in image of node %u: %dx%dx%d datasize=%ld picsize=%ld\n"
 msgstr "Format-Fehler in Bild %u: %dx%dx%d datasize=%ld picsize=%ld\n"
 
-#: hyp/hcpmain.c:1473
+#: hyp/hcpmain.c:1466
 #, c-format
 msgid  "wrote image %s (%dx%dx%d)\n"
 msgstr "Bild-Datei %s geschrieben (%dx%dx%d)\n"
 
-#: hyp/hcpmain.c:1554
+#: hyp/hcpmain.c:1547
 #: hyp/hypfind.c:856
 #, c-format
 msgid  "unknown index entry type %u\n"
 msgstr "Unbekannter Index-Typ %u\n"
 
-#: hyp/hcpmain.c:1581
+#: hyp/hcpmain.c:1574
 #, c-format
 msgid  "Text: <%s>\n"
 msgstr "Text: <%s>\n"
 
-#: hyp/hcpmain.c:1604
+#: hyp/hcpmain.c:1597
 msgid  "<ESC>\n"
 msgstr "<ESC>\n"
 
-#: hyp/hcpmain.c:1611
+#: hyp/hcpmain.c:1604
 #, c-format
 msgid  "Title: %s\n"
 msgstr "Titel: %s\n"
 
-#: hyp/hcpmain.c:1617
+#: hyp/hcpmain.c:1610
 #, c-format
 msgid  "Data: type %u, len %u\n"
 msgstr "Daten: Typ %u, Länge %u\n"
 
-#: hyp/hcpmain.c:1658
+#: hyp/hcpmain.c:1651
 #, c-format
 msgid  "Link: \"%s\" %u \"%s\"\n"
 msgstr "Link: \"%s\" %u \"%s\"\n"
 
-#: hyp/hcpmain.c:1661
+#: hyp/hcpmain.c:1654
 #, c-format
 msgid  "Link: \"%s\" %u \"%s\" %u\n"
 msgstr "Link: \"%s\" %u \"%s\" %u\n"
 
-#: hyp/hcpmain.c:1664
+#: hyp/hcpmain.c:1657
 #, c-format
 msgid  "ALink: \"%s\" %u \"%s\"\n"
 msgstr "ALink: \"%s\" %u \"%s\"\n"
 
-#: hyp/hcpmain.c:1667
+#: hyp/hcpmain.c:1660
 #, c-format
 msgid  "ALink: \"%s\" %u \"%s\" %u\n"
 msgstr "ALink: \"%s\" %u \"%s\" %u\n"
 
-#: hyp/hcpmain.c:1690
+#: hyp/hcpmain.c:1683
 #, c-format
 msgid  "XRef \"%s\" \"%s\"\n"
 msgstr "XRef \"%s\" \"%s\"\n"
 
-#: hyp/hcpmain.c:1714
+#: hyp/hcpmain.c:1707
 #, c-format
 msgid  "Tree: tree=%d, obj=%d, line=%u: \"%s\"\n"
 msgstr "Tree: tree=%d, obj=%d, line=%u: \"%s\"\n"
 
-#: hyp/hcpmain.c:1735
+#: hyp/hcpmain.c:1728
 #, c-format
 msgid  "%s: x=%d, y=%d, w=%d, h=%d, num=%u\n"
 msgstr "%s: x=%d, y=%d, w=%d, h=%d, num=%u\n"
 
-#: hyp/hcpmain.c:1736
+#: hyp/hcpmain.c:1729
 msgid  "limage"
 msgstr "limage"
 
-#: hyp/hcpmain.c:1736
-#: hyp/hcpmain.c:2323
-#: hyp/hcpmain.c:2480
+#: hyp/hcpmain.c:1729
+#: hyp/hcpmain.c:2316
+#: hyp/hcpmain.c:2473
 msgid  "image"
 msgstr "image"
 
-#: hyp/hcpmain.c:1755
+#: hyp/hcpmain.c:1748
 #, c-format
 msgid  "Line: x=%d, y=%d, w=%d, h=%d, attr=0x%02x, begend=%x, style=%d\n"
 msgstr "Zeile: x=%d, y=%d, w=%d, h=%d, attr=0x%02x, begend=%x, style=%d\n"
 
-#: hyp/hcpmain.c:1775
+#: hyp/hcpmain.c:1768
 #, c-format
 msgid  "%s: x=%d, y=%d, w=%d, h=%d, attr=%u\n"
 msgstr "%s: x=%d, y=%d, w=%d, h=%d, attr=%u\n"
 
-#: hyp/hcpmain.c:1776
+#: hyp/hcpmain.c:1769
 msgid  "Box"
 msgstr "Box"
 
-#: hyp/hcpmain.c:1776
+#: hyp/hcpmain.c:1769
 msgid  "RBox"
 msgstr "RBox"
 
-#: hyp/hcpmain.c:1782
+#: hyp/hcpmain.c:1775
 #, c-format
 msgid  "Textattr: $%x\n"
 msgstr "Textattribut: $%x\n"
 
-#: hyp/hcpmain.c:1794
+#: hyp/hcpmain.c:1787
 msgid  "<EOL>\n"
 msgstr "<EOL>\n"
 
-#: hyp/hcpmain.c:1833
+#: hyp/hcpmain.c:1826
 #, c-format
 msgid  "  Width: %d\n"
 msgstr "  Breite: %d\n"
 
-#: hyp/hcpmain.c:1834
+#: hyp/hcpmain.c:1827
 #, c-format
 msgid  "  Height: %d\n"
 msgstr "  Höhe: %d\n"
 
-#: hyp/hcpmain.c:1835
+#: hyp/hcpmain.c:1828
 #, c-format
 msgid  "  Planes: %d\n"
 msgstr "  Ebenen: %d\n"
 
-#: hyp/hcpmain.c:1836
+#: hyp/hcpmain.c:1829
 #, c-format
 msgid  "  Plane Mask: $%02x\n"
 msgstr "  Ebenen-Maske: $%02x\n"
 
-#: hyp/hcpmain.c:1837
+#: hyp/hcpmain.c:1830
 #, c-format
 msgid  "  Plane On-Off: $%02x\n"
 msgstr "  Ebene An/Aus: $%02x\n"
 
-#: hyp/hcpmain.c:1838
+#: hyp/hcpmain.c:1831
 #, c-format
 msgid  "  Filler: $%02x\n"
 msgstr "  Füller: $%02x\n"
 
-#: hyp/hcpmain.c:1853
+#: hyp/hcpmain.c:1846
 #, c-format
 msgid  "OS: %s\n"
 msgstr "OS: %s\n"
 
-#: hyp/hcpmain.c:1854
+#: hyp/hcpmain.c:1847
 #, c-format
 msgid  "Charset: %s\n"
 msgstr "Zeichensatz: %s\n"
 
-#: hyp/hcpmain.c:1857
+#: hyp/hcpmain.c:1850
 #, c-format
 msgid  "Database: %s\n"
 msgstr "Database: %s\n"
 
-#: hyp/hcpmain.c:1861
+#: hyp/hcpmain.c:1854
 #, c-format
 msgid  "Author: %s\n"
 msgstr "Autor: %s\n"
 
-#: hyp/hcpmain.c:1865
+#: hyp/hcpmain.c:1858
 #, c-format
 msgid  "Version: %s\n"
 msgstr "Version: %s\n"
 
-#: hyp/hcpmain.c:1869
+#: hyp/hcpmain.c:1862
 #, c-format
 msgid  "Help Node: %s\n"
 msgstr "Hilfe-Seite: %s\n"
 
-#: hyp/hcpmain.c:1873
+#: hyp/hcpmain.c:1866
 #, c-format
 msgid  "Default Node: %s\n"
 msgstr "Standard-Seite: %s\n"
 
-#: hyp/hcpmain.c:1881
+#: hyp/hcpmain.c:1874
 #, c-format
 msgid  "Host-Application: %s\n"
 msgstr "Host-Applikation: %s\n"
 
-#: hyp/hcpmain.c:1886
+#: hyp/hcpmain.c:1879
 #, c-format
 msgid  "Compiler-Options: %s\n"
 msgstr "Compiler-Optionen: %s\n"
 
-#: hyp/hcpmain.c:1890
+#: hyp/hcpmain.c:1883
 #, c-format
 msgid  "Subject: %s\n"
 msgstr "Thema: %s\n"
 
-#: hyp/hcpmain.c:1894
+#: hyp/hcpmain.c:1887
 #, c-format
 msgid  "Line width: %d\n"
 msgstr "Zeilenbreite: %d\n"
 
-#: hyp/hcpmain.c:1898
+#: hyp/hcpmain.c:1891
 #, c-format
 msgid  "ST-Guide flags: $%04x\n"
 msgstr "ST-Guide Flags: $%04x\n"
 
-#: hyp/hcpmain.c:1900
+#: hyp/hcpmain.c:1893
 #, c-format
 msgid  "Compiler Version: %u\n"
 msgstr "Compiler Version: %u\n"
 
-#: hyp/hcpmain.c:1918
+#: hyp/hcpmain.c:1911
 #, c-format
 msgid  "Index nodes: %u\n"
 msgstr "Index Seiten: %u\n"
 
-#: hyp/hcpmain.c:1919
+#: hyp/hcpmain.c:1912
 #, c-format
 msgid  "Index table size: %ld\n"
 msgstr "Index-Tabellen Größe: %ld\n"
 
-#: hyp/hcpmain.c:1955
+#: hyp/hcpmain.c:1948
 #, c-format
 msgid  "Index entry %u:\n"
 msgstr "Index Eintrag %u:\n"
 
-#: hyp/hcpmain.c:1957
+#: hyp/hcpmain.c:1950
 #, c-format
 msgid  "  Name: %s"
 msgstr "  Name: %s"
 
-#: hyp/hcpmain.c:1981
+#: hyp/hcpmain.c:1974
 #, c-format
 msgid  "  Entry length: %u\n"
 msgstr "  Eintrag Länge: %u\n"
 
-#: hyp/hcpmain.c:1982
+#: hyp/hcpmain.c:1975
 #, c-format
 msgid  "  Offset: %ld $%lx\n"
 msgstr "  Offset: %ld $%lx\n"
 
-#: hyp/hcpmain.c:1983
+#: hyp/hcpmain.c:1976
 #, c-format
 msgid  "  Compressed: %ld $%lx\n"
 msgstr "  Komprimiert: %ld $%lx\n"
 
-#: hyp/hcpmain.c:1984
+#: hyp/hcpmain.c:1977
 #, c-format
 msgid  "  Uncompressed: %ld $%lx\n"
 msgstr "  Unkomprimiert: %ld $%lx\n"
 
-#: hyp/hcpmain.c:1985
+#: hyp/hcpmain.c:1978
 #, c-format
 msgid  "  Next: %u $%04x\n"
 msgstr "  Nächste: %u $%04x\n"
 
-#: hyp/hcpmain.c:1986
+#: hyp/hcpmain.c:1979
 #, c-format
 msgid  "  Previous: %u $%04x\n"
 msgstr "  Vorherige: %u $%04x\n"
 
-#: hyp/hcpmain.c:1987
+#: hyp/hcpmain.c:1980
 #, c-format
 msgid  "  Up: %u $%04x\n"
 msgstr "  Oben: %u $%04x\n"
 
-#: hyp/hcpmain.c:1992
+#: hyp/hcpmain.c:1985
 msgid  "  Type: internal node\n"
 msgstr "  Typ: interne Seite\n"
 
-#: hyp/hcpmain.c:1996
+#: hyp/hcpmain.c:1989
 msgid  "  Type: pop-up node\n"
 msgstr "  Typ: Pop-Up Seite\n"
 
-#: hyp/hcpmain.c:2000
+#: hyp/hcpmain.c:1993
 msgid  "  Type: external node\n"
 msgstr "  Typ: externe Seite\n"
 
-#: hyp/hcpmain.c:2003
+#: hyp/hcpmain.c:1996
 msgid  "  Type: image\n"
 msgstr "  Typ: Bild\n"
 
-#: hyp/hcpmain.c:2007
+#: hyp/hcpmain.c:2000
 msgid  "  Type: system node\n"
 msgstr "  Typ: system Kommando\n"
 
-#: hyp/hcpmain.c:2010
+#: hyp/hcpmain.c:2003
 msgid  "  Type: REXX script\n"
 msgstr "  Typ: REXX Skript\n"
 
-#: hyp/hcpmain.c:2013
+#: hyp/hcpmain.c:2006
 msgid  "  Type: REXX command\n"
 msgstr "  Typ: REXX Kommando\n"
 
-#: hyp/hcpmain.c:2016
+#: hyp/hcpmain.c:2009
 msgid  "  Type: quit\n"
 msgstr "  Typ: quit\n"
 
-#: hyp/hcpmain.c:2019
+#: hyp/hcpmain.c:2012
 msgid  "  Type: close\n"
 msgstr "  Typ: close\n"
 
-#: hyp/hcpmain.c:2022
+#: hyp/hcpmain.c:2015
 msgid  "  Type: EOF\n"
 msgstr "  Typ: EOF\n"
 
-#: hyp/hcpmain.c:2025
+#: hyp/hcpmain.c:2018
 #, c-format
 msgid  "  Type: unknown type %u\n"
 msgstr "  Typ: Unbekannter Typ %u\n"
 
-#: hyp/hcpmain.c:2142
-#: hyp/hcpmain.c:2255
+#: hyp/hcpmain.c:2135
+#: hyp/hcpmain.c:2248
 #: hyp/hypfind.c:894
 #, c-format
 msgid  "%s: %s: not a HYP file\n"
 msgstr "%s: %s: Keine Hypertext-Datei\n"
 
-#: hyp/hcpmain.c:2151
+#: hyp/hcpmain.c:2144
 #: hyp/hypfind.c:901
 #, c-format
 msgid  "%s: fatal: protected hypertext: %s\n"
 msgstr "%s: Fatal: geschützter Hypertext: %s\n"
 
-#: hyp/hcpmain.c:2155
-#: hyp/hcpmain.c:2261
+#: hyp/hcpmain.c:2148
+#: hyp/hcpmain.c:2254
 #: hyp/hypfind.c:905
 #, c-format
 msgid  "%s: warning: %s created by compiler version %u\n"
 msgstr "%s: Warnung: %s wurde von Compiler-Version %u erzeugt\n"
 
-#: hyp/hcpmain.c:2195
+#: hyp/hcpmain.c:2188
 #, c-format
 msgid  "recompiling %s to %s\n"
 msgstr "Recompiliere %s zu %s\n"
 
-#: hyp/hcpmain.c:2270
+#: hyp/hcpmain.c:2263
 msgid  "    #   toc  next  prev type                    offset  packed   size   len name\n"
 msgstr "    #   toc  next  prev Typ                     Offset   komp.  Größe   Len Name\n"
 
-#: hyp/hcpmain.c:2271
+#: hyp/hcpmain.c:2264
 msgid  "--------------------------------------------------------------------------------\n"
 msgstr "--------------------------------------------------------------------------------\n"
 
-#: hyp/hcpmain.c:2286
-#: hyp/hcpmain.c:2450
+#: hyp/hcpmain.c:2279
+#: hyp/hcpmain.c:2443
 msgid  "internal node"
 msgstr "interne Seite"
 
-#: hyp/hcpmain.c:2297
-#: hyp/hcpmain.c:2460
+#: hyp/hcpmain.c:2290
+#: hyp/hcpmain.c:2453
 msgid  "pop-up node"
 msgstr "Pop-Up Seite"
 
-#: hyp/hcpmain.c:2308
-#: hyp/hcpmain.c:2470
+#: hyp/hcpmain.c:2301
+#: hyp/hcpmain.c:2463
 msgid  "external node"
 msgstr "externe Seite"
 
-#: hyp/hcpmain.c:2338
+#: hyp/hcpmain.c:2331
 #, c-format
 msgid  " mask=$%02x on-off=$%02x)"
 msgstr " mask=$%02x on-off=$%02x)"
 
-#: hyp/hcpmain.c:2341
+#: hyp/hcpmain.c:2334
 msgid  " (decode error)"
 msgstr " (Decode-Fehler)"
 
-#: hyp/hcpmain.c:2346
+#: hyp/hcpmain.c:2339
 msgid  " (no data)"
 msgstr " (keine Daten)"
 
-#: hyp/hcpmain.c:2357
-#: hyp/hcpmain.c:2490
+#: hyp/hcpmain.c:2350
+#: hyp/hcpmain.c:2483
 msgid  "system node"
 msgstr "system Kommando"
 
-#: hyp/hcpmain.c:2368
-#: hyp/hcpmain.c:2500
+#: hyp/hcpmain.c:2361
+#: hyp/hcpmain.c:2493
 msgid  "REXX script"
 msgstr "REXX Skript"
 
-#: hyp/hcpmain.c:2379
-#: hyp/hcpmain.c:2510
+#: hyp/hcpmain.c:2372
+#: hyp/hcpmain.c:2503
 msgid  "REXX command"
 msgstr "REXX Kommando"
 
-#: hyp/hcpmain.c:2390
-#: hyp/hcpmain.c:2520
+#: hyp/hcpmain.c:2383
+#: hyp/hcpmain.c:2513
 msgid  "quit node"
 msgstr "quit Seite"
 
-#: hyp/hcpmain.c:2401
-#: hyp/hcpmain.c:2530
+#: hyp/hcpmain.c:2394
+#: hyp/hcpmain.c:2523
 msgid  "close node"
 msgstr "close Seite"
 
-#: hyp/hcpmain.c:2412
-#: hyp/hcpmain.c:2540
+#: hyp/hcpmain.c:2405
+#: hyp/hcpmain.c:2533
 msgid  "EOF entry"
 msgstr "EOF Eintrag"
 
-#: hyp/hcpmain.c:2420
-#: hyp/hcpmain.c:2548
+#: hyp/hcpmain.c:2413
+#: hyp/hcpmain.c:2541
 #, c-format
 msgid  "unknown type %u"
 msgstr "unbekannter Typ %u"
 
-#: hyp/hcpmain.c:2435
+#: hyp/hcpmain.c:2428
 msgid  "type                    offset  packed   size   name\n"
 msgstr "Typ                     Offset   komp.  Größe   Name\n"
 
-#: hyp/hcpmain.c:2436
+#: hyp/hcpmain.c:2429
 msgid  "----------------------------------------------------\n"
 msgstr "----------------------------------------------------\n"
 
-#: hyp/hcpmain.c:2622
+#: hyp/hcpmain.c:2615
 msgid  "only one of -lrv may be specified"
 msgstr "Nur eines von -lrv kann angegeben werden"
 
-#: hyp/hcpmain.c:2644
+#: hyp/hcpmain.c:2637
 #, c-format
 msgid  "File: %s\n"
 msgstr "Datei: %s\n"
 
-#: hyp/hcpmain.c:2672
+#: hyp/hcpmain.c:2665
 #, c-format
 msgid  "@remark File: %s%s"
 msgstr "@remark Datei: %s%s"
 
-#: hyp/hcpmain.c:2696
+#: hyp/hcpmain.c:2689
 msgid  "cannot compile multiple input files to single output"
 msgstr "Kann nicht mehrere Eingabedateien in eine Ausgabedatei schreiben"
 
-#: hyp/hcpmain.c:2725
+#: hyp/hcpmain.c:2718
 msgid  "<press any key>"
 msgstr "<Taste drücken>"
 
-#: hyp/hcpmain.c:2729
+#: hyp/hcpmain.c:2722
 msgid  "<press RETURN>"
 msgstr "<RETURN drücken>"
 
@@ -2358,7 +2520,7 @@ msgid  "Version %s for %s, %s"
 msgstr "Version %s für %s, %s"
 
 #: hyp/hyp.c:129
-#: hyp/hyp_cset.c:362
+#: hyp/hyp_cset.c:374
 #: hyp/stool.c:52
 msgid  "Unknown"
 msgstr "Unbekannt"
@@ -2373,11 +2535,11 @@ msgstr "OS %c"
 msgid  "Type 0x%02x"
 msgstr "Typ 0x%02x"
 
-#: hyp/hyp_asc.c:253
+#: hyp/hyp_asc.c:246
 msgid  "while reading"
 msgstr "beim Lesen"
 
-#: hyp/hyp_cset.c:366
+#: hyp/hyp_cset.c:378
 #, c-format
 msgid  "Charset 0x%02x"
 msgstr "Zeichensatz 0x%02x"
@@ -3069,19 +3231,19 @@ msgstr "  +-c, --[no-]compile           Hypertext Compiler starten\n"
 msgid  "  +-r, --[no-]updateref         update global references file\n"
 msgstr "  +-r, --[no-]updateref         Standard-REF-Datei aktualisieren\n"
 
-#: hyp/utl_prof.c:2406
+#: hyp/utl_prof.c:2501
 msgid  "HypFind Hit List"
 msgstr "HypFind Trefferliste"
 
-#: hyp/utl_prof.c:2408
+#: hyp/utl_prof.c:2503
 msgid  "Personal"
 msgstr "Persönlich"
 
-#: hyp/utl_prof.c:2410
+#: hyp/utl_prof.c:2505
 msgid  "Hit List: "
 msgstr "Trefferliste: "
 
-#: hyp/utl_prof.c:2460
+#: hyp/utl_prof.c:2555
 #, c-format
 msgid  "%s: could not create directory %s: %s\n"
 msgstr "%s: Kann Verzeichnis %s nicht anlegen: %s\n"
@@ -3594,9 +3756,12 @@ msgstr "[1][Fehler beim Laden von |'%s'.][Abbruch]"
 msgid  "[3][ %s: | File <%s>: | %s ][ OK ]"
 msgstr "[3][ %s: | Datei <%s>: | %s ][ OK ]"
 
-#: tos/hv_srch.c:246
+#: tos/hv_srch.c:247
 msgid  "Search Result..."
 msgstr "Suchergebnis..."
+
+#~ msgid  "%s: too early for dialog?\n"
+#~ msgstr "%s: zu früh für Dialoge?\n"
 
 #~ msgid  "@hostname   : %s\n"
 #~ msgstr "@hostname   : %s\n"

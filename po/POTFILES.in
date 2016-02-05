@@ -1,4 +1,5 @@
-# Auto-generated: Mo 1. Feb 15:03:08 CET 2016
+# Auto-generated: Fr 5. Feb 14:26:13 CET 2016
+gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
 gtk/hv_block.c
@@ -14,7 +15,6 @@ gtk/hv_hfind.c
 gtk/hv_info.c
 gtk/hv_main.c
 gtk/hv_mark.c
-gtk/hv_misc.c
 gtk/hv_nav.c
 gtk/hv_prefs.c
 gtk/hv_srch.c
@@ -45,9 +45,6 @@ hyp/win32.c
 hyp/xgetopt.c
 tools/help_rc.c
 tos/dl_init.c
-tos/hv_click.c
-tos/hv_curs.c
-tos/hv_disp.c
 tos/hv_eref.c
 tos/hv_error.c
 tos/hv_file.c
