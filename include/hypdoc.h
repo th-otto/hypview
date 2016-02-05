@@ -7,7 +7,6 @@
 typedef struct _document_ DOCUMENT;
 typedef struct _window_data_ WINDOW_DATA;
 
-
 typedef struct {
 	long line;              /* Line number */
 	long y;
@@ -26,6 +25,8 @@ typedef enum {
 	BLK_ASCIISAVE, /* Save current block as ASCII */
 	BLK_PRINT       /* Print current block */
 } hyp_blockop;
+
+#include "hv_ascii.h"
 
 
 typedef struct _history_  HISTORY;
@@ -94,7 +95,7 @@ struct _document_
 
 
 /*
- *		Block.c
+ * block.c
  */
 gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
 
@@ -108,44 +109,45 @@ DOCUMENT *hypdoc_unref(DOCUMENT *doc);
 DOCUMENT *hypdoc_ref(DOCUMENT *doc);
 DOCUMENT *hypwin_doc(WINDOW_DATA *win);
 HYP_NODE *hypwin_node(WINDOW_DATA *win);
+DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref);
+hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref);
+void HypCloseFile(DOCUMENT *doc);
 
 
 /*
- *		Search.c
+ * hv_srch.c
  */
 WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_message);
 
 
 /*
- *		File.c
+ * hv_file.c
  */
-hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref);
-void HypCloseFile(DOCUMENT *doc);
-DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref);
 void CheckFiledate(WINDOW_DATA *win);
 
 
 /*
- *		Display.c
+ * hv_disp.c
  */
 void HypDisplayPage(WINDOW_DATA *win);
 void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node);
 
 /*
- *		Ascii.c
+ * hyp_asc.c
  */
 hyp_filetype AsciiLoad(DOCUMENT *doc, int handle);
+hyp_filetype AsciiCalcLines(DOCUMENT *doc, FMT_ASCII *ascii);
 
 
 /*
- *		Autoloc.c
+ * autoloc.c
  */
 char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line);
 long HypAutolocator(WINDOW_DATA *win, long line, const char *search);
 
 
 /*
- *		Cursor.c
+ * hv_curs.c
  */
 void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
 

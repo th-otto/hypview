@@ -119,13 +119,72 @@ void BlockCopy(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void paste_clipboard(GtkClipboard *clipboard, const char *txt, void *userdata)
+{
+	WINDOW_DATA *win = (WINDOW_DATA *)userdata;
+	const char *path = "$CLIPBRD";
+	DOCUMENT *doc;
+	DOCUMENT *prev_doc;
+	gboolean add_to_hist = TRUE;
+	FMT_ASCII *ascii;
+	gboolean new_window;
+	size_t len;
+	
+	UNUSED(clipboard);
+	if (txt == NULL)
+		return;
+	len = strlen(txt);
+	ascii = (FMT_ASCII *)g_malloc(sizeof(FMT_ASCII) + len);
+	if (ascii == NULL)
+		return;
+	memcpy(ascii->start, txt, len);
+	ascii->start[len] = '\0';
+	
+	/* create a new document */
+	doc = g_new0(DOCUMENT, 1);
+
+	doc->path = g_strdup(path);
+	doc->buttons.load = TRUE;
+	doc->type = HYP_FT_UNKNOWN;
+	doc->ref_count = 1;
+	
+	new_window = FALSE;
+	if (!win)
+	{
+		win = hv_win_new(doc, FALSE);
+		new_window = TRUE;
+		add_to_hist = FALSE;
+		prev_doc = NULL;
+	} else
+	{
+		prev_doc = win->data;
+		win->data = doc;
+	}
+	
+	ascii->length = len;
+	if (AsciiCalcLines(doc, ascii) < 0)
+	{
+		g_free(doc);
+		win->data = prev_doc;
+		if (new_window)
+			gtk_widget_destroy(win->hwnd);
+		return;
+	}
+	if (add_to_hist)
+		AddHistoryEntry(win, prev_doc);
+	ReInitWindow(win, TRUE);
+	hv_win_open(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 {
 	GtkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win->text_view), GDK_SELECTION_CLIPBOARD);
-
-	UNUSED(clipboard);
-	UNUSED(new_window);
-	HYP_DBG(("NYI: paste"));
+	
+	if (new_window)
+		win = NULL;
+	gtk_clipboard_request_text(clipboard, paste_clipboard, win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
