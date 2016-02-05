@@ -191,6 +191,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 	int ret;
 	long results = 0;
 	RESULT_ENTRY *Result_List;
+	gboolean aborted;
 	
 	/* abort if no all.ref is defined */
 	if (empty(gl_profile.general.all_ref))
@@ -219,7 +220,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 		g_free(filename);
 	}
 
-	Result_List = ref_findall(allref, string, &results);
+	Result_List = ref_findall(allref, string, &results, &aborted);
 
 	/* error loading file? */
 	if (allref == NULL)
@@ -240,19 +241,21 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 				if (Result_List->lineno > 0)
 					hv_win_scroll_to_line(win, Result_List->lineno);
 			}
-			ref_freeresults(&Result_List);
+			ref_freeresults(Result_List);
+			Result_List = NULL;
 			ref_close(allref);
 			allref = NULL;
 		} else
 		{
 			SearchResult(win, Result_List, string);
-			ref_freeresults(&Result_List);
+			ref_freeresults(Result_List);
+			Result_List = NULL;
 			ref_close(allref);
 			allref = NULL;
 		}
 	} else
 	{
-		if (!no_message)
+		if (!no_message && !aborted)
 		{
 			char *str;
 			char *name;
