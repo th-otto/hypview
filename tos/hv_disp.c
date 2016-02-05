@@ -252,13 +252,6 @@ static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static char *invalid_page(hyp_nodenr page)
-{
-	return g_strdup_printf(_("<invalid destination page %u>"), page);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
 {
 	while (gfx != NULL)
@@ -429,7 +422,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 							str = pagename(hyp, dest_page);
 						} else
 						{
-							str = invalid_page(dest_page);
+							str = hyp_invalid_page(dest_page);
 						}
 						src++;
 					} else
@@ -638,7 +631,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 							str = pagename(hyp, dest_page);
 						} else
 						{
-							str = invalid_page(dest_page);
+							str = hyp_invalid_page(dest_page);
 						}
 						src++;
 					} else

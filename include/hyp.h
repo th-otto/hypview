@@ -753,6 +753,8 @@ HYP_OS hyp_os_from_name(const char *name);
 
 char *hyp_find_file(const char *path);
 hyp_filetype hyp_guess_filetype(const char *name);
+char *hyp_invalid_page(hyp_nodenr page);
+
 
 /*
  * hyp_file.c
@@ -813,7 +815,7 @@ hyp_nodenr hyp_last_text_page(HYP_DOCUMENT *hyp_doc);
 
 
 /*
- *		Cache.c
+ * cache.c
  */
 void InitCache(HYP_DOCUMENT *hyp);
 void ClearCache(HYP_DOCUMENT *hyp);
@@ -823,22 +825,22 @@ void RemoveNodes(HYP_DOCUMENT *hyp);
 
 
 /*
- *		Prepare.c
+ * prepare.c
  */
 void hyp_pic_get_header(HYP_PICTURE *hyp_pic, const unsigned char *hyp_pic_raw);
-gboolean PrepareNode(HYP_DOCUMENT *hyp, HYP_NODE *node);
 
 
 /*
- *		Lh5d.c
+ * lh5d.c
  */
 gboolean lh5_decode(unsigned char *unpackedMem, unsigned long unpackedLen, const unsigned char *packedMem, unsigned long packedLen);
 gboolean lh5_encode(FILE *outfile, const unsigned char *unpackedMem, unsigned long orgsize, unsigned int bufsize, unsigned long *packedLen);
 void lh5_make_crctable(void);
 unsigned short lh5_update_crc(const unsigned char *p, unsigned long n, unsigned short crc);
 
+
 /*
- *		Ref.c
+ * ref.c
  */
 #ifndef __TOS__
 typedef struct _lbox_item LBOX_ITEM;
@@ -927,7 +929,7 @@ const char *g_utf8_strcasestr(const char *searchee, const char *lookfor);
 
 
 /*
- *		Ext_Refs.c
+ * ext_refs.c
  */
 short HypCountExtRefs(HYP_NODE *entry);
 

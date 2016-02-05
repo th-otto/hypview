@@ -470,6 +470,13 @@ HYP_DOCUMENT *hyp_new(void)
 
 /* ------------------------------------------------------------------------- */
 
+char *hyp_invalid_page(hyp_nodenr page)
+{
+	return g_strdup_printf(_("<invalid destination page %u>"), page);
+}
+
+/* ------------------------------------------------------------------------- */
+
 HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 {
 	HYP_DOCUMENT *hyp;

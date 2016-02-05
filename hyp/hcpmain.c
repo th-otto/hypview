@@ -189,13 +189,6 @@ static gboolean ascii_out_attr(FILE *outfile, unsigned char oldattr, unsigned ch
 
 /* ------------------------------------------------------------------------- */
 
-static char *invalid_page(hyp_nodenr page)
-{
-	return g_strdup_printf(_("<invalid destination page %u>"), page);
-}
-
-/* ------------------------------------------------------------------------- */
-
 static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 {
 	char *str;
@@ -277,7 +270,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 						str = ascii_quote_nodename(hyp, dest_page);
 					} else
 					{
-						str = invalid_page(dest_page);
+						str = hyp_invalid_page(dest_page);
 					}
 					if (empty(text) || strcmp(str, text) == 0)
 						hyp_utf8_fprintf_charset(opts->outfile, output_charset, "See also: %s%s", str, stg_nl);
@@ -355,7 +348,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 							dest = ascii_quote_nodename(hyp, dest_page);
 						} else
 						{
-							dest = invalid_page(dest_page);
+							dest = hyp_invalid_page(dest_page);
 						}
 						if (*src <= HYP_STRLEN_OFFSET)
 						{
@@ -798,7 +791,7 @@ static void stg_out_gfx(hcp_opts *opts, HYP_DOCUMENT *hyp, struct hyp_gfx *adm)
 			char *fname;
 			
 			if (!hypnode_valid(hyp, adm->extern_node_index))
-				fname = invalid_page(adm->extern_node_index);
+				fname = hyp_invalid_page(adm->extern_node_index);
 			else if (hyp->indextable[adm->extern_node_index]->type != HYP_NODE_IMAGE)
 				fname = g_strdup_printf(_("<non-image node #%u>"), adm->extern_node_index);
 			else
@@ -986,7 +979,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						str = stg_quote_nodename(hyp, dest_page);
 					} else
 					{
-						str = invalid_page(dest_page);
+						str = hyp_invalid_page(dest_page);
 					}
 					if (empty(text) || strcmp(str, text) == 0)
 						hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@xref \"%s\"%s", str, stg_nl);
@@ -1103,7 +1096,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							}
 						} else
 						{
-							dest = invalid_page(dest_page);
+							dest = hyp_invalid_page(dest_page);
 							cmd = "LINK";
 						}
 						if (*src <= HYP_STRLEN_OFFSET)
@@ -1200,7 +1193,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							str = stg_quote_nodename(hyp, dest_page);
 						} else
 						{
-							str = invalid_page(dest_page);
+							str = hyp_invalid_page(dest_page);
 						}
 						FLUSHLINE();
 						if (tree != in_tree)
@@ -1641,7 +1634,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							dest = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest_page]->name, STR0TERM);
 						} else
 						{
-							dest = invalid_page(dest_page);
+							dest = hyp_invalid_page(dest_page);
 						}
 						if (*src <= HYP_STRLEN_OFFSET)
 						{
@@ -1685,7 +1678,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							str = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest_page]->name, STR0TERM);
 						} else
 						{
-							str = invalid_page(dest_page);
+							str = hyp_invalid_page(dest_page);
 						}
 						hyp_utf8_fprintf(opts->outfile, _("XRef \"%s\" \"%s\"\n"), text, str);
 						g_free(str);
@@ -1709,7 +1702,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							str = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest_page]->name, STR0TERM);
 						} else
 						{
-							str = invalid_page(dest_page);
+							str = hyp_invalid_page(dest_page);
 						}
 						hyp_utf8_fprintf(opts->outfile, _("Tree: tree=%d, obj=%d, line=%u: \"%s\"\n"), tree, obj, line, str);
 						g_free(str);

@@ -16,13 +16,6 @@ static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static char *invalid_page(hyp_nodenr page)
-{
-	return g_strdup_printf(_("<invalid destination page %u>"), page);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
@@ -145,7 +138,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 							str = pagename(hyp, dest_page);
 						} else
 						{
-							str = invalid_page(dest_page);
+							str = hyp_invalid_page(dest_page);
 						}
 						src++;
 					} else

@@ -108,13 +108,6 @@ static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 
 /*** ---------------------------------------------------------------------- ***/
 
-static char *invalid_page(hyp_nodenr page)
-{
-	return g_strdup_printf(_("<invalid destination page %u>"), page);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 {
 	DOCUMENT *doc = win->data;
@@ -201,7 +194,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dest_page]->name, STR0TERM, NULL);
 				} else
 				{
-					str = invalid_page(dest_page);
+					str = hyp_invalid_page(dest_page);
 				}
 				vqt_extent(vdi_handle, str, xy);
 				g_free(str);
