@@ -20,7 +20,7 @@ static void hypfind_text(WINDOW_DATA *win)
 	doc->autolocator_dir = 1;
 	if (!empty(search))
 	{
-		line = doc->autolocProc(win, start_line, search);
+		line = doc->autolocProc(win, start_line, search, gl_profile.viewer.find_casesensitive, gl_profile.viewer.find_word);
 	}
 	if (line >= 0)
 	{
@@ -100,7 +100,7 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 {
 	DOCUMENT *doc = win->data;
 	GtkEntry *entry = (GtkEntry *)g_object_get_data(G_OBJECT(dialog), "entry");
-	const char *argv[5];
+	const char *argv[8];
 	int argc = 0;
 	const char *name;
 	char *filename;
@@ -117,10 +117,16 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 	argv[argc++] = filename;
 	argv[argc++] = "-p";
 	argv[argc++] = name;
+	if (gl_profile.viewer.find_casesensitive)
+		argv[argc++] = "-I";
+	if (gl_profile.viewer.find_word)
+		argv[argc++] = "-w";
+		
 	if (!all_hyp)
 	{
 		argv[argc++] = doc->path;
 	}
+	argv[argc] = NULL;
 	HypfindID = hyp_utf8_spawnvp(P_NOWAIT, argc, argv);
 	if (HypfindID > 0)
 	{
@@ -147,11 +153,11 @@ static void enter_pressed(GtkWidget *w, GtkWidget *dialog)
 void Hypfind(WINDOW_DATA *win, gboolean again)
 {
 	gint resp;
+	GtkWidget *button;
 	
 	if (dialog == NULL)
 	{
 		GtkWidget *vbox, *label, *hbox, *entry;
-		GtkWidget *button;
 		GtkWidget *bbox;
 		GtkWidget *bbox_parent;
 		
@@ -176,6 +182,18 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 		g_object_set_data(G_OBJECT(dialog), "entry", entry);
 		g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(enter_pressed), dialog);
+		
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+		
+		button = gtk_check_button_new_with_mnemonic(_("Case sensitive"));
+		gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
+		g_object_set_data(G_OBJECT(dialog), "find_casesensitive", button);
+		
+		button = gtk_check_button_new_with_mnemonic(_("Match words only"));
+		gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
+		g_object_set_data(G_OBJECT(dialog), "find_word", button);
 		
 		button = gtk_button_new_with_label(_("in page"));
 		gtk_widget_set_can_default(button, TRUE);
@@ -221,6 +239,11 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		can_search_again = FALSE;
 	}
 	
+	button = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "find_casesensitive");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.find_casesensitive);
+	button = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "find_word");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.viewer.find_word);
+	
 	/*
 	 * background process still running?
 	 */
@@ -238,6 +261,11 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 
+	button = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "find_casesensitive");
+	gl_profile.viewer.find_casesensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
+	button = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "find_word");
+	gl_profile.viewer.find_word = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
+	
 	can_search_again = FALSE;
 	switch (resp)
 	{

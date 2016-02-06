@@ -49,7 +49,7 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 {
 	char cmd[128];
 	char *name;
-	const char *argv[6];
+	const char *argv[8];
 	char *filename;
 	int argc = 0;
 	char *env;
@@ -67,7 +67,13 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 		name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
 		if (!empty(name))
 		{
+			_WORD wiscr = __magix ? SHW_PARALLEL : CL_PARSE;
+			
 			argv[argc++] = name;
+			if (gl_profile.viewer.find_casesensitive)
+				argv[argc++] = "-I";
+			if (gl_profile.viewer.find_word)
+				argv[argc++] = "-w";
 			if (!all_hyp)
 			{
 				argv[argc++] = doc->path;
@@ -94,14 +100,14 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				x_shell.env = env;
 				x_shell.uid = 0;
 				x_shell.gid = 0;
-				HypfindID = shel_write(SHW_EXEC|SW_ENVIRON, 0, SHW_PARALLEL, (void *)&x_shell, cmd);
+				HypfindID = shel_write(SHW_EXEC|SW_ENVIRON, 0, wiscr, (void *)&x_shell, cmd);
 #endif
 				(void) Mfree(env);
 			}
 			if (HypfindID <= 0)
 			{
 				cmd[0] = (char) strlen(cmd + 1);
-				HypfindID = shel_write(SHW_EXEC, 0, SHW_PARALLEL, filename, cmd);
+				HypfindID = shel_write(SHW_EXEC, 0, wiscr, filename, cmd);
 			}
 			if (HypfindID <= 0)
 			{
@@ -141,7 +147,7 @@ static void hypfind_text(WINDOW_DATA *win, OBJECT *tree)
 		if (!empty(search))
 		{
 			graf_mouse(BUSY_BEE, NULL);
-			line = doc->autolocProc(win, line, search);
+			line = doc->autolocProc(win, line, search, gl_profile.viewer.find_casesensitive, gl_profile.viewer.find_word);
 			graf_mouse(ARROW, NULL);
 		}
 		if (line >= 0)
@@ -180,6 +186,9 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 		tree[args.obj].ob_state &= ~OS_SELECTED;
 
 	can_search_again = FALSE;
+	gl_profile.viewer.find_casesensitive = (tree[HYPFIND_CASE].ob_state & OS_SELECTED) != 0;
+	gl_profile.viewer.find_word = (tree[HYPFIND_WORD].ob_state & OS_SELECTED) != 0;
+	
 	switch (args.obj)
 	{
 	case HNDL_CLSD:
@@ -230,6 +239,14 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		tree[HYPFIND_ALL_PAGE].ob_state |= OS_DISABLED;
 		tree[HYPFIND_ALL_HYP].ob_state |= OS_DISABLED;
 	}
+	if (gl_profile.viewer.find_casesensitive)
+		tree[HYPFIND_CASE].ob_state |= OS_SELECTED;
+	else
+		tree[HYPFIND_CASE].ob_state &= ~OS_SELECTED;
+	if (gl_profile.viewer.find_word)
+		tree[HYPFIND_WORD].ob_state |= OS_SELECTED;
+	else
+		tree[HYPFIND_WORD].ob_state &= ~OS_SELECTED;
 	
 	if (has_window_dialogs())
 	{
@@ -249,6 +266,8 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		form_dial_grect(FMD_FINISH, &little, &big);
 
 		can_search_again = FALSE;
+		gl_profile.viewer.find_casesensitive = (tree[HYPFIND_CASE].ob_state & OS_SELECTED) != 0;
+		gl_profile.viewer.find_word = (tree[HYPFIND_WORD].ob_state & OS_SELECTED) != 0;
 		switch (obj)
 		{
 		case HYPFIND_ABORT:

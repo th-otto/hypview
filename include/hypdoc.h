@@ -43,7 +43,7 @@ typedef	void (*DOC_DISPLAYPROC)(WINDOW_DATA *win);
 typedef	void (*DOC_CLOSEPROC)(DOCUMENT *doc);
 typedef	hyp_nodenr (*DOC_GETNODEPROC)(WINDOW_DATA *win);
 typedef	gboolean (*DOC_GOTOPROC)(WINDOW_DATA *win, const char *chapter, hyp_nodenr node);
-typedef	long (*DOC_AUTOLOCPROC)(WINDOW_DATA *win, long line, const char *search);
+typedef	long (*DOC_AUTOLOCPROC)(WINDOW_DATA *win, long line, const char *search, gboolean casesensitive, gboolean wordonly);
 typedef	void (*DOC_GETCURSORPROC)(WINDOW_DATA *win, int x, int y, TEXT_POS *pos);
 typedef	gboolean (*DOC_BLOCKPROC)(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void *param);
 typedef	void (*DOC_PREPNODEPROC)(WINDOW_DATA *win, HYP_NODE *node);
@@ -143,7 +143,7 @@ hyp_filetype AsciiCalcLines(DOCUMENT *doc, FMT_ASCII *ascii);
  * autoloc.c
  */
 char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line);
-long HypAutolocator(WINDOW_DATA *win, long line, const char *search);
+long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean casesensitive, gboolean wordonly);
 
 
 /*

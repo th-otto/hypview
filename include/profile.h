@@ -61,6 +61,8 @@ typedef struct {
 		gboolean marken_save_ask;   /* ask before saving "marks.dat" */
 		gboolean refonly;           /* if set, clicking on 'normal' text does not search for references */
 		gboolean norefbox;          /* if set, prevents the Find box with a word in a REF-file, from being displayed */
+		gboolean find_casesensitive;
+		gboolean find_word;
 		gboolean detail_info;
 	} viewer;
 

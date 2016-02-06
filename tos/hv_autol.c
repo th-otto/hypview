@@ -112,7 +112,7 @@ static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 	if (*win->autolocator)
 	{
 		graf_mouse(BUSY_BEE, NULL);
-		line = doc->autolocProc(win, start_line, win->autolocator);
+		line = doc->autolocProc(win, start_line, win->autolocator, FALSE, FALSE);
 		graf_mouse(ARROW, NULL);
 	}
 

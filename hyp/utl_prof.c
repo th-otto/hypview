@@ -2427,6 +2427,10 @@ void HypProfile_Load(void)
 		setdefault(gl_profile.viewer.norefbox = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "DETAIL_INFO", &gl_profile.viewer.detail_info))
 		setdefault(gl_profile.viewer.detail_info = FALSE);
+	if (!Profile_ReadBool(profile, "HypView", "find_casesensitive", &gl_profile.viewer.find_casesensitive))
+		setdefault(gl_profile.viewer.find_casesensitive = FALSE);
+	if (!Profile_ReadBool(profile, "HypView", "find_word", &gl_profile.viewer.find_word))
+		setdefault(gl_profile.viewer.find_word = FALSE);
 
 	if (!Profile_ReadString(profile, "Colors", "background", &gl_profile.colors.background))
 		setdefault(gl_profile.colors.background = g_strdup("#ffffff"));
@@ -2610,6 +2614,8 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteBool(profile, "HypView", "ARROWPATCH", gl_profile.viewer.arrowpatch);
 	Profile_WriteBool(profile, "HypView", "NOREFBOX", gl_profile.viewer.norefbox);
 	Profile_WriteBool(profile, "HypView", "DETAIL_INFO", gl_profile.viewer.detail_info);
+	Profile_WriteBool(profile, "HypView", "find_casesensitive", gl_profile.viewer.find_casesensitive);
+	Profile_WriteBool(profile, "HypView", "find_word", gl_profile.viewer.find_word);
 
 	Profile_WriteString(profile, "Colors", "background", gl_profile.colors.background);
 	Profile_WriteString(profile, "Colors", "text", gl_profile.colors.text);

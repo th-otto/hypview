@@ -389,35 +389,37 @@ static char hypview_string_141[] = "as reference";
 static char hypview_string_142[] = "Cancel";
 static char hypview_string_143[] = "in all pages";
 static char hypview_string_144[] = "... of all Hypertexts";
-static char hypview_string_145[] = "Search:";
-static char hypview_string_146[] = "";
-static char hypview_string_147[] = "";
-static char hypview_string_148[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+static char hypview_string_145[] = "Casesensitive";
+static char hypview_string_146[] = "Match words only";
+static char hypview_string_147[] = "Search:";
+static char hypview_string_148[] = "";
 static char hypview_string_149[] = "";
-static char hypview_string_150[] = "";
-static char hypview_string_151[] = "Press Shit+Ctrl to Cancel";
+static char hypview_string_150[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+static char hypview_string_151[] = "";
 static char hypview_string_152[] = "";
-static char hypview_string_153[] = "";
-static char hypview_string_154[] = "[2][This file exists already.|Do you want to replace it?][Replace|Abort]";
-static char hypview_string_155[] = "[2][Do you want to remove|%s|from your bookmarks?][  Yes  |  No  ]";
-static char hypview_string_156[] = "[2][Do you want to add|%s|to your bookmarks?][  Yes  |  No  ]";
-static char hypview_string_157[] = "[2][Save bookmarks?][  Yes  |  No  ]";
-static char hypview_string_158[] = "[1][HypView: could not find|<%s>][ Abort ]";
-static char hypview_string_159[] = "Select hypertext to load:";
-static char hypview_string_160[] = "Save ASCII text as:";
-static char hypview_string_161[] = "Search Pattern...";
-static char hypview_string_162[] = "[1][Command could not be executed.|There is not enough memory.][Cancel]";
-static char hypview_string_163[] = "[1][Please install the system|extension WDIALOG.PRG][Cancel]";
-static char hypview_string_164[] = "[1][Can\'t open a VDI workstation.][Cancel]";
-static char hypview_string_165[] = "[1][No hostname specified in|Hypertext.][Cancel]";
-static char hypview_string_166[] = "[1][Host application not found.][Cancel]";
-static char hypview_string_167[] = "[1][Not Implemented.][Cancel]";
-static char hypview_string_168[] = "[1][Cannot create a fontselector.|Maybe the system does not|support it.][Cancel]";
-static char hypview_string_169[] = "from: %s";
-static char hypview_string_170[] = "Programinfo...";
-static char hypview_string_171[] = "[1][No path to REMARKER configured|in HYPVIEW.INI.][Cancel]";
-static char hypview_string_172[] = "[1][Can not execute|<%s>][Cancel]";
-static char hypview_string_173[] = "[1][HypFind exited with code %d][Cancel]";
+static char hypview_string_153[] = "Press Shit+Ctrl to Cancel";
+static char hypview_string_154[] = "";
+static char hypview_string_155[] = "";
+static char hypview_string_156[] = "[2][This file exists already.|Do you want to replace it?][Replace|Abort]";
+static char hypview_string_157[] = "[2][Do you want to remove|%s|from your bookmarks?][  Yes  |  No  ]";
+static char hypview_string_158[] = "[2][Do you want to add|%s|to your bookmarks?][  Yes  |  No  ]";
+static char hypview_string_159[] = "[2][Save bookmarks?][  Yes  |  No  ]";
+static char hypview_string_160[] = "[1][HypView: could not find|<%s>][ Abort ]";
+static char hypview_string_161[] = "Select hypertext to load:";
+static char hypview_string_162[] = "Save ASCII text as:";
+static char hypview_string_163[] = "Search Pattern...";
+static char hypview_string_164[] = "[1][Command could not be executed.|There is not enough memory.][Cancel]";
+static char hypview_string_165[] = "[1][Please install the system|extension WDIALOG.PRG][Cancel]";
+static char hypview_string_166[] = "[1][Can\'t open a VDI workstation.][Cancel]";
+static char hypview_string_167[] = "[1][No hostname specified in|Hypertext.][Cancel]";
+static char hypview_string_168[] = "[1][Host application not found.][Cancel]";
+static char hypview_string_169[] = "[1][Not Implemented.][Cancel]";
+static char hypview_string_170[] = "[1][Cannot create a fontselector.|Maybe the system does not|support it.][Cancel]";
+static char hypview_string_171[] = "from: %s";
+static char hypview_string_172[] = "Programinfo...";
+static char hypview_string_173[] = "[1][No path to REMARKER configured|in HYPVIEW.INI.][Cancel]";
+static char hypview_string_174[] = "[1][Can not execute|<%s>][Cancel]";
+static char hypview_string_175[] = "[1][HypFind exited with code %d][Cancel]";
 
 
 /* mask of DI_ICON */
@@ -1959,8 +1961,6 @@ static _UBYTE RS14_8CMASK[] = {
 0x3F, 0xFF, 0xFF, 0xFF};
 
 static char *rs_frstr[] = {
-	hypview_string_154,
-	hypview_string_155,
 	hypview_string_156,
 	hypview_string_157,
 	hypview_string_158,
@@ -1978,7 +1978,9 @@ static char *rs_frstr[] = {
 	hypview_string_170,
 	hypview_string_171,
 	hypview_string_172,
-	hypview_string_173
+	hypview_string_173,
+	hypview_string_174,
+	hypview_string_175
 };
 
 
@@ -2063,9 +2065,9 @@ static TEDINFO rs_tedinfo[] = {
 	{ hypview_string_129, hypview_string_130, hypview_string_131, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 71,1 }, /* SR_FSTL_9 */
 	{ hypview_string_133, hypview_string_134, hypview_string_135, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 8,1 },
 	{ hypview_string_136, hypview_string_137, hypview_string_138, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 31,31 }, /* HYPFIND_STRING */
-	{ hypview_string_145, hypview_string_146, hypview_string_147, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 8,1 },
-	{ hypview_string_148, hypview_string_149, hypview_string_150, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 32,1 }, /* REFBOX_STRING */
-	{ hypview_string_151, hypview_string_152, hypview_string_153, SMALL, 0, TE_CNTR, 0x1100, 0x0, -1, 26,1 }
+	{ hypview_string_147, hypview_string_148, hypview_string_149, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 8,1 },
+	{ hypview_string_150, hypview_string_151, hypview_string_152, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 32,1 }, /* REFBOX_STRING */
+	{ hypview_string_153, hypview_string_154, hypview_string_155, SMALL, 0, TE_CNTR, 0x1100, 0x0, -1, 26,1 }
 };
 
 
@@ -2184,15 +2186,17 @@ static OBJECT rs_object[] = {
 
 /* HYPFIND */
 
-	{ -1, 1, 8, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 3,1, 56,8 },
-	{ 2, -1, -1, G_TEXT, OF_FL3DBAK, OS_NORMAL, C_UNION(&rs_tedinfo[26]), 5,1, 6,1 },
+	{ -1, 1, 10, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 3,2, 55,9 },
+	{ 2, -1, -1, G_TEXT, OF_FL3DBAK, OS_NORMAL, C_UNION(&rs_tedinfo[26]), 4,1, 6,1 },
 	{ 3, -1, -1, G_FTEXT, 0x408, OS_NORMAL, C_UNION(&rs_tedinfo[27]), 12,1, 30,1 }, /* HYPFIND_STRING */
-	{ 4, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_139), 2,4, 11,1 }, /* HYPFIND_TEXT */
-	{ 5, -1, -1, G_BUTTON, 0x607, OS_NORMAL, C_UNION(hypview_string_140), 14,4, 11,1 }, /* HYPFIND_PAGES */
-	{ 6, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_141), 26,4, 15,1 }, /* HYPFIND_REF */
-	{ 7, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_142), 42,4, 11,1 }, /* HYPFIND_ABORT */
-	{ 8, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_143), 2,6, 23,1 }, /* HYPFIND_ALL_PAGE */
-	{ 0, -1, -1, G_BUTTON, 0x625, OS_NORMAL, C_UNION(hypview_string_144), 26,6, 27,1 }, /* HYPFIND_ALL_HYP */
+	{ 4, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_139), 2,5, 11,1 }, /* HYPFIND_TEXT */
+	{ 5, -1, -1, G_BUTTON, 0x607, OS_NORMAL, C_UNION(hypview_string_140), 14,5, 11,1 }, /* HYPFIND_PAGES */
+	{ 6, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_141), 26,5, 15,1 }, /* HYPFIND_REF */
+	{ 7, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_142), 42,5, 11,1 }, /* HYPFIND_ABORT */
+	{ 8, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_143), 2,7, 23,1 }, /* HYPFIND_ALL_PAGE */
+	{ 9, -1, -1, G_BUTTON, 0x605, OS_NORMAL, C_UNION(hypview_string_144), 26,7, 27,1 }, /* HYPFIND_ALL_HYP */
+	{ 10, -1, -1, G_BUTTON, 0x601, 0x8040, C_UNION(hypview_string_145), 2,3, 23,1 }, /* HYPFIND_CASE */
+	{ 0, -1, -1, G_BUTTON, 0x621, 0x8040, C_UNION(hypview_string_146), 30,3, 23,1 }, /* HYPFIND_WORD */
 
 /* REFBOX */
 
@@ -2211,7 +2215,7 @@ static OBJECT *rs_trindex[] = {
 	&rs_object[51], /* PROGINFO */
 	&rs_object[77], /* SEARCH_RESULT */
 	&rs_object[94], /* HYPFIND */
-	&rs_object[103] /* REFBOX */
+	&rs_object[105] /* REFBOX */
 };
 
 
@@ -2229,7 +2233,7 @@ static OBJECT *rs_trindex[] = {
 #undef NUM_OBS
 #undef NUM_TREE
 #undef NUM_UD
-#define NUM_STRINGS 174
+#define NUM_STRINGS 176
 #define NUM_BB		0
 #define NUM_IB		0
 #define NUM_CIB     15
@@ -2237,7 +2241,7 @@ static OBJECT *rs_trindex[] = {
 #define NUM_TI		31
 #define NUM_FRSTR	20
 #define NUM_FRIMG	0
-#define NUM_OBS     107
+#define NUM_OBS     109
 #define NUM_TREE	8
 #define NUM_UD		0
 
@@ -2430,7 +2434,7 @@ _WORD hypview_rsc_free()
 #endif /* RSC_NAMED_FUNCTIONS */
 
 #else /* !RSC_STATIC_FILE */
-int rs_numstrings = 174;
+int rs_numstrings = 176;
 int rs_numfrstr = 20;
 
 int rs_nuser = 0;
@@ -2440,7 +2444,7 @@ int rs_numfrimg = 0;
 int rs_numib = 0;
 int rs_numcib = 15;
 int rs_numti = 31;
-int rs_numobs = 107;
+int rs_numobs = 109;
 int rs_numtree = 8;
 
 char rs_name[] = "hypview.rsc";

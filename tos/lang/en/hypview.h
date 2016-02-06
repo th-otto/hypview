@@ -5,7 +5,7 @@
  */
 
 /*
- * Number of Strings:        174
+ * Number of Strings:        176
  * Number of Bitblks:        0
  * Number of Iconblks:       0
  * Number of Color Iconblks: 15
@@ -13,11 +13,11 @@
  * Number of Tedinfos:       31
  * Number of Free Strings:   20
  * Number of Free Images:    0
- * Number of Objects:        107
+ * Number of Objects:        109
  * Number of Trees:          8
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          27776
+ * Total file size:          27844
  */
 
 #undef RSC_NAME
@@ -30,7 +30,7 @@
 #endif
 
 #if !defined(RSC_STATIC_FILE) || !RSC_STATIC_FILE
-#define NUM_STRINGS 174
+#define NUM_STRINGS 176
 #define NUM_FRSTR 20
 #define NUM_UD 0
 #define NUM_IMAGES 0
@@ -39,7 +39,7 @@
 #define NUM_IB 0
 #define NUM_CIB 15
 #define NUM_TI 31
-#define NUM_OBS 107
+#define NUM_OBS 109
 #define NUM_TREE 8
 #endif
 
@@ -146,9 +146,11 @@
 #define HYPFIND_ABORT                      6 /* BUTTON in tree HYPFIND */
 #define HYPFIND_ALL_PAGE                   7 /* BUTTON in tree HYPFIND */
 #define HYPFIND_ALL_HYP                    8 /* BUTTON in tree HYPFIND */
+#define HYPFIND_CASE                       9 /* BUTTON in tree HYPFIND */
+#define HYPFIND_WORD                      10 /* BUTTON in tree HYPFIND */
 
 #define REFBOX                             7 /* form/dialog */
-#define REFBOX_STRING                      2 /* FTEXT in tree REFBOX */ /* max len 30 */
+#define REFBOX_STRING                      2 /* TEXT in tree REFBOX */ /* max len 31 */
 
 #define WARN_FEXIST                        0 /* Alert string */
 /* [2][This file exists already.|Do you want to replace it?][Replace|Abort] */

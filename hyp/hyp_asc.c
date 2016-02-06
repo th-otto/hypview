@@ -98,17 +98,20 @@ unsigned char *AsciiGetTextLine(const unsigned char *src, const unsigned char *e
 
 /*** ---------------------------------------------------------------------- ***/
 
-long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search)
+long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean casesensitive, gboolean wordonly)
 {
 	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
 	const unsigned char *src;
+	int ret;
 	
 	long len = strlen(search);
 
 	if (!ascii)							/* no file loaded */
 		return -1;
 
+	UNUSED(wordonly); /* TODO */
+	
 	if (doc->autolocator_dir > 0)
 	{
 		while (line < ascii->lines)
@@ -118,7 +121,8 @@ long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search)
 			{
 				while (*src)
 				{
-					if (strncasecmp((const char *)src, search, len) == 0)
+					ret = casesensitive ? strncmp((const char *)src, search, len) : strncasecmp((const char *)src, search, len);
+					if (ret == 0)
 						return line;
 					src++;
 				}
@@ -134,7 +138,8 @@ long AsciiAutolocator(WINDOW_DATA *win, long line, const char *search)
 			{
 				while (*src)
 				{
-					if (strncasecmp((const char *)src, search, len) == 0)
+					ret = casesensitive ? strncmp((const char *)src, search, len) : strncasecmp((const char *)src, search, len);
+					if (ret == 0)
 						return line;
 					src++;
 				}

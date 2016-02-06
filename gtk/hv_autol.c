@@ -54,7 +54,7 @@ static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 	search = gtk_entry_get_text(GTK_ENTRY(win->searchentry));
 	if (!empty(search))
 	{
-		line = doc->autolocProc(win, start_line, search);
+		line = doc->autolocProc(win, start_line, search, FALSE, FALSE);
 	}
 
 	if (line >= 0)

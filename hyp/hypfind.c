@@ -617,8 +617,8 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 		if (!opts->wordonly)
 			break;
 		offset = match - scan;
-		if ((offset == 0 || is_word_char(match[-1])) &&
-			(offset + opts->pattern_len >= scanlen || is_word_char(match[opts->pattern_len])))
+		if ((offset == 0 || !is_word_char(match[-1])) &&
+			(offset + opts->pattern_len >= scanlen || !is_word_char(match[opts->pattern_len])))
 			break;
 		offset += opts->pattern_len;
 		scan += offset;
@@ -1183,7 +1183,7 @@ int main(int argc, const char **argv)
 		if (retval == 0)
 		{
 			if (opts->verbose)
-				hyp_utf8_fprintf(stdout, _("searching for <%s>...\n"), opts->pattern);
+				hyp_utf8_fprintf(stdout, _("searching for <%s>%s...\n"), opts->pattern, opts->wordonly ? _(" as word") : "");
 			if (!bm_init(&opts->deltapat, opts->pattern, opts->casesensitive))
 				retval = 1;
 		}

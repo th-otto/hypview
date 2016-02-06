@@ -11,23 +11,27 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-long BinaryAutolocator(WINDOW_DATA *win, long line, const char *search)
+long BinaryAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean casesensitive, gboolean wordonly)
 {
 	DOCUMENT *doc = hypwin_doc(win);
 	FMT_ASCII *ascii = (FMT_ASCII *) doc->data;
 	const unsigned char *src, *end;
 	size_t len = strlen(search);
+	int ret;
 	
 	if (!ascii)							/* no file loaded */
 		return -1;
 
+	UNUSED(wordonly); /* TODO */
+	
 	end = ascii->start + ascii->length - len;
 	src = ascii->start + line * gl_profile.viewer.binary_columns;
 	if (doc->autolocator_dir > 0)
 	{
 		while (src <= end)
 		{
-			if (strncasecmp((const char *)src, search, len) == 0)
+			ret = casesensitive ? strncmp((const char *)src, search, len) : strncasecmp((const char *)src, search, len);
+			if (ret == 0)
 			{
 				return (src - 1 - ascii->start) / gl_profile.viewer.binary_columns;
 			}
@@ -37,7 +41,8 @@ long BinaryAutolocator(WINDOW_DATA *win, long line, const char *search)
 	{
 		while (src >= ascii->start)
 		{
-			if (strncasecmp((const char *)src, search, len) == 0)
+			ret = casesensitive ? strncmp((const char *)src, search, len) : strncasecmp((const char *)src, search, len);
+			if (ret == 0)
 			{
 				return (src - 1 - ascii->start) / gl_profile.viewer.binary_columns;
 			}

@@ -32,14 +32,15 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 
 /*** ---------------------------------------------------------------------- ***/
 
-long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
+long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean casesensitive, gboolean wordonly)
 {
 	DOCUMENT *doc = hypwin_doc(win);
 	HYP_NODE *node;
 	char *temp;
 	size_t len;
 	HYP_DOCUMENT *hyp;
-
+	const char *res;
+	
 	hyp = (HYP_DOCUMENT *) doc->data;
 	if (hyp == NULL)
 		return -1;
@@ -51,13 +52,16 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 	if (empty(search))
 		return -1;
 	
+	UNUSED(wordonly); /* TODO */
+	
 	len = strlen(search);
 
 	if (doc->autolocator_dir > 0)
 	{
 		while ((temp = HypGetTextLine(win, node, line)) != NULL)
 		{
-			if (g_utf8_strcasestr(temp, search) != NULL)
+			res = casesensitive ? strstr(temp, search) : g_utf8_strcasestr(temp, search);
+			if (res != NULL)
 			{
 				g_free(temp);
 				return line;
@@ -72,7 +76,8 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search)
 			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
-				if (g_utf8_strcasestr(temp, search) != NULL)
+				res = casesensitive ? strstr(temp, search) : g_utf8_strcasestr(temp, search);
+				if (res != NULL)
 				{
 					g_free(temp);
 					return line;
