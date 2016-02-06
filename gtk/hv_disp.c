@@ -1308,6 +1308,40 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	}
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
+	/*
+	 * remove trailing empty lines from textbuffer
+	 */
+	while (info.lineno > 0)
+	{
+		GtkTextIter start, end;
+		char *txt;
+		
+		gtk_text_buffer_get_end_iter(info.text_buffer, &end);
+		start = end;
+		if (!gtk_text_iter_backward_char(&start))
+			break;
+		txt = gtk_text_buffer_get_text(info.text_buffer, &start, &end, FALSE);
+		if (txt == NULL)
+			break;
+		if (*txt == '\0')
+		{
+			g_free(txt);
+			break;
+		}
+		{
+			size_t len = strlen(txt) - 1;
+			char *lineend = txt + len;
+			gboolean eol = *lineend == '\n';
+			g_free(txt);
+			if (!eol)
+				break;
+			gtk_text_buffer_delete(info.text_buffer, &start, &end);
+			info.lineno--;
+			if (len != 0)
+				break;
+		}
+	}
+	
 	node->height = info.lineno * win->y_raster;
 	node->width = info.maxx * win->x_raster;
 	
