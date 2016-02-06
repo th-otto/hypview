@@ -245,7 +245,7 @@ void SelectFileSave(WINDOW_DATA *win)
 		if (ret >= 0)
 		{
 			hyp_utf8_close(ret);
-			if (ask_yesno(GTK_WINDOW(parent), _("This file exists already.\nDo you want to replace it?")))
+			if (ask_yesno(parent, _("This file exists already.\nDo you want to replace it?")))
 				ret = -1;
 		}
 		if (ret < 0)

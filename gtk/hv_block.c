@@ -5,7 +5,7 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void StartRemarker(gboolean quiet)
+void StartRemarker(WINDOW_DATA *win, gboolean quiet)
 {
 	char *path = path_subst(gl_profile.remarker.path);
 	const char *argv[2];
@@ -13,7 +13,7 @@ void StartRemarker(gboolean quiet)
 	if (empty(path))
 	{
 		if (!quiet)
-			show_message(_("Error"), _("No path to REMARKER configured"), FALSE);
+			show_message(win ? win->hwnd : NULL, _("Error"), _("No path to REMARKER configured"), FALSE);
 	} else
 	{
 		argv[0] = path;
@@ -21,7 +21,7 @@ void StartRemarker(gboolean quiet)
 		if (hyp_utf8_spawnvp(P_NOWAIT, 1, argv) < 0 && !quiet)
 		{
 			char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), path, hyp_utf8_strerror(errno));
-			show_message(_("Error"), str, FALSE);
+			show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
 			g_free(str);
 		}
 	}
@@ -84,7 +84,7 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 		SelectFont(win);
 		break;
 	case CO_REMARKER:
-		StartRemarker(FALSE);
+		StartRemarker(win, FALSE);
 		break;
 	case CO_PRINT:
 		HYP_DBG(("NYI: print"));

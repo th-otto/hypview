@@ -128,9 +128,9 @@ gboolean init_gtk(void);
 void exit_gtk(void);
 int toplevels_open_except(GtkWidget *top);
 void check_toplevels(GtkWidget *toplevel);
-void show_message(const char *title, const char *text, gboolean big);
-gboolean ask_yesno(GtkWindow *parent, const char *text);
-GtkWindow *top_window(void);
+void show_message(GtkWidget *parent, const char *title, const char *text, gboolean big);
+gboolean ask_yesno(GtkWidget *parent, const char *text);
+GtkWidget *top_window(void);
 gboolean IsResponseOk(int resp);
 
 
@@ -293,7 +293,7 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
 void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(WINDOW_DATA *win, const char *path, GtkTextIter *start, GtkTextIter *end);
-void StartRemarker(gboolean quiet);
+void StartRemarker(WINDOW_DATA *win, gboolean quiet);
 
 
 /*

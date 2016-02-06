@@ -25,11 +25,10 @@ static void expander_toggled(GtkWidget *w, GtkWidget *dialog)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void help_clicked(GtkWidget *w, GtkWidget *dialog)
+static void help_clicked(GtkWidget *w, WINDOW_DATA *win)
 {
 	UNUSED(w);
-	UNUSED(dialog);
-	OpenFileInWindow(NULL, prghelp_name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
+	OpenFileInWindow(win, prghelp_name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, 2, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -143,7 +142,7 @@ void DocumentInfos(WINDOW_DATA *win)
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_HELP);
 	gtk_widget_set_can_default(button, TRUE);
 	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), button, TRUE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(help_clicked), dialog);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(help_clicked), win);
 	
 	button = gtk_button_new_ok();
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_OK);
@@ -151,6 +150,6 @@ void DocumentInfos(WINDOW_DATA *win)
 	g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 	gtk_widget_grab_default(button);
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), top_window());
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
 	gtk_widget_show_all(dialog);
 }

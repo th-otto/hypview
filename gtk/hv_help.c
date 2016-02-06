@@ -266,7 +266,7 @@ gboolean Help_Show(GtkWidget *parent, const char *entry)
 	g_free(my_help_name);
 	if (!found)
 	{
-		show_message(_("Error"), _("No help file found"), FALSE);
+		show_message(parent, _("Error"), _("No help file found"), FALSE);
 	}
 	return found;
 }

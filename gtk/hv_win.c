@@ -230,7 +230,7 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 	if (ret == FALSE)
 	{
 		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), g_strerror(errno));
-		if (ask_yesno(GTK_WINDOW(win->hwnd), msg))
+		if (ask_yesno(win->hwnd, msg))
 			quit_force(NULL, win);
 		g_free(msg);
 		return FALSE;

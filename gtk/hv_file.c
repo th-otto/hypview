@@ -45,6 +45,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	DOCUMENT *doc = NULL;
 	char *real_path;
 	gboolean add_to_hist = TRUE;
+	GtkWidget *errorwin = win ? win->hwnd : NULL;
 	
 	/* done if we don't have a name */
 	if (empty(path))
@@ -178,7 +179,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			else
 				name = g_strdup(hyp_default_main_node_name);
 			str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, name);
-			show_message(_("Error"), str, FALSE);
+			show_message(errorwin, _("Error"), str, FALSE);
 			g_free(name);
 			g_free(str);
 		}

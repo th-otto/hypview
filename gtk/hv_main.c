@@ -284,9 +284,9 @@ int main(int argc, char **argv)
 		} else
 		{
 			hv_recent_add(win->data->path);
-			if (gl_profile.remarker.run_on_startup)
-				StartRemarker(FALSE);
 			hv_win_open(win);
+			if (gl_profile.remarker.run_on_startup)
+				StartRemarker(win, FALSE);
 		}
 	}
 	g_freep(&geom_arg);

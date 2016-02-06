@@ -128,7 +128,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 			char *buff;
 
 			buff = g_strdup_printf(_("Do you want to add\n%s\nto your bookmarks?"), win->title);
-			if (ask_yesno(GTK_WINDOW(win->hwnd), buff))
+			if (ask_yesno(win->hwnd, buff))
 				MarkerSave(win, sel);
 			g_free(buff);
 		} else
@@ -138,7 +138,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 				char *buff;
 
 				buff = g_strdup_printf(_("Do you want to remove\n%s\nfrom your bookmarks?"), marken[sel].node_name);
-				if (ask_yesno(GTK_WINDOW(win->hwnd), buff))
+				if (ask_yesno(win->hwnd, buff))
 				{
 					MarkerDelete(sel);
 					marken_change = TRUE;

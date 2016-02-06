@@ -50,7 +50,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				/* search for host application */
 				if (hyp->hostname == NULL)
 				{
-					show_message(_("Error"), _("No host application defined."), FALSE);
+					show_message(win->hwnd, _("Error"), _("No host application defined."), FALSE);
 					break;
 				}
 				for (h = hyp->hostname; h != NULL && tool == NULL; h = h->next)
@@ -59,7 +59,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				if (empty(tool))	/* host application found? */
 				{
 					char *str = g_strdup_printf(_("No application defined to handle %s."), hyp->hostname->name);
-					show_message(_("Error"), str, FALSE);
+					show_message(win->hwnd, _("Error"), str, FALSE);
 					g_free(str);
 					break;		/* ... cancel */
 				}
@@ -140,7 +140,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 		default:
 			{
 				char *str = g_strdup_printf(_("Link to node of type %u not implemented."), info->dest_page);
-				show_message(_("Error"), str, FALSE);
+				show_message(win->hwnd, _("Error"), str, FALSE);
 				g_free(str);
 			}
 			break;

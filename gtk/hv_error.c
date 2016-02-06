@@ -41,10 +41,10 @@ void check_toplevels(GtkWidget *toplevel)
 
 /*** ---------------------------------------------------------------------- ***/
 
-GtkWindow *top_window(void)
+GtkWidget *top_window(void)
 {
 	GList *tops, *l;
-	GtkWindow *top = NULL;
+	GtkWidget *top = NULL;
 	
 	tops = gtk_window_list_toplevels();
 	for (l = tops; l != NULL; l = l->next)
@@ -52,7 +52,7 @@ GtkWindow *top_window(void)
 		if (gtk_widget_get_visible(GTK_WIDGET(l->data)) &&
 			g_object_get_data(G_OBJECT(l->data), "hypview_window_type") != NULL)
 		{
-			top = GTK_WINDOW(l->data);
+			top = GTK_WIDGET(l->data);
 			break;
 		}
 	}
@@ -104,7 +104,7 @@ gboolean IsResponseOk(int resp)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void show_message(const char *title, const char *text, gboolean big)
+void show_message(GtkWidget *parent, const char *title, const char *text, gboolean big)
 {
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
@@ -153,14 +153,16 @@ void show_message(const char *title, const char *text, gboolean big)
 
 	if (big)
 		gtk_window_set_default_size(GTK_WINDOW(dialog), 640, 400);
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), top_window());
+	if (parent == NULL)
+		parent = top_window();
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean ask_yesno(GtkWindow *parent, const char *text)
+gboolean ask_yesno(GtkWidget *parent, const char *text)
 {
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
@@ -202,7 +204,7 @@ gboolean ask_yesno(GtkWindow *parent, const char *text)
 
 	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_hide), dialog);
 	
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
@@ -230,7 +232,7 @@ void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean
 	}
 	if (use_gui && init_gtk())
 	{
-		show_message(to_stderr ? _("Error") : _("Warning"), s, big);
+		show_message(NULL, to_stderr ? _("Error") : _("Warning"), s, big);
 	}
 }
 

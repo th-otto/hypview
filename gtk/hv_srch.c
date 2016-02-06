@@ -198,7 +198,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 	if (empty(gl_profile.general.all_ref))
 	{
 		if (!no_message)
-			show_message(_("Error"), _("No ALL.REF file defined"), FALSE);
+			show_message(win->hwnd, _("Error"), _("No ALL.REF file defined"), FALSE);
 		return win;
 	}
 
@@ -291,7 +291,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 			
 			name = hyp_utf8_to_charset(hyp_get_current_charset(), string, STR0TERM, &converror);
 			str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, name);
-			show_message(_("Error"), str, FALSE);
+			show_message(win->hwnd, _("Error"), str, FALSE);
 			g_free(name);
 			g_free(str);
 		}
