@@ -1824,9 +1824,13 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		AppendButton(win, TO_BACK);
 		AppendButton(win, TO_HISTORY);
 		AppendButton(win, TO_MEMORY);
+		AppendButton(win, TO_FIRST);
+		AppendButton(win, TO_PREV_PHYS);
 		AppendButton(win, TO_PREV);
 		AppendButton(win, TO_HOME);
 		AppendButton(win, TO_NEXT);
+		AppendButton(win, TO_NEXT_PHYS);
+		AppendButton(win, TO_LAST);
 		AppendButton(win, TO_INDEX);
 		AppendButton(win, TO_KATALOG);
 		AppendButton(win, TO_REFERENCES);
