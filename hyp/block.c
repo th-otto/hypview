@@ -20,11 +20,12 @@ gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void
 		{
 			long line;
 			ssize_t ret;
-			size_t len;
+			ssize_t len;
 			char *line_buffer;
 			const char *src;
 			int *handle = (int *) param;
-
+			char *txt;
+			
 			if (!node)					/* no page loaded */
 			{
 				HYP_DBG(("Error: Can't save, no page loaded"));
@@ -38,23 +39,35 @@ gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void
 
 				if (line_buffer != NULL)
 				{
+					len = strlen(line_buffer);
+
+					if (line == block->end.line && block->end.offset < len)
+					{
+						line_buffer[block->end.offset] = 0;
+						len = block->end.offset;
+					}
 					if (line == block->start.line)
 					{
-						if (block->start.offset > (long)strlen(line_buffer))
-							src = line_buffer + strlen(line_buffer);
-						else
+						if (block->start.offset > len)
+						{
+							src = line_buffer + len;
+							len = 0;
+						} else
+						{
 							src = &line_buffer[block->start.offset];
+							len -= block->start.offset;
+						}
 					} else
 					{
 						src = line_buffer;
 					}
 					
-					if (line == block->end.line && block->end.offset < (long)strlen(line_buffer))
-						line_buffer[block->end.offset] = 0;
-	
-					len = strlen(src);
-					ret = write(*handle, src, len);
-					if (ret != (ssize_t)len)
+					txt = hyp_utf8_to_charset(hyp_get_current_charset(), src, len, NULL);
+					len = strlen(txt);
+					ret = write(*handle, txt, len);
+					g_free(txt);
+					g_free(line_buffer);
+					if (ret != len)
 					{
 						HYP_DBG(("Error %s writing file. Abort.", strerror(errno)));
 						return FALSE;
@@ -65,7 +78,6 @@ gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void
 					write(*handle, "\n", 1);
 
 				line++;
-				g_free(line_buffer);
 			}
 		}
 		break;

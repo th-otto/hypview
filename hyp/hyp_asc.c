@@ -168,8 +168,8 @@ gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, vo
 	case BLK_ASCIISAVE:
 		{
 			long line;
-			size_t ret;
-			size_t len;
+			ssize_t ret;
+			ssize_t len;
 			unsigned char *line_buffer;
 			const unsigned char *src;
 			int *handle = (int *) param;
@@ -182,22 +182,31 @@ gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, vo
 
 				if (line_buffer != NULL)
 				{
+					len = ustrlen(line_buffer);
+					if (line == block->end.line && block->end.offset < len)
+					{
+						line_buffer[block->end.offset] = 0;
+						len = block->end.offset;
+					}
+					
 					if (line == block->start.line)
 					{
-						if (block->start.offset > (long)ustrlen(line_buffer))
-							src = line_buffer + ustrlen(line_buffer);
-						else
+						if (block->start.offset > len)
+						{
+							src = line_buffer + len;
+							len = 0;
+						} else
+						{
 							src = &line_buffer[block->start.offset];
+							len -= block->start.offset;
+						}
 					} else
 					{
 						src = line_buffer;
 					}
 					
-					if (line == block->end.line && block->end.offset < (long)ustrlen(line_buffer))
-						line_buffer[block->end.offset] = 0;
-
-					len = ustrlen(src);
 					ret = write(*handle, src, len);
+					g_free(line_buffer);
 					if (ret != len)
 					{
 						HYP_DBG(("Error %s writing file. Abort.", strerror(errno)));
@@ -209,7 +218,6 @@ gboolean AsciiBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, vo
 					write(*handle, "\n", 1);
 
 				line++;
-				g_free(line_buffer);
 			}
 		}
 		break;
