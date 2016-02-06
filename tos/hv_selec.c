@@ -221,7 +221,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 				xy[3] = work.g_y + py2 - 1;
 				vr_recfl(vdi_handle, xy);
 			}
-			if (px2 >= 0)
+			if (px2 > 0)
 			{
 				/* draw from beginning of line */
 				xy[0] = work.g_x;
