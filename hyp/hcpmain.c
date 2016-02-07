@@ -563,7 +563,7 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-static char *stg_quote_name(HYP_CHARSET charset, const unsigned char *name, size_t len)
+static char *stg_quote_name(HYP_CHARSET charset, const unsigned char *name, size_t len, gboolean convslash)
 {
 	char *str, *ret;
 	char *buf;
@@ -576,9 +576,25 @@ static char *stg_quote_name(HYP_CHARSET charset, const unsigned char *name, size
 		name = (const unsigned char *) buf;
 		while (*name)
 		{
-			if (*name == '\\' || *name == '"')
+			if (*name == '\\')
+			{
+				if (convslash)
+				{
+					*str++ = '/';
+					name++;
+				} else
+				{
+					*str++ = '\\';
+					*str++ = *name++;
+				}
+			} else if (*name == '"')
+			{
 				*str++ = '\\';
-			*str++ = *name++;
+				*str++ = *name++;
+			} else
+			{
+				*str++ = *name++;
+			}
 			len--;
 		}
 		*str++ = '\0';
@@ -594,10 +610,12 @@ static char *stg_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 {
 	INDEX_ENTRY *entry;
 	size_t namelen;
-
+	char *p;
+	
 	entry = hyp->indextable[node];
 	namelen = entry->length - SIZEOF_INDEX_ENTRY;
-	return stg_quote_name(hyp->comp_charset, entry->name, namelen);
+	p = stg_quote_name(hyp->comp_charset, entry->name, namelen, entry->type == HYP_NODE_EXTERNAL_REF);
+	return p;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -886,7 +904,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 			str = stg_quote_nodename(hyp, node);
 			if (nodeptr->window_title)
 			{
-				char *title = stg_quote_name(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+				char *title = stg_quote_name(hyp->comp_charset, nodeptr->window_title, STR0TERM, FALSE);
 				hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s \"%s\" \"%s\"%s", entry->type == HYP_NODE_INTERNAL ? "@node" : "@pnode", str, title, stg_nl);
 				g_free(title);
 			} else
@@ -972,7 +990,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 					char *text;
 					
 					dest_page = DEC_255(&src[3]);
-					text = stg_quote_name(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
+					text = stg_quote_name(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u, FALSE);
 					chomp(&text);
 					if (hypnode_valid(hyp, dest_page))
 					{
@@ -1070,6 +1088,8 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 								/* fall through */
 							case HYP_NODE_INTERNAL:
 							case HYP_NODE_POPUP:
+								cmd = type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE ? "ALINK" : "LINK";
+								break;
 							case HYP_NODE_EXTERNAL_REF:
 								cmd = type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE ? "ALINK" : "LINK";
 								break;
@@ -1120,7 +1140,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							len = *src - HYP_STRLEN_OFFSET;
 							src++;
 							textstart = src;
-							str = stg_quote_name(hyp->comp_charset, src, len);
+							str = stg_quote_name(hyp->comp_charset, src, len, FALSE);
 							src += len;
 							if (hypnode_valid(hyp, dest_page))
 							{

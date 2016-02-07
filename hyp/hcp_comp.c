@@ -5765,6 +5765,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		p = (vars->opts->compat_flags & STG_ALLOW_FOLDERS_IN_XREFS ? strrslash : strslash)(dest);
 		if (p != NULL)
 		{
+			char c = *p;
 			*p = '\0';
 			if (hyp_guess_filetype(dest) == HYP_FT_RSC)
 			{
@@ -5792,6 +5793,8 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 					warn_extra_args(vars);
 			} else
 			{
+				if (c == '\\')
+					hcp_warning(vars, NULL, _("Using backward slashes in external references is deprecated"));
 				*p = '/';
 			}
 		}

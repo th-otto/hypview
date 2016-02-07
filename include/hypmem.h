@@ -209,6 +209,7 @@ char *replace_ext(const char *str, const char *from, const char *to);
 char *strslash(const char *str);
 char *strrslash(const char *str);
 void convslash(char *str);
+gboolean convexternalslash(char *str);
 
 void _crtexit(void);
 void _crtinit(void);

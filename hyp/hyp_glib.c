@@ -900,6 +900,28 @@ void convslash(char *str)
 
 /*** ---------------------------------------------------------------------- ***/
 
+gboolean convexternalslash(char *str)
+{
+	gboolean replaced = FALSE;
+	
+	char *p = str;
+	if (p != NULL)
+	{
+		while (*p)
+		{
+			if (*p == '\\')
+			{
+				*p = '/';
+				replaced = TRUE;
+			}
+			p++;
+		}
+	}
+	return replaced;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 char *replace_ext(const char *str, const char *from, const char *to)
 {
 	char *dst;
