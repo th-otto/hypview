@@ -64,6 +64,9 @@ typedef struct {
 		gboolean find_casesensitive;
 		gboolean find_word;
 		gboolean detail_info;
+#ifdef WITH_GUI_GEM
+		char *applname;
+#endif
 	} viewer;
 
 	struct {

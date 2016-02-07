@@ -173,6 +173,8 @@ int main(int argc, const char **argv)
 
 	if (!_app)							/* running as ACC? */
 		menu_register(gl_apid, "  " PROGRAM_NAME);	/* ...register to menu */
+	if (!empty(gl_profile.viewer.applname))
+		menu_register(-1, gl_profile.viewer.applname);
 	
 	if (argc <= 1)						/* parameters specified? */
 	{
