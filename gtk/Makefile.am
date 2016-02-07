@@ -8,13 +8,15 @@ endif
 INCLUDES = -I$(hyp_srcdir)/include
 
 AM_CPPFLAGS =	$(GTK_CFLAGS) \
-		-DBINDIR="\"$(bindir)\""
+		-DBINDIR="\"$(bindir)\"" \
+		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
 
 hypview_SOURCES = \
 	hv_main.c \
 	hv_gtk.h \
 	gtk_comp.h \
+	gdkkeysyms.h \
 	\
 	hv_about.c \
 	hv_asc.c \

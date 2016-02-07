@@ -81,6 +81,7 @@ h:\src\udo\tools\hypview\hyp\rpl_stat.c
 h:\src\udo\tools\hypview\hyp\utl_prof.c
 h:\src\udo\tools\hypview\hyp\hypdoc.c
 h:\src\udo\tools\hypview\hyp\hypgfx.c
+h:\src\udo\tools\hypview\hyp\localenm.c
 
 h:\src\udo\tools\hypview\hyp\tos\cookie.c
 h:\src\udo\tools\hypview\hyp\tos\mkdir.c

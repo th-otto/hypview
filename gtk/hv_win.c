@@ -399,7 +399,7 @@ static void on_preferences(GtkAction *action, WINDOW_DATA *win)
 static void on_help_contents(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	Help_Contents(win->hwnd);
+	Help_Contents(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -407,7 +407,7 @@ static void on_help_contents(GtkAction *action, WINDOW_DATA *win)
 static void on_help_index(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	Help_Index(win->hwnd);
+	Help_Index(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/

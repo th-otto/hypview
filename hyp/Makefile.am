@@ -82,7 +82,8 @@ libhypdoc_a_SOURCES = \
 	hypdoc.c hypdoc.h \
 	block.c \
 	hyp_asc.c \
-	hyp_bin.c
+	hyp_bin.c \
+	localenm.c
 
 
 UTIL_SRC = \

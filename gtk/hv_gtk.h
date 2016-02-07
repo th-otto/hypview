@@ -111,10 +111,10 @@ void About(GtkWidget *parent);
 /*
  * help.c
  */
-gboolean Help_Show(GtkWidget *parent, const char *entry);
-void Help_Contents(GtkWidget *parent);
-void Help_Index(GtkWidget *parent);
-void Help_Using_Help(GtkWidget *parent);
+gboolean Help_Show(WINDOW_DATA *parent, const char *entry);
+void Help_Contents(WINDOW_DATA *parent);
+void Help_Index(WINDOW_DATA *parent);
+void Help_Using_Help(WINDOW_DATA *parent);
 void Help_Exit(void);
 void Help_Init(void);
 

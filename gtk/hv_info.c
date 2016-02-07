@@ -1,8 +1,6 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
-static char const prghelp_name[] = "hypview.hyp";
-
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -28,7 +26,7 @@ static void expander_toggled(GtkWidget *w, GtkWidget *dialog)
 static void help_clicked(GtkWidget *w, WINDOW_DATA *win)
 {
 	UNUSED(w);
-	OpenFileInWindow(win, prghelp_name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, 2, FALSE);
+	Help_Contents(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/

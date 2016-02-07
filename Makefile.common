@@ -1,3 +1,5 @@
+pkgdatadir = $(datadir)/hypview
+
 hyp_srcdir = $(top_srcdir)/tools/hypview
 hyp_builddir = $(top_builddir)/tools/hypview
 
