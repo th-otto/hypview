@@ -230,13 +230,13 @@ void CheckFiledate(WINDOW_DATA *win)
 		if (st.st_mtime != doc->mtime)
 		{
 			hyp_nodenr node;
-			long lineno = 0;
+			long yoff;
 			int ref_count = 0;
 
 			graf_mouse(BUSY_BEE, NULL);	/* We are busy... */
 
 			node = doc->getNodeProc(win);	/* Remember current node */
-			lineno = win->docsize.y;
+			yoff = win->docsize.y;
 			if (doc->data && doc->type == HYP_FT_HYP)
 			{
 				HYP_DOCUMENT *hyp = doc->data;
@@ -267,7 +267,7 @@ void CheckFiledate(WINDOW_DATA *win)
 			/* jump to previously active node */
 			doc->gotoNodeProc(win, NULL, node);
 
-			win->docsize.y = lineno;
+			win->docsize.y = yoff;
 			ReInitWindow(win, FALSE);
 			graf_mouse(ARROW, NULL);	/* We are done. */
 		}

@@ -133,8 +133,8 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 	mx = m->x - win->scroll.g_x;
 	my = m->y - win->scroll.g_y;
 	
-	sx = -win->docsize.x * win->x_raster;
-	sy = -win->docsize.y * win->y_raster;
+	sx = -win->docsize.x;
+	sy = -win->docsize.y;
 
 	src = node->start;
 	end = node->end;
