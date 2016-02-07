@@ -168,8 +168,8 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 	path = temp;
 	/*
 	   No colon in name? => relative path
-	   colon as 2nd char => absolute Pfad
-	   else => kein Pfad, also auch kein Kapitelname suchen
+	   colon as 2nd char => absolute path
+	   else => no Pfad, don't have chapter name either
 	 */
 	cptr = strchr(temp, ':');
 	if (cptr == NULL || cptr == &temp[1])
