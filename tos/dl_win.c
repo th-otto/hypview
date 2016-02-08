@@ -1021,7 +1021,7 @@ WINDOW_DATA *find_window_by_proc(HNDL_WIN proc)
 
 	while (win)
 	{
-		if ((win->type == WIN_WINDOW) && (win->proc == proc))
+		if ((win->type == WIN_WINDOW) && win->owner == gl_apid && (win->proc == proc))
 			return win;
 		win = win->next;
 	}

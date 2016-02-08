@@ -326,7 +326,6 @@ void FontselectorEvents(FONTSEL_DATA *ptr,EVNT *event);
  */
 extern long av_server_cfg;
 
-void DoVA_PROTOSTATUS(_WORD message[8]);
 void DoAV_PROTOKOLL(short flags);
 void DoAV_EXIT(void);
 
@@ -338,13 +337,15 @@ _BOOL Protokoll_Send(_WORD apid, _UWORD prot, _UWORD a1, _UWORD a2, _UWORD a3, _
 _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self);
 _WORD shel_xwrite(_WORD sh_wdoex, _WORD sh_wisgr, _WORD sh_wiscr, const void *sh_wpcmd, const char *sh_wptail);
 _BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id);
+void appl_makeappname(char *app_name, const char *p);
 _WORD appl_locate(const char *pathlist, _BOOL startit);
-void va_proto_init(void);
+void va_proto_init(const char *myname);
 void va_proto_exit(void);
 
 /*
  * dl_avcmd.c
  */
+char *av_cmdline(const char *const argv[], gboolean incl_argv0);
 void SendAV_GETSTATUS(void);
 void SendAV_STATUS(const char *string);
 void SendAV_SENDKEY(short kbd_state, short code);
@@ -353,7 +354,7 @@ void SendAV_ASKCONFONT(void);
 void SendAV_ASKOBJECT(void);
 void SendAV_OPENCONSOLE(void);
 void SendAV_OPENWIND(const char *path, const char *wildcard);
-void SendAV_STARTPROG(const char *path, const char *commandline);
+void SendAV_STARTPROG(const char *path, const char *commandline, void (*progstart)(_WORD ret));
 void SendAV_ACCWINDOPEN(short handle);
 void SendAV_ACCWINDCLOSED(short handle);
 void SendAV_COPY_DRAGGED(short kbd_state, const char *path);

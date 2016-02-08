@@ -54,9 +54,6 @@
 /* Document history protocol */
 #define	USE_DOCUMENTHISTORY	1
 
-/* Application name in uppercase letters */
-#define	PROGRAM_UNAME		"HYPVIEW"
-
 /* Number of supported Drag&Drop formats */
 #define	MAX_DDFORMAT		8
 

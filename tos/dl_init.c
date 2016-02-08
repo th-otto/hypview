@@ -142,7 +142,7 @@ int DoAesInit(void)
 	
 	Pdomain(1);
 
-	gl_apid = appl_init();
+	/* gl_apid = appl_init(); moved to hypmain.h */
 	if (gl_apid < 0)
 		return FALSE;
 
@@ -255,7 +255,6 @@ int DoInitSystem(void)
 #if USE_BUBBLEGEM
 	DoInitBubble();
 #endif
-	va_proto_init();
 
 	key_table = Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/* fetch keytable */
 

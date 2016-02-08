@@ -37,6 +37,7 @@ long av_server_cfg = 0;
 static char *av_name = NULL;			/* our program name */
 /* for AV_STARTPROG */
 static char *av_parameter = NULL;
+static void (*va_progstart)(_WORD ret);
 
 
 /******************************************************************************/
@@ -140,7 +141,9 @@ _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self)
 		for (id = 0; id <= gl_apid; id++)
 		{
 			if ((id != gl_apid) || send_to_self)
+			{
 				appl_write(id, 16, message);
+			}
 		}
 		return FALSE;
 	}
@@ -149,11 +152,25 @@ _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void appl_makeappname(char *app_name, const char *p)
+{
+	_WORD i;
+	
+	for (i = 0; i < 8 && p[i] != '\0' && p[i] != '.'; i++)
+	{
+		app_name[i] = toupper(p[i]);
+	}
+	for (; i < 8; i++)
+		app_name[i] = ' ';
+	app_name[8] = '\0';
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 _WORD appl_locate(const char *pathlist, _BOOL startit)
 {
 	char app_name[9];
 	_WORD id = -1;
-	_WORD i;
 	const char *p, *pend;
 	char *path;
 	
@@ -174,14 +191,8 @@ _WORD appl_locate(const char *pathlist, _BOOL startit)
 			pend = p + 1;
 		}
 		p = hyp_basename(path);
-		for (i = 0; i < 8 && p[i] != '\0' && p[i] != '.'; i++)
-		{
-			app_name[i] = toupper(p[i]);
-		}
+		appl_makeappname(app_name, p);
 		g_free(path);
-		for (; i < 8; i++)
-			app_name[i] = ' ';
-		app_name[8] = '\0';
 		id = appl_find(app_name);
 	}
 	if (id < 0 && startit && (_AESnumapps != 1 || !_app))
@@ -313,9 +324,62 @@ void SendAV_OPENWIND(const char *path, const char *wildcard)
 /*** ---------------------------------------------------------------------- ***/
 
 /*
+ * create a quoted command line suitable for use
+ * by drag&drop protokoll, or AV protokoll.
+ * Quote arguments only when neccessary,
+ * some servers (like GEMINI) otherwise don't
+ * parse the parameters correctly
+ */
+char *av_cmdline(const char *const argv[], gboolean incl_argv0)
+{
+	int i;
+	size_t cmlen = 0;
+	char *cmd, *dst;
+	const char *src;
+	int first;
+	
+	first = incl_argv0 ? 0 : 1;
+	if (argv == NULL || argv[0] == NULL || argv[first] == NULL)
+		return NULL;
+	for (i = first; argv[i]; i++)
+		cmlen += strlen(argv[i]) * 2 + 3;
+	cmd = g_new(char, cmlen);
+	if (cmd == NULL)
+		return NULL;
+	dst = cmd;
+	for (i = first; argv[i]; i++)
+	{
+		if (i > first)
+			*dst++ = ' ';
+		src = argv[i];
+		if (strchr(src, '\'') || strchr(src, ' '))
+		{
+			*dst++ = '\'';
+			while (*src)
+			{
+				if (*src == '\'')
+					*dst++ = '\'';
+				*dst++ = *src++;
+			}
+			*dst++ = '\'';
+		} else
+		{
+			while (*src)
+			{
+				*dst++ = *src++;
+			}
+		}
+	}
+	*dst = '\0';
+	return cmd;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/*
  * tell server to open a document or start a program
  */
-void SendAV_STARTPROG(const char *path, const char *commandline)
+void SendAV_STARTPROG(const char *path, const char *commandline, void (*progstart)(_WORD ret))
 {
 	char *ptr2;
 	
@@ -323,6 +387,7 @@ void SendAV_STARTPROG(const char *path, const char *commandline)
 	av_parameter = g_strdup2_shared(path, commandline, &ptr2);
 	if (av_parameter != NULL || path == NULL)
 	{
+		va_progstart = progstart;
 		Protokoll_Send(av_server_id, AV_STARTPROG, PROT_NAMEPTR(av_parameter), PROT_NAMEPTR(ptr2), 0x1234);
 	}
 }
@@ -532,7 +597,7 @@ void SendAV_SENDCLICK(EVNTDATA *m, short ev_return)
 /*
  * reply to AV_PROTOKOLL
  */
-void DoVA_PROTOSTATUS(_WORD msg[8])
+static void DoVA_PROTOSTATUS(_WORD msg[8])
 {
 	union {
 		short msg[2];
@@ -544,7 +609,7 @@ void DoVA_PROTOSTATUS(_WORD msg[8])
 	if (msg[1] == av_server_id)
 	{
 		av_server_cfg = cfg.l;
-		HYP_DBG(("AV-Server name: %s  protocol: %lx", printnull(*(char **) &msg[6]), av_server_cfg));
+		HYP_DBG(("AV-Server name: '%s' protocol: %lx", printnull(*(char **) &msg[6]), av_server_cfg));
 	}
 }
 
@@ -578,11 +643,7 @@ void DoAV_PROTOKOLL(short flags)
 	}
 	
 	if (av_name == NULL)
-	{
-		av_name = g_strdup_shared(PROGRAM_UNAME);
-		if (av_name == NULL)
-			return;
-	}
+		return;
 	/*
 	 * send this to ALL applications, not only AV-server,
 	 * since they might need to know wether we understand quoting
@@ -614,18 +675,29 @@ void DoVA_Message(_WORD msg[8])
 {
 	switch (msg[0])
 	{
+	case VA_PROTOSTATUS:					/* server acknowledges registration */
+		DoVA_PROTOSTATUS(msg);
+		break;
 	case AV_STARTED:
-	case VA_PROGSTART:
 		g_free_shared(av_parameter);
 		av_parameter = NULL;
 		break;
-	case AV_PROTOKOLL:
-		if (av_name == NULL)
+	case VA_PROGSTART:
+		g_free_shared(av_parameter);
+		av_parameter = NULL;
+		if (va_progstart)
 		{
-			av_name = g_strdup_shared(PROGRAM_UNAME);
-			if (av_name == NULL)
-				return;
+			_WORD ret;
+			
+			if (msg[3] == 0)
+				ret = -1;
+			else
+				ret = msg[4];
+			va_progstart(ret);
+			va_progstart = 0;
 		}
+		break;
+	case AV_PROTOKOLL:
 		Protokoll_Send(msg[1], VA_PROTOSTATUS,
 			VA_PROT_SENDKEY | VA_PROT_ACCWINDOPEN | VA_PROT_OPENWIND | VA_PROT_PATH_UPDATE | VA_PROT_DRAG_ON_WINDOW | VA_PROT_EXIT | VA_PROT_STARTED | VA_PROT_QUOTING,
 			0, 0,
@@ -638,8 +710,15 @@ void DoVA_Message(_WORD msg[8])
 
 /*** ---------------------------------------------------------------------- ***/
 
-void va_proto_init(void)
+void va_proto_init(const char *myname)
 {
+	if (myname && av_name == NULL)
+	{
+		av_name = g_alloc_shared(9);
+		if (av_name == NULL)
+			return;
+		appl_makeappname(av_name, myname);
+	}
 	DoAV_PROTOKOLL(AV_PROTOKOLL_QUOTING | AV_PROTOKOLL_START | AV_PROTOKOLL_STARTED);
 }
 

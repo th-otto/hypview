@@ -67,6 +67,7 @@ void *g_alloc_shared(size_t size)
 {
 	void *ptr;
 	unsigned short mxmask;
+	SavePD();
 	
 	/*
 	 * MX_READABLE would be good enough for programs
@@ -78,6 +79,7 @@ void *g_alloc_shared(size_t size)
 	 */
 	mxmask = Mxmask();
 	ptr = mxmask ? Mxalloc(size, (MX_PREFTTRAM | MX_GLOBAL) & mxmask) : Malloc(size);
+	RestorePD();
 	return ptr;
 }
 

@@ -1204,7 +1204,10 @@ int main(int argc, const char **argv)
 				{
 					filename = argv[opts->optind + i];
 					if (process_file(filename, opts) == FALSE)
+					{
 						retval = 1;
+						delete_hyp = TRUE;
+					}
 				}
 			}
 		}

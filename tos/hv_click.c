@@ -299,7 +299,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 									prog = NULL;
 								}
 	
-								SendAV_STARTPROG(dfn, NULL);
+								SendAV_STARTPROG(dfn, NULL, 0);
 								g_free(dfn);
 								g_free(prog);
 							}

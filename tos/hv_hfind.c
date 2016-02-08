@@ -45,29 +45,43 @@ static void hypfind_search_allref(WINDOW_DATA *win, OBJECT *tree)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void av_hypfind_finish(_WORD ret)
+{
+	if (ret < 0)
+	{
+		char *filename = path_subst(gl_profile.general.hypfind_path);
+		char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), filename);
+		form_alert(1, str);
+		g_free(str);
+		g_free(filename);
+	} else
+	{
+		HypfindFinish(-1, ret);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 {
 	char cmd[128];
-	char *name;
 	const char *argv[8];
 	char *filename;
 	int argc = 0;
-	char *env;
 	
-	if (_AESnumapps == 1 && _app)
-		return;
 	filename = path_subst(gl_profile.general.hypfind_path);
 	if (!empty(filename))
 	{
+		char *name;
 		const char *tosrun = getenv("TOSRUN");
 		
 		argv[argc++] = filename;
 		argv[argc++] = "-p";
 		
-		name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
+		name = tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext;
 		if (!empty(name))
 		{
-			_WORD wiscr = __magix ? SHW_PARALLEL : CL_PARSE;
+			int name_argc = argc;
 			
 			argv[argc++] = name;
 			if (gl_profile.viewer.find_casesensitive)
@@ -79,47 +93,76 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				argv[argc++] = doc->path;
 			}
 			argv[argc] = NULL;
-			env = make_argv(cmd, argv, tosrun);
-			if (env != NULL)
+			if (_AESnumapps != 1)
 			{
-#if 1 /* does not seem to work yet: tw-call will get our ARGV environment */
-				struct {
-					const char *newcmd;
-					long psetlimit;
-					long prenice;
-					const char *defdir;
-					char *env;
-					short uid;
-					short gid;
-				} x_shell;
+				_WORD wiscr = __magix ? SHW_PARALLEL : CL_PARSE;
+				char *env;
 				
-				x_shell.newcmd = filename;
-				x_shell.psetlimit = 0;
-				x_shell.prenice = 0;
-				x_shell.defdir = 0;
-				x_shell.env = env;
-				x_shell.uid = 0;
-				x_shell.gid = 0;
-				HypfindID = shel_write(SHW_EXEC|SW_ENVIRON, 0, wiscr, (void *)&x_shell, cmd);
+				env = make_argv(cmd, argv, tosrun);
+				if (env != NULL)
+				{
+#if 1 /* does not seem to work yet: tw-call will get our ARGV environment */
+					struct {
+						const char *newcmd;
+						long psetlimit;
+						long prenice;
+						const char *defdir;
+						char *env;
+						short uid;
+						short gid;
+					} x_shell;
+					
+					x_shell.newcmd = filename;
+					x_shell.psetlimit = 0;
+					x_shell.prenice = 0;
+					x_shell.defdir = 0;
+					x_shell.env = env;
+					x_shell.uid = 0;
+					x_shell.gid = 0;
+					HypfindID = shel_xwrite(SHW_EXEC|SW_ENVIRON, 0, wiscr, (void *)&x_shell, cmd);
 #endif
-				(void) Mfree(env);
-			}
-			if (HypfindID <= 0)
+					(void) Mfree(env);
+				}
+				if (HypfindID <= 0)
+				{
+					cmd[0] = (char) strlen(cmd + 1);
+					HypfindID = shel_xwrite(SHW_EXEC, 0, wiscr, filename, cmd);
+				}
+				if (HypfindID <= 0)
+				{
+					char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), filename);
+					form_alert(1, str);
+					g_free(str);
+					HypfindID = -1;
+				}
+			} else if (!_app)
 			{
-				cmd[0] = (char) strlen(cmd + 1);
-				HypfindID = shel_write(SHW_EXEC, 0, wiscr, filename, cmd);
-			}
-			if (HypfindID <= 0)
+				/*
+				 * running as accessory on SingleTOS;
+				 * This will only work if the main application
+				 * is really the AV-Server
+				 */
+				char *cmd = av_cmdline(argv, FALSE);
+				SendAV_STARTPROG(filename, cmd, av_hypfind_finish);
+				g_free(cmd);
+			} else
 			{
-				char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), filename);
-				form_alert(1, str);
-				g_free(str);
-				HypfindID = -1;
+				/*
+				 * running as application on SingleTOS
+				 */
+				int ret;
+				GRECT desk;
+				
+				argv[name_argc] = hyp_conv_to_utf8(hyp_get_current_charset(), name, STR0TERM);
+				ret = hyp_utf8_spawnvp(P_WAIT, argc, argv);
+				g_free(argv[name_argc]);
+				wind_get_grect(0, WF_CURRXYWH, &desk);
+				form_dial_grect(FMD_FINISH, &desk, &desk);
+				av_hypfind_finish(ret);
 			}
 		}
 	}
 	g_free(filename);
-	g_free(name);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -234,11 +277,13 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		return;
 	}
 
+#if 0
 	if (_AESnumapps == 1 && _app)
 	{
 		tree[HYPFIND_ALL_PAGE].ob_state |= OS_DISABLED;
 		tree[HYPFIND_ALL_HYP].ob_state |= OS_DISABLED;
 	}
+#endif
 	if (gl_profile.viewer.find_casesensitive)
 		tree[HYPFIND_CASE].ob_state |= OS_SELECTED;
 	else

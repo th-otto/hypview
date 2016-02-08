@@ -76,6 +76,14 @@ int main(int argc, const char **argv)
 	Fsetdta(&mydta);
 	
 	Pdomain(1); /* DOM_MINT */
+
+#ifdef do_appl_init
+	gl_apid = appl_init();
+	if (gl_apid < 0)
+		return 1;
+	acc_memsave = !_app && _AESnumapps == 1;
+#endif
+
 	_mallocChunkSize(0);
 	
 	__argc = argc;

@@ -55,14 +55,13 @@ void DoUserEvents(EVNT *event)
 		{
 		case AC_OPEN:
 			{
-				WINDOW_DATA *win = NULL;
+				WINDOW_DATA *win;
 				
-				if (count_window() == 0 && !empty(gl_profile.viewer.last_file))
+				va_proto_init(NULL);
+				win = find_window_by_proc(HelpWindow);
+				if (win == NULL && !empty(gl_profile.viewer.last_file))
 				{
 					win = OpenFileInWindow(NULL, gl_profile.viewer.last_file, NULL, last_node, FALSE, TRUE, FALSE);
-					if (win)
-					{
-					}
 				}
 	
 				if (win == NULL)
@@ -101,7 +100,7 @@ void DoUserEvents(EVNT *event)
 					ptr->whandle = -1;
 			}
 			RemoveItems();
-			va_proto_init();
+			va_proto_init(NULL);
 			break;
 
 		case AC_HELP:

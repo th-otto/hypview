@@ -22,10 +22,24 @@
 #include <osbind.h>
 #include <errno.h>
 #include <mint/arch/nf_ops.h>
+#include <mint/sysvars.h>
+#include <mint/ssystem.h>
 
 
 #define MINFREE      (8L * 1024L)            /* free at least this much mem on top */
 #define MINKEEP (64L * 1024L)                /* keep at least this much mem on stack */
+
+
+static BASEPAGE *volatile *tospd;
+int acc_memsave;
+
+static long get_toshdr(void)
+{
+	OSHEADER *hdr = *((OSHEADER **)0x4f2l);
+
+	return (long)hdr;
+}
+
 
 /* CAUTION: use _mallocChunkSize() to tailor to your environment,
  *          do not make the default too large, as the compiler
@@ -38,6 +52,24 @@ static size_t MAXHUNK = 32 * 1024L; /* max. default */
 /* tune chunk size */
 void _mallocChunkSize(size_t chunksize)
 {
+	{
+		OSHEADER *hdr;
+		
+		hdr = (OSHEADER *)Ssystem(S_GETLVAL, 0x4f2l, 0);
+		if ((long) hdr <= 0)
+			hdr = (OSHEADER *)Supexec(get_toshdr);
+		
+		if ((long) hdr > 0)
+		{
+			if (hdr->os_version >= 0x102)
+				tospd = (BASEPAGE **) hdr->_run;
+			else if ((hdr->os_palmode & 0xfffe) == 8)
+				tospd = (BASEPAGE **) 0x873c; /* Spanish ROM */
+			else
+				tospd = (BASEPAGE **) 0x602C;
+		}
+	}
+	
 	if (chunksize == 0)
 	{
 		_DISKINFO d;
@@ -46,6 +78,7 @@ void _mallocChunkSize(size_t chunksize)
 		size_t coresize;
 		void **buf;
 		void **list;
+		SavePD();
 		
 		/* this is like fsstat(u:/proc) */
 		if (Dfree(&d, 35) >= 0)
@@ -116,6 +149,7 @@ void _mallocChunkSize(size_t chunksize)
 			chunksize <<= 1;
 			count >>= 1;
 		}
+		RestorePD();
 #if 0
 		fprintf(stderr, "coresize = %lu, allocation %lu blocks of size %lu\n", coresize, count, chunksize);
 #endif
@@ -749,13 +783,15 @@ void *realloc(void *r, size_t n)
 void *sbrk(intptr_t n)
 {
 	void *rval;
-
+	SavePD();
+	
 	rval = (void *) Malloc(n);
 	if (rval == NULL)
 	{
 		__set_errno(ENOMEM);
 		rval = (void *) (-1L);
 	}
+	RestorePD();
 	return rval;
 }
 
@@ -825,6 +861,18 @@ void _crtexit(void)
 #endif
 }
 #endif
+
+
+
+BASEPAGE *SetActPD(BASEPAGE *newpd)
+{
+	BASEPAGE *retV;
+
+	retV = *tospd;
+	*tospd = newpd;
+	return retV;
+}
+
 
 
 #ifdef MAIN

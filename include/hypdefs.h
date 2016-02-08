@@ -83,6 +83,19 @@ typedef unsigned short wchar_t;
 #define filename_ncmp strncmp
 #endif
 
+#ifdef __TOS__
+extern BASEPAGE *SetActPD (BASEPAGE *new);
+extern BASEPAGE *_BasPag;
+extern int acc_memsave;
+#define SavePD() \
+	BASEPAGE *old = NULL; \
+	if (acc_memsave) \
+		old = SetActPD(_BasPag)
+#define RestorePD() \
+	if (acc_memsave) \
+		SetActPD(old)
+#endif
+
 
 extern char const gl_program_name[];
 extern char const gl_compile_date[12];

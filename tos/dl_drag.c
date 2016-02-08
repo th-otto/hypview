@@ -93,7 +93,7 @@ void DragDrop(_WORD msg[8])
 			ddreply(pipe_handle, DD_NAK);
 			ddclose(pipe_handle, old_sig);
 			return;
-		};
+		}
 		DD_DialogGetFormat(tree, obj, format);
 	} else if (window)
 	{
@@ -102,7 +102,7 @@ void DragDrop(_WORD msg[8])
 			ddreply(pipe_handle, DD_NAK);
 			ddclose(pipe_handle, old_sig);
 			return;
-		};
+		}
 	} else
 	{
 		ddreply(pipe_handle, DD_NAK);
@@ -126,7 +126,9 @@ void DragDrop(_WORD msg[8])
 				Fread(pipe_handle, size, data);
 				data[size] = 0;
 			} else
+			{
 				ddreply(pipe_handle, DD_NAK);
+			}
 			break;
 		}
 	}

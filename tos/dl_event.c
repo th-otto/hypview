@@ -172,8 +172,6 @@ static void DoMessage(EVNT *event)
 		break;
 #endif
 	case VA_PROTOSTATUS:					/* server acknowledges registration */
-		DoVA_PROTOSTATUS(event->msg);
-		break;
 	case VA_SETSTATUS:
 	case VA_FILEFONT:
 	case VA_CONFONT:

@@ -150,6 +150,7 @@ static void LoadConfig(void)
 
 const char *_argv0;
 #define g_ttp_get_bindir g_gem_get_bindir
+#define do_appl_init 1
 #include "hypmain.h"
 
 
@@ -168,6 +169,7 @@ int main(int argc, const char **argv)
 	
 	LoadConfig();						/* load configuration */
 
+	va_proto_init(gl_profile.viewer.applname);
 	hv_init();							/* remaining initialization */
 	ValidateColors();
 

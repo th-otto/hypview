@@ -243,7 +243,9 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 	char *s, *t;
 	char *env;
 	const char *const *envp;
-
+	
+	SavePD();
+	
 	envp = (const char *const *)environ;
 
 /* count up space needed for environment */
@@ -262,6 +264,7 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
   try_again:
 	if ((env = (char *) Malloc((long) enlen)) == NULL)
 	{
+		RestorePD();
 		return NULL;
 	}
 
@@ -270,25 +273,33 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 
 	while ((p = *envp) != 0)
 	{
-		/* copy variable without any conversion */
-		while (*p)
+		/*
+		 * do not copy old ARGV environment variable.
+		 * This can happen e.g. when called from PC.PRG,
+		 * which does not use ARGV method
+		 */
+		if (strncmp(p, "ARGV=", 5) != 0)
 		{
-			*s++ = *p++;
-			if (--left <= min_left)
+			/* copy variable without any conversion */
+			while (*p)
 			{
-			  need_more_core:
-				/* oh dear, we don't have enough core...
-				 * so we Mfree what we already have, and try again with
-				 * some more space.
-				 */
-				Mfree(env);
-				enlen += 1024;
-				goto try_again;
+				*s++ = *p++;
+				if (--left <= min_left)
+				{
+				  need_more_core:
+					/* oh dear, we don't have enough core...
+					 * so we Mfree what we already have, and try again with
+					 * some more space.
+					 */
+					Mfree(env);
+					enlen += 1024;
+					goto try_again;
+				}
 			}
+			*s++ = 0;
+			left--;
 		}
-		*s++ = 0;
-		left--;
-
+		
 		envp++;
 	}
 
@@ -434,6 +445,8 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 	/* signal Extended Argument Passing */
 	*cmd = 0x7f;
 	
+	RestorePD();
+	
 	return env;
 }
 
@@ -462,41 +475,49 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 		__set_errno(ENOMEM);
 		return -1;
 	}
-
-	if (mode == P_WAIT)
-		execmode = 0;
-	else if (mode == P_OVERLAY)
-		execmode = 200;
-	else
-		execmode = 100;
 	
-	rval = Pexec(execmode, path, cmd, env);
-
-	if (rval < 0)
 	{
-#ifdef HASH_BANG
-		if (rval == -ETOS_NOEXEC)
-		{
-			/*
-			 * Always check the environment here, don't remove.
-			 * If UNIXMODE isn't set we run scripts by default
-			 * otherwise, check the 's' flag for activation.
-			 */
-			const char *unixmode = getenv("UNIXMODE");
-
-			if (!unixmode || (unixmode && strchr(unixmode, 's')))
-			{
-				(void) Mfree(env);
-				return interpret_script(mode, path, _path, argc, _argv);
-			}
-		}
-#endif
-		__set_errno(_XltErr((int)rval));
-		rval = -1;
-	} else if (mode == P_OVERLAY)
-		_exit((int) rval);
+		SavePD();
 	
-	(void) Mfree(env);
+		if (mode == P_WAIT)
+			execmode = 0;
+		else if (mode == P_OVERLAY)
+			execmode = 200;
+		else
+			execmode = 100;
+		
+		rval = Pexec(execmode, path, cmd, env);
+		
+		if (rval < 0)
+		{
+	#ifdef HASH_BANG
+			if (rval == -ETOS_NOEXEC)
+			{
+				/*
+				 * Always check the environment here, don't remove.
+				 * If UNIXMODE isn't set we run scripts by default
+				 * otherwise, check the 's' flag for activation.
+				 */
+				const char *unixmode = getenv("UNIXMODE");
+	
+				if (!unixmode || (unixmode && strchr(unixmode, 's')))
+				{
+					(void) Mfree(env);
+					RestorePD();
+					return interpret_script(mode, path, _path, argc, _argv);
+				}
+			}
+	#endif
+			__set_errno(_XltErr((int)rval));
+			rval = -1;
+		} else if (mode == P_OVERLAY)
+		{
+			_exit((int) rval);
+		}
+		
+		(void) Mfree(env);
+		RestorePD();
+	}
 	return (int) rval;
 }
 
