@@ -974,7 +974,7 @@ gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, voi
 #endif
 int hyp_utf8_spawnvp(int mode, int argc, const char *const argv[]);
 #ifdef __TOS__
-char *make_argv(char cmd[128], const char *const argv[], const char *tosrun);
+char *make_argv(char cmd[128], const char *const argv[]);
 #endif
 
 #endif /* __HYP_H__ */

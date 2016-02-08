@@ -234,11 +234,11 @@ static int interpret_script(int mode, const char *path, const char *_path, int a
 #endif /* HASH_BANG */
 
 
-char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
+char *make_argv(char cmd[128], const char *const *argv)
 {
 	size_t cmlen;
 	size_t enlen = 0;
-	size_t left, min_left;
+	size_t used;
 	const char *p;
 	char *s, *t;
 	char *env;
@@ -251,24 +251,22 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 /* count up space needed for environment */
 	for (cmlen = 0; argv[cmlen]; cmlen++)
 		enlen += strlen(argv[cmlen]) + 1;
-	if (tosrun)
-		enlen += strlen(tosrun) + 1;
 	enlen += 64;						/* filler for stuff like ARGV= and zeros, 
 										 * minibuffer for empty param index conversion 
 										 */
-	min_left = enlen;
 	for (cmlen = 0; envp[cmlen]; cmlen++)
 		enlen += strlen(envp[cmlen]) + 1;
+
+  need_more_core:
 	enlen += 1024;						/* buffer for _unx2dos */
 
-  try_again:
 	if ((env = (char *) Malloc((long) enlen)) == NULL)
 	{
 		RestorePD();
 		return NULL;
 	}
 
-	left = enlen;
+	used = 0;
 	s = env;
 
 	while ((p = *envp) != 0)
@@ -284,20 +282,10 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 			while (*p)
 			{
 				*s++ = *p++;
-				if (--left <= min_left)
-				{
-				  need_more_core:
-					/* oh dear, we don't have enough core...
-					 * so we Mfree what we already have, and try again with
-					 * some more space.
-					 */
-					Mfree(env);
-					enlen += 1024;
-					goto try_again;
-				}
+				used++;
 			}
 			*s++ = 0;
-			left--;
+			used++;
 		}
 		
 		envp++;
@@ -305,12 +293,15 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 
 	strcpy(s, "ARGV=");
 	s += 6;								/* s+=sizeof("ARGV=") */
-
+	used += 6;
+	
 	if (argv && *argv)
 	{
-		unsigned long null_params = 0;
-		int digits, i;
-		unsigned long idx, val;
+		unsigned int null_params = 0;
+		int ndigits, i;
+		const char *digits;
+		char digitbuf[10];
+		unsigned int idx, val;
 		const char *const *ap;
 
 		/* communicate empty arguments thru ARGV= value
@@ -325,10 +316,11 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 				{
 					strcpy(s - 1, "NULL:");
 					s += 4;				/* s now points after "NULL:" */
-					left -= 6;
+					used += 6;
 				} else
 				{
 					*s++ = ',';
+					used++;
 				}
 				null_params++;
 
@@ -336,29 +328,32 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 				 */
 				if (idx == 0)
 				{
-					*s++ = '0';
-					digits = 1;
+					digits = "0";
+					ndigits = 1;
 				} else
 				{
-					digits = 0;
+					ndigits = 0;
 					val = idx;
 					while (val)
 					{
-						for (i = digits; i > 0; i--)
-							s[i] = s[i - 1];
-						*s = "0123456789"[val % 10];
+						ndigits++;
+						digitbuf[sizeof(digitbuf) - ndigits] = "0123456789"[val % 10];
 						val /= 10;
-						digits++;
 					}
-					s += digits;
+					digits = digitbuf + sizeof(digitbuf) - ndigits;
 				}
 
-				left -= digits + 2;		/* 2 = sizeof( ',' in NULL:
+				used += ndigits + 2;		/* 2 = sizeof( ',' in NULL:
 										 * list + ' ' we put in place
 										 * of empty params
 										 */
-				if (left < min_left)
+				if (used >= enlen)
+				{
+					Mfree(env);
 					goto need_more_core;
+				}
+				for (i = 0; i < ndigits; i++)
+					*s++ = *digits++;
 			}
 		}
 
@@ -370,10 +365,7 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 		/* copy argv[0] first (because it doesn't go into 
 		 * the command line)
 		 */
-		if (tosrun)
-			p = tosrun;
-		else
-			p = *argv;
+		p = *argv;
 		if (!*p)
 		{								/* if empty argument */
 			*s++ = ' ';					/* replace by space */
@@ -397,8 +389,6 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 	if (argv && *argv)
 	{
 		t++;
-		if (tosrun)
-			--argv;
 		while (*++argv)
 		{
 			p = *argv;
@@ -408,30 +398,25 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 				/* write '' in TOS cmdlin
 				 */
 				if (cmlen < TOS_ARGS)
-				{
 					*t++ = '\'';
-					cmlen++;
-				}
+				cmlen++;
 				if (cmlen < TOS_ARGS)
-				{
 					*t++ = '\'';
-					cmlen++;
-				}
+				cmlen++;
 			} else
 			{
 				do
 				{
 					if (cmlen < TOS_ARGS)
-					{
 						*t++ = *p;
-						cmlen++;
-					}
+					cmlen++;
 					*s++ = *p++;
 				} while (*p);
 			}
-			if (cmlen < TOS_ARGS && *(argv + 1))
+			if (*(argv + 1))
 			{
-				*t++ = ' ';
+				if (cmlen < TOS_ARGS)
+					*t++ = ' ';
 				cmlen++;
 			}
 			*s++ = '\0';
@@ -442,8 +427,23 @@ char *make_argv(char cmd[128], const char *const *argv, const char *tosrun)
 	*s++ = '\0';
 	*s = '\0';
 
-	/* signal Extended Argument Passing */
-	*cmd = 0x7f;
+#if 0
+	/*
+	 * therotically, we don't need to use ARGV if the arguments fit into
+	 * the command line. In practise though, a lot of programs
+	 * have bugs parsing empty and/or quoted arguments correctly
+	 */
+	if (cmlen <= TOS_ARGS)
+	{
+		*cmd = (unsigned char)cmlen;
+		Mfree(env);
+		env = NULL;
+	} else
+#endif
+	{
+		/* signal Extended Argument Passing */
+		*cmd = 0x7f;
+	}
 	
 	RestorePD();
 	
@@ -470,7 +470,7 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 	_argv = argv;
 #endif
 
-	if ((env = make_argv(cmd, argv, NULL)) == NULL)
+	if ((env = make_argv(cmd, argv)) == NULL)
 	{
 		__set_errno(ENOMEM);
 		return -1;
@@ -490,7 +490,7 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 		
 		if (rval < 0)
 		{
-	#ifdef HASH_BANG
+#ifdef HASH_BANG
 			if (rval == -ETOS_NOEXEC)
 			{
 				/*
@@ -507,7 +507,7 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 					return interpret_script(mode, path, _path, argc, _argv);
 				}
 			}
-	#endif
+#endif
 			__set_errno(_XltErr((int)rval));
 			rval = -1;
 		} else if (mode == P_OVERLAY)

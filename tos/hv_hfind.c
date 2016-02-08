@@ -64,7 +64,6 @@ static void av_hypfind_finish(_WORD ret)
 
 static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 {
-	char cmd[128];
 	const char *argv[8];
 	char *filename;
 	int argc = 0;
@@ -73,8 +72,12 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 	if (!empty(filename))
 	{
 		char *name;
+#if 0
 		const char *tosrun = getenv("TOSRUN");
 		
+		if (tosrun)
+			argv[argc++] = tosrun;
+#endif
 		argv[argc++] = filename;
 		argv[argc++] = "-p";
 		
@@ -95,46 +98,12 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 			argv[argc] = NULL;
 			if (_AESnumapps != 1)
 			{
-				_WORD wiscr = __magix ? SHW_PARALLEL : CL_PARSE;
-				char *env;
+				int ret;
 				
-				env = make_argv(cmd, argv, tosrun);
-				if (env != NULL)
-				{
-#if 1 /* does not seem to work yet: tw-call will get our ARGV environment */
-					struct {
-						const char *newcmd;
-						long psetlimit;
-						long prenice;
-						const char *defdir;
-						char *env;
-						short uid;
-						short gid;
-					} x_shell;
-					
-					x_shell.newcmd = filename;
-					x_shell.psetlimit = 0;
-					x_shell.prenice = 0;
-					x_shell.defdir = 0;
-					x_shell.env = env;
-					x_shell.uid = 0;
-					x_shell.gid = 0;
-					HypfindID = shel_xwrite(SHW_EXEC|SW_ENVIRON, 0, wiscr, (void *)&x_shell, cmd);
-#endif
-					(void) Mfree(env);
-				}
-				if (HypfindID <= 0)
-				{
-					cmd[0] = (char) strlen(cmd + 1);
-					HypfindID = shel_xwrite(SHW_EXEC, 0, wiscr, filename, cmd);
-				}
-				if (HypfindID <= 0)
-				{
-					char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), filename);
-					form_alert(1, str);
-					g_free(str);
-					HypfindID = -1;
-				}
+				argv[name_argc] = hyp_conv_to_utf8(hyp_get_current_charset(), name, STR0TERM);
+				ret = hyp_utf8_spawnvp(P_WAIT, argc, argv);
+				g_free(argv[name_argc]);
+				av_hypfind_finish(ret);
 			} else if (!_app)
 			{
 				/*

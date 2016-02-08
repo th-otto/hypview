@@ -352,7 +352,7 @@ char *av_cmdline(const char *const argv[], gboolean incl_argv0)
 		if (i > first)
 			*dst++ = ' ';
 		src = argv[i];
-		if (strchr(src, '\'') || strchr(src, ' '))
+		if (*src == '\0' || strchr(src, '\'') || strchr(src, ' '))
 		{
 			*dst++ = '\'';
 			while (*src)
