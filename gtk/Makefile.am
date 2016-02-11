@@ -11,6 +11,19 @@ AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
+applicationdir = $(datadir)/applications
+
+application_DATA = hypview.desktop
+
+mimeinfodir = $(datadir)/mime-info
+
+mimeinfo_DATA = hypview.keys hypview.mime
+
+PO_DIR = $(builddir)/../po
+PO_SRCDIR = $(srcdir)/../po
+
+EVAL_POFILES = cat $(PO_SRCDIR)/LINGUAS | sed -e '/^#/d' -e 's@^\(.*\)@\t$$(PO_DIR)/\1.po @'
+POFILES := $(shell $(EVAL_POFILES))
 
 hypview_SOURCES = \
 	hv_main.c \
@@ -61,3 +74,15 @@ GEN_PIXBUF_CSOURCE = gen-pixbuf-csource
 
 $(srcdir)/../icons/hypview.h: $(srcdir)/../icons/hypview.ico
 	$(AM_V_GEN)$(GEN_PIXBUF_CSOURCE) --raw --static --name=hypview_icon_data $< > $@.tmp && mv $@.tmp $@ || { $(RM) $@.tmp; false; }
+
+$(PO_DIR)/.intltool-merge-cache: hypview.desktop.in $(INTLTOOL_MERGE) $(POFILES)
+	$(AM_V_GEN)
+	$(AM_V_at)LC_ALL=C $(INTLTOOL_MERGE) -q -d -u -c $(PO_DIR)/.intltool-merge-cache $(PO_DIR) hypview.desktop.in hypview.desktop.$$$$ && $(RM) hypview.desktop.$$$$
+
+hypview.desktop: $(srcdir)/hypview.desktop.in $(INTLTOOL_MERGE) $(PO_DIR)/.intltool-merge-cache
+	$(AM_V_GEN)
+	$(AM_V_at)LC_ALL=C $(INTLTOOL_MERGE) -q -d -u -c $(PO_DIR)/.intltool-merge-cache $(PO_DIR) $< $@.$$$$ && mv $@.$$$$ $@ || $(RM) $@.$$$$
+
+EXTRA_DIST = hypview.desktop hypview.desktop.in $(mimeinfo_DATA)
+
+CLEANFILES = hypview.desktop $(PO_DIR)/.intltool-merge-cache

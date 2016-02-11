@@ -2,6 +2,7 @@
 
 static int gtk_inited;
 static gboolean have_console;
+gboolean defer_messages;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -104,11 +105,29 @@ gboolean IsResponseOk(int resp)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static gboolean show_message_deferred(void *_str)
+{
+	char *str = (char *)_str;
+	GDK_THREADS_ENTER();
+	show_message(NULL, _("Error"), str, FALSE);
+	GDK_THREADS_LEAVE();
+	g_free(str);
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void show_message(GtkWidget *parent, const char *title, const char *text, gboolean big)
 {
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
 	GtkWidget *scroll;
+	
+	if (defer_messages)
+	{
+		g_idle_add(show_message_deferred, g_strdup(text));
+		return;
+	}
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("message"));

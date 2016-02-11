@@ -1060,7 +1060,7 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, 
 			if (strcmp(scheme, "file") == 0)
 			{
 				char *filename = g_filename_from_uri(names[i], NULL, NULL);
-				OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, FALSE, gl_profile.viewer.va_start_newwin, TRUE);
+				OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, FALSE, gl_profile.viewer.va_start_newwin, FALSE);
 				g_free(filename);
 			}
 			g_free(scheme);

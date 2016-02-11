@@ -1,6 +1,7 @@
 #define GDK_DISABLE_DEPRECATION_WARNINGS
 
 #include "hv_gtk.h"
+#include "hypdebug.h"
 #include "gdkkeysyms.h"
 
 #include "../icons/hypview.h"
@@ -8,9 +9,17 @@
 char const gl_program_name[] = "HypView";
 char const gl_compile_date[12] = __DATE__;
 
-static char *geom_arg;
-static gboolean bShowVersion;
-static gboolean bShowHelp;
+static GDesktopAppInfo *appinfo;
+
+/* avoid warnings from G_TYPE_* macros */
+#pragma GCC diagnostic ignored "-Wcast-qual"
+
+static GType hypview_application_get_type(void);
+typedef GApplication HypviewApplication;
+typedef GApplicationClass HypviewApplicationClass;
+G_DEFINE_TYPE(HypviewApplication, hypview_application, G_TYPE_APPLICATION)
+
+
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -34,19 +43,11 @@ GdkPixbuf *app_icon(void)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void NOINLINE LoadConfig(void)
-{
-	HypProfile_Load();
-}
-
-/******************************************************************************/
-/*** ---------------------------------------------------------------------- ***/
-/******************************************************************************/
-
 static GOptionEntry const options[] = {
-	{ "geometry", 0, 0, G_OPTION_ARG_STRING, &geom_arg, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
-	{ "version", 0, 0, G_OPTION_ARG_NONE, &bShowVersion, N_("Show version information and exit"), NULL },
-	{ "help", '?', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &bShowHelp, N_("Show help information and exit"), NULL },
+	{ "geometry", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
+	{ "version", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show version information and exit"), NULL },
+	{ "help", '?', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL, N_("Show help information and exit"), NULL },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, _("[FILE [CHAPTER]]") },
 	
 	{ NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };
@@ -55,60 +56,20 @@ static GOptionEntry const options[] = {
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static gboolean NOINLINE ParseCommandLine(int *argc, char ***argv)
+static gboolean NOINLINE init_options(GApplication *app)
 {
-	GOptionContext *context;
 	GOptionGroup *gtk_group;
-	GError *error = NULL;
-	gboolean retval;
-	GOptionGroup *main_group;
-	
-	/*
-	 * Glib's option parser requires global variables,
-	 * copy options read from INI file there.
-	 */
-	bShowVersion = FALSE;
-	bShowHelp = FALSE;
 	
 	gtk_group = gtk_get_option_group(FALSE);
-	context = g_option_context_new(_("[FILE [CHAPTER]]"));
-	main_group = g_option_group_new(NULL, NULL, NULL, NULL, NULL);
-	g_option_context_set_main_group(context, main_group);
-	g_option_context_set_summary(context, _("GTK Shell for HypView"));
-	g_option_context_add_group(context, gtk_group);
-	g_option_context_add_main_entries(context, options, GETTEXT_PACKAGE);
-	
-	/*
-	 * disable automatic handling of --help from Glib because
-	 * - the short option 'h' conflicts with our short option for --html
-	 * - we may want to redirect the message to a dialog box
-	 */
-	g_option_context_set_help_enabled(context, FALSE);
-	
-	retval = g_option_context_parse(context, argc, argv, &error);
-	if (bShowHelp)
-	{
-		char *msg = g_option_context_get_help(context, FALSE, NULL);
-		write_console(msg, FALSE, FALSE, TRUE);
-		g_free(msg);
-	}
-	g_option_context_free(context);
-	
-	if (retval == FALSE)
-	{
-		char *msg = g_strdup_printf("%s: %s", gl_program_name, error && error->message ? error->message : _("error parsing command line"));
-		write_console(msg, TRUE, TRUE, FALSE);
-		g_free(msg);
-		g_clear_error(&error);
-		return FALSE;
-	}
+	g_application_add_option_group(app, gtk_group);
+	g_application_add_main_option_entries(app, options);
 	
 	return TRUE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void show_version(void)
+static void show_version(GApplicationCommandLine *command_line)
 {
 	char *url = g_strdup_printf(_("%s is Open Source (see %s for further information).\n"), gl_program_name, HYP_URL);
 	char *hyp_version = hyp_lib_version();
@@ -121,7 +82,10 @@ static void show_version(void)
 		hyp_version,
 		HYP_COPYRIGHT,
 		url);
-	write_console(msg, FALSE, FALSE, FALSE);
+	if (command_line)
+		g_application_command_line_print(command_line, "%s\n", msg);
+	else
+		write_console(msg, FALSE, FALSE, FALSE);
 	g_free(msg);
 	g_free(hyp_version);
 	g_free(url);
@@ -170,6 +134,249 @@ static void fix_fds(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void hypview_application_init(HypviewApplication *app)
+{
+	UNUSED(app);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hypview_application_activate(GApplication *application)
+{
+	G_APPLICATION_CLASS(hypview_application_parent_class)->activate(application);
+	g_application_hold(application);
+
+	if (all_list == NULL)
+	{
+		hv_init();
+		Help_Init();
+	}
+	
+	if (!init_gtk())
+	{
+		exit(EXIT_FAILURE);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hypview_application_open(GApplication *application, GFile **files, gint n_files, const gchar *hint)
+{
+	WINDOW_DATA *win = NULL;
+	int i;
+		
+	UNUSED(application);
+	UNUSED(hint);
+	
+	for (i = 0; i < n_files; i++)
+	{
+		char *path = g_file_get_path(files[i]);
+		win = OpenFileInWindow(NULL, path, hyp_default_main_node_name, HYP_NOINDEX, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
+		if (win != NULL)
+		{
+			hv_recent_add(win->data->path);
+			hv_win_open(win);
+		}
+		g_free(path);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hypview_application_startup(GApplication *application)
+{
+	G_APPLICATION_CLASS(hypview_application_parent_class)->startup(application);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hypview_application_before_emit(GApplication *application, GVariant *platform_data)
+{
+	const gchar *startup_id;
+
+	UNUSED(application);
+	if (!g_variant_lookup(platform_data, "desktop-startup-id", "&s", &startup_id))
+		return;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gint hypview_command_line(GApplication *app, GApplicationCommandLine *command_line)
+{
+	GVariantDict *dict = g_application_command_line_get_options_dict(command_line);
+	gboolean bShowVersion = FALSE;
+	gboolean bShowHelp = FALSE;
+	char **argv = NULL;
+	int argc;
+	WINDOW_DATA *win = NULL;
+	int status = EXIT_SUCCESS;
+	
+	UNUSED(app);
+	g_variant_dict_lookup(dict, "help", "b", &bShowHelp);
+	g_variant_dict_lookup(dict, "version", "b", &bShowVersion);
+	g_variant_dict_lookup(dict, G_OPTION_REMAINING, "^as", &argv);
+	argc = argv ? g_strv_length(argv) : 0;
+	
+	if (bShowHelp)
+	{
+		/* char *msg = g_option_context_get_help(context, FALSE, NULL);
+		write_console(msg, FALSE, FALSE, TRUE);
+		g_free(msg); */
+	} else if (bShowVersion)
+	{
+		show_version(command_line);
+	} else
+	{
+		char *geom_arg = NULL;
+		gboolean quiet = FALSE;
+		int new_window = TRUE;
+		gboolean is_remote = g_application_command_line_get_is_remote(command_line);
+		
+		g_application_activate(app);
+
+		g_variant_dict_lookup(dict, "geometry", "s", &geom_arg);
+
+		if (!empty(geom_arg))
+			gtk_XParseGeometry(geom_arg, &gl_profile.viewer.win_x, &gl_profile.viewer.win_y, &gl_profile.viewer.win_w, &gl_profile.viewer.win_h);
+		{
+			char *str= g_strdup_printf("%dx%d+%d+%d",
+				gl_profile.viewer.win_w,
+				gl_profile.viewer.win_h,
+				gl_profile.viewer.win_x,
+				gl_profile.viewer.win_y);
+			hv_win_set_geometry(str);
+			g_free(str);
+		}
+		g_freep(&geom_arg);
+
+		/*
+		 * when called remotely, prevent immediate error dialogs from popping up,
+		 * because that would prevent sending back the exit status
+		 */
+		if (is_remote)
+		{
+			gboolean bNewWindow = FALSE;
+			
+			g_variant_dict_lookup(dict, "new-window", "b", &bNewWindow);
+			
+			defer_messages++;
+			win = all_list ? (WINDOW_DATA *)all_list->data : NULL;
+			new_window = gl_profile.viewer.va_start_newwin;
+			if (bNewWindow)
+				new_window = FORCE_NEW_WINDOW;
+		}
+		
+		if (argc <= 0)
+		{
+			/* default-hypertext specified? */
+			if (gl_profile.viewer.startup == 1 &&
+				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
+			{
+				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
+				win = OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, new_window, quiet);
+				g_free(filename);
+			} else if (gl_profile.viewer.startup == 2 &&
+				!empty(gl_profile.viewer.last_file))
+			{
+				char *filename = path_subst(gl_profile.viewer.last_file);
+				win = OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, new_window, quiet);
+				g_free(filename);
+			}
+		} else
+		{
+			char *path = argv[0];
+			
+			if (argc == 1 && hyp_guess_filetype(path) != HYP_FT_HYP)
+			{
+				win = search_allref(win, path, FALSE);
+			} else
+			{
+				/* ...load this file (incl. chapter) */
+				win = OpenFileInWindow(win, path, (argc >= 2 ? argv[1] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, new_window, quiet);
+			}
+		}
+		
+		if (win == NULL && !is_remote)
+			win = SelectFileLoad(NULL);						/* use file selector */
+		
+		if (win == NULL)
+		{
+			g_application_command_line_set_exit_status(command_line, EXIT_FAILURE);
+			status = EXIT_FAILURE;
+		} else
+		{
+			hv_recent_add(win->data->path);
+			hv_win_open(win);
+			if (gl_profile.remarker.run_on_startup)
+				StartRemarker(win, FALSE);
+		}
+
+		if (is_remote)
+			defer_messages--;
+	}
+	
+	g_strfreev(argv);
+	
+	return status;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hypview_application_class_init(GApplicationClass *klass)
+{
+	klass->before_emit = hypview_application_before_emit;
+	klass->startup = hypview_application_startup;
+	klass->activate = hypview_application_activate;
+	klass->open = hypview_application_open;
+	klass->command_line = hypview_command_line;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static int gtk_application_run(GApplication *application, int argc, char **argv)
+{
+	int status;
+	char **arguments;
+
+	{
+		gint i;
+
+		arguments = g_new (gchar *, argc + 1);
+		for (i = 0; i < argc; i++)
+			arguments[i] = g_strdup (argv[i]);
+		arguments[i] = NULL;
+	}
+
+	if (g_get_prgname() == NULL && argc > 0)
+	{
+		gchar *prgname;
+
+		prgname = g_path_get_basename(argv[0]);
+		g_set_prgname(prgname);
+		g_free(prgname);
+	}
+
+	if (!G_APPLICATION_GET_CLASS(application)->local_command_line(application, &arguments, &status))
+	{
+		/* the default implementation never returns FALSE */
+		ASSERT(0);
+		status = EXIT_FAILURE;
+	}
+	g_strfreev(arguments);
+	
+	if (toplevels_open_except(NULL) != 0)
+		gtk_main();
+
+	if (g_application_get_is_registered(application) && !g_application_get_is_remote(application))
+	{
+		g_signal_emit_by_name(application, "shutdown", 0);
+	}
+
+	return status;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 #if defined(G_OS_WIN32) && defined(_MSC_VER)
 static void myInvalidParameterHandler(const wchar_t *expression,
    const wchar_t *function,
@@ -189,7 +396,10 @@ static void myInvalidParameterHandler(const wchar_t *expression,
 
 int main(int argc, char **argv)
 {
+	HypviewApplication *app;
 	int exit_status = EXIT_SUCCESS;
+	struct stat s;
+	const char *desktop_filename = "hypview.desktop";
 	
 	check_console();
 	fix_fds();
@@ -214,87 +424,21 @@ int main(int argc, char **argv)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 #endif
 
-	LoadConfig();
+	HypProfile_Load();
 
-	if (!ParseCommandLine(&argc, &argv))
+	if (stat(desktop_filename, &s) == 0)
+		appinfo = g_desktop_app_info_new_from_filename(desktop_filename);
+	else
+		appinfo = g_desktop_app_info_new(desktop_filename);
+	app = (HypviewApplication *)g_object_new(hypview_application_get_type(),
+		"application-id", "org.gtk.hypview",
+		"flags", G_APPLICATION_HANDLES_OPEN | G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_IS_LAUNCHER,
+		NULL);
+
+	if (!init_options(app))
 		return EXIT_FAILURE;
 	
-	if (bShowHelp)
-	{
-		/* already handled in ParseCommandLine() */
-	} else if (bShowVersion)
-	{
-		show_version();
-	} else
-	{
-		WINDOW_DATA *win = NULL;
-		
-		hv_init();
-	
-		if (!init_gtk())
-			return EXIT_FAILURE;
-
-		Help_Init();
-		
-		if (!empty(geom_arg))
-			gtk_XParseGeometry(geom_arg, &gl_profile.viewer.win_x, &gl_profile.viewer.win_y, &gl_profile.viewer.win_w, &gl_profile.viewer.win_h);
-		{
-			char *str= g_strdup_printf("%dx%d+%d+%d",
-				gl_profile.viewer.win_w,
-				gl_profile.viewer.win_h,
-				gl_profile.viewer.win_x,
-				gl_profile.viewer.win_y);
-			hv_win_set_geometry(str);
-			g_free(str);
-		}
-		
-		if (argc <= 1)
-		{
-			/* default-hypertext specified? */
-			if (gl_profile.viewer.startup == 1 &&
-				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
-			{
-				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
-				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
-				g_free(filename);
-			} else if (gl_profile.viewer.startup == 2 &&
-				!empty(gl_profile.viewer.last_file))
-			{
-				char *filename = path_subst(gl_profile.viewer.last_file);
-				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
-				g_free(filename);
-			}
-		} else
-		{
-			if (argc == 2 && hyp_guess_filetype(argv[1]) != HYP_FT_HYP)
-			{
-				win = search_allref(win, argv[1], FALSE);
-			} else
-			{
-				/* ...load this file (incl. chapter) */
-				win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
-			}
-		}
-		if (win == NULL)
-			win = SelectFileLoad(NULL);						/* use file selector */
-		
-		if (win == NULL)
-		{
-			exit_status = EXIT_FAILURE;
-		} else
-		{
-			hv_recent_add(win->data->path);
-			hv_win_open(win);
-			if (gl_profile.remarker.run_on_startup)
-				StartRemarker(win, FALSE);
-		}
-	}
-	g_freep(&geom_arg);
-	
-	if (toplevels_open_except(NULL) != 0)
-	{
-		gtk_main();	
-	}
+	exit_status = gtk_application_run(app, argc, argv);	
 	
 	Help_Exit();
 

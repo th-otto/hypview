@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+StartupNotify=true
+DBusActivatable=true
+Exec=hypview %f
+Icon=hypview.png
+Terminal=false
+MimeType=application/x-hyp;
+Categories=GNOME;GTK;Graphics;Office;Viewer;System;Emulator;
+_Name=HypView
+_Comment=HyperText Help File Viewer

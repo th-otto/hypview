@@ -1,0 +1,10 @@
+application/x-hyp
+        default_application_id=hypview
+        description=HyperText Help File
+        category=Documents
+        default_component_iid=
+        icon_filename=hypview.png
+        default_action_type=application
+        short_list_application_ids_for_novice_user_level=hypview
+        short_list_application_ids_for_intermediate_user_level=hypview
+        short_list_application_ids_for_advanced_user_level=hypview

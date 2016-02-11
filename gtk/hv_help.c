@@ -101,7 +101,7 @@ gboolean Help_Show(WINDOW_DATA *parent, const char *entry)
 	if ((my_help_name = file_found(help_filename)) != NULL)
 	{
 		found = TRUE;
-		OpenFileInWindow(parent, my_help_name, entry, HYP_NOINDEX, TRUE, 2, FALSE);
+		OpenFileInWindow(parent, my_help_name, entry, HYP_NOINDEX, TRUE, FORCE_NEW_WINDOW, FALSE);
 	}
 	
 	g_free(my_help_name);

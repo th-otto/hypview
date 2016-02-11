@@ -57,12 +57,13 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 
 	if ((real_path = find_file(win, path)) == NULL)
 	{
-		FileError(path, _("not found"));
+		if (!no_message)
+			FileError(path, _("not found"));
 		return NULL;
 	}
 
 	/* only load file if neccessary */
-	if (new_window > 1)
+	if (new_window >= FORCE_NEW_WINDOW)
 	{
 		win = NULL;
 	} else if (new_window || win == NULL)

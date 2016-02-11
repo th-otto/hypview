@@ -122,6 +122,8 @@ void Help_Init(void);
 /*
  * hv_error.c
  */
+extern gboolean defer_messages;
+
 void check_console(void);
 void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean big);
 gboolean init_gtk(void);
@@ -226,6 +228,8 @@ void hv_file_selector_add_hypfilter(GtkWidget *selector);
 /*
  * hv_file.c
  */
+#define FORCE_NEW_WINDOW 2
+
 WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *chapter, hyp_nodenr node, gboolean find_default, int new_window, gboolean no_message);
 
 
