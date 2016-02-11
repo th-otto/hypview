@@ -432,7 +432,7 @@ int main(int argc, char **argv)
 		appinfo = g_desktop_app_info_new(desktop_filename);
 	app = (HypviewApplication *)g_object_new(hypview_application_get_type(),
 		"application-id", "org.gtk.hypview",
-		"flags", G_APPLICATION_HANDLES_OPEN | G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_IS_LAUNCHER,
+		"flags", G_APPLICATION_HANDLES_OPEN | G_APPLICATION_HANDLES_COMMAND_LINE,
 		NULL);
 
 	if (!init_options(app))
