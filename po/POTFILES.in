@@ -1,4 +1,4 @@
-# Auto-generated: Fr 5. Feb 14:26:13 CET 2016
+# Auto-generated: Do 11. Feb 16:34:07 CET 2016
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -19,6 +19,7 @@ gtk/hv_nav.c
 gtk/hv_prefs.c
 gtk/hv_srch.c
 gtk/hv_win.c
+gtk/hypview.desktop.in
 hyp/bmp2gif.c
 hyp/bmp2img.c
 hyp/gif2bmp.c

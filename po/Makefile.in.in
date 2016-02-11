@@ -13,6 +13,9 @@
 #   Makefile.in.in and po2tbl.sed.in for use with glib-gettextize
 #
 
+# config.status complains if "po/Makefile.in.in was not created by intltoolize".
+# INTLTOOL_MAKEFILE
+
 GETTEXT_PACKAGE = hypview
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
@@ -29,11 +32,12 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 datadir = @datadir@
 datarootdir = @datarootdir@
-#localedir = $(datadir)/locale
-localedir = $(prefix)/share/locale
+localedir = $(datadir)/locale
+#localedir = $(prefix)/share/locale
 gnulocaledir = $(localedir)
 subdir = po
 # DESTDIR = $(install_prefix)
+ac_aux_dir = @ac_aux_dir@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -71,6 +75,7 @@ DISTFILES = $(DISTFILES_1) $(GETTEXT_PACKAGE).pot \
 
 TARFILES = $(DISTFILES_1) $(POFILES) $(SOURCES)
 
+# the next line is edited by config.status; do not change it
 POTFILES = \
 
 CATALOGS = @CATALOGS@
@@ -89,6 +94,17 @@ am__v_echo_0   = :
 am__v_echo_1   = echo
 am__v_echo_    = $(am__v_echo_$(AM_DEFAULT_VERBOSITY))
 
+XGETTEXT_KEYWORDS = \
+	--keyword=_ \
+	--keyword=N_ \
+	--keyword=U_ \
+	--keyword=Q_ \
+	--keyword=P_:1,2 \
+	--keyword=C_:1c,2 \
+	--keyword=NC_:1c,2
+
+XGETTEXT_ARGS = --no-wrap --width=4
+
 .SUFFIXES:
 .SUFFIXES: .c .o .po .pox .gmo .mo .msg .cat
 
@@ -99,6 +115,8 @@ am__v_echo_    = $(am__v_echo_$(AM_DEFAULT_VERBOSITY))
 	$(MAKE) $(GETTEXT_PACKAGE).pot
 	INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) ; \
 	export INTLTOOL_EXTRACT ; \
+	XGETTEXT_ARGS="$(XGETTEXT_ARGS)" ; \
+	export XGETTEXT_ARGS ; \
 	echo $(MSGMERGE) $< $(srcdir)/$(GETTEXT_PACKAGE).pot -o $*.pox ; \
 	     $(MSGMERGE) $< $(srcdir)/$(GETTEXT_PACKAGE).pot -o $*.pox
 
@@ -108,15 +126,15 @@ am__v_echo_    = $(am__v_echo_$(AM_DEFAULT_VERBOSITY))
 
 .po.gmo:
 	$(AM_V_MSGFMT) $@
-	@-file=`echo $* | sed 's,.*/,,'`.gmo ; \
-	 rm -f "$$file" ; \
+	@file=`echo $* | sed 's,.*/,,'`.gmo ; \
+	 $(RM) "$$file" ; \
 	 $(AM_V_echo) $(GMSGFMT) -o "$$file" $< ; \
 	      $(GMSGFMT) -v --statistics -o "$$file" $<
 
 #.po.cat:
 #	@echo "sed -f ../intl/po2msg.sed < $< > $*.msg" ; \
 #	       sed -f ../intl/po2msg.sed < $< > $*.msg && \
-#	 rm -f $@ && \
+#	 $(RM) $@ && \
 #	 echo $(GENCAT) "$@" "$*.msg" ; \
 #	      $(GENCAT) "$@" "$*.msg"
 
@@ -127,11 +145,17 @@ default: all
 all-yes: $(CATALOGS)
 all-no:
 
-$(srcdir)/$(GETTEXT_PACKAGE).pot: $(POTFILES)
-	@INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) ; \
+$(srcdir)/$(GETTEXT_PACKAGE).pot: $(POTFILES) $(INTLTOOL_EXTRACT) $(INTLTOOL_UPDATE)
+	@INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" ; \
 	export INTLTOOL_EXTRACT ; \
-	echo top_srcdir=$(top_srcdir) $(GENPOT) ; \
-	     top_srcdir=$(top_srcdir) $(GENPOT)
+	XGETTEXT_ARGS="$(XGETTEXT_ARGS)" ; \
+	export XGETTEXT_ARGS ; \
+	srcdir="$(srcdir)" ; \
+	export srcdir ; \
+	top_srcdir="$(top_srcdir)" ; \
+	export top_srcdir ; \
+	echo $(GENPOT) ; \
+	     $(GENPOT)
 
 install-strip: install
 
@@ -190,8 +214,8 @@ uninstall:
 		   $(DESTDIR)$(gnulocaledir)/$$suffix \
 		   $(DESTDIR)$(gnulocaledir)/$$suffix.m; do \
 	    if [ -f $$f ]; then \
-	      echo rm -f $$f; \
-	           rm -f $$f; \
+	      echo $(RM) $$f; \
+	           $(RM) $$f; \
 	    fi; \
 	  done; \
 	done
@@ -204,24 +228,24 @@ check: all
 dvi info tags TAGS ID:
 
 mostlyclean:
-	rm -f core core.* *.pox $(GETTEXT_PACKAGE).po *.old.po cat-id-tbl.tmp
-	rm -fr *.o
+	$(RM) core core.* *.pox $(GETTEXT_PACKAGE).po *.old.po cat-id-tbl.tmp .intltool-merge-cache
+	$(RM) *.o
 
 clean: mostlyclean
 
 distclean: clean
-	rm -f Makefile Makefile.in POTFILES *.mo *.msg *.cat *.cat.m *.gmo *.pot
+	$(RM) Makefile Makefile.in POTFILES *.mo *.msg *.cat *.cat.m *.gmo *.pot
 	if test "$(srcdir)" != "."; then \
 	dists="$(DISTFILES)"; \
 	for file in $$dists; do \
-	  $(RM) $$file; \
+	  $(RM) `basename $$file`; \
 	done; \
 	fi
 
 maintainer-clean: distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
-	rm -f $(GMOFILES)
+	$(RM) $(GMOFILES)
 
 depend:
 # fuck off.  love, jwz.
@@ -237,11 +261,12 @@ generate_potfiles_in:
 	 file=$(srcdir)/POTFILES.in ;			\
 	 ( cd $(srcdir)/..;			\
 	   echo "# Auto-generated: `LANG=C date`" ;	\
-	   ( grep -l '_("' gtk/*.[ch] tools/*.[ch] hyp/*.[ch] tos/*.[ch] ;	\
+	   ( grep -l '_("' gtk/*.[ch] tools/*.[ch] hyp/*.[ch] tos/*.[ch] win32/*.[ch] ;	\
+	     ls gtk/*.desktop.in		\
 	     ) | sort	\
 	  ) > $$tmp &&				\
 	 mv $$tmp $$file &&			\
-	 echo "created `pwd`/$$file" || rm -f $tmp
+	 echo "created `pwd`/$$file" || $(RM) $tmp
 
 echo_tarfiles:
 	@echo $(TARFILES)
@@ -259,6 +284,8 @@ update-po: Makefile
 	@catalogs='$(CATALOGS)'; \
 	INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) ; \
 	export INTLTOOL_EXTRACT ; \
+	XGETTEXT_ARGS="$(XGETTEXT_ARGS)" ; \
+	export XGETTEXT_ARGS ; \
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
@@ -268,10 +295,10 @@ update-po: Makefile
 	  cp $$lang.po $$lang.old.po; \
 	  echo $(MSGMERGE) $$lang; \
 	  if   $(MSGMERGE) $$lang >/dev/null 2>&1; then \
-	    rm -f $$lang.old.po; \
+	    $(RM) $$lang.old.po; \
 	  else \
 	    echo "msgmerge for $$cat failed!"; \
-	    rm -f $$lang.po; \
+	    $(RM) $$lang.po; \
 	    mv $$lang.old.po $$lang.po; \
 	  fi; \
 	done
@@ -280,9 +307,11 @@ update-po: Makefile
 	$(MAKE) $(GETTEXT_PACKAGE).pot;
 	INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) ; \
 	export INTLTOOL_EXTRACT ; \
+	XGETTEXT_ARGS="$(XGETTEXT_ARGS)" ; \
+	export XGETTEXT_ARGS ; \
 	echo; printf "$*: "; \
 	if $(MSGMERGE) $*; then \
-	  rm -f $*.old.po; \
+	  $(RM) $*.old.po; \
 	  else \
 	    echo "msgmerge for * failed!"; \
 	    mv $*.old.po $*.po; \
@@ -299,7 +328,7 @@ POTFILES: $(srcdir)/POTFILES.in
 	  else \
 	    posrcprefix="../"; \
 	  fi; \
-	  rm -f $@-t $@ \
+	  $(RM) $@-t $@ \
 	    && (sed -e '/^#/d' 						\
 		    -e "s/^\[.*\] +//" 					\
 		    -e '/^[ 	]*$$/d' 				\
@@ -312,6 +341,15 @@ Makefile: Makefile.in.in $(top_builddir)/config.status POTFILES
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@.in CONFIG_HEADERS= \
 	       $(SHELL) ./config.status
+
+$(INTLTOOL_MERGE): $(top_srcdir)/intltool-merge.in
+	cd $(top_builddir) && $(SHELL) ./config.status intltool
+
+$(INTLTOOL_UPDATE): $(top_srcdir)/intltool-update.in
+	cd $(top_builddir) && $(SHELL) ./config.status intltool
+
+$(INTLTOOL_EXTRACT): $(top_srcdir)/intltool-extract.in
+	cd $(top_builddir) && $(SHELL) ./config.status intltool
 
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
