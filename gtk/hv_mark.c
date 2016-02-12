@@ -117,7 +117,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 	if (action_name == NULL || strncmp(action_name, "bookmark-", 9) != 0)
 		return;
 	sel = (int)strtol(action_name + 9, NULL, 10) - 1;
-	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
+	gdk_display_get_pointer(gtk_widget_get_display(GTK_WIDGET(win)), NULL, NULL, NULL, &mask);
 	if (sel >= 0 && sel < MAX_MARKEN)
 	{
 		if (mask & GDK_SHIFT_MASK)
@@ -128,7 +128,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 			char *buff;
 
 			buff = g_strdup_printf(_("Do you want to add\n%s\nto your bookmarks?"), win->title);
-			if (ask_yesno(win->hwnd, buff))
+			if (ask_yesno(GTK_WIDGET(win), buff))
 				MarkerSave(win, sel);
 			g_free(buff);
 		} else
@@ -138,7 +138,7 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 				char *buff;
 
 				buff = g_strdup_printf(_("Do you want to remove\n%s\nfrom your bookmarks?"), marken[sel].node_name);
-				if (ask_yesno(win->hwnd, buff))
+				if (ask_yesno(GTK_WIDGET(win), buff))
 				{
 					MarkerDelete(sel);
 					marken_change = TRUE;

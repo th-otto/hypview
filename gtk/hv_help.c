@@ -107,7 +107,7 @@ gboolean Help_Show(WINDOW_DATA *parent, const char *entry)
 	g_free(my_help_name);
 	if (!found)
 	{
-		show_message(parent ? parent->hwnd : NULL, _("Error"), _("No help file found"), FALSE);
+		show_message(GTK_WIDGET(parent), _("Error"), _("No help file found"), FALSE);
 	}
 	return found;
 }

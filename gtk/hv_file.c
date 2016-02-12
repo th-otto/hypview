@@ -45,7 +45,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	DOCUMENT *doc = NULL;
 	char *real_path;
 	gboolean add_to_hist = TRUE;
-	GtkWidget *errorwin = win ? win->hwnd : NULL;
+	GtkWidget *errorwin = GTK_WIDGET(win);
 	
 	/* done if we don't have a name */
 	if (empty(path))
@@ -137,7 +137,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		new_window = 0;
 		if (!win)
 		{
-			win = hv_win_new(doc, FALSE);
+			win = gtk_hypview_window_new(doc, FALSE);
 			new_window = 1;
 			add_to_hist = FALSE;
 			prev_doc = NULL;
@@ -165,7 +165,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		{
 			if (new_window)
 			{
-				gtk_widget_destroy(win->hwnd);
+				gtk_widget_destroy(GTK_WIDGET(win));
 			}
 			win = NULL;
 		}

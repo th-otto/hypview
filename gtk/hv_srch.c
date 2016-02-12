@@ -165,7 +165,7 @@ static void SearchResult(WINDOW_DATA *win, RESULT_ENTRY *result_list, const char
 	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), dialog);
 	
 	if (win)
-		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 }
@@ -199,7 +199,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 	if (empty(gl_profile.general.all_ref))
 	{
 		if (!no_message)
-			show_message(win ? win->hwnd : NULL, _("Error"), _("No ALL.REF file defined"), FALSE);
+			show_message(GTK_WIDGET(win), _("Error"), _("No ALL.REF file defined"), FALSE);
 		return win;
 	}
 
@@ -220,7 +220,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 		gtk_widget_show(label);
 		gtk_window_set_type_hint(GTK_WINDOW(splash), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
 		if (win)
-			gtk_window_set_transient_for(GTK_WINDOW(splash), GTK_WINDOW(win->hwnd));
+			gtk_window_set_transient_for(GTK_WINDOW(splash), GTK_WINDOW(win));
 		gtk_window_set_position(GTK_WINDOW(splash), GTK_WIN_POS_CENTER_ON_PARENT);
 		gtk_widget_show(splash);
 		gtk_window_present(GTK_WINDOW(splash));
@@ -293,7 +293,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 			
 			name = hyp_utf8_to_charset(hyp_get_current_charset(), string, STR0TERM, &converror);
 			str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, name);
-			show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
+			show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
 			g_free(name);
 			g_free(str);
 		}

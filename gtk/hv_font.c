@@ -156,7 +156,7 @@ void SelectFont(WINDOW_DATA *win)
 	gtk_widget_set_can_default(button, TRUE);
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 	
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 	

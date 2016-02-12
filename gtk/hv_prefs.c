@@ -395,7 +395,7 @@ void hv_config_colors(WINDOW_DATA *win)
 	
 	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(color_dialog_response), dialog);
 	
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 	
@@ -640,7 +640,7 @@ void hv_preferences(WINDOW_DATA *win)
 	
 	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(prefs_dialog_response), dialog);
 	
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));
 	

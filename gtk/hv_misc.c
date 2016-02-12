@@ -168,7 +168,7 @@ void on_recent_selected(GtkAction *action, WINDOW_DATA *win)
 	if (action_name == NULL || strncmp(action_name, "recent-", 7) != 0)
 		return;
 	sel = (int)strtol(action_name + 7, NULL, 10) - 1;
-	gdk_display_get_pointer(gtk_widget_get_display(win->hwnd), NULL, NULL, NULL, &mask);
+	gdk_display_get_pointer(gtk_widget_get_display(GTK_WIDGET(win)), NULL, NULL, NULL, &mask);
 	for (l = recent_list; l; l = l->next)
 	{
 		if (sel == 0)

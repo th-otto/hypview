@@ -51,6 +51,100 @@ static char *default_geometry;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+#pragma GCC diagnostic ignored "-Wcast-qual"
+G_DEFINE_TYPE(GtkHypviewWindow, gtk_hypview_window, GTK_TYPE_WINDOW)
+#pragma GCC diagnostic warning "-Wcast-qual"
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gint gtk_hypview_window_expose(GtkWidget *widget, GdkEventExpose *event)
+{
+	if (gtk_widget_is_drawable(widget))
+	{
+		if (GTK_WIDGET_CLASS(gtk_hypview_window_parent_class)->expose_event)
+			GTK_WIDGET_CLASS(gtk_hypview_window_parent_class)->expose_event(widget, event);
+    }
+  
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void gtk_hypview_window_finalize(GObject *object)
+{
+	DOCUMENT *doc;
+	WINDOW_DATA *win = (WINDOW_DATA *)object;
+	
+	if (win != NULL)
+	{
+		doc = win->data;
+		if (win->popup)
+		{
+			WINDOW_DATA *pop = win->popup;
+			win->popup = NULL;
+			gtk_widget_destroy(GTK_WIDGET(pop));
+		}
+		hypdoc_unref(doc);
+		if (!win->is_popup)
+		{
+			RemoveAllHistoryEntries(win);
+			all_list = g_slist_remove(all_list, win);
+		}
+		hv_win_destroy_images(win);
+		g_freep(&win->title);
+		G_OBJECT_CLASS(gtk_hypview_window_parent_class)->finalize(object);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void gtk_hypview_window_class_init(GtkHypviewWindowClass *klass)
+{
+	GtkWidgetClass *widget_class;
+	GObjectClass *gobject_class;
+
+	widget_class = (GtkWidgetClass*) klass;
+	gobject_class = (GObjectClass *) klass;
+	widget_class->expose_event = gtk_hypview_window_expose;
+	gobject_class->finalize = gtk_hypview_window_finalize;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void gtk_hypview_window_init(GtkHypviewWindow *win)
+{
+	int i;
+	
+	win->last.g_x = win->last.g_y = win->last.g_w = win->last.g_h = 0;
+	win->title = NULL;
+	win->x_raster = font_cw;
+	win->y_raster = font_ch;
+	win->data = NULL;
+	win->is_popup = FALSE;
+	win->action_group = NULL;
+	win->curlink_mark = NULL;
+	win->recent_menu = NULL;
+	win->bookmarks_menu = NULL;
+	win->text_buffer = NULL;
+	win->text_window = NULL;
+	win->text_view = NULL;
+	win->toolbar = NULL;
+	for (i = 0; i < TO_MAX; i++)
+		win->m_buttons[i] = NULL;
+	win->searchbox = NULL;
+	win->searchentry = NULL;
+	win->strnotfound = NULL;
+	win->hovering_over_link = FALSE;
+	win->popup = NULL;
+	win->history = NULL;
+	win->displayed_node = NULL;
+	win->image_childs = NULL;
+}
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 static int read_int(const char *string, const char **next)
 {
 	int result = 0;
@@ -200,7 +294,7 @@ void hv_win_set_geometry(const char *geometry)
 
 void hv_win_open(WINDOW_DATA *win)
 {
-	gtk_window_present(GTK_WINDOW(win->hwnd));
+	gtk_window_present(GTK_WINDOW(win));
 }
 
 /******************************************************************************/
@@ -212,7 +306,7 @@ static void quit_force(GtkAction *action, void *userdata)
 	WINDOW_DATA *win = (WINDOW_DATA *)userdata;
 
 	UNUSED(action);
-	gtk_widget_destroy(win->hwnd);
+	gtk_widget_destroy(GTK_WIDGET(win));
 	check_toplevels(NULL);
 }
 
@@ -230,7 +324,7 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 	if (ret == FALSE)
 	{
 		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), g_strerror(errno));
-		if (ask_yesno(win->hwnd, msg))
+		if (ask_yesno(GTK_WIDGET(win), msg))
 			quit_force(NULL, win);
 		g_free(msg);
 		return FALSE;
@@ -257,38 +351,6 @@ void hv_win_destroy_images(WINDOW_DATA *win)
 	}
 	g_slist_free(win->image_childs);
 	win->image_childs = NULL;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void NOINLINE hv_win_delete(WINDOW_DATA *win)
-{
-	DOCUMENT *doc;
-	
-	if (win != NULL)
-	{
-		doc = win->data;
-		if (win->popup)
-		{
-			WINDOW_DATA *pop = win->popup;
-			win->popup = NULL;
-			gtk_widget_destroy(pop->hwnd);
-		}
-		hypdoc_unref(doc);
-		RemoveAllHistoryEntries(win);
-		all_list = g_slist_remove(all_list, win);
-		hv_win_destroy_images(win);
-		g_free(win->title);
-		g_free(win);
-	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void shell_destroyed(GtkWidget *w, WINDOW_DATA *win)
-{
-	UNUSED(w);
-	hv_win_delete(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -426,7 +488,7 @@ static gboolean on_history_open(GtkAction *action, WINDOW_DATA *win)
 static void on_about(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	About(win->hwnd);
+	About(GTK_WIDGET(win));
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -579,8 +641,8 @@ static gboolean on_quit(GtkAction *action, WINDOW_DATA *win)
 {
 	{
 		gint x, y, width, height;
-		gdk_window_get_root_origin(gtk_widget_get_window(win->hwnd), &x, &y);
-		gdk_drawable_get_size(gtk_widget_get_window(win->hwnd), &width, &height);
+		gdk_window_get_root_origin(gtk_widget_get_window(GTK_WIDGET(win)), &x, &y);
+		gdk_drawable_get_size(gtk_widget_get_window(GTK_WIDGET(win)), &width, &height);
 		gl_profile.viewer.win_x = x;
 		gl_profile.viewer.win_y = y;
 		gl_profile.viewer.win_w = width;
@@ -822,7 +884,7 @@ static gboolean on_button_press(GtkWidget *text_view, GdkEvent *event, WINDOW_DA
 	{
 		if (win->popup)
 		{
-			gtk_widget_destroy(win->popup->hwnd);
+			gtk_widget_destroy(GTK_WIDGET(win->popup));
 			return TRUE;
 		}
 		if (event->button.button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
@@ -844,9 +906,9 @@ static gboolean on_button_release(GtkWidget *text_view, GdkEvent *event, WINDOW_
 
 	if (event->type == GDK_BUTTON_RELEASE)
 	{
-		if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
+		if (win->is_popup)
 		{
-			gtk_widget_destroy(win->hwnd);
+			gtk_widget_destroy(GTK_WIDGET(win));
 			return TRUE;
 		}
 		
@@ -915,14 +977,14 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 	DOCUMENT *doc = win->data;
 	gint win_w, win_h;
 	
-	if (gtk_window_get_window_type(GTK_WINDOW(win->hwnd)) == GTK_WINDOW_POPUP)
+	if (win->is_popup)
 	{
-		gtk_widget_destroy(win->hwnd);
+		gtk_widget_destroy(GTK_WIDGET(win));
 		return TRUE;
 	}
 	if (win->popup)
 	{
-		gtk_widget_destroy(win->popup->hwnd);
+		gtk_widget_destroy(GTK_WIDGET(win->popup));
 		return TRUE;
 	}
 	
@@ -1516,7 +1578,7 @@ static void set_font_attributes(WINDOW_DATA *win)
 	gtk_widget_modify_base(win->text_view, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_bg(win->text_view, GTK_STATE_NORMAL, &color);
 	gtk_widget_modify_font(win->text_view, desc);
-	screen = gtk_widget_get_screen(win->hwnd);
+	screen = gtk_widget_get_screen(GTK_WIDGET(win));
 	context = gdk_pango_context_get_for_screen(screen);
 	font_map = pango_context_get_font_map(context);
 	font = pango_font_map_load_font(font_map, context, desc);
@@ -1738,7 +1800,7 @@ static char const ui_info[] =
 "  </toolbar>\n"
 "</ui>\n";
 
-WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
+WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 {
 	WINDOW_DATA *win;
 	GtkWidget *vbox, *hbox, *vbox2, *hbox2;
@@ -1748,29 +1810,29 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	GError *error = NULL;
 	GtkTextTagTable *tagtable;
 	
-	win = g_new0(WINDOW_DATA, 1);
+	win = (GtkHypviewWindow *)g_object_new(GTK_TYPE_HYPVIEW_WINDOW, "type", popup ? GTK_WINDOW_POPUP : GTK_WINDOW_TOPLEVEL, NULL);
 	if (win == NULL)
 		return NULL;
+
 	win->data = doc;
+	win->is_popup = popup;
 	
 	register_stock_icons();
 	
-	win->hwnd = gtk_window_new(popup ? GTK_WINDOW_POPUP : GTK_WINDOW_TOPLEVEL);
-	g_object_set_data(G_OBJECT(win->hwnd), "shell-dialog", win);
-	g_object_set_data(G_OBJECT(win->hwnd), "hypview_window_type", NO_CONST("shell-window"));
+	g_object_set_data(G_OBJECT(win), "hypview_window_type", NO_CONST("shell-window"));
 	win->title = g_strdup(doc->path);
-	gtk_window_set_title(GTK_WINDOW(win->hwnd), win->title);
+	gtk_window_set_title(GTK_WINDOW(win), win->title);
 	{
 	GdkPixbuf *icon;
 	icon = app_icon();
-	gtk_window_set_icon(GTK_WINDOW(win->hwnd), icon);
+	gtk_window_set_icon(GTK_WINDOW(win), icon);
 	gdk_pixbuf_unref(icon);
-	gtk_window_set_role(GTK_WINDOW(win->hwnd), "hypview");
+	gtk_window_set_role(GTK_WINDOW(win), "hypview");
 	}
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
-	gtk_container_add(GTK_CONTAINER(win->hwnd), vbox);
+	gtk_container_add(GTK_CONTAINER(win), vbox);
  	
  	if (!popup)
  	{
@@ -1784,10 +1846,10 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(win->action_group, "scalebitmaps")), gl_profile.viewer.scale_bitmaps);
 		
 		ui_manager = gtk_ui_manager_new();
-		g_object_set_data_full(G_OBJECT(win->hwnd), "ui-manager", ui_manager, g_object_unref);
+		g_object_set_data_full(G_OBJECT(win), "ui-manager", ui_manager, g_object_unref);
 		
 		gtk_ui_manager_insert_action_group(ui_manager, win->action_group, 0);
-		gtk_window_add_accel_group(GTK_WINDOW(win->hwnd), gtk_ui_manager_get_accel_group(ui_manager));
+		gtk_window_add_accel_group(GTK_WINDOW(win), gtk_ui_manager_get_accel_group(ui_manager));
 		
 		if (!gtk_ui_manager_add_ui_from_string(ui_manager, ui_info, -1, &error))
 		{
@@ -1909,8 +1971,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 			g_object_set(settings, "gtk-error-bell", FALSE, NULL);
 	}
 	
-	g_signal_connect(G_OBJECT(win->hwnd), "window-state-event", G_CALLBACK(state_changed), (gpointer) win);
-	g_signal_connect(G_OBJECT(win->hwnd), "frame-event", G_CALLBACK(state_changed), (gpointer) win);
+	g_signal_connect(G_OBJECT(win), "window-state-event", G_CALLBACK(state_changed), (gpointer) win);
+	g_signal_connect(G_OBJECT(win), "frame-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
 	g_signal_connect(G_OBJECT(win->text_view), "button-press-event", G_CALLBACK(on_button_press), win);
 	g_signal_connect(G_OBJECT(win->text_view), "button-release-event", G_CALLBACK(on_button_release), win);
@@ -1926,8 +1988,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 	{
 		all_list = g_slist_prepend(all_list, win);
 
-		g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(shell_destroyed), (gpointer) win);
-		g_signal_connect(G_OBJECT(win->hwnd), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) win);
+		g_signal_connect(G_OBJECT(win), "delete_event", G_CALLBACK(wm_toplevel_close_cb), (gpointer) win);
 
 		ToolbarUpdate(win, FALSE);
 
@@ -1948,7 +2009,7 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 		}
 		if (default_geometry != NULL)
 		{
-			gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), default_geometry);
+			gtk_window_parse_geometry(GTK_WINDOW(win), default_geometry);
 		}	
 	}
 	
@@ -1959,14 +2020,14 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 
 void hv_set_title(WINDOW_DATA *win, const char *title)
 {
-	gtk_window_set_title(GTK_WINDOW(win->hwnd), title);
+	gtk_window_set_title(GTK_WINDOW(win), title);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void SendRedraw(WINDOW_DATA *win)
 {
-	gtk_widget_queue_draw(win->hwnd);
+	gtk_widget_queue_draw(GTK_WIDGET(win));
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1974,7 +2035,7 @@ void SendRedraw(WINDOW_DATA *win)
 void SendCloseWindow(WINDOW_DATA *win)
 {
 	if (win)
-		SendClose(win->hwnd);
+		SendClose(GTK_WIDGET(win));
 }
 
 /*** ---------------------------------------------------------------------- ***/

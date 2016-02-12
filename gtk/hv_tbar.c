@@ -86,8 +86,8 @@ void position_popup(GtkMenu *menu, gint *xret, gint *yret, gboolean *push_in, vo
 	
 	UNUSED(menu);
 	gtk_widget_get_allocation(win->m_buttons[pos->obj], &a);
-	gtk_widget_translate_coordinates(win->m_buttons[pos->obj], win->hwnd, 0, a.height, &x, &y);
-	gdk_window_get_origin(gtk_widget_get_window(win->hwnd), &wx, &wy);
+	gtk_widget_translate_coordinates(win->m_buttons[pos->obj], GTK_WIDGET(win), 0, a.height, &x, &y);
+	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(win)), &wx, &wy);
 	*xret = x + wx;
 	*yret = y + wy;
 	*push_in = TRUE;

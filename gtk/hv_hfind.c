@@ -31,7 +31,7 @@ static void hypfind_text(WINDOW_DATA *win)
 		}
 	} else
 	{
-		gtk_widget_error_bell(win->hwnd);
+		gtk_widget_error_bell(GTK_WIDGET(win));
 	}
 }
 
@@ -81,7 +81,7 @@ static gboolean check_hypfind(void *userdata)
 			} else
 			{
 				char *str = g_strdup_printf(_("HypFind exited with code %d"), retcode);
-				show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
+				show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
 				g_free(str);
 			}
 			GDK_THREADS_LEAVE();
@@ -105,7 +105,7 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 	
 	if (empty(gl_profile.general.hypfind_path))
 	{
-		show_message(win->hwnd, _("Error"), _("No path to HypFind configured"), FALSE);
+		show_message(GTK_WIDGET(win), _("Error"), _("No path to HypFind configured"), FALSE);
 		return;
 	}
 	name = gtk_entry_get_text(entry);
@@ -132,7 +132,7 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp)
 	} else
 	{
 		char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), filename, hyp_utf8_strerror(errno));
-		show_message(win->hwnd, _("Error"), str, FALSE);
+		show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
 		g_free(str);
 	}
 	g_free(filename);
@@ -254,7 +254,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		return;
 	}
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), 2);
 	gtk_widget_show_all(dialog);
 	resp = gtk_dialog_run(GTK_DIALOG(dialog));

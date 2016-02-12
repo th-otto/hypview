@@ -67,7 +67,7 @@ static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 	} else
 	{
 		gtk_widget_show(win->strnotfound);
-		gdk_display_beep(gtk_widget_get_display(win->hwnd));
+		gdk_display_beep(gtk_widget_get_display(GTK_WIDGET(win)));
 	}
 }
 

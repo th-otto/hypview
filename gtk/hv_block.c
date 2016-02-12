@@ -5,7 +5,7 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void StartRemarker(WINDOW_DATA *win, gboolean quiet)
+void StartRemarker(GtkHypviewWindow *win, gboolean quiet)
 {
 	char *path = path_subst(gl_profile.remarker.path);
 	const char *argv[2];
@@ -13,7 +13,7 @@ void StartRemarker(WINDOW_DATA *win, gboolean quiet)
 	if (empty(path))
 	{
 		if (!quiet)
-			show_message(win ? win->hwnd : NULL, _("Error"), _("No path to REMARKER configured"), FALSE);
+			show_message(GTK_WIDGET(win), _("Error"), _("No path to REMARKER configured"), FALSE);
 	} else
 	{
 		argv[0] = path;
@@ -21,7 +21,7 @@ void StartRemarker(WINDOW_DATA *win, gboolean quiet)
 		if (hyp_utf8_spawnvp(P_NOWAIT, 1, argv) < 0 && !quiet)
 		{
 			char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), path, hyp_utf8_strerror(errno));
-			show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
+			show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
 			g_free(str);
 		}
 	}
@@ -151,7 +151,7 @@ static void paste_clipboard(GtkClipboard *clipboard, const char *txt, void *user
 	new_window = FALSE;
 	if (!win)
 	{
-		win = hv_win_new(doc, FALSE);
+		win = gtk_hypview_window_new(doc, FALSE);
 		new_window = TRUE;
 		add_to_hist = FALSE;
 		prev_doc = NULL;
@@ -167,7 +167,7 @@ static void paste_clipboard(GtkClipboard *clipboard, const char *txt, void *user
 		g_free(doc);
 		win->data = prev_doc;
 		if (new_window)
-			gtk_widget_destroy(win->hwnd);
+			gtk_widget_destroy(GTK_WIDGET(win));
 		return;
 	}
 	if (add_to_hist)

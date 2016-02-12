@@ -57,19 +57,28 @@ enum blockop {
 	CO_PRINT
 };
 
+#define GTK_TYPE_HYPVIEW_WINDOW                             (gtk_hypview_window_get_type ())
+#define GTK_HYPVIEW_WINDOW(in)                              (G_TYPE_CHECK_INSTANCE_CAST((inst), GTK_TYPE_HYPVIEW_WINDOW, GtkHypviewWindow))
+#define GTK_IS_HYPVIEW_WINDOW(inst)                         (G_TYPE_CHECK_INSTANCE_TYPE((inst), GTK_TYPE_HYPVIEW_WINDOW)
+
+GType  gtk_hypview_window_get_type(void) G_GNUC_CONST;
+
+typedef struct _window_data_ GtkHypviewWindow;
+typedef struct _GtkHypviewWindowClass GtkHypviewWindowClass;
 
 struct _window_data_
 {
+	GtkWindow gtk_window;
 	GRECT last;
 	char *title;						/* Window title, in utf8 encoding */
 	int x_raster;
 	int y_raster;
 	DOCUMENT *data;
-
+	gboolean is_popup;
+	
 	GtkActionGroup *action_group;
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
 
-	GtkWidget *hwnd;					/* GtkWindow */
 	GtkWidget *recent_menu;				/* GtkMenu */
 	GtkWidget *bookmarks_menu;			/* GtkMenu */
 	GtkTextBuffer *text_buffer;
@@ -85,6 +94,10 @@ struct _window_data_
 	HISTORY *history;
 	HYP_NODE *displayed_node;           /* Currently displayed node */
 	GSList *image_childs;               /* list of child widget to implement graphic commands */
+};
+
+struct _GtkHypviewWindowClass {
+	GtkWindowClass parent_class;
 };
 
 typedef struct _link_info {
@@ -167,7 +180,7 @@ extern GSList *all_list;
 
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
-WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
+WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);

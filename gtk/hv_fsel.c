@@ -192,7 +192,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 {
 	char *name;
 	char *subst;
-	GtkWidget *parent = win ? win->hwnd : NULL;
+	GtkWidget *parent = GTK_WIDGET(win);
 	char **paths;
 	
 	if (win)
@@ -223,7 +223,7 @@ void SelectFileSave(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 	char *filepath;
-	GtkWidget *parent = win ? win->hwnd : NULL;
+	GtkWidget *parent = GTK_WIDGET(win);
 	GtkTextIter start, end;
 	
 	filepath = replace_ext(doc->path, NULL, ".txt");

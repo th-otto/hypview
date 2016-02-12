@@ -14,19 +14,6 @@ static void popup_destroyed(GtkWidget *w, WINDOW_DATA *parentwin)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void delete_me(GtkWidget *w, WINDOW_DATA *win)
-{
-	DOCUMENT *doc = win->data;
-	UNUSED(w);
-	
-	hypdoc_unref(doc);
-	hv_win_destroy_images(win);
-	g_free(win->title);
-	g_free(win);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 #if 0
 static gboolean popup_grab_on_window(GdkWindow *window, guint32 activate_time, gboolean grab_keyboard)
 {
@@ -57,12 +44,11 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 	WINDOW_DATA *win;
 	
 	if (parentwin->popup)
-		gtk_widget_destroy(parentwin->popup->hwnd);
-	win = hv_win_new(newdoc, TRUE);
+		gtk_widget_destroy(GTK_WIDGET(parentwin->popup));
+	win = gtk_hypview_window_new(newdoc, TRUE);
 	if (win != NULL)
 	{
-		g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(popup_destroyed), (gpointer) parentwin);
-		g_signal_connect(G_OBJECT(win->hwnd), "destroy", G_CALLBACK(delete_me), (gpointer) win);
+		g_signal_connect(G_OBJECT(win), "destroy", G_CALLBACK(popup_destroyed), (gpointer) parentwin);
 
 		if (newdoc->gotoNodeProc(win, NULL, num))
 		{
@@ -70,7 +56,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 			
 			parentwin->popup = win;
 			geom = g_strdup_printf("+%d+%d", x, y);
-			gtk_window_parse_geometry(GTK_WINDOW(win->hwnd), geom);
+			gtk_window_parse_geometry(GTK_WINDOW(win), geom);
 			g_free(geom);
 #if 0
 			{
@@ -83,16 +69,16 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 				gtk_widget_set_size_request(win->text_view, w, h);
 			}
 #endif
-			gtk_window_set_transient_for(GTK_WINDOW(win->hwnd), GTK_WINDOW(parentwin->hwnd));
+			gtk_window_set_transient_for(GTK_WINDOW(win), GTK_WINDOW(parentwin));
 			ReInitWindow(win, FALSE);
 			hv_win_open(win);
 #if 0
-			popup_grab_on_window(gtk_widget_get_window(win->hwnd), gtk_get_current_event_time(), TRUE);
-			gtk_grab_add(win->hwnd);
+			popup_grab_on_window(gtk_widget_get_window(GTK_WIDGET(win)), gtk_get_current_event_time(), TRUE);
+			gtk_grab_add(GTK_WIDGET(win));
 #endif
 		} else
 		{
-			gtk_widget_destroy(win->hwnd);
+			gtk_widget_destroy(GTK_WIDGET(win));
 		}
 	}
 }

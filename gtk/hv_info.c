@@ -148,6 +148,6 @@ void DocumentInfos(WINDOW_DATA *win)
 	g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 	gtk_widget_grab_default(button);
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win->hwnd));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_widget_show_all(dialog);
 }
