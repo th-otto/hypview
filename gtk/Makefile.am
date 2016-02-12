@@ -64,9 +64,11 @@ hypview_SOURCES = \
 
 hypview_DEPENDENCIES = $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
 hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(LIBINTL)
+hypview_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 
 gfilesel_SOURCES = gfilesel.c
 gfilesel_LDADD = $(GTK_LIBS)
+gfilesel_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 
 icons: $(srcdir)/../icons/hypview.h
 
