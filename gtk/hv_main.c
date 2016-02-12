@@ -19,6 +19,7 @@ typedef GApplication HypviewApplication;
 typedef GApplicationClass HypviewApplicationClass;
 G_DEFINE_TYPE(HypviewApplication, hypview_application, G_TYPE_APPLICATION)
 
+#pragma GCC diagnostic warning "-Wcast-qual"
 
 
 /******************************************************************************/
@@ -44,9 +45,10 @@ GdkPixbuf *app_icon(void)
 /******************************************************************************/
 
 static GOptionEntry const options[] = {
-	{ "geometry", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
 	{ "version", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show version information and exit"), NULL },
 	{ "help", '?', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL, N_("Show help information and exit"), NULL },
+	{ "geometry", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
+	{ "new-window", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Open <FILE> in a new window"), NULL },
 	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, _("[FILE [CHAPTER]]") },
 	
 	{ NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
@@ -168,6 +170,7 @@ static void hypview_application_open(GApplication *application, GFile **files, g
 	UNUSED(application);
 	UNUSED(hint);
 	
+	defer_messages++;
 	for (i = 0; i < n_files; i++)
 	{
 		char *path = g_file_get_path(files[i]);
@@ -179,6 +182,7 @@ static void hypview_application_open(GApplication *application, GFile **files, g
 		}
 		g_free(path);
 	}
+	defer_messages--;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -268,8 +272,12 @@ static gint hypview_command_line(GApplication *app, GApplicationCommandLine *com
 		
 		if (argc <= 0)
 		{
+			if (is_remote && win && new_window < FORCE_NEW_WINDOW)
+			{
+				/* hv_win_open(win); */
+			}
 			/* default-hypertext specified? */
-			if (gl_profile.viewer.startup == 1 &&
+			else if (gl_profile.viewer.startup == 1 &&
 				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
 			{
 				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
@@ -426,6 +434,7 @@ int main(int argc, char **argv)
 
 	HypProfile_Load();
 
+	g_set_prgname(gl_program_name);
 	if (stat(desktop_filename, &s) == 0)
 		appinfo = g_desktop_app_info_new_from_filename(desktop_filename);
 	else
@@ -434,6 +443,17 @@ int main(int argc, char **argv)
 		"application-id", "org.gtk.hypview",
 		"flags", G_APPLICATION_HANDLES_OPEN | G_APPLICATION_HANDLES_COMMAND_LINE,
 		NULL);
+
+	{
+    	GError *error = NULL;
+
+		if (!g_application_register(app, NULL, &error))
+		{
+			g_printerr("%s\n", error->message);
+			g_error_free (error);
+			return EXIT_FAILURE;
+		}
+	}
 
 	if (!init_options(app))
 		return EXIT_FAILURE;
