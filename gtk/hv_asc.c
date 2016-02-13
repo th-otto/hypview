@@ -27,6 +27,9 @@ void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 	 * clear buffer
 	 */
 	hv_win_reset_text(win);
+	g_free(win->title);
+	win->title = g_strdup(doc->path);
+	hv_set_title(win, win->title);
 	gtk_text_buffer_get_iter_at_offset(text_buffer, &iter, 0);
 
 	if (doc->type == HYP_FT_ASCII)
