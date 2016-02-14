@@ -13,14 +13,26 @@ static GDesktopAppInfo *appinfo;
 
 /* avoid warnings from G_TYPE_* macros */
 #pragma GCC diagnostic ignored "-Wcast-qual"
-
-static GType hypview_application_get_type(void);
-typedef GApplication HypviewApplication;
-typedef GApplicationClass HypviewApplicationClass;
 G_DEFINE_TYPE(HypviewApplication, hypview_application, G_TYPE_APPLICATION)
-
 #pragma GCC diagnostic warning "-Wcast-qual"
 
+static const gchar org_gtk_hypview_xml[] =
+  "<node>"
+    "<interface name='org.gtk.hypview'>"
+      "<method name='ToFront'>"
+        "<arg type='o' name='path' direction='in'/>"
+        "<arg type='b' name='result' direction='out'/>"
+      "</method>"
+      "<method name='Close'>"
+        "<arg type='o' name='path' direction='in'/>"
+        "<arg type='b' name='result' direction='out'/>"
+      "</method>"
+      "<method name='GetFront'>"
+        "<arg type='o' name='path' direction='out'/>"
+      "</method>"
+      "<method name='Quit'/>"
+    "</interface>"
+  "</node>";
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -330,6 +342,146 @@ static gint hypview_command_line(GApplication *app, GApplicationCommandLine *com
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void do_action(const char *name)
+{
+	GtkHypviewWindow *win;
+	GtkAction *action;
+	
+	if (all_list == NULL)
+		return;
+	win = (GtkHypviewWindow *)all_list->data;
+	action = gtk_action_group_get_action(win->action_group, name);
+	if (action)
+		gtk_action_activate(action);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void g_application_impl_method_call(
+	GDBusConnection *connection,
+	const gchar *sender,
+	const gchar *object_path,
+	const gchar *interface_name,
+	const gchar *method_name,
+	GVariant *parameters,
+	GDBusMethodInvocation *invocation,
+	gpointer user_data)
+{
+	HypviewApplication *app = (HypviewApplication *)user_data;
+	GVariant *result = NULL;
+	GtkHypviewWindow *win;
+	
+	UNUSED(connection);
+	UNUSED(sender);
+	UNUSED(object_path);
+	UNUSED(interface_name);
+	UNUSED(method_name);
+	UNUSED(app);
+	
+	if (strcmp(method_name, "ToFront") == 0)
+	{
+		const char *path = NULL;
+		
+		win = NULL;
+		g_variant_get(parameters, "(&o)", &path);
+		if (empty(path))
+		{
+			if (all_list)
+				win = (GtkHypviewWindow *)all_list->data;
+		} else
+		{
+			GSList *l;
+			
+			for (l = all_list; l; l = l->next)
+			{
+				win = (GtkHypviewWindow *)l->data;
+				
+				if (strcmp(path, win->object_path) == 0)
+					break;
+			}
+		}
+		if (win)
+		{
+			hv_win_open(win);
+			result = g_variant_new("(b)", TRUE);
+		} else
+		{
+			result = g_variant_new("(b)", FALSE);
+		}
+	}
+	
+	if (strcmp(method_name, "Close") == 0)
+	{
+		const char *path = NULL;
+		
+		win = NULL;
+		g_variant_get(parameters, "(&o)", &path);
+		if (empty(path))
+		{
+			if (all_list)
+				win = (GtkHypviewWindow *)all_list->data;
+		} else
+		{
+			GSList *l;
+			
+			for (l = all_list; l; l = l->next)
+			{
+				win = (GtkHypviewWindow *)l->data;
+				
+				if (strcmp(path, win->object_path) == 0)
+					break;
+			}
+		}
+		if (win)
+		{
+			SendCloseWindow(win);
+			result = g_variant_new("(b)", TRUE);
+		} else
+		{
+			result = g_variant_new("(b)", FALSE);
+		}
+	}
+	
+	if (strcmp(method_name, "GetFront") == 0)
+	{
+		win = all_list ? (GtkHypviewWindow *)all_list->data : NULL;
+		result = g_variant_new("(o)", win ? win->object_path : "");
+	}
+	
+	if (strcmp(method_name, "Quit") == 0)
+	{
+		do_action("quit");
+	}
+	
+	g_dbus_method_invocation_return_value(invocation, result);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static GVariant *g_application_impl_get_property(
+	GDBusConnection *connection,
+	const gchar *sender,
+	const gchar *object_path,
+	const gchar *interface_name,
+	const gchar *property_name,
+	GError **error,
+	gpointer user_data)
+{
+	HypviewApplication *app = (HypviewApplication *)user_data;
+
+	UNUSED(connection);
+	UNUSED(sender);
+	UNUSED(object_path);
+	UNUSED(interface_name);
+	UNUSED(property_name);
+	UNUSED(error);
+	UNUSED(app);
+	
+	return NULL;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void hypview_application_class_init(GApplicationClass *klass)
 {
 	klass->before_emit = hypview_application_before_emit;
@@ -450,11 +602,42 @@ int main(int argc, char **argv)
 		if (!g_application_register(app, NULL, &error))
 		{
 			g_printerr("%s\n", error->message);
-			g_error_free (error);
+			g_error_free(error);
 			return EXIT_FAILURE;
 		}
 	}
-
+	
+	{
+		GError *error = NULL;
+		GDBusNodeInfo *info;
+		GDBusInterfaceInfo *org_gtk_hypview;
+		GDBusConnection *session_bus;
+		const char *object_path;
+		
+		static const GDBusInterfaceVTable vtable = {
+			g_application_impl_method_call,
+			g_application_impl_get_property,
+			NULL, /* set_property */
+			{ 0, 0, 0, 0, 0, 0, 0, 0 }
+		};
+		
+		info = g_dbus_node_info_new_for_xml(org_gtk_hypview_xml, &error);
+		if (G_UNLIKELY(info == NULL))
+		{
+			g_printerr("%s", error->message);
+			g_error_free(error);
+		} else
+		{
+			org_gtk_hypview = g_dbus_node_info_lookup_interface(info, "org.gtk.hypview");
+			g_dbus_interface_info_ref(org_gtk_hypview);
+			g_dbus_node_info_unref(info);
+			
+			session_bus = g_application_get_dbus_connection(app);
+			object_path = g_application_get_dbus_object_path(app);
+			g_dbus_connection_register_object(session_bus, object_path, org_gtk_hypview, &vtable, app, NULL, &error);
+		}
+	}
+	
 	if (!init_options(app))
 		return EXIT_FAILURE;
 	

@@ -75,6 +75,8 @@ struct _window_data_
 	int y_raster;
 	DOCUMENT *data;
 	gboolean is_popup;
+	char *object_path;					/* D-Bus object path */
+	guint object_id;
 	
 	GtkActionGroup *action_group;
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
@@ -110,6 +112,10 @@ typedef struct _link_info {
 
 
 /* hv_main.c */
+
+GType hypview_application_get_type(void);
+typedef GApplication HypviewApplication;
+typedef GApplicationClass HypviewApplicationClass;
 
 void check_toplevels(GtkWidget *toplevel);
 GdkPixbuf *app_icon(void);

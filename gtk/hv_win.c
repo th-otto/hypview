@@ -46,6 +46,72 @@ static const char *const tb_action_names[TO_MAX] = {
 };
 
 static char *default_geometry;
+static GDBusInterfaceInfo *org_gtk_hypview;
+
+static const gchar org_gtk_hypview_xml[] =
+  "<node>"
+    "<interface name='org.gtk.hypviewwindow'>"
+      "<method name='ToFront'/>"
+      "<method name='Close'/>"
+      "<method name='Back'/>"
+      "<method name='First'/>"
+      "<method name='Prev'/>"
+      "<method name='PrevPhys'/>"
+      "<method name='Toc'/>"
+      "<method name='Next'/>"
+      "<method name='NextPhys'/>"
+      "<method name='Last'/>"
+      "<method name='Index'/>"
+      "<method name='Catalog'/>"
+      "<method name='GetNodename'>"
+        "<arg type='s' name='name' direction='out'/>"
+      "</method>"
+      "<method name='GetNodetitle'>"
+        "<arg type='s' name='title' direction='out'/>"
+      "</method>"
+    "<property name='Path' type='s' access='read'/>"
+    "<property name='Title' type='s' access='read'/>"
+    "<property name='Topic' type='s' access='read'/>"
+    "<property name='Author' type='s' access='read'/>"
+    "<property name='Version' type='s' access='read'/>"
+    "<property name='Subject' type='s' access='read'/>"
+    "<property name='Os' type='s' access='read'/>"
+    "<property name='CompilerVersion' type='u' access='read'/>"
+    "<property name='Charset' type='s' access='read'/>"
+    "<property name='Default' type='s' access='read'/>"
+    "<property name='Help' type='s' access='read'/>"
+    "<property name='Options' type='s' access='read'/>"
+    "<property name='Width' type='u' access='read'/>"
+    "<property name='Flags' type='u' access='read'/>"
+    "</interface>"
+  "</node>";
+
+/*
+Category	    Name		Code	Description
+reserved	    INVALID		0 	    Not a valid type code, used to terminate signatures
+fixed, basic	BYTE		'y'		8-bit unsigned integer
+fixed, basic	BOOLEAN		'b'		Boolean value, 0 is FALSE and 1 is TRUE. Everything else is invalid.
+fixed, basic	INT16		'n'		16-bit signed integer
+fixed, basic	UINT16		'q'		16-bit unsigned integer
+fixed, basic	INT32		'i'		32-bit signed integer
+fixed, basic	UINT32		'u'		32-bit unsigned integer
+fixed, basic	INT64		'x'		64-bit signed integer
+fixed, basic	UINT64		't'		64-bit unsigned integer
+fixed, basic	DOUBLE		'd'		IEEE 754 double
+string-like		STRING		's'		UTF-8 string (must be valid UTF-8). Must be nul terminated and contain no other nul bytes.
+string-like		OBJECT_PATH	'o'		Name of an object instance
+string-like		SIGNATURE	'g'		A type signature
+container		ARRAY		'a'		Array
+container		STRUCT		'r', '()'	Struct; type code 114 'r' is reserved for use in bindings and implementations to represent the general concept of a struct, and must not appear in signatures used on D-Bus.
+container		VARIANT		'v' 	Variant type (the type of the value is part of the value itself)
+container		DICT_ENTRY	'e', '{}') 	Entry in a dict or map (array of key-value pairs). Type code 101 'e' is reserved for use in bindings and implementations to represent the general concept of a dict or dict-entry, and must not appear in signatures used on D-Bus.
+fixed			UNIX_FD		'h'		Unix file descriptor
+reserved					'm'		Reserved for a 'maybe' type compatible with the one in GVariant, and must not appear in signatures used on D-Bus until specified here
+reserved					'*'		Reserved for use in bindings/implementations to represent any single complete type, and must not appear in signatures used on D-Bus.
+reserved					'?'		Reserved for use in bindings/implementations to represent any basic type, and must not appear in signatures used on D-Bus.
+reserved					'@', '&', '^'	Reserved for internal use by bindings/implementations, and must not appear in signatures used on D-Bus. GVariant uses these type-codes to encode calling conventions.
+*/
+
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -92,7 +158,17 @@ static void gtk_hypview_window_finalize(GObject *object)
 		}
 		hv_win_destroy_images(win);
 		g_freep(&win->title);
+		if (org_gtk_hypview)
+		{
+			HypviewApplication *app = g_application_get_default();
+			GDBusConnection *session_bus = g_application_get_dbus_connection(app);
+			if (win->object_id)
+				g_dbus_connection_unregister_object(session_bus, win->object_id);
+			g_dbus_interface_info_unref(org_gtk_hypview);
+		}
+		g_freep(&win->object_path);
 		G_OBJECT_CLASS(gtk_hypview_window_parent_class)->finalize(object);
+		check_toplevels(NULL);
 	}
 }
 
@@ -111,12 +187,195 @@ static void gtk_hypview_window_class_init(GtkHypviewWindowClass *klass)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void do_action(GtkHypviewWindow *win, const char *name)
+{
+	GtkAction *action = gtk_action_group_get_action(win->action_group, name);
+	if (action)
+		gtk_action_activate(action);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void g_application_impl_method_call(
+	GDBusConnection *connection,
+	const gchar *sender,
+	const gchar *object_path,
+	const gchar *interface_name,
+	const gchar *method_name,
+	GVariant *parameters,
+	GDBusMethodInvocation *invocation,
+	gpointer user_data)
+{
+	GtkHypviewWindow *win = (GtkHypviewWindow *)user_data;
+	GVariant *result = NULL;
+	
+	UNUSED(connection);
+	UNUSED(sender);
+	UNUSED(object_path);
+	UNUSED(interface_name);
+	UNUSED(parameters);
+	
+	if (strcmp(method_name, "ToFront") == 0)
+		hv_win_open(win);
+	
+	else if (strcmp(method_name, "Close") == 0)
+		do_action(win, "close");
+	
+	else if (strcmp(method_name, "Back") == 0)
+		do_action(win, "back");
+	else if (strcmp(method_name, "First") == 0)
+		do_action(win, "firstpage");
+	else if (strcmp(method_name, "Prev") == 0)
+		do_action(win, "prevlogpage");
+	else if (strcmp(method_name, "PrevPhys") == 0)
+		do_action(win, "prevphyspage");
+	else if (strcmp(method_name, "Toc") == 0)
+		do_action(win, "toc");
+	else if (strcmp(method_name, "Next") == 0)
+		do_action(win, "nextlogpage");
+	else if (strcmp(method_name, "NextPhys") == 0)
+		do_action(win, "nextlogpage");
+	else if (strcmp(method_name, "Last") == 0)
+		do_action(win, "lastpage");
+	else if (strcmp(method_name, "Index") == 0)
+		do_action(win, "index");
+	else if (strcmp(method_name, "Catalog") == 0)
+		do_action(win, "catalog");
+
+	else if (strcmp(method_name, "GetNodename") == 0)
+	{
+		DOCUMENT *doc = win->data;
+		if (doc->type == HYP_FT_HYP)
+		{
+			char *str;
+			HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+			HYP_NODE *node = win->displayed_node;
+			
+			if (node)
+				str = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
+			else
+				str = g_strdup("");
+			result = g_variant_new("(s)", str);
+			g_free(str);
+		} else
+		{
+			result = g_variant_new("(s)", hyp_default_main_node_name);
+		}
+	}
+	
+	else if (strcmp(method_name, "GetNodetitle") == 0)
+	{
+		DOCUMENT *doc = win->data;
+		if (doc->type == HYP_FT_HYP)
+		{
+			char *str;
+			HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+			HYP_NODE *node = win->displayed_node;
+			
+			if (node)
+			{
+				if (node->window_title)
+					str = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
+				else
+					str = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
+			} else
+			{
+				str = g_strdup("");
+			}
+			result = g_variant_new("(s)", str);
+			g_free(str);
+		} else
+		{
+			result = g_variant_new("(s)", doc->path);
+		}
+	}
+	
+	g_dbus_method_invocation_return_value(invocation, result);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static GVariant *g_application_impl_get_property(
+	GDBusConnection *connection,
+	const gchar *sender,
+	const gchar *object_path,
+	const gchar *interface_name,
+	const gchar *property_name,
+	GError **error,
+	gpointer user_data)
+{
+	GtkHypviewWindow *win = (GtkHypviewWindow *)user_data;
+	DOCUMENT *doc = win->data;
+	
+	UNUSED(connection);
+	UNUSED(sender);
+	UNUSED(object_path);
+	UNUSED(interface_name);
+	UNUSED(property_name);
+	UNUSED(error);
+	
+	if (strcmp(property_name, "Path") == 0)
+		return g_variant_new_string(win->data->path);
+	if (strcmp(property_name, "Title") == 0)
+		return g_variant_new_string(win->title);
+	if (doc->type == HYP_FT_HYP)
+	{
+		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+		
+		if (strcmp(property_name, "Topic") == 0)
+			return g_variant_new_string(fixnull(hyp->database));
+		if (strcmp(property_name, "Author") == 0)
+			return g_variant_new_string(fixnull(hyp->author));
+		if (strcmp(property_name, "Version") == 0)
+			return g_variant_new_string(fixnull(hyp->version));
+		if (strcmp(property_name, "Subject") == 0)
+			return g_variant_new_string(fixnull(hyp->subject));
+		if (strcmp(property_name, "Os") == 0)
+			return g_variant_new_string(hyp_osname(hyp->comp_os));
+		if (strcmp(property_name, "CompilerVersion") == 0)
+			return g_variant_new_uint32(hyp->comp_vers);
+		if (strcmp(property_name, "Charset") == 0)
+			return g_variant_new_string(hyp_charset_name(hyp->comp_charset));
+		if (strcmp(property_name, "Default") == 0)
+			return g_variant_new_string(fixnull(hyp->default_name));
+		if (strcmp(property_name, "Help") == 0)
+			return g_variant_new_string(fixnull(hyp->help_name));
+		if (strcmp(property_name, "Options") == 0)
+			return g_variant_new_string(fixnull(hyp->hcp_options));
+		if (strcmp(property_name, "Width") == 0)
+			return g_variant_new_uint32(hyp->line_width);
+		if (strcmp(property_name, "Flags") == 0)
+			return g_variant_new_uint32(hyp->st_guide_flags);
+	} else
+	{
+		FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
+		if (strcmp(property_name, "Charset") == 0)
+			return g_variant_new_string(hyp_charset_name(ascii->charset));
+		g_set_error(error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Not supported"));
+	}
+	return NULL;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void gtk_hypview_window_init(GtkHypviewWindow *win)
 {
 	int i;
+	HypviewApplication *app;
+	static unsigned int window_id;
+	GDBusConnection *session_bus;
+	GError *error = NULL;
 	
+	static const GDBusInterfaceVTable vtable = {
+		g_application_impl_method_call,
+		g_application_impl_get_property,
+		NULL, /* set_property */
+		{ 0, 0, 0, 0, 0, 0, 0, 0 }
+	};
+		
 	win->last.g_x = win->last.g_y = win->last.g_w = win->last.g_h = 0;
 	win->title = NULL;
+	win->object_path = NULL;
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
 	win->data = NULL;
@@ -139,6 +398,38 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 	win->history = NULL;
 	win->displayed_node = NULL;
 	win->image_childs = NULL;
+
+	app = g_application_get_default();
+	
+	if (org_gtk_hypview == NULL)
+	{
+		GDBusNodeInfo *info;
+		info = g_dbus_node_info_new_for_xml(org_gtk_hypview_xml, &error);
+		if (G_UNLIKELY(info == NULL))
+		{
+			g_printerr("%s", error->message);
+			g_error_free(error);
+		} else
+		{
+			org_gtk_hypview = g_dbus_node_info_lookup_interface(info, "org.gtk.hypviewwindow");
+			g_dbus_interface_info_ref(org_gtk_hypview);
+			g_dbus_node_info_unref(info);
+		}
+	} else
+	{
+		g_dbus_interface_info_ref(org_gtk_hypview);
+	}
+	if (org_gtk_hypview != NULL)
+	{
+		session_bus = g_application_get_dbus_connection(app);
+		win->object_path = g_strdup_printf("%s/Window/%u", g_application_get_dbus_object_path(app), ++window_id);
+		win->object_id = g_dbus_connection_register_object(session_bus, win->object_path, org_gtk_hypview, &vtable, win, NULL, &error);
+		if (G_UNLIKELY(win->object_id == 0))
+		{
+			g_printerr("%s", error->message);
+			g_error_free(error);
+		}
+	}
 }
 
 /******************************************************************************/
@@ -301,17 +592,6 @@ void hv_win_open(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void quit_force(GtkAction *action, void *userdata)
-{
-	WINDOW_DATA *win = (WINDOW_DATA *)userdata;
-
-	UNUSED(action);
-	gtk_widget_destroy(GTK_WIDGET(win));
-	check_toplevels(NULL);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 {
 	gboolean ret;
@@ -324,10 +604,11 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 	if (ret == FALSE)
 	{
 		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), g_strerror(errno));
-		if (ask_yesno(GTK_WIDGET(win), msg))
-			quit_force(NULL, win);
+		ret = ask_yesno(GTK_WIDGET(win), msg);
 		g_free(msg);
-		return FALSE;
+		if (ret)
+			gtk_widget_destroy(GTK_WIDGET(win));
+		return ret;
 	}
 	return TRUE;
 }
@@ -639,25 +920,14 @@ static void on_xref(GtkAction *action, WINDOW_DATA *win)
 
 static gboolean on_quit(GtkAction *action, WINDOW_DATA *win)
 {
+	GSList *l;
+	
+	UNUSED(action);
+	for (l = all_list; l; l = l->next)
 	{
-		gint x, y, width, height;
-		gdk_window_get_root_origin(gtk_widget_get_window(GTK_WIDGET(win)), &x, &y);
-		gdk_drawable_get_size(gtk_widget_get_window(GTK_WIDGET(win)), &width, &height);
-		gl_profile.viewer.win_x = x;
-		gl_profile.viewer.win_y = y;
-		gl_profile.viewer.win_w = width;
-		gl_profile.viewer.win_h = height;
-		if (win->data && win->data->path)
-		{
-			g_free(gl_profile.viewer.last_file);
-			gl_profile.viewer.last_file = g_strdup(win->data->path);
-		}
-		HypProfile_SetChanged();
+		win = (GtkHypviewWindow *)l->data;
+		SendCloseWindow(win);
 	}
-	RecentSaveToDisk();
-	if (!WriteProfile(win))
-		return TRUE;
-	quit_force(action, win);
 	return FALSE;
 }
 
@@ -691,7 +961,25 @@ static gboolean wm_toplevel_close_cb(GtkWidget *widget, GdkEvent *event, WINDOW_
 {
 	UNUSED(widget);
 	UNUSED(event);
-	return on_quit(NULL, win);
+	{
+		gint x, y, width, height;
+		gdk_window_get_root_origin(gtk_widget_get_window(GTK_WIDGET(win)), &x, &y);
+		gdk_drawable_get_size(gtk_widget_get_window(GTK_WIDGET(win)), &width, &height);
+		gl_profile.viewer.win_x = x;
+		gl_profile.viewer.win_y = y;
+		gl_profile.viewer.win_w = width;
+		gl_profile.viewer.win_h = height;
+		if (win->data && win->data->path)
+		{
+			g_free(gl_profile.viewer.last_file);
+			gl_profile.viewer.last_file = g_strdup(win->data->path);
+		}
+		HypProfile_SetChanged();
+	}
+	RecentSaveToDisk();
+	if (!WriteProfile(win))
+		return TRUE;
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1818,7 +2106,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	win->is_popup = popup;
 	
 	register_stock_icons();
-	
+
 	g_object_set_data(G_OBJECT(win), "hypview_window_type", NO_CONST("shell-window"));
 	win->title = g_strdup(doc->path);
 	gtk_window_set_title(GTK_WINDOW(win), win->title);
