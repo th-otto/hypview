@@ -51,7 +51,7 @@ static _WORD const entrie_objs[10] = { SR_FSTL_0, SR_FSTL_1, SR_FSTL_2, SR_FSTL_
 
 static void __CDECL select_item(struct SLCT_ITEM_args args)
 {
-	WINDOW_DATA *win = args.user_data;
+	WINDOW_DATA *win = (WINDOW_DATA *)args.user_data;
 	RESULT_ENTRY *my_item = (RESULT_ENTRY *)args.item;
 
 	if (nclicks > 1)
@@ -183,8 +183,8 @@ static _WORD __CDECL SearchResultHandle(struct HNDL_OBJ_args args)
 	DIALOG_DATA *dial;
 	WINDOW_DATA *win;
 	
-	dial = wdlg_get_udata(args.dialog);
-	win = dial->data;
+	dial = (DIALOG_DATA *)wdlg_get_udata(args.dialog);
+	win = (WINDOW_DATA *)dial->data;
 	wdlg_get_tree(args.dialog, &tree, &rect);
 
 	switch (args.obj)

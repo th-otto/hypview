@@ -68,7 +68,7 @@ static void ApplyFont(void)
 				hyp_nodenr node = doc->getNodeProc(win);
 
 				/* remove all nodes from cache */
-				RemoveNodes(doc->data);
+				RemoveNodes((HYP_DOCUMENT *)doc->data);
 
 				/* reload page */
 				ret = doc->gotoNodeProc(win, NULL, node);

@@ -41,7 +41,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	hyp = doc->data;
+	hyp = (HYP_DOCUMENT *)doc->data;
 	node = win->displayed_node;
 
 	line = (y + win->docsize.y) / win->y_raster;
@@ -79,7 +79,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 			if (src > textstart)
 			{
 				_UWORD len = (_UWORD)(src - textstart);
-				char *s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL);
+				char *s = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), textstart, len, NULL);
 				char *newt;
 				
 				/* output remaining data */
@@ -178,7 +178,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 	if (src > textstart)
 	{
 		_UWORD len = (_UWORD)(src - textstart);
-		char *s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL);
+		char *s = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), textstart, len, NULL);
 		char *newt;
 		
 		vqt_extent(vdi_handle, s, ext);

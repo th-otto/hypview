@@ -49,7 +49,7 @@
  * msg[6] = 0;
  * msg[7] = 0;
  */
-#define BUBBLEGEM_ASKFONT  0xbabd;
+#define BUBBLEGEM_ASKFONT  0xbabd
 
 /* BUBBLEGEM_FONT ($BABE)
  * msg[0] = $BABE;
@@ -61,7 +61,7 @@
  * msg[6] = 0;
  * msg[7] = 0;
  */
-#define BUBBLEGEM_FONT     0xbabe;
+#define BUBBLEGEM_FONT     0xbabe
 
 
 /* BUBBLEGEM_HIDE ($BABF)
@@ -74,7 +74,7 @@
  * msg[6] = ?;
  * msg[7] = ?;
  */
-#define BUBBLEGEM_HIDE     0xBABF;
+#define BUBBLEGEM_HIDE     0xBABF
 
 
 /*

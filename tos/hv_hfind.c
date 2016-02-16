@@ -100,9 +100,10 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 			{
 				int ret;
 				
-				argv[name_argc] = hyp_conv_to_utf8(hyp_get_current_charset(), name, STR0TERM);
+				name = hyp_conv_to_utf8(hyp_get_current_charset(), name, STR0TERM);
+				argv[name_argc] = name;
 				ret = hyp_utf8_spawnvp(P_WAIT, argc, argv);
-				g_free(argv[name_argc]);
+				g_free(name);
 				av_hypfind_finish(ret);
 			} else if (!_app)
 			{
@@ -122,9 +123,10 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				int ret;
 				GRECT desk;
 				
-				argv[name_argc] = hyp_conv_to_utf8(hyp_get_current_charset(), name, STR0TERM);
+				name = hyp_conv_to_utf8(hyp_get_current_charset(), name, STR0TERM);
+				argv[name_argc] = name;
 				ret = hyp_utf8_spawnvp(P_WAIT, argc, argv);
-				g_free(argv[name_argc]);
+				g_free(name);
 				wind_get_grect(0, WF_CURRXYWH, &desk);
 				form_dial_grect(FMD_FINISH, &desk, &desk);
 				av_hypfind_finish(ret);
@@ -189,8 +191,8 @@ static _WORD __CDECL HypfindHandle(struct HNDL_OBJ_args args)
 	DOCUMENT *doc;
 	GRECT r;
 	
-	dial = wdlg_get_udata(args.dialog);
-	win = dial->data;
+	dial = (DIALOG_DATA *)wdlg_get_udata(args.dialog);
+	win = (WINDOW_DATA *)dial->data;
 	doc = win->data;
 	wdlg_get_tree(args.dialog, &tree, &r);
 

@@ -389,9 +389,9 @@ void BGH_help(short mx, short my, const char *helpstring)
 
 	if (helpstring)
 	{
-		bubble_id = appl_locate("BUBBLE", TRUE);
+		bubble_id = appl_locate("BUBBLE", NULL, TRUE);
 		if (bubble_id < 0)
-			bubble_id = appl_locate(getenv( "BUBBLEGEM"), TRUE);
+			bubble_id = appl_locate(getenv("BUBBLEGEM"), NULL, TRUE);
 
 		if (bubble_id >= 0)
 		{

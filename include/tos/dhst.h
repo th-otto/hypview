@@ -1,3 +1,6 @@
+#ifndef __DHST_H__
+#define __DHST_H__
+
 typedef struct
 {
 	const char *appname;	/* The name of the application (e.g. "Texel") */
@@ -30,3 +33,5 @@ typedef struct
 		msg[7]			0=error(s), else: OK
 */
 #define	DHST_ACK	0xdade
+
+#endif /* __DHST_H__ */

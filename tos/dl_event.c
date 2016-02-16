@@ -33,6 +33,9 @@
 #if USE_DOCUMENTHISTORY
 #include "dhst.h"
 #endif
+#if USE_GEMSCRIPT
+#include "gscript.h"
+#endif
 
 short doneFlag = FALSE, quitApp = FALSE;
 
@@ -86,10 +89,7 @@ static void DoKeybd(EVNT *event)
 #if USE_MENU
 			ChooseMenu(ME_FILE, ME_QUIT);
 #else
-			if (_app)
-				doneFlag = TRUE;
-			else
-				RemoveItems();
+			doneFlag = TRUE;
 #endif
 			event->mwhich &= ~MU_KEYBD;
 			break;
@@ -136,22 +136,7 @@ static void DoKeybd(EVNT *event)
 
 static void DoMessage(EVNT *event)
 {
-	if (event->msg[2] > 0)				/* extended message ?? */
-	{
-		short *xmsg;
-
-		xmsg = (short *)g_malloc(event->msg[2]);	/* reserve memory */
-		if (xmsg != NULL)
-		{
-			appl_read(gl_apid, event->msg[2], xmsg);	/* read "message" */
-			g_free(xmsg);
-		} else
-		{
-			form_alert(1, rs_string(DI_MEMORY_ERROR));
-		}
-	}
-
-	switch (event->msg[0])
+	switch ((_UWORD)event->msg[0])
 	{
 #if USE_MENU
 	case MN_SELECTED:
@@ -159,7 +144,8 @@ static void DoMessage(EVNT *event)
 		break;
 #endif
 	case AP_TERM:
-		quitApp = TRUE;
+		if (_app)
+			quitApp = TRUE;
 #if USE_MENU
 		ChooseMenu(ME_FILE, ME_QUIT);
 #else
@@ -214,6 +200,14 @@ static void DoMessage(EVNT *event)
 		event->key = event->msg[4];
 		DoEventDispatch(event);
 		break;
+
+	case AV_EXIT:
+		DoVA_Message(event->msg);
+#if USE_GEMSCRIPT
+		gemscript_handle_message(event->msg);
+#endif
+		break;
+
 #if USE_BUBBLEGEM
 	case BUBBLEGEM_REQUEST:
 		Bubble(event->msg[4], event->msg[5]);
@@ -226,6 +220,19 @@ static void DoMessage(EVNT *event)
 		DhstFree(event->msg);
 		break;
 #endif
+
+#if USE_GEMSCRIPT
+	case GS_REQUEST:
+	case GS_REPLY:
+	case GS_QUIT:
+	case GS_COMMAND:
+	case GS_ACK:
+	case GS_CLOSEMACRO:
+	case GS_MACRO:
+		gemscript_handle_message(event->msg);
+		break;
+#endif
+
 	default:
 		HYP_DBG(("Message :%d %x erhalten", event->msg[0], event->msg[0]));
 		break;
@@ -237,6 +244,18 @@ static void DoMessage(EVNT *event)
 
 void DoEventDispatch(EVNT *event)
 {
+	if ((event->mwhich & MU_MESAG) && event->msg[2] > 0)				/* extended message ?? */
+	{
+		short *xmsg;
+
+		xmsg = (short *)g_malloc(event->msg[2]);	/* reserve memory */
+		if (xmsg != NULL)
+		{
+			appl_read(gl_apid, event->msg[2], xmsg);	/* read "message" */
+			g_free(xmsg);
+		}
+	}
+
 	DoUserEvents(event);
 
 	if (event->mwhich & MU_BUTTON)
@@ -261,4 +280,9 @@ void DoEvent(void)
 	event.mwhich = evnt_multi_gemlib(EVENTS, MBCLICKS, MBMASK, MBSTATE, MBLOCK1, MBLOCK2, event.msg, WAIT,
 		&event.mx, &event.my, &event.mbutton, &event.kstate, &event.key, &event.mclicks);
 	DoEventDispatch(&event);
+	if (doneFlag)
+	{
+		RemoveItems();
+		doneFlag = FALSE;
+	}
 }

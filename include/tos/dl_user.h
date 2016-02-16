@@ -51,6 +51,9 @@
 /* BubbleGEM help system */
 #define	USE_BUBBLEGEM       0
 
+/* GEMscript protocol */
+#define	USE_GEMSCRIPT       1
+
 /* Document history protocol */
 #define	USE_DOCUMENTHISTORY	1
 

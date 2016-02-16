@@ -3,6 +3,7 @@
 
 #include "hypdoc.h"
 #include "tos/diallib.h"
+#include "dbgwin.h"
 
 #define HYPVIEW_VERSION "1.0"
 
@@ -45,6 +46,8 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 /*
  * hv_win.c
  */
+#define FORCE_NEW_WINDOW 2
+
 void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(_WORD whandle);
 void SendTopped(_WORD whandle);
@@ -115,7 +118,7 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
 void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(WINDOW_DATA *win, const char *path);
-void StartRemarker(gboolean quiet);
+void StartRemarker(gboolean startup, gboolean quiet);
 
 
 /*
@@ -144,7 +147,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again);
 /*
  * dl_tools.c
  */
-WINDOW_DATA *get_first_window(void);
+WINDOW_DATA *top_window(void);
 
 
 /*
@@ -163,8 +166,8 @@ void GotoDefaultFile(WINDOW_DATA *win);
 /*
  * userdef objects
  */
-_VOID *hfix_objs(RSHDR *hdr, OBJECT *_ob, _WORD _num_objs);
-_VOID hrelease_objs(OBJECT *_ob, _WORD _num_objs);
+void *hfix_objs(RSHDR *hdr, OBJECT *_ob, _WORD _num_objs);
+void hrelease_objs(OBJECT *_ob, _WORD _num_objs);
 void hv_userdef_exit(void);
 
 

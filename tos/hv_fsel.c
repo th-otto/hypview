@@ -75,7 +75,7 @@ static void OpenFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 	UNUSED(nfiles);
 	if (fslx->button && *fslx->name)
 	{
-		WINDOW_DATA *win = fslx->data;
+		WINDOW_DATA *win = (WINDOW_DATA *)fslx->data;
 		char *path = g_build_filename(fslx->path, fslx->name, NULL);
 		OpenFileInWindow(win, path, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
 		g_free(path);
@@ -100,7 +100,7 @@ void SelectFileLoad(WINDOW_DATA *win)
 
 static void SaveFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 {
-	WINDOW_DATA *win = fslx->data;
+	WINDOW_DATA *win = (WINDOW_DATA *)fslx->data;
 
 	UNUSED(nfiles);
 	if (fslx->button)

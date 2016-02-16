@@ -33,7 +33,7 @@
 void BinaryDisplayPage(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	FMT_ASCII *ascii = doc->data;
+	FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
 	short x, y;
 	char *line_buffer;
 	const unsigned char *src = ascii->start;
@@ -83,7 +83,7 @@ void BinaryDisplayPage(WINDOW_DATA *win)
 void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
-	FMT_ASCII *ascii = doc->data;
+	FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
 	long line = (y + win->docsize.y) / win->y_raster;
 	_WORD i;
 	const unsigned char *start;

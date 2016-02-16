@@ -40,7 +40,7 @@ void HypExtRefPopup(WINDOW_DATA *win, short x, short y)
 	const unsigned char *end;
 	static char eos = 0;
 	
-	hyp = doc->data;
+	hyp = (HYP_DOCUMENT *)doc->data;
 
 	i = tree[ROOT].ob_head;
 	pos = win->displayed_node->start;

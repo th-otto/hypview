@@ -154,7 +154,7 @@ void DocumentInfos(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 	GRECT big, little;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	OBJECT *tree = rs_tree(PROGINFO);
 	char *version = gl_program_version();
 	char buf[20];

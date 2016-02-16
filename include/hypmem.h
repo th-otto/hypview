@@ -127,6 +127,7 @@ gboolean g_path_is_absolute(const char *path);
 char *g_strchomp(char *str);
 char *g_strchug(char *str);
 void g_strfreev(char **str_array);
+unsigned int g_strv_length(char **str_array);
 
 #if DEBUG_ALLOC >= 2
 #define malloc(n) dbg_malloc(n, __FILE__, __LINE__)

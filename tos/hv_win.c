@@ -51,7 +51,8 @@ void SendClose(_WORD whandle)
 
 void SendCloseWindow(WINDOW_DATA *win)
 {
-	SendClose(win->whandle);
+	if (win)
+		SendClose(win->whandle);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -642,7 +643,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	case WIND_DRAGDROPFORMAT:
 		{
 			_WORD i;
-			long *format = data;
+			long *format = (long *)data;
 	
 			for (i = 0; i < MAX_DDFORMAT; i++)
 				format[i] = 0L;
@@ -654,12 +655,15 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	case WIND_DRAGDROP:
 		{
 			char *ptr = hyp_conv_to_utf8(hyp_get_current_charset(), data, STR0TERM);
-			char *chapter;
+			char **argv = split_av_parameter(ptr);
 			
-			chapter = ParseData(ptr);
-			if (chapter != ptr && *chapter == '\'')
-				ParseData(chapter);
-			OpenFileInWindow(win, ptr, chapter, HYP_NOINDEX, FALSE, FALSE, FALSE);
+			if (argv && !empty(argv[0]))
+			{
+				char *filename = argv[0];
+				char *chapter = argv[1];
+				OpenFileInWindow(win, filename, chapter, HYP_NOINDEX, FALSE, FALSE, FALSE);
+			}		
+			g_strfreev(argv);
 			g_free(ptr);
 		}
 		break;
@@ -778,6 +782,8 @@ WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup)
 
 void hv_win_open(WINDOW_DATA *win)
 {
+	if (win == NULL)
+		return;
 	if (win->status & WIS_ICONIFY)
 		UniconifyWindow(win);
 	if (!(win->status & WIS_OPEN))

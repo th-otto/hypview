@@ -84,7 +84,7 @@ WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT 
 	ptr->x_offset = 0;
 	ptr->y_offset = 0;
 #endif
-	ptr->data = user_data;
+	ptr->data = (DOCUMENT *)user_data;
 
 	wind_get_grect(0, WF_WORKXYWH, &screen);
 	ptr->whandle = wind_create_grect(ptr->kind, &screen);

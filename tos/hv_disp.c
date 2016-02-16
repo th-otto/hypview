@@ -17,7 +17,7 @@ struct fVDI_cookie {
 static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	WP_UNIT tx, ty;
 	HYP_IMAGE *pic;
 	
@@ -281,7 +281,7 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	HYP_IMAGE *pic;
 	
 	pic = (HYP_IMAGE *)AskCache(hyp, gfx->extern_node_index);
@@ -366,7 +366,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 		/* draw remaining text */ \
 		char *s; \
 		_UWORD len = (_UWORD)(src - textstart); \
-		s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL); \
+		s = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), textstart, len, NULL); \
 		TEXTOUT(s); \
 		g_free(s); \
 	}
@@ -433,7 +433,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 					
 					if (hypnode_valid(hyp, dest_page))
 					{
-						dst_type = hyp->indextable[dest_page]->type;
+						dst_type = (hyp_indextype)hyp->indextable[dest_page]->type;
 						switch (dst_type)
 						{
 						case HYP_NODE_INTERNAL:
@@ -579,7 +579,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		/* draw remaining text */ \
 		char *s; \
 		_UWORD len = (_UWORD)(src - textstart); \
-		s = hyp_conv_charset(hyp->comp_os, hyp_get_current_charset(), textstart, len, NULL); \
+		s = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), textstart, len, NULL); \
 		TEXTOUT(s); \
 		g_free(s); \
 	}

@@ -1,8 +1,8 @@
 include ../Makefile.common
 
 if WITH_GUI_GEM
-noinst_PROGRAMS = hypview
-noinst_SCRIPTS = hypview.app
+bin_PROGRAMS = hypview
+EXEEXT = .app
 endif
 
 LIBGEM = -lgem
@@ -69,23 +69,15 @@ hypview_SOURCES = \
 	nf_stder.c \
 	nf_vers.c \
 	\
+	dbgwin.c dbgwin.h \
+	gscript.c \
 	dragdrop/dragdrop.c \
 	bubble/bgh.c
 
 hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYPDOC_DEP) $(LIBHYP_DEP)
 hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(LIBGEM) $(LIBINTL)
 
-hypview.app: hypview$(EXEEXT)
-	cp -a $? $@
-
 CLEANFILES = hypview.app
-
-install-exec-local: $(noinst_SCRIPTS)
-	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
-	$(INSTALL_PROGRAM) hypview.app $(DESTDIR)$(bindir)
-
-uninstall-local:
-	$(RM) $(DESTDIR)$(bindir)/hypview.app
 
 clean-local:
 	$(RM) *.tos *.ttp *.app *.gtp

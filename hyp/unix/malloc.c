@@ -89,7 +89,7 @@ typedef struct _mem_control
 
 
 #if DEBUG_ALLOC >= 2
-LOCAL MEM_CONTROL *alloc_list;
+static MEM_CONTROL *alloc_list;
 
 /*** ---------------------------------------------------------------------- ***/
 

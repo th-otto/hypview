@@ -167,7 +167,7 @@ void appl_makeappname(char *app_name, const char *p)
 
 /*** ---------------------------------------------------------------------- ***/
 
-_WORD appl_locate(const char *pathlist, _BOOL startit)
+_WORD appl_locate(const char *pathlist, const char *arg, _BOOL startit)
 {
 	char app_name[9];
 	_WORD id = -1;
@@ -214,13 +214,29 @@ _WORD appl_locate(const char *pathlist, _BOOL startit)
 			}
 			if (path[0] == '*' && path[1] == ':')
 				path[0] = GetBootDrive();
-			if (__magix)
+			convslash(path);
+			if (_AESnumapps != 1)
 			{
-				id = shel_xwrite(SHW_EXEC, 1, SHW_PARALLEL, path, "\0");
-				evnt_timer_gemlib(500);
+				char cmdline[128];
+				
+				if (arg)
+					strncpy(cmdline + 1, arg, 126);
+				else
+					cmdline[1] = '\0';
+				cmdline[0] = (char)strlen(cmdline + 1);
+				if (__magix)
+				{
+					id = shel_xwrite(SHW_EXEC, 1, SHW_PARALLEL, path, cmdline);
+					evnt_timer_gemlib(500);
+				} else
+				{
+					id = shel_xwrite(SHW_EXEC, 1, 1, path, cmdline);
+				}
+				nf_debugprintf("start remarker %s: %d\n", path, id);
 			} else
 			{
-				id = shel_xwrite(SHW_EXEC, 1, 1, path, "\0");
+				SendAV_STARTPROG(path, arg, FUNK_NULL);
+				id = 0;
 			}
 			g_free(path);
 		}
@@ -632,9 +648,9 @@ void DoAV_PROTOKOLL(short flags)
 	
 	if (av_server_id < 0)
 	{
-		av_server_id = appl_locate(getenv("AVSERVER"), FALSE);
+		av_server_id = appl_locate(getenv("AVSERVER"), NULL, FALSE);
 		if (av_server_id < 0)
-			av_server_id = appl_locate("AVSERVER", FALSE);
+			av_server_id = appl_locate("AVSERVER", NULL, FALSE);
 		if (av_server_id < 0)
 			if (!appl_xsearch(2, servername, &type, &av_server_id))
 				av_server_id = -1;
@@ -714,7 +730,7 @@ void va_proto_init(const char *myname)
 {
 	if (myname && av_name == NULL)
 	{
-		av_name = g_alloc_shared(9);
+		av_name = (char *)g_alloc_shared(9);
 		if (av_name == NULL)
 			return;
 		appl_makeappname(av_name, myname);

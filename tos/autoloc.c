@@ -15,7 +15,7 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 	char *dst, *ret;
 	size_t len;
 	
-	if (doc == NULL || (hyp = doc->data) == NULL || node == NULL || node->line_ptr == NULL || line < 0 || (line * win->y_raster) >= win->docsize.h)
+	if (doc == NULL || (hyp = (HYP_DOCUMENT *)doc->data) == NULL || node == NULL || node->line_ptr == NULL || line < 0 || (line * win->y_raster) >= win->docsize.h)
 		return NULL;
 	src = node->line_ptr[line];
 	end = node->line_ptr[line + 1];

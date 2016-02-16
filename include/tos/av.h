@@ -86,9 +86,13 @@
 #define VA_SETSTATUS 0x4705
 
 /*
- * AV_SENDCLICK
+ * AV_SENDKLICK
+ * msg[3]: ev_mmox
+ * msg[4]: ev_mmoy
+ * msg[5]: ev_mmobutton
+ * msg[6]: ev_mmokstate
+ * msg[7]: ev_mbreturn
  */
-
 #define AV_SENDCLICK 0x4709
 
 
@@ -451,15 +455,6 @@
 #define VA_PATH_UPDATE 0x4760
 
 
-/*
- * AV_SENDKLICK
- * msg[3]: ev_mmox
- * msg[4]: ev_mmoy
- * msg[5]: ev_mmobutton
- * msg[6]: ev_mmokstate
- * msg[7]: ev_mbreturn
- */
-#define AV_SENDCLICK 0x4709
 
 
 /* AV protokol flags */

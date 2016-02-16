@@ -43,7 +43,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 	_WORD clip_rect[4];
 	short x, y;
 	WP_UNIT ox, oy;
-	TEXT_POS start, end, new;
+	TEXT_POS start, end, newpos;
 	WP_UNIT scroll_x = 0, scroll_y = 0;
 
 	wind_update(BEG_UPDATE);
@@ -174,10 +174,10 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 		}
 
 		/* calculate cursor position in text */
-		doc->getCursorProc(win, x, y, &new);
+		doc->getCursorProc(win, x, y, &newpos);
 
-		x = (short)(new.x - win->docsize.x * win->x_raster);
-		y = new.y - (win->docsize.y * win->y_raster);
+		x = (short)(newpos.x - win->docsize.x * win->x_raster);
+		y = newpos.y - (win->docsize.y * win->y_raster);
 		if (y != oy)
 		{
 			_WORD xy[4];
@@ -266,7 +266,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 			/* evnt_timer(300); */
 		}
 
-		end = new;
+		end = newpos;
 
 		if ((start.line == end.line) && (start.offset == end.offset))
 		{

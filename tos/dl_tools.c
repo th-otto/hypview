@@ -24,7 +24,7 @@
 #include "hv_defs.h"
 
 
-WINDOW_DATA *get_first_window(void)
+WINDOW_DATA *top_window(void)
 {
 	WINDOW_DATA *win;
 	_WORD whandle = 0;

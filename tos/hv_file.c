@@ -239,7 +239,7 @@ void CheckFiledate(WINDOW_DATA *win)
 			yoff = win->docsize.y;
 			if (doc->data && doc->type == HYP_FT_HYP)
 			{
-				HYP_DOCUMENT *hyp = doc->data;
+				HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 				ref_count = hyp->ref_count;
 				hyp->ref_count = 1;
 				doc->data = hyp_unref(hyp);
@@ -256,7 +256,7 @@ void CheckFiledate(WINDOW_DATA *win)
 				hyp_utf8_close(ret);
 				if (doc->data && doc->type == HYP_FT_HYP)
 				{
-					HYP_DOCUMENT *hyp = doc->data;
+					HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 					hyp->ref_count = ref_count;
 				}
 			} else

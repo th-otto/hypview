@@ -32,7 +32,7 @@
 void AsciiDisplayPage(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
-	FMT_ASCII *ascii = doc->data;
+	FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
 	long line = win->docsize.y / win->y_raster;
 	_WORD x, y;
 	_WORD end_y;
@@ -67,7 +67,7 @@ void AsciiDisplayPage(WINDOW_DATA *win)
 void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 {
 	DOCUMENT *doc = win->data;
-	FMT_ASCII *ascii = doc->data;
+	FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
 	UNUSED(node);
 	win->docsize.w = ascii->columns * win->x_raster;
 	win->docsize.h = ascii->lines * win->y_raster;
@@ -78,7 +78,7 @@ void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 {
 	DOCUMENT *doc = win->data;
-	FMT_ASCII *ascii = doc->data;
+	FMT_ASCII *ascii = (FMT_ASCII *)doc->data;
 	long line = (y + win->docsize.y) / win->y_raster;
 	size_t i;
 	unsigned char *temp;

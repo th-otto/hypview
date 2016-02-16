@@ -84,13 +84,13 @@ typedef unsigned short wchar_t;
 #endif
 
 #ifdef __TOS__
-extern BASEPAGE *SetActPD (BASEPAGE *new);
-extern BASEPAGE *_BasPag;
+extern BASEPAGE *SetActPD (BASEPAGE *newpd);
+extern BASEPAGE *_base;
 extern int acc_memsave;
 #define SavePD() \
 	BASEPAGE *old = NULL; \
 	if (acc_memsave) \
-		old = SetActPD(_BasPag)
+		old = SetActPD(_base)
 #define RestorePD() \
 	if (acc_memsave) \
 		SetActPD(old)

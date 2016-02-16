@@ -47,7 +47,7 @@ static char *findfile(const char *fname, const char *fpath, const char *const *f
 	const char *start;
 	gboolean hasext = FALSE;
 	gboolean haspath = FALSE;
-	char *try, *path;
+	char *trypath, *path;
 	
 	if (!fname || !*fname)
 		return NULL;
@@ -75,22 +75,22 @@ static char *findfile(const char *fname, const char *fpath, const char *const *f
 	path = g_strdup(fname);
 	for (;;)
 	{									/* loop on path elements */
-		try = g_strdup(path);
-		if (EXISTS(try))
+		trypath = g_strdup(path);
+		if (EXISTS(trypath))
 			break;
-		g_free(try);
+		g_free(trypath);
 		if (!hasext && fext)
 		{
 			nextext = fext;
 			while (*nextext)
 			{								/* loop on extensions */
-				try = g_strconcat(path, *nextext++, NULL);
-				if (EXISTS(try))
+				trypath = g_strconcat(path, *nextext++, NULL);
+				if (EXISTS(trypath))
 					goto found;
-				g_free(try);
+				g_free(trypath);
 			}
 		}
-		try = NULL;
+		trypath = NULL;
 		if (!*fpath)
 			break;						/* no more places to look */
 
@@ -108,16 +108,16 @@ static char *findfile(const char *fname, const char *fpath, const char *const *f
 		{
 			fpath++;
 		}
-		try = g_strndup(start, fpath - start);
+		trypath = g_strndup(start, fpath - start);
 		if (c)
 			fpath++;
 		
-		path = g_build_filename(try, fname, NULL);
-		g_free(try);
+		path = g_build_filename(trypath, fname, NULL);
+		g_free(trypath);
 	}
 found:
 	g_free(path);
-	return try;
+	return trypath;
 }
 
 
@@ -477,8 +477,6 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 	}
 	
 	{
-		SavePD();
-	
 		if (mode == P_WAIT)
 			execmode = 0;
 		else if (mode == P_OVERLAY)
@@ -502,6 +500,7 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 	
 				if (!unixmode || (unixmode && strchr(unixmode, 's')))
 				{
+					SavePD();
 					(void) Mfree(env);
 					RestorePD();
 					return interpret_script(mode, path, _path, argc, _argv);
@@ -515,8 +514,11 @@ static int _spawnvp(int mode, const char *_path, int argc, const char *const *ar
 			_exit((int) rval);
 		}
 		
+		{
+		SavePD();
 		(void) Mfree(env);
 		RestorePD();
+		}
 	}
 	return (int) rval;
 }

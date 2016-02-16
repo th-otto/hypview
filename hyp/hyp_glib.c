@@ -272,6 +272,19 @@ void g_strfreev(char **str_array)
 
 /*** ---------------------------------------------------------------------- ***/
 
+unsigned int g_strv_length(char **str_array)
+{
+	int i = 0;
+	if (str_array)
+	{
+		for (; str_array[i] != NULL; i++)
+			;
+	}
+	return i;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 char **g_strsplit(const char *string, const char *delimiter, int max_tokens)
 {
 	char **str_array;

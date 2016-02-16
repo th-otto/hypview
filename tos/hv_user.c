@@ -17,6 +17,8 @@ struct userdef_list {
 	struct userdef userobjs[1];
 };
 
+#define NICELINES 1
+
 static struct userdef_list *userdefs;
 
 /*
@@ -761,7 +763,7 @@ gboolean W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes)
 
 void W_Release_Bitmap(void **pdata, _WORD width, _WORD height, _WORD planes)
 {
-	unsigned char *data = *pdata;
+	unsigned char *data = (unsigned char *)(*pdata);
 	
 	UNUSED(width);
 	UNUSED(height);
@@ -801,15 +803,17 @@ static void xfix_make_selmask(_WORD w, _WORD h, void *dst, const void *src)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+#if NICELINES
 static _WORD _CDECL draw_niceline(PARMBLK *pb)
 {
 	GRECT gr;
 	GRECT clip;
 	_WORD pxy[4];
 	_WORD aes_clip[5];
+	_WORD vdi_h = aes_handle;
 	
-	save_clip(aes_handle, aes_clip);
-	set_user_clip(aes_handle, pb);
+	save_clip(vdi_h, aes_clip);
+	set_user_clip(vdi_h, pb);
 	
 	gr.g_x = pb->pb_x;
 	gr.g_y = pb->pb_y + pb->pb_h / 2 - 1;
@@ -824,30 +828,31 @@ static _WORD _CDECL draw_niceline(PARMBLK *pb)
 		_WORD attrib[5];
 		_WORD max_w, max_h;
 		
-		save_fillattr(aes_handle, attrib);
+		save_fillattr(vdi_h, attrib);
 		
-		vswr_mode(aes_handle, MD_REPLACE);
-		vsf_perimeter(aes_handle, FALSE);
+		vswr_mode(vdi_h, MD_REPLACE);
+		vsf_perimeter(vdi_h, FALSE);
 		GetScreenSize(&max_w, &max_h);
 		rect2pxy(&gr, pxy, max_w, max_h);
 		if (GetNumColors() >= 16)
 		{
-			vsf_color(aes_handle, G_LBLACK);
-			vsf_interior(aes_handle, FIS_SOLID);
-			vsf_style(aes_handle, 0);
+			vsf_color(vdi_h, G_LBLACK);
+			vsf_interior(vdi_h, FIS_SOLID);
+			vsf_style(vdi_h, 0);
 		} else
 		{
-			vsf_color(aes_handle, G_BLACK);
-			vsf_interior(aes_handle, FIS_PATTERN);
-			vsf_style(aes_handle, 4);
+			vsf_color(vdi_h, G_BLACK);
+			vsf_interior(vdi_h, FIS_PATTERN);
+			vsf_style(vdi_h, 4);
 		}
-		vr_recfl(aes_handle, pxy);
+		vr_recfl(vdi_h, pxy);
 		
-		restore_fillattr(aes_handle, attrib);
+		restore_fillattr(vdi_h, attrib);
 	}
-	restore_clip(aes_handle, aes_clip);
+	restore_clip(vdi_h, aes_clip);
 	return OS_NORMAL;
 }
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -1432,11 +1437,13 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 
 		case G_STRING:
 		case G_SHORTCUT:
+#if NICELINES
 			if ((ob->ob_state & OS_DISABLED) &&
 				ob->ob_spec.free_string[0] == '-')
 			{
 				num_user++;
 			}
+#endif
 			break;
 		}
 	}
@@ -1490,15 +1497,15 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 						len = (_LONG) d.fd_wdwidth * 2l * d.fd_h;
 						
 						xfix_cicon((_UWORD *)cicon->col_data, len, cicon->num_planes, xscrn_planes, &d);
-						cicon->col_data = d.fd_addr;
+						cicon->col_data = (_WORD *)d.fd_addr;
 						if (cicon->sel_data)
 						{
 							xfix_cicon((_UWORD *)cicon->sel_data, len, cicon->num_planes, xscrn_planes, &d);
-							cicon->sel_data = d.fd_addr;
+							cicon->sel_data = (_WORD *)d.fd_addr;
 						} else
 						{
 							/* prepare darken mask */
-							cicon->sel_mask = g_try_malloc(len);
+							cicon->sel_mask = (_WORD *)g_try_malloc(len);
 							if (cicon->sel_mask != NULL)
 								xfix_make_selmask(d.fd_w, d.fd_h, cicon->sel_mask, cicon->col_mask);
 						}
@@ -1531,11 +1538,13 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 
 		case G_STRING:
 		case G_SHORTCUT:
+#if NICELINES
 			if ((ob->ob_state & OS_DISABLED) &&
 				ob->ob_spec.free_string[0] == '-')
 			{
 				adduser(draw_niceline);
 			}
+#endif
 			break;
 		}
 	}

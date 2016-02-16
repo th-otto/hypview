@@ -140,8 +140,6 @@ int DoAesInit(void)
 {
 	_WORD attrib[10];
 	
-	Pdomain(1);
-
 	/* gl_apid = appl_init(); moved to hypmain.h */
 	if (gl_apid < 0)
 		return FALSE;
@@ -256,7 +254,7 @@ int DoInitSystem(void)
 	DoInitBubble();
 #endif
 
-	key_table = Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/* fetch keytable */
+	key_table = (KEYTAB *)Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/* fetch keytable */
 
 	return TRUE;
 }

@@ -29,7 +29,7 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void StartRemarker(gboolean quiet)
+void StartRemarker(gboolean startup, gboolean quiet)
 {
 	if (empty(gl_profile.remarker.path))
 	{
@@ -37,7 +37,7 @@ void StartRemarker(gboolean quiet)
 			form_alert(1, rs_string(HV_ERR_NO_REMARKER));
 	} else
 	{
-		_WORD id = appl_locate(gl_profile.remarker.path, TRUE);
+		_WORD id = appl_locate(gl_profile.remarker.path, startup ? "-t" : NULL, TRUE);
 		if (id < 0 && !quiet)
 		{
 			char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), gl_profile.remarker.path);
@@ -92,7 +92,7 @@ void BlockOperation(WINDOW_DATA *win, short num)
 		SelectFont(win);
 		break;
 	case CO_REMARKER:
-		StartRemarker(FALSE);
+		StartRemarker(FALSE, FALSE);
 		break;
 	case CO_PRINT:
 		break;

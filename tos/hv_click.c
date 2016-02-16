@@ -64,7 +64,7 @@ static void get_word(const unsigned char *min, const unsigned char *src, unsigne
 static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = doc->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	HYP_IMAGE *pic;
 	
 	pic = (HYP_IMAGE *)AskCache(hyp, gfx->extern_node_index);
@@ -121,7 +121,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 	WP_UNIT mx, my;
 	WP_UNIT x, sx, sy;
 	
-	hyp = doc->data;
+	hyp = (HYP_DOCUMENT *)doc->data;
 
 	node = win->displayed_node;
 
@@ -206,7 +206,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				{
 					if (hypnode_valid(hyp, dest_page))
 					{
-						hyp_indextype dst_type = hyp->indextable[dest_page]->type;
+						hyp_indextype dst_type = (hyp_indextype)hyp->indextable[dest_page]->type;
 	
 						switch (dst_type)
 						{
@@ -244,7 +244,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 									break;
 								}
 								for (h = hyp->hostname; h != NULL && dst_id < 0; h = h->next)
-									dst_id = appl_locate(h->name, FALSE);
+									dst_id = appl_locate(h->name, NULL, FALSE);
 								if (dst_id < 0)	/* host application found? */
 								{
 									form_alert(1, rs_string(HV_ERR_HOST_NOT_FOUND));

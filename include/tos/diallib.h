@@ -223,7 +223,7 @@ int DoAesInit(void);
 int DoInitSystem(void);
 void DoExitSystem(void);
 void GetScreenSize(_WORD *width, _WORD *height);
-_WORD GetNumColors(_VOID);
+_WORD GetNumColors(void);
 
 /*
  * dl_event.c
@@ -338,7 +338,7 @@ _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self);
 _WORD shel_xwrite(_WORD sh_wdoex, _WORD sh_wisgr, _WORD sh_wiscr, const void *sh_wpcmd, const char *sh_wptail);
 _BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id);
 void appl_makeappname(char *app_name, const char *p);
-_WORD appl_locate(const char *pathlist, _BOOL startit);
+_WORD appl_locate(const char *pathlist, const char *arg, _BOOL startit);
 void va_proto_init(const char *myname);
 void va_proto_exit(void);
 
@@ -406,7 +406,7 @@ void DhstFree(_WORD message[]);
  */
 void ConvertKeypress(_WORD *key, _WORD *kstate);
 void CopyMaximumChars(OBJECT *obj, char *str);
-char *ParseData(char *start);
+char **split_av_parameter(char *start);
 short rc_intersect_my(GRECT *p1, GRECT *p2);
 
 /*
@@ -422,6 +422,8 @@ typedef struct
 
 extern LONG_EDIT long_edit[];
 extern short long_edit_count;
+
+const char *gem_message_name(_UWORD id);
 
 void DoButton(EVNT *event);
 void DoUserEvents(EVNT *event);

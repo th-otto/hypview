@@ -23,6 +23,7 @@
 
 #include "hv_defs.h"
 #include "hypview.h"
+#include <mint/arch/nf_ops.h>
 
 
 OBJECT *iconified_tree;
@@ -48,7 +49,7 @@ _WORD modal_stack[MAX_MODALRECURSION];
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void add_item(CHAIN_DATA * item)
+void add_item(CHAIN_DATA *item)
 {
 	CHAIN_DATA *ptr = all_list;
 
@@ -68,7 +69,7 @@ void add_item(CHAIN_DATA * item)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void remove_item(CHAIN_DATA * item)
+void remove_item(CHAIN_DATA *item)
 {
 	CHAIN_DATA *ptr = all_list;
 
@@ -84,7 +85,27 @@ void remove_item(CHAIN_DATA * item)
 				all_list = ptr->next;
 			ptr = NULL;
 		} else
+		{
 			ptr = ptr->next;
+		}
+	}
+	if (all_list == NULL)
+	{
+		_WORD remarker;
+		
+		nf_debugprintf("removed last window\n");
+		/*
+		 * remarker does not quit if you just close its window;
+		 * since it also does not install a menubar,
+		 * without any window would make it impossible to make it quit
+		 */
+		if (!_app && (remarker = appl_locate("REMARKER", NULL, FALSE)) >= 0)
+		{
+			nf_debugprintf("killing REMARKER\n");
+			Protokoll_Send(remarker, AP_TERM, 0, 0, 0, 0, 0);
+		}
+		if (_app)
+			quitApp = TRUE;
 	}
 }
 

@@ -5,10 +5,11 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void StartRemarker(GtkHypviewWindow *win, gboolean quiet)
+void StartRemarker(GtkHypviewWindow *win, gboolean startup, gboolean quiet)
 {
 	char *path = path_subst(gl_profile.remarker.path);
-	const char *argv[2];
+	const char *argv[3];
+	int argc;
 	
 	if (empty(path))
 	{
@@ -16,8 +17,10 @@ void StartRemarker(GtkHypviewWindow *win, gboolean quiet)
 			show_message(GTK_WIDGET(win), _("Error"), _("No path to REMARKER configured"), FALSE);
 	} else
 	{
-		argv[0] = path;
-		argv[1] = NULL;
+		argv[argc++] = path;
+		if (startup)
+			argv[argc++] = "-t";
+		argv[argc] = NULL;
 		if (hyp_utf8_spawnvp(P_NOWAIT, 1, argv) < 0 && !quiet)
 		{
 			char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), path, hyp_utf8_strerror(errno));

@@ -85,49 +85,87 @@ void CopyMaximumChars(OBJECT * obj, char *str)
 /*** ---------------------------------------------------------------------- ***/
 
 /*
-    Modifies <start> to point to the first parameter, and returns
-    pointer to next parameter.
-    To handle all parameters, do something like:
-
-	{
-		char *next, *ptr = data;
-		do
-		{
-			next = ParseData(ptr);
-			DoSomething(ptr);
-			ptr = next;
-		} while (*next);
-	}
-*/
-char *ParseData(char *start)
+ * split argument line according to Drag&Drop quoting rules.
+ * Can also be used for parameters send via AV protocol
+ */
+char **split_av_parameter(char *start)
 {
 	_BOOL in_quote = FALSE;
-	_BOOL more = FALSE;
-
-	while (*start)
+	int argc = 0;
+	char **argv = NULL;
+	char *ptr;
+	
+	if (start == NULL)
+		return NULL;
+	ptr = start;
+	start = NULL;
+	while (*ptr != '\0')
 	{
-		if (*start == ' ')
+		if (*ptr == ' ')
 		{
 			if (!in_quote)
 			{
-				*start = 0;
-				more = TRUE;
+				*ptr++ = '\0';
+				while (*ptr == ' ')
+					ptr++;
+				if (start)
+				{
+					argv = g_renew(char *, argv, argc + 2);
+					argv[argc++] = g_strdup(start);
+				}
+				start = NULL;
 			} else
-				start++;
-		} else if (*start == '\'')
+			{
+				ptr++;
+			}
+		} else if (*ptr == '\'')
 		{
-			memmove(start, start + 1, strlen(start + 1) + 1);
-			if (*start == '\'')
-				start++;
-			else
-				in_quote = !in_quote;
+			memmove(ptr, ptr + 1, strlen(ptr + 1) + 1);
+			if (!in_quote)
+			{
+				if (start)
+				{
+					argv = g_renew(char *, argv, argc + 2);
+					argv[argc++] = g_strdup(start);
+				}
+				in_quote = TRUE;
+				start = ptr;
+			} else if (*ptr != '\'')
+			{
+				in_quote = FALSE;
+				if (*ptr != '\0')
+					*ptr++ = '\0';
+				if (start)
+				{
+					argv = g_renew(char *, argv, argc + 2);
+					argv[argc++] = g_strdup(start);
+				}
+				start = NULL;
+			} else
+			{
+				ptr++;
+			}
 		} else
-			start++;
+		{
+			if (start == NULL)
+				start = ptr;
+			ptr++;
+		}
 	}
-	if (more)
-		return start + 1;
-	else
-		return start;
+	if (start)
+	{
+		if (in_quote)
+		{
+			/* unterminated quoted argument */
+		}
+		argv = g_renew(char *, argv, argc + 2);
+		argv[argc++] = g_strdup(start);
+	} else
+	{
+		argv = g_renew(char *, argv, argc + 1);
+	}
+	argv[argc] = NULL;
+	return argv;
 }
 
 /*** ---------------------------------------------------------------------- ***/

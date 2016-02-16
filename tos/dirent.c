@@ -42,7 +42,7 @@ DIR *opendir(const char *uname)
 	char *p;
 	const char* name = uname;
 	
-	d = malloc(sizeof(DIR));
+	d = (DIR *)malloc(sizeof(DIR));
 	if (!d)
 	{
 		__set_errno(ENOMEM);
@@ -130,7 +130,7 @@ DIR *opendir(const char *uname)
 		if (*namebuf != '\\')
 			(void)Dgetpath(dirpath+2, 0);
 	}
-	d->dirname = malloc(strlen(dirpath)+strlen(namebuf)+1);
+	d->dirname = (char *)malloc(strlen(dirpath)+strlen(namebuf)+1);
 	if (d->dirname)
 	{
 		strcpy(d->dirname, dirpath);

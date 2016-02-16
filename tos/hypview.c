@@ -3,6 +3,9 @@
 #define RSC_NAMED_FUNCTIONS 1
 #include "lang/en/hypview.rsh"
 #include <mint/arch/nf_ops.h>
+#if USE_GEMSCRIPT
+#include "tos/gscript.h"
+#endif
 
 #define PROGRAM_NAME "HypView"
 char const gl_program_name[] = PROGRAM_NAME;
@@ -148,6 +151,126 @@ static void LoadConfig(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static _BOOL gs_open(_WORD argc, const char *const *argv, char **erg)
+{
+	if (argc <= 1 || argv[1] == NULL || argv[1][0] == '\0')
+	{
+		SelectFileLoad(NULL);
+	} else
+	{
+		while (--argc)
+		{
+			const char *filename = *++argv;
+			OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FORCE_NEW_WINDOW, FALSE);
+		}
+	}
+	*erg = g_strdup("1");
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static _BOOL gs_getfront(_WORD argc, const char *const *argv, char **erg)
+{
+	WINDOW_DATA *win;
+	
+	UNUSED(argc);
+	UNUSED(argv);
+	win = top_window();
+	if (win != NULL)
+	{
+		*erg = g_strdup(win->data->path);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static WINDOW_DATA *gs_findwin(_WORD argc, const char *const *argv)
+{
+	WINDOW_DATA *win;
+	
+	if (argc <= 1)
+	{
+		win = top_window();
+	} else
+	{
+		win = (WINDOW_DATA *) all_list;
+		
+		while (win)
+		{
+			if ((win->type == WIN_WINDOW) && win->owner == gl_apid && filename_cmp(argv[1], win->data->path) == 0)
+				break;
+		}
+	}
+	return win;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static _BOOL gs_tofront(_WORD argc, const char *const *argv, char **erg)
+{
+	WINDOW_DATA *win = gs_findwin(argc, argv);;
+	
+	hv_win_open(win);
+	*erg = g_strdup("1");
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static _BOOL gs_version(_WORD argc, const char *const *argv, char **erg)
+{
+	UNUSED(argv);
+	if (argc > 1)
+		return FALSE;
+	*erg = g_strdup(gl_program_version());
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static _BOOL gs_close(_WORD argc, const char *const *argv, char **erg)
+{
+	WINDOW_DATA *win = gs_findwin(argc, argv);
+	
+	SendCloseWindow(win);
+	*erg = g_strdup("1");
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static _BOOL gs_quit(_WORD argc, const char *const *argv, char **erg)
+{
+	UNUSED(argc);
+	UNUSED(argv);
+	doneFlag = TRUE;
+	*erg = NULL;
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+typedef struct _gs_command {
+	const char *name;
+	_BOOL (*func)(_WORD argc, const char *const *argv, char **erg);
+} HV_COMMAND;
+
+static HV_COMMAND const gs_command[] = {
+	{ "Open", gs_open },
+	{ "Close", gs_close },
+	{ "GetFront", gs_getfront },
+	{ "ToFront", gs_tofront },
+	{ "Quit", gs_quit },
+	{ "Version", gs_version },
+	
+	{ NULL, FUNK_NULL }
+};
+
+/*** ---------------------------------------------------------------------- ***/
+
 const char *_argv0;
 #define g_ttp_get_bindir g_gem_get_bindir
 #define do_appl_init 1
@@ -158,6 +281,7 @@ int main(int argc, const char **argv)
 {
 	WINDOW_DATA *win = NULL;
 	
+	nf_debugprintf("%s: %d %d\n", gl_program_name, gl_apid, (int)Pgetpid());
 	if (DoAesInit() == FALSE)
 		return 1;
 
@@ -172,6 +296,15 @@ int main(int argc, const char **argv)
 	va_proto_init(gl_profile.viewer.applname);
 	hv_init();							/* remaining initialization */
 	ValidateColors();
+
+#if USE_GEMSCRIPT
+	gemscript_init();
+	{
+		_WORD i;
+		for (i = 0; gs_command[i].name != NULL; i++)
+			gemscript_register_command(gs_command[i].name, gs_command[i].func);
+	}
+#endif
 
 	if (!_app)							/* running as ACC? */
 		menu_register(gl_apid, "  " PROGRAM_NAME);	/* ...register to menu */
@@ -210,6 +343,9 @@ int main(int argc, const char **argv)
 	}
 	if (win == NULL && _app)
 		SelectFileLoad(NULL);						/* use file selector */
+
+	if (all_list && _app && gl_profile.remarker.run_on_startup)
+		StartRemarker(TRUE, FALSE);
 
 	while (!_app || (!doneFlag && all_list))
 	{

@@ -36,14 +36,14 @@ _WORD help_viewer_id(void)
 	_WORD viewer;
 	
 	/* look for environment variable which points to the help viewer */
-	viewer = appl_locate(getenv("HELPVIEWER"), FALSE);
+	viewer = appl_locate(getenv("HELPVIEWER"), NULL, FALSE);
 
 	/*
 	 * ACC search: ST-Guide, 1stGuide and 1stView in this
 	 * order
 	 */
 	if (viewer < 0)
-		viewer = appl_locate("HYPVIEW;HYP_VIEW;ST-GUIDE;HELPACC;1STGUIDE;1STVIEW", FALSE);
+		viewer = appl_locate("HYPVIEW;HYP_VIEW;ST-GUIDE;HELPACC;1STGUIDE;1STVIEW", NULL, FALSE);
 	return viewer;
 }
 

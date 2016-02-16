@@ -316,7 +316,7 @@ static void dialog_iconify(DIALOG *dialog, GRECT *r)
 	DIALOG_DATA *ptr;
 	GRECT big;
 
-	ptr = wdlg_get_udata(dialog);
+	ptr = (DIALOG_DATA *)wdlg_get_udata(dialog);
 	if (ptr->status & WIS_ICONIFY)
 		return;
 
@@ -335,7 +335,7 @@ static void dialog_uniconify(DIALOG *dialog, GRECT *r)
 	DIALOG_DATA *ptr;
 	GRECT small;
 
-	ptr = wdlg_get_udata(dialog);
+	ptr = (DIALOG_DATA *)wdlg_get_udata(dialog);
 	if (!(ptr->status & WIS_ICONIFY))
 		return;
 
