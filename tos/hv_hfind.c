@@ -49,11 +49,7 @@ static void av_hypfind_finish(_WORD ret)
 {
 	if (ret < 0)
 	{
-		char *filename = path_subst(gl_profile.general.hypfind_path);
-		char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), filename);
-		form_alert(1, str);
-		g_free(str);
-		g_free(filename);
+		FileExecError(gl_profile.general.hypfind_path);
 	} else
 	{
 		HypfindFinish(-1, ret);
@@ -112,8 +108,9 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				 * This will only work if the main application
 				 * is really the AV-Server
 				 */
-				char *cmd = av_cmdline(argv, FALSE);
-				SendAV_STARTPROG(filename, cmd, av_hypfind_finish);
+				char *cmd = av_cmdline(argv, 1, FALSE);
+				if (SendAV_STARTPROG(filename, cmd, av_hypfind_finish) < 0)
+					av_hypfind_finish(-1);
 				g_free(cmd);
 			} else
 			{

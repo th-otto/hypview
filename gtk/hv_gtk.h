@@ -39,6 +39,7 @@ enum toolbutton {
 	TO_INFO,
 	TO_LOAD,
 	TO_SAVE,
+	TO_REMARKER,
 	TO_MAX
 };
 
@@ -316,7 +317,8 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
 void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(WINDOW_DATA *win, const char *path, GtkTextIter *start, GtkTextIter *end);
-void StartRemarker(WINDOW_DATA *win, gboolean startup, gboolean quiet);
+typedef enum { remarker_top, remarker_startup, remarker_check } remarker_mode;
+int StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet);
 
 
 /*

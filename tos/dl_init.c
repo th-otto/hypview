@@ -176,7 +176,7 @@ int DoAesInit(void)
 		   Bit 4:           pdlg_xx()-funktions are available (1)
 		 */
 		appl_xgetinfo(AES_WDIALOG, &has_wlffp, &dummy, &dummy, &dummy);
-
+		
 		appl_xgetinfo(AES_MENU, &dummy, &has_form_popup, &dummy, &dummy);
 
 		appl_xgetinfo(AES_WINDOW, &has_iconify, &dummy, &dummy, &dummy);
@@ -236,15 +236,15 @@ int DoInitSystem(void)
 		{
 			form_alert(1, rs_string(DI_VDI_WKS_ERROR));
 			hypview_rsc_free();
-			appl_exit();
 			return FALSE;
 		}
 		vq_extnd(vdi_handle, 1, ext_workout);
 
 #if SAVE_COLORS
 		for (i = 0; i < 256; i++)
-			vq_color(vdi_handle, i, 1, (short *) &save_palette[i]);
+			vq_color(vdi_handle, i, 1, &save_palette[i].red);
 #endif
+		hfix_palette(vdi_handle);
 	}
 #endif
 #if USE_LONGEDITFIELDS
@@ -278,7 +278,7 @@ void DoExitSystem(void)
 		short i;
 
 		for (i = 0; i < 256; i++)
-			vs_color(vdi_handle, i, (short *) &save_palette[i]);
+			vs_color(vdi_handle, i, &save_palette[i].red);
 #endif
 		v_clsvwk(vdi_handle);
 		vdi_handle = 0;

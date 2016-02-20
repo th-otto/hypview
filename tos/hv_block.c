@@ -25,26 +25,63 @@
 #include "hypdebug.h"
 #include "hypview.h"
 
+#define remarker_can_utf8 (0 && win)
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void StartRemarker(gboolean startup, gboolean quiet)
+_WORD StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet)
 {
+	_WORD id = -1;
+	
+	if (mode == remarker_check)
+		return appl_locate(gl_profile.remarker.path, NULL, FALSE);
 	if (empty(gl_profile.remarker.path))
 	{
 		if (!quiet)
 			form_alert(1, rs_string(HV_ERR_NO_REMARKER));
 	} else
 	{
-		_WORD id = appl_locate(gl_profile.remarker.path, startup ? "-t" : NULL, TRUE);
+		/* for startup; was "-t", but that causes remarker to use a small font */
+		id = appl_locate(gl_profile.remarker.path, mode == remarker_startup ? "" : "", mode != remarker_update);
+		if (id >= 0 && (mode == remarker_update || mode == remarker_top) && win)
+		{
+			const char *argv[4];
+			int argc = 0;
+			DOCUMENT *doc = win->data;
+			char *cmd;
+			char *nodename = NULL;
+			
+			if (id == 0 && !_app && appl_locate(gl_profile.remarker.path, NULL, FALSE) < 0)
+			{
+				/* it's about to be started by the AV-server */
+				return -1;
+			}
+			if (mode == remarker_top)
+				argv[argc++] = "-r";
+			argv[argc++] = doc->path;
+			if (doc->type == HYP_FT_HYP)
+			{
+				HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+				if (remarker_can_utf8)
+					nodename = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[win->displayed_node->number]->name, STR0TERM);
+				else
+					nodename = hyp_conv_charset(hyp->comp_charset, HYP_CHARSET_ATARI, hyp->indextable[win->displayed_node->number]->name, STR0TERM, NULL);
+				argv[argc++] = nodename;
+			}
+			argv[argc] = NULL;
+			cmd = av_cmdline(argv, 0, TRUE);
+			SendVA_START(id, cmd, FUNK_NULL);
+			g_free(cmd);
+			g_free(nodename);
+		}
 		if (id < 0 && !quiet)
 		{
-			char *str = g_strdup_printf(rs_string(HV_ERR_EXEC), gl_profile.remarker.path);
-			form_alert(1, str);
-			g_free(str);
+			FileExecError(gl_profile.remarker.path);
 		}
 	}
+	return id;
 }
 
 /******************************************************************************/
@@ -92,7 +129,8 @@ void BlockOperation(WINDOW_DATA *win, short num)
 		SelectFont(win);
 		break;
 	case CO_REMARKER:
-		StartRemarker(FALSE, FALSE);
+		if (StartRemarker(win, remarker_top, FALSE) >= 0)
+			ToolbarUpdate(win, TRUE);
 		break;
 	case CO_PRINT:
 		break;

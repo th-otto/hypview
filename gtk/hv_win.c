@@ -22,6 +22,7 @@
 #include "../icons/last.h"
 #include "../icons/referenc.h"
 #include "../icons/save.h"
+#include "../icons/remarker.h"
 
 GSList *all_list;
 
@@ -39,6 +40,7 @@ static const char *const tb_action_names[TO_MAX] = {
 	[TO_INDEX] = "index",
 	[TO_KATALOG] = "catalog",
 	[TO_REFERENCES] = "xref",
+	[TO_REMARKER] = "remarker",
 	[TO_HELP] = "help",
 	[TO_INFO] = "info",
 	[TO_LOAD] = "open",
@@ -1661,7 +1663,8 @@ static void register_stock_icons(void)
 		{ "hv-help", N_("Show help page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-info", N_("Show info page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-load", N_("_Open Hypertext"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
-		{ "hv-save", N_("_Save text"), (GdkModifierType)0, 0, GETTEXT_PACKAGE }
+		{ "hv-save", N_("_Save text"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-remarker", N_("Remarker"), (GdkModifierType)0, 0, GETTEXT_PACKAGE }
 	};
 	static gboolean registered = FALSE;
 	GtkIconFactory *factory;
@@ -1690,6 +1693,7 @@ static void register_stock_icons(void)
 	register_icon(factory, "hv-info", info_icon_data);
 	register_icon(factory, "hv-load", load_icon_data);
 	register_icon(factory, "hv-save", save_icon_data);
+	register_icon(factory, "hv-remarker", remarker_icon_data);
 	
 	g_object_unref(factory);
 
@@ -1910,7 +1914,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_save) },
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
-	{ "remarker",           NULL,                    N_("_Run Remarker"),                   "<Alt>R",      NULL,                                                G_CALLBACK(on_remarker) },
+	{ "remarker",           "hv-remarker",           N_("_Run Remarker"),                   "<Alt>R",      N_("Start Remarker"),                                G_CALLBACK(on_remarker) },
 	{ "close",              "gtk-close",             N_("_Close"),                          "<Ctrl>U",     NULL,                                                G_CALLBACK(on_close) },
 	{ "quit",               "gtk-quit",              N_("_Quit"),                           "<Ctrl>Q",     NULL,                                                G_CALLBACK(on_quit) },
 
@@ -2085,6 +2089,8 @@ static char const ui_info[] =
 "    <toolitem action='open'/>\n"
 "    <toolitem action='save'/>\n"
 "    <separator/>\n"
+"    <toolitem action='remarker'/>\n"
+"    <separator/>\n"
 "  </toolbar>\n"
 "</ui>\n";
 
@@ -2188,6 +2194,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		AppendButton(win, TO_INFO);
 		AppendButton(win, TO_LOAD);
 		AppendButton(win, TO_SAVE);
+		AppendButton(win, TO_REMARKER);
 		}
 	
 		gtk_widget_show_all(win->toolbar);

@@ -123,6 +123,7 @@ char GetBootDrive(void);
 void FileError(const char *path, const char *str);
 void FileErrorNr(const char *path, int err_no);
 void FileErrorErrno(const char *path);
+void FileExecError(const char *path);
 
 
 #endif /* __HYPDEFS_H__ */

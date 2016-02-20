@@ -139,7 +139,7 @@ void SelectFont(WINDOW_DATA *win)
 		}
 	} else
 	{
-		wind_set_int(ptr->whandle, WF_TOP, 0);
+		wind_set_top(ptr->whandle);
 	}
 }
 

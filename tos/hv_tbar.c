@@ -70,6 +70,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	doc->buttons.memory = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
+	doc->buttons.remarker_running = StartRemarker(win, remarker_check, TRUE) >= 0;
 	
 	if (win->history == NULL)
 	{
@@ -91,6 +92,16 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		toolbar[TO_MENU].ob_state &= ~OS_DISABLED;
 	else
 		toolbar[TO_MENU].ob_state |= OS_DISABLED;
+	
+	if (doc->buttons.remarker_running)
+		toolbar[TO_REMARKER].ob_flags &= ~OF_HIDETREE;
+	else
+		toolbar[TO_REMARKER].ob_flags |= OF_HIDETREE;
+	
+	if (doc->buttons.remarker)
+		toolbar[TO_REMARKER].ob_state &= ~OS_DISABLED;
+	else
+		toolbar[TO_REMARKER].ob_state |= OS_DISABLED;
 	
 	if (doc->buttons.load)
 		toolbar[TO_LOAD].ob_state &= ~OS_DISABLED;
@@ -181,11 +192,11 @@ static void position_popup(WINDOW_DATA *win, _WORD obj, _WORD *x, _WORD *y)
 /* Handle mouse click on toolbar */
 void ToolbarClick(WINDOW_DATA *win, short obj)
 {
-	short redraw_button = FALSE;
+	_BOOL redraw_button = FALSE;
 
 	if (!obj)
 		RemoveSearchBox(win);
-	else if (win->toolbar[obj].ob_state & OS_DISABLED)
+	else if ((win->toolbar[obj].ob_state & OS_DISABLED) && obj != TO_REMARKER)
 		return;
 
 	CheckFiledate(win);		/* Check if file has changed */
@@ -254,6 +265,9 @@ void ToolbarClick(WINDOW_DATA *win, short obj)
 			num = popup_select(tree, 0, 0);
 			BlockOperation(win, num);
 		}
+		break;
+	case TO_REMARKER:
+		BlockOperation(win, CO_REMARKER);
 		break;
 	default:
 		break;

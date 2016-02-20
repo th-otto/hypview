@@ -120,7 +120,7 @@ void FileselectorEvents(FILESEL_DATA *ptr, EVNT *event)
 {
 	char *pattern;
 
-	if (!fslx_evnt((XFSL_DIALOG *)ptr->dialog, event, ptr->path, ptr->name, &ptr->button, &ptr->nfiles, &ptr->sort_mode, &pattern))
+	if (!fslx_evnt(ptr->dialog, event, ptr->path, ptr->name, &ptr->button, &ptr->nfiles, &ptr->sort_mode, &pattern))
 	{
 		ptr->proc(ptr, ptr->nfiles);
 		RemoveFileselector(ptr);
@@ -133,7 +133,7 @@ void RemoveFileselector(FILESEL_DATA * ptr)
 {
 	if (ptr == NULL || ptr->dialog == NULL)
 		return;
-	fslx_close((XFSL_DIALOG *)ptr->dialog);
+	fslx_close(ptr->dialog);
 	remove_item((CHAIN_DATA *) ptr);
 	g_free(ptr);
 	if (modal_items >= 0)

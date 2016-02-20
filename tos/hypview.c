@@ -280,20 +280,26 @@ const char *_argv0;
 int main(int argc, const char **argv)
 {
 	WINDOW_DATA *win = NULL;
+	char *applname;
 	
-	nf_debugprintf("%s: %d %d\n", gl_program_name, gl_apid, (int)Pgetpid());
 	if (DoAesInit() == FALSE)
 		return 1;
 
 	if (DoInitSystem() == FALSE)
 	{
 		singletos_fail_loop();
+		appl_exit();
 		return 1;
 	}
 	
 	LoadConfig();						/* load configuration */
 
-	va_proto_init(gl_profile.viewer.applname);
+	applname = gl_profile.viewer.applname;
+	if (empty(applname))
+		applname = gl_program_name;
+	menu_register(-1, applname);
+	va_proto_init(applname);
+	
 	hv_init();							/* remaining initialization */
 	ValidateColors();
 
@@ -308,8 +314,6 @@ int main(int argc, const char **argv)
 
 	if (!_app)							/* running as ACC? */
 		menu_register(gl_apid, "  " PROGRAM_NAME);	/* ...register to menu */
-	if (!empty(gl_profile.viewer.applname))
-		menu_register(-1, gl_profile.viewer.applname);
 	
 	if (argc <= 1)						/* parameters specified? */
 	{
@@ -345,7 +349,7 @@ int main(int argc, const char **argv)
 		SelectFileLoad(NULL);						/* use file selector */
 
 	if (all_list && _app && gl_profile.remarker.run_on_startup)
-		StartRemarker(TRUE, FALSE);
+		StartRemarker(NULL, remarker_startup, FALSE);
 
 	while (!_app || (!doneFlag && all_list))
 	{

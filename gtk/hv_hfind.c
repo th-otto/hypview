@@ -3,7 +3,7 @@
 
 static GtkWidget *dialog;
 static gboolean can_search_again;
-static int HypfindID = -1;
+static volatile int HypfindID = -1;
 
 /*** ---------------------------------------------------------------------- ***/
 

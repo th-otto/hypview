@@ -328,7 +328,7 @@ static gint hypview_command_line(GApplication *app, GApplicationCommandLine *com
 			hv_recent_add(win->data->path);
 			hv_win_open(win);
 			if (gl_profile.remarker.run_on_startup)
-				StartRemarker(win, TRUE, FALSE);
+				StartRemarker(win, remarker_startup, FALSE);
 		}
 
 		if (is_remote)

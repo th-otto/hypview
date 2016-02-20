@@ -219,16 +219,21 @@ void DocumentInfos(WINDOW_DATA *win)
 		little.g_x = little.g_y = little.g_w = little.g_h = 0;
 		do {
 			form_center_grect(tree, &big);
+			wind_update(BEG_UPDATE);
 			form_dial_grect(FMD_START, &little, &big);
 			objc_draw_grect(tree, ROOT, MAX_DEPTH, &big);
 			obj = form_do(tree, 0);
+			form_dial_grect(FMD_FINISH, &little, &big);
+			wind_update(END_UPDATE);
 			if (obj > 0)
 			{
 				tree[obj].ob_state &= ~OS_SELECTED;
 				if (obj == INFO_LESS || obj == INFO_MORE)
+				{
 					toggle_morebox(tree, INFO_MORE_BOX);
+					evnt_timer_gemlib(0);
+				}
 			}
-			form_dial_grect(FMD_FINISH, &little, &big);
 		} while (obj > 0 && obj != PROG_HELP && obj != PROG_OK);
 		switch (obj)
 		{

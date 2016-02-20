@@ -69,6 +69,8 @@ typedef struct _hyp_nav_buttons
 	unsigned int ascii : 1;      /* TO_ASCII; enabled if we can save file as ASCII */
 	unsigned int searchbox : 1;  /* enabled if search text entry is visible */
 	unsigned int menu : 1;       /* context menu */
+	unsigned int remarker_running : 1;   /* remarker available */
+	unsigned int remarker : 1;   /* remarker state */
 } hyp_nav_buttons;
 
 struct _document_

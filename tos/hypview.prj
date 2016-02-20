@@ -98,6 +98,7 @@ h:\src\udo\tools\hypview\tos\dl_filsl.c
 h:\src\udo\tools\hypview\tos\dl_fonsl.c
 h:\src\udo\tools\hypview\tos\dl_tools.c
 h:\src\udo\tools\hypview\tos\dl_popup.c
+h:\src\udo\tools\hypview\tos\dl_msgs.c
 
 h:\src\udo\tools\hypview\tos\dl_routs.c
 h:\src\udo\tools\hypview\tos\dl_avcmd.c

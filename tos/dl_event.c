@@ -39,10 +39,10 @@
 
 short doneFlag = FALSE, quitApp = FALSE;
 
-#define setmsg(a,b,c,d,e,f,g,h) \
+#define setmsg(a,d,e,f,g,h) \
 	msg[0] = a; \
-	msg[1] = b; \
-	msg[2] = c; \
+	msg[1] = gl_apid; \
+	msg[2] = 0; \
 	msg[3] = d; \
 	msg[4] = e; \
 	msg[5] = f; \
@@ -77,7 +77,7 @@ static void DoKeybd(EVNT *event)
 			_WORD msg[8];
 			_WORD top;
 			wind_get_int(DESK, WF_TOP, &top);
-			setmsg(WM_ALLICONIFY, gl_apid, 0, top, -1, -1, -1, -1);
+			setmsg(WM_ALLICONIFY, top, -1, -1, -1, -1);
 			appl_write(gl_apid, 16, msg);
 			event->mwhich &= ~MU_KEYBD;
 		}
@@ -102,7 +102,7 @@ static void DoKeybd(EVNT *event)
 				_WORD msg[8];
 				_WORD top;
 				wind_get_int(DESK, WF_TOP, &top);
-				setmsg(WM_CLOSED, gl_apid, 0, top, 0, 0, 0, 0);
+				setmsg(WM_CLOSED, top, 0, 0, 0, 0);
 				appl_write(gl_apid, 16, &msg[0]);
 				event->mwhich &= ~MU_KEYBD;
 			}
@@ -177,13 +177,15 @@ static void DoMessage(EVNT *event)
 	case VA_PATH_UPDATE:
 	case AV_STARTED:
 	case AV_PROTOKOLL:
+	case VA_DRAGACCWIND:
+	case VA_START:						/* pass command line */
 		DoVA_Message(event->msg);
 		break;
-	case VA_DRAGACCWIND:
-		DoVA_DRAGACCWIND(event->msg);
-		break;
-	case VA_START:						/* pass command line */
-		DoVA_START(event->msg);
+	case AV_EXIT:
+		DoVA_Message(event->msg);
+#if USE_GEMSCRIPT
+		gemscript_handle_message(event->msg);
+#endif
 		break;
 	case AV_SENDCLICK:					/* mouse click reported (BubbleGEM) */
 		event->mwhich = MU_BUTTON;
@@ -199,13 +201,6 @@ static void DoMessage(EVNT *event)
 		event->kstate = event->msg[3];
 		event->key = event->msg[4];
 		DoEventDispatch(event);
-		break;
-
-	case AV_EXIT:
-		DoVA_Message(event->msg);
-#if USE_GEMSCRIPT
-		gemscript_handle_message(event->msg);
-#endif
 		break;
 
 #if USE_BUBBLEGEM
@@ -234,7 +229,7 @@ static void DoMessage(EVNT *event)
 #endif
 
 	default:
-		HYP_DBG(("Message :%d %x erhalten", event->msg[0], event->msg[0]));
+		HYP_DBG(("Message :%d %x received", event->msg[0], event->msg[0]));
 		break;
 	}
 

@@ -1,0 +1,43 @@
+/* OLGA protocol */
+#define OLE_INIT							0x4950
+#define OLE_EXIT							0x4951
+#define OLE_NEW 							0x4952
+
+#define OLGA_INIT 							0x1236
+#define OLGA_UPDATE 						0x1238
+#define OLGA_ACK							0x1239
+#define OLGA_RENAME 						0x123A
+#define OLGA_OPENDOC						0x123B
+#define OLGA_CLOSEDOC 						0x123C
+#define OLGA_LINK 							0x123D
+#define OLGA_UNLINK 						0x123E
+#define OLGA_UPDATED						0x123F
+#define OLGA_RENAMELINK 					0x1240
+#define OLGA_LINKRENAMED					0x1241
+#define OLGA_GETOBJECTS 					0x1242
+#define OLGA_OBJECTS						0x1243
+#define OLGA_BREAKLINK						0x1244
+#define OLGA_LINKBROKEN 					0x1245
+#define OLGA_START							0x1246
+#define OLGA_GETINFO						0x1247
+#define OLGA_INFO 							0x1248
+#define OLGA_IDLE 							0x1249
+#define OLGA_ACTIVATE 						0x124A
+#define OLGA_EMBED							0x124B
+#define OLGA_EMBEDDED 						0x124C
+#define OLGA_UNEMBED						0x124D
+#define OLGA_GETSETTINGS					0x124E
+#define OLGA_SETTINGS 						0x124F
+#define OLGA_REQUESTNOTIFICATION			0x1250
+#define OLGA_RELEASENOTIFICATION			0x1251
+#define OLGA_NOTIFY 						0x1252
+#define OLGA_NOTIFIED 						0x1253
+#define OLGA_SERVERTERMINATED	 			0x1254
+#define OLGA_CLIENTTERMINATED 				0x1255
+#define OLGA_INPLACEUPDATE					0x1256
+#define OLGA_ID4UPDATE						0x1257
+#define OLGA_GETEXTENSION					0x1258
+#define OLGA_EXTENSION						0x1259
+#define OLGA_GETSERVERPATH					0x125A
+#define OLGA_SERVERPATH						0x125B
+

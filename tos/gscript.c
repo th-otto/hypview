@@ -293,13 +293,13 @@ static _WORD gs_handle_command(_WORD argc, const char *const *argv, char **erg)
 	{
 		if (argc == 1)
 		{
-			SendVA_START(gl_apid, NULL);
+			SendVA_START(gl_apid, NULL, FUNK_NULL);
 		} else
 		{
 			while (--argc)
 			{
 				arg = *++argv;
-				SendVA_START(gl_apid, arg);
+				SendVA_START(gl_apid, arg, FUNK_NULL);
 			}
 		}
 		*erg = g_strdup("1");
@@ -307,7 +307,7 @@ static _WORD gs_handle_command(_WORD argc, const char *const *argv, char **erg)
 	}
 	if (strcasecmp(argv[0], "Quit") == 0)
 	{
-		Protokoll_Send(gl_apid, AP_TERM, 0, 0, 0, 0, 0);
+		Protokoll_Send(gl_apid, AP_TERM, 0, 0, AP_TERM, 0, 0);
 		*erg = g_strdup("1");
 		return GSACK_OK;
 	}

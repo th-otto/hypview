@@ -27,6 +27,8 @@
 #include "dhst.h"
 #include "tos/mem.h"
 
+static DHSTINFO *dhst_info;
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -44,6 +46,8 @@ void DhstAddFile(const char *path)
 		DHSTINFO *info;
 		char *p;
 		
+		g_free_shared(dhst_info);
+		dhst_info = NULL;
 		ret = g_alloc_shared(sizeof(DHSTINFO) + strlen(gl_program_name) + DL_PATHMAX * 2);
 		if (ret == NULL)
 		{
@@ -75,6 +79,7 @@ void DhstAddFile(const char *path)
 		msg[6] = 0;
 		msg[7] = 0;
 		appl_write((short) value, 16, &msg[0]);
+		dhst_info = info;
 	}
 }
 
@@ -82,7 +87,13 @@ void DhstAddFile(const char *path)
 
 void DhstFree(_WORD msg[8])
 {
-	g_free_shared(*(void **) &msg[3]);
+	DHSTINFO *info = *(DHSTINFO **)&msg[3];
+	
+	if (info == dhst_info)
+	{
+		g_free_shared(info);
+		dhst_info = NULL;
+	}
 }
 
 #endif

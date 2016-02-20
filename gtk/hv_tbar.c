@@ -35,6 +35,8 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
 	doc->buttons.save = TRUE;
+	doc->buttons.remarker_running = StartRemarker(win, remarker_check, TRUE) >= 0;
+	doc->buttons.remarker = TRUE;
 	
 	if (win->history == NULL)
 	{
@@ -66,6 +68,15 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "xref"), doc->buttons.references);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "help"), doc->buttons.help);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "save"), doc->buttons.save);
+
+		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "remarker"), doc->buttons.remarker);
+	}
+	if (win->m_buttons[TO_REMARKER])
+	{
+		if (doc->buttons.remarker_running)
+			gtk_widget_show(win->m_buttons[TO_REMARKER]);
+		else
+			gtk_widget_hide(win->m_buttons[TO_REMARKER]);
 	}
 	
 	if (redraw)
@@ -145,6 +156,9 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button, guint32 eve
 		break;
 	case TO_INFO:
 		DocumentInfos(win);
+		break;
+	case TO_REMARKER:
+		BlockOperation(win, CO_REMARKER);
 		break;
 	default:
 		break;

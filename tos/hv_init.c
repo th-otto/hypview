@@ -71,7 +71,7 @@ void hv_init(void)
 	vsf_interior(vdi_handle, FIS_SOLID);
 	vsf_perimeter(vdi_handle, 0);
 
-	/* set default line attribtes */
+	/* set default line attributes */
 	vsl_udsty(vdi_handle, 0xAAAA);		/* dotted line */
 	vsl_width(vdi_handle, 1);
 	vsl_ends(vdi_handle, 0, 0);

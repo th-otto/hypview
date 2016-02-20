@@ -1,15 +1,47 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
+#include <sys/wait.h>
+
+static volatile int remarker_pid = -1;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void StartRemarker(GtkHypviewWindow *win, gboolean startup, gboolean quiet)
+static gboolean check_remarker(void *userdata)
 {
-	char *path = path_subst(gl_profile.remarker.path);
-	const char *argv[3];
-	int argc;
+	UNUSED(userdata);
+	if (remarker_pid > 0)
+	{
+		int retval = 0;
+		int ret;
+		
+		if ((ret = waitpid(remarker_pid, &retval, WNOHANG)) >= 0)
+		{
+			if (ret > 0 && WIFEXITED(retval))
+				remarker_pid = -1;
+		} else if (errno == ECHILD)
+		{
+			remarker_pid = -1;
+		}
+	}
+	if (remarker_pid < 0)
+		return FALSE; /* remove timeout handler */
+	return TRUE; /* keep checking for process to finish */
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+int StartRemarker(GtkHypviewWindow *win, remarker_mode mode, gboolean quiet)
+{
+	char *path;
+	const char *argv[5];
+	int argc = 0;
+	
+	if (remarker_pid > 0 || mode == remarker_check)
+		return remarker_pid;
+	
+	path = path_subst(gl_profile.remarker.path);
 	
 	if (empty(path))
 	{
@@ -17,18 +49,41 @@ void StartRemarker(GtkHypviewWindow *win, gboolean startup, gboolean quiet)
 			show_message(GTK_WIDGET(win), _("Error"), _("No path to REMARKER configured"), FALSE);
 	} else
 	{
+		char *nodename = NULL;
+		
 		argv[argc++] = path;
-		if (startup)
-			argv[argc++] = "-t";
-		argv[argc] = NULL;
-		if (hyp_utf8_spawnvp(P_NOWAIT, 1, argv) < 0 && !quiet)
+		if (mode == remarker_startup)
 		{
-			char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), path, hyp_utf8_strerror(errno));
-			show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
-			g_free(str);
+			argv[argc++] = "-t";
+		} else if (mode == remarker_top && win)
+		{
+			DOCUMENT *doc = win->data;
+			argv[argc++] = "-r";
+			argv[argc++] = doc->path;
+			if (doc->type == HYP_FT_HYP)
+			{
+				HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+				nodename = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[win->displayed_node->number]->name, STR0TERM);
+				argv[argc++] = nodename;
+			}
 		}
+		argv[argc] = NULL;
+		if ((remarker_pid = hyp_utf8_spawnvp(P_NOWAIT, 1, argv)) < 0)
+		{
+			if (!quiet)
+			{
+				char *str = g_strdup_printf(_("Can not execute\n'%s'\n%s"), path, hyp_utf8_strerror(errno));
+				show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
+				g_free(str);
+			}
+		} else
+		{
+			g_timeout_add(500, check_remarker, NULL);
+		}
+		g_free(nodename);
 	}
 	g_free(path);
+	return remarker_pid;
 }
 
 /******************************************************************************/
@@ -87,7 +142,8 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 		SelectFont(win);
 		break;
 	case CO_REMARKER:
-		StartRemarker(win, FALSE);
+		StartRemarker(win, remarker_top, FALSE);
+		ToolbarUpdate(win, FALSE);
 		break;
 	case CO_PRINT:
 		HYP_DBG(("NYI: print"));

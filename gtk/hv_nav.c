@@ -259,6 +259,10 @@ void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 	case TO_HELP:
 		GotoHelp(win);
 		break;
+	case TO_REMARKER:
+		StartRemarker(win, remarker_top, FALSE);
+		ToolbarUpdate(win, FALSE);
+		break;
 	default:
 		new_node = HYP_NOINDEX;
 		break;

@@ -561,6 +561,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
 	hv_set_title(win, win->title);
 	
+	StartRemarker(win, remarker_update, TRUE);
+	
 	sx = sy = 0;
 
 	vst_effects(vdi_handle, 0);

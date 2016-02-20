@@ -31,13 +31,136 @@
  * basic AV-Protokoll: register to server
  */
 
-static _WORD av_server_id = -1;			/* program ID of server */
-long av_server_cfg = 0;
 
 static char *av_name = NULL;			/* our program name */
+#define NUM_AV_BUFFERS 10
+static char *av_buffers[NUM_AV_BUFFERS];
+static int av_par_num;
 /* for AV_STARTPROG */
-static char *av_parameter = NULL;
 static void (*va_progstart)(_WORD ret);
+static void (*va_started)(void);
+
+typedef struct _av_app AV_APP;
+struct _av_app {
+	AV_APP *next;
+	char name[9];
+	_WORD apid;
+	_WORD av_server_cfg1;
+	_WORD av_server_cfg2;
+	_WORD av_server_cfg3;
+	_WORD av_proto_cfg;
+};
+
+static AV_APP *av_server_app;			/* program ID of server */
+static AV_APP *av_apps;
+
+#define setmsg(a,d,e,f,g,h) \
+	msg[0] = a; \
+	msg[1] = gl_apid; \
+	msg[2] = 0; \
+	msg[3] = d; \
+	msg[4] = e; \
+	msg[5] = f; \
+	msg[6] = g; \
+	msg[7] = h
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+static char **get_av_buffer(void)
+{
+	char **p;
+	
+	if (++av_par_num >= NUM_AV_BUFFERS)
+		av_par_num = 0;
+	p = &av_buffers[av_par_num];
+	g_free_shared(*p);
+	*p = NULL;
+	return p;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void free_av_buffer(const _WORD *msg)
+{
+	const char *p = *((const char **)&msg[3]);
+	int i;
+	
+	if (p == NULL)
+		return;
+	for (i = 0; i < NUM_AV_BUFFERS; i++)
+	{
+		if (av_buffers[i] == p)
+		{
+			g_free_shared(av_buffers[i]);
+			av_buffers[i] = NULL;
+			break;
+		}
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void av_remove_app(_WORD id)
+{
+	AV_APP **last = &av_apps;
+	AV_APP *app;
+	
+	while ((app = *last) != NULL)
+	{
+		if (app->apid == id)
+		{
+			if (app == av_server_app)
+			{
+				av_server_app = NULL;
+			}
+			*last = app->next;
+			g_free(app);
+			return;
+		}
+		last = &app->next;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static AV_APP *av_find_app(_WORD id)
+{
+	AV_APP *app;
+	
+	for (app = av_apps; app; app = app->next)
+	{
+		if (app->apid == id)
+			return app;
+	}
+	return NULL;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static AV_APP *av_new_app(_WORD id)
+{
+	AV_APP *app;
+	
+	app = av_find_app(id);
+	if (app == NULL)
+	{
+		app = g_new(AV_APP, 1);
+		if (app)
+		{
+			app->name[0] = 0;
+			app->apid = id;
+			app->av_server_cfg1 = 0;
+			app->av_server_cfg2 = 0;
+			app->av_server_cfg3 = 0;
+			app->av_proto_cfg = 0;
+			app->next = av_apps;
+			av_apps = app;
+		}
+	}
+	return app;
+}
 
 
 /******************************************************************************/
@@ -83,24 +206,26 @@ _BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id)
 
 _BOOL Protokoll_Send(_WORD apid, _UWORD prot, _UWORD a1, _UWORD a2, _UWORD a3, _UWORD a4, _UWORD a5)
 {
-	_WORD message[8];
+	_WORD msg[8];
 	
 	if (apid >= 0)
 	{
-		message[0] = prot;
-		message[1] = gl_apid;
-		message[2] = 0;
-		message[3] = a1;
-		message[4] = a2;
-		message[5] = a3;
-		message[6] = a4;
-		message[7] = a5;
-		if (appl_write(apid, 16, message) > 0)
+		setmsg(prot, a1, a2, a3, a4, a5);
+		if (appl_write(apid, 16, msg) > 0)
 		{
 			return TRUE;
 		}
 	}
 	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static _BOOL Protokoll_SendAv(AV_APP *app, _UWORD prot, _UWORD a1, _UWORD a2, _UWORD a3, _UWORD a4, _UWORD a5)
+{
+	if (!app)
+		return FALSE;
+	return Protokoll_Send(app->apid, prot, a1, a2, a3, a4, a5);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -194,6 +319,11 @@ _WORD appl_locate(const char *pathlist, const char *arg, _BOOL startit)
 		appl_makeappname(app_name, p);
 		g_free(path);
 		id = appl_find(app_name);
+		if (id < 0)
+		{
+			strlwr(app_name);
+			id = appl_find(app_name);
+		}
 	}
 	if (id < 0 && startit && (_AESnumapps != 1 || !_app))
 	{
@@ -232,11 +362,9 @@ _WORD appl_locate(const char *pathlist, const char *arg, _BOOL startit)
 				{
 					id = shel_xwrite(SHW_EXEC, 1, 1, path, cmdline);
 				}
-				nf_debugprintf("start remarker %s: %d\n", path, id);
 			} else
 			{
-				SendAV_STARTPROG(path, arg, FUNK_NULL);
-				id = 0;
+				id = SendAV_STARTPROG(path, arg, FUNK_NULL);
 			}
 			g_free(path);
 		}
@@ -250,9 +378,11 @@ _WORD appl_locate(const char *pathlist, const char *arg, _BOOL startit)
  * ask server for the configuration string thet was set with
  * AV_STATUS
  */
-void SendAV_GETSTATUS(void)
+_BOOL SendAV_GETSTATUS(void)
 {
-	Protokoll_Send(av_server_id, AV_GETSTATUS, 0, 0, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_GETSTATUS))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_GETSTATUS, 0, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -260,14 +390,19 @@ void SendAV_GETSTATUS(void)
 /*
  * send a configuration string that is saved by the server
  */
-void SendAV_STATUS(const char *string)
+_BOOL SendAV_STATUS(const char *string)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(string);
-	if (av_parameter != NULL)
+	char **p;
+	
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_SENDKEY))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(string);
+	if (*p != NULL)
 	{
-		Protokoll_Send(av_server_id, AV_STATUS, PROT_NAMEPTR(av_parameter), 0, 0, 0);
+		return Protokoll_SendAv(av_server_app, AV_STATUS, PROT_NAMEPTR(*p), 0, 0, 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -275,9 +410,11 @@ void SendAV_STATUS(const char *string)
 /*
  * send a key event that was not handled
  */
-void SendAV_SENDKEY(short kbd_state, short code)
+_BOOL SendAV_SENDKEY(short kbd_state, short code)
 {
-	Protokoll_Send(av_server_id, AV_SENDKEY, kbd_state, code, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_SENDKEY))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_SENDKEY, kbd_state, code, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -285,9 +422,11 @@ void SendAV_SENDKEY(short kbd_state, short code)
 /*
  * ask server about default font to use for displaying text
  */
-void SendAV_ASKFILEFONT(void)
+_BOOL SendAV_ASKFILEFONT(void)
 {
-	Protokoll_Send(av_server_id, AV_ASKFILEFONT, 0, 0, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_ASKFILEFONT))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_ASKFILEFONT, 0, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -295,9 +434,11 @@ void SendAV_ASKFILEFONT(void)
 /*
  * ask server about font to use for console text
  */
-void SendAV_ASKCONFONT(void)
+_BOOL SendAV_ASKCONFONT(void)
 {
-	Protokoll_Send(av_server_id, AV_ASKCONFONT, 0, 0, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_ASKCONFONT))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_ASKCONFONT, 0, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -305,9 +446,11 @@ void SendAV_ASKCONFONT(void)
 /*
  * ask server about currently selected object
  */
-void SendAV_ASKOBJECT(void)
+_BOOL SendAV_ASKOBJECT(void)
 {
-	Protokoll_Send(av_server_id, AV_ASKOBJECT, 0, 0, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_ASKOBJECT))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_ASKOBJECT, 0, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -315,9 +458,11 @@ void SendAV_ASKOBJECT(void)
 /*
  * tell server to open console window
  */
-void SendAV_OPENCONSOLE(void)
+_BOOL SendAV_OPENCONSOLE(void)
 {
-	Protokoll_Send(av_server_id, AV_OPENCONSOLE, 0, 0, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_OPENCONSOLE))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_OPENCONSOLE, 0, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -325,16 +470,20 @@ void SendAV_OPENCONSOLE(void)
 /*
  * tell server to open a directory window
  */
-void SendAV_OPENWIND(const char *path, const char *wildcard)
+_BOOL SendAV_OPENWIND(const char *path, const char *wildcard)
 {
 	char *ptr2;
+	char **p;
 	
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup2_shared(path, wildcard, &ptr2);
-	if (av_parameter != NULL)
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_OPENWIND))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup2_shared(path, wildcard, &ptr2);
+	if (*p != NULL)
 	{
-		Protokoll_Send(av_server_id, AV_OPENWIND, PROT_NAMEPTR(av_parameter), PROT_NAMEPTR(ptr2), 0);
+		return Protokoll_SendAv(av_server_app, AV_OPENWIND, PROT_NAMEPTR(*p), PROT_NAMEPTR(ptr2), 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -346,15 +495,13 @@ void SendAV_OPENWIND(const char *path, const char *wildcard)
  * some servers (like GEMINI) otherwise don't
  * parse the parameters correctly
  */
-char *av_cmdline(const char *const argv[], gboolean incl_argv0)
+char *av_cmdline(const char *const argv[], int first, gboolean for_remarker)
 {
 	int i;
 	size_t cmlen = 0;
 	char *cmd, *dst;
 	const char *src;
-	int first;
 	
-	first = incl_argv0 ? 0 : 1;
 	if (argv == NULL || argv[0] == NULL || argv[first] == NULL)
 		return NULL;
 	for (i = first; argv[i]; i++)
@@ -362,13 +509,22 @@ char *av_cmdline(const char *const argv[], gboolean incl_argv0)
 	cmd = g_new(char, cmlen);
 	if (cmd == NULL)
 		return NULL;
+	
 	dst = cmd;
 	for (i = first; argv[i]; i++)
 	{
 		if (i > first)
 			*dst++ = ' ';
 		src = argv[i];
-		if (*src == '\0' || strchr(src, '\'') || strchr(src, ' '))
+		/*
+		 * ugly hack for remarker here:
+		 * it does not send AV_PROTOKOLL,
+		 * but must have the arguments quoted,
+		 * otherwise it generates garbage.
+		 * Another hack: it must not have switches quoted
+		 */
+		if (*src == '\0' || strchr(src, '\'') || strchr(src, ' ') ||
+			(for_remarker && *src != '-'))
 		{
 			*dst++ = '\'';
 			while (*src)
@@ -395,29 +551,47 @@ char *av_cmdline(const char *const argv[], gboolean incl_argv0)
 /*
  * tell server to open a document or start a program
  */
-void SendAV_STARTPROG(const char *path, const char *commandline, void (*progstart)(_WORD ret))
+_WORD SendAV_STARTPROG(const char *path, const char *commandline, void (*progstart)(_WORD ret))
 {
 	char *ptr2;
+	char **p;
 	
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup2_shared(path, commandline, &ptr2);
-	if (av_parameter != NULL || path == NULL)
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_STARTPROG))
+		return -1;
+	/*
+	 * if the AV-Server is the desktop,
+	 * check wether it is still running,
+	 * otherwise sending the command won't work
+	 */
+	if (av_server_app->apid == 0)
+	{
+		if (av_server_app->name[0] == '\0' || appl_find(av_server_app->name) < 0)
+			return -1;
+	}
+	p = get_av_buffer();
+	*p = g_strdup2_shared(path, commandline, &ptr2);
+	if (*p != NULL || path == NULL)
 	{
 		va_progstart = progstart;
-		Protokoll_Send(av_server_id, AV_STARTPROG, PROT_NAMEPTR(av_parameter), PROT_NAMEPTR(ptr2), 0x1234);
+		Protokoll_SendAv(av_server_app, AV_STARTPROG, PROT_NAMEPTR(*p), PROT_NAMEPTR(ptr2), 0x1234);
+		return 0;
 	}
+	return -1;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SendVA_START(_WORD dst_app, const char *path)
+_BOOL SendVA_START(_WORD dst_app, const char *path, void (*started)(void))
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(path);
-	if (av_parameter != NULL || path == NULL)
+	char **p = get_av_buffer();
+
+	*p = g_strdup_shared(path);
+	va_started = started;
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(dst_app, VA_START, PROT_NAMEPTR(av_parameter), PROT_NAMEPTR(NULL), 0);
+		return Protokoll_Send(dst_app, VA_START, PROT_NAMEPTR(*p), PROT_NAMEPTR(NULL), 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -425,19 +599,23 @@ void SendVA_START(_WORD dst_app, const char *path)
 /*
  * register a new window with server (for window-cycle and  Drag&Drop)
  */
-void SendAV_ACCWINDOPEN(short handle)
+_BOOL SendAV_ACCWINDOPEN(short handle)
 {
-	Protokoll_Send(av_server_id, AV_ACCWINDOPEN, handle, 0, 0, 0, 0);
+	if (handle <= 0 || av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_ACCWINDOPEN))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_ACCWINDOPEN, handle, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 /*
- * uregister a window handle
+ * unregister a window handle
  */
-void SendAV_ACCWINDCLOSED(short handle)
+_BOOL SendAV_ACCWINDCLOSED(short handle)
 {
-	Protokoll_Send(av_server_id, AV_ACCWINDCLOSED, handle, 0, 0, 0, 0);
+	if (handle <= 0 || av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_ACCWINDCLOSED))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_ACCWINDCLOSED, handle, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -445,14 +623,19 @@ void SendAV_ACCWINDCLOSED(short handle)
 /*
  * ask server to copy the file
  */
-void SendAV_COPY_DRAGGED(short kbd_state, const char *path)
+_BOOL SendAV_COPY_DRAGGED(short kbd_state, const char *path)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(path);
-	if (av_parameter != NULL || path == NULL)
+	char **p;
+
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_COPY_DRAGGED))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(path);
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(av_server_id, AV_COPY_DRAGGED, kbd_state, PROT_NAMEPTR(av_parameter), 0, 0);
+		return Protokoll_SendAv(av_server_app, AV_COPY_DRAGGED, kbd_state, PROT_NAMEPTR(*p), 0, 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -460,14 +643,19 @@ void SendAV_COPY_DRAGGED(short kbd_state, const char *path)
 /*
  * ask server to update a directory window
  */
-void SendAV_PATH_UPDATE(const char *path)
+_BOOL SendAV_PATH_UPDATE(const char *path)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(path);
-	if (av_parameter != NULL || path == NULL)
+	char **p;
+
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_PATH_UPDATE))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(path);
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(av_server_id, AV_PATH_UPDATE, PROT_NAMEPTR(av_parameter), 0, 0, 0);
+		return Protokoll_SendAv(av_server_app, AV_PATH_UPDATE, PROT_NAMEPTR(*p), 0, 0, 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -475,9 +663,11 @@ void SendAV_PATH_UPDATE(const char *path)
 /*
  * ask server about object at position x,y
  */
-void SendAV_WHAT_IZIT(short x, short y)
+_BOOL SendAV_WHAT_IZIT(short x, short y)
 {
-	Protokoll_Send(av_server_id, AV_WHAT_IZIT, x, y, 0, 0, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_WHAT_IZIT))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_WHAT_IZIT, x, y, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -485,14 +675,19 @@ void SendAV_WHAT_IZIT(short x, short y)
 /*
  * tell server that an object has been dragged to a window
  */
-void SendAV_DRAG_ON_WINDOW(short x, short y, short kbd_state, const char *path)
+_BOOL SendAV_DRAG_ON_WINDOW(short x, short y, short kbd_state, const char *path)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(path);
-	if (av_parameter != NULL || path == NULL)
+	char **p;
+
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_DRAG_ON_WINDOW))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(path);
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(av_server_id, AV_DRAG_ON_WINDOW, x, y, kbd_state, PROT_NAMEPTR(av_parameter));
+		return Protokoll_SendAv(av_server_app, AV_DRAG_ON_WINDOW, x, y, kbd_state, PROT_NAMEPTR(*p));
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -500,9 +695,12 @@ void SendAV_DRAG_ON_WINDOW(short x, short y, short kbd_state, const char *path)
 /*
  * reply to VA_START
  */
-void SendAV_STARTED(const _WORD *msg)
+_BOOL SendAV_STARTED(const _WORD *msg)
 {
-	Protokoll_Send(msg[1], AV_STARTED, msg[3], msg[4], msg[5], msg[6], msg[7]);
+	AV_APP *app = av_find_app(msg[1]);
+	if (!app || !(app->av_proto_cfg & AV_PROTOKOLL_STARTED))
+		return FALSE;
+	return Protokoll_SendAv(app, AV_STARTED, msg[3], msg[4], msg[5], msg[6], msg[7]);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -510,16 +708,20 @@ void SendAV_STARTED(const _WORD *msg)
 /*
  * Tell server to open a window
  */
-void SendAV_XWIND(const char *path, const char *wild_card, short bits)
+_BOOL SendAV_XWIND(const char *path, const char *wild_card, short bits)
 {
 	char *ptr2;
+	char **p;
 	
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup2_shared(path, wild_card, &ptr2);
-	if (av_parameter != NULL || path == NULL)
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_XWIND))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup2_shared(path, wild_card, &ptr2);
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(av_server_id, AV_XWIND, PROT_NAMEPTR(av_parameter), PROT_NAMEPTR(ptr2), bits);
+		return Protokoll_SendAv(av_server_app, AV_XWIND, PROT_NAMEPTR(*p), PROT_NAMEPTR(ptr2), bits);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -527,14 +729,19 @@ void SendAV_XWIND(const char *path, const char *wild_card, short bits)
 /*
  * Tell server to start a viewer registered for a file
  */
-void SendAV_VIEW(const char *path)
+_BOOL SendAV_VIEW(const char *path)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(path);
-	if (av_parameter != NULL || path == NULL)
+	char **p;
+
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg2 & VA_PROT_VIEW))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(path);
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(av_server_id, AV_XWIND, PROT_NAMEPTR(av_parameter), 0, 0, 0);
+		return Protokoll_SendAv(av_server_app, AV_VIEW, PROT_NAMEPTR(*p), 0, 0, 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -542,14 +749,19 @@ void SendAV_VIEW(const char *path)
 /*
  * Tell server to show the file-/directory information
  */
-void SendAV_FILEINFO(const char *path)
+_BOOL SendAV_FILEINFO(const char *path)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(path);
-	if (av_parameter != NULL || path == NULL)
+	char **p;
+
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg1 & VA_PROT_FILEINFO))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(path);
+	if (*p != NULL || path == NULL)
 	{
-		Protokoll_Send(av_server_id, AV_FILEINFO, PROT_NAMEPTR(av_parameter), 0, 0, 0);
+		return Protokoll_SendAv(av_server_app, AV_FILEINFO, PROT_NAMEPTR(*p), 0, 0, 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -557,16 +769,20 @@ void SendAV_FILEINFO(const char *path)
 /*
  * Ask server to copy the files
  */
-void SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits)
+_BOOL SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits)
 {
 	char *ptr2;
+	char **p;
 	
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup2_shared(file_list, dest_path, &ptr2);
-	if (av_parameter != NULL && ptr2 != NULL)
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg2 & VA_PROT_COPYFILE))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup2_shared(file_list, dest_path, &ptr2);
+	if (*p != NULL && ptr2 != NULL)
 	{
-		Protokoll_Send(av_server_id, AV_COPYFILE, PROT_NAMEPTR(av_parameter), PROT_NAMEPTR(ptr2), bits);
+		return Protokoll_SendAv(av_server_app, AV_COPYFILE, PROT_NAMEPTR(*p), PROT_NAMEPTR(ptr2), bits);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -574,14 +790,19 @@ void SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits)
 /*
  * Ask server to delete the files
  */
-void SendAV_DELFILE(const char *file_list)
+_BOOL SendAV_DELFILE(const char *file_list)
 {
-	g_free_shared(av_parameter);
-	av_parameter = g_strdup_shared(file_list);
-	if (av_parameter != NULL)
+	char **p;
+
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg2 & VA_PROT_DELFILE))
+		return FALSE;
+	p = get_av_buffer();
+	*p = g_strdup_shared(file_list);
+	if (*p != NULL)
 	{
-		Protokoll_Send(av_server_id, AV_DELFILE, PROT_NAMEPTR(av_parameter), 0, 0, 0);
+		return Protokoll_SendAv(av_server_app, AV_DELFILE, PROT_NAMEPTR(*p), 0, 0, 0);
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -589,9 +810,11 @@ void SendAV_DELFILE(const char *file_list)
 /*
  * Tell server where to open the next window
  */
-void SendAV_SETWINDPOS(short x, short y, short w, short h)
+_BOOL SendAV_SETWINDPOS(short x, short y, short w, short h)
 {
-	Protokoll_Send(av_server_id, AV_SETWINDPOS, x, y, w, h, 0);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg2 & VA_PROT_SETWINDPOS))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_SETWINDPOS, x, y, w, h, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -599,9 +822,11 @@ void SendAV_SETWINDPOS(short x, short y, short w, short h)
 /*
  * Tell server about mouse event that was not handled
  */
-void SendAV_SENDCLICK(EVNTDATA *m, short ev_return)
+_BOOL SendAV_SENDCLICK(EVNTDATA *m, short ev_return)
 {
-	Protokoll_Send(av_server_id, AV_SENDCLICK, m->x, m->y, m->bstate, m->kstate, ev_return);
+	if (av_server_app == NULL || !(av_server_app->av_server_cfg2 & VA_PROT_SENDCLICK))
+		return FALSE;
+	return Protokoll_SendAv(av_server_app, AV_SENDCLICK, m->x, m->y, m->bstate, m->kstate, ev_return);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -615,17 +840,18 @@ void SendAV_SENDCLICK(EVNTDATA *m, short ev_return)
  */
 static void DoVA_PROTOSTATUS(_WORD msg[8])
 {
-	union {
-		short msg[2];
-		long l;
-	} cfg;
+	AV_APP *app;
 	
-	cfg.msg[0] = msg[3];
-	cfg.msg[1] = msg[4];
-	if (msg[1] == av_server_id)
+	app = av_new_app(msg[1]);
+	if (app == av_server_app)
 	{
-		av_server_cfg = cfg.l;
-		HYP_DBG(("AV-Server name: '%s' protocol: %lx", printnull(*(char **) &msg[6]), av_server_cfg));
+		const char *name = *(const char *const *) &msg[6];
+		app->av_server_cfg1 = msg[3];
+		app->av_server_cfg2 = msg[4];
+		app->av_server_cfg3 = msg[5];
+		if (name)
+			appl_makeappname(app->name, name);
+		HYP_DBG(("AV-Server name: '%s' protocol: %04x %04x", app->name, app->av_server_cfg1, app->av_server_cfg2));
 	}
 }
 
@@ -646,16 +872,25 @@ void DoAV_PROTOKOLL(short flags)
 	_WORD type;
 	_WORD msg[8];
 	
-	if (av_server_id < 0)
+	if (av_server_app == NULL)
 	{
-		av_server_id = appl_locate(getenv("AVSERVER"), NULL, FALSE);
-		if (av_server_id < 0)
-			av_server_id = appl_locate("AVSERVER", NULL, FALSE);
-		if (av_server_id < 0)
-			if (!appl_xsearch(2, servername, &type, &av_server_id))
-				av_server_id = -1;
-		if (av_server_id < 0 && gl_apid != 0)
-			av_server_id = 0;
+		_WORD id = appl_locate(getenv("AVSERVER"), NULL, FALSE);
+		if (id < 0)
+			id = appl_locate("AVSERVER", NULL, FALSE);
+		if (id < 0)
+			if (!appl_xsearch(2, servername, &type, &id))
+				id = -1;
+		if (id < 0 && gl_apid != 0)
+			id = 0;
+		if (id >= 0)
+		{
+			AV_APP *app = av_new_app(id);
+			if (app)
+			{
+				appl_makeappname(app->name, servername);
+				av_server_app = app;
+			}
+		}
 	}
 	
 	if (av_name == NULL)
@@ -682,25 +917,30 @@ void DoAV_PROTOKOLL(short flags)
  */
 void DoAV_EXIT(void)
 {
-	Protokoll_Send(av_server_id, AV_EXIT, gl_apid, 0, 0, 0, 0);
+	Protokoll_SendAv(av_server_app, AV_EXIT, gl_apid, 0, 0, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void DoVA_Message(_WORD msg[8])
 {
+	AV_APP *app;
+	
 	switch (msg[0])
 	{
 	case VA_PROTOSTATUS:					/* server acknowledges registration */
 		DoVA_PROTOSTATUS(msg);
 		break;
 	case AV_STARTED:
-		g_free_shared(av_parameter);
-		av_parameter = NULL;
+		free_av_buffer(msg);
+		if (va_started)
+		{
+			va_started();
+			va_started = 0;
+		}
 		break;
 	case VA_PROGSTART:
-		g_free_shared(av_parameter);
-		av_parameter = NULL;
+		free_av_buffer(msg);
 		if (va_progstart)
 		{
 			_WORD ret;
@@ -714,10 +954,27 @@ void DoVA_Message(_WORD msg[8])
 		}
 		break;
 	case AV_PROTOKOLL:
-		Protokoll_Send(msg[1], VA_PROTOSTATUS,
+		app = av_new_app(msg[1]);
+		if (app)
+		{
+			const char *name = *(const char *const*)&msg[6];
+			app->av_proto_cfg = msg[3];
+			if (name)
+				appl_makeappname(app->name, name);
+		}
+		Protokoll_SendAv(app, VA_PROTOSTATUS,
 			VA_PROT_SENDKEY | VA_PROT_ACCWINDOPEN | VA_PROT_OPENWIND | VA_PROT_PATH_UPDATE | VA_PROT_DRAG_ON_WINDOW | VA_PROT_EXIT | VA_PROT_STARTED | VA_PROT_QUOTING,
 			0, 0,
 			PROT_NAMEPTR(av_name));
+		break;
+	case AV_EXIT:
+		av_remove_app(msg[1]);
+		break;
+	case VA_START:						/* pass command line */
+		DoVA_START(msg);
+		break;
+	case VA_DRAGACCWIND:
+		DoVA_DRAGACCWIND(msg);
 		break;
 	default:
 		break;
@@ -742,5 +999,14 @@ void va_proto_init(const char *myname)
 
 void va_proto_exit(void)
 {
+	int i;
+	
+	for (i = 0; i < NUM_AV_BUFFERS; i++)
+	{
+		g_free_shared(av_buffers[i]);
+		av_buffers[i] = NULL;
+	}
+	while (av_apps)
+		av_remove_app(av_apps->apid);
 	DoAV_EXIT();
 }

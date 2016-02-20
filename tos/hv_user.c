@@ -1366,6 +1366,29 @@ void pic_stdpalette(PALETTE pal, _WORD planes)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void hfix_palette(_WORD vdi_h)
+{
+	if (xscrn_planes >= 8)
+	{
+		_WORD pixel;
+		_WORD rgbnew[4];
+		PALETTE im_palette;
+		
+		pic_stdpalette(im_palette, 8);
+		for (pixel = 0; pixel < 256; pixel++)
+		{
+			rgbnew[0] = pic_rgb_to_vdi(im_palette[pixel].r);
+			rgbnew[1] = pic_rgb_to_vdi(im_palette[pixel].g);
+			rgbnew[2] = pic_rgb_to_vdi(im_palette[pixel].b);
+			vs_color(vdi_h, pixtbl[pixel], rgbnew);
+			if (vdi_h != aes_handle)
+				vs_color(aes_handle, pixtbl[pixel], rgbnew);
+		}
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 {
 	_WORD i;
@@ -1382,21 +1405,7 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 	if (xpixelbytes < 0)
 	{
 		xpixelbytes = test_rez();
-		if (xscrn_planes >= 8)
-		{
-			_WORD pixel;
-			_WORD rgbnew[4];
-			PALETTE im_palette;
-			
-			pic_stdpalette(im_palette, 8);
-			for (pixel = 0; pixel < 256; pixel++)
-			{
-				rgbnew[0] = pic_rgb_to_vdi(im_palette[pixel].r);
-				rgbnew[1] = pic_rgb_to_vdi(im_palette[pixel].g);
-				rgbnew[2] = pic_rgb_to_vdi(im_palette[pixel].b);
-				vs_color(xvdi_handle, pixtbl[pixel], rgbnew);
-			}
-		}
+		hfix_palette(xvdi_handle);
 		std_palette(rgb_palette);
 	}
 	xfill_colortbl();

@@ -29,7 +29,7 @@ WINDOW_DATA *top_window(void)
 	WINDOW_DATA *win;
 	_WORD whandle = 0;
 	
-	wind_get_int(0, WF_TOP, &whandle);
+	wind_get_int(DESK, WF_TOP, &whandle);
 	if (whandle > 0 &&
 		(win = find_window_by_whandle(whandle)) != NULL &&
 		win->type == WIN_WINDOW &&

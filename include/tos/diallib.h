@@ -164,7 +164,7 @@ struct _filesel_data_
 	COMMON_CHAIN_DATA(FILESEL_DATA);
 
 	HNDL_FSL proc;
-	void *dialog;
+	XFSL_DIALOG *dialog;
 	char path[DL_PATHMAX];
 	char name[DL_PATHMAX];
 	_WORD	button;
@@ -288,9 +288,12 @@ void SpecialMessageEvents(DIALOG *dialog,EVNT *event);
 WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, 
 					WP_UNIT max_w, WP_UNIT max_h,void *user_data);
 void OpenWindow(WINDOW_DATA *win);
-void CloseWindow(WINDOW_DATA *ptr);
-void CloseAllWindows(void);
-void RemoveWindow(WINDOW_DATA *ptr);
+void SendClose(_WORD whandle);
+void SendTop(_WORD whandle);
+_BOOL wind_set_top(_WORD whandle);
+_BOOL CloseWindow(WINDOW_DATA *ptr);
+_BOOL CloseAllWindows(void);
+_BOOL RemoveWindow(WINDOW_DATA *ptr);
 gboolean ScrollWindow(WINDOW_DATA *ptr, WP_UNIT rel_x, WP_UNIT rel_y);
 void WindowEvents(WINDOW_DATA *ptr, EVNT *event);
 void SetWindowSlider(WINDOW_DATA *ptr);
@@ -345,31 +348,31 @@ void va_proto_exit(void);
 /*
  * dl_avcmd.c
  */
-char *av_cmdline(const char *const argv[], gboolean incl_argv0);
-void SendAV_GETSTATUS(void);
-void SendAV_STATUS(const char *string);
-void SendAV_SENDKEY(short kbd_state, short code);
-void SendAV_ASKFILEFONT(void);
-void SendAV_ASKCONFONT(void);
-void SendAV_ASKOBJECT(void);
-void SendAV_OPENCONSOLE(void);
-void SendAV_OPENWIND(const char *path, const char *wildcard);
-void SendAV_STARTPROG(const char *path, const char *commandline, void (*progstart)(_WORD ret));
-void SendAV_ACCWINDOPEN(short handle);
-void SendAV_ACCWINDCLOSED(short handle);
-void SendAV_COPY_DRAGGED(short kbd_state, const char *path);
-void SendAV_PATH_UPDATE(const char *path);
-void SendAV_WHAT_IZIT(short x, short y);
-void SendAV_DRAG_ON_WINDOW(short x,short y, short kbd_state, const char *path);
-void SendAV_STARTED(const _WORD *msg);
-void SendVA_START(_WORD dst_app, const char *path);
-void SendAV_XWIND(const char *path, const char *wild_card, short bits);
-void SendAV_VIEW(const char *path);
-void SendAV_FILEINFO(const char *path);
-void SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits);
-void SendAV_DELFILE(const char *file_list);
-void SendAV_SETWINDPOS(short x, short y, short w, short h);
-void SendAV_SENDCLICK(EVNTDATA *mouse, short ev_return);
+char *av_cmdline(const char *const argv[], int firstarg, gboolean for_remarker);
+_BOOL SendAV_GETSTATUS(void);
+_BOOL SendAV_STATUS(const char *string);
+_BOOL SendAV_SENDKEY(short kbd_state, short code);
+_BOOL SendAV_ASKFILEFONT(void);
+_BOOL SendAV_ASKCONFONT(void);
+_BOOL SendAV_ASKOBJECT(void);
+_BOOL SendAV_OPENCONSOLE(void);
+_BOOL SendAV_OPENWIND(const char *path, const char *wildcard);
+_WORD SendAV_STARTPROG(const char *path, const char *commandline, void (*progstart)(_WORD ret));
+_BOOL SendAV_ACCWINDOPEN(short handle);
+_BOOL SendAV_ACCWINDCLOSED(short handle);
+_BOOL SendAV_COPY_DRAGGED(short kbd_state, const char *path);
+_BOOL SendAV_PATH_UPDATE(const char *path);
+_BOOL SendAV_WHAT_IZIT(short x, short y);
+_BOOL SendAV_DRAG_ON_WINDOW(short x,short y, short kbd_state, const char *path);
+_BOOL SendAV_STARTED(const _WORD *msg);
+_BOOL SendVA_START(_WORD dst_app, const char *path, void (*started)(void));
+_BOOL SendAV_XWIND(const char *path, const char *wild_card, short bits);
+_BOOL SendAV_VIEW(const char *path);
+_BOOL SendAV_FILEINFO(const char *path);
+_BOOL SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits);
+_BOOL SendAV_DELFILE(const char *file_list);
+_BOOL SendAV_SETWINDPOS(short x, short y, short w, short h);
+_BOOL SendAV_SENDCLICK(EVNTDATA *mouse, short ev_return);
 
 /*
  * dl_drag.c
@@ -410,6 +413,15 @@ char **split_av_parameter(char *start);
 short rc_intersect_my(GRECT *p1, GRECT *p2);
 
 /*
+ * dl_msgs.c
+ */
+extern char const gl_program_name[];
+
+const char *gem_message_name(_UWORD id);
+void gem_print_message(const _WORD *msg);
+
+
+/*
  * dl_user.c
  */
 typedef struct
@@ -422,8 +434,6 @@ typedef struct
 
 extern LONG_EDIT long_edit[];
 extern short long_edit_count;
-
-const char *gem_message_name(_UWORD id);
 
 void DoButton(EVNT *event);
 void DoUserEvents(EVNT *event);

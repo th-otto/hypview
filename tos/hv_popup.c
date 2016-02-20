@@ -57,6 +57,8 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 	case WIND_EXIT:
 		popup->parentwin->popup = NULL;
 		g_free(popup);
+		g_free(win->autolocator);
+		win->autolocator = NULL;
 		break;
 	case WIND_OPEN:
 		break;

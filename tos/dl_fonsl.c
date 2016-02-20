@@ -114,14 +114,15 @@ void CloseFontselector(FONTSEL_DATA *ptr)
 	if (ptr == NULL || ptr->dialog == NULL)
 		return;
 	
-	if (ptr->whandle > 0)
+	if (ptr->status & WIS_OPEN)
 	{
-		fnts_close(ptr->dialog, &ptr->last.g_x, &ptr->last.g_y);
+		if (ptr->whandle > 0)
+			fnts_close(ptr->dialog, &ptr->last.g_x, &ptr->last.g_y);
 		ptr->status &= ~WIS_OPEN;
-		ptr->whandle = 0;
-		if (modal_items >= 0)
-			modal_items--;
+		ptr->whandle = -1;
 	}
+	if (modal_items >= 0)
+		modal_items--;
 }
 
 /*** ---------------------------------------------------------------------- ***/

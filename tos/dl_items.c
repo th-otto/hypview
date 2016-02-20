@@ -35,10 +35,10 @@ short modal_items = -1;
 _WORD modal_stack[MAX_MODALRECURSION];
 
 
-#define setmsg(a,b,c,d,e,f,g,h) \
+#define setmsg(a,d,e,f,g,h) \
 	msg[0] = a; \
-	msg[1] = b; \
-	msg[2] = c; \
+	msg[1] = gl_apid; \
+	msg[2] = 0; \
 	msg[3] = d; \
 	msg[4] = e; \
 	msg[5] = f; \
@@ -89,24 +89,6 @@ void remove_item(CHAIN_DATA *item)
 			ptr = ptr->next;
 		}
 	}
-	if (all_list == NULL)
-	{
-		_WORD remarker;
-		
-		nf_debugprintf("removed last window\n");
-		/*
-		 * remarker does not quit if you just close its window;
-		 * since it also does not install a menubar,
-		 * without any window would make it impossible to make it quit
-		 */
-		if (!_app && (remarker = appl_locate("REMARKER", NULL, FALSE)) >= 0)
-		{
-			nf_debugprintf("killing REMARKER\n");
-			Protokoll_Send(remarker, AP_TERM, 0, 0, 0, 0, 0);
-		}
-		if (_app)
-			quitApp = TRUE;
-	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -124,7 +106,7 @@ void FlipIconify(void)
 	ptr = find_ptr_by_whandle(top);
 	if (!ptr)
 		return;
-	setmsg(WM_ICONIFY, gl_apid, 0, top, -1, -1, -1, -1);
+	setmsg(WM_ICONIFY, top, -1, -1, -1, -1);
 	if (ptr->status & WIS_ICONIFY)
 	{
 		msg[0] = WM_UNICONIFY;
@@ -171,8 +153,10 @@ void AllIconify(short handle, GRECT *r)
 
 			ptr->status |= WIS_ALLICONIFY | WIS_ICONIFY;
 		} else
+		{
 			ptr->status |= WIS_ALLICONIFY;
-
+		}
+		
 		wind_get_grect(ptr->whandle, WF_CURRXYWH, r);
 		graf_shrinkbox_grect(r, &big);
 		iconified_list[iconified_count++] = (CHAIN_DATA *) ptr;
@@ -180,7 +164,7 @@ void AllIconify(short handle, GRECT *r)
 		small = *r;
 	}
 
-	wind_set_int(handle, WF_TOP, 0);
+	wind_set_top(handle);
 	{
 		_WORD hndl = 0,
 			pid,
@@ -208,44 +192,6 @@ void AllIconify(short handle, GRECT *r)
 			wind_close(ptr->whandle);
 		}
 	}
-#if 0
-	if ((wind_get_ptr(0, WF_M_WINDLIST, (void **) &window_list)) && (window_list))
-	{
-		HYP_DBG(("WF_M_WINDLIST supported: %p", window_list));
-		for (j = 0; window_list[j]; j++)
-		{
-			ptr = find_ptr_by_whandle(window_list[j]);
-			if ((ptr) && !(ptr->status & WIS_ALLICONIFY) &&
-				(ptr->status & WIS_OPEN) && (iconified_count < MAX_ICONIFY_PLACE))
-			{
-				ptr->status &= ~WIS_OPEN;
-				ptr->status |= WIS_ALLICONIFY;
-				wind_get_grect(ptr->whandle, WF_CURRXYWH, &ptr->last);
-				wind_close(ptr->whandle);
-				graf_shrinkbox_grect(&small, &ptr->last);
-				iconified_list[iconified_count++] = ptr;
-				j = 0;
-			}
-		}
-	}
-	else
-	{
-		ptr = all_list;
-		while (ptr)
-		{
-			if (!(ptr->status & WIS_ALLICONIFY) && (ptr->status & WIS_OPEN) && (iconified_count < MAX_ICONIFY_PLACE))
-			{
-				ptr->status &= ~WIS_OPEN;
-				ptr->status |= WIS_ALLICONIFY;
-				wind_get_grect(ptr->whandle, WF_CURRXYWH, &ptr->last);
-				wind_close(ptr->whandle);
-				graf_shrinkbox_grect(&small, &ptr->last);
-				iconified_list[iconified_count++] = ptr;
-			}
-			ptr = ptr->next;
-		}
-	}
-#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -307,7 +253,7 @@ void CycleItems(void)
 		_WORD handle;
 		CHAIN_DATA *start_ptr, *ptr;
 
-		wind_get_int(0, WF_TOP, &handle);
+		wind_get_int(DESK, WF_TOP, &handle);
 		start_ptr = find_ptr_by_whandle(handle);
 		if (!start_ptr)
 			return;
@@ -394,7 +340,7 @@ static void SetMenu(short enable)
 
 void ModalItem(void)
 {
-	wind_get_int(0, WF_TOP, &modal_stack[++modal_items]);
+	wind_get_int(DESK, WF_TOP, &modal_stack[++modal_items]);
 #if USE_MENU
 	SetMenu(FALSE);
 #endif
@@ -407,7 +353,7 @@ void ItemEvent(EVNT *event)
 	_WORD whandle = 0, top_window;
 	CHAIN_DATA *ptr;
 
-	wind_get_int(0, WF_TOP, &top_window);
+	wind_get_int(DESK, WF_TOP, &top_window);
 
 	if (modal_items >= 0)
 	{
@@ -415,17 +361,24 @@ void ItemEvent(EVNT *event)
 		if ((event->mwhich & MU_MESAG) && ((event->msg[0] == WM_REDRAW) || (event->msg[0] == WM_MOVED)))
 			whandle = event->msg[3];
 		else if ((event->mwhich & MU_BUTTON) && (top_window != whandle))
-			wind_set_int(whandle, WF_TOP, 0);
+			wind_set_top(whandle);
 	} else
 	{
 		if (event->mwhich & MU_MESAG)
 		{
-			if ((event->msg[0] >= WM_REDRAW) && (event->msg[0] <= WM_ALLICONIFY))
+			if ((event->msg[0] >= WM_REDRAW && event->msg[0] <= WM_REPOSED) ||
+				event->msg[0] == AP_DRAGDROP ||
+				event->msg[0] == WM_WHEEL ||
+				event->msg[0] == WM_SHADED ||
+				event->msg[0] == WM_UNSHADED)
 				whandle = event->msg[3];
 		} else if (event->mwhich & MU_BUTTON)
+		{
 			whandle = wind_find(event->mx, event->my);
-		else
+		} else
+		{
 			whandle = top_window;
+		}
 	}
 
 	ptr = find_ptr_by_whandle(whandle);

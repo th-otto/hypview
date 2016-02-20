@@ -271,7 +271,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 										prog = NULL;
 									}
 		
-									SendVA_START(dst_id, dfn);
+									SendVA_START(dst_id, dfn, FUNK_NULL);
 									g_free(dfn);
 									g_free(prog);
 								}

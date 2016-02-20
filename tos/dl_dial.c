@@ -25,15 +25,17 @@
 #include "hypview.h"
 
 
-#define setmsg(a,b,c,d,e,f,g,h) \
+#define setmsg(a,d,e,f,g,h) \
 	msg[0] = a; \
-	msg[1] = b; \
-	msg[2] = c; \
+	msg[1] = gl_apid; \
+	msg[2] = 0; \
 	msg[3] = d; \
 	msg[4] = e; \
 	msg[5] = f; \
 	msg[6] = g; \
 	msg[7] = h
+
+static GRECT const small = { 0, 0, 0, 0 };
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -91,7 +93,7 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 		}
 		if (ptr->status & WIS_ICONIFY)
 		{
-			setmsg(WM_UNICONIFY, gl_apid, 0, ptr->whandle, 0, 0, 0, 0);
+			setmsg(WM_UNICONIFY, ptr->whandle, 0, 0, 0, 0);
 			wind_get_grect(msg[3], WF_UNICONIFY, (GRECT *) & msg[4]);
 			appl_write(gl_apid, 16, msg);
 		}
@@ -119,7 +121,6 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 		{
 			short whandle;
 			GRECT big;
-			GRECT small = { 0, 0, 0, 0 };
 			
 			if ((ptr->last.g_x == -1) && (ptr->last.g_y == -1))
 			{
@@ -159,7 +160,7 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 		if (ptr->dial != NULL)
 		{
 			short kind = CLOSER | MOVER | NAME | SMALLER;
-			GRECT big, small = { 0, 0, 0, 0 };
+			GRECT big;
 
 			if (!has_iconify)
 				kind &= ~SMALLER;
@@ -223,7 +224,6 @@ void SendCloseDialog(DIALOG *dial)
 void CloseDialog(DIALOG_DATA *ptr)
 {
 	GRECT big;
-	GRECT small = { 0, 0, 0, 0 };
 	OBJECT *tree;
 
 	if (ptr->status & WIS_ICONIFY)
@@ -262,9 +262,12 @@ void CloseDialog(DIALOG_DATA *ptr)
 	}
 	if (ptr->status & WIS_OPEN)
 	{
-		wdlg_get_tree(ptr->dial, &tree, &big);
-		wdlg_close(ptr->dial, &ptr->last.g_x, &ptr->last.g_y);
-		graf_shrinkbox_grect(&small, &big);
+		if (ptr->whandle > 0)
+		{
+			wdlg_get_tree(ptr->dial, &tree, &big);
+			wdlg_close(ptr->dial, &ptr->last.g_x, &ptr->last.g_y);
+			graf_shrinkbox_grect(&small, &big);
+		}
 		ptr->status &= ~WIS_OPEN;
 		ptr->whandle = -1;
 	}
@@ -288,25 +291,15 @@ void CloseAllDialogs(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void RemoveDialog(DIALOG_DATA * ptr)
+void RemoveDialog(DIALOG_DATA *ptr)
 {
-	GRECT big, small = { 0, 0, 0, 0 };
-	OBJECT *tree;
-
-	if (ptr == NULL)
+	if (ptr == NULL || ptr->dial == NULL)
 		return;
 	
-	if (ptr->status & WIS_OPEN)
-	{
-		wdlg_get_tree(ptr->dial, &tree, &big);
-		wdlg_close(ptr->dial, &ptr->last.g_x, &ptr->last.g_y);
-		graf_shrinkbox_grect(&small, &big);
-	}
+	CloseDialog(ptr);
 	wdlg_delete(ptr->dial);
 	remove_item((CHAIN_DATA *) ptr);
 	g_free(ptr);
-	if (modal_items >= 0)
-		modal_items--;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -359,14 +352,14 @@ static void dialog_uniconify(DIALOG *dialog, GRECT *r)
 	}
 
 	graf_growbox_grect(&small, r);
-	wind_set_int(ptr->whandle, WF_TOP, 0);
+	wind_set_top(ptr->whandle);
 	wdlg_set_uniconify(ptr->dial, r, ptr->title, ptr->obj);
 	ptr->status &= ~WIS_ICONIFY;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SpecialMessageEvents(DIALOG * dialog, EVNT * event)
+void SpecialMessageEvents(DIALOG *dialog, EVNT *event)
 {
 	switch (event->msg[0])
 	{

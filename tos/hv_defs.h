@@ -49,7 +49,6 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 #define FORCE_NEW_WINDOW 2
 
 void SendCloseWindow(WINDOW_DATA *win);
-void SendClose(_WORD whandle);
 void SendTopped(_WORD whandle);
 void SendRedraw(WINDOW_DATA *wind);
 void SendRedrawArea(WINDOW_DATA *win, const GRECT *area);
@@ -118,7 +117,8 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
 void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(WINDOW_DATA *win, const char *path);
-void StartRemarker(gboolean startup, gboolean quiet);
+typedef enum { remarker_top, remarker_startup, remarker_check, remarker_update } remarker_mode;
+_WORD StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet);
 
 
 /*
@@ -169,6 +169,7 @@ void GotoDefaultFile(WINDOW_DATA *win);
 void *hfix_objs(RSHDR *hdr, OBJECT *_ob, _WORD _num_objs);
 void hrelease_objs(OBJECT *_ob, _WORD _num_objs);
 void hv_userdef_exit(void);
+void hfix_palette(_WORD vdi_h);
 
 
 /*

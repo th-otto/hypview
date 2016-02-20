@@ -37,10 +37,10 @@
 static GRECT const small = { 0, 0, 0, 0 };
 
 
-#define setmsg(a,b,c,d,e,f,g,h) \
+#define setmsg(a,d,e,f,g,h) \
 	msg[0] = a; \
-	msg[1] = b; \
-	msg[2] = c; \
+	msg[1] = gl_apid; \
+	msg[2] = 0; \
 	msg[3] = d; \
 	msg[4] = e; \
 	msg[5] = f; \
@@ -180,12 +180,44 @@ void OpenWindow(WINDOW_DATA *win)
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-void CloseWindow(WINDOW_DATA *ptr)
+void SendClose(_WORD whandle)
 {
+	_WORD msg[8];
+	setmsg(WM_CLOSED, whandle, 0, 0, 0, 0);
+	appl_write(gl_apid, 16, msg);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void SendTop(_WORD whandle)
+{
+	_WORD msg[8];
+	setmsg(WM_NEWTOP, whandle, 0, 0, 0, 0);
+	appl_write(gl_apid, 16, msg);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+_BOOL wind_set_top(_WORD whandle)
+{
+	_WORD top;
+	
+	wind_get_int(DESK, WF_TOP, &top);
+	wind_set_int(whandle, WF_TOP, 0);
+	return whandle != top;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+_BOOL CloseWindow(WINDOW_DATA *ptr)
+{
+	_BOOL closed = TRUE;
+	
 	if (!ptr)
-		return;
-	if (ptr->status & WIS_ICONIFY)
+		return FALSE;
+	if ((ptr->status & WIS_ICONIFY) && ptr->owner == gl_apid)
 	{
 		EVNT event;
 
@@ -198,86 +230,94 @@ void CloseWindow(WINDOW_DATA *ptr)
 		wind_get_grect(ptr->whandle, WF_UNICONIFY, (GRECT *) & event.msg[4]);
 		DoEventDispatch(&event);
 	}
-	if (ptr->status & WIS_ALLICONIFY)
+	if ((ptr->status & WIS_ALLICONIFY) && ptr->owner == gl_apid)
 	{
 		GRECT sm;
 		short i, copy = FALSE;
 
-		wind_get_grect(iconified_list[0]->whandle, WF_CURRXYWH, &sm);
-
-		graf_growbox_grect(&sm, &ptr->last);
-		wind_open_grect(ptr->whandle, &ptr->last);
-		ptr->status &= ~WIS_ALLICONIFY;
-		ptr->status |= WIS_OPEN;
-		for (i = 0; i < iconified_count; i++)
+		if (iconified_count > 0)
 		{
-			if (copy)
-				iconified_list[i - 1] = iconified_list[i];
-			if (iconified_list[i] == (CHAIN_DATA *) ptr)
-				copy = TRUE;
+			wind_get_grect(iconified_list[0]->whandle, WF_CURRXYWH, &sm);
+	
+			graf_growbox_grect(&sm, &ptr->last);
+			wind_open_grect(ptr->whandle, &ptr->last);
+			ptr->status &= ~WIS_ALLICONIFY;
+			ptr->status |= WIS_OPEN;
+			for (i = 0; i < iconified_count; i++)
+			{
+				if (copy)
+					iconified_list[i - 1] = iconified_list[i];
+				if (iconified_list[i] == (CHAIN_DATA *) ptr)
+				{
+					iconified_list[i] = NULL;
+					copy = TRUE;
+				}
+			}
 		}
-		iconified_count--;
+		if (copy)
+			iconified_count--;
 	}
 	if (ptr->status & WIS_OPEN)
 	{
-		if (ptr->owner == gl_apid && ptr->proc(ptr, WIND_CLOSE, NULL))
+		if (ptr->owner == gl_apid)
 		{
-			ptr->status &= ~WIS_OPEN;
-			wind_get_grect(ptr->whandle, WF_CURRXYWH, &ptr->last);
-			wind_close(ptr->whandle);
-			graf_shrinkbox_grect(&small, &ptr->last);
-			if (modal_items >= 0)
-				modal_items--;
+			if (ptr->proc(ptr, WIND_CLOSE, NULL))
+			{
+				ptr->status &= ~WIS_OPEN;
+				if (ptr->whandle > 0)
+				{
+					wind_get_grect(ptr->whandle, WF_CURRXYWH, &ptr->last);
+					wind_close(ptr->whandle);
+					graf_shrinkbox_grect(&small, &ptr->last);
+				}
+			} else
+			{
+				closed = FALSE;
+			}
 		} else
 		{
 			ptr->status &= ~WIS_OPEN;
 			ptr->whandle = -1;
 		}
 	}
+	return closed;
 }
 
-void CloseAllWindows(void)
+
+_BOOL CloseAllWindows(void)
 {
 	WINDOW_DATA *ptr = (WINDOW_DATA *) all_list;
 
 	while (ptr)
 	{
 		if (ptr->type == WIN_WINDOW)
-			CloseWindow(ptr);
+			if (!CloseWindow(ptr))
+				return FALSE;
 		ptr = ptr->next;
 	}
+	return TRUE;
 }
 
-void RemoveWindow(WINDOW_DATA *ptr)
+
+_BOOL RemoveWindow(WINDOW_DATA *ptr)
 {
-	GRECT big;
 	if (ptr)
 	{
+		if (!CloseWindow(ptr))
+			return FALSE;
 		if (ptr->owner == gl_apid)
 		{
-			if (ptr->status & WIS_OPEN)
-			{
-				ptr->proc(ptr, WIND_CLOSE, NULL);
-				if (ptr->whandle > 0)
-				{
-					wind_get_grect(ptr->whandle, WF_CURRXYWH, &big);
-					wind_close(ptr->whandle);
-					graf_shrinkbox_grect(&small, &big);
-				}
-			}
 			ptr->proc(ptr, WIND_EXIT, NULL);
 #if OPEN_VDI_WORKSTATION
 			v_clsvwk(ptr->vdi_handle);
 #endif
 			if (ptr->whandle > 0)
 				wind_delete(ptr->whandle);
-			if (modal_items >= 0)
-				modal_items--;
 		}
 		remove_item((CHAIN_DATA *) ptr);
-		g_free(ptr->autolocator);
 		g_free(ptr);
 	}
+	return TRUE;
 }
 
 
@@ -341,8 +381,8 @@ gboolean ScrollWindow(WINDOW_DATA *win, WP_UNIT rel_x, WP_UNIT rel_y)
 		move_screen = FALSE;
 	}
 
-	graf_mouse(M_OFF, NULL);
 	wind_update(BEG_UPDATE);
+	graf_mouse(M_OFF, NULL);
 	work = win->scroll;
 	ret = wind_get_grect(win->whandle, WF_FIRSTXYWH, &box);
 
@@ -425,8 +465,8 @@ gboolean ScrollWindow(WINDOW_DATA *win, WP_UNIT rel_x, WP_UNIT rel_y)
 		ret = wind_get_grect(win->whandle, WF_NEXTXYWH, &box);
 	}
 	SetWindowSlider(win);
-	wind_update(END_UPDATE);
 	graf_mouse(M_ON, NULL);
+	wind_update(END_UPDATE);
 
 	return TRUE;
 }
@@ -449,7 +489,7 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 			case WM_MOVED:
 				break;
 			case WM_TOPPED:
-				wind_set_int(event->msg[3], WF_TOP, 0);
+				wind_set_top(event->msg[3]);
 			default:
 				event->mwhich &= ~MU_MESAG;
 				break;
@@ -495,14 +535,15 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 				 * with exit or touchexit flag
 				 */
 				if ((num >= 0) && (win->toolbar[num].ob_flags & OF_SELECTABLE) &&
-					!(win->toolbar[num].ob_state & OS_DISABLED) &&
+					/* not done here because of disabled TO_REMARKER
+					!(win->toolbar[num].ob_state & OS_DISABLED) && */
 					(win->toolbar[num].ob_flags & (OF_EXIT | OF_TOUCHEXIT)))
 				{
 					if ((win->toolbar[num].ob_flags & OF_TOUCHEXIT) ||
 						((win->toolbar[num].ob_flags & OF_EXIT) && graf_watchbox(win->toolbar, num, OS_SELECTED, 0)))
 					{
-						evnt_timer_gemlib(10);
-						win->proc(win, WIND_TBCLICK, &num);
+						if (win->proc(win, WIND_TBCLICK, &num))
+							evnt_timer_gemlib(10);
 					}
 				}
 			} else
@@ -536,6 +577,7 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 				_WORD ret;
 				
 				wind_update(BEG_UPDATE);
+				graf_mouse(M_OFF, NULL);
 				WindowCalcScroll(win);
 				if (win->status & WIS_ICONIFY)
 				{
@@ -543,14 +585,12 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 					dial_library_tree[0].ob_x = box.g_x;
 					dial_library_tree[0].ob_y = box.g_y;
 					ret = wind_get_grect(event->msg[3], WF_FIRSTXYWH, &box);
-					graf_mouse(M_OFF, NULL);
 					while (ret != 0 && box.g_w && box.g_h)
 					{
 						if (rc_intersect((GRECT *) & event->msg[4], &box))
 							objc_draw_grect(dial_library_tree, 0, 1, &box);
 						ret = wind_get_grect(event->msg[3], WF_NEXTXYWH, &box);
 					}
-					graf_mouse(M_ON, NULL);
 				} else
 				{
 #if USE_TOOLBAR
@@ -581,7 +621,6 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 #endif
 					ret = wind_get_grect(event->msg[3], WF_FIRSTXYWH, &box);
 
-					graf_mouse(M_OFF, NULL);
 					while (ret != 0 && box.g_w && box.g_h)
 					{
 #if USE_TOOLBAR
@@ -608,15 +647,15 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 							win->proc(win, WIND_REDRAW, (void *) &box);
 						ret = wind_get_grect(event->msg[3], WF_NEXTXYWH, &box);
 					}
-					graf_mouse(M_ON, NULL);
 				}
+				graf_mouse(M_ON, NULL);
 				wind_update(END_UPDATE);
 			}
 			break;
 			
 		case WM_TOPPED:
 			if (win->proc(win, WIND_TOPPED, event))
-				wind_set_int(event->msg[3], WF_TOP, 0);
+				wind_set_top(event->msg[3]);
 			break;
 			
 		case WM_CLOSED:
@@ -922,14 +961,15 @@ void UniconifyWindow(WINDOW_DATA *win)
 	{
 		CHAIN_DATA *ptr2;
 
-		while (--iconified_count > 0)
+		while (iconified_count > 0)
 		{
+			iconified_count--;
 			ptr2 = iconified_list[iconified_count];
 			graf_growbox_grect(&small, &ptr2->last);
 			wind_open_grect(ptr2->whandle, &ptr2->last);
 			ptr2->status &= ~WIS_ALLICONIFY;
 			ptr2->status |= WIS_OPEN;
-		};
+		}
 		iconified_list[0] = NULL;
 		iconified_count = 0;
 		win->status &= ~WIS_ALLICONIFY;
@@ -937,13 +977,13 @@ void UniconifyWindow(WINDOW_DATA *win)
 
 	wind_get_grect(win->whandle, WF_UNICONIFY, &current_size);
 	graf_growbox_grect(&small, &current_size);
-	wind_set_int(win->whandle, WF_TOP, 0);
+	wind_set_top(win->whandle);
 	wind_set_grect(win->whandle, WF_UNICONIFY, &current_size);
 	win->status &= ~WIS_ICONIFY;
 }
 
 #if USE_TOOLBAR
-void DrawToolbar(WINDOW_DATA * win)
+void DrawToolbar(WINDOW_DATA *win)
 {
 	if (!win->toolbar)
 		return;

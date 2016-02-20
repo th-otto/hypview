@@ -26,10 +26,10 @@
 #include "hypdebug.h"
 
 
-#define setmsg(a,b,c,d,e,f,g,h) \
+#define setmsg(a,d,e,f,g,h) \
 	msg[0] = a; \
-	msg[1] = b; \
-	msg[2] = c; \
+	msg[1] = gl_apid; \
+	msg[2] = 0; \
 	msg[3] = d; \
 	msg[4] = e; \
 	msg[5] = f; \
@@ -39,15 +39,6 @@
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
-
-void SendClose(_WORD whandle)
-{
-	_WORD msg[8];
-	setmsg(WM_CLOSED, gl_apid, 0, whandle, 0, 0, 0, 0);
-	appl_write(gl_apid, 16, msg);
-}
-
-/*** ---------------------------------------------------------------------- ***/
 
 void SendCloseWindow(WINDOW_DATA *win)
 {
@@ -60,7 +51,7 @@ void SendCloseWindow(WINDOW_DATA *win)
 void SendTopped(_WORD whandle)
 {
 	_WORD msg[8];
-	setmsg(WM_TOPPED, gl_apid, 0, whandle, 0, 0, 0, 0);
+	setmsg(WM_TOPPED, whandle, 0, 0, 0, 0);
 	appl_write(gl_apid, 16, msg);
 }
 
@@ -273,7 +264,24 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			RemoveWindow(win->popup);	/* ... close it */
 		hypdoc_unref(doc);
 		RemoveAllHistoryEntries(win);
-		win = NULL;
+		g_free(win->autolocator);
+		win->autolocator = NULL;
+		if (count_window() == 1 && win->whandle > 0)
+		{
+			_WORD remarker;
+			
+			/*
+			 * remarker does not quit if you just close its window;
+			 * since it also does not install a menubar,
+			 * it would impossible to make it quit
+			 */
+			if (!_app && (remarker = StartRemarker(win, remarker_check, FALSE)) >= 0)
+			{
+				Protokoll_Send(remarker, AP_TERM, 0, 0, AP_TERM, 0, 0);
+			}
+			if (_app)
+				quitApp = TRUE;
+		}
 		break;
 		
 	case WIND_OPEN:
@@ -327,6 +335,29 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		
 	case WIND_CLOSE:
 		SendAV_ACCWINDCLOSED(win->whandle);
+		/*
+		 * save the path of the last window closed,
+		 * so it can be reopenend again on receive of AC_OPEN.
+		 * Only need to do this when running as accessory,
+		 * since a regular application will exit when all
+		 * windows are closed.
+		 */
+		if (!_app)
+		{
+			/*
+			 * is this the last window?
+			 * == 1 because ptr has not yet been removed from list
+			 */
+			if (count_window() == 1)
+			{
+				DOCUMENT *doc;
+
+				doc = (DOCUMENT *) win->data;
+				gl_profile.viewer.last_node = doc->getNodeProc(win);
+				g_free(gl_profile.viewer.last_file);
+				gl_profile.viewer.last_file = g_strdup(doc->path);
+			}
+		}
 		break;
 		
 	case WIND_REDRAW:
@@ -702,7 +733,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			} else if (event->mbutton & 2)	/* right button */
 			{
 				if (gl_profile.viewer.backwind)
-					wind_set_int(win->whandle, WF_TOP, 0);
+					wind_set_top(win->whandle);
 				if (gl_profile.viewer.rightback)
 				{
 					GoThisButton(win, TO_BACK);
@@ -723,8 +754,11 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_TBCLICK:
-		ToolbarClick(win, *(_WORD *) data);
-		break;
+		{
+			_WORD obj = *(_WORD *) data;
+			ToolbarClick(win, obj);
+			return obj != TO_REMARKER;
+		}
 		
 	case WIND_ICONIFY:
 		hv_set_title(win, hyp_basename(doc->path));
@@ -732,6 +766,12 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		
 	case WIND_UNICONIFY:
 		hv_set_title(win, win->title);
+		break;
+	
+	case WIND_NEWTOP:
+	case WIND_ONTOP:
+		StartRemarker(win, remarker_update, TRUE);
+		hfix_palette(vdi_handle);
 		break;
 		
 	case WIND_TOPPED:
@@ -744,16 +784,16 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 
 			if (top != popup->whandle)
 			{
-				wind_set_int(win->whandle, WF_TOP, 0);
-				wind_set_int(popup->whandle, WF_TOP, 0);
+				wind_set_top(win->whandle);
+				wind_set_top(popup->whandle);
 			} else
 			{
 				SendCloseWindow(popup);
-				wind_set_int(win->whandle, WF_TOP, 0);
+				wind_set_top(win->whandle);
 			}
 		} else
 		{
-			wind_set_int(win->whandle, WF_TOP, 0);
+			wind_set_top(win->whandle);
 		}
 		CheckFiledate(win);
 		return FALSE;
@@ -788,5 +828,5 @@ void hv_win_open(WINDOW_DATA *win)
 		UniconifyWindow(win);
 	if (!(win->status & WIS_OPEN))
 		OpenWindow(win);
-	wind_set_int(win->whandle, WF_TOP, 0);
+	wind_set_top(win->whandle);
 }

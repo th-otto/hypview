@@ -5,19 +5,19 @@
  */
 
 /*
- * Number of Strings:        176
+ * Number of Strings:        177
  * Number of Bitblks:        0
  * Number of Iconblks:       0
- * Number of Color Iconblks: 15
- * Number of Color Icons:    29
+ * Number of Color Iconblks: 16
+ * Number of Color Icons:    30
  * Number of Tedinfos:       31
  * Number of Free Strings:   20
  * Number of Free Images:    0
- * Number of Objects:        109
+ * Number of Objects:        110
  * Number of Trees:          8
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          27844
+ * Total file size:          28532
  */
 
 #undef RSC_NAME
@@ -30,16 +30,16 @@
 #endif
 
 #if !defined(RSC_STATIC_FILE) || !RSC_STATIC_FILE
-#define NUM_STRINGS 176
+#define NUM_STRINGS 177
 #define NUM_FRSTR 20
 #define NUM_UD 0
 #define NUM_IMAGES 0
 #define NUM_BB 0
 #define NUM_FRIMG 0
 #define NUM_IB 0
-#define NUM_CIB 15
+#define NUM_CIB 16
 #define NUM_TI 31
-#define NUM_OBS 109
+#define NUM_OBS 110
 #define NUM_TREE 8
 #endif
 
@@ -65,9 +65,10 @@
 #define TO_LOAD                           13 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_SAVE                           14 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_MENU                           15 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_SEARCHBOX                      16 /* BOX in tree TOOLBAR */
-#define TO_SEARCH                         17 /* FTEXT in tree TOOLBAR */ /* max len 25 */
-#define TO_STRNOTFOUND                    18 /* TEXT in tree TOOLBAR */ /* max len 10 */
+#define TO_REMARKER                       16 /* CICON in tree TOOLBAR */ /* max len 1 */
+#define TO_SEARCHBOX                      17 /* BOX in tree TOOLBAR */
+#define TO_SEARCH                         18 /* FTEXT in tree TOOLBAR */ /* max len 25 */
+#define TO_STRNOTFOUND                    19 /* TEXT in tree TOOLBAR */ /* max len 10 */
 
 #define CONTEXT                            2 /* form/dialog */
 #define CO_BACK                            1 /* STRING in tree CONTEXT */

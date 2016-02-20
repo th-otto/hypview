@@ -84,6 +84,7 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 	doc->buttons.last = hypnode_valid(hyp, hyp->last_text_page) && node_num != hyp->last_text_page;
 	doc->buttons.home = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->toc_index) && node_num != hyp->indextable[node_num]->toc_index;
 	doc->buttons.references = HypCountExtRefs(node) != 0;
+	doc->buttons.remarker = FALSE;
 	
 	/* ASCII Export supported */
 	doc->buttons.ascii = TRUE;
