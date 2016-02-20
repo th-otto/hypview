@@ -84,7 +84,7 @@ static char **get_av_buffer(void)
 
 static void free_av_buffer(const _WORD *msg)
 {
-	const char *p = *((const char **)&msg[3]);
+	const char *p = *((const char *const *)&msg[3]);
 	int i;
 	
 	if (p == NULL)

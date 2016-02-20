@@ -89,8 +89,6 @@ void MarkerSave(WINDOW_DATA *win, short num)
 
 void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window)
 {
-	DOCUMENT *doc = win->data;
-
 	/* avoid illegal parameters */
 	if (num < 0 || num >= MAX_MARKEN)
 		return;
@@ -100,7 +98,6 @@ void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window)
 		win = OpenFileInWindow(win, marken[num].path, NULL, marken[num].node_num, TRUE, new_window, FALSE);
 		if (win != NULL)
 		{
-			doc = win->data;
 			GotoPage(win, marken[num].node_num, marken[num].line, FALSE);
 		}
 	}

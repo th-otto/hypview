@@ -280,7 +280,7 @@ const char *_argv0;
 int main(int argc, const char **argv)
 {
 	WINDOW_DATA *win = NULL;
-	char *applname;
+	const char *applname;
 	
 	if (DoAesInit() == FALSE)
 		return 1;

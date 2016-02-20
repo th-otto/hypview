@@ -37,7 +37,6 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 	DOCUMENT *doc = hypwin_doc(win);
 	HYP_NODE *node;
 	char *temp;
-	size_t len;
 	HYP_DOCUMENT *hyp;
 	const char *res;
 	
@@ -54,8 +53,6 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 	
 	UNUSED(wordonly); /* TODO */
 	
-	len = strlen(search);
-
 	if (doc->autolocator_dir > 0)
 	{
 		while ((temp = HypGetTextLine(win, node, line)) != NULL)
