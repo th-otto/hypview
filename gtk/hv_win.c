@@ -619,6 +619,164 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+typedef struct
+{
+	GString *text_str;
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+	WINDOW_DATA *win;
+	int x;
+	int tab;
+	int line;
+	int default_tab_width;
+} SerializationContext;
+
+/*** ---------------------------------------------------------------------- ***/
+
+#if 0
+static int get_tab_pos(PangoTabArray *tabs, int index, int default_tab_width)
+{
+	gint n_tabs;
+
+	n_tabs = pango_tab_array_get_size(tabs);
+
+	if (index < n_tabs)
+	{
+		gint pos = 0;
+
+		pango_tab_array_get_tab(tabs, index, NULL, &pos);
+
+		return pos;
+	}
+
+	if (n_tabs > 0)
+	{
+		/* Extrapolate tab position, repeating the last tab gap to
+		 * infinity.
+		 */
+		int last_pos = 0;
+		int next_to_last_pos = 0;
+		int tab_width;
+
+		pango_tab_array_get_tab(tabs, n_tabs - 1, NULL, &last_pos);
+
+		if (n_tabs > 1)
+			pango_tab_array_get_tab(tabs, n_tabs - 2, NULL, &next_to_last_pos);
+		else
+			next_to_last_pos = 0;
+
+		if (last_pos > next_to_last_pos)
+		{
+			tab_width = last_pos - next_to_last_pos;
+		} else
+		{
+			tab_width = default_tab_width;
+		}
+
+		return last_pos + tab_width * (index - n_tabs + 1);
+	} else
+	{
+		/* No tab array set, so use default tab width
+		 */
+		return default_tab_width * index;
+	}
+}
+#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void serialize_text(SerializationContext *context)
+{
+	GtkTextIter iter;
+	gunichar ch;
+	
+	iter = context->start;
+	for (;;)
+	{
+		if (gtk_text_iter_compare(&iter, &context->end) >= 0)
+			break;
+		ch = gtk_text_iter_get_char(&iter);
+		if (ch == 0xFFFC)
+		{
+			/* an embedded pixbuf */
+		} else if (ch == 0)
+		{
+			break;
+		} else if (ch == '\t')
+		{
+#if 0
+			/* ignore tabs for output; they were converted to invisible spaces */
+			GSList *tags, *tagp;
+			PangoTabArray *tabs = NULL;
+			int pos;
+			
+			tags = gtk_text_iter_get_tags(&iter);
+			for (tagp = tags; tagp != NULL; tagp = tagp->next)
+			{
+				GtkTextTag *tag = (GtkTextTag *)tagp->data;
+				g_object_get(G_OBJECT(tag), "tabs", &tabs, NULL);
+				if (tabs)
+					break;
+			}
+			pos = get_tab_pos(tabs, context->tab, context->default_tab_width) / context->win->x_raster;
+			context->tab++;
+			while (context->x < pos)
+			{
+				g_string_append_unichar(context->text_str, ' ');
+				context->x++;
+			}
+#endif
+		} else if (ch == 0x200b) /* zero width space */
+		{
+			g_string_append_unichar(context->text_str, ' ');
+			context->x++;
+		} else
+		{
+			g_string_append_unichar(context->text_str, ch);
+			context->x++;
+			if (ch == '\n')
+			{
+				context->x = 0;
+				context->tab = 0;
+				context->line++;
+			}
+		}
+		gtk_text_iter_forward_char(&iter);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static guint8 *text_buffer_serialize_text (GtkTextBuffer     *register_buffer,
+                                      GtkTextBuffer     *content_buffer,
+                                      const GtkTextIter *start,
+                                      const GtkTextIter *end,
+                                      gsize             *length,
+                                      gpointer           user_data)
+{
+	SerializationContext context;
+	WINDOW_DATA *win = (WINDOW_DATA *)user_data;
+	
+	UNUSED(register_buffer);
+	context.win = win;
+	context.text_str = g_string_new(NULL);
+	context.buffer = content_buffer;
+	context.start = *start;
+	context.end = *end;
+	context.x = 0;
+	context.tab = 0;
+	context.line = 0;
+	context.default_tab_width = gl_profile.viewer.ascii_tab_size * win->x_raster;
+	serialize_text(&context);
+	*length = context.text_str->len;
+
+	return (guint8 *) g_string_free(context.text_str, FALSE);
+}
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
 void hv_win_destroy_images(WINDOW_DATA *win)
 {
 	GSList *l;
@@ -2224,6 +2382,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	tagtable = create_tags();
 	win->text_buffer = gtk_text_buffer_new(tagtable);
 	g_object_unref(tagtable);
+	win->serialize_text = gtk_text_buffer_register_serialize_format(win->text_buffer, "text/plain", text_buffer_serialize_text, win, FUNK_NULL);
 	
 	win->text_view = gtk_text_view_new_with_buffer(win->text_buffer);
 	g_object_unref(win->text_buffer);

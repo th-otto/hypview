@@ -84,7 +84,8 @@ struct _window_data_
 	
 	GtkActionGroup *action_group;
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
-
+	GdkAtom serialize_text;
+	
 	GtkWidget *recent_menu;				/* GtkMenu */
 	GtkWidget *bookmarks_menu;			/* GtkMenu */
 	GtkTextBuffer *text_buffer;

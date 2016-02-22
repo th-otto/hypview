@@ -251,8 +251,8 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 void BlockAsciiSave(WINDOW_DATA *win, const char *path, GtkTextIter *start, GtkTextIter *end)
 {
 	int handle;
-	char *txt;
-	size_t len, ret;
+	guint8 *txt;
+	gsize len = 0, ret;
 	
 	handle = hyp_utf8_open(path, O_WRONLY | O_TRUNC | O_CREAT, HYP_DEFAULT_FILEMODE);
 	if (handle < 0)
@@ -260,8 +260,7 @@ void BlockAsciiSave(WINDOW_DATA *win, const char *path, GtkTextIter *start, GtkT
 		FileErrorErrno(path);
 	} else
 	{
-		txt = gtk_text_buffer_get_text(win->text_buffer, start, end, FALSE);
-		len = txt ? strlen(txt) : 0;
+		txt = gtk_text_buffer_serialize(win->text_buffer, win->text_buffer, win->serialize_text, start, end, &len);
 		ret = hyp_utf8_write(handle, txt, len);
 		if (ret != len)
 		{

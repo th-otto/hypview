@@ -836,11 +836,15 @@ static void print_text_and_tabs(WINDOW_DATA *win, GtkTextIter *start, GtkTextIte
 
 static void info_flush_spaces(struct prep_info *info)
 {
+	int i;
+	
 	if (info->last_was_space > 1)
 	{
 		gtk_text_buffer_insert(info->text_buffer, &info->iter, "\t", 1);
 		pango_tab_array_set_tab(info->tab_array, info->tab_array_size, PANGO_TAB_LEFT, info->x * info->x_raster);
 		info->tab_array_size++;
+		for (i = 0; i < info->last_was_space; i++)
+			gtk_text_buffer_insert(info->text_buffer, &info->iter, "\342\200\213", 3); /* zero width space */
 	} else if (info->last_was_space == 1)
 	{
 		gtk_text_buffer_insert(info->text_buffer, &info->iter, " ", 1);

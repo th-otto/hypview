@@ -140,7 +140,9 @@ static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist,
 	g_object_set_data(G_OBJECT(selector), "hypview_window_type", NO_CONST("fileselector"));
 	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(selector), save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN);
 	gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(selector), TRUE);
-	
+	if (save)
+		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(selector), TRUE);
+		
 	if (!empty(*name))
 	{
 		const char *base = hyp_basename(*name);
@@ -239,6 +241,7 @@ void SelectFileSave(WINDOW_DATA *win)
 
 	if (choose_file(parent, &filepath, FALSE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
 	{
+#if 0
 		int ret;
 
 		ret = hyp_utf8_open(filepath, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
@@ -249,6 +252,7 @@ void SelectFileSave(WINDOW_DATA *win)
 				ret = -1;
 		}
 		if (ret < 0)
+#endif
 			BlockAsciiSave(win, filepath, &start, &end);
 	}
 	g_free(filepath);
