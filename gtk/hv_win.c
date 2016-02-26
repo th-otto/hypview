@@ -2097,7 +2097,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "catalog",            "hv-catalog",            N_("Catalog"),                         "<Alt>K",      N_("Show catalog of hypertexts"),                    G_CALLBACK(on_catalog) },
 	{ "defaultfile",        NULL,                    N_("Default file"),                    "<Alt>D",      N_("Show default file"),                             G_CALLBACK(on_defaultfile) },
 	{ "xref",               "hv-xref",               N_("References"),                      NULL,          N_("Show list of cross references"),                 G_CALLBACK(on_xref) },
-	{ "help",               "hv-help",               N_("Show help page"),                  NULL,          N_("Show help page"),                                G_CALLBACK(on_help) },
+	{ "help",               "hv-help",               N_("Show help page"),                  "<Alt>H",      N_("Show help page"),                                G_CALLBACK(on_help) },
 
 	{ "bookmark-1",         NULL,                    N_("free"),                            "F1",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
 	{ "bookmark-2",         NULL,                    N_("free"),                            "F2",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
@@ -2209,7 +2209,6 @@ static char const ui_info[] =
 "      <menuitem action='selectfont'/>\n"
 "      <menuitem action='selectcolors'/>\n"
 "      <separator/>\n"
-"      <menuitem action='outputconfig'/>\n"
 "      <menuitem action='outputconfig'/>\n"
 "      <separator/>\n"
 "      <menuitem action='altfont'/>\n"
