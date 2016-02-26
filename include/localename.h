@@ -17,6 +17,16 @@
 #ifndef _GL_LOCALENAME_H
 #define _GL_LOCALENAME_H
 
+#ifdef HAVE_SETLOCALE
+#include <locale.h>
+#endif
+
+/* The LC_MESSAGES locale category is specified in POSIX, but not in ISO C.
+   On systems that don't define it, use the same value as GNU libintl.  */
+#if !defined LC_MESSAGES
+# define LC_MESSAGES 1729
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

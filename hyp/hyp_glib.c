@@ -463,6 +463,36 @@ int g_ascii_strncasecmp(const char *s1, const char *s2, size_t n)
 	return 0;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+GSList *g_slist_remove(GSList *list, gconstpointer data)
+{
+	GSList *l, **last;
+	
+	for (last = &list; (l = *last) != NULL; last = &(*last)->next)
+	{
+		if (l->data == data)
+		{
+			*last = l->next;
+			g_slist_free_1(l);
+			break;
+		}
+	}
+	return list;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GSList *g_slist_prepend(GSList *list, gpointer data)
+{
+	GSList *l;
+	
+	l = g_new(GSList, 1);
+	l->data = data;
+	l->next = list;
+	return l;
+}
+
 #endif /* HAVE_GLIB */
 
 /*** ---------------------------------------------------------------------- ***/
@@ -529,6 +559,7 @@ char *g_build_filename(const char *first, ...)
 			*--ptr = '\0';
 	}
 	va_end(args);
+	convslash(ret);
 	return ret;
 }
 
@@ -1002,3 +1033,27 @@ gboolean g_is_number(const char *val, gboolean is_unsigned)
 		return FALSE;
 	return TRUE;
 }
+
+/*** ---------------------------------------------------------------------- ***/
+
+#if defined(_WIN32) && !GLIB_CHECK_VERSION(2, 40, 0)
+#include <shellapi.h>
+
+char **g_win32_get_command_line(void)
+{
+	char **result;
+	LPWSTR *args;
+	int i, n;
+
+	args = CommandLineToArgvW(GetCommandLineW(), &n);
+
+	result = g_new(char *, n + 1);
+	for (i = 0; i < n; i++)
+		result[i] = hyp_wchar_to_utf8(args[i], STR0TERM);
+	result[i] = NULL;
+
+	LocalFree(args);
+	return result;
+}
+#endif
+

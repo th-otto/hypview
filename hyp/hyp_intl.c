@@ -61,7 +61,7 @@ char *g_get_package_bindir(void)
 	if (!GetModuleFileNameW(NULL, wc_fn, MAX_PATH))
 		return NULL;
 	len = WideCharToMultiByte(CP_UTF8, 0, wc_fn, -1, NULL, 0, NULL, NULL);
-	retval = g_malloc(len);
+	retval = g_new(char, len);
 	WideCharToMultiByte(CP_UTF8, 0, wc_fn, -1, retval, len, NULL, NULL);
 	if ((p = strrchr(retval, '\\')) != NULL)
 		*p = '\0';

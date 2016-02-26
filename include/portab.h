@@ -249,6 +249,8 @@ _BOOL is_big_endian (void);
 typedef int gboolean;
 typedef uint32_t gunichar;
 typedef unsigned short gunichar2;
+typedef void *gpointer;
+typedef const void *gconstpointer;
 #endif
 
 #ifdef __cplusplus

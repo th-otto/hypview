@@ -33,6 +33,14 @@ void *dbg_realloc(void *p, size_t s, const char *file, long line);
 #include <glib.h>
 #else
 
+#define GLIB_CHECK_VERSION(a, b, c) 0
+
+#if __GNUC_PREREQ(3, 4)
+#define G_GNUC_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+#else
+#define G_GNUC_WARN_UNUSED_RESULT
+#endif
+
 #include <stdint.h>
 
 #if defined(__WIN32__)
@@ -154,6 +162,16 @@ char *g_ascii_formatd(char *buffer, int buf_len, const char *format, double d);
 #define g_getenv(s) getenv(s)
 #endif
 
+typedef struct _gslist GSList;
+struct _gslist {
+	GSList *next;
+	void *data;
+};
+
+GSList *g_slist_remove(GSList *list, gconstpointer data) G_GNUC_WARN_UNUSED_RESULT;
+GSList *g_slist_prepend(GSList  *list, gpointer  data) G_GNUC_WARN_UNUSED_RESULT;
+#define g_slist_free_1(l) g_free(l)
+
 #endif /* HAVE_GLIB */
 
 #undef g_utf8_next_char
@@ -161,6 +179,7 @@ char *g_ascii_formatd(char *buffer, int buf_len, const char *format, double d);
 extern const char _hyp_utf8_skip_data[256];
 gboolean g_utf8_validate(const char *str, ssize_t max_len, const char **end);
 
+char **g_win32_get_command_line(void);
 
 #if MEM_GARBAGE_FRIENDLY
 #define mem_garbage_clear(p) p = NULL
