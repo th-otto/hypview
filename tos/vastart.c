@@ -2,6 +2,7 @@
 #include <mint/cookie.h>
 #include <mint/arch/nf_ops.h>
 #include "tos/av.h"
+#include "hv_vers.h"
 
 #define PROGRAM_NAME "vastart"
 char const gl_program_name[] = PROGRAM_NAME;

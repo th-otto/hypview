@@ -5,6 +5,7 @@
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
+#include "hv_vers.h"
 
 
 #define CATALOG_TXT "catalog.txt"

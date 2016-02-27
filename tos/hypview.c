@@ -6,6 +6,7 @@
 #if USE_GEMSCRIPT
 #include "tos/gscript.h"
 #endif
+#include "hv_vers.h"
 
 #define PROGRAM_NAME "HypView"
 char const gl_program_name[] = PROGRAM_NAME;

@@ -1,6 +1,7 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
 #include <stddef.h>
+#include "hv_vers.h"
 
 
 char const hyp_default_main_node_name[] = "Main";

@@ -7,6 +7,7 @@
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
+#include "hv_vers.h"
 
 
 char const gl_program_name[] = "HypFind";

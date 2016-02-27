@@ -4,22 +4,6 @@
 #include "profile.h"
 #include <dirent.h>
 
-#define HYP_VERSION_MAJOR "0"
-#define HYP_VERSION_MINOR "9"
-#define HYP_VERSION_MICRO "9"
-#define HYP_VERSION HYP_VERSION_MAJOR "." HYP_VERSION_MINOR "." HYP_VERSION_MICRO
-
-#define HYP_RELEASE_YEAR "2014"
-#define HYP_RELEASE_DATE "08-Aug-" HYP_RELEASE_YEAR
-
-/* UTF-8 of \u00a9 */
-#define S_COPYRIGHT_SIGN "\xC2\xA9"
-
-#define HYP_COPYRIGHT "Copyright " S_COPYRIGHT_SIGN " 1991-" HYP_RELEASE_YEAR " by Thorsten Otto"
-#define HYP_URL       "http://somewhere/"
-#undef PACKAGE_URL
-#define PACKAGE_URL HYP_URL
-
 
 #undef min
 #define	min(a, b)	((a) < (b) ? (a) : (b))
@@ -707,6 +691,10 @@ struct hyp_gfx
 	int window_x, window_y;
 	int window_margin;
 	void /* cairo_surface_t */ *surf;
+#endif
+	
+#ifdef WITH_GUI_WIN32
+	HDC surf;
 #endif
 };
 

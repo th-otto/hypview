@@ -3,6 +3,7 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 #include "gdkkeysyms.h"
+#include "hv_vers.h"
 
 #include "../icons/hypview.h"
 

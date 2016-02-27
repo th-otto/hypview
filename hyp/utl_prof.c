@@ -13,6 +13,7 @@
 #endif
 #include <errno.h>
 #include "hypdebug.h"
+#include "hv_vers.h"
 
 
 
