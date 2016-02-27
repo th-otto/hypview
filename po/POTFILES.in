@@ -1,4 +1,4 @@
-# Auto-generated: Do 11. Feb 16:34:07 CET 2016
+# Auto-generated: Sa 27. Feb 18:28:25 CET 2016
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -53,3 +53,15 @@ tos/hv_mark.c
 tos/hv_nav.c
 tos/hv_srch.c
 tos/nf_ops.c
+win32/hv_block.c
+win32/hv_click.c
+win32/hv_eref.c
+win32/hv_error.c
+win32/hv_file.c
+win32/hv_fsel.c
+win32/hv_help.c
+win32/hv_hfind.c
+win32/hv_main.c
+win32/hv_mark.c
+win32/hv_nav.c
+win32/hv_srch.c
