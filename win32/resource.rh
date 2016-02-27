@@ -1,0 +1,138 @@
+#define MY_PROGRESS_CONTROL   "MyProgressControl"
+
+#define IDR_MAIN_MENU 1
+#define IDR_MAINFRAME                   128
+
+#define IDB_WEBLINK                     130
+#define IDB_EMAIL                       131
+
+#define IDR_ACCEL                       3000
+
+#define IDM_FILE_OPEN 100
+#define IDM_FILE_SAVE 101
+#define IDM_FILE_CATALOG 102
+#define IDM_FILE_DEFAULT 103
+#define IDM_FILE_REMARKER 104
+#define IDM_FILE_RECENTMENU 105
+#define IDM_FILE_INFO 106
+#define IDM_FILE_CLOSE 107
+#define IDM_FILE_QUIT 108
+#define IDM_FILE_RECENT_1 110
+#define IDM_FILE_RECENT_2 111
+#define IDM_FILE_RECENT_3 112
+#define IDM_FILE_RECENT_4 113
+#define IDM_FILE_RECENT_5 114
+#define IDM_FILE_RECENT_6 115
+#define IDM_FILE_RECENT_7 116
+#define IDM_FILE_RECENT_8 117
+#define IDM_FILE_RECENT_9 118
+#define IDM_FILE_RECENT_10 119
+
+#define IDM_EDIT_SELECTALL 200
+#define IDM_EDIT_COPY 202
+#define IDM_EDIT_PASTE 203
+#define IDM_EDIT_FIND 204
+#define IDM_EDIT_FINDNEXT 205
+
+#define IDM_NAV_PREV     300
+#define IDM_NAV_NEXT     301
+#define IDM_NAV_PREVPHYS 302
+#define IDM_NAV_NEXTPHYS 303
+#define IDM_NAV_FIRST    304
+#define IDM_NAV_LAST     305
+#define IDM_NAV_TOC      306
+#define IDM_NAV_INDEX    307
+#define IDM_NAV_XREF     310
+#define IDM_NAV_HELP     311
+#define IDM_NAV_BOOKMARKSMENU 312
+#define IDM_NAV_BACK     313
+#define IDM_NAV_CLEARSTACK 314
+#define IDM_NAV_BOOKMARK_1 320
+#define IDM_NAV_BOOKMARK_2 321
+#define IDM_NAV_BOOKMARK_3 322
+#define IDM_NAV_BOOKMARK_4 323
+#define IDM_NAV_BOOKMARK_5 324
+#define IDM_NAV_BOOKMARK_6 325
+#define IDM_NAV_BOOKMARK_7 326
+#define IDM_NAV_BOOKMARK_8 327
+#define IDM_NAV_BOOKMARK_9 328
+#define IDM_NAV_BOOKMARK_10 329
+
+
+#define IDM_OPT_SELECTFONT   400
+#define IDM_OPT_SELECTCOLORS 401
+#define IDM_OPT_OUTPUT       402
+#define IDM_OPT_ALTFONT      403
+#define IDM_OPT_EXPANDSPACES 404
+#define IDM_OPT_SCALEBITMAPS 405
+#define IDM_OPT_PREFERENCES  406
+
+#define IDM_HELP_CONTENTS  500
+#define IDM_HELP_INDEX     501
+#define IDM_HELP_ABOUT     510
+
+#define IDD_PROGINFO       100
+#define IDD_SEARCHRESULT   101
+#define IDD_HYPFIND        102
+#define IDD_REFBOX         103
+#define IDD_OUTPUT         104
+#define IDD_COLORS         105
+#define IDD_PREFERENCES    106
+#define IDD_ABOUT          107
+
+
+#define IDC_PROG_NAME                        500
+#define IDC_PROG_DATE                        501
+#define IDC_PROG_FILE                        502
+#define IDC_PROG_DATABASE                    503
+#define IDC_PROG_AUTHOR                      504
+#define IDC_PROG_VERSION                     505
+#define IDC_INFO_MORE_BOX                    506
+#define IDC_INFO_NODES                       507
+#define IDC_INFO_INDEXSIZE                   508
+#define IDC_INFO_HCPVERSION                  509
+#define IDC_INFO_OS                          510
+#define IDC_INFO_HELP                        511
+#define IDC_INFO_OPTIONS                     512
+#define IDC_INFO_DEFAULT                     513
+#define IDC_INFO_WIDTH                       514
+#define IDC_PROG_HELP                        515
+#define IDC_INFO_MORE                        516
+#define IDC_INFO_LESS                        517
+#define IDC_PROG_OK                          518
+#define IDC_PROG_SUBJECT                     519
+
+#define IDC_SR_FSTL_UP                       600
+#define IDC_SR_FSTL_BACK                     601
+#define IDC_SR_FSTL_WHITE                    602
+#define IDC_SR_FSTL_DOWN                     603
+#define IDC_SR_BOX                           604
+#define IDC_SR_FSTL_0                        605
+#define IDC_SR_FSTL_1                        606
+#define IDC_SR_FSTL_2                        607
+#define IDC_SR_FSTL_3                        608
+#define IDC_SR_FSTL_4                        609
+#define IDC_SR_FSTL_5                        610
+#define IDC_SR_FSTL_6                        611
+#define IDC_SR_FSTL_7                        612
+#define IDC_SR_FSTL_8                        613
+#define IDC_SR_FSTL_9                        614
+#define IDC_SR_ABORT                         615
+
+#define IDC_HYPFIND_STRING                   700
+#define IDC_HYPFIND_TEXT                     701
+#define IDC_HYPFIND_PAGES                    702
+#define IDC_HYPFIND_REF                      703
+#define IDC_HYPFIND_ABORT                    704
+#define IDC_HYPFIND_ALL_PAGE                 705
+#define IDC_HYPFIND_ALL_HYP                  706
+#define IDC_HYPFIND_CASE                     707
+#define IDC_HYPFIND_WORD                     708
+
+#define IDC_EMAIL                            800
+#define IDC_EMAILLINK                        801
+#define IDC_URL                              802
+#define IDC_WEBLINK                          803
+#define IDC_VERSION                          804
+#define IDC_HV_ICON                          805
+

@@ -99,6 +99,11 @@ extern const char * gl_locale_name_default (void);
 
 char *gl_locale_name_posify (const char *name);
 
+#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__ || defined __MSYS__
+LANGID gl_locale_win32_langid_from_name(const char *name);
+LANGID gl_locale_win32_messages_langid(void);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

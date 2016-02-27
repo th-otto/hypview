@@ -1,0 +1,4308 @@
+#ifndef __WINDOWS_RH__
+#define __WINDOWS_RH__
+
+  #pragma GCC system_header
+
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define APSTUDIO_READONLY_SYMBOLS
+#endif
+
+/*
+ * Definitions used in RC files
+ */
+
+/*
+ * window styles
+ */
+#ifndef WS_OVERLAPPEDWINDOW
+#  define WS_OVERLAPPEDWINDOW (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX)
+#endif
+#ifndef WS_POPUPWINDOW
+#  define WS_POPUPWINDOW (WS_POPUP | WS_BORDER | WS_SYSMENU)
+#endif
+#ifndef WS_OVERLAPPED
+#  define WS_OVERLAPPED 0x0
+#endif
+#ifndef WS_POPUP
+#  define WS_POPUP 0x80000000
+#endif
+#ifndef WS_CHILD
+#  define WS_CHILD 0x40000000
+#endif
+#ifndef WS_CHILDWINDOW
+#  define WS_CHILDWINDOW 0x40000000
+#endif
+#ifndef WS_MINIMIZE
+#  define WS_MINIMIZE 0x20000000
+#endif
+#ifndef WS_MAXIMIZE
+#  define WS_MAXIMIZE 0x1000000
+#endif
+#ifndef WS_VISIBLE
+#  define WS_VISIBLE 0x10000000
+#endif
+#ifndef WS_DISABLED
+#  define WS_DISABLED 0x8000000
+#endif
+#ifndef WS_CLIPSIBLINGS
+#  define WS_CLIPSIBLINGS 0x4000000
+#endif
+#ifndef WS_CLIPCHILDREN
+#  define WS_CLIPCHILDREN 0x2000000
+#endif
+#ifndef WS_CAPTION
+#  define WS_CAPTION (WS_BORDER | WS_DLGFRAME)
+#endif
+#ifndef WS_BORDER
+#  define WS_BORDER 0x800000
+#endif
+#ifndef WS_DLGFRAME
+#  define WS_DLGFRAME 0x400000
+#endif
+#ifndef WS_VSCROLL
+#  define WS_VSCROLL 0x200000
+#endif
+#ifndef WS_HSCROLL
+#  define WS_HSCROLL 0x100000
+#endif
+#ifndef WS_SYSMENU
+#  define WS_SYSMENU 0x80000
+#endif
+#ifndef WS_THICKFRAME
+#  define WS_THICKFRAME 0x40000
+#endif
+#ifndef WS_MINIMIZEBOX
+#  define WS_MINIMIZEBOX 0x20000
+#endif
+#ifndef WS_MAXIMIZEBOX
+#  define WS_MAXIMIZEBOX 0x10000
+#endif
+#ifndef WS_GROUP
+#  define WS_GROUP 0x20000
+#endif
+#ifndef WS_TABSTOP
+#  define WS_TABSTOP 0x10000
+#endif
+
+#ifndef WS_TILED
+#  define WS_TILED WS_OVERLAPPED
+#endif
+#ifndef WS_ICONIC
+#  define WS_ICONIC WS_MINIMIZE
+#endif
+#ifndef WS_SIZEBOX
+#  define WS_SIZEBOX WS_THICKFRAME
+#endif
+#ifndef WS_TILEDWINDOW
+#  define WS_TILEDWINDOW WS_OVERLAPPEDWINDOW
+#endif
+
+
+/*
+ * extended window styles
+*/
+#ifndef WS_EX_DLGMODALFRAME
+#  define WS_EX_DLGMODALFRAME 0x00000001
+#endif
+#ifndef WS_EX_NOPARENTNOTIFY
+#  define WS_EX_NOPARENTNOTIFY 0x00000004
+#endif
+#ifndef WS_EX_TOPMOST
+#  define WS_EX_TOPMOST 0x00000008
+#endif
+#ifndef WS_EX_ACCEPTFILES
+#  define WS_EX_ACCEPTFILES 0x00000010
+#endif
+#ifndef WS_EX_TRANSPARENT
+#  define WS_EX_TRANSPARENT 0x00000020
+#endif
+#ifndef WS_EX_MDICHILD
+#  define WS_EX_MDICHILD 0x00000040
+#endif
+#ifndef WS_EX_TOOLWINDOW
+#  define WS_EX_TOOLWINDOW 0x00000080
+#endif
+#ifndef WS_EX_WINDOWEDGE
+#  define WS_EX_WINDOWEDGE 0x00000100
+#endif
+#ifndef WS_EX_CLIENTEDGE
+#  define WS_EX_CLIENTEDGE 0x00000200
+#endif
+#ifndef WS_EX_CONTEXTHELP
+#  define WS_EX_CONTEXTHELP 0x00000400
+#endif
+#ifndef WS_EX_RIGHT
+#  define WS_EX_RIGHT 0x00001000
+#endif
+#ifndef WS_EX_LEFT
+#  define WS_EX_LEFT 0x00000000
+#endif
+#ifndef WS_EX_RTLREADING
+#  define WS_EX_RTLREADING 0x00002000
+#endif
+#ifndef WS_EX_LTRREADING
+#  define WS_EX_LTRREADING 0x00000000
+#endif
+#ifndef WS_EX_LEFTSCROLLBAR
+#  define WS_EX_LEFTSCROLLBAR 0x00004000
+#endif
+#ifndef WS_EX_RIGHTSCROLLBAR
+#  define WS_EX_RIGHTSCROLLBAR 0x00000000
+#endif
+#ifndef WS_EX_CONTROLPARENT
+#  define WS_EX_CONTROLPARENT 0x00010000
+#endif
+#ifndef WS_EX_STATICEDGE
+#  define WS_EX_STATICEDGE 0x00020000
+#endif
+#ifndef WS_EX_APPWINDOW
+#  define WS_EX_APPWINDOW 0x00040000
+#endif
+#ifndef WS_EX_LAYERED
+#  define WS_EX_LAYERED 0x00080000
+#endif
+#ifndef WS_EX_NOINHERITLAYOUT
+#  define WS_EX_NOINHERITLAYOUT 0x00100000
+#endif
+#ifndef WS_EX_NOREDIRECTIONBITMAP
+#  define WS_EX_NOREDIRECTIONBITMAP 0x00200000
+#endif
+#ifndef WS_EX_LAYOUTRTL
+#  define WS_EX_LAYOUTRTL 0x00400000
+#endif
+#ifndef WS_EX_COMPOSITED
+#  define WS_EX_COMPOSITED 0x02000000
+#endif
+#ifndef WS_EX_NOACTIVATE
+#  define WS_EX_NOACTIVATE 0x08000000
+#endif
+
+#ifndef WS_EX_OVERLAPPEDWINDOW
+#  define WS_EX_OVERLAPPEDWINDOW (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE)
+#endif
+#ifndef WS_EX_PALETTEWINDOW
+#  define WS_EX_PALETTEWINDOW (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST)
+#endif
+
+
+/*
+ * dialog styles
+ */
+#ifndef DS_ABSALIGN
+#  define DS_ABSALIGN 0x0001
+#endif
+#ifndef DS_SYSMODAL
+#  define DS_SYSMODAL 0x0002
+#endif
+#ifndef DS_3DLOOK
+#  define DS_3DLOOK 0x0004
+#endif
+#ifndef DS_SHELLFONT
+#  define DS_SHELLFONT (DS_SETFONT | DS_FIXEDSYS)
+#endif
+#ifndef DS_FIXEDSYS
+#  define DS_FIXEDSYS 0x0008
+#endif
+#ifndef DS_SETFONT
+#  define DS_SETFONT 0x0040
+#endif
+#ifndef DS_NOFAILCREATE
+#  define DS_NOFAILCREATE 0x0010
+#endif
+#ifndef DS_LOCALEDIT
+#  define DS_LOCALEDIT 0x0020
+#endif
+#ifndef DS_MODALFRAME
+#  define DS_MODALFRAME 0x0080
+#endif
+#ifndef DS_NOIDLEMSG
+#  define DS_NOIDLEMSG 0x0100
+#endif
+#ifndef DS_SETFOREGROUND
+#  define DS_SETFOREGROUND 0x0200
+#endif
+#ifndef DS_CONTROL
+#  define DS_CONTROL 0x0400
+#endif
+#ifndef DS_CENTER
+#  define DS_CENTER 0x0800
+#endif
+#ifndef DS_CENTERMOUSE
+#  define DS_CENTERMOUSE 0x1000
+#endif
+#ifndef DS_CONTEXTHELP
+#  define DS_CONTEXTHELP 0x2000
+#endif
+#ifndef DS_USEPIXELS
+#  define DS_USEPIXELS 0x8000
+#endif
+#ifndef DS_WINDOWSUI
+#  define DS_WINDOWSUI 0x8000
+#endif
+
+
+/*
+ * menu item types and states
+ */
+#ifndef MF_ENABLED
+#  define MF_ENABLED 0x0
+#endif
+#ifndef MF_GRAYED
+#  define MF_GRAYED 0x1
+#endif
+#ifndef MF_DISABLED
+#  define MF_DISABLED 0x2
+#endif
+#ifndef MF_UNCHECKED
+#  define MF_UNCHECKED 0x0
+#endif
+#ifndef MF_CHECKED
+#  define MF_CHECKED 0x8
+#endif
+#ifndef MF_POPUP
+#  define MF_POPUP 0x10
+#endif
+#ifndef MF_END
+#  define MF_END 0x80
+#endif
+#ifndef MF_USECHECKBITMAPS
+#  define MF_USECHECKBITMAPS 0x200
+#endif
+#ifndef MF_SEPARATOR
+#  define MF_SEPARATOR 0x800
+#endif
+#ifndef MF_MENUBARBREAK
+#  define MF_MENUBARBREAK 0x20
+#endif
+#ifndef MF_MENUBREAK
+#  define MF_MENUBREAK 0x40
+#endif
+#ifndef MF_UNHILITE
+#  define MF_UNHILITE 0x0
+#endif
+#ifndef MF_HILITE
+#  define MF_HILITE 0x80
+#endif
+#ifndef MF_STRING
+#  define MF_STRING 0x0
+#endif
+#ifndef MF_BITMAP
+#  define MF_BITMAP 0x4
+#endif
+#ifndef MF_OWNERDRAW
+#  define MF_OWNERDRAW 0x100
+#endif
+#ifndef MF_DEFAULT
+#  define MF_DEFAULT 0x1000
+#endif
+#ifndef MF_SYSMENU
+#  define MF_SYSMENU 0x2000
+#endif
+#ifndef MF_HELP
+#  define MF_HELP 0x4000
+#endif
+#ifndef MF_RIGHTJUSTIFY
+#  define MF_RIGHTJUSTIFY 0x4000
+#endif
+#ifndef MF_MOUSESELECT
+#  define MF_MOUSESELECT 0x8000
+#endif
+#ifndef MFT_STRING
+#  define MFT_STRING MF_STRING
+#endif
+#ifndef MFT_BITMAP
+#  define MFT_BITMAP MF_BITMAP
+#endif
+#ifndef MFT_MENUBARBREAK
+#  define MFT_MENUBARBREAK MF_MENUBARBREAK
+#endif
+#ifndef MFT_MENUBREAK
+#  define MFT_MENUBREAK MF_MENUBREAK
+#endif
+#ifndef MFT_OWNERDRAW
+#  define MFT_OWNERDRAW MF_OWNERDRAW
+#endif
+#ifndef MFT_RADIOCHECK
+#  define MFT_RADIOCHECK 0x200
+#endif
+#ifndef MFT_SEPARATOR
+#  define MFT_SEPARATOR MF_SEPARATOR
+#endif
+#ifndef MFT_RIGHTORDER
+#  define MFT_RIGHTORDER 0x2000
+#endif
+#ifndef MFT_RIGHTJUSTIFY
+#  define MFT_RIGHTJUSTIFY MF_RIGHTJUSTIFY
+#endif
+#ifndef MFS_GRAYED
+#  define MFS_GRAYED (MF_DISABLED | MF_GRAYED)
+#endif
+#ifndef MFS_DISABLED
+#  define MFS_DISABLED MFS_GRAYED
+#endif
+#ifndef MFS_ENABLED
+#  define MFS_ENABLED MF_ENABLED
+#endif
+#ifndef MFS_CHECKED
+#  define MFS_CHECKED MF_CHECKED
+#endif
+#ifndef MFS_UNCHECKED
+#  define MFS_UNCHECKED MF_UNCHECKED
+#endif
+#ifndef MFS_HILITE
+#  define MFS_HILITE MF_HILITE
+#endif
+#ifndef MFS_UNHILITE
+#  define MFS_UNHILITE MF_UNHILITE
+#endif
+#ifndef MFS_DEFAULT
+#  define MFS_DEFAULT MF_DEFAULT
+#endif
+
+
+/*
+ * button styles
+ */
+#ifndef BS_PUSHBUTTON
+#  define BS_PUSHBUTTON 0x0
+#endif
+#ifndef BS_DEFPUSHBUTTON
+#  define BS_DEFPUSHBUTTON 0x1
+#endif
+#ifndef BS_CHECKBOX
+#  define BS_CHECKBOX 0x2
+#endif
+#ifndef BS_AUTOCHECKBOX
+#  define BS_AUTOCHECKBOX 0x3
+#endif
+#ifndef BS_RADIOBUTTON
+#  define BS_RADIOBUTTON 0x4
+#endif
+#ifndef BS_3STATE
+#  define BS_3STATE 0x5
+#endif
+#ifndef BS_AUTO3STATE
+#  define BS_AUTO3STATE 0x6
+#endif
+#ifndef BS_GROUPBOX
+#  define BS_GROUPBOX 0x7
+#endif
+#ifndef BS_USERBUTTON
+#  define BS_USERBUTTON 0x8
+#endif
+#ifndef BS_AUTORADIOBUTTON
+#  define BS_AUTORADIOBUTTON 0x9
+#endif
+#ifndef BS_PUSHBOX
+#  define BS_PUSHBOX 0xa
+#endif
+#ifndef BS_OWNERDRAW
+#  define BS_OWNERDRAW 0xb
+#endif
+#ifndef BS_TYPEMASK
+#  define BS_TYPEMASK 0x0f
+#endif
+#ifndef BS_TEXT
+#  define BS_TEXT 0x0
+#endif
+#ifndef BS_LEFTTEXT
+#  define BS_LEFTTEXT 0x20
+#endif
+#ifndef BS_ICON
+#  define BS_ICON 0x40
+#endif
+#ifndef BS_BITMAP
+#  define BS_BITMAP 0x80
+#endif
+#ifndef BS_CENTER
+#  define BS_CENTER (BS_LEFT | BS_RIGHT)
+#endif
+#ifndef BS_LEFT
+#  define BS_LEFT 0x100
+#endif
+#ifndef BS_RIGHT
+#  define BS_RIGHT 0x200
+#endif
+#ifndef BS_VCENTER
+#  define BS_VCENTER (BS_TOP | BS_BOTTOM)
+#endif
+#ifndef BS_TOP
+#  define BS_TOP 0x400
+#endif
+#ifndef BS_BOTTOM
+#  define BS_BOTTOM 0x800
+#endif
+#ifndef BS_PUSHLIKE
+#  define BS_PUSHLIKE 0x1000
+#endif
+#ifndef BS_MULTILINE
+#  define BS_MULTILINE 0x2000
+#endif
+#ifndef BS_NOTIFY
+#  define BS_NOTIFY 0x4000
+#endif
+#ifndef BS_FLAT
+#  define BS_FLAT 0x8000
+#endif
+#ifndef BS_RIGHTBUTTON
+#  define BS_RIGHTBUTTON BS_LEFTTEXT
+#endif
+
+
+/*
+ * edit control styles
+ */
+#ifndef ES_LEFT
+#  define ES_LEFT 0x0
+#endif
+#ifndef ES_CENTER
+#  define ES_CENTER 0x1
+#endif
+#ifndef ES_RIGHT
+#  define ES_RIGHT 0x2
+#endif
+#ifndef ES_MULTILINE
+#  define ES_MULTILINE 0x4
+#endif
+#ifndef ES_UPPERCASE
+#  define ES_UPPERCASE 0x8
+#endif
+#ifndef ES_LOWERCASE
+#  define ES_LOWERCASE 0x10
+#endif
+#ifndef ES_PASSWORD
+#  define ES_PASSWORD 0x20
+#endif
+#ifndef ES_AUTOVSCROLL
+#  define ES_AUTOVSCROLL 0x40
+#endif
+#ifndef ES_AUTOHSCROLL
+#  define ES_AUTOHSCROLL 0x80
+#endif
+#ifndef ES_NOHIDESEL
+#  define ES_NOHIDESEL 0x100
+#endif
+#ifndef ES_OEMCONVERT
+#  define ES_OEMCONVERT 0x400
+#endif
+#ifndef ES_READONLY
+#  define ES_READONLY 0x800
+#endif
+#ifndef ES_WANTRETURN
+#  define ES_WANTRETURN 0x1000
+#endif
+#ifndef ES_NUMBER
+#  define ES_NUMBER 0x2000
+#endif
+
+
+/*
+ * static control styles
+ */
+#ifndef SS_LEFT
+#  define SS_LEFT 0x0
+#endif
+#ifndef SS_CENTER
+#  define SS_CENTER 0x1
+#endif
+#ifndef SS_RIGHT
+#  define SS_RIGHT 0x2
+#endif
+#ifndef SS_ICON
+#  define SS_ICON 0x3
+#endif
+#ifndef SS_BLACKRECT
+#  define SS_BLACKRECT 0x4
+#endif
+#ifndef SS_GRAYRECT
+#  define SS_GRAYRECT 0x5
+#endif
+#ifndef SS_WHITERECT
+#  define SS_WHITERECT 0x6
+#endif
+#ifndef SS_BLACKFRAME
+#  define SS_BLACKFRAME 0x7
+#endif
+#ifndef SS_GRAYFRAME
+#  define SS_GRAYFRAME 0x8
+#endif
+#ifndef SS_WHITEFRAME
+#  define SS_WHITEFRAME 0x9
+#endif
+#ifndef SS_USERITEM
+#  define SS_USERITEM 0xa
+#endif
+#ifndef SS_SIMPLE
+#  define SS_SIMPLE 0xb
+#endif
+#ifndef SS_LEFTNOWORDWRAP
+#  define SS_LEFTNOWORDWRAP 0xc
+#endif
+#ifndef SS_OWNERDRAW
+#  define SS_OWNERDRAW 0xd
+#endif
+#ifndef SS_BITMAP
+#  define SS_BITMAP 0xe
+#endif
+#ifndef SS_ENHMETAFILE
+#  define SS_ENHMETAFILE 0xf
+#endif
+#ifndef SS_ETCHEDHORZ
+#  define SS_ETCHEDHORZ 0x10
+#endif
+#ifndef SS_ETCHEDVERT
+#  define SS_ETCHEDVERT 0x11
+#endif
+#ifndef SS_ETCHEDFRAME
+#  define SS_ETCHEDFRAME 0x12
+#endif
+#ifndef SS_TYPEMASK
+#  define SS_TYPEMASK 0x1f
+#endif
+#ifndef SS_REALSIZECONTROL
+#  define SS_REALSIZECONTROL 0x40
+#endif
+#ifndef SS_NOPREFIX
+#  define SS_NOPREFIX 0x80
+#endif
+#ifndef SS_NOTIFY
+#  define SS_NOTIFY 0x100
+#endif
+#ifndef SS_CENTERIMAGE
+#  define SS_CENTERIMAGE 0x200
+#endif
+#ifndef SS_RIGHTJUST
+#  define SS_RIGHTJUST 0x400
+#endif
+#ifndef SS_REALSIZEIMAGE
+#  define SS_REALSIZEIMAGE 0x800
+#endif
+#ifndef SS_SUNKEN
+#  define SS_SUNKEN 0x1000
+#endif
+#ifndef SS_EDITCONTROL
+#  define SS_EDITCONTROL 0x2000
+#endif
+#ifndef SS_ENDELLIPSIS
+#  define SS_ENDELLIPSIS 0x4000
+#endif
+#ifndef SS_PATHELLIPSIS
+#  define SS_PATHELLIPSIS 0x8000
+#endif
+#ifndef SS_WORDELLIPSIS
+#  define SS_WORDELLIPSIS 0xc000
+#endif
+#ifndef SS_ELLIPSISMASK
+#  define SS_ELLIPSISMASK 0xc000
+#endif
+
+
+/*
+ * listbox styles
+ */
+#ifndef LBS_NOTIFY
+#  define LBS_NOTIFY 0x1
+#endif
+#ifndef LBS_SORT
+#  define LBS_SORT 0x2
+#endif
+#ifndef LBS_NOREDRAW
+#  define LBS_NOREDRAW 0x4
+#endif
+#ifndef LBS_MULTIPLESEL
+#  define LBS_MULTIPLESEL 0x8
+#endif
+#ifndef LBS_OWNERDRAWFIXED
+#  define LBS_OWNERDRAWFIXED 0x10
+#endif
+#ifndef LBS_OWNERDRAWVARIABLE
+#  define LBS_OWNERDRAWVARIABLE 0x20
+#endif
+#ifndef LBS_HASSTRINGS
+#  define LBS_HASSTRINGS 0x40
+#endif
+#ifndef LBS_USETABSTOPS
+#  define LBS_USETABSTOPS 0x80
+#endif
+#ifndef LBS_NOINTEGRALHEIGHT
+#  define LBS_NOINTEGRALHEIGHT 0x100
+#endif
+#ifndef LBS_MULTICOLUMN
+#  define LBS_MULTICOLUMN 0x200
+#endif
+#ifndef LBS_WANTKEYBOARDINPUT
+#  define LBS_WANTKEYBOARDINPUT 0x400
+#endif
+#ifndef LBS_EXTENDEDSEL
+#  define LBS_EXTENDEDSEL 0x800
+#endif
+#ifndef LBS_DISABLENOSCROLL
+#  define LBS_DISABLENOSCROLL 0x1000
+#endif
+#ifndef LBS_NODATA
+#  define LBS_NODATA 0x2000
+#endif
+#ifndef LBS_NOSEL
+#  define LBS_NOSEL 0x4000
+#endif
+#ifndef LBS_COMBOBOX
+#  define LBS_COMBOBOX 0x8000
+#endif
+#ifndef LBS_STANDARD
+#define LBS_STANDARD          (LBS_NOTIFY | LBS_SORT | WS_VSCROLL | WS_BORDER)
+#endif
+
+
+/*
+ * scrollbar styles
+ */
+#ifndef SBS_HORZ
+#  define SBS_HORZ 0x0
+#endif
+#ifndef SBS_VERT
+#  define SBS_VERT 0x1
+#endif
+#ifndef SBS_TOPALIGN
+#  define SBS_TOPALIGN 0x3
+#endif
+#ifndef SBS_LEFTALIGN
+#  define SBS_LEFTALIGN 0x2
+#endif
+#ifndef SBS_SIZEBOXTOPLEFTALIGN
+#  define SBS_SIZEBOXTOPLEFTALIGN 0x2
+#endif
+#ifndef SBS_BOTTOMALIGN
+#  define SBS_BOTTOMALIGN 0x5
+#endif
+#ifndef SBS_RIGHTALIGN
+#  define SBS_RIGHTALIGN 0x4
+#endif
+#ifndef SBS_SIZEBOXBOTTOMRIGHTALIGN
+#  define SBS_SIZEBOXBOTTOMRIGHTALIGN 0x4
+#endif
+#ifndef SBS_SIZEBOX
+#  define SBS_SIZEBOX 0x8
+#endif
+#ifndef SBS_SIZEGRIP
+#  define SBS_SIZEGRIP 0x10
+#endif
+
+
+/*
+ * combobox styles
+ */
+#ifndef CBS_TYPEMASK
+#  define CBS_TYPEMASK 0x0f
+#endif
+#ifndef CBS_SIMPLE
+#  define CBS_SIMPLE 0x1
+#endif
+#ifndef CBS_DROPDOWN
+#  define CBS_DROPDOWN 0x2
+#endif
+#ifndef CBS_DROPDOWNLIST
+#  define CBS_DROPDOWNLIST 0x3
+#endif
+#ifndef CBS_OWNERDRAWFIXED
+#  define CBS_OWNERDRAWFIXED 0x10
+#endif
+#ifndef CBS_OWNERDRAWVARIABLE
+#  define CBS_OWNERDRAWVARIABLE 0x20
+#endif
+#ifndef CBS_AUTOHSCROLL
+#  define CBS_AUTOHSCROLL 0x40
+#endif
+#ifndef CBS_OEMCONVERT
+#  define CBS_OEMCONVERT 0x80
+#endif
+#ifndef CBS_SORT
+#  define CBS_SORT 0x100
+#endif
+#ifndef CBS_HASSTRINGS
+#  define CBS_HASSTRINGS 0x200
+#endif
+#ifndef CBS_NOINTEGRALHEIGHT
+#  define CBS_NOINTEGRALHEIGHT 0x400
+#endif
+#ifndef CBS_DISABLENOSCROLL
+#  define CBS_DISABLENOSCROLL 0x800
+#endif
+#ifndef CBS_UPPERCASE
+#  define CBS_UPPERCASE 0x2000
+#endif
+#ifndef CBS_LOWERCASE
+#  define CBS_LOWERCASE 0x4000
+#endif
+
+
+/*
+ * listview styles
+ */
+#ifndef LVS_ICON
+#  define LVS_ICON 0x0
+#endif
+#ifndef LVS_REPORT
+#  define LVS_REPORT 0x1
+#endif
+#ifndef LVS_SMALLICON
+#  define LVS_SMALLICON 0x2
+#endif
+#ifndef LVS_LIST
+#  define LVS_LIST 0x3
+#endif
+#ifndef LVS_TYPEMASK
+#  define LVS_TYPEMASK 0x03
+#endif
+#ifndef LVS_SINGLESEL
+#  define LVS_SINGLESEL 0x4
+#endif
+#ifndef LVS_SHOWSELALWAYS
+#  define LVS_SHOWSELALWAYS 0x8
+#endif
+#ifndef LVS_SORTASCENDING
+#  define LVS_SORTASCENDING 0x10
+#endif
+#ifndef LVS_SORTDESCENDING
+#  define LVS_SORTDESCENDING 0x20
+#endif
+#ifndef LVS_SHAREIMAGELISTS
+#  define LVS_SHAREIMAGELISTS 0x40
+#endif
+#ifndef LVS_NOLABELWRAP
+#  define LVS_NOLABELWRAP 0x80
+#endif
+#ifndef LVS_AUTOARRANGE
+#  define LVS_AUTOARRANGE 0x100
+#endif
+#ifndef LVS_EDITLABELS
+#  define LVS_EDITLABELS 0x200
+#endif
+#ifndef LVS_OWNERDATA
+#  define LVS_OWNERDATA 0x1000
+#endif
+#ifndef LVS_NOSCROLL
+#  define LVS_NOSCROLL 0x2000
+#endif
+#ifndef LVS_TYPESTYLEMASK
+#  define LVS_TYPESTYLEMASK 0xfc00
+#endif
+#ifndef LVS_ALIGNTOP
+#  define LVS_ALIGNTOP 0x0
+#endif
+#ifndef LVS_ALIGNLEFT
+#  define LVS_ALIGNLEFT 0x800
+#endif
+#ifndef LVS_ALIGNMASK
+#  define LVS_ALIGNMASK 0xc00
+#endif
+#ifndef LVS_OWNERDRAWFIXED
+#  define LVS_OWNERDRAWFIXED 0x400
+#endif
+#ifndef LVS_NOCOLUMNHEADER
+#  define LVS_NOCOLUMNHEADER 0x4000
+#endif
+#ifndef LVS_NOSORTHEADER
+#  define LVS_NOSORTHEADER 0x8000
+#endif
+
+
+/*
+ * fixed version info
+ */
+#ifndef VS_FILE_INFO
+#  define VS_FILE_INFO RT_VERSION
+#endif
+#ifndef VS_VERSION_INFO
+#  define VS_VERSION_INFO 1
+#endif
+#ifndef VS_USER_DEFINED
+#  define VS_USER_DEFINED 100
+#endif
+#ifndef VS_FFI_SIGNATURE
+#  ifndef _MAC
+#    define VS_FFI_SIGNATURE        0xFEEF04BDL
+#  else
+#    define VS_FFI_SIGNATURE        0xBD04EFFEL
+#  endif
+#endif
+#ifndef VS_FFI_STRUCVERSION
+#  define VS_FFI_STRUCVERSION     0x00010000L
+#endif
+#ifndef VS_FFI_FILEFLAGSMASK
+#  define VS_FFI_FILEFLAGSMASK 0x3f
+#endif
+
+#ifndef VS_FF_DEBUG
+#  define VS_FF_DEBUG 0x1
+#endif
+#ifndef VS_FF_PRERELEASE
+#  define VS_FF_PRERELEASE 0x2
+#endif
+#ifndef VS_FF_PATCHED
+#  define VS_FF_PATCHED 0x4
+#endif
+#ifndef VS_FF_PRIVATEBUILD
+#  define VS_FF_PRIVATEBUILD 0x8
+#endif
+#ifndef VS_FF_INFOINFERRED
+#  define VS_FF_INFOINFERRED 0x10
+#endif
+#ifndef VS_FF_SPECIALBUILD
+#  define VS_FF_SPECIALBUILD 0x20
+#endif
+
+#ifndef VOS_UNKNOWN
+#  define VOS_UNKNOWN 0x0
+#endif
+#ifndef VOS_DOS_WINDOWS16
+#  define VOS_DOS_WINDOWS16 (VOS_DOS | VOS__WINDOWS16)
+#endif
+#ifndef VOS_DOS_WINDOWS32
+#  define VOS_DOS_WINDOWS32 (VOS_DOS | VOS__WINDOWS32)
+#endif
+#ifndef VOS_OS216_PM16
+#  define VOS_OS216_PM16 (VOS_OS216 | VOS__PM16)
+#endif
+#ifndef VOS_OS232_PM32
+#  define VOS_OS232_PM32 (VOS_OS232 | VOS__PM32)
+#endif
+#ifndef VOS_NT_WINDOWS32
+#  define VOS_NT_WINDOWS32 (VOS_NT | VOS__WINDOWS32)
+#endif
+#ifndef VOS_DOS
+#  define VOS_DOS 0x10000
+#endif
+#ifndef VOS_OS216
+#  define VOS_OS216 0x20000
+#endif
+#ifndef VOS_OS232
+#  define VOS_OS232 0x30000
+#endif
+#ifndef VOS_NT
+#  define VOS_NT 0x40000
+#endif
+#ifndef VOS_WINCE
+#  define VOS_WINCE 0x50000
+#endif
+#ifndef VOS__BASE
+#  define VOS__BASE 0x0
+#endif
+#ifndef VOS__WINDOWS16
+#  define VOS__WINDOWS16 0x1
+#endif
+#ifndef VOS__PM16
+#  define VOS__PM16 0x2
+#endif
+#ifndef VOS__PM32
+#  define VOS__PM32 0x3
+#endif
+#ifndef VOS__WINDOWS32
+#  define VOS__WINDOWS32 0x4
+#endif
+
+#ifndef VFT_UNKNOWN
+#  define VFT_UNKNOWN 0x0
+#endif
+#ifndef VFT_APP
+#  define VFT_APP 0x1
+#endif
+#ifndef VFT_DLL
+#  define VFT_DLL 0x2
+#endif
+#ifndef VFT_DRV
+#  define VFT_DRV 0x3
+#endif
+#ifndef VFT_FONT
+#  define VFT_FONT 0x4
+#endif
+#ifndef VFT_VXD
+#  define VFT_VXD 0x5
+#endif
+#ifndef VFT_STATIC_LIB
+#  define VFT_STATIC_LIB 0x7
+#endif
+
+#ifndef VFT2_UNKNOWN
+#  define VFT2_UNKNOWN 0x0
+#endif
+#ifndef VFT2_DRV_PRINTER
+#  define VFT2_DRV_PRINTER 0x1
+#endif
+#ifndef VFT2_DRV_KEYBOARD
+#  define VFT2_DRV_KEYBOARD 0x2
+#endif
+#ifndef VFT2_DRV_LANGUAGE
+#  define VFT2_DRV_LANGUAGE 0x3
+#endif
+#ifndef VFT2_DRV_DISPLAY
+#  define VFT2_DRV_DISPLAY 0x4
+#endif
+#ifndef VFT2_DRV_MOUSE
+#  define VFT2_DRV_MOUSE 0x5
+#endif
+#ifndef VFT2_DRV_NETWORK
+#  define VFT2_DRV_NETWORK 0x6
+#endif
+#ifndef VFT2_DRV_SYSTEM
+#  define VFT2_DRV_SYSTEM 0x7
+#endif
+#ifndef VFT2_DRV_INSTALLABLE
+#  define VFT2_DRV_INSTALLABLE 0x8
+#endif
+#ifndef VFT2_DRV_SOUND
+#  define VFT2_DRV_SOUND 0x9
+#endif
+#ifndef VFT2_DRV_COMM
+#  define VFT2_DRV_COMM 0xa
+#endif
+#ifndef VFT2_DRV_INPUTMETHOD
+#  define VFT2_DRV_INPUTMETHOD 0xb
+#endif
+#ifndef VFT2_DRV_VERSIONED_PRINTER
+#  define VFT2_DRV_VERSIONED_PRINTER 0xc
+#endif
+
+#ifndef VFT2_UNKNOWN
+#  define VFT2_UNKNOWN 0x0
+#endif
+#ifndef VFT2_FONT_RASTER
+#  define VFT2_FONT_RASTER 0x1
+#endif
+#ifndef VFT2_FONT_VECTOR
+#  define VFT2_FONT_VECTOR 0x2
+#endif
+#ifndef VFT2_FONT_TRUETYPE
+#  define VFT2_FONT_TRUETYPE 0x3
+#endif
+
+
+/*
+ * accelerator flags
+ */
+#ifndef FASCII
+#  define FASCII 0x0
+#endif
+#ifndef FVIRTKEY
+#  define FVIRTKEY 0x1
+#endif
+#ifndef FNOINVERT
+#  define FNOINVERT 0x2
+#endif
+#ifndef FSHIFT
+#  define FSHIFT 0x4
+#endif
+#ifndef FCONTROL
+#  define FCONTROL 0x8
+#endif
+#ifndef FALT
+#  define FALT 0x10
+#endif
+
+
+/*
+ * richedit styles
+ */
+#ifndef ES_SAVESEL
+#  define ES_SAVESEL 0x8000
+#endif
+#ifndef ES_SUNKEN
+#  define ES_SUNKEN 0x4000
+#endif
+#ifndef ES_DISABLENOSCROLL
+#  define ES_DISABLENOSCROLL 0x2000
+#endif
+#ifndef ES_SELECTIONBAR
+#  define ES_SELECTIONBAR 0x1000000
+#endif
+#ifndef ES_NOOLEDRAGDROP
+#  define ES_NOOLEDRAGDROP 0x8
+#endif
+#ifndef ES_VERTICAL
+#  define ES_VERTICAL 0x400000
+#endif
+#ifndef ES_NOIME
+#  define ES_NOIME 0x80000
+#endif
+#ifndef ES_SELFIME
+#  define ES_SELFIME 0x40000
+#endif
+
+#ifdef ES_EX_NOCALLOLEINIT
+#  undef ES_EX_NOCALLOLEINIT
+#endif
+#define ES_EX_NOCALLOLEINIT 0x01000000
+
+
+/*
+ * header control styles
+ */
+#ifndef HDS_HORZ
+#  define HDS_HORZ 0x0
+#endif
+#ifndef HDS_VERT
+#  define HDS_VERT 0x1
+#endif
+#ifndef HDS_BUTTONS
+#  define HDS_BUTTONS 0x2
+#endif
+#ifndef HDS_HOTTRACK
+#  define HDS_HOTTRACK 0x4
+#endif
+#ifndef HDS_HIDDEN
+#  define HDS_HIDDEN 0x8
+#endif
+#ifndef HDS_DRAGDROP
+#  define HDS_DRAGDROP 0x40
+#endif
+#ifndef HDS_FULLDRAG
+#  define HDS_FULLDRAG 0x80
+#endif
+#ifndef HDS_FILTERBAR
+#  define HDS_FILTERBAR 0x100
+#endif
+#ifndef HDS_FLAT
+#  define HDS_FLAT 0x200
+#endif
+#ifndef HDS_CHECKBOXES
+#  define HDS_CHECKBOXES 0x0400
+#endif
+#ifndef HDS_NOSIZING
+#  define HDS_NOSIZING 0x0800
+#endif
+#ifndef HDS_OVERFLOW
+#  define HDS_OVERFLOW 0x1000
+#endif
+
+#ifndef TBSTYLE_BUTTON
+#  define TBSTYLE_BUTTON 0x0
+#endif
+#ifndef BTNS_BUTTON
+#  define BTNS_BUTTON TBSTYLE_BUTTON
+#endif
+#ifndef TBSTYLE_SEP
+#  define TBSTYLE_SEP 0x1
+#endif
+#ifndef BTNS_SEP
+#  define BTNS_SEP TBSTYLE_SEP
+#endif
+#ifndef TBSTYLE_CHECK
+#  define TBSTYLE_CHECK 0x2
+#endif
+#ifndef BTNS_CHECK
+#  define BTNS_CHECK TBSTYLE_CHECK
+#endif
+#ifndef TBSTYLE_GROUP
+#  define TBSTYLE_GROUP 0x4
+#endif
+#ifndef BTNS_GROUP
+#  define BTNS_GROUP TBSTYLE_GROUP
+#endif
+#ifndef TBSTYLE_CHECKGROUP
+#  define TBSTYLE_CHECKGROUP (TBSTYLE_GROUP | TBSTYLE_CHECK)
+#endif
+#ifndef BTNS_CHECKGROUP
+#  define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP
+#endif
+#ifndef TBSTYLE_DROPDOWN
+#  define TBSTYLE_DROPDOWN 0x8
+#endif
+#ifndef BTNS_DROPDOWN
+#  define BTNS_DROPDOWN TBSTYLE_DROPDOWN
+#endif
+#ifndef TBSTYLE_AUTOSIZE
+#  define TBSTYLE_AUTOSIZE 0x10
+#endif
+#ifndef BTNS_AUTOSIZE
+#  define BTNS_AUTOSIZE TBSTYLE_AUTOSIZE
+#endif
+#ifndef TBSTYLE_NOPREFIX
+#  define TBSTYLE_NOPREFIX 0x20
+#endif
+#ifndef BTNS_NOPREFIX
+#  define BTNS_NOPREFIX TBSTYLE_NOPREFIX
+#endif
+#ifndef BTNS_SHOWTEXT
+#  define BTNS_SHOWTEXT 0x40
+#endif
+#ifndef BTNS_WHOLEDROPDOWN
+#  define BTNS_WHOLEDROPDOWN 0x80
+#endif
+#ifndef TBSTYLE_TOOLTIPS
+#  define TBSTYLE_TOOLTIPS 0x100
+#endif
+#ifndef TBSTYLE_WRAPABLE
+#  define TBSTYLE_WRAPABLE 0x200
+#endif
+#ifndef TBSTYLE_ALTDRAG
+#  define TBSTYLE_ALTDRAG 0x400
+#endif
+#ifndef TBSTYLE_FLAT
+#  define TBSTYLE_FLAT 0x800
+#endif
+#ifndef TBSTYLE_LIST
+#  define TBSTYLE_LIST 0x1000
+#endif
+#ifndef TBSTYLE_CUSTOMERASE
+#  define TBSTYLE_CUSTOMERASE 0x2000
+#endif
+#ifndef TBSTYLE_REGISTERDROP
+#  define TBSTYLE_REGISTERDROP 0x4000
+#endif
+#ifndef TBSTYLE_TRANSPARENT
+#  define TBSTYLE_TRANSPARENT 0x8000
+#endif
+
+#ifndef TBSTYLE_EX_DRAWDDARROWS
+#  define TBSTYLE_EX_DRAWDDARROWS 0x0001
+#endif
+#ifndef TBSTYLE_EX_MULTICOLUMN
+#  define TBSTYLE_EX_MULTICOLUMN 0x0002
+#endif
+#ifndef TBSTYLE_EX_VERTICAL
+#  define TBSTYLE_EX_VERTICAL 0x0004
+#endif
+#ifndef TBSTYLE_EX_MIXEDBUTTONS
+#  define TBSTYLE_EX_MIXEDBUTTONS 0x0008
+#endif
+#ifndef TBSTYLE_EX_HIDECLIPPEDBUTTONS
+#  define TBSTYLE_EX_HIDECLIPPEDBUTTONS 0x0010
+#endif
+#ifndef TBSTYLE_EX_DOUBLEBUFFER
+#  define TBSTYLE_EX_DOUBLEBUFFER 0x0080
+#endif
+
+
+/*
+ * rebar styles
+ */
+#ifndef RBS_TOOLTIPS
+#  define RBS_TOOLTIPS 0x100
+#endif
+#ifndef RBS_VARHEIGHT
+#  define RBS_VARHEIGHT 0x200
+#endif
+#ifndef RBS_BANDBORDERS
+#  define RBS_BANDBORDERS 0x400
+#endif
+#ifndef RBS_FIXEDORDER
+#  define RBS_FIXEDORDER 0x800
+#endif
+#ifndef RBS_REGISTERDROP
+#  define RBS_REGISTERDROP 0x1000
+#endif
+#ifndef RBS_AUTOSIZE
+#  define RBS_AUTOSIZE 0x2000
+#endif
+#ifndef RBS_VERTICALGRIPPER
+#  define RBS_VERTICALGRIPPER 0x4000
+#endif
+#ifndef RBS_DBLCLKTOGGLE
+#  define RBS_DBLCLKTOGGLE 0x8000
+#endif
+
+
+/*
+ * tooltip styles
+ */
+#ifndef TTS_ALWAYSTIP
+#  define TTS_ALWAYSTIP 0x1
+#endif
+#ifndef TTS_NOPREFIX
+#  define TTS_NOPREFIX 0x2
+#endif
+#ifndef TTS_NOANIMATE
+#  define TTS_NOANIMATE 0x10
+#endif
+#ifndef TTS_NOFADE
+#  define TTS_NOFADE 0x20
+#endif
+#ifndef TTS_BALLOON
+#  define TTS_BALLOON 0x40
+#endif
+#ifndef TTS_CLOSE
+#  define TTS_CLOSE 0x80
+#endif
+#ifndef TTS_USEVISUALSTYLE
+#  define TTS_USEVISUALSTYLE 0x100
+#endif
+
+
+/*
+ * statusbar styles
+ */
+#ifndef SBARS_SIZEGRIP
+#  define SBARS_SIZEGRIP 0x100
+#endif
+#ifndef SBARS_TOOLTIPS
+#  define SBARS_TOOLTIPS 0x800
+#endif
+#ifndef SBT_TOOLTIPS
+#  define SBT_TOOLTIPS SBARS_TOOLTIPS
+#endif
+
+
+/*
+ * trackbar styles
+ */
+#ifndef TBS_AUTOTICKS
+#  define TBS_AUTOTICKS 0x1
+#endif
+#ifndef TBS_HORZ
+#  define TBS_HORZ 0x0
+#endif
+#ifndef TBS_VERT
+#  define TBS_VERT 0x2
+#endif
+#ifndef TBS_BOTTOM
+#  define TBS_BOTTOM 0x0
+#endif
+#ifndef TBS_TOP
+#  define TBS_TOP 0x4
+#endif
+#ifndef TBS_RIGHT
+#  define TBS_RIGHT 0x0
+#endif
+#ifndef TBS_LEFT
+#  define TBS_LEFT 0x4
+#endif
+#ifndef TBS_BOTH
+#  define TBS_BOTH 0x8
+#endif
+#ifndef TBS_BOTH
+#  define TBS_BOTH 0x8
+#endif
+#ifndef TBS_NOTICKS
+#  define TBS_NOTICKS 0x10
+#endif
+#ifndef TBS_ENABLESELRANGE
+#  define TBS_ENABLESELRANGE 0x20
+#endif
+#ifndef TBS_FIXEDLENGTH
+#  define TBS_FIXEDLENGTH 0x40
+#endif
+#ifndef TBS_NOTHUMB
+#  define TBS_NOTHUMB 0x80
+#endif
+#ifndef TBS_TOOLTIPS
+#  define TBS_TOOLTIPS 0x100
+#endif
+#ifndef TBS_REVERSED
+#  define TBS_REVERSED 0x200
+#endif
+#ifndef TBS_DOWNISLEFT
+#  define TBS_DOWNISLEFT 0x400
+#endif
+#ifndef TBS_NOTIFYBEFOREMOVE
+#  define TBS_NOTIFYBEFOREMOVE 0x0800
+#endif
+#ifndef TBS_TRANSPARENTBKGND
+#  define TBS_TRANSPARENTBKGND 0x1000
+#endif
+
+
+/*
+ * updown styles
+ */
+#ifndef UDS_WRAP
+#  define UDS_WRAP 0x1
+#endif
+#ifndef UDS_SETBUDDYINT
+#  define UDS_SETBUDDYINT 0x2
+#endif
+#ifndef UDS_ALIGNRIGHT
+#  define UDS_ALIGNRIGHT 0x4
+#endif
+#ifndef UDS_ALIGNLEFT
+#  define UDS_ALIGNLEFT 0x8
+#endif
+#ifndef UDS_AUTOBUDDY
+#  define UDS_AUTOBUDDY 0x10
+#endif
+#ifndef UDS_ARROWKEYS
+#  define UDS_ARROWKEYS 0x20
+#endif
+#ifndef UDS_HORZ
+#  define UDS_HORZ 0x40
+#endif
+#ifndef UDS_NOTHOUSANDS
+#  define UDS_NOTHOUSANDS 0x80
+#endif
+#ifndef UDS_HOTTRACK
+#  define UDS_HOTTRACK 0x100
+#endif
+
+
+/*
+ * progress styles
+ */
+#ifndef PBS_SMOOTH
+#  define PBS_SMOOTH 0x1
+#endif
+#ifndef PBS_VERTICAL
+#  define PBS_VERTICAL 0x4
+#endif
+
+
+/*
+ * common control styles
+ */
+#ifndef CCS_TOP
+#  define CCS_TOP 0x00000001L
+#endif
+#ifndef CCS_NOMOVEY
+#  define CCS_NOMOVEY 0x00000002L
+#endif
+#ifndef CCS_BOTTOM
+#  define CCS_BOTTOM 0x00000003L
+#endif
+#ifndef CCS_NORESIZE
+#  define CCS_NORESIZE 0x00000004L
+#endif
+#ifndef CCS_NOPARENTALIGN
+#  define CCS_NOPARENTALIGN 0x00000008L
+#endif
+#ifndef CCS_ADJUSTABLE
+#  define CCS_ADJUSTABLE 0x00000020L
+#endif
+#ifndef CCS_NODIVIDER
+#  define CCS_NODIVIDER 0x00000040L
+#endif
+#ifndef CCS_VERT
+#  define CCS_VERT 0x00000080L
+#endif
+#ifndef CCS_LEFT
+#  define CCS_LEFT (CCS_VERT | CCS_TOP)
+#endif
+#ifndef CCS_RIGHT
+#  define CCS_RIGHT (CCS_VERT | CCS_BOTTOM)
+#endif
+#ifndef CCS_NOMOVEX
+#  define CCS_NOMOVEX (CCS_VERT | CCS_NOMOVEY)
+#endif
+
+
+/*
+ * treeview styles
+ */
+#ifndef TVS_HASBUTTONS
+#  define TVS_HASBUTTONS 0x1
+#endif
+#ifndef TVS_HASLINES
+#  define TVS_HASLINES 0x2
+#endif
+#ifndef TVS_LINESATROOT
+#  define TVS_LINESATROOT 0x4
+#endif
+#ifndef TVS_EDITLABELS
+#  define TVS_EDITLABELS 0x8
+#endif
+#ifndef TVS_DISABLEDRAGDROP
+#  define TVS_DISABLEDRAGDROP 0x10
+#endif
+#ifndef TVS_SHOWSELALWAYS
+#  define TVS_SHOWSELALWAYS 0x20
+#endif
+#ifndef TVS_RTLREADING
+#  define TVS_RTLREADING 0x40
+#endif
+#ifndef TVS_NOTOOLTIPS
+#  define TVS_NOTOOLTIPS 0x80
+#endif
+#ifndef TVS_CHECKBOXES
+#  define TVS_CHECKBOXES 0x100
+#endif
+#ifndef TVS_TRACKSELECT
+#  define TVS_TRACKSELECT 0x200
+#endif
+#ifndef TVS_SINGLEEXPAND
+#  define TVS_SINGLEEXPAND 0x400
+#endif
+#ifndef TVS_INFOTIP
+#  define TVS_INFOTIP 0x800
+#endif
+#ifndef TVS_FULLROWSELECT
+#  define TVS_FULLROWSELECT 0x1000
+#endif
+#ifndef TVS_NOSCROLL
+#  define TVS_NOSCROLL 0x2000
+#endif
+#ifndef TVS_NONEVENHEIGHT
+#  define TVS_NONEVENHEIGHT 0x4000
+#endif
+#ifndef TVS_NOHSCROLL
+#  define TVS_NOHSCROLL 0x8000
+#endif
+
+#ifndef TVS_EX_NOSINGLECOLLAPSE
+#  define TVS_EX_NOSINGLECOLLAPSE 0x0001
+#endif
+#ifndef TVS_EX_MULTISELECT
+#  define TVS_EX_MULTISELECT 0x0002
+#endif
+#ifndef TVS_EX_DOUBLEBUFFER
+#  define TVS_EX_DOUBLEBUFFER 0x0004
+#endif
+#ifndef TVS_EX_NOINDENTSTATE
+#  define TVS_EX_NOINDENTSTATE 0x0008
+#endif
+#ifndef TVS_EX_RICHTOOLTIP
+#  define TVS_EX_RICHTOOLTIP 0x0010
+#endif
+#ifndef TVS_EX_AUTOHSCROLL
+#  define TVS_EX_AUTOHSCROLL 0x0020
+#endif
+#ifndef TVS_EX_FADEINOUTEXPANDOS
+#  define TVS_EX_FADEINOUTEXPANDOS 0x0040
+#endif
+#ifndef TVS_EX_PARTIALCHECKBOXES
+#  define TVS_EX_PARTIALCHECKBOXES 0x0080
+#endif
+#ifndef TVS_EX_EXCLUSIONCHECKBOXES
+#  define TVS_EX_EXCLUSIONCHECKBOXES 0x0100
+#endif
+#ifndef TVS_EX_DIMMEDCHECKBOXES
+#  define TVS_EX_DIMMEDCHECKBOXES 0x0200
+#endif
+#ifndef TVS_EX_DRAWIMAGEASYNC
+#  define TVS_EX_DRAWIMAGEASYNC 0x0400
+#endif
+
+
+/*
+ * tabcontrol styles
+ */
+#ifndef TCS_SCROLLOPPOSITE
+#  define TCS_SCROLLOPPOSITE 0x1
+#endif
+#ifndef TCS_BOTTOM
+#  define TCS_BOTTOM TCS_RIGHT
+#endif
+#ifndef TCS_RIGHT
+#  define TCS_RIGHT 0x2
+#endif
+#ifndef TCS_MULTISELECT
+#  define TCS_MULTISELECT 0x4
+#endif
+#ifndef TCS_FLATBUTTONS
+#  define TCS_FLATBUTTONS 0x8
+#endif
+#ifndef TCS_FORCEICONLEFT
+#  define TCS_FORCEICONLEFT 0x10
+#endif
+#ifndef TCS_FORCELABELLEFT
+#  define TCS_FORCELABELLEFT 0x20
+#endif
+#ifndef TCS_HOTTRACK
+#  define TCS_HOTTRACK 0x40
+#endif
+#ifndef TCS_VERTICAL
+#  define TCS_VERTICAL 0x80
+#endif
+#ifndef TCS_TABS
+#  define TCS_TABS 0x0
+#endif
+#ifndef TCS_BUTTONS
+#  define TCS_BUTTONS 0x100
+#endif
+#ifndef TCS_SINGLELINE
+#  define TCS_SINGLELINE 0x0
+#endif
+#ifndef TCS_MULTILINE
+#  define TCS_MULTILINE 0x200
+#endif
+#ifndef TCS_FIXEDWIDTH
+#  define TCS_FIXEDWIDTH 0x400
+#endif
+#ifndef TCS_RIGHTJUSTIFY
+#  define TCS_RIGHTJUSTIFY 0x0
+#endif
+#ifndef TCS_RAGGEDRIGHT
+#  define TCS_RAGGEDRIGHT 0x800
+#endif
+#ifndef TCS_FOCUSONBUTTONDOWN
+#  define TCS_FOCUSONBUTTONDOWN 0x1000
+#endif
+#ifndef TCS_OWNERDRAWFIXED
+#  define TCS_OWNERDRAWFIXED 0x2000
+#endif
+#ifndef TCS_TOOLTIPS
+#  define TCS_TOOLTIPS 0x4000
+#endif
+#ifndef TCS_FOCUSNEVER
+#  define TCS_FOCUSNEVER 0x8000
+#endif
+
+#ifndef TCS_EX_FLATSEPARATORS
+#  define TCS_EX_FLATSEPARATORS 0x00000001
+#endif
+#ifndef TCS_EX_REGISTERDROP
+#  define TCS_EX_REGISTERDROP  0x00000002
+#endif
+
+
+/*
+ * animate styles
+ */
+#ifndef ACS_CENTER
+#  define ACS_CENTER 0x1
+#endif
+#ifndef ACS_TRANSPARENT
+#  define ACS_TRANSPARENT 0x2
+#endif
+#ifndef ACS_AUTOPLAY
+#  define ACS_AUTOPLAY 0x4
+#endif
+#ifndef ACS_TIMER
+#  define ACS_TIMER 0x8
+#endif
+
+
+/*
+ * monthcal styles
+ */
+#ifndef MCS_DAYSTATE
+#  define MCS_DAYSTATE 0x1
+#endif
+#ifndef MCS_MULTISELECT
+#  define MCS_MULTISELECT 0x2
+#endif
+#ifndef MCS_WEEKNUMBERS
+#  define MCS_WEEKNUMBERS 0x4
+#endif
+#undef MCS_NOTODAY
+#undef MCS_NOTODAYCIRCLE
+#ifndef MCS_NOTODAYCIRCLE
+#  define MCS_NOTODAYCIRCLE 0x8
+#endif
+#ifndef MCS_NOTODAY
+#  define MCS_NOTODAY 0x10
+#endif
+#ifndef MCS_NOTRAILINGDATES
+#  define MCS_NOTRAILINGDATES 0x40
+#endif
+#ifndef MCS_SHORTDAYSOFWEEK
+#  define MCS_SHORTDAYSOFWEEK 0x80
+#endif
+#ifndef MCS_NOSELCHANGEONNAV
+#  define MCS_NOSELCHANGEONNAV 0x100
+#endif
+
+
+/*
+ * datetimepick styles
+ */
+#ifndef DTS_SHORTDATECENTURYFORMAT
+#  define DTS_SHORTDATECENTURYFORMAT 0xc
+#endif
+#ifndef DTS_TIMEFORMAT
+#  define DTS_TIMEFORMAT 0x9
+#endif
+#ifndef DTS_UPDOWN
+#  define DTS_UPDOWN 0x1
+#endif
+#ifndef DTS_SHOWNONE
+#  define DTS_SHOWNONE 0x2
+#endif
+#ifndef DTS_SHORTDATEFORMAT
+#  define DTS_SHORTDATEFORMAT 0x0
+#endif
+#ifndef DTS_LONGDATEFORMAT
+#  define DTS_LONGDATEFORMAT 0x4
+#endif
+#ifndef DTS_APPCANPARSE
+#  define DTS_APPCANPARSE 0x10
+#endif
+#ifndef DTS_RIGHTALIGN
+#  define DTS_RIGHTALIGN 0x20
+#endif
+
+
+/*
+ * pager control styles
+ */
+#ifndef PGS_VERT
+#  define PGS_VERT 0x0
+#endif
+#ifndef PGS_HORZ
+#  define PGS_HORZ 0x1
+#endif
+#ifndef PGS_AUTOSCROLL
+#  define PGS_AUTOSCROLL 0x2
+#endif
+#ifndef PGS_DRAGNDROP
+#  define PGS_DRAGNDROP 0x4
+#endif
+
+
+/*
+ * native fontctl styles
+ */
+#ifndef NFS_EDIT
+#  define NFS_EDIT 0x1
+#endif
+#ifndef NFS_STATIC
+#  define NFS_STATIC 0x2
+#endif
+#ifndef NFS_LISTCOMBO
+#  define NFS_LISTCOMBO 0x4
+#endif
+#ifndef NFS_BUTTON
+#  define NFS_BUTTON 0x8
+#endif
+#ifndef NFS_ALL
+#  define NFS_ALL 0x10
+#endif
+#ifndef NFS_USEFONTASSOC
+#  define NFS_USEFONTASSOC 0x20
+#endif
+
+
+/*
+ * syslink styles
+ */
+#ifndef LWS_TRANSPARENT
+#  define LWS_TRANSPARENT 0x0001
+#endif
+#ifndef LWS_IGNORERETURN
+#  define LWS_IGNORERETURN 0x0002
+#endif
+#ifndef LWS_NOPREFIX
+#  define LWS_NOPREFIX 0x0004
+#endif
+#ifndef LWS_USEVISUALSTYLE
+#  define LWS_USEVISUALSTYLE 0x0008
+#endif
+#ifndef LWS_USECUSTOMTEXT
+#  define LWS_USECUSTOMTEXT 0x0010
+#endif
+#ifndef LWS_RIGHT
+#  define LWS_RIGHT 0x0020
+#endif
+
+
+/*
+ * languages/sublanguages
+ */
+
+#ifndef LANG_NEUTRAL
+#  define LANG_NEUTRAL 0x0
+#endif
+#ifndef LANG_INVARIANT
+#  define LANG_INVARIANT 0x7f
+#endif
+
+#ifndef LANG_ARABIC
+#  define LANG_ARABIC 0x01
+#endif
+#ifndef LANG_BULGARIAN
+#  define LANG_BULGARIAN 0x02
+#endif
+#ifndef LANG_CATALAN
+#  define LANG_CATALAN 0x03
+#endif
+#ifndef LANG_VALENCIAN
+#define LANG_VALENCIAN                  LANG_CATALAN
+#endif
+#ifndef LANG_CHINESE
+#  define LANG_CHINESE 0x04
+#endif
+#ifndef LANG_CHINESE_SIMPLIFIED
+#define LANG_CHINESE_SIMPLIFIED         LANG_CHINESE
+#endif
+#ifndef LANG_CHINESE_TRADITIONAL
+#  define LANG_CHINESE_TRADITIONAL 0x7c04
+#endif
+#ifndef LANG_CZECH
+#  define LANG_CZECH 0x05
+#endif
+#ifndef LANG_DANISH
+#  define LANG_DANISH 0x06
+#endif
+#ifndef LANG_GERMAN
+#  define LANG_GERMAN 0x07
+#endif
+#ifndef LANG_GREEK
+#  define LANG_GREEK 0x08
+#endif
+#ifndef LANG_ENGLISH
+#  define LANG_ENGLISH 0x09
+#endif
+#ifndef LANG_SPANISH
+#  define LANG_SPANISH 0x0a
+#endif
+#ifndef LANG_FINNISH
+#  define LANG_FINNISH 0x0b
+#endif
+#ifndef LANG_FRENCH
+#  define LANG_FRENCH 0x0c
+#endif
+#ifndef LANG_HEBREW
+#  define LANG_HEBREW 0x0d
+#endif
+#ifndef LANG_HUNGARIAN
+#  define LANG_HUNGARIAN 0x0e
+#endif
+#ifndef LANG_ICELANDIC
+#  define LANG_ICELANDIC 0x0f
+#endif
+#ifndef LANG_ITALIAN
+#  define LANG_ITALIAN 0x10
+#endif
+#ifndef LANG_JAPANESE
+#  define LANG_JAPANESE 0x11
+#endif
+#ifndef LANG_KOREAN
+#  define LANG_KOREAN 0x12
+#endif
+#ifndef LANG_DUTCH
+#  define LANG_DUTCH 0x13
+#endif
+#ifndef LANG_NORWEGIAN
+#  define LANG_NORWEGIAN 0x14
+#endif
+#ifndef LANG_POLISH
+#  define LANG_POLISH 0x15
+#endif
+#ifndef LANG_PORTUGUESE
+#  define LANG_PORTUGUESE 0x16
+#endif
+#ifndef LANG_ROMANSH
+#  define LANG_ROMANSH 0x17
+#endif
+#ifndef LANG_ROMANIAN
+#  define LANG_ROMANIAN 0x18
+#endif
+#ifndef LANG_RUSSIAN
+#  define LANG_RUSSIAN 0x19
+#endif
+#ifndef LANG_SERBIAN
+#  define LANG_SERBIAN 0x1a
+#endif
+#ifndef LANG_BOSNIAN
+#define LANG_BOSNIAN                    LANG_SERBIAN
+#endif
+#ifndef LANG_CROATIAN
+#define LANG_CROATIAN                   LANG_SERBIAN
+#endif
+#ifndef LANG_BOSNIAN_NEUTRAL
+#  define LANG_BOSNIAN_NEUTRAL 0x781a
+#endif
+#ifndef LANG_SERBIAN_NEUTRAL
+#  define LANG_SERBIAN_NEUTRAL 0x7c1a
+#endif
+#ifndef LANG_SLOVAK
+#  define LANG_SLOVAK 0x1b
+#endif
+#ifndef LANG_ALBANIAN
+#  define LANG_ALBANIAN 0x1c
+#endif
+#ifndef LANG_SWEDISH
+#  define LANG_SWEDISH 0x1d
+#endif
+#ifndef LANG_THAI
+#  define LANG_THAI 0x1e
+#endif
+#ifndef LANG_TURKISH
+#  define LANG_TURKISH 0x1f
+#endif
+#ifndef LANG_URDU
+#  define LANG_URDU 0x20
+#endif
+#ifndef LANG_INDONESIAN
+#  define LANG_INDONESIAN 0x21
+#endif
+#ifndef LANG_UKRAINIAN
+#  define LANG_UKRAINIAN 0x22
+#endif
+#ifndef LANG_BELARUSIAN
+#  define LANG_BELARUSIAN 0x23
+#endif
+#ifndef LANG_SLOVENIAN
+#  define LANG_SLOVENIAN 0x24
+#endif
+#ifndef LANG_ESTONIAN
+#  define LANG_ESTONIAN 0x25
+#endif
+#ifndef LANG_LATVIAN
+#  define LANG_LATVIAN 0x26
+#endif
+#ifndef LANG_LITHUANIAN
+#  define LANG_LITHUANIAN 0x27
+#endif
+#ifndef LANG_TAJIK
+#  define LANG_TAJIK 0x28
+#endif
+#ifndef LANG_FARSI
+#  define LANG_FARSI 0x29
+#endif
+#ifndef LANG_PERSIAN
+#define LANG_PERSIAN                    LANG_FARSI
+#endif
+#ifndef LANG_VIETNAMESE
+#  define LANG_VIETNAMESE 0x2a
+#endif
+#ifndef LANG_ARMENIAN
+#  define LANG_ARMENIAN 0x2b
+#endif
+#ifndef LANG_AZERI
+#  define LANG_AZERI 0x2c
+#endif
+#ifndef LANG_AZERBAIJANI
+#  define LANG_AZERBAIJANI              LANG_AZERI
+#endif
+#ifndef LANG_BASQUE
+#  define LANG_BASQUE 0x2d
+#endif
+#ifndef LANG_LOWER_SORBIAN
+#  define LANG_LOWER_SORBIAN 0x2e
+#endif
+#ifndef LANG_SORBIAN
+#  define LANG_SORBIAN LANG_LOWER_SORBIAN
+#endif
+#ifndef LANG_UPPER_SORBIAN
+#  define LANG_UPPER_SORBIAN            LANG_LOWER_SORBIAN
+#endif
+#ifndef LANG_MACEDONIAN
+#  define LANG_MACEDONIAN 0x2f
+#endif
+#ifndef LANG_SUTU
+#  define LANG_SUTU 0x30
+#endif
+#ifndef LANG_TSONGA
+#  define LANG_TSONGA 0x31
+#endif
+#ifndef LANG_TSWANA
+#  define LANG_TSWANA 0x32
+#endif
+#ifndef LANG_VENDA
+#  define LANG_VENDA 0x33
+#endif
+#ifndef LANG_XHOSA
+#  define LANG_XHOSA 0x34
+#endif
+#ifndef LANG_ZULU
+#  define LANG_ZULU 0x35
+#endif
+#ifndef LANG_AFRIKAANS
+#  define LANG_AFRIKAANS 0x36
+#endif
+#ifndef LANG_GEORGIAN
+#  define LANG_GEORGIAN 0x37
+#endif
+#ifndef LANG_FAEROESE
+#  define LANG_FAEROESE 0x38
+#endif
+#ifndef LANG_HINDI
+#  define LANG_HINDI 0x39
+#endif
+#ifndef LANG_MALTESE
+#  define LANG_MALTESE 0x3a
+#endif
+#ifndef LANG_SAMI
+#  define LANG_SAMI 0x3b
+#endif
+#ifndef LANG_IRISH
+#  define LANG_IRISH 0x3c
+#endif
+#ifndef LANG_YIDDISH
+#  define LANG_YIDDISH 0x3d
+#endif
+#ifndef LANG_MALAY
+#  define LANG_MALAY 0x3e
+#endif
+#ifndef LANG_KAZAK
+#  define LANG_KAZAK 0x3f
+#endif
+#ifndef LANG_KAZAKH
+#  define LANG_KAZAKH LANG_KAZAK
+#endif
+#ifndef LANG_KYRGYZ
+#  define LANG_KYRGYZ 0x40
+#endif
+#ifndef LANG_SWAHILI
+#  define LANG_SWAHILI 0x41
+#endif
+#ifndef LANG_TURKMEN
+#  define LANG_TURKMEN 0x42
+#endif
+#ifndef LANG_UZBEK
+#  define LANG_UZBEK 0x43
+#endif
+#ifndef LANG_TATAR
+#  define LANG_TATAR 0x44
+#endif
+#ifndef LANG_BENGALI
+#  define LANG_BENGALI 0x45
+#endif
+#ifndef LANG_BANGLA
+#define LANG_BANGLA                     LANG_BENGALI
+#endif
+#ifndef LANG_PUNJABI
+#  define LANG_PUNJABI 0x46
+#endif
+#ifndef LANG_GUJARATI
+#  define LANG_GUJARATI 0x47
+#endif
+#ifndef LANG_ORIYA
+#  define LANG_ORIYA 0x48
+#endif
+#ifndef LANG_ODIA
+#  define LANG_ODIA                     LANG_ORIYA
+#endif
+#ifndef LANG_TAMIL
+#  define LANG_TAMIL 0x49
+#endif
+#ifndef LANG_TELUGU
+#  define LANG_TELUGU 0x4a
+#endif
+#ifndef LANG_KANNADA
+#  define LANG_KANNADA 0x4b
+#endif
+#ifndef LANG_MALAYALAM
+#  define LANG_MALAYALAM 0x4c
+#endif
+#ifndef LANG_ASSAMESE
+#  define LANG_ASSAMESE 0x4d
+#endif
+#ifndef LANG_MARATHI
+#  define LANG_MARATHI 0x4e
+#endif
+#ifndef LANG_SANSKRIT
+#  define LANG_SANSKRIT 0x4f
+#endif
+#ifndef LANG_MONGOLIAN
+#  define LANG_MONGOLIAN 0x50
+#endif
+#ifndef LANG_TIBETAN
+#  define LANG_TIBETAN 0x51
+#endif
+#ifndef LANG_DZONGKHA
+#  define LANG_DZONGKHA                 LANG_TIBETAN
+#endif
+#ifndef LANG_WELSH
+#  define LANG_WELSH 0x52
+#endif
+#ifndef LANG_KHMER
+#  define LANG_KHMER 0x53
+#endif
+#ifndef LANG_CAMBODIAN
+#  define LANG_CAMBODIAN LANG_KHMER
+#endif
+#ifndef LANG_LAO
+#  define LANG_LAO 0x54
+#endif
+#ifndef LANG_BURMESE
+#  define LANG_BURMESE 0x55
+#endif
+#ifndef LANG_GALICIAN
+#  define LANG_GALICIAN 0x56
+#endif
+#ifndef LANG_KONKANI
+#  define LANG_KONKANI 0x57
+#endif
+#ifndef LANG_MANIPURI
+#  define LANG_MANIPURI 0x58
+#endif
+#ifndef LANG_SINDHI
+#  define LANG_SINDHI 0x59
+#endif
+#ifndef LANG_SYRIAC
+#  define LANG_SYRIAC 0x5a
+#endif
+#ifndef LANG_SINHALESE
+#  define LANG_SINHALESE 0x5b
+#endif
+#ifndef LANG_CHEROKEE
+#  define LANG_CHEROKEE 0x5c
+#endif
+#ifndef LANG_INUKTITUT
+#  define LANG_INUKTITUT 0x5d
+#endif
+#ifndef LANG_AMHARIC
+#  define LANG_AMHARIC 0x5e
+#endif
+#ifndef LANG_TAMAZIGHT
+#  define LANG_TAMAZIGHT 0x5f
+#endif
+#ifndef LANG_KASHMIRI
+#  define LANG_KASHMIRI 0x60
+#endif
+#ifndef LANG_NEPALI
+#  define LANG_NEPALI 0x61
+#endif
+#ifndef LANG_FRISIAN
+#  define LANG_FRISIAN 0x62
+#endif
+#ifndef LANG_PASHTO
+#  define LANG_PASHTO 0x63
+#endif
+#ifndef LANG_TAGALOG
+#  define LANG_TAGALOG 0x64
+#endif
+#ifndef LANG_FILIPINO
+#  define LANG_FILIPINO LANG_TAGALOG
+#endif
+#ifndef LANG_DIVEHI
+#  define LANG_DIVEHI 0x65
+#endif
+#ifndef LANG_EDO
+#  define LANG_EDO 0x66
+#endif
+#ifndef LANG_FULAH
+#  define LANG_FULAH 0x67
+#endif
+#ifndef LANG_FULFULDE
+#  define LANG_FULFULDE LANG_FULAH
+#endif
+#ifndef LANG_PULAR
+#  define LANG_PULAR                    LANG_FULAH
+#endif
+#ifndef LANG_HAUSA
+#  define LANG_HAUSA 0x68
+#endif
+#ifndef LANG_IBIBIO
+#  define LANG_IBIBIO 0x69
+#endif
+#ifndef LANG_YORUBA
+#  define LANG_YORUBA 0x6a
+#endif
+#ifndef LANG_QUECHUA
+#  define LANG_QUECHUA 0x6b
+#endif
+#ifndef LANG_SOTHO
+#  define LANG_SOTHO 0x6c
+#endif
+#ifndef LANG_SEPEDI
+#  define LANG_SEPEDI LANG_SOTHO
+#endif
+#ifndef LANG_BASHKIR
+#  define LANG_BASHKIR 0x6d
+#endif
+#ifndef LANG_LUXEMBOURGISH
+#  define LANG_LUXEMBOURGISH 0x6e
+#endif
+#ifndef LANG_GREENLANDIC
+#  define LANG_GREENLANDIC 0x6f
+#endif
+#ifndef LANG_IGBO
+#  define LANG_IGBO 0x70
+#endif
+#ifndef LANG_KANURI
+#  define LANG_KANURI 0x71
+#endif
+#ifndef LANG_OROMO
+#  define LANG_OROMO 0x72
+#endif
+#ifndef LANG_TIGRIGNA
+#  define LANG_TIGRIGNA 0x73
+#endif
+#ifndef LANG_TIGRINYA
+#define LANG_TIGRINYA                   LANG_TIGRIGNA
+#endif
+#ifndef LANG_GUARANI
+#  define LANG_GUARANI 0x74
+#endif
+#ifndef LANG_HAWAIIAN
+#  define LANG_HAWAIIAN 0x75
+#endif
+#ifndef LANG_LATIN
+#  define LANG_LATIN 0x76
+#endif
+#ifndef LANG_SOMALI
+#  define LANG_SOMALI 0x77
+#endif
+#ifndef LANG_YI
+#  define LANG_YI 0x78
+#endif
+#ifndef LANG_PAPIAMENTO
+#  define LANG_PAPIAMENTO 0x79
+#endif
+#ifndef LANG_MAPUDUNGUN
+#  define LANG_MAPUDUNGUN 0x7a
+#endif
+/* 0x7b unassigned */
+#ifndef LANG_MOHAWK
+#  define LANG_MOHAWK 0x7c
+#endif
+/* 0x7d unassigned */
+#ifndef LANG_BRETON
+#  define LANG_BRETON 0x7e
+#endif
+#ifndef LANG_BRETON
+#  define LANG_BRETON 0x7e
+#endif
+#ifndef LANG_INVARIANT
+#  define LANG_INVARIANT 0x7f
+#endif
+#ifndef LANG_UIGHUR
+#  define LANG_UIGHUR 0x80
+#endif
+#ifndef LANG_MAORI
+#  define LANG_MAORI 0x81
+#endif
+#ifndef LANG_OCCITAN
+#  define LANG_OCCITAN 0x82
+#endif
+#ifndef LANG_CORSICAN
+#  define LANG_CORSICAN 0x83
+#endif
+#ifndef LANG_ALSATIAN
+#  define LANG_ALSATIAN 0x84
+#endif
+#ifndef LANG_YAKUT
+#  define LANG_YAKUT 0x85
+#endif
+#ifndef LANG_SAKHA
+#define LANG_SAKHA                      LANG_YAKUT
+#endif
+#ifndef LANG_KICHE
+#  define LANG_KICHE 0x86
+#endif
+#ifndef LANG_KINYARWANDA
+#  define LANG_KINYARWANDA 0x87
+#endif
+#ifndef LANG_WOLOF
+#  define LANG_WOLOF 0x88
+#endif
+/* 0x89 unassigned */
+/* 0x8a unassigned */
+/* 0x8b unassigned */
+#ifndef LANG_DARI
+#  define LANG_DARI 0x8c
+#endif
+#ifndef LANG_MALAGASY
+#  define LANG_MALAGASY 0x8d
+#endif
+/* 0x8e unassigned */
+#ifndef LANG_ESPERANTO
+#  define LANG_ESPERANTO 0x8f
+#endif
+#ifndef LANG_WALLOON
+#  define LANG_WALLOON 0x90
+#endif
+#ifndef LANG_WALON
+#define LANG_WALON                      LANG_WALLOON 
+#endif
+#ifndef LANG_SCOTTISH_GAELIC
+#  define LANG_SCOTTISH_GAELIC 0x91
+#endif
+#ifndef LANG_CORNISH
+#define LANG_CORNISH                    LANG_SCOTTISH_GAELIC 
+#endif
+#ifndef LANG_CENTRAL_KURDISH
+#  define LANG_CENTRAL_KURDISH 0x92
+#endif
+/* 0x93 unassigned */
+#ifndef LANG_GAELIC
+#  define LANG_GAELIC 0x94
+#endif
+
+#ifndef LANG_AFAR
+#  define LANG_AFAR 0x100
+#endif
+#ifndef LANG_ABKHAZIAN
+#  define LANG_ABKHAZIAN 0x101
+#endif
+#ifndef LANG_AVESTAN
+#  define LANG_AVESTAN 0x102
+#endif
+#ifndef LANG_AKAN
+#  define LANG_AKAN 0x103
+#endif
+#ifndef LANG_ARAGONESE
+#  define LANG_ARAGONESE 0x104
+#endif
+#ifndef LANG_AVARIC
+#  define LANG_AVARIC 0x105
+#endif
+#ifndef LANG_AYMARA
+#  define LANG_AYMARA 0x106
+#endif
+#ifndef LANG_BIHARI
+#  define LANG_BIHARI 0x107
+#endif
+#ifndef LANG_BISLAMA
+#  define LANG_BISLAMA 0x108
+#endif
+#ifndef LANG_BAMBARA
+#  define LANG_BAMBARA 0x109
+#endif
+#ifndef LANG_CHECHEN
+#  define LANG_CHECHEN 0x10a
+#endif
+#ifndef LANG_CHAMORRO
+#  define LANG_CHAMORRO 0x10b
+#endif
+#ifndef LANG_CREE
+#  define LANG_CREE 0x10c
+#endif
+#ifndef LANG_CHURCH_SLAVONIC
+#  define LANG_CHURCH_SLAVONIC 0x10d
+#endif
+#ifndef LANG_CHUVASH
+#  define LANG_CHUVASH 0x10e
+#endif
+#ifndef LANG_EWE
+#  define LANG_EWE 0x110
+#endif
+#ifndef LANG_FIJIAN
+#  define LANG_FIJIAN 0x111
+#endif
+#ifndef LANG_HIRI_MOTU
+#  define LANG_HIRI_MOTU 0x112
+#endif
+#ifndef LANG_HAITIAN
+#  define LANG_HAITIAN 0x113
+#endif
+#ifndef LANG_HERERO
+#  define LANG_HERERO 0x114
+#endif
+#ifndef LANG_INTERLINGUA
+#  define LANG_INTERLINGUA 0x115
+#endif
+#ifndef LANG_INTERLINGUE
+#  define LANG_INTERLINGUE 0x116
+#endif
+#ifndef LANG_INUPIAQ
+#  define LANG_INUPIAQ 0x117
+#endif
+#ifndef LANG_IDO
+#  define LANG_IDO 0x118
+#endif
+#ifndef LANG_JAVANESE
+#  define LANG_JAVANESE 0x119
+#endif
+#ifndef LANG_KONGO
+#  define LANG_KONGO 0x11a
+#endif
+#ifndef LANG_GIKUYU
+#  define LANG_GIKUYU 0x11b
+#endif
+#ifndef LANG_KWANYAMA
+#  define LANG_KWANYAMA 0x11c
+#endif
+#ifndef LANG_KOMI
+#  define LANG_KOMI 0x11d
+#endif
+#ifndef LANG_GANDA
+#  define LANG_GANDA 0x11e
+#endif
+#ifndef LANG_LIMBURGISH
+#  define LANG_LIMBURGISH 0x11f
+#endif
+#ifndef LANG_LINGALA
+#  define LANG_LINGALA 0x120
+#endif
+#ifndef LANG_LUBA_KATANGA
+#  define LANG_LUBA_KATANGA 0x121
+#endif
+#ifndef LANG_MARSHALLESE
+#  define LANG_MARSHALLESE 0x122
+#endif
+#ifndef LANG_MOLDOVAN
+#  define LANG_MOLDOVAN 0x123
+#endif
+#ifndef LANG_NAURUAN
+#  define LANG_NAURUAN 0x124
+#endif
+#ifndef LANG_NDEBELE_NORTH
+#  define LANG_NDEBELE_NORTH 0x125
+#endif
+#ifndef LANG_NDEBELE_SOUTH
+#  define LANG_NDEBELE_SOUTH 0x126
+#endif
+#ifndef LANG_NDONGA
+#  define LANG_NDONGA 0x127
+#endif
+#ifndef LANG_NAVAJO
+#  define LANG_NAVAJO 0x128
+#endif
+#ifndef LANG_CHEWA
+#  define LANG_CHEWA 0x129
+#endif
+#ifndef LANG_OJIBWA
+#  define LANG_OJIBWA 0x12a
+#endif
+#ifndef LANG_OSSETIC
+#  define LANG_OSSETIC 0x12b
+#endif
+#ifndef LANG_PALI
+#  define LANG_PALI 0x12c
+#endif
+#ifndef LANG_KIRUNDI
+#  define LANG_KIRUNDI 0x12d
+#endif
+#ifndef LANG_SARDINIAN
+#  define LANG_SARDINIAN 0x12e
+#endif
+#ifndef LANG_SANGO
+#  define LANG_SANGO 0x12f
+#endif
+#ifndef LANG_SAMOAN
+#  define LANG_SAMOAN 0x130
+#endif
+#ifndef LANG_SHONA
+#  define LANG_SHONA 0x131
+#endif
+#ifndef LANG_SWAZI
+#  define LANG_SWAZI 0x132
+#endif
+#ifndef LANG_SUNDANESE
+#  define LANG_SUNDANESE 0x133
+#endif
+#ifndef LANG_TONGAN
+#  define LANG_TONGAN 0x135
+#endif
+#ifndef LANG_TWI
+#  define LANG_TWI 0x136
+#endif
+#ifndef LANG_TAHITIAN
+#  define LANG_TAHITIAN 0x137
+#endif
+#ifndef LANG_VOLAPUK
+#  define LANG_VOLAPUK 0x138
+#endif
+#ifndef LANG_ZHUANG
+#  define LANG_ZHUANG 0x139
+#endif
+
+
+#ifndef SUBLANG_NEUTRAL
+#  define SUBLANG_NEUTRAL 0x0
+#endif
+#ifndef SUBLANG_DEFAULT
+#  define SUBLANG_DEFAULT 0x1
+#endif
+#ifndef SUBLANG_SYS_DEFAULT
+#  define SUBLANG_SYS_DEFAULT 0x2
+#endif
+#ifndef SUBLANG_CUSTOM_DEFAULT
+#  define SUBLANG_CUSTOM_DEFAULT 0x3
+#endif
+#ifndef SUBLANG_CUSTOM_UNSPECIFIED
+#  define SUBLANG_CUSTOM_UNSPECIFIED 0x4
+#endif
+#ifndef SUBLANG_UI_CUSTOM_DEFAULT
+#  define SUBLANG_UI_CUSTOM_DEFAULT 0x5
+#endif
+
+#ifndef SUBLANG_AFRIKAANS_SOUTH_AFRICA
+#  define SUBLANG_AFRIKAANS_SOUTH_AFRICA  0x01    /* Afrikaans (South Africa) */ 
+#endif
+#ifndef SUBLANG_ALBANIAN_ALBANIA
+#  define SUBLANG_ALBANIAN_ALBANIA        0x01    /* Albanian (Albania) */
+#endif
+#ifndef SUBLANG_ALSATIAN_FRANCE
+#  define SUBLANG_ALSATIAN_FRANCE         0x01    /* Alsatian (France) */
+#endif
+#ifndef SUBLANG_AMHARIC_ETHIOPIA
+#  define SUBLANG_AMHARIC_ETHIOPIA        0x01    /* Amharic (Ethiopia) */
+#endif
+#ifndef SUBLANG_ARABIC_SAUDI_ARABIA
+#  define SUBLANG_ARABIC_SAUDI_ARABIA     0x01    /* Arabic (Saudi Arabia) */
+#endif
+#ifndef SUBLANG_ARABIC_IRAQ
+#  define SUBLANG_ARABIC_IRAQ             0x02    /* Arabic (Iraq) */
+#endif
+#ifndef SUBLANG_ARABIC_EGYPT
+#  define SUBLANG_ARABIC_EGYPT            0x03    /* Arabic (Egypt) */
+#endif
+#ifndef SUBLANG_ARABIC_LIBYA
+#  define SUBLANG_ARABIC_LIBYA            0x04    /* Arabic (Libya) */
+#endif
+#ifndef SUBLANG_ARABIC_ALGERIA
+#  define SUBLANG_ARABIC_ALGERIA          0x05    /* Arabic (Algeria) */
+#endif
+#ifndef SUBLANG_ARABIC_MOROCCO
+#  define SUBLANG_ARABIC_MOROCCO          0x06    /* Arabic (Morocco) */
+#endif
+#ifndef SUBLANG_ARABIC_TUNISIA
+#  define SUBLANG_ARABIC_TUNISIA          0x07    /* Arabic (Tunisia) */
+#endif
+#ifndef SUBLANG_ARABIC_OMAN
+#  define SUBLANG_ARABIC_OMAN             0x08    /* Arabic (Oman) */
+#endif
+#ifndef SUBLANG_ARABIC_YEMEN
+#  define SUBLANG_ARABIC_YEMEN            0x09    /* Arabic (Yemen) */
+#endif
+#ifndef SUBLANG_ARABIC_SYRIA
+#  define SUBLANG_ARABIC_SYRIA            0x0a    /* Arabic (Syria) */
+#endif
+#ifndef SUBLANG_ARABIC_JORDAN
+#  define SUBLANG_ARABIC_JORDAN           0x0b    /* Arabic (Jordan) */
+#endif
+#ifndef SUBLANG_ARABIC_LEBANON
+#  define SUBLANG_ARABIC_LEBANON          0x0c    /* Arabic (Lebanon) */
+#endif
+#ifndef SUBLANG_ARABIC_KUWAIT
+#  define SUBLANG_ARABIC_KUWAIT           0x0d    /* Arabic (Kuwait) */
+#endif
+#ifndef SUBLANG_ARABIC_UAE
+#  define SUBLANG_ARABIC_UAE              0x0e    /* Arabic (U.A.E) */
+#endif
+#ifndef SUBLANG_ARABIC_BAHRAIN
+#  define SUBLANG_ARABIC_BAHRAIN          0x0f    /* Arabic (Bahrain) */
+#endif
+#ifndef SUBLANG_ARABIC_QATAR
+#  define SUBLANG_ARABIC_QATAR            0x10    /* Arabic (Qatar) */
+#endif
+#ifndef SUBLANG_ARMENIAN_ARMENIA
+#  define SUBLANG_ARMENIAN_ARMENIA        0x01    /* Armenian (Armenia) */
+#endif
+#ifndef SUBLANG_ASSAMESE_INDIA
+#  define SUBLANG_ASSAMESE_INDIA          0x01    /* Assamese (India) */
+#endif
+#ifndef SUBLANG_AZERI_LATIN
+#  define SUBLANG_AZERI_LATIN             0x01    /* Azeri (Latin) */
+#endif
+#ifndef SUBLANG_AZERBAIJANI_AZERBAIJAN_LATIN
+#define SUBLANG_AZERBAIJANI_AZERBAIJAN_LATIN SUBLANG_AZERI_LATIN
+#endif
+#ifndef SUBLANG_AZERI_CYRILLIC
+#  define SUBLANG_AZERI_CYRILLIC          0x02    /* Azeri (Cyrillic) */
+#endif
+#ifndef SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC
+#define SUBLANG_AZERBAIJANI_AZERBAIJAN_CYRILLIC SUBLANG_AZERI_CYRILLIC
+#endif
+#ifndef SUBLANG_BASHKIR_RUSSIA
+#  define SUBLANG_BASHKIR_RUSSIA          0x01    /* Bashkir (Russia) */
+#endif
+#ifndef SUBLANG_BASQUE_BASQUE
+#  define SUBLANG_BASQUE_BASQUE           0x01    /* Basque (Basque) */
+#endif
+#ifndef SUBLANG_BELARUSIAN_BELARUS
+#  define SUBLANG_BELARUSIAN_BELARUS      0x01    /* Belarusian (Belarus) */
+#endif
+#ifndef SUBLANG_BENGALI_INDIA
+#  define SUBLANG_BENGALI_INDIA           0x01    /* Bengali (India) */
+#endif
+#ifndef SUBLANG_BANGLA_INDIA
+#define SUBLANG_BANGLA_INDIA              SUBLANG_BENGALI_INDIA
+#endif
+#ifndef SUBLANG_BENGALI_BANGLADESH
+#  define SUBLANG_BENGALI_BANGLADESH      0x02    /* Bengali (Bangladesh) */
+#endif
+#ifndef SUBLANG_BANGLA_BANGLADESH
+#define SUBLANG_BANGLA_BANGLADESH         SUBLANG_BENGALI_BANGLADESH
+#endif
+#ifndef SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_LATIN
+#  define SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_LATIN 0x05 /* Bosnian (Bosnia and Herzegovina - Latin) */
+#endif
+#ifndef SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_CYRILLIC
+#  define SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_CYRILLIC 0x08 /* Bosnian (Bosnia and Herzegovina - Cyrillic) */
+#endif
+#ifndef SUBLANG_BRETON_FRANCE
+#  define SUBLANG_BRETON_FRANCE           0x01    /* Breton (France) */
+#endif
+#ifndef SUBLANG_BULGARIAN_BULGARIA
+#  define SUBLANG_BULGARIAN_BULGARIA      0x01    /* Bulgarian (Bulgaria) */
+#endif
+#ifndef SUBLANG_BURMESE_BURMA
+#  define SUBLANG_BURMESE_BURMA           0x01    /* Burmese (Burma) */
+#endif
+#ifndef SUBLANG_CATALAN_CATALAN
+#  define SUBLANG_CATALAN_CATALAN         0x01    /* Catalan (Catalan) */
+#endif
+#ifndef SUBLANG_VALENCIAN_VALENCIA
+#  define SUBLANG_VALENCIAN_VALENCIA      0x02    /* Valencian (Valencia) */
+#endif
+#ifndef SUBLANG_CHEROKEE_CHEROKEE
+#  define SUBLANG_CHEROKEE_CHEROKEE       0x01    /* Cherokee (United States) */
+#endif
+#ifndef SUBLANG_CHINESE_TRADITIONAL
+#  define SUBLANG_CHINESE_TRADITIONAL     0x01    /* Chinese (Taiwan) */
+#endif
+#ifndef SUBLANG_CHINESE_SIMPLIFIED
+#  define SUBLANG_CHINESE_SIMPLIFIED      0x02    /* Chinese (PR China) */
+#endif
+#ifndef SUBLANG_CHINESE_HONGKONG
+#  define SUBLANG_CHINESE_HONGKONG        0x03    /* Chinese (Hong Kong S.A.R., P.R.C.) */
+#endif
+#ifndef SUBLANG_CHINESE_SINGAPORE
+#  define SUBLANG_CHINESE_SINGAPORE       0x04    /* Chinese (Singapore) */
+#endif
+#ifndef SUBLANG_CHINESE_MACAU
+#  define SUBLANG_CHINESE_MACAU           0x05    /* Chinese (Macau) */
+#endif
+#ifndef SUBLANG_CORNISH_UK
+#  define SUBLANG_CORNISH_UK              0x01    /* Cornish (United Kingdom) */
+#endif
+#ifndef SUBLANG_CORSICAN_FRANCE
+#  define SUBLANG_CORSICAN_FRANCE         0x01    /* Corsican (France) */
+#endif
+#ifndef SUBLANG_CZECH_CZECH_REPUBLIC
+#  define SUBLANG_CZECH_CZECH_REPUBLIC    0x01    /* Czech (Czech Republic) */
+#endif
+#ifndef SUBLANG_CROATIAN_CROATIA
+#  define SUBLANG_CROATIAN_CROATIA        0x01    /* Croatian (Croatia) */
+#endif
+#ifndef SUBLANG_CROATIAN
+#  define SUBLANG_CROATIAN                SUBLANG_CROATIAN_CROATIA
+#endif
+#ifndef SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN
+#  define SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN 0x04 /* Croatian (Bosnia and Herzegovina - Latin) */
+#endif
+#ifndef SUBLANG_DANISH_DENMARK
+#  define SUBLANG_DANISH_DENMARK          0x01    /* Danish (Denmark) */
+#endif
+#ifndef SUBLANG_DARI_AFGHANISTAN
+#  define SUBLANG_DARI_AFGHANISTAN        0x01    /* Dari (Afghanistan) */
+#endif
+#ifndef SUBLANG_DIVEHI_MALDIVES
+#  define SUBLANG_DIVEHI_MALDIVES         0x01    /* Divehi (Maldives) */
+#endif
+#ifndef SUBLANG_DUTCH
+#  define SUBLANG_DUTCH                   0x01    /* Dutch */
+#endif
+#ifndef SUBLANG_DUTCH_BELGIAN
+#  define SUBLANG_DUTCH_BELGIAN           0x02    /* Dutch (Belgian) */
+#endif
+#ifndef SUBLANG_DUTCH_SURINAM
+#  define SUBLANG_DUTCH_SURINAM           0x03    /* Dutch (Surinam) */
+#endif
+#ifndef SUBLANG_DZONGKHA_BHUTAN
+#  define SUBLANG_DZONGKHA_BHUTAN         0x02    /* Dzongkha (Bhutan) */
+#endif
+#ifndef SUBLANG_EDO_NIGERIA
+#  define SUBLANG_EDO_NIGERIA             0x01    /* Edo / Bini (Nigeria) */
+#endif
+#ifndef SUBLANG_ENGLISH_US
+#  define SUBLANG_ENGLISH_US              0x01    /* English (USA) */
+#endif
+#ifndef SUBLANG_ENGLISH_UK
+#  define SUBLANG_ENGLISH_UK              0x02    /* English (UK) */
+#endif
+#ifndef SUBLANG_ENGLISH_AUS
+#  define SUBLANG_ENGLISH_AUS             0x03    /* English (Australian) */
+#endif
+#ifndef SUBLANG_ENGLISH_CAN
+#  define SUBLANG_ENGLISH_CAN             0x04    /* English (Canadian) */
+#endif
+#ifndef SUBLANG_ENGLISH_NZ
+#  define SUBLANG_ENGLISH_NZ              0x05    /* English (New Zealand) */
+#endif
+#ifndef SUBLANG_ENGLISH_EIRE
+#  define SUBLANG_ENGLISH_EIRE            0x06    /* English (Irish) */
+#endif
+#ifndef SUBLANG_ENGLISH_IRELAND
+#define SUBLANG_ENGLISH_IRELAND           SUBLANG_ENGLISH_EIRE
+#endif
+#ifndef SUBLANG_ENGLISH_SOUTH_AFRICA
+#  define SUBLANG_ENGLISH_SOUTH_AFRICA    0x07    /* English (South Africa) */
+#endif
+#ifndef SUBLANG_ENGLISH_JAMAICA
+#  define SUBLANG_ENGLISH_JAMAICA         0x08    /* English (Jamaica) */
+#endif
+#ifndef SUBLANG_ENGLISH_CARIBBEAN
+#  define SUBLANG_ENGLISH_CARIBBEAN       0x09    /* English (Caribbean) */
+#endif
+#ifndef SUBLANG_ENGLISH_BELIZE
+#  define SUBLANG_ENGLISH_BELIZE          0x0a    /* English (Belize) */
+#endif
+#ifndef SUBLANG_ENGLISH_TRINIDAD
+#  define SUBLANG_ENGLISH_TRINIDAD        0x0b    /* English (Trinidad) */
+#endif
+#ifndef SUBLANG_ENGLISH_ZIMBABWE
+#  define SUBLANG_ENGLISH_ZIMBABWE        0x0c    /* English (Zimbabwe) */
+#endif
+#ifndef SUBLANG_ENGLISH_PHILIPPINES
+#  define SUBLANG_ENGLISH_PHILIPPINES     0x0d    /* English (Philippines) */
+#endif
+#ifndef SUBLANG_ENGLISH_INDONESIA
+#  define SUBLANG_ENGLISH_INDONESIA       0x0e    /* English (Indonesia) */
+#endif
+#ifndef SUBLANG_ENGLISH_HONGKONG
+#  define SUBLANG_ENGLISH_HONGKONG        0x0f    /* English (Hongkong) */
+#endif
+#ifndef SUBLANG_ENGLISH_INDIA
+#  define SUBLANG_ENGLISH_INDIA           0x10    /* English (India) */
+#endif
+#ifndef SUBLANG_ENGLISH_MALAYSIA
+#  define SUBLANG_ENGLISH_MALAYSIA        0x11    /* English (Malaysia) */
+#endif
+#ifndef SUBLANG_ENGLISH_SINGAPORE
+#  define SUBLANG_ENGLISH_SINGAPORE       0x12    /* English (Singapore) */
+#endif
+#ifndef SUBLANG_ESTONIAN_ESTONIA
+#  define SUBLANG_ESTONIAN_ESTONIA        0x01    /* Estonian (Estonia) */
+#endif
+#ifndef SUBLANG_FAEROESE_FAROE_ISLANDS
+#  define SUBLANG_FAEROESE_FAROE_ISLANDS  0x01    /* Faroese (Faroe Islands) */
+#endif
+#ifndef SUBLANG_FARSI_IRAN
+#  define SUBLANG_FARSI_IRAN              SUBLANG_PERSIAN_IRAN
+#endif
+#ifndef SUBLANG_FILIPINO_PHILIPPINES
+#  define SUBLANG_FILIPINO_PHILIPPINES    0x01    /* Filipino (Philippines) */
+#endif
+#ifndef SUBLANG_TAGALOG_PHILIPPINES
+#  define SUBLANG_TAGALOG_PHILIPPINES     0x01    /* Tagalog (Philippines) */
+#endif
+#ifndef SUBLANG_FINNISH_FINLAND
+#  define SUBLANG_FINNISH_FINLAND         0x01    /* Finnish (Finland) */
+#endif
+#ifndef SUBLANG_FRENCH
+#  define SUBLANG_FRENCH                  0x01    /* French */
+#endif
+#ifndef SUBLANG_FRENCH_BELGIAN
+#  define SUBLANG_FRENCH_BELGIAN          0x02    /* French (Belgian) */
+#endif
+#ifndef SUBLANG_FRENCH_CANADIAN
+#  define SUBLANG_FRENCH_CANADIAN         0x03    /* French (Canadian) */
+#endif
+#ifndef SUBLANG_FRENCH_SWISS
+#  define SUBLANG_FRENCH_SWISS            0x04    /* French (Swiss) */
+#endif
+#ifndef SUBLANG_FRENCH_LUXEMBOURG
+#  define SUBLANG_FRENCH_LUXEMBOURG       0x05    /* French (Luxembourg) */
+#endif
+#ifndef SUBLANG_FRENCH_MONACO
+#  define SUBLANG_FRENCH_MONACO           0x06    /* French (Monaco) */
+#endif
+#ifndef SUBLANG_FRENCH_WESTINDIES
+#  define SUBLANG_FRENCH_WESTINDIES       0x07    /* French (West Indies) */
+#endif
+#ifndef SUBLANG_FRENCH_REUNION
+#  define SUBLANG_FRENCH_REUNION          0x08    /* French (Reunion) */
+#endif
+#ifndef SUBLANG_FRENCH_CONGO
+#  define SUBLANG_FRENCH_CONGO            0x09    /* French (Democratic Rep. of Congo) */
+#endif
+#ifndef SUBLANG_FRENCH_SENEGAL
+#  define SUBLANG_FRENCH_SENEGAL          0x0a    /* French (Senegal) */
+#endif
+#ifndef SUBLANG_FRENCH_CAMEROON
+#  define SUBLANG_FRENCH_CAMEROON         0x0b    /* French (Cameroon) */
+#endif
+#ifndef SUBLANG_FRENCH_COTEDIVOIRE
+#  define SUBLANG_FRENCH_COTEDIVOIRE      0x0c    /* French (Cote d'Ivoire) */
+#endif
+#ifndef SUBLANG_FRENCH_MALI
+#  define SUBLANG_FRENCH_MALI             0x0d    /* French (Mali) */
+#endif
+#ifndef SUBLANG_FRENCH_MOROCCO
+#  define SUBLANG_FRENCH_MOROCCO          0x0e    /* French (Morocco) */
+#endif
+#ifndef SUBLANG_FRENCH_HAITI
+#  define SUBLANG_FRENCH_HAITI            0x0f    /* French (Haiti) */
+#endif
+#ifndef SUBLANG_FRENCH_NORTH_AFRICA
+#  define SUBLANG_FRENCH_NORTH_AFRICA     0x39    /* French (North Africa) */
+#endif
+#ifndef SUBLANG_FRISIAN_NETHERLANDS
+#  define SUBLANG_FRISIAN_NETHERLANDS     0x01    /* Frisian (Netherlands) */
+#endif
+#ifndef SUBLANG_FULAH_NIGERIA
+#  define SUBLANG_FULAH_NIGERIA           0x01    /* Fulah (Nigeria) */
+#endif
+#ifndef SUBLANG_PULAR_NIGERIA
+#define SUBLANG_PULAR_NIGERIA             SUBLANG_FULAH_NIGERIA
+#endif
+#ifndef SUBLANG_FULAH_SENEGAL
+#  define SUBLANG_FULAH_SENEGAL           0x02    /* Fulah (Senegal) */
+#endif
+#ifndef SUBLANG_PULAR_SENEGAL
+#define SUBLANG_PULAR_SENEGAL             SUBLANG_FULAH_SENEGAL
+#endif
+#ifndef SUBLANG_GALICIAN_GALICIAN
+#  define SUBLANG_GALICIAN_GALICIAN       0x01    /* Galician (Galician) */
+#endif
+#ifndef SUBLANG_GEORGIAN_GEORGIA
+#  define SUBLANG_GEORGIAN_GEORGIA        0x01    /* Georgian (Georgia) */
+#endif
+#ifndef SUBLANG_GERMAN
+#  define SUBLANG_GERMAN                  0x01    /* German */
+#endif
+#ifndef SUBLANG_GERMAN_SWISS
+#  define SUBLANG_GERMAN_SWISS            0x02    /* German (Swiss) */
+#endif
+#ifndef SUBLANG_GERMAN_AUSTRIAN
+#  define SUBLANG_GERMAN_AUSTRIAN         0x03    /* German (Austrian) */
+#endif
+#ifndef SUBLANG_GERMAN_LUXEMBOURG
+#  define SUBLANG_GERMAN_LUXEMBOURG       0x04    /* German (Luxembourg) */
+#endif
+#ifndef SUBLANG_GERMAN_LIECHTENSTEIN
+#  define SUBLANG_GERMAN_LIECHTENSTEIN    0x05    /* German (Liechtenstein) */
+#endif
+#ifndef SUBLANG_GREEK_GREECE
+#  define SUBLANG_GREEK_GREECE            0x01    /* Greek (Greece) */
+#endif
+#ifndef SUBLANG_GREENLANDIC_GREENLAND
+#  define SUBLANG_GREENLANDIC_GREENLAND   0x01    /* Greenlandic (Greenland) */
+#endif
+#ifndef SUBLANG_GUARANI_PARAGUAY
+#  define SUBLANG_GUARANI_PARAGUAY        0x01    /* Guarani (Paraguay) */
+#endif
+#ifndef SUBLANG_GUJARATI_INDIA
+#  define SUBLANG_GUJARATI_INDIA          0x01    /* Gujarati (India) */
+#endif
+#ifndef SUBLANG_HAUSA_NIGERIA_LATIN
+#  define SUBLANG_HAUSA_NIGERIA_LATIN     0x01    /* Hausa (Latin, Nigeria) */
+#endif
+#ifndef SUBLANG_HAUSA_NIGERIA
+#  define SUBLANG_HAUSA_NIGERIA           SUBLANG_HAUSA_NIGERIA_LATIN
+#endif
+#ifndef SUBLANG_HAWAIIAN_US
+#  define SUBLANG_HAWAIIAN_US             0x01    /* Hawaiian (United Stated) */
+#endif
+#ifndef SUBLANG_HEBREW_ISRAEL
+#  define SUBLANG_HEBREW_ISRAEL           0x01    /* Hebrew (Israel) */
+#endif
+#ifndef SUBLANG_HINDI_INDIA
+#  define SUBLANG_HINDI_INDIA             0x01    /* Hindi (India) */
+#endif
+#ifndef SUBLANG_HUNGARIAN_HUNGARY
+#  define SUBLANG_HUNGARIAN_HUNGARY       0x01    /* Hungarian (Hungary) */
+#endif
+#ifndef SUBLANG_IBIBIO_NIGERIA
+#  define SUBLANG_IBIBIO_NIGERIA          0x01    /* Ibibio (Nigeria) */
+#endif
+#ifndef SUBLANG_ICELANDIC_ICELAND
+#  define SUBLANG_ICELANDIC_ICELAND       0x01    /* Icelandic (Iceland) */
+#endif
+#ifndef SUBLANG_IGBO_NIGERIA
+#  define SUBLANG_IGBO_NIGERIA            0x01    /* Igbo (Nigeria) */
+#endif
+#ifndef SUBLANG_INDONESIAN_INDONESIA
+#  define SUBLANG_INDONESIAN_INDONESIA    0x01    /* Indonesian (Indonesia) */
+#endif
+#ifndef SUBLANG_INUKTITUT_CANADA
+#  define SUBLANG_INUKTITUT_CANADA        0x01    /* Inuktitut (Syllabics) (Canada) */
+#endif
+#ifndef SUBLANG_INUKTITUT_CANADA_LATIN
+#  define SUBLANG_INUKTITUT_CANADA_LATIN  0x02    /* Inuktitut (Canada - Latin) */
+#endif
+#ifndef SUBLANG_IRISH_IRELAND
+#  define SUBLANG_IRISH_IRELAND           0x02    /* Irish (Ireland) */
+#endif
+#ifndef SUBLANG_ITALIAN
+#  define SUBLANG_ITALIAN                 0x01    /* Italian */
+#endif
+#ifndef SUBLANG_ITALIAN_SWISS
+#  define SUBLANG_ITALIAN_SWISS           0x02    /* Italian (Swiss) */
+#endif
+#ifndef SUBLANG_JAPANESE_JAPAN
+#  define SUBLANG_JAPANESE_JAPAN          0x01    /* Japanese (Japan) */
+#endif
+#ifndef SUBLANG_KANNADA_INDIA
+#  define SUBLANG_KANNADA_INDIA           0x01    /* Kannada (India) */
+#endif
+#ifndef SUBLANG_KANURI_NIGERIA
+#  define SUBLANG_KANURI_NIGERIA          0x01    /* Kanuri (Nigeria) */
+#endif
+#ifndef SUBLANG_KASHMIRI_PAKISTAN
+#  define SUBLANG_KASHMIRI_PAKISTAN       0x01    /* Kashmiri (Pakistan) */
+#endif
+#ifndef SUBLANG_KASHMIRI_SASIA
+#  define SUBLANG_KASHMIRI_SASIA          0x02    /* Kashmiri (South Asia) */
+#endif
+#ifndef SUBLANG_KASHMIRI_INDIA
+#  define SUBLANG_KASHMIRI_INDIA          SUBLANG_KASHMIRI_SASIA
+#endif
+#ifndef SUBLANG_KAZAK_KAZAKHSTAN
+#  define SUBLANG_KAZAK_KAZAKHSTAN        0x01    /* Kazakh (Kazakhstan) */
+#endif
+#ifndef SUBLANG_KHMER_CAMBODIA
+#  define SUBLANG_KHMER_CAMBODIA          0x01    /* Khmer (Cambodia) */
+#endif
+#ifndef SUBLANG_CAMBODIAN_CAMBODIA
+#  define SUBLANG_CAMBODIAN_CAMBODIA SUBLANG_KHMER_CAMBODIA
+#endif
+#ifndef SUBLANG_KICHE_GUATEMALA
+#  define SUBLANG_KICHE_GUATEMALA         0x01    /* K'iche (Guatemala) */
+#endif
+#ifndef SUBLANG_KINYARWANDA_RWANDA
+#  define SUBLANG_KINYARWANDA_RWANDA      0x01    /* Kinyarwanda (Rwanda) */
+#endif
+#ifndef SUBLANG_KONKANI_INDIA
+#  define SUBLANG_KONKANI_INDIA           0x01    /* Konkani (India) */
+#endif
+#ifndef SUBLANG_KOREAN
+#  define SUBLANG_KOREAN                  0x01    /* Korean (Extended Wansung) */
+#endif
+#ifndef SUBLANG_CENTRAL_KURDISH_IRAQ
+#  define SUBLANG_CENTRAL_KURDISH_IRAQ    0x01    /* Kurdish (Iraq) */
+#endif
+#ifndef SUBLANG_KYRGYZ_KYRGYZSTAN
+#  define SUBLANG_KYRGYZ_KYRGYZSTAN       0x01    /* Kyrgyz (Kyrgyzstan) */
+#endif
+#ifndef SUBLANG_LAO_LAO
+#  define SUBLANG_LAO_LAO                 0x01    /* Lao (Lao PDR) */
+#endif
+#ifndef SUBLANG_LAO_LAO_PDR
+#  define SUBLANG_LAO_LAO_PDR             SUBLANG_LAO_LAO
+#endif
+#ifndef SUBLANG_LATIN_VATICAN
+#  define SUBLANG_LATIN_VATICAN           0x01    /* Latin (Vatican City State) */
+#endif
+#ifndef SUBLANG_LATVIAN_LATVIA
+#  define SUBLANG_LATVIAN_LATVIA          0x01    /* Latvian (Latvia) */
+#endif
+#ifndef SUBLANG_LITHUANIAN
+#  define SUBLANG_LITHUANIAN              0x01    /* Lithuanian */
+#endif
+#ifndef SUBLANG_LITHUANIAN_LITHUANIA
+#define SUBLANG_LITHUANIAN_LITHUANIA      SUBLANG_LITHUANIAN
+#endif
+#ifndef SUBLANG_LITHUANIAN_CLASSIC
+#  define SUBLANG_LITHUANIAN_CLASSIC      0x02    /* Lithuanian (Classic) */
+#endif
+#ifndef SUBLANG_LOWER_SORBIAN_GERMANY
+#  define SUBLANG_LOWER_SORBIAN_GERMANY   0x02    /* Lower Sorbian (Germany) */
+#endif
+#ifndef SUBLANG_LUXEMBOURGISH_LUXEMBOURG
+#  define SUBLANG_LUXEMBOURGISH_LUXEMBOURG 0x01   /* Luxembourgish (Luxembourg) */
+#endif
+#ifndef SUBLANG_MACEDONIAN_MACEDONIA
+#  define SUBLANG_MACEDONIAN_MACEDONIA    0x01    /* Macedonian (Macedonia (FYROM)) */
+#endif
+#ifndef SUBLANG_MALAGASY_MADAGASCAR
+#  define SUBLANG_MALAGASY_MADAGASCAR     0x01    /* Malagasy (Madagascar) */
+#endif
+#ifndef SUBLANG_MALAY_MALAYSIA
+#  define SUBLANG_MALAY_MALAYSIA          0x01    /* Malay (Malaysia) */
+#endif
+#ifndef SUBLANG_MALAY_BRUNEI_DARUSSALAM
+#  define SUBLANG_MALAY_BRUNEI_DARUSSALAM 0x02    /* Malay (Brunei Darussalam) */
+#endif
+#ifndef SUBLANG_MALAYALAM_INDIA
+#  define SUBLANG_MALAYALAM_INDIA         0x01    /* Malayalam (India) */
+#endif
+#ifndef SUBLANG_MALTESE_MALTA
+#  define SUBLANG_MALTESE_MALTA           0x01    /* Maltese (Malta) */
+#endif
+#ifndef SUBLANG_MANIPURI_MANIPUR
+#  define SUBLANG_MANIPURI_MANIPUR        0x01    /* Manipuri (Manipur) */
+#endif
+#ifndef SUBLANG_MAORI_NEW_ZEALAND
+#  define SUBLANG_MAORI_NEW_ZEALAND       0x01    /* Maori (New Zealand) */
+#endif
+#ifndef SUBLANG_MAPUDUNGUN_CHILE
+#  define SUBLANG_MAPUDUNGUN_CHILE        0x01    /* Mapudungun (Chile) */
+#endif
+#ifndef SUBLANG_MARATHI_INDIA
+#  define SUBLANG_MARATHI_INDIA           0x01    /* Marathi (India) */
+#endif
+#ifndef SUBLANG_MOHAWK_MOHAWK
+#  define SUBLANG_MOHAWK_MOHAWK           0x01    /* Mohawk (Mohawk) */
+#endif
+#ifndef SUBLANG_MONGOLIAN_CYRILLIC_MONGOLIA
+#  define SUBLANG_MONGOLIAN_CYRILLIC_MONGOLIA 0x01 /* Mongolian (Cyrillic, Mongolia) */
+#endif
+#ifndef SUBLANG_MONGOLIAN_PRC
+#  define SUBLANG_MONGOLIAN_PRC           0x02    /* Mongolian (PRC) */
+#endif
+#ifndef SUBLANG_NEPALI_NEPAL
+#  define SUBLANG_NEPALI_NEPAL            0x01    /* Nepali (Nepal) */
+#endif
+#ifndef SUBLANG_NEPALI_INDIA
+#  define SUBLANG_NEPALI_INDIA            0x02    /* Nepali (India) */
+#endif
+#ifndef SUBLANG_NORWEGIAN_BOKMAL
+#  define SUBLANG_NORWEGIAN_BOKMAL        0x01    /* Norwegian (Bokmal) */
+#endif
+#ifndef SUBLANG_NORWEGIAN_NYNORSK
+#  define SUBLANG_NORWEGIAN_NYNORSK       0x02    /* Norwegian (Nynorsk) */
+#endif
+#ifndef SUBLANG_OCCITAN_FRANCE
+#  define SUBLANG_OCCITAN_FRANCE          0x01    /* Occitan (France) */
+#endif
+#ifndef SUBLANG_ORIYA_INDIA
+#  define SUBLANG_ORIYA_INDIA             0x01    /* Oriya (India) */
+#endif
+#ifndef SUBLANG_ODIA_INDIA
+#  define SUBLANG_ODIA_INDIA              SUBLANG_ORIYA_INDIA
+#endif
+#ifndef SUBLANG_OROMO_ETHIOPIA
+#  define SUBLANG_OROMO_ETHIOPIA          0x01    /* Oromo (Ethiopia) */
+#endif
+#ifndef SUBLANG_PAPIAMENTO_NETHERLANDS_ANTILLES
+#  define SUBLANG_PAPIAMENTO_NETHERLANDS_ANTILLES 0x01 /* Papiamento (Netherlands Antilles) */
+#endif
+#ifndef SUBLANG_PASHTO_AFGHANISTAN
+#  define SUBLANG_PASHTO_AFGHANISTAN      0x01    /* Pashto (Afghanistan) */
+#endif
+#ifndef SUBLANG_PERSIAN_IRAN
+#  define SUBLANG_PERSIAN_IRAN            0x01    /* Persian (Iran) */
+#endif
+#ifndef SUBLANG_POLISH_POLAND
+#  define SUBLANG_POLISH_POLAND           0x01    /* Polish (Poland) */
+#endif
+#ifndef SUBLANG_PORTUGUESE
+#  define SUBLANG_PORTUGUESE              0x02    /* Portuguese */
+#endif
+#ifndef SUBLANG_PORTUGUESE_PORTUGAL
+#define SUBLANG_PORTUGUESE_PORTUGAL       SUBLANG_PORTUGUESE
+#endif
+#ifndef SUBLANG_PORTUGUESE_BRAZILIAN
+#  define SUBLANG_PORTUGUESE_BRAZILIAN    0x01    /* Portuguese (Brazil) */
+#endif
+#ifndef SUBLANG_PUNJABI_INDIA
+#  define SUBLANG_PUNJABI_INDIA           0x01    /* Punjabi (India) */
+#endif
+#ifndef SUBLANG_PUNJABI_PAKISTAN
+#  define SUBLANG_PUNJABI_PAKISTAN        0x02    /* Punjabi (Pakistan) */
+#endif
+#ifndef SUBLANG_QUECHUA_BOLIVIA
+#  define SUBLANG_QUECHUA_BOLIVIA         0x01    /* Quechua (Bolivia) */
+#endif
+#ifndef SUBLANG_QUECHUA_ECUADOR
+#  define SUBLANG_QUECHUA_ECUADOR         0x02    /* Quechua (Ecuador) */
+#endif
+#ifndef SUBLANG_QUECHUA_PERU
+#  define SUBLANG_QUECHUA_PERU            0x03    /* Quechua (Peru) */
+#endif
+#ifndef SUBLANG_ROMANIAN_ROMANIA
+#  define SUBLANG_ROMANIAN_ROMANIA        0x01    /* Romanian (Romania) */
+#endif
+#ifndef SUBLANG_ROMANIAN
+#  define SUBLANG_ROMANIAN                SUBLANG_ROMANIAN_ROMANIA
+#endif
+#ifndef SUBLANG_ROMANIAN_MOLDAVIA
+#  define SUBLANG_ROMANIAN_MOLDAVIA       0x02    /* Romanian (Moldavia) */
+#endif
+#ifndef SUBLANG_ROMANSH_SWITZERLAND
+#  define SUBLANG_ROMANSH_SWITZERLAND     0x01    /* Romansh (Switzerland) */
+#endif
+#ifndef SUBLANG_RUSSIAN_RUSSIA
+#  define SUBLANG_RUSSIAN_RUSSIA          0x01    /* Russian (Russia) */
+#endif
+#ifndef SUBLANG_RUSSIAN
+#  define SUBLANG_RUSSIAN                 SUBLANG_RUSSIAN_RUSSIA
+#endif
+#ifndef SUBLANG_RUSSIAN_MOLDAVIA
+#  define SUBLANG_RUSSIAN_MOLDAVIA        0x02    /* Russian (Moldavia) */
+#endif
+#ifndef SUBLANG_SAMI_NORTHERN_NORWAY
+#  define SUBLANG_SAMI_NORTHERN_NORWAY    0x01    /* Northern Sami (Norway) */
+#endif
+#ifndef SUBLANG_SAMI_NORTHERN_SWEDEN
+#  define SUBLANG_SAMI_NORTHERN_SWEDEN    0x02    /* Northern Sami (Sweden) */
+#endif
+#ifndef SUBLANG_SAMI_NORTHERN_FINLAND
+#  define SUBLANG_SAMI_NORTHERN_FINLAND   0x03    /* Northern Sami (Finland) */
+#endif
+#ifndef SUBLANG_SAMI_LULE_NORWAY
+#  define SUBLANG_SAMI_LULE_NORWAY        0x04    /* Lule Sami (Norway) */
+#endif
+#ifndef SUBLANG_SAMI_LULE_SWEDEN
+#  define SUBLANG_SAMI_LULE_SWEDEN        0x05    /* Lule Sami (Sweden) */
+#endif
+#ifndef SUBLANG_SAMI_SOUTHERN_NORWAY
+#  define SUBLANG_SAMI_SOUTHERN_NORWAY    0x06    /* Southern Sami (Norway) */
+#endif
+#ifndef SUBLANG_SAMI_SOUTHERN_SWEDEN
+#  define SUBLANG_SAMI_SOUTHERN_SWEDEN    0x07    /* Southern Sami (Sweden) */
+#endif
+#ifndef SUBLANG_SAMI_SKOLT_FINLAND
+#  define SUBLANG_SAMI_SKOLT_FINLAND      0x08    /* Skolt Sami (Finland) */
+#endif
+#ifndef SUBLANG_SAMI_INARI_FINLAND
+#  define SUBLANG_SAMI_INARI_FINLAND      0x09    /* Inari Sami (Finland) */
+#endif
+#ifndef SUBLANG_SANSKRIT_INDIA
+#  define SUBLANG_SANSKRIT_INDIA          0x01    /* Sanskrit (India) */
+#endif
+#ifndef SUBLANG_SCOTTISH_GAELIC
+#  define SUBLANG_SCOTTISH_GAELIC         0x01    /* Scottish Gaelic (United Kingdom) */
+#endif
+#ifndef SUBLANG_GAELIC
+#  define SUBLANG_GAELIC                  0x01    /* Gaelic (Ireland) */
+#endif
+#ifndef SUBLANG_GAELIC_SCOTTISH
+#  define SUBLANG_GAELIC_SCOTTISH         0x02    /* Gaelic (Scotland) */
+#endif
+#ifndef SUBLANG_GAELIC_MANX
+#  define SUBLANG_GAELIC_MANX             0x03    /* Gaelic (Isle of Man) */
+#endif
+#ifndef SUBLANG_SERBIAN_CROATIA
+#  define SUBLANG_SERBIAN_CROATIA         0x01    /* Croatian (Croatia) */
+#endif
+#ifndef SUBLANG_SERBIAN_LATIN
+#  define SUBLANG_SERBIAN_LATIN           0x02    /* Serbian (Latin) */
+#endif
+#ifndef SUBLANG_SERBIAN_CYRILLIC
+#  define SUBLANG_SERBIAN_CYRILLIC        0x03    /* Serbian (Cyrillic) */
+#endif
+#ifndef SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN
+#  define SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN 0x06 /* Serbian (Bosnia and Herzegovina - Latin) */
+#endif
+#ifndef SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC
+#  define SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC 0x07 /* Serbian (Bosnia and Herzegovina - Cyrillic) */
+#endif
+#ifndef SUBLANG_SERBIAN_SERBIA_LATIN
+#  define SUBLANG_SERBIAN_SERBIA_LATIN    0x09    /* Serbian (Serbia - Latin) */
+#endif
+#ifndef SUBLANG_SERBIAN_SERBIA_CYRILLIC
+#  define SUBLANG_SERBIAN_SERBIA_CYRILLIC 0x0a    /* Serbian (Serbia - Cyrillic) */
+#endif
+#ifndef SUBLANG_SERBIAN_MONTENEGRO_LATIN
+#  define SUBLANG_SERBIAN_MONTENEGRO_LATIN 0x0b   /* Serbian (Montenegro - Latn) */
+#endif
+#ifndef SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC
+#  define SUBLANG_SERBIAN_MONTENEGRO_CYRILLIC 0x0c /* Serbian (Montenegro - Cyrillic) */
+#endif
+#ifndef SUBLANG_SINDHI_INDIA
+#  define SUBLANG_SINDHI_INDIA            0x01    /* Sindhi (India) */
+#endif
+#ifndef SUBLANG_SINDHI_PAKISTAN
+#  define SUBLANG_SINDHI_PAKISTAN         0x02    /* Sindhi (Pakistan) */
+#endif
+#ifndef SUBLANG_SINDHI_AFGHANISTAN
+#  define SUBLANG_SINDHI_AFGHANISTAN      SUBLANG_SINDHI_PAKISTAN
+#endif
+#ifndef SUBLANG_SINHALESE_SRI_LANKA
+#  define SUBLANG_SINHALESE_SRI_LANKA     0x01    /* Sinhalese (Sri Lanka) */
+#endif
+#ifndef SUBLANG_SOMALI_SOMALIA
+#  define SUBLANG_SOMALI_SOMALIA          0x01    /* Somali (Somalia) */
+#endif
+#ifndef SUBLANG_SOTHO_SOUTH_AFRICA
+#  define SUBLANG_SOTHO_SOUTH_AFRICA      0x01    /* Northern Sotho (South Africa) */
+#endif
+#ifndef SUBLANG_SOTHO_NORTHERN_SOUTH_AFRICA
+#  define SUBLANG_SOTHO_NORTHERN_SOUTH_AFRICA SUBLANG_SOTHO_SOUTH_AFRICA
+#endif
+#ifndef SUBLANG_SLOVAK_SLOVAKIA
+#  define SUBLANG_SLOVAK_SLOVAKIA         0x01    /* Slovak (Slovakia) */
+#endif
+#ifndef SUBLANG_SLOVENIAN_SLOVENIA
+#  define SUBLANG_SLOVENIAN_SLOVENIA      0x01    /* Slovenian (Slovenia) */
+#endif
+#ifndef SUBLANG_SPANISH
+#  define SUBLANG_SPANISH                 0x01    /* Spanish (Castilian) */
+#endif
+#ifndef SUBLANG_SPANISH_MEXICAN
+#  define SUBLANG_SPANISH_MEXICAN         0x02    /* Spanish (Mexican) */
+#endif
+#ifndef SUBLANG_SPANISH_MODERN
+#  define SUBLANG_SPANISH_MODERN          0x03    /* Spanish (Modern) */
+#endif
+#ifndef SUBLANG_SPANISH_GUATEMALA
+#  define SUBLANG_SPANISH_GUATEMALA       0x04    /* Spanish (Guatemala) */
+#endif
+#ifndef SUBLANG_SPANISH_COSTA_RICA
+#  define SUBLANG_SPANISH_COSTA_RICA      0x05    /* Spanish (Costa Rica) */
+#endif
+#ifndef SUBLANG_SPANISH_PANAMA
+#  define SUBLANG_SPANISH_PANAMA          0x06    /* Spanish (Panama) */
+#endif
+#ifndef SUBLANG_SPANISH_DOMINICAN_REPUBLIC
+#  define SUBLANG_SPANISH_DOMINICAN_REPUBLIC 0x07 /* Spanish (Dominican Republic) */
+#endif
+#ifndef SUBLANG_SPANISH_VENEZUELA
+#  define SUBLANG_SPANISH_VENEZUELA       0x08    /* Spanish (Venezuela) */
+#endif
+#ifndef SUBLANG_SPANISH_COLOMBIA
+#  define SUBLANG_SPANISH_COLOMBIA        0x09    /* Spanish (Colombia) */
+#endif
+#ifndef SUBLANG_SPANISH_PERU
+#  define SUBLANG_SPANISH_PERU            0x0a    /* Spanish (Peru) */
+#endif
+#ifndef SUBLANG_SPANISH_ARGENTINA
+#  define SUBLANG_SPANISH_ARGENTINA       0x0b    /* Spanish (Argentina) */
+#endif
+#ifndef SUBLANG_SPANISH_ECUADOR
+#  define SUBLANG_SPANISH_ECUADOR         0x0c    /* Spanish (Ecuador) */
+#endif
+#ifndef SUBLANG_SPANISH_CHILE
+#  define SUBLANG_SPANISH_CHILE           0x0d    /* Spanish (Chile) */
+#endif
+#ifndef SUBLANG_SPANISH_URUGUAY
+#  define SUBLANG_SPANISH_URUGUAY         0x0e    /* Spanish (Uruguay) */
+#endif
+#ifndef SUBLANG_SPANISH_PARAGUAY
+#  define SUBLANG_SPANISH_PARAGUAY        0x0f    /* Spanish (Paraguay) */
+#endif
+#ifndef SUBLANG_SPANISH_BOLIVIA
+#  define SUBLANG_SPANISH_BOLIVIA         0x10    /* Spanish (Bolivia) */
+#endif
+#ifndef SUBLANG_SPANISH_EL_SALVADOR
+#  define SUBLANG_SPANISH_EL_SALVADOR     0x11    /* Spanish (El Salvador) */
+#endif
+#ifndef SUBLANG_SPANISH_HONDURAS
+#  define SUBLANG_SPANISH_HONDURAS        0x12    /* Spanish (Honduras) */
+#endif
+#ifndef SUBLANG_SPANISH_NICARAGUA
+#  define SUBLANG_SPANISH_NICARAGUA       0x13    /* Spanish (Nicaragua) */
+#endif
+#ifndef SUBLANG_SPANISH_PUERTO_RICO
+#  define SUBLANG_SPANISH_PUERTO_RICO     0x14    /* Spanish (Puerto Rico) */
+#endif
+#ifndef SUBLANG_SPANISH_US
+#  define SUBLANG_SPANISH_US              0x15    /* Spanish (United States) */
+#endif
+#ifndef SUBLANG_SPANISH_LATIN_AMERICA
+#  define SUBLANG_SPANISH_LATIN_AMERICA   0x16    /* Spanish (Latin America) */
+#endif
+#ifndef SUBLANG_SUTU_SOUTH_AFRICA
+#  define SUBLANG_SUTU_SOUTH_AFRICA       0x01    /* Sutu (South Africa) */
+#endif
+#ifndef SUBLANG_SWAHILI_KENYA
+#  define SUBLANG_SWAHILI_KENYA           0x01    /* Swahili (Kenya) */
+#endif
+#ifndef SUBLANG_SWAHILI
+#  define SUBLANG_SWAHILI                 SUBLANG_SWAHILI_KENYA
+#endif
+#ifndef SUBLANG_SWEDISH
+#  define SUBLANG_SWEDISH                 0x01    /* Swedish */
+#endif
+#ifndef SUBLANG_SWEDISH_SWEDEN
+#define SUBLANG_SWEDISH_SWEDEN            SUBLANG_SWEDISH
+#endif
+#ifndef SUBLANG_SWEDISH_FINLAND
+#  define SUBLANG_SWEDISH_FINLAND         0x02    /* Swedish (Finland) */
+#endif
+#ifndef SUBLANG_SYRIAC_SYRIA
+#  define SUBLANG_SYRIAC_SYRIA            0x01    /* Syriac (Syria) */
+#endif
+#ifndef SUBLANG_SYRIAC
+#  define SUBLANG_SYRIAC                  SUBLANG_SYRIAC_SYRIA
+#endif
+#ifndef SUBLANG_TAJIK_TAJIKISTAN
+#  define SUBLANG_TAJIK_TAJIKISTAN        0x01    /* Tajik (Tajikistan) */
+#endif
+#ifndef SUBLANG_TAMAZIGHT_MOROCCO
+#  define SUBLANG_TAMAZIGHT_MOROCCO       0x01    /* Tamazight (Arabic, Morocco) */
+#endif
+#ifndef SUBLANG_TAMAZIGHT_ARABIC
+#  define SUBLANG_TAMAZIGHT_ARABIC SUBLANG_TAMAZIGHT_MOROCCO
+#endif
+#ifndef SUBLANG_TAMAZIGHT_ALGERIA_LATIN
+#  define SUBLANG_TAMAZIGHT_ALGERIA_LATIN 0x02    /* Tamazight (Latin, Algeria) */
+#endif
+#ifndef SUBLANG_TAMAZIGHT_MOROCCO_TIFINAGH
+#  define SUBLANG_TAMAZIGHT_MOROCCO_TIFINAGH 0x04    /* Tamazight (Arabic, Tifinagh) */
+#endif
+#ifndef SUBLANG_TAMIL_INDIA
+#  define SUBLANG_TAMIL_INDIA             0x01    /* Tamil (India) */
+#endif
+#ifndef SUBLANG_TAMIL_SRI_LANKA
+#  define SUBLANG_TAMIL_SRI_LANKA         0x02    /* Tamil (Sri Lanka) */
+#endif
+#ifndef SUBLANG_TATAR_RUSSIA
+#  define SUBLANG_TATAR_RUSSIA            0x01    /* Tatar (Russia) */
+#endif
+#ifndef SUBLANG_TELUGU_INDIA
+#  define SUBLANG_TELUGU_INDIA            0x01    /* Telugu (India) */
+#endif
+#ifndef SUBLANG_THAI_THAILAND
+#  define SUBLANG_THAI_THAILAND           0x01    /* Thai (Thailand) */
+#endif
+#ifndef SUBLANG_TIBETAN_PRC
+#  define SUBLANG_TIBETAN_PRC             0x01    /* Tibetan (PRC) */
+#endif
+#undef SUBLANG_TIBETAN_BHUTAN
+#  define SUBLANG_TIBETAN_BHUTAN          0x02    /* Tibetan (Bhutan) */
+#ifndef SUBLANG_TIGRIGNA_ETHIOPIA
+#  define SUBLANG_TIGRIGNA_ETHIOPIA       0x01    /* Tigrigna (Ethiopia) */
+#endif
+#ifndef SUBLANG_TIGRINYA_ETHIOPIA
+#define SUBLANG_TIGRINYA_ETHIOPIA         SUBLANG_TIGRIGNA_ETHIOPIA
+#endif
+#ifndef SUBLANG_TIGRIGNA_ERITREA
+#  define SUBLANG_TIGRIGNA_ERITREA        0x02    /* Tigrigna (Eritrea) */
+#endif
+#ifndef SUBLANG_TIGRINYA_ERITREA
+#define SUBLANG_TIGRINYA_ERITREA          SUBLANG_TIGRIGNA_ERITREA
+#endif
+#ifndef SUBLANG_TIGRIGNA_ERYTHREA
+#define SUBLANG_TIGRIGNA_ERYTHREA         SUBLANG_TIGRIGNA_ERITREA
+#endif
+#ifndef SUBLANG_TSONGA_SOUTH_AFRICA
+#  define SUBLANG_TSONGA_SOUTH_AFRICA     0x01    /* Tsonga (Soth Africa) */
+#endif
+#ifndef SUBLANG_TSWANA_SOUTH_AFRICA
+#  define SUBLANG_TSWANA_SOUTH_AFRICA     0x01    /* Setswana / Tswana (South Africa) */
+#endif
+#ifndef SUBLANG_TSWANA_BOTSWANA
+#  define SUBLANG_TSWANA_BOTSWANA         0x02    /* Setswana / Tswana (Botswana) */
+#endif
+#ifndef SUBLANG_TURKISH_TURKEY
+#  define SUBLANG_TURKISH_TURKEY          0x01    /* Turkish (Turkey) */
+#endif
+#ifndef SUBLANG_TURKMEN_TURKMENISTAN
+#  define SUBLANG_TURKMEN_TURKMENISTAN    0x01    /* Turkmen (Turkmenistan) */
+#endif
+#ifndef SUBLANG_UIGHUR_PRC
+#  define SUBLANG_UIGHUR_PRC              0x01    /* Uighur (PRC) */
+#endif
+#ifndef SUBLANG_UKRAINIAN_UKRAINE
+#  define SUBLANG_UKRAINIAN_UKRAINE       0x01    /* Ukrainian (Ukraine) */
+#endif
+#ifndef SUBLANG_UPPER_SORBIAN_GERMANY
+#  define SUBLANG_UPPER_SORBIAN_GERMANY   0x01    /* Upper Sorbian (Germany) */
+#endif
+#ifndef SUBLANG_URDU_PAKISTAN
+#  define SUBLANG_URDU_PAKISTAN           0x01    /* Urdu (Pakistan) */
+#endif
+#ifndef SUBLANG_URDU_INDIA
+#  define SUBLANG_URDU_INDIA              0x02    /* Urdu (India) */
+#endif
+#ifndef SUBLANG_UZBEK_LATIN
+#  define SUBLANG_UZBEK_LATIN             0x01    /* Uzbek (Latin) */
+#endif
+#ifndef SUBLANG_UZBEK_CYRILLIC
+#  define SUBLANG_UZBEK_CYRILLIC          0x02    /* Uzbek (Cyrillic) */
+#endif
+#ifndef SUBLANG_VENDA_SOUTH_AFRICA
+#  define SUBLANG_VENDA_SOUTH_AFRICA      0x01    /* Venda (South Africa) */
+#endif
+#ifndef SUBLANG_VIETNAMESE_VIETNAM
+#  define SUBLANG_VIETNAMESE_VIETNAM      0x01    /* Vietnamese (Vietnam) */
+#endif
+#ifndef SUBLANG_WALLOON_BELGIUM
+#  define SUBLANG_WALLOON_BELGIUM         0x01    /* Walloon (Belgium) */
+#endif
+#ifndef SUBLANG_WELSH_UNITED_KINGDOM
+#  define SUBLANG_WELSH_UNITED_KINGDOM    0x01    /* Welsh (United Kingdom) */
+#endif
+#ifndef SUBLANG_WOLOF_SENEGAL
+#  define SUBLANG_WOLOF_SENEGAL           0x01    /* Wolof (Senegal) */
+#endif
+#ifndef SUBLANG_XHOSA_SOUTH_AFRICA
+#  define SUBLANG_XHOSA_SOUTH_AFRICA      0x01    /* isiXhosa / Xhosa (South Africa) */
+#endif
+#ifndef SUBLANG_YAKUT_RUSSIA
+#  define SUBLANG_YAKUT_RUSSIA            0x01    /* Yakut (Russia) 0x0485 sah-RU */
+#endif
+#ifndef SUBLANG_SAKHA_RUSSIA
+#define SUBLANG_SAKHA_RUSSIA              SUBLANG_YAKUT_RUSSIA
+#endif
+#ifndef SUBLANG_YI_PRC
+#  define SUBLANG_YI_PRC                  0x01    /* Yi (PRC) */
+#endif
+#ifndef SUBLANG_YIDDISH_ISRAEL
+#  define SUBLANG_YIDDISH_ISRAEL          0x01    /* Yiddish (Israel) */
+#endif
+#ifndef SUBLANG_YORUBA_NIGERIA
+#  define SUBLANG_YORUBA_NIGERIA          0x01    /* Yoruba (Nigeria) */
+#endif
+#ifndef SUBLANG_ZULU_SOUTH_AFRICA
+#  define SUBLANG_ZULU_SOUTH_AFRICA       0x01    /* isiZulu / Zulu (South Africa) */
+#endif
+
+
+/*
+ * control IDs
+ */
+#ifndef IDOK
+#  define IDOK 0x1
+#endif
+#ifndef IDCANCEL
+#  define IDCANCEL 0x2
+#endif
+#ifndef IDABORT
+#  define IDABORT 0x3
+#endif
+#ifndef IDRETRY
+#  define IDRETRY 0x4
+#endif
+#ifndef IDIGNORE
+#  define IDIGNORE 0x5
+#endif
+#ifndef IDYES
+#  define IDYES 0x6
+#endif
+#ifndef IDNO
+#  define IDNO 0x7
+#endif
+#ifndef IDCLOSE
+#  define IDCLOSE 0x8
+#endif
+#ifndef IDHELP
+#  define IDHELP 0x9
+#endif
+#ifndef IDTRYAGAIN
+#  define IDTRYAGAIN 0xa
+#endif
+#ifndef IDCONTINUE
+#  define IDCONTINUE 0xb
+#endif
+#ifndef IDTIMEOUT
+#  define IDTIMEOUT 32000
+#endif
+#ifndef IDC_STATIC
+#  define IDC_STATIC (-1)
+#endif
+
+
+
+/*
+ * virtual keys
+ */
+#ifndef VK_LBUTTON
+#  define VK_LBUTTON 0x1
+#endif
+#ifndef VK_RBUTTON
+#  define VK_RBUTTON 0x2
+#endif
+#ifndef VK_CANCEL
+#  define VK_CANCEL 0x3
+#endif
+#ifndef VK_MBUTTON
+#  define VK_MBUTTON 0x4
+#endif
+#ifndef VK_XBUTTON1
+#  define VK_XBUTTON1 0x5
+#endif
+#ifndef VK_XBUTTON2
+#  define VK_XBUTTON2 0x6
+#endif
+#ifndef VK_BACK
+#  define VK_BACK 0x8
+#endif
+#ifndef VK_TAB
+#  define VK_TAB 0x9
+#endif
+#ifndef VK_CLEAR
+#  define VK_CLEAR 0xc
+#endif
+#ifndef VK_RETURN
+#  define VK_RETURN 0xd
+#endif
+#ifndef VK_SHIFT
+#  define VK_SHIFT 0x10
+#endif
+#ifndef VK_CONTROL
+#  define VK_CONTROL 0x11
+#endif
+#ifndef VK_MENU
+#  define VK_MENU 0x12
+#endif
+#ifndef VK_PAUSE
+#  define VK_PAUSE 0x13
+#endif
+#ifndef VK_CAPITAL
+#  define VK_CAPITAL 0x14
+#endif
+#ifndef VK_KANA
+#  define VK_KANA 0x15
+#endif
+#ifndef VK_HANGUL
+#  define VK_HANGUL VK_KANA
+#endif
+#ifndef VK_HANGEUL
+#  define VK_HANGEUL VK_KANA
+#endif
+#ifndef VK_JUNJA
+#  define VK_JUNJA 0x17
+#endif
+#ifndef VK_FINAL
+#  define VK_FINAL 0x18
+#endif
+#ifndef VK_KANJI
+#  define VK_KANJI 0x19
+#endif
+#ifndef VK_HANJA
+#  define VK_HANJA VK_KANJI
+#endif
+#ifndef VK_ESCAPE
+#  define VK_ESCAPE 0x1b
+#endif
+#ifndef VK_CONVERT
+#  define VK_CONVERT 0x1c
+#endif
+#ifndef VK_NONCONVERT
+#  define VK_NONCONVERT 0x1d
+#endif
+#ifndef VK_ACCEPT
+#  define VK_ACCEPT 0x1e
+#endif
+#ifndef VK_MODECHANGE
+#  define VK_MODECHANGE 0x1f
+#endif
+#ifndef VK_SPACE
+#  define VK_SPACE 0x20
+#endif
+#ifndef VK_PRIOR
+#  define VK_PRIOR 0x21
+#endif
+#ifndef VK_NEXT
+#  define VK_NEXT 0x22
+#endif
+#ifndef VK_END
+#  define VK_END 0x23
+#endif
+#ifndef VK_HOME
+#  define VK_HOME 0x24
+#endif
+#ifndef VK_LEFT
+#  define VK_LEFT 0x25
+#endif
+#ifndef VK_UP
+#  define VK_UP 0x26
+#endif
+#ifndef VK_RIGHT
+#  define VK_RIGHT 0x27
+#endif
+#ifndef VK_DOWN
+#  define VK_DOWN 0x28
+#endif
+#ifndef VK_SELECT
+#  define VK_SELECT 0x29
+#endif
+#ifndef VK_PRINT
+#  define VK_PRINT 0x2a
+#endif
+#ifndef VK_EXECUTE
+#  define VK_EXECUTE 0x2b
+#endif
+#ifndef VK_SNAPSHOT
+#  define VK_SNAPSHOT 0x2c
+#endif
+#ifndef VK_INSERT
+#  define VK_INSERT 0x2d
+#endif
+#ifndef VK_DELETE
+#  define VK_DELETE 0x2e
+#endif
+#ifndef VK_HELP
+#  define VK_HELP 0x2f
+#endif
+#ifndef VK_LWIN
+#  define VK_LWIN 0x5b
+#endif
+#ifndef VK_RWIN
+#  define VK_RWIN 0x5c
+#endif
+#ifndef VK_APPS
+#  define VK_APPS 0x5d
+#endif
+#ifndef VK_SLEEP
+#  define VK_SLEEP 0x5f
+#endif
+#ifndef VK_NUMPAD0
+#  define VK_NUMPAD0 0x60
+#endif
+#ifndef VK_NUMPAD1
+#  define VK_NUMPAD1 0x61
+#endif
+#ifndef VK_NUMPAD2
+#  define VK_NUMPAD2 0x62
+#endif
+#ifndef VK_NUMPAD3
+#  define VK_NUMPAD3 0x63
+#endif
+#ifndef VK_NUMPAD4
+#  define VK_NUMPAD4 0x64
+#endif
+#ifndef VK_NUMPAD5
+#  define VK_NUMPAD5 0x65
+#endif
+#ifndef VK_NUMPAD6
+#  define VK_NUMPAD6 0x66
+#endif
+#ifndef VK_NUMPAD7
+#  define VK_NUMPAD7 0x67
+#endif
+#ifndef VK_NUMPAD8
+#  define VK_NUMPAD8 0x68
+#endif
+#ifndef VK_NUMPAD9
+#  define VK_NUMPAD9 0x69
+#endif
+#ifndef VK_MULTIPLY
+#  define VK_MULTIPLY 0x6a
+#endif
+#ifndef VK_ADD
+#  define VK_ADD 0x6b
+#endif
+#ifndef VK_SEPARATOR
+#  define VK_SEPARATOR 0x6c
+#endif
+#ifndef VK_SUBTRACT
+#  define VK_SUBTRACT 0x6d
+#endif
+#ifndef VK_DECIMAL
+#  define VK_DECIMAL 0x6e
+#endif
+#ifndef VK_DIVIDE
+#  define VK_DIVIDE 0x6f
+#endif
+#ifndef VK_F1
+#  define VK_F1 0x70
+#endif
+#ifndef VK_F2
+#  define VK_F2 0x71
+#endif
+#ifndef VK_F3
+#  define VK_F3 0x72
+#endif
+#ifndef VK_F4
+#  define VK_F4 0x73
+#endif
+#ifndef VK_F5
+#  define VK_F5 0x74
+#endif
+#ifndef VK_F6
+#  define VK_F6 0x75
+#endif
+#ifndef VK_F7
+#  define VK_F7 0x76
+#endif
+#ifndef VK_F8
+#  define VK_F8 0x77
+#endif
+#ifndef VK_F9
+#  define VK_F9 0x78
+#endif
+#ifndef VK_F10
+#  define VK_F10 0x79
+#endif
+#ifndef VK_F11
+#  define VK_F11 0x7a
+#endif
+#ifndef VK_F12
+#  define VK_F12 0x7b
+#endif
+#ifndef VK_F13
+#  define VK_F13 0x7c
+#endif
+#ifndef VK_F14
+#  define VK_F14 0x7d
+#endif
+#ifndef VK_F15
+#  define VK_F15 0x7e
+#endif
+#ifndef VK_F16
+#  define VK_F16 0x7f
+#endif
+#ifndef VK_F17
+#  define VK_F17 0x80
+#endif
+#ifndef VK_F18
+#  define VK_F18 0x81
+#endif
+#ifndef VK_F19
+#  define VK_F19 0x82
+#endif
+#ifndef VK_F20
+#  define VK_F20 0x83
+#endif
+#ifndef VK_F21
+#  define VK_F21 0x84
+#endif
+#ifndef VK_F22
+#  define VK_F22 0x85
+#endif
+#ifndef VK_F23
+#  define VK_F23 0x86
+#endif
+#ifndef VK_F24
+#  define VK_F24 0x87
+#endif
+#ifndef VK_NUMLOCK
+#  define VK_NUMLOCK 0x90
+#endif
+#ifndef VK_SCROLL
+#  define VK_SCROLL 0x91
+#endif
+#ifndef VK_OEM_NEC_EQUAL
+#  define VK_OEM_NEC_EQUAL 0x92
+#endif
+#ifndef VK_OEM_FJ_JISHO
+#  define VK_OEM_FJ_JISHO 0x92
+#endif
+#ifndef VK_OEM_FJ_MASSHOU
+#  define VK_OEM_FJ_MASSHOU 0x93
+#endif
+#ifndef VK_OEM_FJ_TOUROKU
+#  define VK_OEM_FJ_TOUROKU 0x94
+#endif
+#ifndef VK_OEM_FJ_LOYA
+#  define VK_OEM_FJ_LOYA 0x95
+#endif
+#ifndef VK_OEM_FJ_ROYA
+#  define VK_OEM_FJ_ROYA 0x96
+#endif
+#ifndef VK_LSHIFT
+#  define VK_LSHIFT 0xa0
+#endif
+#ifndef VK_RSHIFT
+#  define VK_RSHIFT 0xa1
+#endif
+#ifndef VK_LCONTROL
+#  define VK_LCONTROL 0xa2
+#endif
+#ifndef VK_RCONTROL
+#  define VK_RCONTROL 0xa3
+#endif
+#ifndef VK_LMENU
+#  define VK_LMENU 0xa4
+#endif
+#ifndef VK_RMENU
+#  define VK_RMENU 0xa5
+#endif
+#ifndef VK_BROWSER_BACK
+#  define VK_BROWSER_BACK 0xa6
+#endif
+#ifndef VK_BROWSER_FORWARD
+#  define VK_BROWSER_FORWARD 0xa7
+#endif
+#ifndef VK_BROWSER_REFRESH
+#  define VK_BROWSER_REFRESH 0xa8
+#endif
+#ifndef VK_BROWSER_STOP
+#  define VK_BROWSER_STOP 0xa9
+#endif
+#ifndef VK_BROWSER_SEARCH
+#  define VK_BROWSER_SEARCH 0xaa
+#endif
+#ifndef VK_BROWSER_FAVORITES
+#  define VK_BROWSER_FAVORITES 0xab
+#endif
+#ifndef VK_BROWSER_HOME
+#  define VK_BROWSER_HOME 0xac
+#endif
+#ifndef VK_VOLUME_MUTE
+#  define VK_VOLUME_MUTE 0xad
+#endif
+#ifndef VK_VOLUME_DOWN
+#  define VK_VOLUME_DOWN 0xae
+#endif
+#ifndef VK_VOLUME_UP
+#  define VK_VOLUME_UP 0xaf
+#endif
+#ifndef VK_MEDIA_NEXT_TRACK
+#  define VK_MEDIA_NEXT_TRACK 0xb0
+#endif
+#ifndef VK_MEDIA_PREV_TRACK
+#  define VK_MEDIA_PREV_TRACK 0xb1
+#endif
+#ifndef VK_MEDIA_STOP
+#  define VK_MEDIA_STOP 0xb2
+#endif
+#ifndef VK_MEDIA_PLAY_PAUSE
+#  define VK_MEDIA_PLAY_PAUSE 0xb3
+#endif
+#ifndef VK_LAUNCH_MAIL
+#  define VK_LAUNCH_MAIL 0xb4
+#endif
+#ifndef VK_LAUNCH_MEDIA_SELECT
+#  define VK_LAUNCH_MEDIA_SELECT 0xb5
+#endif
+#ifndef VK_LAUNCH_APP1
+#  define VK_LAUNCH_APP1 0xb6
+#endif
+#ifndef VK_LAUNCH_APP2
+#  define VK_LAUNCH_APP2 0xb7
+#endif
+#ifndef VK_OEM_1
+#  define VK_OEM_1 0xba
+#endif
+#ifndef VK_OEM_PLUS
+#  define VK_OEM_PLUS 0xbb
+#endif
+#ifndef VK_OEM_COMMA
+#  define VK_OEM_COMMA 0xbc
+#endif
+#ifndef VK_OEM_MINUS
+#  define VK_OEM_MINUS 0xbd
+#endif
+#ifndef VK_OEM_PERIOD
+#  define VK_OEM_PERIOD 0xbe
+#endif
+#ifndef VK_OEM_2
+#  define VK_OEM_2 0xbf
+#endif
+#ifndef VK_OEM_3
+#  define VK_OEM_3 0xc0
+#endif
+#ifndef VK_OEM_4
+#  define VK_OEM_4 0xdb
+#endif
+#ifndef VK_OEM_5
+#  define VK_OEM_5 0xdc
+#endif
+#ifndef VK_OEM_6
+#  define VK_OEM_6 0xdd
+#endif
+#ifndef VK_OEM_7
+#  define VK_OEM_7 0xde
+#endif
+#ifndef VK_OEM_8
+#  define VK_OEM_8 0xdf
+#endif
+#ifndef VK_OEM_AX
+#  define VK_OEM_AX 0xe1
+#endif
+#ifndef VK_OEM_102
+#  define VK_OEM_102 0xe2
+#endif
+#ifndef VK_ICO_HELP
+#  define VK_ICO_HELP 0xe3
+#endif
+#ifndef VK_ICO_00
+#  define VK_ICO_00 0xe4
+#endif
+#ifndef VK_PROCESSKEY
+#  define VK_PROCESSKEY 0xe5
+#endif
+#ifndef VK_ICO_CLEAR
+#  define VK_ICO_CLEAR 0xe6
+#endif
+#ifndef VK_PACKET
+#  define VK_PACKET 0xe7
+#endif
+#ifndef VK_OEM_RESET
+#  define VK_OEM_RESET 0xe9
+#endif
+#ifndef VK_OEM_JUMP
+#  define VK_OEM_JUMP 0xea
+#endif
+#ifndef VK_OEM_PA1
+#  define VK_OEM_PA1 0xeb
+#endif
+#ifndef VK_OEM_PA2
+#  define VK_OEM_PA2 0xec
+#endif
+#ifndef VK_OEM_PA3
+#  define VK_OEM_PA3 0xed
+#endif
+#ifndef VK_OEM_WSCTRL
+#  define VK_OEM_WSCTRL 0xee
+#endif
+#ifndef VK_OEM_CUSEL
+#  define VK_OEM_CUSEL 0xef
+#endif
+#ifndef VK_OEM_ATTN
+#  define VK_OEM_ATTN 0xf0
+#endif
+#ifndef VK_OEM_FINISH
+#  define VK_OEM_FINISH 0xf1
+#endif
+#ifndef VK_OEM_COPY
+#  define VK_OEM_COPY 0xf2
+#endif
+#ifndef VK_OEM_AUTO
+#  define VK_OEM_AUTO 0xf3
+#endif
+#ifndef VK_OEM_ENLW
+#  define VK_OEM_ENLW 0xf4
+#endif
+#ifndef VK_OEM_BACKTAB
+#  define VK_OEM_BACKTAB 0xf5
+#endif
+#ifndef VK_ATTN
+#  define VK_ATTN 0xf6
+#endif
+#ifndef VK_CRSEL
+#  define VK_CRSEL 0xf7
+#endif
+#ifndef VK_EXSEL
+#  define VK_EXSEL 0xf8
+#endif
+#ifndef VK_EREOF
+#  define VK_EREOF 0xf9
+#endif
+#ifndef VK_PLAY
+#  define VK_PLAY 0xfa
+#endif
+#ifndef VK_ZOOM
+#  define VK_ZOOM 0xfb
+#endif
+#ifndef VK_NONAME
+#  define VK_NONAME 0xfc
+#endif
+#ifndef VK_PA1
+#  define VK_PA1 0xfd
+#endif
+#ifndef VK_OEM_CLEAR
+#  define VK_OEM_CLEAR 0xfe
+#endif
+
+#ifndef RT_VERSION
+#define RT_VERSION	MAKEINTRESOURCE(16)
+#endif
+#ifndef RT_ANICURSOR
+#define RT_ANICURSOR    MAKEINTRESOURCE(21)
+#endif
+#ifndef RT_ANIICON
+#define RT_ANIICON      MAKEINTRESOURCE(22)
+#endif
+#ifndef RT_HTML
+#define RT_HTML         MAKEINTRESOURCE(23)
+#endif
+#ifndef RT_MANIFEST
+#define RT_MANIFEST     MAKEINTRESOURCE(24)
+#endif
+#ifndef RT_DLGINIT
+#define RT_DLGINIT      MAKEINTRESOURCE(240)
+#endif
+#ifndef RT_TOOLBAR
+#define RT_TOOLBAR      MAKEINTRESOURCE(241)
+#endif
+
+
+#ifndef ctlFirst
+#  define ctlFirst 0x0400
+#endif
+#ifndef ctlLast
+#  define ctlLast 0x04ff
+#endif
+#ifndef psh1
+#  define psh1 0x0400
+#endif
+#ifndef psh2
+#  define psh2 0x0401
+#endif
+#ifndef psh3
+#  define psh3 0x0402
+#endif
+#ifndef psh4
+#  define psh4 0x0403
+#endif
+#ifndef psh5
+#  define psh5 0x0404
+#endif
+#ifndef psh6
+#  define psh6 0x0405
+#endif
+#ifndef psh7
+#  define psh7 0x0406
+#endif
+#ifndef psh8
+#  define psh8 0x0407
+#endif
+#ifndef psh9
+#  define psh9 0x0408
+#endif
+#ifndef psh10
+#  define psh10 0x0409
+#endif
+#ifndef psh11
+#  define psh11 0x040a
+#endif
+#ifndef psh12
+#  define psh12 0x040b
+#endif
+#ifndef psh13
+#  define psh13 0x040c
+#endif
+#ifndef psh14
+#  define psh14 0x040d
+#endif
+#ifndef psh15
+#  define psh15 0x040e
+#endif
+#ifndef pshHelp
+#  define pshHelp psh15
+#endif
+#ifndef psh16
+#  define psh16 0x040f
+#endif
+#ifndef chx1
+#  define chx1 0x0410
+#endif
+#ifndef chx2
+#  define chx2 0x0411
+#endif
+#ifndef chx3
+#  define chx3 0x0412
+#endif
+#ifndef chx4
+#  define chx4 0x0413
+#endif
+#ifndef chx5
+#  define chx5 0x0414
+#endif
+#ifndef chx6
+#  define chx6 0x0415
+#endif
+#ifndef chx7
+#  define chx7 0x0416
+#endif
+#ifndef chx8
+#  define chx8 0x0417
+#endif
+#ifndef chx9
+#  define chx9 0x0418
+#endif
+#ifndef chx10
+#  define chx10 0x0419
+#endif
+#ifndef chx11
+#  define chx11 0x041a
+#endif
+#ifndef chx12
+#  define chx12 0x041b
+#endif
+#ifndef chx13
+#  define chx13 0x041c
+#endif
+#ifndef chx14
+#  define chx14 0x041d
+#endif
+#ifndef chx15
+#  define chx15 0x041e
+#endif
+#ifndef chx16
+#  define chx16 0x041f
+#endif
+#ifndef rad1
+#  define rad1 0x0420
+#endif
+#ifndef rad2
+#  define rad2 0x0421
+#endif
+#ifndef rad3
+#  define rad3 0x0422
+#endif
+#ifndef rad4
+#  define rad4 0x0423
+#endif
+#ifndef rad5
+#  define rad5 0x0424
+#endif
+#ifndef rad6
+#  define rad6 0x0425
+#endif
+#ifndef rad7
+#  define rad7 0x0426
+#endif
+#ifndef rad8
+#  define rad8 0x0427
+#endif
+#ifndef rad9
+#  define rad9 0x0428
+#endif
+#ifndef rad10
+#  define rad10 0x0429
+#endif
+#ifndef rad11
+#  define rad11 0x042a
+#endif
+#ifndef rad12
+#  define rad12 0x042b
+#endif
+#ifndef rad13
+#  define rad13 0x042c
+#endif
+#ifndef rad14
+#  define rad14 0x042d
+#endif
+#ifndef rad15
+#  define rad15 0x042e
+#endif
+#ifndef rad16
+#  define rad16 0x042f
+#endif
+#ifndef grp1
+#  define grp1 0x0430
+#endif
+#ifndef grp2
+#  define grp2 0x0431
+#endif
+#ifndef grp3
+#  define grp3 0x0432
+#endif
+#ifndef grp4
+#  define grp4 0x0433
+#endif
+#ifndef frm1
+#  define frm1 0x0434
+#endif
+#ifndef frm2
+#  define frm2 0x0435
+#endif
+#ifndef frm3
+#  define frm3 0x0436
+#endif
+#ifndef frm4
+#  define frm4 0x0437
+#endif
+#ifndef rct1
+#  define rct1 0x0438
+#endif
+#ifndef rct2
+#  define rct2 0x0439
+#endif
+#ifndef rct3
+#  define rct3 0x043a
+#endif
+#ifndef rct4
+#  define rct4 0x043b
+#endif
+#ifndef ico1
+#  define ico1 0x043c
+#endif
+#ifndef ico2
+#  define ico2 0x043d
+#endif
+#ifndef ico3
+#  define ico3 0x043e
+#endif
+#ifndef ico4
+#  define ico4 0x043f
+#endif
+#ifndef stc1
+#  define stc1 0x0440
+#endif
+#ifndef stc2
+#  define stc2 0x0441
+#endif
+#ifndef stc3
+#  define stc3 0x0442
+#endif
+#ifndef stc4
+#  define stc4 0x0443
+#endif
+#ifndef stc5
+#  define stc5 0x0444
+#endif
+#ifndef stc6
+#  define stc6 0x0445
+#endif
+#ifndef stc7
+#  define stc7 0x0446
+#endif
+#ifndef stc8
+#  define stc8 0x0447
+#endif
+#ifndef stc9
+#  define stc9 0x0448
+#endif
+#ifndef stc10
+#  define stc10 0x0449
+#endif
+#ifndef stc11
+#  define stc11 0x044a
+#endif
+#ifndef stc12
+#  define stc12 0x044b
+#endif
+#ifndef stc13
+#  define stc13 0x044c
+#endif
+#ifndef stc14
+#  define stc14 0x044d
+#endif
+#ifndef stc15
+#  define stc15 0x044e
+#endif
+#ifndef stc16
+#  define stc16 0x044f
+#endif
+#ifndef stc17
+#  define stc17 0x0450
+#endif
+#ifndef stc18
+#  define stc18 0x0451
+#endif
+#ifndef stc19
+#  define stc19 0x0452
+#endif
+#ifndef stc20
+#  define stc20 0x0453
+#endif
+#ifndef stc21
+#  define stc21 0x0454
+#endif
+#ifndef stc22
+#  define stc22 0x0455
+#endif
+#ifndef stc23
+#  define stc23 0x0456
+#endif
+#ifndef stc24
+#  define stc24 0x0457
+#endif
+#ifndef stc25
+#  define stc25 0x0458
+#endif
+#ifndef stc26
+#  define stc26 0x0459
+#endif
+#ifndef stc27
+#  define stc27 0x045a
+#endif
+#ifndef stc28
+#  define stc28 0x045b
+#endif
+#ifndef stc29
+#  define stc29 0x045c
+#endif
+#ifndef stc30
+#  define stc30 0x045d
+#endif
+#ifndef stc31
+#  define stc31 0x045e
+#endif
+#ifndef stc32
+#  define stc32 0x045f
+#endif
+#ifndef lst1
+#  define lst1 0x0460
+#endif
+#ifndef lst2
+#  define lst2 0x0461
+#endif
+#ifndef lst3
+#  define lst3 0x0462
+#endif
+#ifndef lst4
+#  define lst4 0x0463
+#endif
+#ifndef lst5
+#  define lst5 0x0464
+#endif
+#ifndef lst6
+#  define lst6 0x0465
+#endif
+#ifndef lst7
+#  define lst7 0x0466
+#endif
+#ifndef lst8
+#  define lst8 0x0467
+#endif
+#ifndef lst9
+#  define lst9 0x0468
+#endif
+#ifndef lst10
+#  define lst10 0x0469
+#endif
+#ifndef lst11
+#  define lst11 0x046a
+#endif
+#ifndef lst12
+#  define lst12 0x046b
+#endif
+#ifndef lst13
+#  define lst13 0x046c
+#endif
+#ifndef lst14
+#  define lst14 0x046d
+#endif
+#ifndef lst15
+#  define lst15 0x046e
+#endif
+#ifndef lst16
+#  define lst16 0x046f
+#endif
+#ifndef cmb1
+#  define cmb1 0x0470
+#endif
+#ifndef cmb2
+#  define cmb2 0x0471
+#endif
+#ifndef cmb3
+#  define cmb3 0x0472
+#endif
+#ifndef cmb4
+#  define cmb4 0x0473
+#endif
+#ifndef cmb5
+#  define cmb5 0x0474
+#endif
+#ifndef cmb6
+#  define cmb6 0x0475
+#endif
+#ifndef cmb7
+#  define cmb7 0x0476
+#endif
+#ifndef cmb8
+#  define cmb8 0x0477
+#endif
+#ifndef cmb9
+#  define cmb9 0x0478
+#endif
+#ifndef cmb10
+#  define cmb10 0x0479
+#endif
+#ifndef cmb11
+#  define cmb11 0x047a
+#endif
+#ifndef cmb12
+#  define cmb12 0x047b
+#endif
+#ifndef cmb13
+#  define cmb13 0x047c
+#endif
+#ifndef cmb14
+#  define cmb14 0x047d
+#endif
+#ifndef cmb15
+#  define cmb15 0x047e
+#endif
+#ifndef cmb16
+#  define cmb16 0x047f
+#endif
+#ifndef edt1
+#  define edt1 0x0480
+#endif
+#ifndef edt2
+#  define edt2 0x0481
+#endif
+#ifndef edt3
+#  define edt3 0x0482
+#endif
+#ifndef edt4
+#  define edt4 0x0483
+#endif
+#ifndef edt5
+#  define edt5 0x0484
+#endif
+#ifndef edt6
+#  define edt6 0x0485
+#endif
+#ifndef edt7
+#  define edt7 0x0486
+#endif
+#ifndef edt8
+#  define edt8 0x0487
+#endif
+#ifndef edt9
+#  define edt9 0x0488
+#endif
+#ifndef edt10
+#  define edt10 0x0489
+#endif
+#ifndef edt11
+#  define edt11 0x048a
+#endif
+#ifndef edt12
+#  define edt12 0x048b
+#endif
+#ifndef edt13
+#  define edt13 0x048c
+#endif
+#ifndef edt14
+#  define edt14 0x048d
+#endif
+#ifndef edt15
+#  define edt15 0x048e
+#endif
+#ifndef edt16
+#  define edt16 0x048f
+#endif
+#ifndef scr1
+#  define scr1 0x0490
+#endif
+#ifndef scr2
+#  define scr2 0x0491
+#endif
+#ifndef scr3
+#  define scr3 0x0492
+#endif
+#ifndef scr4
+#  define scr4 0x0493
+#endif
+#ifndef scr5
+#  define scr5 0x0494
+#endif
+#ifndef scr6
+#  define scr6 0x0495
+#endif
+#ifndef scr7
+#  define scr7 0x0496
+#endif
+#ifndef scr8
+#  define scr8 0x0497
+#endif
+#ifndef ctl1
+#  define ctl1 0x04A0
+#endif
+
+#endif /* __WINDOWS_RH__  */

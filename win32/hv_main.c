@@ -1,16 +1,14 @@
-#define GDK_DISABLE_DEPRECATION_WARNINGS
-
-#include "hv_gtk.h"
-#include "gdkkeysyms.h"
-
-#include "../icons/hypview.h"
+#include "hv_defs.h"
+#include "hv_vers.h"
+#include "xgetopt.h"
+#include "resource.rh"
 
 char const gl_program_name[] = "HypView";
 char const gl_compile_date[12] = __DATE__;
 
-static char *geom_arg;
 static gboolean bShowVersion;
 static gboolean bShowHelp;
+static const char *geom_arg;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -19,15 +17,6 @@ static gboolean bShowHelp;
 char *gl_program_version(void)
 {
 	return g_strdup(HYPVIEW_VERSION);
-}
-
-/******************************************************************************/
-/*** ---------------------------------------------------------------------- ***/
-/******************************************************************************/
-
-GdkPixbuf *app_icon(void)
-{
-	return gdk_pixbuf_new_from_inline(-1, hypview_icon_data, FALSE, NULL);
 }
 
 /******************************************************************************/
@@ -43,67 +32,84 @@ static void NOINLINE LoadConfig(void)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static GOptionEntry const options[] = {
-	{ "geometry", 0, 0, G_OPTION_ARG_STRING, &geom_arg, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
-	{ "version", 0, 0, G_OPTION_ARG_NONE, &bShowVersion, N_("Show version information and exit"), NULL },
-	{ "help", '?', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &bShowHelp, N_("Show help information and exit"), NULL },
-	
-	{ NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
+enum {
+	OPT_GEOMETRY = 256
 };
 
-/******************************************************************************/
-/*** ---------------------------------------------------------------------- ***/
-/******************************************************************************/
-
-static gboolean NOINLINE ParseCommandLine(int *argc, char ***argv)
-{
-	GOptionContext *context;
-	GOptionGroup *gtk_group;
-	GError *error = NULL;
-	gboolean retval;
-	GOptionGroup *main_group;
+static struct option const long_options[] = {
+	{ "geometry", required_argument, NULL, OPT_GEOMETRY },
+	{ "help", no_argument, NULL, 'h' },
+	{ "version", no_argument, NULL, 'V' },
 	
-	/*
-	 * Glib's option parser requires global variables,
-	 * copy options read from INI file there.
-	 */
+	{ NULL, no_argument, NULL, 0 }
+};
+	
+
+static gboolean NOINLINE ParseCommandLine(int *argc, const char ***pargv)
+{
+	struct _getopt_data *d;
+	gboolean retval = TRUE;
+	int c;
+	const char **argv = *pargv;
+	
 	bShowVersion = FALSE;
 	bShowHelp = FALSE;
 	
-	gtk_group = gtk_get_option_group(FALSE);
-	context = g_option_context_new(_("[FILE [CHAPTER]]"));
-	main_group = g_option_group_new(NULL, NULL, NULL, NULL, NULL);
-	g_option_context_set_main_group(context, main_group);
-	g_option_context_set_summary(context, _("GTK Shell for HypView"));
-	g_option_context_add_group(context, gtk_group);
-	g_option_context_add_main_entries(context, options, GETTEXT_PACKAGE);
-	
-	/*
-	 * disable automatic handling of --help from Glib because
-	 * - the short option 'h' conflicts with our short option for --html
-	 * - we may want to redirect the message to a dialog box
-	 */
-	g_option_context_set_help_enabled(context, FALSE);
-	
-	retval = g_option_context_parse(context, argc, argv, &error);
+	getopt_init_r(gl_program_name, &d);
+	while ((c = getopt_long_only_r(*argc, argv, "hV?", long_options, NULL, d)) != EOF)
+	{
+		switch (c)
+		{
+		case OPT_GEOMETRY:
+			geom_arg = getopt_arg_r(d);
+			break;
+		case 'h':
+			bShowHelp = TRUE;
+			break;
+		case 'V':
+			bShowVersion = TRUE;
+			break;
+		case '?':
+			if (getopt_opt_r(d) == '?')
+			{
+				bShowHelp = TRUE;
+			} else
+			{
+				retval = FALSE;
+			}
+			break;
+		case 0:
+			/* option which just sets a var */
+			break;
+		
+		default:
+			/* error message already issued */
+			retval = FALSE;
+			break;
+		}
+	}
+
 	if (bShowHelp)
 	{
-		char *msg = g_option_context_get_help(context, FALSE, NULL);
+		char *msg = g_strdup_printf(_("\
+HypView Win32 Version %s\n\
+ST-Guide Hypertext File Viewer\n\
+\n\
+usage: %s [FILE [CHAPTER]]"), HYPVIEW_VERSION, gl_program_name);
 		write_console(msg, FALSE, FALSE, TRUE);
 		g_free(msg);
 	}
-	g_option_context_free(context);
 	
-	if (retval == FALSE)
+	if (retval)
 	{
-		char *msg = g_strdup_printf("%s: %s", gl_program_name, error && error->message ? error->message : _("error parsing command line"));
-		write_console(msg, TRUE, TRUE, FALSE);
-		g_free(msg);
-		g_clear_error(&error);
-		return FALSE;
+		int oind = getopt_ind_r(d);
+		*argc = *argc - oind;
+		*pargv += oind;
 	}
 	
-	return TRUE;
+	getopt_finish_r(&d);
+
+	return retval;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -113,7 +119,7 @@ static void show_version(void)
 	char *url = g_strdup_printf(_("%s is Open Source (see %s for further information).\n"), gl_program_name, HYP_URL);
 	char *hyp_version = hyp_lib_version();
 	char *msg = g_strdup_printf(
-		"HypView GTK Version %s\n"
+		"HypView Win32 Version %s\n"
 		"HCP %s\n"
 		"%s\n"
 		"%s",
@@ -125,47 +131,6 @@ static void show_version(void)
 	g_free(msg);
 	g_free(hyp_version);
 	g_free(url);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void fix_fds(void)
-{
-	/* Bad Things Happen if stdin, stdout, and stderr have been closed
-	   (as by the `sh incantation "hypview >&- 2>&-").  When you do
-	   that, the X connection gets allocated to one of these fds, and
-	   then some random library writes to stderr, and random bits get
-	   stuffed down the X pipe, causing "Xlib: sequence lost" errors.
-	   So, we cause the first three file descriptors to be open to
-	   /dev/null if they aren't open to something else already.  This
-	   must be done before any other files are opened (or the closing
-	   of that other file will again free up one of the "magic" first
-	   three FDs.)
-
-	   We do this by opening /dev/null three times, and then closing
-	   those fds, *unless* any of them got allocated as #0, #1, or #2,
-	   in which case we leave them open.  Gag.
-
-	   Really, this crap is technically required of *every* X program,
-	   if you want it to be robust in the face of "2>&-".
-	 */
-#ifdef G_OS_WIN32
-#define NULL_DEV "nul"
-#endif
-#ifdef G_OS_UNIX
-#define NULL_DEV "/dev/null"
-#endif
-
-	int fd0 = open(NULL_DEV, O_RDWR);
-	int fd1 = open(NULL_DEV, O_RDWR);
-	int fd2 = open(NULL_DEV, O_RDWR);
-
-	if (fd0 > 2)
-		close(fd0);
-	if (fd1 > 2)
-		close(fd1);
-	if (fd2 > 2)
-		close(fd2);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -187,19 +152,16 @@ static void myInvalidParameterHandler(const wchar_t *expression,
 
 /*** ---------------------------------------------------------------------- ***/
 
-int main(int argc, char **argv)
+#include "hypmain.h"
+
+int main(int argc, const char **argv)
 {
 	int exit_status = EXIT_SUCCESS;
+	HACCEL haccel;
 	
 	check_console();
-	fix_fds();
-
-#ifdef HAVE_SETLOCALE
-	setlocale(LC_ALL, "");
-#endif
-
+	
 #ifdef G_OS_WIN32
-	g_win32_get_windows_version();
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 #ifdef _MSC_VER
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
@@ -208,14 +170,8 @@ int main(int argc, char **argv)
 #endif
 #endif
 	
-#ifdef ENABLE_NLS
-	bindtextdomain(GETTEXT_PACKAGE, xs_get_locale_dir());
-	textdomain(GETTEXT_PACKAGE);
-	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-#endif
-
 	LoadConfig();
-
+	
 	if (!ParseCommandLine(&argc, &argv))
 		return EXIT_FAILURE;
 	
@@ -231,9 +187,6 @@ int main(int argc, char **argv)
 		
 		hv_init();
 	
-		if (!init_gtk())
-			return EXIT_FAILURE;
-
 		Help_Init();
 		
 		if (!empty(geom_arg))
@@ -286,14 +239,23 @@ int main(int argc, char **argv)
 			hv_recent_add(win->data->path);
 			hv_win_open(win);
 			if (gl_profile.remarker.run_on_startup)
-				StartRemarker(win, TRUE, FALSE);
+				StartRemarker(win, remarker_startup, FALSE);
 		}
 	}
-	g_freep(&geom_arg);
 	
 	if (toplevels_open_except(NULL) != 0)
 	{
-		gtk_main();	
+		MSG msg;
+		haccel = LoadAccelerators(GetInstance(), MAKEINTRESOURCE(IDR_ACCEL));
+		
+		while (GetMessage(&msg, NULL, 0, 0))
+		{
+			if (haccel == NULL || !TranslateAccelerator(msg.hwnd, haccel, &msg))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
 	}
 	
 	Help_Exit();
@@ -301,8 +263,6 @@ int main(int argc, char **argv)
 	hv_exit();
 	HypProfile_Delete();
 
-	exit_gtk();
-	
 	x_free_resources();
 
 	return exit_status;
