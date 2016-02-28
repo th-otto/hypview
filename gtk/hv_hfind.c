@@ -230,7 +230,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 		
 		button = gtk_button_new_cancel();
 		gtk_widget_set_can_default(button, TRUE);
-		gtk_widget_set_tooltip_text(button, _(""));
+		gtk_widget_set_tooltip_text(button, "");
 		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 		gtk_widget_reparent(button, hbox);
 		
