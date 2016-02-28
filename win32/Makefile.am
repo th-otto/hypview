@@ -12,7 +12,7 @@ AM_CPPFLAGS =	-DBINDIR="\"$(bindir)\"" \
 PO_DIR = $(builddir)/../po
 PO_SRCDIR = $(srcdir)/../po
 
-EVAL_POFILES = cat $(PO_SRCDIR)/LINGUAS | sed -e '/^#/d' -e 's@^\(.*\)@\t$$(PO_DIR)/\1.po @'
+EVAL_POFILES = cat $(PO_SRCDIR)/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ $(PO_DIR)/\1.po @'
 POFILES := $(shell $(EVAL_POFILES))
 
 #WINDRES = windres
