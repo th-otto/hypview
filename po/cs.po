@@ -4,7 +4,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-28 04:36+0100\n"
+"POT-Creation-Date: 2016-02-29 14:51+0100\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: Czech <gnome-de@gnome.org>\n"
@@ -255,7 +255,7 @@ msgid  "Link to node of type %u not implemented."
 msgstr ""
 
 #: ../gtk/hv_eref.c:111
-#: ../hyp/hyp.c:476
+#: ../hyp/hyp.c:491
 #: ../tos/hv_eref.c:72
 #: ../win32/hv_eref.c:108
 #, c-format
@@ -2523,18 +2523,18 @@ msgstr ""
 msgid  "Version %s for %s, %s"
 msgstr ""
 
-#: ../hyp/hyp.c:130
+#: ../hyp/hyp.c:145
 #: ../hyp/hyp_cset.c:374
 #: ../hyp/stool.c:53
 msgid  "Unknown"
 msgstr ""
 
-#: ../hyp/hyp.c:145
+#: ../hyp/hyp.c:160
 #, c-format
 msgid  "OS %c"
 msgstr ""
 
-#: ../hyp/hyp.c:148
+#: ../hyp/hyp.c:163
 #, c-format
 msgid  "Type 0x%02x"
 msgstr ""

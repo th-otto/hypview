@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-28 04:36+0100\n"
+"POT-Creation-Date: 2016-02-29 14:51+0100\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -274,7 +274,7 @@ msgid  "Link to node of type %u not implemented."
 msgstr "Link zu Seiten vom Typ %u nicht implementiert."
 
 #: ../gtk/hv_eref.c:111
-#: ../hyp/hyp.c:476
+#: ../hyp/hyp.c:491
 #: ../tos/hv_eref.c:72
 #: ../win32/hv_eref.c:108
 #, c-format
@@ -2586,18 +2586,18 @@ msgstr "<RETURN drücken>"
 msgid  "Version %s for %s, %s"
 msgstr "Version %s für %s, %s"
 
-#: ../hyp/hyp.c:130
+#: ../hyp/hyp.c:145
 #: ../hyp/hyp_cset.c:374
 #: ../hyp/stool.c:53
 msgid  "Unknown"
 msgstr "Unbekannt"
 
-#: ../hyp/hyp.c:145
+#: ../hyp/hyp.c:160
 #, c-format
 msgid  "OS %c"
 msgstr "OS %c"
 
-#: ../hyp/hyp.c:148
+#: ../hyp/hyp.c:163
 #, c-format
 msgid  "Type 0x%02x"
 msgstr "Typ 0x%02x"
@@ -2815,9 +2815,7 @@ msgstr "Unbekannter OS Typ '%s' in Modul %s von %s\n"
 #: ../hyp/ref.c:295
 #, c-format
 msgid  "character set specified more than once in REF module %s of %s\n"
-msgstr ""
-"Zeichensatz mehr als einmal angegeben in REF-Modul %s in %s\n"
-"\n"
+msgstr "Zeichensatz mehr als einmal angegeben in REF-Modul %s in %s\n"
 
 #: ../hyp/ref.c:303
 #, c-format
