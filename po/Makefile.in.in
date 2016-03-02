@@ -46,6 +46,7 @@ CC = @CC@
 #GENCAT = @GENCAT@
 GMSGFMT = @GMSGFMT@
 MSGFMT = @MSGFMT@
+MSGFMT_OPTS = @MSGFMT_OPTS@
 XGETTEXT = @XGETTEXT@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
@@ -68,9 +69,9 @@ POFILES := $(shell $(EVAL_POFILES))
 EVAL_GMOFILES = cat $(srcdir)/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ \1@CATOBJEXT@ @'
 GMOFILES := $(shell $(EVAL_GMOFILES))
 
-DISTFILES_1 = LINGUAS Makefile.in.in $(srcdir)/POTFILES.in
+DISTFILES_1 = LINGUAS $(srcdir)/linguas.rc Makefile.in.in $(srcdir)/POTFILES.in
 DISTFILES = $(DISTFILES_1) $(GETTEXT_PACKAGE).pot \
-	    $(POFILES) $(GMOFILES) $(SOURCES)
+	    $(POFILES) $(SOURCES)
 
 TARFILES = $(DISTFILES_1) $(POFILES) $(SOURCES)
 
@@ -121,14 +122,14 @@ XGETTEXT_ARGS = --no-wrap --width=4
 
 .po.mo:
 	$(AM_V_MSGFMT) $@
-	$(AM_V_at)$(MSGFMT) -o $@ $<
+	$(AM_V_at)$(MSGFMT) $(MSGFMT_OPTS) -o $@ $<
 
 .po.gmo:
 	$(AM_V_MSGFMT) $@
 	@file=`echo $* | sed 's,.*/,,'`.gmo ; \
 	 $(RM) "$$file" ; \
 	 $(AM_V_echo) $(GMSGFMT) -o "$$file" $< ; \
-	      $(GMSGFMT) -v --statistics -o "$$file" $<
+	      $(GMSGFMT) -c -v --statistics -o "$$file" $<
 
 #.po.cat:
 #	@echo "sed -f ../intl/po2msg.sed < $< > $*.msg" ; \
@@ -141,7 +142,7 @@ XGETTEXT_ARGS = --no-wrap --width=4
 all: all-@USE_NLS@
 default: all
 
-all-yes: $(CATALOGS)
+all-yes: $(CATALOGS) $(srcdir)/linguas.rc
 all-no:
 
 $(srcdir)/$(GETTEXT_PACKAGE).pot: $(POTFILES) $(INTLTOOL_EXTRACT) $(INTLTOOL_UPDATE)
@@ -228,7 +229,7 @@ dvi info tags TAGS ID:
 
 mostlyclean:
 	$(RM) core core.* *.pox $(GETTEXT_PACKAGE).po *.old.po cat-id-tbl.tmp .intltool-merge-cache
-	$(RM) *.o
+	$(RM) *.o $(GMOFILES)
 
 clean: mostlyclean
 
@@ -349,6 +350,10 @@ $(INTLTOOL_UPDATE): $(top_srcdir)/intltool-update.in
 
 $(INTLTOOL_EXTRACT): $(top_srcdir)/intltool-extract.in
 	cd $(top_builddir) && $(SHELL) ./config.status intltool
+
+$(srcdir)/linguas.rc: $(srcdir)/LINGUAS
+	$(MAKE) -C $(top_builddir)/potools all-am
+	$(AM_V_GEN)$(top_builddir)/potools/polinguas --podir . --linguas $< > $@.tmp && mv $@.tmp $@ || { $(RM) $@.tmp; false; }
 
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

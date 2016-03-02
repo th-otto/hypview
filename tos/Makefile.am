@@ -2,8 +2,8 @@ include ../Makefile.common
 
 if WITH_GUI_GEM
 bin_PROGRAMS = hypview
-EXEEXT = .app
 endif
+EXEEXT = .app
 
 LIBGEM = -lgem
 
@@ -75,7 +75,7 @@ hypview_SOURCES = \
 	bubble/bgh.c
 
 hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYPDOC_DEP) $(LIBHYP_DEP)
-hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(LIBGEM) $(LIBINTL)
+hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(LIBGEM) $(INTLLIBS)
 
 CLEANFILES = hypview.app
 

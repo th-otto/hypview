@@ -7,4 +7,3 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) \
 noinst_PROGRAMS = help_rc
 
 help_rc_SOURCES = help_rc.c help_rc.h malloc.c
-help_rc_LDADD = $(LIBINTL)

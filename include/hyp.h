@@ -12,10 +12,6 @@
 #undef abs
 #define	abs(a)		((a) >= 0  ? (a) : -(a))
 
-#define empty(str) ((str) == NULL || *(str) == '\0')
-#define fixnull(str) ((str) != NULL ? (str) : "")
-#define printnull(str) ((str) != NULL ? (const char *)(str) : "(nil)")
-
 
 #if defined(__PUREC__) && defined(_PUREC_SOURCE)
 #define fclose(file) purec_fclose(file)
@@ -936,16 +932,11 @@ DWORD win32_from_errno(int err_no);
  * misc.c
  */
 char *hyp_utf8_strerror(int err);
-void g_freep(char **str);
 void chomp(char **str);
 intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base);
 char *xs_imaxtostr(uintmax_t val, char *buf, gboolean is_signed);
 const char *g_utf8_skipchar(const char *p);
 size_t g_utf8_str_len(const char *p, size_t len);
-gboolean g_is_number(const char *val, gboolean is_unsigned);
-
-int g_ascii_strcasecmp(const char *s1, const char *s2);
-int g_ascii_strncasecmp(const char *s1, const char *s2, size_t n);
 
 gboolean walk_dir(const char *dirname, gboolean (*f)(const char *filename, void *data), void *data);
 gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, void *data), void *data);

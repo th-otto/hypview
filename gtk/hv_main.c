@@ -60,9 +60,9 @@ GdkPixbuf *app_icon(void)
 static GOptionEntry const options[] = {
 	{ "version", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show version information and exit"), NULL },
 	{ "help", '?', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL, N_("Show help information and exit"), NULL },
-	{ "geometry", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
+	{ "geometry", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Sets the client geometry of the main window"), NC_("option", "GEOMETRY") },
 	{ "new-window", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Open <FILE> in a new window"), NULL },
-	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, _("[FILE [CHAPTER]]") },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, N_("[FILE [CHAPTER]]") },
 	
 	{ NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };

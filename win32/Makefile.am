@@ -1,23 +1,16 @@
+AUTOMAKE_OPTIONS = -Wno-portability
+
 include ../Makefile.common
 
 if WITH_GUI_WIN32
 bin_PROGRAMS = hypview
 endif
 
-INCLUDES = -I$(hyp_srcdir)/include
+INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
 
 AM_CPPFLAGS =	-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
-PO_DIR = $(builddir)/../po
-PO_SRCDIR = $(srcdir)/../po
-
-EVAL_POFILES = cat $(PO_SRCDIR)/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ $(PO_DIR)/\1.po @'
-POFILES := $(shell $(EVAL_POFILES))
-
-#WINDRES = windres
-WINDRES = orc --compiler none
-
 hypview_SOURCES = \
 	hv_main.c \
 	hv_defs.h \
@@ -53,13 +46,23 @@ hypview_SOURCES = \
 	autoloc.c \
 	$(empty)
 
-hypview_DEPENDENCIES = resource.res $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
-hypview_LDADD = resource.res $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(LIBINTL) -lshell32 -lgdi32 -lcomdlg32
+hypview_DEPENDENCIES = resource.res $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)
+hypview_LDADD = resource.res $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(INTLLIBS) -lshell32 -lgdi32 -lcomdlg32
 hypview_LDFLAGS = -mconsole
 
-resource.res: $(srcdir)/resource.rc $(srcdir)/resource.rh
-	$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
+EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
+MOFILES := $(shell $(EVAL_MOFILES))
 
-EXTRA_DIST = resource.rc resource.rh windows.rh
+resource_files = \
+	$(srcdir)/resource.rc \
+	$(srcdir)/resource.rh \
+	$(srcdir)/resource_en.rc \
+	$(srcdir)/resource_de.rc \
+	$(empty)
+
+resource.res: $(resource_files) $(srcdir)/../po/linguas.rc $(MOFILES)
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
+
+EXTRA_DIST = $(resource_files)
 
 CLEANFILES = *.res

@@ -5,11 +5,11 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-29 14:51+0100\n"
+"POT-Creation-Date: 2016-02-29 15:26+0100\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
-"Language: de\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,6 +22,7 @@ msgstr "Setzt die Geometrie des Hauptfensters"
 
 #: ../gtk/gfilesel.c:53
 #: ../gtk/hv_main.c:63
+msgctxt "option"
 msgid  "GEOMETRY"
 msgstr "GEOMETRY"
 
@@ -2041,7 +2042,7 @@ msgstr "  -p, --pic-format [WERT]       Typ zu recompilierender Bilder\n"
 
 #: ../hyp/hcpmain.c:105
 msgid  "  -q[qq], --quiet               set quiet mode\n"
-msgstr "  -q[qq], --quiet               Ausgaben -abschaltn\n"
+msgstr "  -q[qq], --quiet               Ausgaben -abschalten\n"
 
 #: ../hyp/hcpmain.c:106
 msgid  "  -r, --recompile               recompile a hypertext file\n"
@@ -2637,7 +2638,7 @@ msgstr "  -c, --compile                       Ausgabedatei nicht übersetzen\n"
 
 #: ../hyp/hypfind.c:126
 msgid  "  -q, --quiet                         suppress output messages\n"
-msgstr "  -q, --quiet                         Ausgaben abschaltn\n"
+msgstr "  -q, --quiet                         Ausgaben abschalten\n"
 
 #: ../hyp/hypfind.c:127
 msgid  "  -I, --casesensitive                 case-sensitive search\n"

@@ -21,6 +21,7 @@
 
 #define _(x) x
 #define N_(x) x
+#define NC_(Context, String) String
 
 #ifndef GETTEXT_PACKAGE
 #define GETTEXT_PACKAGE "gtk+"
@@ -50,15 +51,15 @@ static gboolean bShowHelp;
 /******************************************************************************/
 
 static GOptionEntry const options[] = {
-	{ "geometry", 0, 0, G_OPTION_ARG_STRING, &geom_arg, N_("Sets the client geometry of the main window"), N_("GEOMETRY") },
-	{ "caption", 0, 0, G_OPTION_ARG_STRING, &caption, N_("The name of the application"), "TITLE" },
-	{ "prompt", 0, 0, G_OPTION_ARG_STRING, &title, N_("The caption of the dialog widget"), "TITLE" },
-	{ "title", 0, G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, &title, N_("The caption of the dialog widget"), "TITLE" },
-	{ "icon", 0, 0, G_OPTION_ARG_STRING, &iconname, N_("The application icon"), "FILE" },
-	{ "location", 0, 0, G_OPTION_ARG_STRING, &startdir, N_("The directory to start in"), "DIR" },
-	{ "filter", 0, 0, G_OPTION_ARG_STRING, &filter, N_("Sets the filter(s) to be used"), "FILTER" },
-	{ "filterindex", 0, 0, G_OPTION_ARG_STRING, &filterindex_str, N_("Sets the filter to start with"), "INDEX" },
-	{ "parent", 0, 0, G_OPTION_ARG_STRING, &parentid, N_("ID of the parent window"), "WINDOW-ID" },
+	{ "geometry", 0, 0, G_OPTION_ARG_STRING, &geom_arg, N_("Sets the client geometry of the main window"), NC_("option", "GEOMETRY") },
+	{ "caption", 0, 0, G_OPTION_ARG_STRING, &caption, N_("The name of the application"), NC_("option", "TITLE") },
+	{ "prompt", 0, 0, G_OPTION_ARG_STRING, &title, N_("The caption of the dialog widget"), NC_("option", "TITLE") },
+	{ "title", 0, G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, &title, N_("The caption of the dialog widget"), NC_("option", "TITLE") },
+	{ "icon", 0, 0, G_OPTION_ARG_STRING, &iconname, N_("The application icon"), NC_("option", "FILE") },
+	{ "location", 0, 0, G_OPTION_ARG_STRING, &startdir, N_("The directory to start in"), NC_("option", "DIR") },
+	{ "filter", 0, 0, G_OPTION_ARG_STRING, &filter, N_("Sets the filter(s) to be used"), NC_("option", "FILTER") },
+	{ "filterindex", 0, 0, G_OPTION_ARG_STRING, &filterindex_str, N_("Sets the filter to start with"), NC_("option", "INDEX") },
+	{ "parent", 0, 0, G_OPTION_ARG_STRING, &parentid, N_("ID of the parent window"), NC_("option", "WINDOW-ID") },
 	{ "multiple", 0, 0, G_OPTION_ARG_NONE, &multiple, N_("Allow multiple filenames to be selected"), NULL },
 	{ "save", 0, 0, G_OPTION_ARG_NONE, &saving, N_("create a \"Save As\" type dialog"), NULL },
 	{ "uri", 0, 0, G_OPTION_ARG_NONE, &uri, N_("print filenames as URI"), NULL },

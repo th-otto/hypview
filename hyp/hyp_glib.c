@@ -1,9 +1,10 @@
+#ifndef CC_FOR_BUILD
 #include "hypdefs.h"
+#endif
 #include <limits.h>
 #include <math.h>
 #include <unistd.h>
 #include <errno.h>
-#include "hypdebug.h"
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -14,6 +15,9 @@
 #undef __clear_errno
 #define __set_errno(e) errno = e
 #define __clear_errno() __set_errno(0)
+#ifndef unreachable
+# define unreachable() abort()
+#endif
 
 #ifndef HAVE_GLIB
 
@@ -100,6 +104,7 @@ char *g_strconcat(const char *first, ...)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#ifndef CC_FOR_BUILD
 char *g_get_current_dir(void)
 {
 #if defined(__TOS__)
@@ -145,6 +150,7 @@ char *g_get_current_dir(void)
 	return hyp_conv_to_utf8(hyp_get_current_charset(), cwd, STR0TERM);
 #endif
 }
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -230,7 +236,7 @@ char *g_strchomp(char *str)
 	if (str == NULL)
 		return NULL;
 	end = str + strlen(str) - 1;
-	while (end > str && (*end == ' ' || *end == '\t'))
+	while (end > str && (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n'))
 		--end;
 	*++end = '\0';
 	return str;
@@ -491,6 +497,43 @@ GSList *g_slist_prepend(GSList *list, gpointer data)
 	l->data = data;
 	l->next = list;
 	return l;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GSList *g_slist_append(GSList *list, gpointer data)
+{
+	GSList *l, **last;
+	
+	for (last = &list; *last != NULL; last = &(*last)->next)
+		;
+	l = g_new(GSList, 1);
+	l->data = data;
+	l->next = NULL;
+	*last = l;
+	return list;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void g_slist_free_full(GSList *list, void (*freefunc)(void *))
+{
+	GSList *l, *next;
+	
+	for (l = list; l; l = next)
+	{
+		next = l->next;
+		if (freefunc)
+ 			freefunc(l->data);
+		g_free(l);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void g_slist_free(GSList *list)
+{
+	g_slist_free_full(list, 0);
 }
 
 #endif /* HAVE_GLIB */
@@ -1003,21 +1046,6 @@ char *replace_ext(const char *str, const char *from, const char *to)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void chomp(char **str)
-{
-	if (*str != NULL)
-	{
-		g_strchomp(*str);
-		g_strchug(*str);
-	}
-	if (empty(*str))
-	{
-		g_freep(str);
-	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 gboolean g_is_number(const char *val, gboolean is_unsigned)
 {
 	char *end;
@@ -1036,7 +1064,7 @@ gboolean g_is_number(const char *val, gboolean is_unsigned)
 
 /*** ---------------------------------------------------------------------- ***/
 
-#if defined(_WIN32) && !GLIB_CHECK_VERSION(2, 40, 0)
+#if defined(_WIN32) && !GLIB_CHECK_VERSION(2, 40, 0) && !defined(CC_FOR_BUILD)
 #include <shellapi.h>
 
 char **g_win32_get_command_line(void)

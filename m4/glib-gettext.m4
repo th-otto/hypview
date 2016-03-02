@@ -100,9 +100,14 @@ AC_SUBST($1)dnl
 # GLIB_WITH_NLS
 #-----------------
 glib_DEFUN([GLIB_WITH_NLS],
-  dnl NLS is obligatory
-  [USE_NLS=yes
-    AC_SUBST(USE_NLS)
+  [ 
+  AC_MSG_CHECKING([whether NLS is requested])
+  dnl Default is enabled NLS
+  AC_ARG_ENABLE([nls],
+    [AC_HELP_STRING([--disable-nls], [do not use Native Language Support])],
+    USE_NLS=$enableval, USE_NLS=maybe)
+  AC_MSG_RESULT([$USE_NLS])
+  AC_SUBST([USE_NLS])
 
     gt_cv_have_gettext=no
 
@@ -263,9 +268,15 @@ msgstr ""
       fi
     ])
 
-    if test "$gt_cv_have_gettext" = "yes" ; then
+    if test "$gt_cv_have_gettext" = "yes" -a "$USE_NLS" != "no" ; then
       AC_DEFINE(ENABLE_NLS, 1,
-        [always defined to indicate that i18n is enabled])
+        [indicate that i18n is enabled])
+      USE_NLS=yes
+    else
+      if test "$USE_NLS" = "yes"; then
+        AC_MSG_ERROR([use of NLS was requested, but gettext not available])
+      fi
+      USE_NLS=no
     fi
 
     dnl Test whether we really found GNU xgettext.
@@ -280,6 +291,12 @@ msgstr ""
         XGETTEXT=":"
       fi
     fi
+
+    dnl For backward compatibility. Some Makefiles may be using this.
+    LIBINTL="$INTLLIBS"
+    AC_SUBST([LIBINTL])
+    AC_MSG_CHECKING([whether NLS is supported])
+    AC_MSG_RESULT([$USE_NLS])
 
     AC_OUTPUT_COMMANDS(
       [case "$CONFIG_FILES" in *po/Makefile.in*)

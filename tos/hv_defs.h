@@ -5,8 +5,6 @@
 #include "tos/diallib.h"
 #include "dbgwin.h"
 
-#define HYPVIEW_VERSION "1.0"
-
 
 struct _viewer_colors {
 	_WORD background;       /* window background color */

@@ -58,6 +58,7 @@ extern const char * gl_locale_name (int category, const char *categoryname);
    should be used for codeset information instead.
    The result must not be freed; it is statically allocated.  */
 extern const char * gl_locale_name_thread (int category, const char *categoryname);
+const char *gl_locale_name_thread_unsafe (int category, const char *categoryname);
 
 /* Determine the thread-independent current locale's name, as specified by
    setlocale() calls or by environment variables.
@@ -102,6 +103,8 @@ char *gl_locale_name_posify (const char *name);
 #if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__ || defined __MSYS__
 LANGID gl_locale_win32_langid_from_name(const char *name);
 LANGID gl_locale_win32_messages_langid(void);
+const char *gl_locale_name_from_win32_LCID (LCID lcid);
+const char *gl_locale_name_from_win32_LANGID (LANGID langid);
 #endif
 
 #ifdef __cplusplus

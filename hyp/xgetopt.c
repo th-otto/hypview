@@ -22,8 +22,10 @@
 
 #define __XGETOPT_IMPLEMENTATION__
 
+#ifndef CC_FOR_BUILD
 #include "hypdefs.h"
 #include "xgetopt.h"
+#endif
 
 
 /* This version of `getopt' appears to the caller like standard Unix `getopt'
@@ -40,8 +42,6 @@
 
    GNU application programs can use a third alternative mode in which
    they can distinguish the relative order of options and other arguments. */
-
-#include "xgetopt.h"
 
 /* For communication from `getopt' to the caller.
    When `getopt' finds an option that takes an argument,

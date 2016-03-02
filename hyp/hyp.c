@@ -63,6 +63,21 @@ char *hyp_compiler_version(void)
 
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+void chomp(char **str)
+{
+	if (*str != NULL)
+	{
+		g_strchomp(*str);
+		g_strchug(*str);
+	}
+	if (empty(*str))
+	{
+		g_freep(str);
+	}
+}
+
 /* ------------------------------------------------------------------------- */
 
 HYP_NODE *hyp_node_alloc(long size)

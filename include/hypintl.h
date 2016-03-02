@@ -5,10 +5,15 @@
 #undef ENABLE_NLS
 #endif
 
-#undef ENABLE_NLS
-
 #ifdef ENABLE_NLS
-# include <libintl.h>
+# if (defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__) || defined(__MSYS__)) && !defined(HAVE_GTK)
+#  include "../rcintl/rcintl.h"
+#  define textdomain(String) rc_textdomain(String)
+#  define bindtextdomain(Domain, Directory) rc_bindtextdomain(Domain, GetModuleHandleW(NULL)) 
+#  define bind_textdomain_codeset(Domain, codeset) rc_bind_textdomain_codeset(Domain, codeset)
+# else
+#  include <libintl.h>
+# endif
 # include <locale.h>
 
 /* The separator between msgctxt and msgid in a .mo file. */

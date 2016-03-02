@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = -Wno-portability
+
 include ../Makefile.common
 
 if WITH_GUI_GTK
@@ -5,7 +7,7 @@ bin_PROGRAMS = hypview
 noinst_PROGRAMS = gfilesel
 endif
 
-INCLUDES = -I$(hyp_srcdir)/include
+INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
 
 AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DBINDIR="\"$(bindir)\"" \
@@ -24,6 +26,9 @@ PO_SRCDIR = $(srcdir)/../po
 
 EVAL_POFILES = cat $(PO_SRCDIR)/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@\t$(PO_DIR)/\1.po @'
 POFILES := $(shell $(EVAL_POFILES))
+
+EVAL_MOFILES = cat $(PO_SRCDIR)/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
+MOFILES := $(shell $(EVAL_MOFILES))
 
 hypview_SOURCES = \
 	hv_main.c \
@@ -63,8 +68,11 @@ hypview_SOURCES = \
 	$(empty)
 
 hypview_DEPENDENCIES = $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
-hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(LIBINTL)
+hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(INTLLIBS)
 hypview_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+if OS_WIN32
+hypview_DEPENDENCIES += $(LIBRCINTL_DEP)
+endif
 
 gfilesel_SOURCES = gfilesel.c
 gfilesel_LDADD = $(GTK_LIBS)

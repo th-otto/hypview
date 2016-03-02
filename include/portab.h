@@ -66,6 +66,36 @@
 # endif
 #endif
 
+#ifndef __LEAF
+# if __GNUC_PREREQ (4, 6) && !defined _LIBC
+#  define __LEAF , __leaf__
+#  define __LEAF_ATTR __attribute__ ((__leaf__))
+# else
+#  define __LEAF
+#  define __LEAF_ATTR
+# endif
+#endif
+
+#ifndef __THROW
+# if !defined __cplusplus && __GNUC_PREREQ (3, 3)
+#  define __THROW	__attribute__ ((__nothrow__ __LEAF))
+# else
+#  if defined __cplusplus && __GNUC_PREREQ (2,8)
+#   define __THROW	throw ()
+#  else
+#   define __THROW
+#  endif
+# endif
+#endif
+
+#ifndef __attribute_format_arg__
+#if __GNUC_PREREQ (2,8)
+# define __attribute_format_arg__(x) __attribute__ ((__format_arg__ (x)))
+#else
+# define __attribute_format_arg__(x) /* Ignore */
+#endif
+#endif
+
 /*****************************************************************************/
 /* STANDARD TYPE DEFINITIONS                                                 */
 /*****************************************************************************/

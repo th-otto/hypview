@@ -2,6 +2,8 @@
 c:\hypview.acc
 .C[-Ih:\src\udo\tools\hypview\include\tos]
 .C[-Ih:\src\udo\tools\hypview\include]
+.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
+.C[-Ih:\src\udo\rcintl]
 .C[-Ic:\pc\include]
 .C[-P]
 .C[-K] ; default char unsigned, but FIXME

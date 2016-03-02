@@ -2588,7 +2588,7 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 int main(int argc, const char **argv)
 {
 	int c;
-	int retval = 0;
+	int retval = EXIT_SUCCESS;
 	hcp_opts _opts;
 	hcp_opts *opts = &_opts;
 	int wait_key;
@@ -2601,11 +2601,11 @@ int main(int argc, const char **argv)
 	hcp_opts_init(opts);
 	opts->tabwidth = gl_profile.viewer.ascii_tab_size;
 	if (!hcp_opts_parse_string(opts, gl_profile.hcp.options, OPTS_FROM_CONFIG))
-		retval = 1;
+		retval = EXIT_FAILURE;
 	if (hcp_opts_parse(opts, argc, argv, OPTS_FROM_COMMANDLINE) == FALSE)
-		retval = 1;
+		retval = EXIT_FAILURE;
 	
-	if (retval != 0)
+	if (retval != EXIT_SUCCESS)
 	{
 	} else if (opts->do_version)
 	{
@@ -2621,7 +2621,7 @@ int main(int argc, const char **argv)
 		c = opts->optind;
 		num_args = argc - c;
 
-		if (retval == 0)
+		if (retval == EXIT_SUCCESS)
 		{
 			if (num_opts == 0 && num_args > 0)
 			{
@@ -2629,22 +2629,22 @@ int main(int argc, const char **argv)
 			} else if (num_opts == 0 && num_args <= 0)
 			{
 				/* maybe empty commandline from old Desktop */
-				retval = 1;
+				retval = EXIT_FAILURE;
 				print_usage(stderr);
 			} else if (num_opts > 1)
 			{
 				hcp_usage_error(_("only one of -lrv may be specified"));
-				retval = 1;
+				retval = EXIT_FAILURE;
 			}
 		}
 		
-		if (retval == 0 && num_args <= 0)
+		if (retval == EXIT_SUCCESS && num_args <= 0)
 		{
 			hcp_usage_error(_("no files specified"));
-			retval = 1;
+			retval = EXIT_FAILURE;
 		}
 		
-		if (retval == 0)
+		if (retval == EXIT_SUCCESS)
 		{
 			if (opts->do_list)
 			{
@@ -2657,7 +2657,7 @@ int main(int argc, const char **argv)
 					if (num_args > 1)
 						hyp_utf8_fprintf(opts->outfile, _("File: %s\n"), filename);
 					if (!list_entries(filename, opts))
-						retval = 1;
+						retval = EXIT_FAILURE;
 					else if (c < argc)
 						hyp_utf8_fprintf(opts->outfile, "\n\n");
 				}
@@ -2672,7 +2672,7 @@ int main(int argc, const char **argv)
 				 */
 				if (recompile(filename, opts, recompile_ascii, argc - c, &argv[c], ".txt") == FALSE)
 				{
-					retval = 1;
+					retval = EXIT_FAILURE;
 				}
 			} else if (opts->do_recompile)
 			{
@@ -2686,7 +2686,7 @@ int main(int argc, const char **argv)
 						hyp_utf8_fprintf_charset(opts->outfile, output_charset, _("@remark File: %s%s"), filename, stg_nl);
 					if (recompile(filename, opts, recompile_stg, 0, NULL, HYP_EXT_STG) == FALSE)
 					{
-						retval = 1;
+						retval = EXIT_FAILURE;
 						break;
 					}
 					else if (c < argc)
@@ -2701,7 +2701,7 @@ int main(int argc, const char **argv)
 				 */
 				if (recompile(filename, opts, recompile_dump, argc - c, &argv[c], ".txt") == FALSE)
 				{
-					retval = 1;
+					retval = EXIT_FAILURE;
 				}
 			} else if (opts->do_compile)
 			{
@@ -2715,14 +2715,14 @@ int main(int argc, const char **argv)
 						const char *filename = argv[c++];
 						if (!hcp_compile(filename, opts))
 						{
-							retval = 1;
+							retval = EXIT_FAILURE;
 							break;
 						}
 					}
 				}
 			} else
 			{
-				retval = 1;
+				retval = EXIT_FAILURE;
 				unreachable();
 			}
 		}
@@ -2732,7 +2732,7 @@ int main(int argc, const char **argv)
 	hcp_opts_free(opts);
 	
 	if (wait_key == 2 ||
-		(wait_key == 1 && retval != 0))
+		(wait_key == 1 && retval != EXIT_SUCCESS))
 	{
 		fflush(stderr);
 #ifdef __TOS__

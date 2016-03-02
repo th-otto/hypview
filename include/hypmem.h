@@ -97,7 +97,7 @@ void *dbg_realloc(void *p, size_t s, const char *file, long line);
 #define g_calloc(n, s) calloc(n, s)
 #define g_malloc0(n) calloc(n, 1)
 #define g_realloc(ptr, s) realloc(ptr, s)
-#define g_free(t) free(t)
+#define g_free free
 
 #undef g_ascii_isspace
 #define g_ascii_isspace(c) ((c) == ' ' || (c) == '\t' || (c) == '\r' || (c) == '\n' || (c) == '\f' || (c) == '\v')
@@ -170,7 +170,10 @@ struct _gslist {
 
 GSList *g_slist_remove(GSList *list, gconstpointer data) G_GNUC_WARN_UNUSED_RESULT;
 GSList *g_slist_prepend(GSList  *list, gpointer  data) G_GNUC_WARN_UNUSED_RESULT;
+GSList *g_slist_append(GSList *list, gpointer data);
 #define g_slist_free_1(l) g_free(l)
+void g_slist_free_full(GSList *list, void (*freefunc)(void *));
+void g_slist_free(GSList *list);
 
 #endif /* HAVE_GLIB */
 
@@ -188,6 +191,9 @@ char **g_win32_get_command_line(void);
 #endif
 
 double g_ascii_strtodouble(const char *nptr, const char **endptr);
+gboolean g_is_number(const char *val, gboolean is_unsigned);
+int g_ascii_strcasecmp(const char *s1, const char *s2);
+int g_ascii_strncasecmp(const char *s1, const char *s2, size_t n);
 
 #undef G_IS_DIR_SEPARATOR
 #undef G_SEARCHPATH_SEPARATOR
@@ -241,5 +247,11 @@ void _crtinit(void);
 #if DEBUG_ALLOC < 4
 #define _crtinit()
 #endif
+
+#define empty(str) ((str) == NULL || *(str) == '\0')
+#define fixnull(str) ((str) != NULL ? (str) : "")
+#define printnull(str) ((str) != NULL ? (const char *)(str) : "(nil)")
+
+void g_freep(char **str);
 
 #endif /* __HYPMEM_H__ */

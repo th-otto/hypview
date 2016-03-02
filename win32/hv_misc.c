@@ -18,19 +18,19 @@ static GSList *recent_list;
  */
 HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name)
 {
-    HRSRC hrsrc;
-    LPCWSTR type = MAKEINTRESOURCEW(RT_MENU);
-    LANGID lang = gl_locale_win32_messages_langid();
-    
-    if (!instance)
-    	instance = GetInstance();
-    hrsrc = FindResourceExW(instance, type, name, lang);
-    if (!hrsrc && SUBLANGID(lang) != SUBLANG_DEFAULT)
-    	hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_DEFAULT));
-    if (!hrsrc && SUBLANGID(lang) != SUBLANG_NEUTRAL)
-    	hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_NEUTRAL));
-    if (!hrsrc && lang != MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
-    	hrsrc = FindResourceExW(instance, type, name, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+	HRSRC hrsrc;
+	LPCWSTR type = MAKEINTRESOURCEW(RT_MENU);
+	LANGID lang = gl_locale_win32_messages_langid();
+ 	
+	if (!instance)
+		instance = GetInstance();
+	hrsrc = FindResourceExW(instance, type, name, lang);
+	if (!hrsrc && SUBLANGID(lang) != SUBLANG_DEFAULT)
+		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_DEFAULT));
+	if (!hrsrc && SUBLANGID(lang) != SUBLANG_NEUTRAL)
+		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_NEUTRAL));
+	if (!hrsrc && lang != MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
+		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (!hrsrc)
 		return 0;
 	return LoadMenuIndirectW(LoadResource(instance, hrsrc));
@@ -40,50 +40,26 @@ HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name)
 
 INT_PTR WINAPI DialogBoxExW(HINSTANCE instance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param)
 {
-    HRSRC hrsrc;
-    LPCWSTR type = MAKEINTRESOURCEW(RT_DIALOG);
-    LPCDLGTEMPLATE templ;
-    LANGID lang = gl_locale_win32_messages_langid();
-    
-    if (!instance)
-    	instance = GetInstance();
-    hrsrc = FindResourceExW(instance, type, name, lang);
-    if (!hrsrc && SUBLANGID(lang) != SUBLANG_DEFAULT)
-    	hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_DEFAULT));
-    if (!hrsrc && SUBLANGID(lang) != SUBLANG_NEUTRAL)
-    	hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_NEUTRAL));
-    if (!hrsrc && lang != MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
-    	hrsrc = FindResourceExW(instance, type, name, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+	HRSRC hrsrc;
+	LPCWSTR type = MAKEINTRESOURCEW(RT_DIALOG);
+	LPCDLGTEMPLATE templ;
+	LANGID lang = gl_locale_win32_messages_langid();
+	
+	if (!instance)
+		instance = GetInstance();
+	hrsrc = FindResourceExW(instance, type, name, lang);
+	if (!hrsrc && SUBLANGID(lang) != SUBLANG_DEFAULT)
+		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_DEFAULT));
+	if (!hrsrc && SUBLANGID(lang) != SUBLANG_NEUTRAL)
+		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_NEUTRAL));
+	if (!hrsrc && lang != MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
+		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (!hrsrc)
 		return -1;
 	templ = (LPCDLGTEMPLATE)LoadResource(instance, hrsrc);
 	if (!templ)
 		return -1;
 	return DialogBoxIndirectParamW(instance, templ, owner, dlgProc, param);
-}
-
-/******************************************************************************/
-/*** ---------------------------------------------------------------------- ***/
-/******************************************************************************/
-
-void g_slist_free_full(GSList *list, void (*freefunc)(void *))
-{
-	GSList *l, *next;
-	
-	for (l = list; l; l = next)
-	{
-		next = l->next;
-		if (freefunc)
- 			freefunc(l->data);
-		g_free(l);
-	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-void g_slist_free(GSList *list)
-{
-	g_slist_free_full(list, 0);
 }
 
 /******************************************************************************/
@@ -363,7 +339,7 @@ void RecentInit(void)
 	Profile *profile = gl_profile.profile;
 	char *path;
 	
-	g_slist_free_full(recent_list, free);
+	g_slist_free_full(recent_list, g_free);
 	recent_list = NULL;
 	i = 0;
 	for (;;)

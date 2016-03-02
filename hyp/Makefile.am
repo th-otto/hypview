@@ -1,7 +1,7 @@
 #
 # Makefile for hypview (hyp)
 #
-AUTOMAKE_OPTIONS = subdir-objects
+AUTOMAKE_OPTIONS = subdir-objects -Wno-portability
 
 include ../Makefile.common
 
@@ -18,7 +18,6 @@ noinst_SCRIPTS = $(build_triplet)-hcp$(EXEEXT) \
 endif
 
 EXTRA_DIST = gfx.s genmaptab.c
-
 
 noinst_PROGRAMS = img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico
 
@@ -58,6 +57,7 @@ libhyp_a_SOURCES = \
 	utl_dbg.c \
 	xgetopt.c \
 	str2imax.c \
+	localenm.c \
 	$(empty)
 
 EXTRA_DIST += tos/cookie.c
@@ -82,36 +82,13 @@ libhypdoc_a_SOURCES = \
 	hypdoc.c hypdoc.h \
 	block.c \
 	hyp_asc.c \
-	hyp_bin.c \
-	localenm.c
+	hyp_bin.c
 
 
 UTIL_SRC = \
 	utl_err.c \
 	hyp_err.c \
 	utl_ngui.c
-
-
-reflink_SOURCES = \
-	reflink.c \
-	refcmds.c \
-	$(UTIL_SRC)
-reflink_DEPENDENCIES = libhyp.a
-reflink_LDADD = $(LIBHYP) $(GLIB_LIBS) $(LIBINTL)
-
-reflink.ttp: reflink
-	$(LN_S) $?$(EXEEXT) $@
-
-refcheck_SOURCES = \
-	refcheck.c \
-	refcmds.c \
-	$(UTIL_SRC)
-
-refcheck_DEPENDENCIES = libhyp.a
-refcheck_LDADD = $(LIBHYP) $(GLIB_LIBS) $(LIBINTL)
-
-refcheck.ttp: refcheck
-	$(LN_S) $?$(EXEEXT) $@
 
 
 hcp_SOURCES = \
@@ -123,8 +100,18 @@ hcp_SOURCES = \
 	refcmds.c \
 	$(UTIL_SRC)
 
+EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
+MOFILES := $(shell $(EVAL_MOFILES))
+
 hcp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-hcp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+hcp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if OS_WIN32
+hcp_SOURCES += hcp_rc.rc
+hcp_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
+hcp_LDADD += hcp_rc.res
+hcp_rc.res: $(srcdir)/hcp_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+endif
 
 hcp.ttp: hcp
 	$(LN_S) $?$(EXEEXT) $@
@@ -132,12 +119,57 @@ hcp.ttp: hcp
 $(build_triplet)-hcp$(EXEEXT): hcp$(EXEEXT)
 	cp -a $? $@
 
+
+reflink_SOURCES = \
+	reflink.c \
+	refcmds.c \
+	$(UTIL_SRC)
+reflink_DEPENDENCIES = libhyp.a
+reflink_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
+if OS_WIN32
+reflink_SOURCES += reflink_rc.rc
+reflink_DEPENDENCIES += reflink_rc.res $(LIBRCINTL_DEP)
+reflink_LDADD += reflink_rc.res
+reflink_rc.res: $(srcdir)/reflink_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+endif
+
+reflink.ttp: reflink
+	$(LN_S) $?$(EXEEXT) $@
+
+
+refcheck_SOURCES = \
+	refcheck.c \
+	refcmds.c \
+	$(UTIL_SRC)
+
+refcheck_DEPENDENCIES = libhyp.a
+refcheck_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
+if OS_WIN32
+refcheck_SOURCES += refcheck.rc
+refcheck_DEPENDENCIES += refcheck_rc.res $(LIBRCINTL_DEP)
+refcheck_LDADD += refcheck_rc.res
+refcheck_rc.res: $(srcdir)/refcheck_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+endif
+
+refcheck.ttp: refcheck
+	$(LN_S) $?$(EXEEXT) $@
+
+
 stool_SOURCES = \
 	stool.c \
 	$(UTIL_SRC)
 
 stool_DEPENDENCIES = libhyp.a
-stool_LDADD = $(LIBHYP) $(GLIB_LIBS) $(LIBINTL)
+stool_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
+if OS_WIN32
+stool_SOURCES += stool.rc
+stool_DEPENDENCIES += stool_rc.res $(LIBRCINTL_DEP)
+stool_LDADD += stool_rc.res
+stool_rc.res: $(srcdir)/stool_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+endif
 
 stool.tos: stool
 	$(LN_S) $?$(EXEEXT) $@
@@ -151,7 +183,14 @@ hypfind_SOURCES = \
 	hcp_opts.c \
 	$(UTIL_SRC)
 hypfind_DEPENDENCIES = libhyp.a
-hypfind_LDADD = $(LIBHYP) $(GLIB_LIBS) $(LIBINTL)
+hypfind_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
+if OS_WIN32
+hypfind_SOURCES += hypfind.rc
+hypfind_DEPENDENCIES += hypfind_rc.res $(LIBRCINTL_DEP)
+hypfind_LDADD += hypfind_rc.res
+hypfind_rc.res: $(srcdir)/hypfind_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+endif
 
 hypfind.ttp: hypfind
 	$(LN_S) $?$(EXEEXT) $@
@@ -165,7 +204,7 @@ img2bmp_SOURCES = \
 	$(UTIL_SRC)
 
 img2bmp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-img2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+img2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
 bmp2img_SOURCES = \
@@ -173,7 +212,7 @@ bmp2img_SOURCES = \
 	$(UTIL_SRC)
 
 bmp2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-bmp2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+bmp2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
 bmp2gif_SOURCES = \
@@ -181,7 +220,7 @@ bmp2gif_SOURCES = \
 	$(UTIL_SRC)
 
 bmp2gif_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-bmp2gif_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+bmp2gif_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
 gif2bmp_SOURCES = \
@@ -189,7 +228,7 @@ gif2bmp_SOURCES = \
 	$(UTIL_SRC)
 
 gif2bmp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-gif2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+gif2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
 icn2img_SOURCES = \
@@ -197,7 +236,7 @@ icn2img_SOURCES = \
 	$(UTIL_SRC)
 
 icn2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-icn2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+icn2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
 icn2ico_SOURCES = \
@@ -205,7 +244,7 @@ icn2ico_SOURCES = \
 	$(UTIL_SRC)
 
 icn2ico_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-icn2ico_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+icn2ico_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
 picinfo_SOURCES = \
@@ -213,8 +252,8 @@ picinfo_SOURCES = \
 	$(UTIL_SRC)
 
 picinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-picinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(LIBINTL)
+picinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 
-CLEANFILES = reflink.ttp refcheck.ttp hcp.ttp stool.tos hypfind.ttp
+CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)

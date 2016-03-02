@@ -14,6 +14,7 @@
 #endif
 #undef HAVE_GLIB
 #undef HAVE_GTK
+#undef ENABLE_NLS
 
 #include "hypdefs.h"
 #include <portab.h>

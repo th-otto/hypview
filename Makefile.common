@@ -1,7 +1,12 @@
+include ../../../silent.am
+
 pkgdatadir = $(datadir)/hypview
 
 hyp_srcdir = $(top_srcdir)/tools/hypview
 hyp_builddir = $(top_builddir)/tools/hypview
+
+#WINDRES = windres
+WINDRES = orc --compiler none
 
 LIBHYP_DEP = $(hyp_builddir)/hyp/libhyp.a
 LIBHYP = $(LIBHYP_DEP)
@@ -20,3 +25,9 @@ LIBPIC = $(LIBPIC_DEP)
 
 $(LIBPIC_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/pic libpic.a; fi
+
+LIBRCINTL_DEP = $(top_builddir)/rcintl/librcintl.a
+LIBRCINTL = $(LIBRCINTL_DEP)
+
+$(LIBRCINTL_DEP)::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rcintl librcintl.a; fi
