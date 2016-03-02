@@ -10,16 +10,10 @@
 
 #define PROGRAM_NAME "HypView"
 char const gl_program_name[] = PROGRAM_NAME;
+char const gl_program_version[] = HYPVIEW_VERSION;
 char const gl_compile_date[12] = __DATE__;
 
 struct _viewer_colors viewer_colors;
-
-/* ------------------------------------------------------------------------- */
-
-char *gl_program_version(void)
-{
-	return g_strdup(HYPVIEW_VERSION);
-}
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -226,7 +220,7 @@ static _BOOL gs_version(_WORD argc, const char *const *argv, char **erg)
 	UNUSED(argv);
 	if (argc > 1)
 		return FALSE;
-	*erg = g_strdup(gl_program_version());
+	*erg = g_strdup(gl_program_version);
 	return TRUE;
 }
 

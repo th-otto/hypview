@@ -55,13 +55,11 @@ void DocumentInfos(WINDOW_DATA *win)
 
 #if 0
 	{
-	char *version = gl_program_version();
-	str = g_strdup_printf("%s %s", gl_program_name, version);
+	str = g_strdup_printf("%s %s", gl_program_name, gl_program_version);
 	label = gtk_label_new(str);
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	g_free(str);
-	g_free(version);
 	str = g_strdup_printf(_("from: %s"), gl_compile_date);
 	label = gtk_label_new(str);
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);

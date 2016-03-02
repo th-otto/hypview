@@ -49,7 +49,7 @@ void About(GtkWidget *parent)
 		  "Email: <a href=\"mailto:%s\">%s</a>\n"
 		  "\n"
 		  "Homepage: <a href=\"%s\">%s</a>\n"),
-		  HYPVIEW_VERSION,
+		  gl_program_version,
 		  hyp_version,
 		  gl_compile_date,
 		  compiler_version,

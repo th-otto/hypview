@@ -8,6 +8,7 @@
 #include "../icons/hypview.h"
 
 char const gl_program_name[] = "HypView";
+char const gl_program_version[] = HYPVIEW_VERSION;
 char const gl_compile_date[12] = __DATE__;
 
 static GDesktopAppInfo *appinfo;
@@ -34,15 +35,6 @@ static const gchar org_gtk_hypview_xml[] =
       "<method name='Quit'/>"
     "</interface>"
   "</node>";
-
-/******************************************************************************/
-/*** ---------------------------------------------------------------------- ***/
-/******************************************************************************/
-
-char *gl_program_version(void)
-{
-	return g_strdup(HYPVIEW_VERSION);
-}
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -93,7 +85,7 @@ static void show_version(GApplicationCommandLine *command_line)
 		"HCP %s\n"
 		"%s\n"
 		"%s",
-		HYPVIEW_VERSION,
+		gl_program_version,
 		hyp_version,
 		HYP_COPYRIGHT,
 		url);

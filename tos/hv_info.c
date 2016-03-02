@@ -156,7 +156,6 @@ void DocumentInfos(WINDOW_DATA *win)
 	GRECT big, little;
 	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	OBJECT *tree = rs_tree(PROGINFO);
-	char *version = gl_program_version();
 	char buf[20];
 	
 	static gboolean first = TRUE;
@@ -167,8 +166,7 @@ void DocumentInfos(WINDOW_DATA *win)
 		first = FALSE;
 	}
 	
-	sprintf(tree[PROG_NAME].ob_spec.free_string, "%s %s", gl_program_name, version);
-	g_free(version);
+	sprintf(tree[PROG_NAME].ob_spec.free_string, "%s %s", gl_program_name, gl_program_version);
 	sprintf(tree[PROG_DATE].ob_spec.free_string, rs_string(PROGINFO_FROM), gl_compile_date);
 
 	set_text(tree, PROG_FILE, hyp_basename(doc->path));

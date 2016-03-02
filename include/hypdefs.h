@@ -98,10 +98,8 @@ extern int acc_memsave;
 
 
 extern char const gl_program_name[];
+extern char const gl_program_version[];
 extern char const gl_compile_date[12];
-
-
-extern char *gl_program_version(void);
 
 
 /*

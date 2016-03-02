@@ -864,8 +864,7 @@ gboolean Profile_Read(Profile *profile)
 			time_t now = time((time_t *) 0);
 			char timbuf[40];
 			const char *timestr = ctime_r(&now, timbuf);
-			char *nl = (char *) (void *)strchr(timestr, '\n');
-			char *version = gl_program_version();
+			char *nl = strchr(timestr, '\n');
 			
 			if (nl)
 				*nl = 0;
@@ -874,9 +873,8 @@ gboolean Profile_Read(Profile *profile)
 					"# Written by %s %s for %s on %s.\n"
 					"# " HYP_URL "\n"
 					"\n",
-					RESOURCES_IDENTIFIER, gl_program_name, version, whoami, timestr);
+					RESOURCES_IDENTIFIER, gl_program_name, gl_program_version, whoami, timestr);
 			profile->leng = profile->alloc_len = strlen(profile->buf);
-			g_free(version);
 		}
 		return TRUE;
 	}

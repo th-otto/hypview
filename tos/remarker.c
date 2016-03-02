@@ -6,6 +6,7 @@
 
 #define PROGRAM_NAME "Remarker"
 char const gl_program_name[] = PROGRAM_NAME;
+char const gl_program_version[] = HYPVIEW_VERSION;
 char const gl_compile_date[12] = __DATE__;
 
 _WORD pwchar;
@@ -24,13 +25,6 @@ GRECT winpos = { 700, 100, 200, 200 };
 static OBJECT theobj[] = {
 	{ -1, -1, -1, G_BOX, OF_LASTOB, 0, 0, 0, 0, 0, 0 }
 };
-
-/* ------------------------------------------------------------------------- */
-
-char *gl_program_version(void)
-{
-	return g_strdup(HYPVIEW_VERSION);
-}
 
 /*** ---------------------------------------------------------------------- ***/
 

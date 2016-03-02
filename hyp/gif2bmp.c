@@ -14,6 +14,7 @@
 #include "hv_vers.h"
 
 char const gl_program_name[] = "gif2bmp";
+char const gl_program_version[] = HYP_VERSION;
 
 static gboolean do_help = FALSE;
 static gboolean do_version = FALSE;
@@ -32,13 +33,6 @@ static struct option const long_options[] = {
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
-
-char *gl_program_version(void)
-{
-	return hyp_lib_version();
-}
-
-/* ------------------------------------------------------------------------- */
 
 static void oom(void)
 {
@@ -63,13 +57,12 @@ static void usage_error(const char *msg, ...)
 static void print_version(FILE *out)
 {
 	char *url = g_strdup_printf(_("%s is Open Source (see %s for further information)."), gl_program_name, HYP_URL);
-	char *version = gl_program_version();
 	char *compiler = hyp_compiler_version();
 	char *msg = g_strdup_printf("%s %s\n"
 		"%s\n"
 		"Using %s\n"
 		"%s\n",
-		gl_program_name, printnull(version),
+		gl_program_name, gl_program_version,
 		HYP_COPYRIGHT,
 		printnull(compiler),
 		printnull(url));
@@ -79,7 +72,6 @@ static void print_version(FILE *out)
 	hyp_utf8_fprintf(out, "%s", printnull(msg));
 	g_free(msg);
 	g_free(compiler);
-	g_free(version);
 	g_free(url);
 }
 

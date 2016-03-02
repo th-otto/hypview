@@ -6,6 +6,7 @@
 
 #define PROGRAM_NAME "vastart"
 char const gl_program_name[] = PROGRAM_NAME;
+char const gl_program_version[] = HYPVIEW_VERSION;
 char const gl_compile_date[12] = __DATE__;
 
 _WORD pwchar;
@@ -14,13 +15,6 @@ _WORD pwbox;
 _WORD phbox;
 _WORD aes_handle;
 short doneFlag;
-
-/* ------------------------------------------------------------------------- */
-
-char *gl_program_version(void)
-{
-	return g_strdup(HYPVIEW_VERSION);
-}
 
 /*** ---------------------------------------------------------------------- ***/
 

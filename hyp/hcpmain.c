@@ -10,6 +10,7 @@
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hcp";
+char const gl_program_version[] = HYP_VERSION;
 
 static const char *stg_nl;
 static gboolean is_MASTER;
@@ -28,23 +29,15 @@ typedef gboolean (*recompile_func)(HYP_DOCUMENT *hyp, hcp_opts *opt, int argc, c
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-char *gl_program_version(void)
-{
-	return hyp_lib_version();
-}
-
-/* ------------------------------------------------------------------------- */
-
 static void print_version(FILE *out)
 {
 	char *url = g_strdup_printf(_("%s is Open Source (see %s for further information)."), gl_program_name, HYP_URL);
-	char *version = gl_program_version();
 	char *compiler = hyp_compiler_version();
 	char *msg = g_strdup_printf("%s %s\n"
 		"%s\n"
 		"Using %s\n"
 		"%s\n",
-		gl_program_name, printnull(version),
+		gl_program_name, gl_program_version,
 		HYP_COPYRIGHT,
 		printnull(compiler),
 		printnull(url));
@@ -54,7 +47,6 @@ static void print_version(FILE *out)
 	hyp_utf8_fprintf(out, "%s", printnull(msg));
 	g_free(msg);
 	g_free(compiler);
-	g_free(version);
 	g_free(url);
 }
 
@@ -63,17 +55,15 @@ static void print_version(FILE *out)
 #if 0
 static void print_short_version(FILE *out)
 {
-	char *version = gl_program_version();
 	char *msg = g_strdup_printf("%s %s\n"
 		"%s\n\n",
-		gl_program_name, printnull(version),
+		gl_program_name, gl_program_version,
 		HYP_COPYRIGHT);
 	
 	fflush(stdout);
 	fflush(stderr);
 	hyp_utf8_fprintf(out, "%s", printnull(msg));
 	g_free(msg);
-	g_free(version);
 }
 #endif
 

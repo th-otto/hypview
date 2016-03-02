@@ -9,6 +9,7 @@
 
 
 char const gl_program_name[] = "RefLink";
+char const gl_program_version[] = HYP_VERSION;
 
 
 static struct option const long_options[] = {
@@ -26,29 +27,20 @@ static struct option const long_options[] = {
 
 /* ------------------------------------------------------------------------- */
 
-char *gl_program_version(void)
-{
-	return hyp_lib_version();
-}
-
-/* ------------------------------------------------------------------------- */
-
 static void print_version(FILE *out)
 {
 	char *url = g_strdup_printf(_("%s is Open Source (see %s for further information)."), gl_program_name, HYP_URL);
-	char *version = gl_program_version();
 	char *msg = g_strdup_printf("%s %s\n"
 		"%s\n"
 		"%s\n",
-		 gl_program_name, version,
+		 gl_program_name, gl_program_version,
 		 HYP_COPYRIGHT,
 		 url);
 	
 	fflush(stdout);
 	fflush(stderr);
-	hyp_utf8_fprintf(out, "%s", msg);
+	hyp_utf8_fprintf(out, "%s", printnull(msg));
 	g_free(msg);
-	g_free(version);
 	g_free(url);
 }
 

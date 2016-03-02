@@ -4,20 +4,12 @@
 #include "resource.rh"
 
 char const gl_program_name[] = "HypView";
+char const gl_program_version[] = HYPVIEW_VERSION;
 char const gl_compile_date[12] = __DATE__;
 
 static gboolean bShowVersion;
 static gboolean bShowHelp;
 static const char *geom_arg;
-
-/******************************************************************************/
-/*** ---------------------------------------------------------------------- ***/
-/******************************************************************************/
-
-char *gl_program_version(void)
-{
-	return g_strdup(HYPVIEW_VERSION);
-}
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -95,7 +87,7 @@ static gboolean NOINLINE ParseCommandLine(int *argc, const char ***pargv)
 HypView Win32 Version %s\n\
 ST-Guide Hypertext File Viewer\n\
 \n\
-usage: %s [FILE [CHAPTER]]"), HYPVIEW_VERSION, gl_program_name);
+usage: %s [FILE [CHAPTER]]"), gl_program_version, gl_program_name);
 		write_console(msg, FALSE, FALSE, TRUE);
 		g_free(msg);
 	}
@@ -123,7 +115,7 @@ static void show_version(void)
 		"HCP %s\n"
 		"%s\n"
 		"%s",
-		HYPVIEW_VERSION,
+		gl_program_version,
 		hyp_version,
 		HYP_COPYRIGHT,
 		url);
