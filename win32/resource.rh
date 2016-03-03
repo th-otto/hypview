@@ -130,9 +130,12 @@
 #define IDC_HYPFIND_WORD                     708
 
 #define IDC_EMAIL                            800
-#define IDC_EMAILLINK                        801
-#define IDC_URL                              802
-#define IDC_WEBLINK                          803
-#define IDC_VERSION                          804
-#define IDC_HV_ICON                          805
+#define IDC_HV_ICON                          801
+#define IDC_EMAILLINK                        802
+#define IDC_URL                              803
+#define IDC_WEBLINK                          804
+#define IDC_VERSION                          805
+#define IDC_HCP_VERSION                      806
+#define IDC_COMPILE_DATE                     807
+#define IDC_COMPILER_VERSION                 808
 

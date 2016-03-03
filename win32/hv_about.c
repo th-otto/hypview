@@ -18,13 +18,25 @@ static INT_PTR CALLBACK about_dialog(HWND hwnd, UINT message, WPARAM wParam, LPA
 	case WM_CREATE:
 		break;
 	case WM_INITDIALOG:
-		CenterWindow(hwnd);
-		hBitmap = LoadBitmap(GetInstance(), MAKEINTRESOURCE(IDB_WEBLINK));
-		SendDlgItemMessage(hwnd, IDC_WEBLINK, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
-		hBitmap = LoadBitmap(GetInstance(), MAKEINTRESOURCE(IDB_EMAIL));
-		SendDlgItemMessage(hwnd, IDC_EMAILLINK, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
-		hIcon = LoadIcon(GetInstance(), MAKEINTRESOURCE(IDR_MAINFRAME));
-		SendDlgItemMessage(hwnd, IDC_HV_ICON, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+		{
+			char *hyp_version = hyp_lib_version();
+			char *compile_date = g_strdup_printf(_("(Compiled %s)"), gl_compile_date);
+			char *compiler_version = hyp_compiler_version();
+			
+			CenterWindow(hwnd);
+			hBitmap = LoadBitmap(GetInstance(), MAKEINTRESOURCE(IDB_WEBLINK));
+			SendDlgItemMessage(hwnd, IDC_WEBLINK, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
+			hBitmap = LoadBitmap(GetInstance(), MAKEINTRESOURCE(IDB_EMAIL));
+			SendDlgItemMessage(hwnd, IDC_EMAILLINK, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
+			hIcon = LoadIcon(GetInstance(), MAKEINTRESOURCE(IDR_MAINFRAME));
+			SendDlgItemMessage(hwnd, IDC_HV_ICON, STM_SETICON, (WPARAM)hIcon, 0);
+			SetDialogText(hwnd, IDC_HCP_VERSION, hyp_version);
+			SetDialogText(hwnd, IDC_COMPILE_DATE, compile_date);
+			SetDialogText(hwnd, IDC_COMPILER_VERSION, compiler_version);
+			g_free(compiler_version);
+			g_free(compile_date);
+			g_free(hyp_version);
+		}
 		return TRUE;
 	case WM_CLOSE:
 		EndDialog(hwnd, IDCANCEL);

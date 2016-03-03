@@ -385,3 +385,12 @@ void RecentSaveToDisk(void)
 		i++;
 	}
 }
+
+/*** ---------------------------------------------------------------------- ***/
+
+void SetDialogText(HWND hwnd, int id, const char *str)
+{
+	wchar_t *wstr = hyp_utf8_to_wchar(str, STR0TERM, NULL);
+	SendDlgItemMessageW(hwnd, id, WM_SETTEXT, 0, (LPARAM)wstr);
+	g_free(wstr);
+}

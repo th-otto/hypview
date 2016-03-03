@@ -254,6 +254,7 @@ void DlgSetText(HWND hwnd, int id, char *buf);
 BOOL DlgGetButton(HWND hwnd, int id);
 void DlgSetButton(HWND hwnd, int id, BOOL check);
 void DlgEnable(HWND hwnd, int id, BOOL enable);
+void SetDialogText(HWND hwnd, int id, const char *str);
 
 HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name);
 INT_PTR WINAPI DialogBoxExW(HINSTANCE hInstance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param);
