@@ -399,6 +399,18 @@
 #ifndef BS_OWNERDRAW
 #  define BS_OWNERDRAW 0xb
 #endif
+#ifndef BS_SPLITBUTTON
+#  define BS_SPLITBUTTON   0xC
+#endif
+#ifndef BS_DEFSPLITBUTTON
+#  define BS_DEFSPLITBUTTON 0xD
+#endif
+#ifndef BS_COMMANDLINK
+#  define BS_COMMANDLINK 0xE
+#endif
+#ifndef BS_DEFCOMMANDLINK
+#  define BS_DEFCOMMANDLINK 0xF
+#endif
 #ifndef BS_TYPEMASK
 #  define BS_TYPEMASK 0x0f
 #endif

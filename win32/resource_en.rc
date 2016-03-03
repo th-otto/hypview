@@ -120,3 +120,40 @@ BEGIN
 END
 
 
+IDD_FILEINFO DIALOG PRELOAD DISCARDABLE 0, 0, 208, 200
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_3DLOOK
+CAPTION "File Info"
+FONT 8, "MS Sans Serif"
+BEGIN
+        LTEXT           "File :", IDC_STATIC, 5,5,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_FILE, 45,5,160,8, SS_NOPREFIX
+        LTEXT           "Topic :", IDC_STATIC, 5,15,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_DATABASE, 45,15,160,8, SS_NOPREFIX
+        LTEXT           "Author :", IDC_STATIC, 5,25,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_AUTHOR, 45,25,160,8, SS_NOPREFIX
+        LTEXT           "Version :", IDC_STATIC, 5,35,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_VERSION, 45,35,160,8, SS_NOPREFIX
+        LTEXT           "Subject :", IDC_STATIC, 5,45,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_SUBJECT, 45,45,160,8, SS_NOPREFIX
+	GROUPBOX	"Details", IDC_INFO_MORE_BOX, 5,60,198,110
+        LTEXT           "Nodes :", IDC_STATIC, 15,70,50,8, SS_NOPREFIX
+        LTEXT           "99999", IDC_INFO_NODES, 65,70,130,8, SS_NOPREFIX
+        LTEXT           "Index Size :", IDC_STATIC, 15,80,50,8, SS_NOPREFIX
+        LTEXT           "99999", IDC_INFO_INDEXSIZE, 65,80,130,8, SS_NOPREFIX
+        LTEXT           "HCP-Version :", IDC_STATIC, 15,90,50,8, SS_NOPREFIX
+        LTEXT           "5", IDC_INFO_HCPVERSION, 65,90,130,8, SS_NOPREFIX
+        LTEXT           "Compiled on :", IDC_STATIC, 15,100,50,8, SS_NOPREFIX
+        LTEXT           "Atari", IDC_INFO_OS, 65,100,130,8, SS_NOPREFIX
+        LTEXT           "@charset :", IDC_STATIC, 15,110,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_CHARSET, 65,110,130,8, SS_NOPREFIX
+        LTEXT           "@default :", IDC_STATIC, 15,120,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_DEFAULT, 65,120,130,8, SS_NOPREFIX
+        LTEXT           "@help :", IDC_STATIC, 15,130,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_HELP, 65,130,130,8, SS_NOPREFIX
+        LTEXT           "@options :", IDC_STATIC, 15,140,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_OPTIONS, 65,140,130,8, SS_NOPREFIX
+        LTEXT           "@width :", IDC_STATIC, 15,150,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_WIDTH, 65,150,130,8, SS_NOPREFIX
+        PUSHBUTTON      "&Help", IDHELP, 20,180,50,14, WS_GROUP
+        DEFPUSHBUTTON   "&OK", IDOK, 140,180,50,14, WS_GROUP
+END

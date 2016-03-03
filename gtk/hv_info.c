@@ -37,13 +37,12 @@ void DocumentInfos(WINDOW_DATA *win)
 	GtkWidget *dialog, *vbox, *label;
 	GtkWidget *button;
 	GtkWidget *expander, *frame;
-	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	char *str;
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("message"));
 	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(message_destroyed), dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Programinfo..."));
+	gtk_window_set_title(GTK_WINDOW(dialog), _("File Info"));
 	gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
 	/* needed ot make the dialog shrink when the expander is closed */
@@ -77,6 +76,7 @@ void DocumentInfos(WINDOW_DATA *win)
 	if (doc->type == HYP_FT_HYP)
 	{
 		HYP_HOSTNAME *h;
+		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 
 		str = g_strdup_printf(_("Topic   : %s\n"
 		                        "Author  : %s\n"
@@ -101,7 +101,7 @@ void DocumentInfos(WINDOW_DATA *win)
 		g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(expander_toggled), dialog);
 		gtk_expander_set_expanded(GTK_EXPANDER(expander), gl_profile.viewer.detail_info);
 		
-		str = g_strdup_printf(_("Nodes       : %7d\n"
+		str = g_strdup_printf(_("Nodes       : %7u\n"
 		                        "Index Size  : %7ld\n"
 		                        "HCP-Version : %3u\n"
 		                        "Compiled on : %s\n"

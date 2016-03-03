@@ -112,6 +112,9 @@ hcp_LDADD += hcp_rc.res
 hcp_rc.res: $(srcdir)/hcp_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
 	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
+if WITH_GUI_GTK
+hcp_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+endif
 
 hcp.ttp: hcp
 	$(LN_S) $?$(EXEEXT) $@

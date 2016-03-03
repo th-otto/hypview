@@ -71,7 +71,7 @@
 #define IDM_HELP_INDEX     501
 #define IDM_HELP_ABOUT     510
 
-#define IDD_PROGINFO       100
+#define IDD_FILEINFO       100
 #define IDD_SEARCHRESULT   101
 #define IDD_HYPFIND        102
 #define IDD_REFBOX         103
@@ -81,12 +81,10 @@
 #define IDD_ABOUT          107
 
 
-#define IDC_PROG_NAME                        500
-#define IDC_PROG_DATE                        501
-#define IDC_PROG_FILE                        502
-#define IDC_PROG_DATABASE                    503
-#define IDC_PROG_AUTHOR                      504
-#define IDC_PROG_VERSION                     505
+#define IDC_INFO_FILE                        502
+#define IDC_INFO_DATABASE                    503
+#define IDC_INFO_AUTHOR                      504
+#define IDC_INFO_VERSION                     505
 #define IDC_INFO_MORE_BOX                    506
 #define IDC_INFO_NODES                       507
 #define IDC_INFO_INDEXSIZE                   508
@@ -96,11 +94,10 @@
 #define IDC_INFO_OPTIONS                     512
 #define IDC_INFO_DEFAULT                     513
 #define IDC_INFO_WIDTH                       514
-#define IDC_PROG_HELP                        515
+#define IDC_INFO_CHARSET                     515
 #define IDC_INFO_MORE                        516
 #define IDC_INFO_LESS                        517
-#define IDC_PROG_OK                          518
-#define IDC_PROG_SUBJECT                     519
+#define IDC_INFO_SUBJECT                     518
 
 #define IDC_SR_FSTL_UP                       600
 #define IDC_SR_FSTL_BACK                     601

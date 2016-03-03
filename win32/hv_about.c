@@ -10,7 +10,6 @@ static INT_PTR CALLBACK about_dialog(HWND hwnd, UINT message, WPARAM wParam, LPA
 	HBITMAP hBitmap;
 	HICON hIcon;
 	WORD notifyCode;
-	char buf[256];
 	
 	UNUSED(lParam);
 	switch (message)
@@ -30,9 +29,9 @@ static INT_PTR CALLBACK about_dialog(HWND hwnd, UINT message, WPARAM wParam, LPA
 			SendDlgItemMessage(hwnd, IDC_EMAILLINK, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
 			hIcon = LoadIcon(GetInstance(), MAKEINTRESOURCE(IDR_MAINFRAME));
 			SendDlgItemMessage(hwnd, IDC_HV_ICON, STM_SETICON, (WPARAM)hIcon, 0);
-			SetDialogText(hwnd, IDC_HCP_VERSION, hyp_version);
-			SetDialogText(hwnd, IDC_COMPILE_DATE, compile_date);
-			SetDialogText(hwnd, IDC_COMPILER_VERSION, compiler_version);
+			DlgSetText(hwnd, IDC_HCP_VERSION, hyp_version);
+			DlgSetText(hwnd, IDC_COMPILE_DATE, compile_date);
+			DlgSetText(hwnd, IDC_COMPILER_VERSION, compiler_version);
 			g_free(compiler_version);
 			g_free(compile_date);
 			g_free(hyp_version);
@@ -58,18 +57,23 @@ static INT_PTR CALLBACK about_dialog(HWND hwnd, UINT message, WPARAM wParam, LPA
 		case IDC_EMAIL:
 			if (notifyCode == BN_CLICKED)
 			{
-				strcpy(buf, "mailto:");
-				DlgGetText(hwnd, IDC_EMAIL, buf + 7, sizeof(buf) - 7);
-				strcat(buf, "?subject=UDO Shell for Windows");
-				ShellExecute(NULL, "open", buf, NULL, NULL, SW_SHOWNORMAL);
+				char *url;
+				char *buf;
+				
+				url = DlgGetText(hwnd, IDC_EMAIL);
+				buf = g_strdup_printf("mailto:%s?subject=HypView for Windows", url);
+				ShellExecuteA(NULL, "open", buf, NULL, NULL, SW_SHOWNORMAL);
+				g_free(buf);
+				g_free(url);
 			}
 			break;
 		case IDC_WEBLINK:
 		case IDC_URL:
 			if (notifyCode == BN_CLICKED)
 			{
-				DlgGetText(hwnd, IDC_URL, buf, sizeof(buf));
-				ShellExecute(NULL, "open", buf, NULL, NULL, SW_SHOWNORMAL);
+				wchar_t *url = DlgGetTextW(hwnd, IDC_URL);
+				ShellExecuteW(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
+				g_free(url);
 			}
 			break;
 		}

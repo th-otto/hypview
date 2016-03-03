@@ -207,19 +207,42 @@ int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *heig
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void DlgGetText(HWND hwnd, int id, char *buf, int maxlen)
+char *DlgGetText(HWND hwnd, int id)
 {
-	int len;
-
-	len = GetDlgItemText(hwnd, id, buf, maxlen - 1);
-	buf[len] = '\0';
+	int len = SendDlgItemMessageW(hwnd, id, WM_GETTEXTLENGTH, 0, 0);
+	wchar_t *wstr;
+	char *str;
+	
+	wstr = g_new0(wchar_t, len + 1);
+	if (wstr == NULL)
+		return NULL;
+	SendDlgItemMessageW(hwnd, id, WM_GETTEXT, len + 1, (LPARAM)wstr);
+	str = hyp_wchar_to_utf8(wstr, len);
+	g_free(wstr);
+	return str;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void DlgSetText(HWND hwnd, int id, char *buf)
+wchar_t *DlgGetTextW(HWND hwnd, int id)
 {
-	SetDlgItemText(hwnd, id, buf);
+	int len = SendDlgItemMessageW(hwnd, id, WM_GETTEXTLENGTH, 0, 0);
+	wchar_t *wstr;
+	
+	wstr = g_new0(wchar_t, len + 1);
+	if (wstr == NULL)
+		return NULL;
+	SendDlgItemMessageW(hwnd, id, WM_GETTEXT, len + 1, (LPARAM)wstr);
+	return wstr;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void DlgSetText(HWND hwnd, int id, const char *str)
+{
+	wchar_t *wstr = hyp_utf8_to_wchar(str, STR0TERM, NULL);
+	SendDlgItemMessageW(hwnd, id, WM_SETTEXT, 0, (LPARAM)wstr);
+	g_free(wstr);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -384,13 +407,4 @@ void RecentSaveToDisk(void)
 		g_free(name);
 		i++;
 	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-void SetDialogText(HWND hwnd, int id, const char *str)
-{
-	wchar_t *wstr = hyp_utf8_to_wchar(str, STR0TERM, NULL);
-	SendDlgItemMessageW(hwnd, id, WM_SETTEXT, 0, (LPARAM)wstr);
-	g_free(wstr);
 }
