@@ -46,6 +46,20 @@ enum blockop {
 	CO_PRINT
 };
 
+struct _viewer_colors {
+	COLORREF background;       /* window background color */
+	COLORREF text;             /* Displays text in the specified color */
+	COLORREF link;             /* Displays references in the specified color */
+	COLORREF popup;            /* Displays references to popups in the specified color */
+	COLORREF xref;             /* Displays external references in the specified color */
+	COLORREF system;           /* Displays references to {@ system } in the specified color */
+	COLORREF rx;               /* Displays references to {@ rx } in the specified color */
+	COLORREF rxs;              /* Displays references to {@ rxs } in the specified color */
+	COLORREF quit;             /* Displays references to {@ quit } in the specified color */
+	COLORREF close;            /* Displays references to {@ close } in the specified color */
+	COLORREF error;            /* used to display invalid links in hypertext files */
+};
+
 struct _window_data_
 {
 	HWND hwnd;
@@ -106,8 +120,8 @@ extern GSList *all_list;
 
 void check_console(void);
 void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean big);
-int toplevels_open_except(HWND top);
-void check_toplevels(HWND toplevel);
+int toplevels_open_except(WINDOW_DATA *top);
+void check_toplevels(WINDOW_DATA *toplevel);
 void show_message(HWND parent, const char *title, const char *text, gboolean big);
 gboolean ask_yesno(HWND parent, const char *text);
 HWND top_window(void);
@@ -123,6 +137,8 @@ _WORD GetNumPlanes(void);
 /*
  * hv_init.c
  */
+extern struct _viewer_colors viewer_colors;
+
 void hv_init(void);
 void hv_exit(void);
 
@@ -139,6 +155,8 @@ void hv_update_menus(void);
 /*
  * hv_win.c
  */
+extern UINT commdlg_help;
+
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
 WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup);

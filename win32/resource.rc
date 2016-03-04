@@ -1,6 +1,10 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "resource.rh"
 #include "hv_vers.h"
 #include "windows.rh"
+#include "hypintl.h"
 
 
 

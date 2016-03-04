@@ -121,11 +121,10 @@ void hv_file_selector_add_hypfilter(GtkWidget *selector)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean choose_file(GtkWidget *parent, char **name, gboolean must_exist, const char *title, const char *filter)
+static gboolean choose_file(GtkWidget *parent, char **name, gboolean save, const char *title, const char *filter)
 {
 	GtkWidget *selector;
 	int resp;
-	gboolean save = !must_exist;
 	gboolean res = FALSE;
 	
 	if (parent)
@@ -210,7 +209,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 		g_free(subst);
 	}
 	
-	if (choose_file(parent, &name, TRUE, _("Open Hypertext..."), IDS_SELECT_HYPERTEXT))
+	if (choose_file(parent, &name, FALSE, _("Open Hypertext..."), IDS_SELECT_HYPERTEXT))
 	{
 		hv_recent_add(name);
 		win = OpenFileInWindow(win, name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
@@ -239,9 +238,8 @@ void SelectFileSave(WINDOW_DATA *win)
 	else
 		gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
 
-	if (choose_file(parent, &filepath, FALSE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
+	if (choose_file(parent, &filepath, TRUE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
 	{
-#if 0
 		int ret;
 
 		ret = hyp_utf8_open(filepath, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
@@ -252,7 +250,6 @@ void SelectFileSave(WINDOW_DATA *win)
 				ret = -1;
 		}
 		if (ret < 0)
-#endif
 			BlockAsciiSave(win, filepath, &start, &end);
 	}
 	g_free(filepath);

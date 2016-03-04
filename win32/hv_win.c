@@ -87,6 +87,26 @@ static void on_quit(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
+{
+	gboolean ret;
+	Profile *inifile;
+	
+	inifile = gl_profile.profile;
+	
+	ret = HypProfile_Save(TRUE);
+	
+	if (ret == FALSE)
+	{
+		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), hyp_utf8_strerror(errno));
+		ret = ask_yesno(win ? win->hwnd : 0, msg);
+		g_free(msg);
+	}
+	return ret;
+}
+	
+/*** ---------------------------------------------------------------------- ***/
+
 static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	WINDOW_DATA *win;
@@ -106,6 +126,11 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 	
 	case WM_CLOSE:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		if (toplevels_open_except(win) == 0)
+		{
+			if (WriteProfile(win) == FALSE)
+				return FALSE;
+		}
 		DestroyWindow(win->hwnd);
 		return TRUE;
 
@@ -113,6 +138,20 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		win32_hypview_window_finalize(win);
 		return FALSE;
+	
+	case WM_MOVE:
+	case WM_SIZE:
+		{
+			RECT r;
+			
+			GetWindowRect(hwnd, &r);
+			gl_profile.viewer.win_x = r.left;
+			gl_profile.viewer.win_y = r.top;
+			gl_profile.viewer.win_w = r.right - r.left;
+			gl_profile.viewer.win_h = r.bottom - r.top;
+			HypProfile_SetChanged();
+		}
+		break;
 	
 	case WM_INITMENUPOPUP:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
@@ -290,6 +329,39 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			break;
 		}
 		return 0;
+	
+	default:
+		if (message == commdlg_help)
+		{
+			DWORD *p = (DWORD *)lParam;
+			
+			if (p == NULL)
+			{
+				HYP_DBG(("HELP %x %lx", wParam, lParam));
+			} else if (*p == sizeof(CHOOSECOLORW))
+			{
+				Help_Show(NULL, "colorselector");
+			} else if (*p == sizeof(CHOOSEFONTW))
+			{
+				Help_Show(NULL, "fontselector");
+			} else if (*p == sizeof(FINDREPLACEW))
+			{
+				Help_Show(NULL, "findselector");
+			} else if (*p == sizeof(OPENFILENAMEW) || *p == OPENFILENAME_SIZE_VERSION_400)
+			{
+				Help_Show(NULL, "fileselector");
+			} else if (*p == sizeof(PAGESETUPDLGW))
+			{
+				Help_Show(NULL, "pagesetupselector");
+			} else if (*p == sizeof(PRINTDLGW))
+			{
+				Help_Show(NULL, "printerselector");
+			} else
+			{
+				HYP_DBG(("HELP %x %lx: %ld", wParam, lParam, *p));
+			}
+		}
+		break;
 	}
 
 	return DefWindowProc(hwnd, message, wParam, lParam);
@@ -320,6 +392,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	HWND hwnd;
 	HMENU menu = 0;
 	HWND parent = 0;
+	int x, y, w, h;
 	
 	if (!registered)
 	{
@@ -353,12 +426,26 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_HSCROLL | WS_VSCROLL | WS_SIZEBOX;
 		menu = LoadMenuExW(GetInstance(), MAKEINTRESOURCEW(IDR_MAIN_MENU));
 	}
+	x = gl_profile.viewer.win_x;
+	y = gl_profile.viewer.win_y;
+	w = gl_profile.viewer.win_w;
+	h = gl_profile.viewer.win_h;
+	if (default_geometry)
+	{
+		gtk_XParseGeometry(default_geometry, &x, &y, &w, &h);
+		hv_win_set_geometry(NULL);
+	}
+	if (w == 0)
+		w = CW_USEDEFAULT;
+	if (h == 0)
+		h = CW_USEDEFAULT;
+		
 	hwnd = CreateWindowExA(
 		exstyle,
 		"hypview",
 		NULL,
 		style,
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		x, y, w, h,
 		parent,
 		menu,
 		GetInstance(),

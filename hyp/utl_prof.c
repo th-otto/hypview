@@ -2338,9 +2338,9 @@ void HypProfile_Load(void)
 #endif
 #ifdef WITH_GUI_WIN32
 	if (!Profile_ReadString(profile, "HypView", "FONT", &gl_profile.viewer.font_name))
-		setdefault(gl_profile.viewer.font_name = g_strdup("Arial 12"));
+		setdefault(gl_profile.viewer.font_name = g_strdup("Arial,,120"));
 	if (!Profile_ReadString(profile, "HypView", "XFONT", &gl_profile.viewer.xfont_name))
-		setdefault(gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
+		setdefault(gl_profile.viewer.xfont_name = g_strdup("Courier New,,120"));
 #endif
 	if (!Profile_ReadBool(profile, "HypView", "USE_XFONT", &gl_profile.viewer.use_xfont))
 		setdefault(gl_profile.viewer.use_xfont = FALSE);

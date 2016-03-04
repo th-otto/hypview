@@ -1,4 +1,5 @@
 #include "hv_defs.h"
+#include "hv_vers.h"
 #include "resource.rh"
 
 /******************************************************************************/
@@ -57,14 +58,11 @@ static INT_PTR CALLBACK about_dialog(HWND hwnd, UINT message, WPARAM wParam, LPA
 		case IDC_EMAIL:
 			if (notifyCode == BN_CLICKED)
 			{
-				char *url;
 				char *buf;
 				
-				url = DlgGetText(hwnd, IDC_EMAIL);
-				buf = g_strdup_printf("mailto:%s?subject=HypView for Windows", url);
+				buf = g_strdup_printf("mailto:%s?subject=HypView%%20for%%20Windows", HYP_URL);
 				ShellExecuteA(NULL, "open", buf, NULL, NULL, SW_SHOWNORMAL);
 				g_free(buf);
-				g_free(url);
 			}
 			break;
 		case IDC_WEBLINK:

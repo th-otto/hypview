@@ -7,7 +7,7 @@ GSList *all_list;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-int toplevels_open_except(HWND top)
+int toplevels_open_except(WINDOW_DATA *top)
 {
 	GSList *l;
 	int num_open;
@@ -22,7 +22,7 @@ int toplevels_open_except(HWND top)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void check_toplevels(HWND toplevel)
+void check_toplevels(WINDOW_DATA *toplevel)
 {
 	int num_open;
 	
@@ -37,7 +37,10 @@ void check_toplevels(HWND toplevel)
 HWND top_window(void)
 {
 	if (all_list)
-		return (HWND)all_list->data;
+	{
+		WINDOW_DATA *win = (WINDOW_DATA *)all_list->data;
+		return win->hwnd;
+	}
 	return NULL;
 }
 

@@ -2,6 +2,17 @@
 #include "hypdebug.h"
 #include "resource.rh"
 
+#define FONT_NAME_LEN 256
+
+typedef struct _font_attr {
+	int size;						/* size of font, in 1/10 points */
+	unsigned int style;				/* bitmask of text effects */
+	char name[FONT_NAME_LEN];		/* font Family */
+	int charset;
+} FONT_ATTR;
+
+UINT commdlg_help;
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -94,10 +105,185 @@ void SwitchFont(WINDOW_DATA *win)
 	HypProfile_SetChanged();
 }
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+static char *W_Fontdesc(const FONT_ATTR *attr)
+{
+	char namebuf[FONT_NAME_LEN];
+	char sizebuf[30];
+	char attrbuf[FONT_NAME_LEN];
+	
+	strcpy(namebuf, attr->name);
+	strncat(namebuf, ",", sizeof(namebuf));
+	*attrbuf = '\0';
+	if (attr->style & HYP_TXT_BOLD)
+		strcat(attrbuf, " Bold");
+	if (attr->style & HYP_TXT_ITALIC)
+		strcat(attrbuf, " Italic");
+	if (attr->style & HYP_TXT_UNDERLINED)
+		strcat(attrbuf, " Underline");
+	if (attrbuf[0] != '\0')
+		strncat(namebuf, attrbuf + 1, sizeof(namebuf));
+	sprintf(sizebuf, " , %d", attr->size);
+	strncat(namebuf, sizebuf, sizeof(namebuf));
+	return g_strdup(namebuf);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static BOOL W_Fontname(const char *name, FONT_ATTR *attr)
+{
+	char namebuf[FONT_NAME_LEN];
+	char *p;
+	char *stylename;
+	
+#define font_attr(name, len, mask) \
+	while (*stylename == ' ') \
+		stylename++; \
+	if (strncasecmp(stylename, name, len) == 0) \
+	{ \
+		attr->style |= mask; \
+		stylename += len; \
+		while (*stylename == ' ') \
+			stylename++; \
+	}
+
+	attr->size = 0;
+	attr->style = 0;
+	attr->name[0] = '\0';
+	if (name == NULL)
+		return FALSE;
+	strncpy(namebuf, name, sizeof(namebuf));
+	p = strchr(namebuf, ',');
+	if (p != NULL)
+	{
+		*p++ = '\0';
+		stylename = p;
+		p = strchr(p, ',');
+		if (p != NULL)
+		{
+			*p++ = '\0';
+			attr->size = (int)strtol(p, NULL, 10);
+			p = strchr(p, ',');
+			if (p != NULL)
+			{
+				*p++ = '\0';
+			}
+		}
+		font_attr("Bold", 4, HYP_TXT_BOLD);
+		font_attr("Italic", 6, HYP_TXT_ITALIC);
+		font_attr("Underline", 9, HYP_TXT_UNDERLINED);
+	}
+	strcpy(attr->name, namebuf);
+	if (*attr->name == '\0')
+		return FALSE;
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static UINT_PTR CALLBACK select_font_hook(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+{
+	UNUSED(wparam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		{
+			LPCHOOSEFONT cf = (LPCHOOSEFONT) lparam;
+			const char *title = (const char *) cf->lCustData;
+			wchar_t *wtitle;
+			
+			wtitle = hyp_utf8_to_wchar(_(title), STR0TERM, NULL);
+			SetWindowTextW(hwnd, wtitle);
+			g_free(wtitle);
+		}
+		break;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static BOOL Choose1Font(HWND parent, char **desc, const char *title)
+{
+	CHOOSEFONTA cf;
+	HDC hdc;
+	FONT_ATTR attr;
+	LOGFONTA lf;
+	int h;
+	char *fontname;
+	BOOL res = FALSE;
+	
+	memset(&cf, 0, sizeof(cf));
+	memset(&lf, 0, sizeof(lf));
+	hdc = GetDC(HWND_DESKTOP);
+	h = GetDeviceCaps(hdc, LOGPIXELSY);
+	cf.lStructSize = sizeof(cf);
+	cf.hwndOwner = parent;
+	cf.hDC = hdc;
+	cf.lpLogFont = &lf;
+	cf.Flags = CF_SCREENFONTS | CF_SHOWHELP | CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK | CF_EFFECTS;
+	cf.nFontType = REGULAR_FONTTYPE;
+	cf.lCustData = (LPARAM) title;
+	cf.lpfnHook = select_font_hook;
+	cf.rgbColors = viewer_colors.text;
+	lf.lfWeight = FW_NORMAL;
+	if (W_Fontname(*desc, &attr))
+	{
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
+		if (attr.style & HYP_TXT_BOLD)
+		{
+			cf.nFontType |= BOLD_FONTTYPE;
+			lf.lfWeight = FW_BOLD;
+		}
+		if (attr.style & HYP_TXT_ITALIC)
+		{
+			cf.nFontType |= ITALIC_FONTTYPE;
+			lf.lfItalic = TRUE;
+		}
+		if (attr.style & HYP_TXT_UNDERLINED)
+		{
+			lf.lfUnderline = TRUE;
+		}
+		lf.lfCharSet = DEFAULT_CHARSET;
+	}
+	
+	commdlg_help = RegisterWindowMessageW(HELPMSGSTRINGW);
+	
+	if (ChooseFont(&cf))
+	{
+		if (lf.lfHeight < 0)
+			lf.lfHeight = -lf.lfHeight;
+		attr.size = (int)MulDiv(lf.lfHeight, 72, h) * 10;
+		attr.style = 0;
+		if (lf.lfWeight >= FW_BOLD)
+			attr.style |= HYP_TXT_BOLD;
+		if (lf.lfItalic)
+			attr.style |= HYP_TXT_ITALIC;
+		if (lf.lfUnderline)
+			attr.style |= HYP_TXT_UNDERLINED;
+		strncpy(attr.name, lf.lfFaceName, sizeof(attr.name));
+		fontname = W_Fontdesc(&attr);
+		if (fontname)
+		{
+			g_free(*desc);
+			*desc = fontname;
+			printf("selected: %s\n", fontname);
+			res = TRUE;
+		}
+	}
+	ReleaseDC(HWND_DESKTOP, hdc);
+	return res;
+}
+
 /*** ---------------------------------------------------------------------- ***/
 
 void SelectFont(WINDOW_DATA *win)
 {
-	UNUSED(win);
-	/* NYI */
+	HWND parent = win ? win->hwnd : 0;
+	Choose1Font(parent, &gl_profile.viewer.font_name, _("Standard font"));
+	Choose1Font(parent, &gl_profile.viewer.xfont_name, _("Alternative font"));
 }

@@ -3,17 +3,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDR_MAIN_MENU MENUEX PRELOAD DISCARDABLE 
 BEGIN
-	POPUP "&File"
+	POPUP N_("&File")
 	BEGIN
-		MENUITEM "&Open Hypertext...\tCtrl+O",	IDM_FILE_OPEN
+		MENUITEM N_("&Open Hypertext...\tCtrl+O"),	IDM_FILE_OPEN
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Save text...\tCtrl+S",	IDM_FILE_SAVE
+		MENUITEM N_("&Save text...\tCtrl+S"),	        IDM_FILE_SAVE
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Catalog\tAlt+K",		IDM_FILE_CATALOG
-		MENUITEM "&Default file\tAlt+D",	IDM_FILE_DEFAULT
-		MENUITEM "&Remarker\tAlt+R",		IDM_FILE_REMARKER
+		MENUITEM N_("&Catalog\tAlt+K"),		        IDM_FILE_CATALOG
+		MENUITEM N_("&Default file\tAlt+D"),	        IDM_FILE_DEFAULT
+		MENUITEM N_("&Remarker\tAlt+R"),		IDM_FILE_REMARKER
 		MENUITEM "", -1, MFT_SEPARATOR
-		POPUP "Open Recent", IDM_FILE_RECENTMENU
+		POPUP N_("Open Recent"), IDM_FILE_RECENTMENU
 		BEGIN
 			MENUITEM "recent-1\tCtrl+1",	IDM_FILE_RECENT_1
 			MENUITEM "recent-2\tCtrl+2",	IDM_FILE_RECENT_2
@@ -27,36 +27,36 @@ BEGIN
 			MENUITEM "recent-10\tCtrl+0",	IDM_FILE_RECENT_10
 		END
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&File info...\tCtrl+I",	IDM_FILE_INFO
+		MENUITEM N_("&File info...\tCtrl+I"),	IDM_FILE_INFO
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Close\tCtrl+U",		IDM_FILE_CLOSE
-		MENUITEM "&Quit\tCtrl+Q",		IDM_FILE_QUIT
+		MENUITEM N_("&Close\tCtrl+U"),		IDM_FILE_CLOSE
+		MENUITEM N_("&Quit\tCtrl+Q"),		IDM_FILE_QUIT
 	END
-	POPUP "&Edit"
+	POPUP N_("&Edit")
 	BEGIN
-		MENUITEM "Select &All",                 IDM_EDIT_SELECTALL
-		MENUITEM "&Copy",                       IDM_EDIT_COPY
-		MENUITEM "&Paste",                      IDM_EDIT_PASTE
+		MENUITEM N_("Select &All"),                 IDM_EDIT_SELECTALL
+		MENUITEM N_("&Copy"),                       IDM_EDIT_COPY
+		MENUITEM N_("&Paste"),                      IDM_EDIT_PASTE
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Find",                       IDM_EDIT_FIND
-		MENUITEM "Find &Next",                  IDM_EDIT_FINDNEXT
+		MENUITEM N_("&Find"),                       IDM_EDIT_FIND
+		MENUITEM N_("Find &Next"),                  IDM_EDIT_FINDNEXT
 	END
-	POPUP "&Navigate"
+	POPUP N_("&Navigate")
 	BEGIN
-		MENUITEM "Previous logical page\tNumpad -",       IDM_NAV_PREV
-		MENUITEM "Next logical page\tNumpad +",           IDM_NAV_NEXT
+		MENUITEM N_("Previous logical page\tNumpad -"),       IDM_NAV_PREV
+		MENUITEM N_("Next logical page\tNumpad +"),           IDM_NAV_NEXT
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "Previous physical page\tNumpad /",      IDM_NAV_PREVPHYS
-		MENUITEM "Next physical page\tNumpad *",          IDM_NAV_NEXTPHYS
+		MENUITEM N_("Previous physical page\tNumpad /"),      IDM_NAV_PREVPHYS
+		MENUITEM N_("Next physical page\tNumpad *"),          IDM_NAV_NEXTPHYS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "First page",                  IDM_NAV_FIRST
-		MENUITEM "Last page",                   IDM_NAV_LAST
+		MENUITEM N_("First page"),                            IDM_NAV_FIRST
+		MENUITEM N_("Last page"),                             IDM_NAV_LAST
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "Contents\tAlt+T",                    IDM_NAV_TOC
-		MENUITEM "Index\tAlt+X",                       IDM_NAV_INDEX
-		MENUITEM "Show help page\tAlt+H",              IDM_NAV_HELP
+		MENUITEM N_("Contents\tAlt+T"),                       IDM_NAV_TOC
+		MENUITEM N_("Index\tAlt+X"),                          IDM_NAV_INDEX
+		MENUITEM N_("Show help page\tAlt+H"),                 IDM_NAV_HELP
 		MENUITEM "", -1, MFT_SEPARATOR
-		POPUP "&Bookmarks", IDM_NAV_BOOKMARKSMENU
+		POPUP N_("&Bookmarks"), IDM_NAV_BOOKMARKSMENU
 		BEGIN
 			MENUITEM "bookmark-1\tF1",      IDM_NAV_BOOKMARK_1
 			MENUITEM "bookmark-2\tF2",      IDM_NAV_BOOKMARK_2
@@ -70,40 +70,40 @@ BEGIN
 			MENUITEM "bookmark-10\tF10",    IDM_NAV_BOOKMARK_10
 		END
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "Back one page\tBackSpace",    IDM_NAV_BACK
-		MENUITEM "Clear stack\tAlt+E",          IDM_NAV_CLEARSTACK
+		MENUITEM N_("Back one page\tBackSpace"),    IDM_NAV_BACK
+		MENUITEM N_("Clear stack\tAlt+E"),          IDM_NAV_CLEARSTACK
 	END
-	POPUP "&Options"
+	POPUP N_("&Options")
 	BEGIN
-		MENUITEM "&Font...\tAlt+Z",            IDM_OPT_SELECTFONT
-		MENUITEM "&Colors...",                 IDM_OPT_SELECTCOLORS
+		MENUITEM N_("&Font...\tAlt+Z"),            IDM_OPT_SELECTFONT
+		MENUITEM N_("&Colors..."),                 IDM_OPT_SELECTCOLORS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Output...",                 IDM_OPT_OUTPUT
+		MENUITEM N_("&Output..."),                 IDM_OPT_OUTPUT
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Alternative font\tCtrl+Z",  IDM_OPT_ALTFONT
-		MENUITEM "&Expand multiple spaces\tCtrl+L",  IDM_OPT_EXPANDSPACES
-		// MENUITEM "&Scale bitmaps\tCtrl+B",     IDM_OPT_SCALEBITMAPS
+		MENUITEM N_("&Alternative font\tCtrl+Z"),  IDM_OPT_ALTFONT
+		MENUITEM N_("&Expand multiple spaces\tCtrl+L"),  IDM_OPT_EXPANDSPACES
+		// MENUITEM N_("&Scale bitmaps\tCtrl+B"),     IDM_OPT_SCALEBITMAPS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Settings...",               IDM_OPT_PREFERENCES
+		MENUITEM N_("&Settings..."),               IDM_OPT_PREFERENCES
 	END
-	POPUP "&Help"
+	POPUP N_("&Help")
 	BEGIN
-		MENUITEM "&Contents",                  IDM_HELP_CONTENTS
-		MENUITEM "&Index",                     IDM_HELP_INDEX
+		MENUITEM N_("&Contents"),                  IDM_HELP_CONTENTS
+		MENUITEM N_("&Index"),                     IDM_HELP_INDEX
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&About",                     IDM_HELP_ABOUT
+		MENUITEM N_("&About"),                     IDM_HELP_ABOUT
 	END
 END
 
 
 IDD_ABOUT DIALOG PRELOAD DISCARDABLE 0, 0, 168, 180
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_3DLOOK
-CAPTION "HypView Version info"
+CAPTION N_("HypView Version info")
 FONT 8, "MS Sans Serif"
 BEGIN
 	CONTROL IDR_MAINFRAME, IDC_HV_ICON, "STATIC", SS_ICON | SS_LEFT | WS_CHILD | WS_VISIBLE, 145,5,18,20
-	CONTROL "ST-Guide HyperText File Viewer for Win32", IDC_STATIC, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,5,140,8
-	CONTROL "Version " HYPVIEW_VERSION, IDC_VERSION, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,15,116,8
+	CONTROL N_("ST-Guide HyperText File Viewer for Win32"), IDC_STATIC, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,5,140,8
+	CONTROL N_("Version ") HYPVIEW_VERSION, IDC_VERSION, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,15,116,8
 	CONTROL "HCP", IDC_STATIC, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,25,116,8
 	CONTROL "", IDC_HCP_VERSION, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 21,25,150,8
 	CONTROL "", IDC_COMPILE_DATE, "STATIC", SS_LEFT | SS_NOPREFIX | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,35,150,8
@@ -116,34 +116,34 @@ BEGIN
 	CONTROL "WWW:", IDC_STATIC, "STATIC", SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP, 5,145,151,8
 	CONTROL HYP_URL, IDC_URL, "STATIC", SS_LEFT | WS_CHILD | WS_VISIBLE | WS_GROUP | SS_NOTIFY, 30,145,136,8
 	CONTROL IDB_WEBLINK, IDC_WEBLINK, "BUTTON", BS_PUSHBUTTON | BS_BITMAP, 140,140,18,18
-	CONTROL "&OK", IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 58,160,50,14
+	CONTROL N_("&OK"), IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 58,160,50,14
 END
 
 
 IDD_FILEINFO DIALOG PRELOAD DISCARDABLE 0, 0, 208, 200
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_3DLOOK
-CAPTION "File Info"
+CAPTION N_("File Info")
 FONT 8, "MS Sans Serif"
 BEGIN
-        LTEXT           "File :", IDC_STATIC, 5,5,40,8, SS_NOPREFIX
+        LTEXT           N_("File :"), IDC_STATIC, 5,5,40,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_FILE, 45,5,160,8, SS_NOPREFIX
-        LTEXT           "Topic :", IDC_STATIC, 5,15,40,8, SS_NOPREFIX
+        LTEXT           N_("Topic :"), IDC_STATIC, 5,15,40,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_DATABASE, 45,15,160,8, SS_NOPREFIX
-        LTEXT           "Author :", IDC_STATIC, 5,25,40,8, SS_NOPREFIX
+        LTEXT           N_("Author :"), IDC_STATIC, 5,25,40,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_AUTHOR, 45,25,160,8, SS_NOPREFIX
-        LTEXT           "Version :", IDC_STATIC, 5,35,40,8, SS_NOPREFIX
+        LTEXT           N_("Version :"), IDC_STATIC, 5,35,40,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_VERSION, 45,35,160,8, SS_NOPREFIX
-        LTEXT           "Subject :", IDC_STATIC, 5,45,40,8, SS_NOPREFIX
+        LTEXT           N_("Subject :"), IDC_STATIC, 5,45,40,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_SUBJECT, 45,45,160,8, SS_NOPREFIX
-	GROUPBOX	"Details", IDC_INFO_MORE_BOX, 5,60,198,110
-        LTEXT           "Nodes :", IDC_STATIC, 15,70,50,8, SS_NOPREFIX
-        LTEXT           "99999", IDC_INFO_NODES, 65,70,130,8, SS_NOPREFIX
-        LTEXT           "Index Size :", IDC_STATIC, 15,80,50,8, SS_NOPREFIX
-        LTEXT           "99999", IDC_INFO_INDEXSIZE, 65,80,130,8, SS_NOPREFIX
-        LTEXT           "HCP-Version :", IDC_STATIC, 15,90,50,8, SS_NOPREFIX
-        LTEXT           "5", IDC_INFO_HCPVERSION, 65,90,130,8, SS_NOPREFIX
-        LTEXT           "Compiled on :", IDC_STATIC, 15,100,50,8, SS_NOPREFIX
-        LTEXT           "Atari", IDC_INFO_OS, 65,100,130,8, SS_NOPREFIX
+	GROUPBOX	N_("Details"), IDC_INFO_MORE_BOX, 5,60,198,110
+        LTEXT           N_("Nodes :"), IDC_STATIC, 15,70,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_NODES, 65,70,130,8, SS_NOPREFIX
+        LTEXT           N_("Index Size :"), IDC_STATIC, 15,80,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_INDEXSIZE, 65,80,130,8, SS_NOPREFIX
+        LTEXT           N_("HCP-Version :"), IDC_STATIC, 15,90,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_HCPVERSION, 65,90,130,8, SS_NOPREFIX
+        LTEXT           N_("Compiled on :"), IDC_STATIC, 15,100,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_OS, 65,100,130,8, SS_NOPREFIX
         LTEXT           "@charset :", IDC_STATIC, 15,110,50,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_CHARSET, 65,110,130,8, SS_NOPREFIX
         LTEXT           "@default :", IDC_STATIC, 15,120,50,8, SS_NOPREFIX
@@ -154,6 +154,6 @@ BEGIN
         LTEXT           "", IDC_INFO_OPTIONS, 65,140,130,8, SS_NOPREFIX
         LTEXT           "@width :", IDC_STATIC, 15,150,50,8, SS_NOPREFIX
         LTEXT           "", IDC_INFO_WIDTH, 65,150,130,8, SS_NOPREFIX
-        PUSHBUTTON      "&Help", IDHELP, 20,180,50,14, WS_GROUP
-        DEFPUSHBUTTON   "&OK", IDOK, 140,180,50,14, WS_GROUP
+        PUSHBUTTON      N_("&Help"), IDHELP, 20,180,50,14, WS_GROUP
+        DEFPUSHBUTTON   N_("&OK"), IDOK, 140,180,50,14, WS_GROUP
 END

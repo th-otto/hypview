@@ -605,7 +605,7 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 	
 	if (ret == FALSE)
 	{
-		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), g_strerror(errno));
+		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), hyp_utf8_strerror(errno));
 		ret = ask_yesno(GTK_WIDGET(win), msg);
 		g_free(msg);
 		if (ret)

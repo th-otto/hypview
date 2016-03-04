@@ -11,6 +11,8 @@ static gboolean bShowVersion;
 static gboolean bShowHelp;
 static const char *geom_arg;
 
+struct _viewer_colors viewer_colors;
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -18,6 +20,85 @@ static const char *geom_arg;
 static void NOINLINE LoadConfig(void)
 {
 	HypProfile_Load();
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static unsigned char parse_hex(const char *str)
+{
+	unsigned char val;
+	if (str[0] >= '0' && str[0] <= '9')
+		val = str[0] - '0';
+	else if (str[0] >= 'a' && str[0] <= 'f')
+		val = str[0] - 'a' + 10;
+	else if (str[0] >= 'A' && str[0] <= 'F')
+		val = str[0] - 'A' + 10;
+	else
+		val = 0;
+	val <<= 4;
+	if (str[1] >= '0' && str[1] <= '9')
+		val |= str[1] - '0';
+	else if (str[1] >= 'a' && str[1] <= 'f')
+		val |= str[1] - 'a' + 10;
+	else if (str[1] >= 'A' && str[1] <= 'F')
+		val |= str[1] - 'A' + 10;
+	return val;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void parse_color(const char *name, int rgb[3])
+{
+	if (name == NULL || *name != '#' || strlen(name) != 7)
+	{
+		rgb[0] = rgb[1] = rgb[2] = 0;
+		return;
+	}
+	rgb[0] = parse_hex(name + 1);
+	rgb[1] = parse_hex(name + 3);
+	rgb[2] = parse_hex(name + 5);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static COLORREF get_color(const char *name)
+{
+	int rgb[3];
+	
+	parse_color(name, rgb);
+	return RGB(rgb[0], rgb[1], rgb[2]);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void ValidateColors(void)
+{
+	_WORD display_colors = GetNumColors();
+	
+	viewer_colors.background = get_color(gl_profile.colors.background);
+	viewer_colors.text = get_color(gl_profile.colors.text);
+	viewer_colors.link = get_color(gl_profile.colors.link);
+	viewer_colors.xref = get_color(gl_profile.colors.xref);
+	viewer_colors.popup = get_color(gl_profile.colors.popup);
+	viewer_colors.system = get_color(gl_profile.colors.system);
+	viewer_colors.rx = get_color(gl_profile.colors.rx);
+	viewer_colors.rxs = get_color(gl_profile.colors.rxs);
+	viewer_colors.quit = get_color(gl_profile.colors.quit);
+	viewer_colors.close = get_color(gl_profile.colors.close);
+	viewer_colors.error = get_color("#ff0000"); /* used to display invalid links in hypertext files */
+	
+	if (viewer_colors.background == viewer_colors.text)
+		viewer_colors.background = viewer_colors.text ^ 1;
+	if (display_colors < 16)
+		viewer_colors.link =
+		viewer_colors.popup =
+		viewer_colors.xref =
+		viewer_colors.system =
+		viewer_colors.rx =
+		viewer_colors.rxs =
+		viewer_colors.quit =
+		viewer_colors.close =
+		viewer_colors.error = viewer_colors.text;
 }
 
 /******************************************************************************/
@@ -127,7 +208,7 @@ static void show_version(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-#if defined(G_OS_WIN32) && defined(_MSC_VER)
+#if defined(_MSC_VER)
 static void myInvalidParameterHandler(const wchar_t *expression,
    const wchar_t *function,
    const wchar_t *file,
@@ -140,7 +221,7 @@ static void myInvalidParameterHandler(const wchar_t *expression,
 		wprintf(L"Expression: %s\n", expression);
 	(void) pReserved;
 }
-#endif /* G_OS_WIN32 */
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -153,13 +234,11 @@ int main(int argc, const char **argv)
 	
 	check_console();
 	
-#ifdef G_OS_WIN32
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 #ifdef _MSC_VER
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
 	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 	_set_invalid_parameter_handler(myInvalidParameterHandler);
-#endif
 #endif
 	
 	LoadConfig();
@@ -178,6 +257,7 @@ int main(int argc, const char **argv)
 		WINDOW_DATA *win = NULL;
 		
 		hv_init();
+		ValidateColors();
 	
 		Help_Init();
 		
@@ -248,6 +328,7 @@ int main(int argc, const char **argv)
 				DispatchMessage(&msg);
 			}
 		}
+		
 	}
 	
 	Help_Exit();
