@@ -67,7 +67,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;
-	doc->buttons.memory = TRUE;
+	doc->buttons.bookmarks = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
 	doc->buttons.remarker_running = StartRemarker(win, remarker_check, TRUE) >= 0;
@@ -78,10 +78,10 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		doc->buttons.history = FALSE;
 	}
 	
-	if (doc->buttons.memory)
-		toolbar[TO_MEMORY].ob_state &= ~OS_DISABLED;
+	if (doc->buttons.bookmarks)
+		toolbar[TO_BOOKMARKS].ob_state &= ~OS_DISABLED;
 	else
-		toolbar[TO_MEMORY].ob_state |= OS_DISABLED;
+		toolbar[TO_BOOKMARKS].ob_state |= OS_DISABLED;
 
 	if (doc->buttons.references)
 		toolbar[TO_REFERENCES].ob_state &= ~OS_DISABLED;
@@ -125,9 +125,9 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 
 	/* is there a catalog file? */
 	if (!empty(gl_profile.viewer.catalog_file))
-		toolbar[TO_KATALOG].ob_state &= ~OS_DISABLED;
+		toolbar[TO_CATALOG].ob_state &= ~OS_DISABLED;
 	else
-		toolbar[TO_KATALOG].ob_state |= OS_DISABLED;
+		toolbar[TO_CATALOG].ob_state |= OS_DISABLED;
 
 	/* next buttons are type specific */
 	if (doc->buttons.previous)
@@ -212,7 +212,7 @@ void ToolbarClick(WINDOW_DATA *win, short obj)
 	case TO_INDEX:
 		GotoIndex(win);
 		break;
-	case TO_KATALOG:
+	case TO_CATALOG:
 		GotoCatalog(win);
 		break;
 	case TO_REFERENCES:
@@ -242,7 +242,7 @@ void ToolbarClick(WINDOW_DATA *win, short obj)
 	case TO_HOME:
 		GoThisButton(win, obj);
 		break;
-	case TO_MEMORY:
+	case TO_BOOKMARKS:
 		{
 			_WORD x, y;
 			

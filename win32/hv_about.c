@@ -28,7 +28,7 @@ static INT_PTR CALLBACK about_dialog(HWND hwnd, UINT message, WPARAM wParam, LPA
 			SendDlgItemMessage(hwnd, IDC_WEBLINK, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
 			hBitmap = LoadBitmap(GetInstance(), MAKEINTRESOURCE(IDB_EMAIL));
 			SendDlgItemMessage(hwnd, IDC_EMAILLINK, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
-			hIcon = LoadIcon(GetInstance(), MAKEINTRESOURCE(IDR_MAINFRAME));
+			hIcon = LoadIcon(GetInstance(), MAKEINTRESOURCE(IDI_MAINFRAME));
 			SendDlgItemMessage(hwnd, IDC_HV_ICON, STM_SETICON, (WPARAM)hIcon, 0);
 			DlgSetText(hwnd, IDC_HCP_VERSION, hyp_version);
 			DlgSetText(hwnd, IDC_COMPILE_DATE, compile_date);

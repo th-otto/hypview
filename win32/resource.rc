@@ -11,10 +11,30 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 
-IDR_MAINFRAME	ICON	DISCARDABLE "../icons/hypview.ico"
+IDI_MAINFRAME	ICON	DISCARDABLE "../icons/hypview.ico"
 
 IDB_WEBLINK	BITMAP	DISCARDABLE "res/weblink.bmp"
 IDB_EMAIL	BITMAP	DISCARDABLE "res/mail.bmp"
+
+IDI_BACK	ICON	DISCARDABLE "../icons/back.ico"
+IDI_HOME	ICON	DISCARDABLE "../icons/home.ico"
+IDI_INDEX	ICON	DISCARDABLE "../icons/index.ico"
+IDI_INFO	ICON	DISCARDABLE "../icons/info.ico"
+IDI_HELP	ICON	DISCARDABLE "../icons/help.ico"
+IDI_CATALOG	ICON	DISCARDABLE "../icons/katalog.ico"
+IDI_LOAD	ICON	DISCARDABLE "../icons/load.ico"
+IDI_BOOKMARKS	ICON	DISCARDABLE "../icons/bookmark.ico"
+IDI_MENU	ICON	DISCARDABLE "../icons/menu.ico"
+IDI_HISTORY	ICON	DISCARDABLE "../icons/history.ico"
+IDI_NEXT	ICON	DISCARDABLE "../icons/next.ico"
+IDI_NEXTPHYS	ICON	DISCARDABLE "../icons/nextphys.ico"
+IDI_PREV	ICON	DISCARDABLE "../icons/previous.ico"
+IDI_PREVPHYS	ICON	DISCARDABLE "../icons/prevphys.ico"
+IDI_FIRST	ICON	DISCARDABLE "../icons/first.ico"
+IDI_LAST	ICON	DISCARDABLE "../icons/last.ico"
+IDI_REFERENCE	ICON	DISCARDABLE "../icons/referenc.ico"
+IDI_SAVE	ICON	DISCARDABLE "../icons/save.ico"
+IDI_REMARKER	ICON	DISCARDABLE "../icons/remarker.ico"
 
 #include "resource_en.rc"
 #include "resource_de.rc"

@@ -1,7 +1,27 @@
 #define MY_PROGRESS_CONTROL   "MyProgressControl"
 
 #define IDR_MAIN_MENU 1
-#define IDR_MAINFRAME                   128
+
+#define IDI_MAINFRAME                   1
+#define IDI_BACK                        2
+#define IDI_HOME                        3
+#define IDI_INDEX                       4
+#define IDI_INFO                        5
+#define IDI_HELP                        6
+#define IDI_CATALOG                     7
+#define IDI_LOAD                        8
+#define IDI_BOOKMARKS                   9
+#define IDI_MENU                       10
+#define IDI_HISTORY                    11
+#define IDI_NEXT                       12
+#define IDI_NEXTPHYS                   13
+#define IDI_PREV                       14
+#define IDI_PREVPHYS                   15
+#define IDI_FIRST                      16
+#define IDI_LAST                       17
+#define IDI_REFERENCE                  18
+#define IDI_SAVE                       19
+#define IDI_REMARKER                   20
 
 #define IDB_WEBLINK                     130
 #define IDB_EMAIL                       131
@@ -47,6 +67,7 @@
 #define IDM_NAV_BOOKMARKSMENU 312
 #define IDM_NAV_BACK     313
 #define IDM_NAV_CLEARSTACK 314
+#define IDM_NAV_HISTORYMENU 315
 #define IDM_NAV_BOOKMARK_1 320
 #define IDM_NAV_BOOKMARK_2 321
 #define IDM_NAV_BOOKMARK_3 322

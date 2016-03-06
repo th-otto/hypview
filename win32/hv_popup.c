@@ -13,7 +13,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 	
 	if (parentwin->popup)
 		DestroyWindow(parentwin->popup->hwnd);
-	win = gtk_hypview_window_new(newdoc, TRUE);
+	win = win32_hypview_window_new(newdoc, TRUE);
 	if (win != NULL)
 	{
 		win->parentwin = parentwin;

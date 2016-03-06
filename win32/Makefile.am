@@ -44,6 +44,9 @@ hypview_SOURCES = \
 	hv_tbar.c \
 	hv_win.c \
 	autoloc.c \
+	w_draw.c w_draw.h \
+	\
+	windebug.c windebug.h \
 	$(empty)
 
 hypview_DEPENDENCIES = resource.res $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)

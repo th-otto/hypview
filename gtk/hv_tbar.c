@@ -31,7 +31,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;
-	doc->buttons.memory = TRUE;
+	doc->buttons.bookmarks = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
 	doc->buttons.save = TRUE;
@@ -46,7 +46,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	
 	if (win->action_group)
 	{
-		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "bookmarks"), doc->buttons.memory);
+		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "bookmarks"), doc->buttons.bookmarks);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "open"), doc->buttons.load);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "info"), doc->buttons.info);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "back"), doc->buttons.back);
@@ -127,7 +127,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button, guint32 eve
 	case TO_INDEX:
 		GotoIndex(win);
 		break;
-	case TO_KATALOG:
+	case TO_CATALOG:
 		GotoCatalog(win);
 		break;
 	case TO_REFERENCES:
@@ -151,7 +151,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button, guint32 eve
 	case TO_HOME:
 		GoThisButton(win, obj);
 		break;
-	case TO_MEMORY:
+	case TO_BOOKMARKS:
 		MarkerPopup(win, button, event_time);
 		break;
 	case TO_INFO:

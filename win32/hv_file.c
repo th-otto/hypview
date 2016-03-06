@@ -135,7 +135,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		new_window = 0;
 		if (!win)
 		{
-			win = gtk_hypview_window_new(doc, FALSE);
+			win = win32_hypview_window_new(doc, FALSE);
 			new_window = 1;
 			add_to_hist = FALSE;
 			prev_doc = NULL;

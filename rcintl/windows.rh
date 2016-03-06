@@ -3605,6 +3605,30 @@
 #ifndef VK_F24
 #  define VK_F24 0x87
 #endif
+#ifndef VK_NAVIGATION_VIEW
+#define VK_NAVIGATION_VIEW     0x88
+#endif
+#ifndef VK_NAVIGATION_MENU
+#define VK_NAVIGATION_MENU     0x89
+#endif
+#ifndef VK_NAVIGATION_UP
+#define VK_NAVIGATION_UP       0x8A
+#endif
+#ifndef VK_NAVIGATION_DOWN
+#define VK_NAVIGATION_DOWN     0x8B
+#endif
+#ifndef VK_NAVIGATION_LEFT
+#define VK_NAVIGATION_LEFT     0x8C
+#endif
+#ifndef VK_NAVIGATION_RIGHT
+#define VK_NAVIGATION_RIGHT    0x8D
+#endif
+#ifndef VK_NAVIGATION_ACCEPT
+#define VK_NAVIGATION_ACCEPT   0x8E
+#endif
+#ifndef VK_NAVIGATION_CANCEL
+#define VK_NAVIGATION_CANCEL   0x8F
+#endif
 #ifndef VK_NUMLOCK
 #  define VK_NUMLOCK 0x90
 #endif
@@ -3721,6 +3745,78 @@
 #endif
 #ifndef VK_OEM_3
 #  define VK_OEM_3 0xc0
+#endif
+#ifndef VK_GAMEPAD_A
+#define VK_GAMEPAD_A                         0xC3
+#endif
+#ifndef VK_GAMEPAD_B
+#define VK_GAMEPAD_B                         0xC4
+#endif
+#ifndef VK_GAMEPAD_X
+#define VK_GAMEPAD_X                         0xC5
+#endif
+#ifndef VK_GAMEPAD_Y
+#define VK_GAMEPAD_Y                         0xC6
+#endif
+#ifndef VK_GAMEPAD_RIGHT_SHOULDER
+#define VK_GAMEPAD_RIGHT_SHOULDER            0xC7
+#endif
+#ifndef VK_GAMEPAD_LEFT_SHOULDER
+#define VK_GAMEPAD_LEFT_SHOULDER             0xC8
+#endif
+#ifndef VK_GAMEPAD_LEFT_TRIGGER
+#define VK_GAMEPAD_LEFT_TRIGGER              0xC9
+#endif
+#ifndef VK_GAMEPAD_RIGHT_TRIGGER
+#define VK_GAMEPAD_RIGHT_TRIGGER             0xCA
+#endif
+#ifndef VK_GAMEPAD_DPAD_UP
+#define VK_GAMEPAD_DPAD_UP                   0xCB
+#endif
+#ifndef VK_GAMEPAD_DPAD_DOWN
+#define VK_GAMEPAD_DPAD_DOWN                 0xCC
+#endif
+#ifndef VK_GAMEPAD_DPAD_LEFT
+#define VK_GAMEPAD_DPAD_LEFT                 0xCD
+#endif
+#ifndef VK_GAMEPAD_DPAD_RIGHT
+#define VK_GAMEPAD_DPAD_RIGHT                0xCE
+#endif
+#ifndef VK_GAMEPAD_MENU
+#define VK_GAMEPAD_MENU                      0xCF
+#endif
+#ifndef VK_GAMEPAD_VIEW
+#define VK_GAMEPAD_VIEW                      0xD0
+#endif
+#ifndef VK_GAMEPAD_LEFT_THUMBSTICK_BUTTON
+#define VK_GAMEPAD_LEFT_THUMBSTICK_BUTTON    0xD1
+#endif
+#ifndef VK_GAMEPAD_RIGHT_THUMBSTICK_BUTTON
+#define VK_GAMEPAD_RIGHT_THUMBSTICK_BUTTON   0xD2
+#endif
+#ifndef VK_GAMEPAD_LEFT_THUMBSTICK_UP
+#define VK_GAMEPAD_LEFT_THUMBSTICK_UP        0xD3
+#endif
+#ifndef VK_GAMEPAD_LEFT_THUMBSTICK_DOWN
+#define VK_GAMEPAD_LEFT_THUMBSTICK_DOWN      0xD4
+#endif
+#ifndef VK_GAMEPAD_LEFT_THUMBSTICK_RIGHT
+#define VK_GAMEPAD_LEFT_THUMBSTICK_RIGHT     0xD5
+#endif
+#ifndef VK_GAMEPAD_LEFT_THUMBSTICK_LEFT
+#define VK_GAMEPAD_LEFT_THUMBSTICK_LEFT      0xD6
+#endif
+#ifndef VK_GAMEPAD_RIGHT_THUMBSTICK_UP
+#define VK_GAMEPAD_RIGHT_THUMBSTICK_UP       0xD7
+#endif
+#ifndef VK_GAMEPAD_RIGHT_THUMBSTICK_DOWN
+#define VK_GAMEPAD_RIGHT_THUMBSTICK_DOWN     0xD8
+#endif
+#ifndef VK_GAMEPAD_RIGHT_THUMBSTICK_RIGHT
+#define VK_GAMEPAD_RIGHT_THUMBSTICK_RIGHT    0xD9
+#endif
+#ifndef VK_GAMEPAD_RIGHT_THUMBSTICK_LEFT
+#define VK_GAMEPAD_RIGHT_THUMBSTICK_LEFT     0xDA
 #endif
 #ifndef VK_OEM_4
 #  define VK_OEM_4 0xdb

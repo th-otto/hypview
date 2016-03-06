@@ -289,7 +289,7 @@ void GoThisButton(WINDOW_DATA *win, short obj)
 	case TO_BACK:
 		GoBack(win);
 		break;
-	case TO_KATALOG:
+	case TO_CATALOG:
 		GotoCatalog(win);
 		break;
 	case TO_INDEX:

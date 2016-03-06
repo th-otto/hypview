@@ -54,7 +54,7 @@ typedef struct _hyp_nav_buttons
 	unsigned int load : 1;       /* TO_LOAD: always enabled */
 	unsigned int back : 1;       /* TO_BACK; disabled when history empty */
 	unsigned int history : 1;    /* TO_HISTORY; disabled when history empty */
-	unsigned int memory : 1;     /* TO_MEMORY (marks); disabled if form_popup() is not available */
+	unsigned int bookmarks : 1;  /* TO_BOOKMARKS; disabled if form_popup() is not available */
 	unsigned int save : 1;       /* TO_SAVE; currently enable only when displaying ASCII */
 	unsigned int help : 1;       /* TO_HELP; enabled if file contains help entry */
 	unsigned int index : 1;      /* TO_INDEX; enabled if file contains Index entry */

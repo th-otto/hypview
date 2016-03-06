@@ -53,12 +53,12 @@
 #define TO_BUTTONBOX                       1 /* IBOX in tree TOOLBAR */
 #define TO_BACK                            2 /* CICON in tree TOOLBAR */ /* max len 4 */
 #define TO_HISTORY                         3 /* CICON in tree TOOLBAR */ /* max len 0 */
-#define TO_MEMORY                          4 /* CICON in tree TOOLBAR */ /* max len 1 */
+#define TO_BOOKMARKS                       4 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_PREV                            5 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_HOME                            6 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_NEXT                            7 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_INDEX                           8 /* CICON in tree TOOLBAR */ /* max len 1 */
-#define TO_KATALOG                         9 /* CICON in tree TOOLBAR */ /* max len 1 */
+#define TO_CATALOG                         9 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_REFERENCES                     10 /* CICON in tree TOOLBAR */ /* max len 1 */
 #define TO_HELP                           11 /* CICON in tree TOOLBAR */ /* max len 0 */
 #define TO_INFO                           12 /* CICON in tree TOOLBAR */ /* max len 0 */

@@ -161,14 +161,14 @@ void MarkerPopup(WINDOW_DATA *win, int button)
 	struct popup_pos popup_pos;
 	int x, y;
 	
-	if (!win->m_buttons[TO_MEMORY])
+	if (!win->m_buttons[TO_BOOKMARKS])
 		return;
 	
 	MarkerUpdate(win);
 	menu = win->bookmarks_menu;
 	
 	popup_pos.window = win;
-	popup_pos.obj = TO_MEMORY;
+	popup_pos.obj = TO_BOOKMARKS;
 	position_popup(menu, &popup_pos, &x, &y);
 	/* NYI */
 	UNUSED(button);

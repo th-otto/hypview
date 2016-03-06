@@ -1,15 +1,7 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
+#include "w_draw.h"
 #include "resource.rh"
-
-#define FONT_NAME_LEN 256
-
-typedef struct _font_attr {
-	int size;						/* size of font, in 1/10 points */
-	unsigned int style;				/* bitmask of text effects */
-	char name[FONT_NAME_LEN];		/* font Family */
-	int charset;
-} FONT_ATTR;
 
 UINT commdlg_help;
 
@@ -27,12 +19,13 @@ void hv_update_menu(WINDOW_DATA *win)
 		CheckMenuObj(win, IDM_OPT_ALTFONT, gl_profile.viewer.use_xfont);
 		CheckMenuObj(win, IDM_OPT_EXPANDSPACES, gl_profile.viewer.expand_spaces);
 		
-		EnableMenuObj(menu, IDM_NAV_BOOKMARKSMENU, doc->buttons.memory);
+		EnableMenuObj(menu, IDM_NAV_BOOKMARKSMENU, doc->buttons.bookmarks);
 		EnableMenuObj(menu, IDM_FILE_OPEN, doc->buttons.load);
 		EnableMenuObj(menu, IDM_FILE_SAVE, doc->buttons.save);
 		EnableMenuObj(menu, IDM_FILE_REMARKER, doc->buttons.remarker);
 		EnableMenuObj(menu, IDM_FILE_INFO, doc->buttons.info);
 		EnableMenuObj(menu, IDM_NAV_BACK, doc->buttons.back);
+		EnableMenuObj(menu, IDM_NAV_HISTORYMENU, doc->buttons.history);
 		EnableMenuObj(menu, IDM_NAV_CLEARSTACK, doc->buttons.history);
 		EnableMenuObj(menu, IDM_FILE_CATALOG, !empty(gl_profile.viewer.catalog_file));
 		EnableMenuObj(menu, IDM_NAV_PREV, doc->buttons.previous);
@@ -109,7 +102,7 @@ void SwitchFont(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static char *W_Fontdesc(const FONT_ATTR *attr)
+char *W_Fontdesc(const FONT_ATTR *attr)
 {
 	char namebuf[FONT_NAME_LEN];
 	char sizebuf[30];
@@ -118,11 +111,11 @@ static char *W_Fontdesc(const FONT_ATTR *attr)
 	strcpy(namebuf, attr->name);
 	strncat(namebuf, ",", sizeof(namebuf));
 	*attrbuf = '\0';
-	if (attr->style & HYP_TXT_BOLD)
+	if (attr->textstyle & HYP_TXT_BOLD)
 		strcat(attrbuf, " Bold");
-	if (attr->style & HYP_TXT_ITALIC)
+	if (attr->textstyle & HYP_TXT_ITALIC)
 		strcat(attrbuf, " Italic");
-	if (attr->style & HYP_TXT_UNDERLINED)
+	if (attr->textstyle & HYP_TXT_UNDERLINED)
 		strcat(attrbuf, " Underline");
 	if (attrbuf[0] != '\0')
 		strncat(namebuf, attrbuf + 1, sizeof(namebuf));
@@ -133,7 +126,7 @@ static char *W_Fontdesc(const FONT_ATTR *attr)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static BOOL W_Fontname(const char *name, FONT_ATTR *attr)
+gboolean W_Fontname(const char *name, FONT_ATTR *attr)
 {
 	char namebuf[FONT_NAME_LEN];
 	char *p;
@@ -144,14 +137,14 @@ static BOOL W_Fontname(const char *name, FONT_ATTR *attr)
 		stylename++; \
 	if (strncasecmp(stylename, name, len) == 0) \
 	{ \
-		attr->style |= mask; \
+		attr->textstyle |= mask; \
 		stylename += len; \
 		while (*stylename == ' ') \
 			stylename++; \
 	}
 
 	attr->size = 0;
-	attr->style = 0;
+	attr->textstyle = HYP_TXT_NORMAL;
 	attr->name[0] = '\0';
 	if (name == NULL)
 		return FALSE;
@@ -206,7 +199,7 @@ static UINT_PTR CALLBACK select_font_hook(HWND hwnd, UINT message, WPARAM wparam
 
 /*** ---------------------------------------------------------------------- ***/
 
-static BOOL Choose1Font(HWND parent, char **desc, const char *title)
+static gboolean Choose1Font(HWND parent, char **desc, const char *title)
 {
 	CHOOSEFONTA cf;
 	HDC hdc;
@@ -214,7 +207,7 @@ static BOOL Choose1Font(HWND parent, char **desc, const char *title)
 	LOGFONTA lf;
 	int h;
 	char *fontname;
-	BOOL res = FALSE;
+	gboolean res = FALSE;
 	
 	memset(&cf, 0, sizeof(cf));
 	memset(&lf, 0, sizeof(lf));
@@ -234,17 +227,17 @@ static BOOL Choose1Font(HWND parent, char **desc, const char *title)
 	{
 		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
 		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
-		if (attr.style & HYP_TXT_BOLD)
+		if (attr.textstyle & HYP_TXT_BOLD)
 		{
 			cf.nFontType |= BOLD_FONTTYPE;
 			lf.lfWeight = FW_BOLD;
 		}
-		if (attr.style & HYP_TXT_ITALIC)
+		if (attr.textstyle & HYP_TXT_ITALIC)
 		{
 			cf.nFontType |= ITALIC_FONTTYPE;
 			lf.lfItalic = TRUE;
 		}
-		if (attr.style & HYP_TXT_UNDERLINED)
+		if (attr.textstyle & HYP_TXT_UNDERLINED)
 		{
 			lf.lfUnderline = TRUE;
 		}
@@ -258,20 +251,19 @@ static BOOL Choose1Font(HWND parent, char **desc, const char *title)
 		if (lf.lfHeight < 0)
 			lf.lfHeight = -lf.lfHeight;
 		attr.size = (int)MulDiv(lf.lfHeight, 72, h) * 10;
-		attr.style = 0;
+		attr.textstyle = HYP_TXT_NORMAL;
 		if (lf.lfWeight >= FW_BOLD)
-			attr.style |= HYP_TXT_BOLD;
+			attr.textstyle |= HYP_TXT_BOLD;
 		if (lf.lfItalic)
-			attr.style |= HYP_TXT_ITALIC;
+			attr.textstyle |= HYP_TXT_ITALIC;
 		if (lf.lfUnderline)
-			attr.style |= HYP_TXT_UNDERLINED;
+			attr.textstyle |= HYP_TXT_UNDERLINED;
 		strncpy(attr.name, lf.lfFaceName, sizeof(attr.name));
 		fontname = W_Fontdesc(&attr);
 		if (fontname)
 		{
 			g_free(*desc);
 			*desc = fontname;
-			printf("selected: %s\n", fontname);
 			res = TRUE;
 		}
 	}

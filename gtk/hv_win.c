@@ -11,7 +11,7 @@
 #include "../icons/help.h"
 #include "../icons/katalog.h"
 #include "../icons/load.h"
-#include "../icons/memory.h"
+#include "../icons/bookmark.h"
 #include "../icons/menu.h"
 #include "../icons/history.h"
 #include "../icons/next.h"
@@ -29,7 +29,7 @@ GSList *all_list;
 static const char *const tb_action_names[TO_MAX] = {
 	[TO_BACK] = "back",
 	[TO_HISTORY] = "history",
-	[TO_MEMORY] = "bookmarks",
+	[TO_BOOKMARKS] = "bookmarks",
 	[TO_FIRST] = "firstpage",
 	[TO_PREV_PHYS] = "prevphyspage",
 	[TO_PREV] = "prevlogpage",
@@ -38,7 +38,7 @@ static const char *const tb_action_names[TO_MAX] = {
 	[TO_NEXT_PHYS] = "nextphyspage",
 	[TO_LAST] = "lastpage",
 	[TO_INDEX] = "index",
-	[TO_KATALOG] = "catalog",
+	[TO_CATALOG] = "catalog",
 	[TO_REFERENCES] = "xref",
 	[TO_REMARKER] = "remarker",
 	[TO_HELP] = "help",
@@ -961,7 +961,7 @@ static void on_history(GtkAction *action, WINDOW_DATA *win)
 static void on_catalog(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	GoThisButton(win, TO_KATALOG);
+	GoThisButton(win, TO_CATALOG);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -985,7 +985,7 @@ static void on_help(GtkAction *action, WINDOW_DATA *win)
 static void on_bookmarks(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	ToolbarClick(win, TO_MEMORY, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
+	ToolbarClick(win, TO_BOOKMARKS, GDK_BUTTON_PRIMARY, gtk_get_current_event_time());
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1836,7 +1836,7 @@ static void register_stock_icons(void)
 	
 	register_icon(factory, "hv-back", back_icon_data);
 	register_icon(factory, "hv-history", history_icon_data);
-	register_icon(factory, "hv-bookmarks", memory_icon_data);
+	register_icon(factory, "hv-bookmarks", bookmark_icon_data);
 	register_icon(factory, "hv-prev", previous_icon_data);
 	register_icon(factory, "hv-prevphys", prevphys_icon_data);
 	register_icon(factory, "hv-toc", home_icon_data);
@@ -2336,7 +2336,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		{
 		AppendButton(win, TO_BACK);
 		AppendButton(win, TO_HISTORY);
-		AppendButton(win, TO_MEMORY);
+		AppendButton(win, TO_BOOKMARKS);
 		AppendButton(win, TO_FIRST);
 		AppendButton(win, TO_PREV_PHYS);
 		AppendButton(win, TO_PREV);
@@ -2345,7 +2345,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		AppendButton(win, TO_NEXT_PHYS);
 		AppendButton(win, TO_LAST);
 		AppendButton(win, TO_INDEX);
-		AppendButton(win, TO_KATALOG);
+		AppendButton(win, TO_CATALOG);
 		AppendButton(win, TO_REFERENCES);
 		AppendButton(win, TO_HELP);
 		AppendButton(win, TO_INFO);

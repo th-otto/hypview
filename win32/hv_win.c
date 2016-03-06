@@ -1,8 +1,45 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
+#include "windebug.h"
 #include "resource.rh"
 
 static char *default_geometry;
+
+static TOOLBAR_ENTRY const tb_entries[] = {
+	[ TO_BACK] = { TO_BACK, IDM_NAV_BACK, IDI_BACK, N_("Back one page") },
+	[ TO_HISTORY ] = { TO_HISTORY, IDM_NAV_HISTORYMENU, IDI_HISTORY, N_("Show history of pages") },
+	[ TO_BOOKMARKS ] = { TO_BOOKMARKS, IDM_NAV_BOOKMARKSMENU, IDI_BOOKMARKS, N_("Show list of bookmarks") },
+	[ TO_FIRST ] = { TO_FIRST, IDM_NAV_FIRST, IDI_FIRST, N_("Goto first page") },
+	[ TO_PREV_PHYS ] = { TO_PREV_PHYS, IDM_NAV_PREVPHYS, IDI_PREVPHYS, N_("Goto next physical page") },
+	[ TO_PREV ] = { TO_PREV, IDM_NAV_PREV, IDI_PREV, N_("Goto next page") },
+	[ TO_HOME ] = { TO_HOME, IDM_NAV_TOC, IDI_HOME, N_("Go up one page") },
+	[ TO_NEXT ] = { TO_NEXT, IDM_NAV_NEXT, IDI_NEXT, N_("Goto next page") },
+	[ TO_NEXT_PHYS ] = { TO_NEXT_PHYS, IDM_NAV_NEXTPHYS, IDI_NEXTPHYS, N_("Goto next physical page") },
+	[ TO_LAST ] = { TO_LAST, IDM_NAV_LAST, IDI_LAST, N_("Goto last page") },
+	[ TO_INDEX ] = { TO_INDEX, IDM_NAV_INDEX, IDI_INDEX, N_("Goto index page") },
+	[ TO_CATALOG ] = { TO_CATALOG, IDM_FILE_CATALOG, IDI_CATALOG, N_("Show catalog of hypertexts") },
+	[ TO_REFERENCES ] = { TO_REFERENCES, IDM_NAV_XREF, IDI_REFERENCE, N_("Show list of cross references") },
+	[ TO_HELP ] = { TO_HELP, IDM_NAV_HELP, IDI_HELP, N_("Show help page") },
+	[ TO_INFO ] = { TO_INFO, IDM_FILE_INFO, IDI_INFO, N_("Show info about hypertext") },
+	[ TO_LOAD ] = { TO_LOAD, IDM_FILE_OPEN, IDI_LOAD, N_("Load a file") },
+	[ TO_SAVE ] = { TO_SAVE, IDM_FILE_SAVE, IDI_SAVE, N_("Save page to file") },
+	/* [ TO_MENU ] = { TO_MENU, 0, IDI_MENU, NULL }, */
+	[ TO_REMARKER ] = { TO_REMARKER, IDM_FILE_REMARKER, IDI_REMARKER, N_("Start Remarker") },
+};
+
+/*
+ * note: values from this table are used as indices into the table above;
+ * using the ids here only works when tb_entries[i].config_id == i
+ */
+static int const tb_defs[] = {
+#define indexof(i) i
+	indexof(TO_BACK), indexof(TO_HISTORY), indexof(TO_BOOKMARKS), TB_SEPARATOR,
+	indexof(TO_FIRST), indexof(TO_PREV_PHYS), indexof(TO_PREV), indexof(TO_HOME), indexof(TO_NEXT), indexof(TO_NEXT_PHYS), indexof(TO_LAST), TB_SEPARATOR,
+	indexof(TO_INDEX), indexof(TO_CATALOG), indexof(TO_REFERENCES), indexof(TO_HELP), TB_SEPARATOR,
+	indexof(TO_INFO), indexof(TO_LOAD), indexof(TO_SAVE), TB_SEPARATOR,
+	indexof(TO_REMARKER), TB_ENDMARK
+#undef indexof
+};
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -20,6 +57,89 @@ void hv_win_open(WINDOW_DATA *win)
 {
 	ShowWindow(win->hwnd, SW_SHOW);
 	BringWindowToTop(win->hwnd);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void WindowCalcScroll(WINDOW_DATA *win)
+{
+	RECT r;
+	GRECT tgr, sgr;
+	int th = 0;
+	int sh = 0;
+	TOOL_DATA *td;
+	STATUS_DATA *sd;
+	
+	GetClientRect(win->hwnd, &r);
+	td = win->td;
+	sd = win->sd;
+	
+	if (td && td->hwnd)
+	{
+		if (td->visible)
+		{
+			if (!IsWindowVisible(td->hwnd))
+				ShowWindow(td->hwnd, SW_SHOW);
+			RectToGrect(&tgr, &r);
+			th = td->toolbar_size(td, &tgr);
+		} else
+		{
+			if (IsWindowVisible(td->hwnd))
+				ShowWindow(td->hwnd, SW_HIDE);
+		}
+	}
+	if (sd != NULL && sd->hwnd != 0)
+	{
+		if (td->visible)
+		{
+			if (!IsWindowVisible(sd->hwnd))
+				ShowWindow(sd->hwnd, SW_SHOW);
+		} else
+		{
+			if (IsWindowVisible(sd->hwnd))
+				ShowWindow(sd->hwnd, SW_HIDE);
+		}
+		RectToGrect(&sgr, &r);
+		sh = sd->statusbar_size(sd, &sgr);
+	}
+
+	if (td && td->hwnd)
+	{
+		if (td->ontop)
+		{
+			MoveWindow(td->hwnd, r.left, r.top, r.right - r.left, th, TRUE);
+			r.top += th;
+		} else
+		{
+			r.bottom -= th;
+			MoveWindow(td->hwnd, r.left, r.bottom, r.right - r.left, th, TRUE);
+		}
+	}
+
+	if (sd != NULL && sd->hwnd != 0)
+	{
+		if (sd->ontop)
+		{
+			MoveWindow(sd->hwnd, r.left, r.top, r.right - r.left, sh, TRUE);
+			r.top += sh;
+		} else
+		{
+			r.bottom -= sh;
+			MoveWindow(sd->hwnd, r.left, r.bottom, r.right - r.left, sh, TRUE);
+		}
+	}
+
+	if (win->textwin)
+	{
+		MoveWindow(win->textwin, r.left, r.top, r.right - r.left, r.bottom - r.top, TRUE);
+	}
+#if 0
+	wind_get_grect(win->whandle, WF_WORKXYWH, &win->work);
+	win->scroll.g_x = win->work.g_x + win->x_offset + win->x_margin_left;
+	win->scroll.g_y = win->work.g_y + win->y_offset + win->y_margin_top;
+	win->scroll.g_w = win->work.g_w - win->x_offset - win->x_margin_left - win->x_margin_right;
+	win->scroll.g_h = win->work.g_h - win->y_offset - win->y_margin_top - win->y_margin_bottom;
+#endif
 }
 
 /******************************************************************************/
@@ -45,6 +165,25 @@ void hv_win_destroy_images(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void toolbar_status_exit(WINDOW_DATA *win)
+{
+	STATUS_DATA *sd;
+	TOOL_DATA *td;
+
+	if ((td = win->td) != NULL)
+	{
+		td->toolbar_close(win);
+		td->toolbar_exit(win);
+	}
+	if ((sd = win->sd) != NULL)
+	{
+		sd->statusbar_close(win);
+		sd->statusbar_exit(win);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void win32_hypview_window_finalize(WINDOW_DATA *win)
 {
 	DOCUMENT *doc;
@@ -60,6 +199,7 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 		}
 		if (win->parentwin)
 			win->parentwin->popup = NULL;
+		toolbar_status_exit(win);
 		hypdoc_unref(doc);
 		if (!win->is_popup)
 		{
@@ -111,6 +251,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 {
 	WINDOW_DATA *win;
 	
+	win32debug_msg_print(stderr, "mainWndProc", hwnd, message, wParam, lParam);
 	switch (message)
 	{
 	case WM_NCCREATE:
@@ -132,11 +273,13 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 				return FALSE;
 		}
 		DestroyWindow(win->hwnd);
+		win32debug_msg_end("mainWndProc", message, "TRUE");
 		return TRUE;
 
 	case WM_DESTROY:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		win32_hypview_window_finalize(win);
+		win32debug_msg_end("mainWndProc", message, "FALSE");
 		return FALSE;
 	
 	case WM_MOVE:
@@ -144,12 +287,14 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		{
 			RECT r;
 			
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			GetWindowRect(hwnd, &r);
 			gl_profile.viewer.win_x = r.left;
 			gl_profile.viewer.win_y = r.top;
 			gl_profile.viewer.win_w = r.right - r.left;
 			gl_profile.viewer.win_h = r.bottom - r.top;
 			HypProfile_SetChanged();
+			WindowCalcScroll(win);
 		}
 		break;
 	
@@ -185,7 +330,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			SelectFileSave(win);
 			break;
 		case IDM_FILE_CATALOG:
-			GoThisButton(win, TO_KATALOG);
+			GoThisButton(win, TO_CATALOG);
 			break;
 		case IDM_FILE_DEFAULT:
 			GotoDefaultFile(win);
@@ -271,6 +416,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			break;
 		case IDM_NAV_BOOKMARKSMENU:
 			MarkerUpdate(win);
+			MarkerPopup(win, 1);
 			break;
 		case IDM_NAV_BOOKMARK_1:
 		case IDM_NAV_BOOKMARK_2:
@@ -283,6 +429,9 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		case IDM_NAV_BOOKMARK_9:
 		case IDM_NAV_BOOKMARK_10:
 			on_bookmark_selected(win, LOWORD(wParam) - IDM_NAV_BOOKMARK_1);
+			break;
+		case IDM_NAV_HISTORYMENU:
+			HistoryPopup(win, 1);
 			break;
 		
 		case IDM_OPT_SELECTFONT:
@@ -328,6 +477,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			About(hwnd);
 			break;
 		}
+		win32debug_msg_end("mainWndProc", message, "0");
 		return 0;
 	
 	default:
@@ -364,6 +514,8 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		break;
 	}
 
+	win32debug_msg_end("mainWndProc", message, "DefWindowProc");
+	
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
@@ -383,7 +535,7 @@ static void set_font_attributes(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
+WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 {
 	static int registered;
 	WINDOW_DATA *win;
@@ -393,25 +545,29 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	HMENU menu = 0;
 	HWND parent = 0;
 	int x, y, w, h;
+	HINSTANCE inst = GetInstance();
 	
 	if (!registered)
 	{
 		WNDCLASS wndclass;
-
+		
 		wndclass.style = CS_BYTEALIGNCLIENT | CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 		wndclass.lpfnWndProc = mainWndProc;
 		wndclass.cbClsExtra = 0;
 		wndclass.cbWndExtra = 0;
-		wndclass.hInstance = GetInstance();
-		wndclass.hIcon = LoadIcon(GetInstance(), MAKEINTRESOURCE(IDR_MAINFRAME));
+		wndclass.hInstance = inst;
+		wndclass.hIcon = LoadIcon(inst, MAKEINTRESOURCE(IDI_MAINFRAME));
 		wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wndclass.hbrBackground = (HBRUSH) (COLOR_APPWORKSPACE + 1);
 		wndclass.lpszMenuName = NULL;
 		wndclass.lpszClassName = "hypview";
 
 		RegisterClass(&wndclass);
+		toolbar_register_classes(inst);
 	}
 	win = g_new0(WINDOW_DATA, 1);
+	if (win == NULL)
+		return NULL;
 	
 	win->data = doc;
 	win->is_popup = popup;
@@ -422,9 +578,10 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		style = WS_POPUP | WS_BORDER;
 	} else
 	{
+		win->td = toolbar_init(win, tb_defs, (int)(sizeof(tb_defs) / sizeof(tb_defs[0])), tb_entries, (int)(sizeof(tb_entries) / sizeof(tb_entries[0])));
 		exstyle = WS_EX_OVERLAPPEDWINDOW;
 		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_HSCROLL | WS_VSCROLL | WS_SIZEBOX;
-		menu = LoadMenuExW(GetInstance(), MAKEINTRESOURCEW(IDR_MAIN_MENU));
+		menu = LoadMenuExW(inst, MAKEINTRESOURCEW(IDR_MAIN_MENU));
 	}
 	x = gl_profile.viewer.win_x;
 	y = gl_profile.viewer.win_y;
@@ -448,13 +605,15 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		x, y, w, h,
 		parent,
 		menu,
-		GetInstance(),
+		inst,
 		(LPVOID)win);
-	if (!hwnd)
+	if (hwnd == 0)
 	{
 		g_free(win);
 		return NULL;
 	}
+	if (win->td && win->td->visible)
+		win->td->toolbar_open(win);
 	
 	set_font_attributes(win);
 	hv_set_title(win, win->title);

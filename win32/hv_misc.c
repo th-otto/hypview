@@ -247,21 +247,21 @@ void DlgSetText(HWND hwnd, int id, const char *str)
 
 /*** ---------------------------------------------------------------------- ***/
 
-BOOL DlgGetButton(HWND hwnd, int id)
+gboolean DlgGetButton(HWND hwnd, int id)
 {
 	return IsDlgButtonChecked(hwnd, id) == BST_CHECKED;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void DlgSetButton(HWND hwnd, int id, BOOL check)
+void DlgSetButton(HWND hwnd, int id, gboolean check)
 {
 	CheckDlgButton(hwnd, id, check ? BST_CHECKED : BST_UNCHECKED);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void DlgEnable(HWND hwnd, int id, BOOL enable)
+void DlgEnable(HWND hwnd, int id, gboolean enable)
 {
 	EnableWindow(GetDlgItem(hwnd, id), enable);
 }

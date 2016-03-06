@@ -12,7 +12,7 @@ typedef long WP_UNIT;
 enum toolbutton {
 	TO_BACK,
 	TO_HISTORY,
-	TO_MEMORY,
+	TO_BOOKMARKS,
 	TO_FIRST,
 	TO_PREV_PHYS,
 	TO_PREV,
@@ -21,7 +21,7 @@ enum toolbutton {
 	TO_NEXT_PHYS,
 	TO_LAST,
 	TO_INDEX,
-	TO_KATALOG,
+	TO_CATALOG,
 	TO_REFERENCES,
 	TO_HELP,
 	TO_INFO,
@@ -60,6 +60,83 @@ struct _viewer_colors {
 	COLORREF error;            /* used to display invalid links in hypertext files */
 };
 
+typedef struct
+{
+	int config_id;			/* unique id */
+	int menu_id;			/* corresponding menu id */
+	int icon_id;			/* resource id of icon */
+	const char *comment;	/* optional tooltip text */
+} TOOLBAR_ENTRY;
+
+#define TB_ENDMARK (-1)
+#define TB_SEPARATOR (-2)
+
+typedef struct _tool_data TOOL_DATA;
+
+struct _tool_data {
+	HWND hwnd;
+	int		buttonsave;			/* id of last pressed button*/
+	int		num_entries;		/* number of entries */
+	int		num_definitions;	/* number of definititions */
+	const TOOLBAR_ENTRY *entries;		/* all definitions */
+	const int *definitions;		/* currently displayed entries */
+	int		buttondown;			/* number of currently pressed button */
+	int		buttonxs;			/* X-coordinate of last pressed buttpn */
+	int     buttonys;			/* Y-coordinate of last pressed buttpn */
+	gboolean buttonpress;		/* TRUE if mousebutton pressed in toolbar */
+	gboolean visible;			/* TRUE if toolbar should be displayed */
+	gboolean ontop;				/* TRUE if toolbar should be display at top */
+	char    *help_text;			/* currently display tooltip text */
+	HWND    toolbar_help_hwnd;
+	
+	void	(*toolbar_paint)(HDC hdc, TOOL_DATA *td, const GRECT *gr);
+	int		(*toolbar_size)(TOOL_DATA *td, GRECT *r);
+	gboolean (*toolbar_mouse_move)(TOOL_DATA *td, const GRECT *gr, int mousex, int mousey);
+	void	(*toolbar_mouse_down)(TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey);
+	void	(*toolbar_button_up)(TOOL_DATA *td);
+	void	(*toolbar_exit)(WINDOW_DATA *win);
+	
+	void    (*toolbar_close)(WINDOW_DATA *win);
+	void	(*toolbar_open)(WINDOW_DATA *win);
+
+	void	(*toolbar_help_settext)(TOOL_DATA *td, const char *text, int x, int y);
+	void	(*toolbar_refresh)(TOOL_DATA *td, const GRECT *gr);
+	void	(*toolbar_drawicon)(HDC hdc, TOOL_DATA *td, int x, int y, int id);
+};
+
+typedef struct _status_data STATUS_DATA;
+
+#define STATUS_MAX_LEN 160
+
+typedef struct
+{
+	int x;
+	int y;
+	int w;
+	int flags;
+	char txt[STATUS_MAX_LEN];
+} STATUS_PARTS;
+
+struct _status_data {
+	HWND hwnd;
+	STATUS_PARTS *StatusParts;	/* Koordinaten der Felder                         */
+	int     count;				/* Anzahl Felder in der Statuszeile               */
+	gboolean ontop;				/* TRUE wenn Statusbar oben angezeigt werden soll */
+	gboolean visible;			/* TRUE wenn Statusbar angezeigt werden soll      */
+	int     text_width;
+	int     text_height;
+	
+	int     (*statusbar_size)(STATUS_DATA *sd, GRECT *r);
+	int     (*statusbar_paint)(HDC hdc, STATUS_DATA *sd, GRECT *gr);
+	void    (*statusbar_textout)(HDC hdc, STATUS_DATA *sd, const char *text, int fieldno, gboolean refresh);
+	void    (*statusbar_exit)(WINDOW_DATA *win);
+	
+	void    (*statusbar_open)(WINDOW_DATA *win);
+	void	(*statusbar_close)(WINDOW_DATA *win);
+
+	void	(*statusbar_refresh)(HDC hdc, STATUS_DATA *sd, GRECT *gr);
+};
+
 struct _window_data_
 {
 	HWND hwnd;
@@ -76,7 +153,7 @@ struct _window_data_
 	
 	HMENU bookmarks_menu;
 	HWND m_buttons[TO_MAX];
-	HWND toolbar;
+	HWND textwin;
 	HWND searchbox;
 	HWND searchentry;
 	GSList *image_childs;
@@ -85,6 +162,8 @@ struct _window_data_
 	} docsize;
 	gboolean hovering_over_link;
 	WINDOW_DATA *parentwin;
+	TOOL_DATA *td;
+	STATUS_DATA *sd;
 };
 
 typedef struct _link_info {
@@ -94,6 +173,21 @@ typedef struct _link_info {
 	hyp_nodenr dest_page;
 	hyp_lineno line_nr;
 } LINK_INFO;
+
+
+#define RectToGrect(gr, re) \
+	((gr)->g_x = (re)->left, \
+	 (gr)->g_y = (re)->top, \
+	 (gr)->g_w = (re)->right - (re)->left, \
+	 (gr)->g_h = (re)->bottom - (re)->top)
+#define GrectToRect(re, gr) \
+	((re)->left = (gr)->g_x, \
+	 (re)->top = (gr)->g_y, \
+	 (re)->right = (gr)->g_x + (gr)->g_w, \
+	 (re)->bottom = (gr)->g_y + (gr)->g_h)
+
+
+#define NO_WINDOW ((HWND)0)
 
 
 /* about.c */
@@ -146,6 +240,8 @@ void hv_exit(void);
 /*
  * hv_font.c
  */
+#define FONT_NAME_LEN 256
+
 void SwitchFont(WINDOW_DATA *win);
 void SelectFont(WINDOW_DATA *win);
 void hv_update_menu(WINDOW_DATA *win);
@@ -159,7 +255,7 @@ extern UINT commdlg_help;
 
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
-WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup);
+WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
@@ -170,6 +266,7 @@ void hv_win_scroll_to_line(WINDOW_DATA *win, long line);
 void hv_win_destroy_images(WINDOW_DATA *win);
 void hv_win_update_attributes(WINDOW_DATA *win);
 void hv_win_reset_text(WINDOW_DATA *win);
+void WindowCalcScroll(WINDOW_DATA *win);
 
 
 /*
@@ -186,12 +283,16 @@ struct popup_pos {
 	WINDOW_DATA *window;
 	enum toolbutton obj;
 };
+
 void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw);
 void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button);
 void RemoveSearchBox(WINDOW_DATA *win);
 void position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret);
 void EnableMenuObj(HMENU menu, int obj, gboolean enable);
 void CheckMenuObj(WINDOW_DATA *win, int obj, gboolean check);
+void toolbar_register_classes(HINSTANCE hinst);
+TOOL_DATA *toolbar_init(WINDOW_DATA *win, const int *definitions, int num_definitions, const TOOLBAR_ENTRY *entries, int num_entries);
+void toolbar_setfont(const char *desc);
 
 
 /*
@@ -270,9 +371,9 @@ void g_slist_free(GSList *list);
 void DlgSetText(HWND hwnd, int id, const char *str);
 char *DlgGetText(HWND hwnd, int id);
 wchar_t *DlgGetTextW(HWND hwnd, int id);
-BOOL DlgGetButton(HWND hwnd, int id);
-void DlgSetButton(HWND hwnd, int id, BOOL check);
-void DlgEnable(HWND hwnd, int id, BOOL enable);
+gboolean DlgGetButton(HWND hwnd, int id);
+void DlgSetButton(HWND hwnd, int id, gboolean check);
+void DlgEnable(HWND hwnd, int id, gboolean enable);
 
 HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name);
 INT_PTR WINAPI DialogBoxExW(HINSTANCE hInstance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param);

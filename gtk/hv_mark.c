@@ -179,14 +179,14 @@ void MarkerPopup(WINDOW_DATA *win, int button, guint32 event_time)
 	GtkWidget *menu;
 	struct popup_pos popup_pos;
 	
-	if (!win->m_buttons[TO_MEMORY])
+	if (!win->m_buttons[TO_BOOKMARKS])
 		return;
 	
 	MarkerUpdate(win);
 	menu = win->bookmarks_menu;
 	
 	popup_pos.window = win;
-	popup_pos.obj = TO_MEMORY;
+	popup_pos.obj = TO_BOOKMARKS;
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, position_popup, &popup_pos, button, event_time);
 }
 

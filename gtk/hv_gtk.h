@@ -22,7 +22,7 @@ typedef long WP_UNIT;
 enum toolbutton {
 	TO_BACK,
 	TO_HISTORY,
-	TO_MEMORY,
+	TO_BOOKMARKS,
 	TO_FIRST,
 	TO_PREV_PHYS,
 	TO_PREV,
@@ -31,7 +31,7 @@ enum toolbutton {
 	TO_NEXT_PHYS,
 	TO_LAST,
 	TO_INDEX,
-	TO_KATALOG,
+	TO_CATALOG,
 	TO_REFERENCES,
 	TO_HELP,
 	TO_INFO,
