@@ -610,8 +610,10 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	if (hwnd == 0)
 	{
 		g_free(win);
+		fprintf(stderr, "can't create %s window: %s\n", "main", win32_errstring(GetLastError()));
 		return NULL;
 	}
+
 	if (win->td && win->td->visible)
 		win->td->toolbar_open(win);
 	

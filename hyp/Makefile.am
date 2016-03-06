@@ -19,7 +19,7 @@ endif
 
 EXTRA_DIST = gfx.s genmaptab.c
 
-noinst_PROGRAMS = img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico
+noinst_PROGRAMS = img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpicon
 
 INCLUDES = -I$(hyp_srcdir)/include
 AM_CPPFLAGS = $(GLIB_CFLAGS) \
@@ -257,6 +257,9 @@ picinfo_SOURCES = \
 picinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 picinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
+
+dumpicon_SOURCES = \
+	dumpicon.c
 
 CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)

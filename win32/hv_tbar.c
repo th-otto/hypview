@@ -304,10 +304,18 @@ static void tool_help_create(TOOL_DATA *td, const char *text, int x, int y)
 		0,
 		GetInstance(),
 		td);
+	if (td->toolbar_help_hwnd == NO_WINDOW)
+	{
+		fprintf(stderr, "can't create %s window: %s\n", "tooltip", win32_errstring(GetLastError()));
+		return;
+	}
 	if (timer_id == 0)
 	{
 		timer_id = SetTimer(td->toolbar_help_hwnd, TIMER_ID, time_val, NULL);
 	}
+	/*
+	 * if timer creation failed, show window immediately
+	 */
 	if (timer_id == 0)
 		ShowWindow(td->toolbar_help_hwnd, SW_SHOW);
 	g_free(wtext);
@@ -583,23 +591,26 @@ static void toolbar_refresh(TOOL_DATA *td, const GRECT *gr)
 
 static void toolbar_drawicon(HDC hdc, TOOL_DATA *td, int x, int y, int id)
 {
-	(void) hdc;
-	(void) td;
-	(void) x;
-	(void) y;
+#if 0
+	HICON icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(id), IMAGE_ICON, 0, 0, LR_SHARED);
+#else
+	HICON icon = (HICON)LoadImageA(0, "../icons/back.ico", IMAGE_ICON, 0, 0, LR_SHARED|LR_LOADFROMFILE);
 	(void) id;
+#endif
+	UNUSED(td);
+	DrawIconEx(hdc, x, y, icon, BITMAP_WIDTH, BITMAP_HEIGHT, 0, 0, DI_NORMAL);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_enum(TOOL_DATA *td, const int *defs, int num_defs, int maxx, void (*enumproc)(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int xs, int ys, int c, void *specialdata), void *specialdata)
+static void toolbar_enum(TOOL_DATA *td, const int *defs, int num_defs, int maxx, void (*enumproc)(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata), void *specialdata)
 {
-	int c;
+	int def_idx;
 	int xs = TB_X_OFF;
 	int ys = TB_Y_OFF;
 	
-	c = 0;
-	while (c < num_defs && *defs != TB_ENDMARK)
+	def_idx = 0;
+	while (def_idx < num_defs && *defs != TB_ENDMARK)
 	{
 		switch (*defs)
 		{
@@ -609,7 +620,7 @@ static void toolbar_enum(TOOL_DATA *td, const int *defs, int num_defs, int maxx,
 				xs = TB_X_OFF;
 				ys += TOOLHEIGHT - TB_Y_OFF;
 			}
-			enumproc(td, *defs, td->entries, xs, ys, c, specialdata);
+			enumproc(td, *defs, td->entries, xs, ys, def_idx, specialdata);
 			xs += TB_SEP_WIDTH;
 			break;
 		default:
@@ -618,19 +629,19 @@ static void toolbar_enum(TOOL_DATA *td, const int *defs, int num_defs, int maxx,
 				xs = TB_X_OFF;
 				ys += TOOLHEIGHT - TB_Y_OFF;
 			}
-			enumproc(td, *defs, td->entries, xs, ys, c, specialdata);
+			enumproc(td, *defs, td->entries, xs, ys, def_idx, specialdata);
 			xs += BUTTONWIDTH;
 			break;
 		}
 		defs++;
-		c++;
+		def_idx++;
 	}
-	enumproc(td, TB_ENDMARK, NULL, xs, ys, c, specialdata);
+	enumproc(td, TB_ENDMARK, NULL, xs, ys, def_idx, specialdata);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_draw(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int xs, int ys, int c, void *specialdata)
+static void toolbar_draw(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata)
 {
 	GRECT button;
 	DRAWINFO *dw;
@@ -638,19 +649,19 @@ static void toolbar_draw(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int 
 	UNUSED(te);
 
 	dw = (DRAWINFO *)specialdata;
-	if (entry >= 0)
+	if (entry_idx >= 0)
 	{
 		button.g_x = xs + dw->x_off;
 		button.g_y = ys + dw->y_off;
 		button.g_w = BUTTONWIDTH;
 		button.g_h = BUTTONHEIGHT;
-		if (c == td->buttondown)
+		if (def_idx == td->buttondown)
 		{
-			td->toolbar_drawicon(dw->hdc, td, button.g_x + FRAMESIZE + 1, button.g_y + FRAMESIZE, td->entries[entry].icon_id);
+			td->toolbar_drawicon(dw->hdc, td, button.g_x + FRAMESIZE + 1, button.g_y + FRAMESIZE + 1, td->entries[entry_idx].icon_id);
 			W_TDFrame(dw->hdc, &button, FRAMESIZE, INVERT | OUTLINE);
 		} else
 		{
-			td->toolbar_drawicon(dw->hdc, td, button.g_x + FRAMESIZE, button.g_y + FRAMESIZE, td->entries[entry].icon_id);
+			td->toolbar_drawicon(dw->hdc, td, button.g_x + FRAMESIZE, button.g_y + FRAMESIZE, td->entries[entry_idx].icon_id);
 			W_TDFrame(dw->hdc, &button, FRAMESIZE, OUTLINE);
 		}
 	}
@@ -662,48 +673,32 @@ static void toolbar_paint(HDC hdc, TOOL_DATA *td, const GRECT *gr)
 {
 	DRAWINFO dw;
 	int oldmode;
+	GRECT r1;
+	RECT r;
 	
 	oldmode = SetBkMode(hdc, OPAQUE);
 	W_TDFrame(hdc, gr, 1, FILL | OUTLINE);
 
 	dw.hdc = hdc;
 	dw.win = NULL;
-	dw.x_off = gr->g_x;
-	dw.y_off = gr->g_y;
-	toolbar_enum(td, td->definitions, td->num_definitions, gr->g_w, toolbar_draw, &dw);
+	r1 = *gr;
+	GetClientRect(td->hwnd, &r);
+	RectToGrect(&r1, &r);
+	dw.x_off = r1.g_x;
+	dw.y_off = r1.g_y;
+	toolbar_enum(td, td->definitions, td->num_definitions, r1.g_w, toolbar_draw, &dw);
 	SetBkMode(hdc, oldmode);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void tb_size_proc(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int xs, int ys, int c, void *specialdata)
-{
-	_WORD *h = (_WORD *)specialdata;
-	
-	UNUSED(td);
-	UNUSED(te);
-	UNUSED(c);
-	UNUSED(xs);
-	switch (entry)
-	{
-	case TB_SEPARATOR:
-	default:
-		*h = ys + TOOLHEIGHT - TB_Y_OFF;
-		break;
-	case TB_ENDMARK:
-		break;
-	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void toolbar_click(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int xs, int ys, int c, void *specialdata)
+static void toolbar_click(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata)
 {
 	GRECT button;
 	CLICKINFO *di;
 
 	di = (CLICKINFO *)specialdata;
-	if (entry >= 0)
+	if (entry_idx >= 0)
 	{
 		button.g_x = xs + di->x_off;
 		button.g_y = ys + di->y_off;
@@ -717,7 +712,7 @@ static void toolbar_click(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int
 				{
 					const char *comment;
 					
-					comment = te[entry].comment;
+					comment = te[entry_idx].comment;
 					if (comment != NULL)
 					{
 						td->toolbar_help_settext(td, comment, xs, ys);
@@ -725,13 +720,13 @@ static void toolbar_click(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int
 				}
 			} else
 			{
-				td->buttondown = c;
+				td->buttondown = def_idx;
 
 				td->buttonxs = button.g_x;
 				td->buttonys = button.g_y;
 				if (di->domove == TB_MOVE_ACTIVATE)
 				{
-					if (td->buttonsave != c)
+					if (td->buttonsave != def_idx)
 						if (td->toolbar_refresh != FUNK_NULL)
 							td->toolbar_refresh(td, &button);
 				} else
@@ -745,7 +740,7 @@ static void toolbar_click(TOOL_DATA *td, int entry, const TOOLBAR_ENTRY *te, int
 		{
 			if (di->domove == TB_MOVE_ACTIVATE)
 			{
-				if (td->buttonsave == c)
+				if (td->buttonsave == def_idx)
 				{
 					if (td->buttondown == td->buttonsave)
 						td->buttondown = -1;
@@ -825,6 +820,27 @@ static void toolbar_button_up(TOOL_DATA *td)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void tb_size_proc(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata)
+{
+	_WORD *h = (_WORD *)specialdata;
+	
+	UNUSED(td);
+	UNUSED(te);
+	UNUSED(def_idx);
+	UNUSED(xs);
+	switch (entry_idx)
+	{
+	case TB_SEPARATOR:
+	default:
+		*h = ys + TOOLHEIGHT - TB_Y_OFF;
+		break;
+	case TB_ENDMARK:
+		break;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static int toolbar_size(TOOL_DATA *td, GRECT *r)
 {
 	_WORD th = TOOLHEIGHT;
@@ -867,6 +883,7 @@ static void toolbar_open(WINDOW_DATA *win)
 
 		if (td->hwnd == NO_WINDOW)
 		{
+			fprintf(stderr, "can't create %s window: %s\n", "toolbar", win32_errstring(GetLastError()));
 			return;
 		}
 	}
@@ -1001,7 +1018,12 @@ void toolbar_register_classes(HINSTANCE hinst)
 	wndclass.hbrBackground = 0;	/* GetStockObject(WHITE_BRUSH); */
 	wndclass.lpszClassName = WCN_Toolbar;
 	wndclass.lpfnWndProc = toolbarWndProc;
+	if (RegisterClassW(&wndclass) == 0)
+	{
+	}
 	wndclass.lpszClassName = WCN_ToolHelp;
 	wndclass.lpfnWndProc = toolhelpWndProc;
-	RegisterClassW(&wndclass);
+	if (RegisterClassW(&wndclass) == 0)
+	{
+	}
 }

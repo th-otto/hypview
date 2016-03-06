@@ -1,6 +1,6 @@
 include ../silent.am
 
-INCLUDES = -I$(hyp_srcdir)/include
+INCLUDES = 
 
 if OS_WIN32
 noinst_LIBRARIES = librcintl.a

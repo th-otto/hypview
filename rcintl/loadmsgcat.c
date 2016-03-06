@@ -189,7 +189,7 @@ void _rc_load_domain(struct loaded_l10nfile *domain_file, struct binding *domain
 	if (unlikely(data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED))
 	{
 		/* The magic number is wrong: not a message catalog file.  */
-		UnlockResource(hglbl);
+		(void) UnlockResource(hglbl);
 		FreeResource(hglbl);
 		goto out;
 	}
@@ -513,7 +513,7 @@ void _rc_load_domain(struct loaded_l10nfile *domain_file, struct binding *domain
 		/* This is an invalid .mo file or we ran out of resources.  */
 		if (domain)
 			free(domain->malloced);
-		UnlockResource(hglbl);
+		(void) UnlockResource(hglbl);
 		FreeResource(hglbl);
 		free(domain);
 		domain_file->domain = NULL;

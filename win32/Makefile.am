@@ -64,7 +64,7 @@ resource_files = \
 	$(empty)
 
 resource.res: $(resource_files) $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
+	$(AM_V_RC)$(WINDRES) $(INCLUDES) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
 
 EXTRA_DIST = $(resource_files)
 

@@ -138,7 +138,7 @@ static void _rc_unload_domain(struct loaded_domain *domain)
 
 	free(domain->malloced);
 
-	UnlockResource(domain->hglbl);
+	(void) UnlockResource(domain->hglbl);
 	FreeResource(domain->hglbl);
 
 	free(domain);

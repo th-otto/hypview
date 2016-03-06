@@ -19,7 +19,7 @@ static GSList *recent_list;
 HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name)
 {
 	HRSRC hrsrc;
-	LPCWSTR type = MAKEINTRESOURCEW(RT_MENU);
+	LPCWSTR type = MAKEINTRESOURCEW((DWORD)(DWORD_PTR)RT_MENU);
 	LANGID lang = gl_locale_win32_messages_langid();
  	
 	if (!instance)
@@ -41,7 +41,7 @@ HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name)
 INT_PTR WINAPI DialogBoxExW(HINSTANCE instance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param)
 {
 	HRSRC hrsrc;
-	LPCWSTR type = MAKEINTRESOURCEW(RT_DIALOG);
+	LPCWSTR type = MAKEINTRESOURCEW((DWORD)(DWORD_PTR)RT_DIALOG);
 	LPCDLGTEMPLATE templ;
 	LANGID lang = gl_locale_win32_messages_langid();
 	
