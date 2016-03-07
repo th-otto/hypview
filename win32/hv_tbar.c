@@ -17,13 +17,13 @@ static int time_val = TIME_VAL;
 static char *toolbar_font_desc;
 static FONT_ATTR toolbar_font;
 
-#define BITMAP_WIDTH  32
-#define BITMAP_HEIGHT 21
+static int bitmap_width = 32;
+static int bitmap_height = 21;
 
 #define FRAMESIZE 2	/* width&height of frame around toolbar window */
 
-#define BUTTONWIDTH  (BITMAP_WIDTH + 2 * FRAMESIZE)
-#define BUTTONHEIGHT (BITMAP_HEIGHT + 2 * FRAMESIZE)
+#define BUTTONWIDTH  (bitmap_width + 2 * FRAMESIZE)
+#define BUTTONHEIGHT (bitmap_height + 2 * FRAMESIZE)
 
 #define TB_X_OFF 2	/* x-offset of icon in toolbar */
 #define TB_Y_OFF 2	/* y-offset of icon in toolbar */
@@ -589,11 +589,17 @@ static void toolbar_refresh(TOOL_DATA *td, const GRECT *gr)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_drawicon(HDC hdc, TOOL_DATA *td, int x, int y, int id)
+static void toolbar_drawicon(HDC hdc, TOOL_DATA *td, const GRECT *button, int entry_idx, gboolean selected)
 {
-	HICON icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(id), IMAGE_ICON, 0, 0, LR_SHARED);
-	UNUSED(td);
-	DrawIconEx(hdc, x, y, icon, BITMAP_WIDTH, BITMAP_HEIGHT, 0, 0, DI_NORMAL);
+	int icon_id = td->entries[entry_idx].icon_id;
+	HICON icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(icon_id), IMAGE_ICON, 0, 0, LR_SHARED);
+	int x = button->g_x + FRAMESIZE + (selected ? 1 : 0);
+	int y = button->g_y + FRAMESIZE + (selected ? 1 : 0);
+	DrawIconEx(hdc, x, y, icon, bitmap_width, bitmap_height, 0, 0, DI_NORMAL);
+	if (selected)
+		W_TDFrame(hdc, button, FRAMESIZE, INVERT | OUTLINE);
+	else
+		W_TDFrame(hdc, button, FRAMESIZE, OUTLINE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -650,15 +656,7 @@ static void toolbar_draw(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, 
 		button.g_y = ys + dw->y_off;
 		button.g_w = BUTTONWIDTH;
 		button.g_h = BUTTONHEIGHT;
-		if (def_idx == td->buttondown)
-		{
-			td->toolbar_drawicon(dw->hdc, td, button.g_x + FRAMESIZE + 1, button.g_y + FRAMESIZE + 1, td->entries[entry_idx].icon_id);
-			W_TDFrame(dw->hdc, &button, FRAMESIZE, INVERT | OUTLINE);
-		} else
-		{
-			td->toolbar_drawicon(dw->hdc, td, button.g_x + FRAMESIZE, button.g_y + FRAMESIZE, td->entries[entry_idx].icon_id);
-			W_TDFrame(dw->hdc, &button, FRAMESIZE, OUTLINE);
-		}
+		td->toolbar_drawicon(dw->hdc, td, &button, entry_idx, def_idx == td->buttondown);
 	}
 }
 
@@ -1020,5 +1018,26 @@ void toolbar_register_classes(HINSTANCE hinst)
 	wndclass.lpfnWndProc = toolhelpWndProc;
 	if (RegisterClassW(&wndclass) == 0)
 	{
+	}
+	{
+		HICON icon;
+		BITMAP bitmap = { 0 };
+		ICONINFO info;
+		
+		icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(IDI_NEXT), IMAGE_ICON, 0, 0, LR_SHARED);
+		GetIconInfo(icon, &info);
+		if (info.hbmColor)
+		{
+			GetObject((HGDIOBJ)info.hbmColor, sizeof(bitmap), &bitmap);
+			bitmap_width = bitmap.bmWidth;
+			bitmap_height = bitmap.bmHeight;
+			DeleteObject(info.hbmColor);
+		} else
+		{
+			GetObject((HGDIOBJ)info.hbmMask, sizeof(bitmap), &bitmap);
+			bitmap_width = bitmap.bmWidth;
+			bitmap_height = bitmap.bmHeight / 2;
+		}
+		DeleteObject(info.hbmMask);
 	}
 }

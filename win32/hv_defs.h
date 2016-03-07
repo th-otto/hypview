@@ -101,7 +101,7 @@ struct _tool_data {
 
 	void	(*toolbar_help_settext)(TOOL_DATA *td, const char *text, int x, int y);
 	void	(*toolbar_refresh)(TOOL_DATA *td, const GRECT *gr);
-	void	(*toolbar_drawicon)(HDC hdc, TOOL_DATA *td, int x, int y, int id);
+	void	(*toolbar_drawicon)(HDC hdc, TOOL_DATA *td, const GRECT *button, int entry_idx, gboolean selected);
 };
 
 typedef struct _status_data STATUS_DATA;

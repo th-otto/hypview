@@ -223,6 +223,12 @@ void W_Lines(HDC hdc, const POINT points[], int npoints, int linestyle, COLORREF
 	if (linestyle == W_PEN_SOLID)
 	{
 		Polyline(hdc, points, npoints);
+		if (npoints > 0 &&
+			(points[0].x != points[npoints-1].x ||
+			 points[0].y != points[npoints-1].y))
+		{
+			SetPixel(hdc, points[npoints-1].x, points[npoints-1].y, color);
+		}
 	} else
 	{
 		LDDA dda;
