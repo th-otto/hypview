@@ -932,23 +932,10 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic
 				for (i = pic->pi_height; --i >= 0; )
 				{
 					src -= k;
+					rp = dest;
+					memset(rp, 0, dstrowsize);
 					for (l = 0; l < j; l++)
-						*dest++ = ~src[l];
-					switch (j & 3)
-					{
-					case 1:
-						*dest++ = '\0';
-						*dest++ = '\0';
-						*dest++ = '\0';
-						break;
-					case 2:
-						*dest++ = '\0';
-						*dest++ = '\0';
-						break;
-					case 3:
-						*dest++ = '\0';
-						break;
-					}
+						*rp++ = ~src[l];
 				}
 			}
 			break;
@@ -1158,23 +1145,15 @@ long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const
 					for (i = pic->pi_height; --i >= 0; )
 					{
 						src -= k;
+						rp = dest;
+						mp = masksrc;
+						memset(rp, 0, dstrowsize);
 						for (l = 0; l < j; l++)
-							*dest++ = ~src[l];
-						switch (j & 3)
 						{
-						case 1:
-							*dest++ = '\0';
-							*dest++ = '\0';
-							*dest++ = '\0';
-							break;
-						case 2:
-							*dest++ = '\0';
-							*dest++ = '\0';
-							break;
-						case 3:
-							*dest++ = '\0';
-							break;
+							/* rp[l] = ~mp[l]; */
 						}
+						dest += dstrowsize;
+						masksrc += maskrowsize;
 					}
 				}
 				break;
