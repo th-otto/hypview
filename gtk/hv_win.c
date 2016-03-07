@@ -9,7 +9,7 @@
 #include "../icons/index.h"
 #include "../icons/info.h"
 #include "../icons/help.h"
-#include "../icons/katalog.h"
+#include "../icons/catalog.h"
 #include "../icons/load.h"
 #include "../icons/bookmark.h"
 #include "../icons/menu.h"
@@ -1845,7 +1845,7 @@ static void register_stock_icons(void)
 	register_icon(factory, "hv-first", first_icon_data);
 	register_icon(factory, "hv-last", last_icon_data);
 	register_icon(factory, "hv-index", index_icon_data);
-	register_icon(factory, "hv-catalog", katalog_icon_data);
+	register_icon(factory, "hv-catalog", catalog_icon_data);
 	register_icon(factory, "hv-xref", reference_icon_data);
 	register_icon(factory, "hv-help", help_icon_data);
 	register_icon(factory, "hv-info", info_icon_data);

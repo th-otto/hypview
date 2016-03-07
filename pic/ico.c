@@ -255,7 +255,7 @@ gboolean ico_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG ico_header(_UBYTE **dest_p, PICTURE *pic)
+_LONG ico_header(_UBYTE **dest_p, PICTURE *pic, const unsigned char *maptab)
 {
 	_ULONG len, headlen;
 	_WORD ncolors;
@@ -267,7 +267,7 @@ _LONG ico_header(_UBYTE **dest_p, PICTURE *pic)
 		_UBYTE b;
 	};
 #if 0
-	LOCAL struct _rgb const win16_palette[16] = {
+	static struct _rgb const win16_palette[16] = {
 		{	0,	 0,   0 },
 		{ 128,	 0,   0 },
 		{	0, 128,   0 },
@@ -325,29 +325,18 @@ _LONG ico_header(_UBYTE **dest_p, PICTURE *pic)
 	put_long((_LONG)(ncolors));
 	put_long(0l);
 
-	bmp_put_palette(buf, pic);
+	bmp_put_palette(buf, pic, maptab);
 	
 	return headlen;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG ico_pack(_UBYTE *dest, const _UBYTE *data, const _UBYTE *mask, PICTURE *pic)
+_LONG ico_pack(_UBYTE *dest, const _UBYTE *data, const _UBYTE *mask, PICTURE *pic, const unsigned char *maptab)
 {
 	long datasize;
-	long masksize;
 	
 	pic->pi_compressed = 0 /* BMP_RGB */;
-	datasize = bmp_pack_planes(dest, data, pic, FALSE);
-	masksize = bmp_rowsize(pic, 1) * pic->pi_height;
-	if (mask)
-	{
-		datasize += bmp_pack_mask(dest + datasize, mask, pic);
-	} else
-	{
-		memset(dest + pic->pi_dataoffset + datasize, 0, masksize);
-		datasize += masksize;
-	}
-	pic->pi_datasize = datasize;
+	datasize = bmp_pack_data_and_mask(dest, data, mask, pic, FALSE, maptab);
 	return datasize;
 }

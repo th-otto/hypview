@@ -61,9 +61,34 @@ resource_files = \
 	$(srcdir)/resource.rh \
 	$(srcdir)/resource_en.rc \
 	$(srcdir)/resource_de.rc \
+	$(srcdir)/res/mail.bmp \
+	$(srcdir)/res/weblink.bmp \
 	$(empty)
 
-resource.res: $(resource_files) $(srcdir)/../po/linguas.rc $(MOFILES)
+resource_icons = \
+	$(srcdir)/../icons/hypview.ico \
+	$(srcdir)/../icons/back.ico \
+	$(srcdir)/../icons/help.ico \
+	$(srcdir)/../icons/home.ico \
+	$(srcdir)/../icons/index.ico \
+	$(srcdir)/../icons/info.ico \
+	$(srcdir)/../icons/catalog.ico \
+	$(srcdir)/../icons/load.ico \
+	$(srcdir)/../icons/bookmark.ico \
+	$(srcdir)/../icons/menu.ico \
+	$(srcdir)/../icons/history.ico \
+	$(srcdir)/../icons/next.ico \
+	$(srcdir)/../icons/nextphys.ico \
+	$(srcdir)/../icons/previous.ico \
+	$(srcdir)/../icons/prevphys.ico \
+	$(srcdir)/../icons/first.ico \
+	$(srcdir)/../icons/last.ico \
+	$(srcdir)/../icons/referenc.ico \
+	$(srcdir)/../icons/save.ico \
+	$(srcdir)/../icons/remarker.ico \
+	$(empty)
+	
+resource.res: $(resource_files) $(resource_icons) $(srcdir)/../po/linguas.rc $(MOFILES)
 	$(AM_V_RC)$(WINDRES) $(INCLUDES) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
 
 EXTRA_DIST = $(resource_files)

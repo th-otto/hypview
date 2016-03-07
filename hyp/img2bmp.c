@@ -141,13 +141,13 @@ static gboolean conv_file(const char *filename)
 	g_free(buf);
 	buf = NULL;
 	pic.pi_compressed = 0;
-	headerlen = bmp_header(&buf, &pic);
+	headerlen = bmp_header(&buf, &pic, pic.pi_planes == 4 ? bmp_coltab4 : bmp_coltab8);
 	if (buf == NULL)
 	{
 		oom();
 		goto error;
 	}
-	datalen = bmp_pack(buf, dest, &pic, TRUE);
+	datalen = bmp_pack(buf, dest, &pic, TRUE, pic.pi_planes == 4 ? bmp_revtab4 : bmp_revtab8);
 	
 	outname = replace_ext(filename, ".img", ".bmp");
 	if (outname == NULL)

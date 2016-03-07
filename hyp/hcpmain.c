@@ -1444,13 +1444,13 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		pic_planes_to_interleaved(conv, buf + SIZEOF_HYP_PICTURE, &pic);
 		g_free(buf);
 		buf = NULL;
-		header_size = bmp_header(&buf, &pic);
+		header_size = bmp_header(&buf, &pic, pic.pi_planes == 4 ? bmp_coltab4 : bmp_coltab8);
 		if (buf == NULL)
 		{
 			oom();
 			goto error;
 		}
-		data_size = bmp_pack(buf, conv, &pic, TRUE);
+		data_size = bmp_pack(buf, conv, &pic, TRUE, pic.pi_planes == 4 ? bmp_revtab4 : bmp_revtab8);
 		if ((long) fwrite(buf, 1, header_size + data_size, fp) != header_size + data_size)
 		{
 			FileErrorErrno(pic.pi_name);

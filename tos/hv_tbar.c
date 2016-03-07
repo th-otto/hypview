@@ -49,6 +49,26 @@ static void toolbar_redraw(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void EnableObj(OBJECT *tree, _WORD obj, gboolean enable)
+{
+	if (enable)
+		tree[obj].ob_state &= ~OS_DISABLED;
+	else
+		tree[obj].ob_state |= OS_DISABLED;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void ShowObj(OBJECT *tree, _WORD obj, gboolean show)
+{
+	if (show)
+		tree[obj].ob_flags &= ~OF_HIDETREE;
+	else
+		tree[obj].ob_flags |= OF_HIDETREE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 {
 	DOCUMENT *doc = win->data;
@@ -57,13 +77,13 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	/* autolocator active? */
 	if (doc->buttons.searchbox && win->autolocator != NULL)
 	{
-		toolbar[TO_BUTTONBOX].ob_flags |= OF_HIDETREE;
-		toolbar[TO_SEARCHBOX].ob_flags &= ~OF_HIDETREE;
+		ShowObj(toolbar, TO_BUTTONBOX, FALSE);
+		ShowObj(toolbar, TO_SEARCHBOX, TRUE);
 		toolbar[TO_SEARCH].ob_spec.tedinfo->te_ptext = win->autolocator;
 		return;
 	}
-	toolbar[TO_SEARCHBOX].ob_flags |= OF_HIDETREE;
-	toolbar[TO_BUTTONBOX].ob_flags &= ~OF_HIDETREE;
+	ShowObj(toolbar, TO_SEARCHBOX, FALSE);
+	ShowObj(toolbar, TO_BUTTONBOX, TRUE);
 	
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;
@@ -78,92 +98,40 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		doc->buttons.history = FALSE;
 	}
 	
-	if (doc->buttons.bookmarks)
-		toolbar[TO_BOOKMARKS].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_BOOKMARKS].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.references)
-		toolbar[TO_REFERENCES].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_REFERENCES].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.menu)
-		toolbar[TO_MENU].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_MENU].ob_state |= OS_DISABLED;
-	
-	if (doc->buttons.remarker_running)
-		toolbar[TO_REMARKER].ob_flags &= ~OF_HIDETREE;
-	else
-		toolbar[TO_REMARKER].ob_flags |= OF_HIDETREE;
-	
-	if (doc->buttons.remarker)
-		toolbar[TO_REMARKER].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_REMARKER].ob_state |= OS_DISABLED;
-	
-	if (doc->buttons.load)
-		toolbar[TO_LOAD].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_LOAD].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.info)
-		toolbar[TO_INFO].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_INFO].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.back)
-		toolbar[TO_BACK].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_BACK].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.history)
-		toolbar[TO_HISTORY].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_HISTORY].ob_state |= OS_DISABLED;
+	EnableObj(toolbar, TO_BOOKMARKS, doc->buttons.bookmarks);
+	EnableObj(toolbar, TO_REFERENCES, doc->buttons.references);
+	EnableObj(toolbar, TO_MENU, doc->buttons.menu);
+	ShowObj(toolbar, TO_REMARKER, doc->buttons.remarker_running);
+	EnableObj(toolbar, TO_REMARKER, doc->buttons.remarker);
+	EnableObj(toolbar, TO_LOAD, doc->buttons.load);
+	EnableObj(toolbar, TO_INFO, doc->buttons.info);
+	EnableObj(toolbar, TO_BACK, doc->buttons.back);
+	EnableObj(toolbar, TO_HISTORY, doc->buttons.history);
 
 	/* is there a catalog file? */
-	if (!empty(gl_profile.viewer.catalog_file))
-		toolbar[TO_CATALOG].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_CATALOG].ob_state |= OS_DISABLED;
+	EnableObj(toolbar, TO_CATALOG, !empty(gl_profile.viewer.catalog_file));
 
 	/* next buttons are type specific */
-	if (doc->buttons.previous)
-		toolbar[TO_PREV].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_PREV].ob_state |= OS_DISABLED;
+	EnableObj(toolbar, TO_PREV, doc->buttons.previous);
+	EnableObj(toolbar, TO_HOME, doc->buttons.home);
+	EnableObj(toolbar, TO_NEXT, doc->buttons.next);
+#ifdef TO_NEXT_PHYS
+	EnableObj(toolbar, TO_NEXT_PHYS, doc->buttons.nextphys);
+#endif
+#ifdef TO_PREV_PHYS
+	EnableObj(toolbar, TO_PREV_PHYS, doc->buttons.prevphys);
+#endif
+#ifdef TO_FIRST
+	EnableObj(toolbar, TO_FIRST, doc->buttons.first);
+#endif
+#ifdef TO_LAST
+	EnableObj(toolbar, TO_LAST, doc->buttons.last);
+#endif
 
-	if (doc->buttons.home)
-		toolbar[TO_HOME].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_HOME].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.next)
-		toolbar[TO_NEXT].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_NEXT].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.index)
-		toolbar[TO_INDEX].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_INDEX].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.references)
-		toolbar[TO_REFERENCES].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_REFERENCES].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.help)
-		toolbar[TO_HELP].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_HELP].ob_state |= OS_DISABLED;
-
-	if (doc->buttons.save)
-		toolbar[TO_SAVE].ob_state &= ~OS_DISABLED;
-	else
-		toolbar[TO_SAVE].ob_state |= OS_DISABLED;
+	EnableObj(toolbar, TO_INDEX, doc->buttons.index);
+	EnableObj(toolbar, TO_REFERENCES, doc->buttons.references);
+	EnableObj(toolbar, TO_HELP, doc->buttons.help);
+	EnableObj(toolbar, TO_SAVE, doc->buttons.save);
 
 	if (redraw)
 	{
@@ -240,6 +208,10 @@ void ToolbarClick(WINDOW_DATA *win, short obj)
 	case TO_NEXT:
 	case TO_PREV:
 	case TO_HOME:
+	case TO_NEXT_PHYS:
+	case TO_PREV_PHYS:
+	case TO_FIRST:
+	case TO_LAST:
 		GoThisButton(win, obj);
 		break;
 	case TO_BOOKMARKS:

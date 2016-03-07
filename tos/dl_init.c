@@ -164,6 +164,13 @@ int DoAesInit(void)
 	hypview_rsc_gaddr(R_FRSTR, 0, &string_addr);
 	dial_library_tree = rs_tree(DIAL_LIBRARY);
 	toolbar_tree = rs_tree(TOOLBAR);
+
+#ifdef TO_NEXT_PHYS
+	toolbar_tree[TO_NEXT_PHYS].ob_flags |= OF_HIDETREE;
+	toolbar_tree[TO_PREV_PHYS].ob_flags |= OF_HIDETREE;
+	toolbar_tree[TO_FIRST].ob_flags |= OF_HIDETREE;
+	toolbar_tree[TO_LAST].ob_flags |= OF_HIDETREE;
+#endif
 	
 	{
 		_WORD dummy, level;

@@ -167,13 +167,13 @@ static gboolean conv_file(const char *filename)
 		goto error;
 	}
 	
-	headerlen = bmp_header(&buf, &pic);
+	headerlen = bmp_header(&buf, &pic, pic.pi_planes == 4 ? bmp_coltab4 : bmp_coltab8);
 	if (buf == NULL)
 	{
 		oom();
 		goto error;
 	}
-	datalen = bmp_pack(buf, dest, &pic, TRUE);
+	datalen = bmp_pack(buf, dest, &pic, TRUE, pic.pi_planes == 4 ? bmp_revtab4 : bmp_revtab8);
 	if ((long)fwrite(buf, 1, headerlen + datalen, out) != headerlen + datalen ||
 		ferror(out))
 	{

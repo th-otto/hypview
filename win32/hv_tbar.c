@@ -591,12 +591,7 @@ static void toolbar_refresh(TOOL_DATA *td, const GRECT *gr)
 
 static void toolbar_drawicon(HDC hdc, TOOL_DATA *td, int x, int y, int id)
 {
-#if 0
 	HICON icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(id), IMAGE_ICON, 0, 0, LR_SHARED);
-#else
-	HICON icon = (HICON)LoadImageA(0, "../icons/back.ico", IMAGE_ICON, 0, 0, LR_SHARED|LR_LOADFROMFILE);
-	(void) id;
-#endif
 	UNUSED(td);
 	DrawIconEx(hdc, x, y, icon, BITMAP_WIDTH, BITMAP_HEIGHT, 0, 0, DI_NORMAL);
 }

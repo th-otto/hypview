@@ -254,23 +254,29 @@ long imagic_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 /*** Windows Icons -------------------------------------------------------- ***/
 
 gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size);
-long ico_header(unsigned char **buf, PICTURE *pic);
+long ico_header(unsigned char **buf, PICTURE *pic, const unsigned char *maptab);
 
 gboolean ico_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
-long ico_pack(unsigned char *dest, const unsigned char *data, const _UBYTE *mask, PICTURE *pic);
+long ico_pack(unsigned char *dest, const unsigned char *data, const _UBYTE *mask, PICTURE *pic, const unsigned char *maptab);
 
 /*** BMP ------------------------------------------------------------------ ***/
 
-unsigned char *bmp_put_palette(unsigned char *buf, PICTURE *pic);
+unsigned char *bmp_put_palette(unsigned char *buf, PICTURE *pic, const unsigned char *maptab);
+extern unsigned char const bmp_coltab8[256];
+extern unsigned char const bmp_revtab8[256];
+extern unsigned char const bmp_coltab4[16];
+extern unsigned char const bmp_revtab4[16];
+extern unsigned char const bmp_idtab[256];
 
 gboolean pic_type_bmp(PICTURE *pic, const unsigned char *buf, long size);
-long bmp_header(unsigned char **buf, PICTURE *pic);
+long bmp_header(unsigned char **buf, PICTURE *pic, const unsigned char *maptab);
 long bmp_rowsize(PICTURE *pic, _WORD planes);
 
 gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
-long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
-long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
+long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
 long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic);
+long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const unsigned char *mask, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
 
 /*** GIF ------------------------------------------------------------------ ***/
 
