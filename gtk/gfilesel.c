@@ -195,7 +195,7 @@ static gboolean filter_fignore(const GtkFileFilterInfo *filter_info, gpointer us
 		return FALSE;
 
 	patterns = g_strsplit(fignore, ":", 0);
-	for (i = 0; patterns[i] != NULL; i++)
+	for (i = 0; patterns[i] != NULL && ret; i++)
 		if (g_str_has_suffix(filter_info->filename, patterns[i]))
 			ret = FALSE;
 	g_strfreev(patterns);
@@ -281,7 +281,7 @@ int main (int argc, char* argv[])
 	{
 		fignore = getenv("FIGNORE");
 		if (fignore == NULL)
-			fignore = ".o:.a:~";
+			fignore = ".o:.lo:.a:~";
 	}
 	
 	selector = gtk_file_chooser_dialog_new(title,

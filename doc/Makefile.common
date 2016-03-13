@@ -420,6 +420,7 @@ htmlhelp: .stamp.htmlhelp
 		$(AM_V_at)$(MKDIRHIER) "$(HTMLHELP_DIR)" || exit 1; \
 		echo "generating HtmlHelp documentation"; \
 		$(CP) $(srcdir)/images/*.gif "$(HTMLHELP_DIR)"; \
+		$(CP) $(srcdir)/images/favicon.ico $(HTMLHELP_DIR); \
 		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}.gif "$(HTMLHELP_DIR)"; \
 		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(HTMLHELP_DIR)"; \
 		for i in $(TOOL_DOCS); do \
