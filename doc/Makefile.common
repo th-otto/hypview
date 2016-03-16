@@ -425,19 +425,19 @@ htmlhelp: .stamp.htmlhelp
 		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(HTMLHELP_DIR)"; \
 		for i in $(TOOL_DOCS); do \
 			$(UDO) --htmlhelp --check --force-short -o "$(HTMLHELP_DIR)$$i.html" -l $(srcdir)/$$i.u || exit 1; \
-		done; \
 		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.chm; \
 		if test "`type $(HHC) 2>/dev/null`" = ""; then \
 		 echo "HTML Help Compiler ($(HHC)) not found" >&2; \
-		 else \
-		(cd $(HTMLHELP_DIR); \
-		 for i in $(TOOL_DOCS); do \
-		   $(HHC) $$i.hhp; \
-		 done; \
-		); \
-		$(CP) $(HTMLHELP_DIR)*.chm $(BIN_DIR)/$(OUTPUT_LANG) || exit 1; \
-		: $(RMDIRHIER) "$(HTMLHELP_DIR)"; \
-		fi
+		else \
+		 cwd=`pwd`; \
+		 cd $(HTMLHELP_DIR); \
+		 $(HHC) $$i.hhp; \
+		 rm -f *.htm*; \
+		 cd "$$cwd"; \
+		 $(CP) $(HTMLHELP_DIR)*.chm $(BIN_DIR)/$(OUTPUT_LANG) || exit 1; \
+		 : $(RMDIRHIER) "$(HTMLHELP_DIR)"; \
+		fi; \
+		done
 		$(AM_V_at)touch $@
 
 ####################################################################
