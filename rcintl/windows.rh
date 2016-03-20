@@ -2833,6 +2833,9 @@
 #ifndef SUBLANG_KOREAN
 #  define SUBLANG_KOREAN                  0x01    /* Korean (Extended Wansung) */
 #endif
+#ifndef SUBLANG_KOREAN_JOHAB
+#  define SUBLANG_KOREAN_JOHAB            0x02    /* Korean (Johab) */
+#endif
 #ifndef SUBLANG_CENTRAL_KURDISH_IRAQ
 #  define SUBLANG_CENTRAL_KURDISH_IRAQ    0x01    /* Kurdish (Iraq) */
 #endif
