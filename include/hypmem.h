@@ -147,17 +147,6 @@ unsigned int g_strv_length(char **str_array);
 #define realloc(p, n) dbg_realloc(p, n, __FILE__, __LINE__)
 #endif
 
-#ifndef G_LOCK_DEFINE_STATIC
-#define G_LOCK_DEFINE_STATIC(x) extern int x
-#define G_LOCK(x)
-#define G_UNLOCK(x)
-#endif
-
-#define G_ASCII_DTOSTR_BUF_SIZE (29 + 10)
-
-char *g_ascii_dtostr(char *buffer, int buf_len, double d);
-char *g_ascii_formatd(char *buffer, int buf_len, const char *format, double d);
-
 #ifndef g_getenv
 #define g_getenv(s) getenv(s)
 #endif
@@ -226,7 +215,6 @@ const char *hyp_basename(const char *path);
 char *hyp_path_get_basename(const char *path);
 char *hyp_path_get_dirname(const char *path);
 
-extern const char *g_secure_getenv(const char *name);
 gboolean is_allupper(const char *str);
 char *replace_ext(const char *str, const char *from, const char *to);
 

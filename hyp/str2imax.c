@@ -1,4 +1,6 @@
+#ifndef __HYPDEFS_H__
 #include "hypdefs.h"
+#endif
 #include <limits.h>
 
 

@@ -53,7 +53,8 @@ libhyp_a_SOURCES = \
 	hyp_glib.c \
 	hypgfx.c \
 	rpl_stat.c \
-	utl_prof.c \
+	profile.c \
+	hyp_cfg.c \
 	utl_dbg.c \
 	xgetopt.c \
 	str2imax.c \

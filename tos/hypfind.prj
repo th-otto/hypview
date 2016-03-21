@@ -35,7 +35,8 @@ h:\src\udo\tools\hypview\hyp\hyp_glib.c
 h:\src\udo\tools\hypview\hyp\hyp_cset.c
 h:\src\udo\tools\hypview\hyp\utl_dbg.c
 h:\src\udo\tools\hypview\hyp\rpl_stat.c
-h:\src\udo\tools\hypview\hyp\utl_prof.c
+h:\src\udo\tools\hypview\hyp\profile.c
+h:\src\udo\tools\hypview\hyp\hyp_cfg.c
 
 h:\src\udo\tools\hypview\hyp\tos\cookie.c
 h:\src\udo\tools\hypview\hyp\tos\spawn.c

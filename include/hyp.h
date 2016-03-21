@@ -1,7 +1,7 @@
 #ifndef __HYP_H__
 #define __HYP_H__
 
-#include "profile.h"
+#include "hypcfg.h"
 #include <dirent.h>
 
 
@@ -933,8 +933,6 @@ DWORD win32_from_errno(int err_no);
  */
 char *hyp_utf8_strerror(int err);
 void chomp(char **str);
-intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base);
-char *xs_imaxtostr(uintmax_t val, char *buf, gboolean is_signed);
 const char *g_utf8_skipchar(const char *p);
 size_t g_utf8_str_len(const char *p, size_t len);
 
