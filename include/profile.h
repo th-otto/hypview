@@ -47,6 +47,7 @@ const char *g_secure_getenv(const char *name);
 intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base);
 char *xs_imaxtostr(uintmax_t val, char *buf, gboolean is_signed);
 
+#undef G_ASCII_DTOSTR_BUF_SIZE
 #define G_ASCII_DTOSTR_BUF_SIZE (29 + 10)
 
 char *g_ascii_dtostr(char *buffer, int buf_len, double d);
@@ -56,17 +57,23 @@ Profile *Profile_New(const char *filename);
 void Profile_Delete(Profile *profile);
 gboolean Profile_Read(Profile *profile, const char *creator);
 gboolean Profile_IsNew(Profile *profile);
+void Profile_SetBoolStrings(Profile *profile, const char *truestring, const char *falsestring);
 
 Profile *Profile_Load(const char *filename, const char *creator);
 gboolean Profile_Save(Profile *profile);
 const char *Profile_GetFilename(Profile *profile);
+gboolean Profile_Dump(Profile *profile, FILE *fp);
 
 char *Profile_GetSectionNames(Profile *profile, unsigned long *pNumSections);
 char *Profile_GetKeyNames(Profile *profile, const char *section, unsigned long *pNumKeys);
 gboolean Profile_DeleteKey(Profile *profile, const char *section, const char *key);
 
+char **Profile_GetSection(Profile *profile, const char *section);
+gboolean Profile_SetSection(Profile *profile, const char *section, const char *str);
+
 
 gboolean Profile_ReadString(Profile *profile, const char *section, const char *key, char **strp);
+gboolean Profile_ReadStringUnquoted(Profile *profile, const char *section, const char *key, char **strp);
 gboolean Profile_ReadByte(Profile *profile, const char *section, const char *key, unsigned char *pval);
 gboolean Profile_ReadInt(Profile *profile, const char *section, const char *key, int *pval);
 gboolean Profile_ReadLong(Profile *profile, const char *section, const char *key, intmax_t *pval);
@@ -76,6 +83,7 @@ gboolean Profile_ReadBool(Profile *profile, const char *section, const char *key
 gboolean Profile_ReadChar(Profile *profile, const char *section, const char *key, char *pval);
 
 void Profile_WriteString(Profile *profile, const char *section, const char *key, const char *str);
+void Profile_WriteStringUnquoted(Profile *profile, const char *section, const char *key, const char *str);
 void Profile_WriteByte(Profile *profile, const char *section, const char *key, unsigned char val);
 void Profile_WriteInt(Profile *profile, const char *section, const char *key, int val);
 void Profile_WriteCard(Profile *profile, const char *section, const char *key, unsigned int val);

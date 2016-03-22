@@ -41,6 +41,8 @@ struct _profile {
 	char *buf;
 	gboolean new_file;
 	gboolean changed;
+	const char *truestring;
+	const char *falsestring;
 	size_t leng;
 	size_t alloc_len;
 	size_t num_sections;
@@ -1062,6 +1064,8 @@ Profile *Profile_New(const char *filename)
 		profile->section_names = NULL;
 		profile->new_file = TRUE;
 		profile->changed = FALSE;
+		profile->truestring = "True";
+		profile->falsestring = "False";
 		if (profile->filename == NULL && filename != NULL)
 		{
 			Profile_Delete(profile);
@@ -1069,6 +1073,16 @@ Profile *Profile_New(const char *filename)
 		}
 	}
 	return profile;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void Profile_SetBoolStrings(Profile *profile, const char *truestring, const char *falsestring)
+{
+	if (profile == NULL)
+		return;
+	profile->truestring = truestring;
+	profile->falsestring = falsestring;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1087,7 +1101,7 @@ gboolean Profile_Read(Profile *profile, const char *creator)
 	if (profile != NULL && profile->filename != NULL)
 	{
 		FILE *fp;
-
+		
 		fp = fopen(profile->filename, "r");
 		if (fp != NULL)
 		{
@@ -1115,9 +1129,9 @@ gboolean Profile_Read(Profile *profile, const char *creator)
 			if (nl)
 				*nl = 0;
 			profile->buf = g_strdup_printf(
-					"# %s Preferences File\n"
-					"# Written by %s %s for %s on %s.\n"
-					"# " HYP_URL "\n"
+					"; %s Preferences File\n"
+					"; Written by %s %s for %s on %s.\n"
+					"; " HYP_URL "\n"
 					"\n",
 					creator, gl_program_name, gl_program_version, whoami, timestr);
 			profile->leng = profile->alloc_len = strlen(profile->buf);
@@ -1179,6 +1193,27 @@ gboolean Profile_Save(Profile *profile)
 				}
 			}
 			fclose(fp);
+		}
+	}
+	return retV;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+gboolean Profile_Dump(Profile *profile, FILE *fp)
+{
+	gboolean retV;
+
+	retV = FALSE;
+	if (profile != NULL)
+	{
+		if (profile->buf != NULL && profile->leng != 0)
+		{
+			if (fwrite(profile->buf, sizeof(*profile->buf), profile->leng, fp) == profile->leng &&
+				fflush(fp) == 0)
+			{
+				retV = TRUE;
+			}
 		}
 	}
 	return retV;
@@ -1790,6 +1825,175 @@ static gboolean Profile_PutValue(Profile *profile, const char *section, const ch
 	return TRUE;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+gboolean Profile_SetSection(Profile *profile, const char *section, const char *value)
+{
+	size_t lenval;
+
+	if (profile == NULL || value == NULL)
+		return FALSE;
+
+	profile->changed = TRUE;
+	lenval = strlen(value);
+
+	{
+		gboolean found;
+		char *use;
+		char *end;
+		char *start;
+		size_t lengsection;
+		size_t newsize;
+		size_t pos;
+		size_t oldlen;
+		char *sectstart;
+		size_t i;
+
+		use = profile->buf;
+		end = use + profile->leng;
+
+		lengsection = strlen(section);
+
+		/*
+		 * search for the section
+		 */
+		found = FALSE;
+		for (i = 0; i < profile->num_sections; i++)
+		{
+			if (lengsection == profile->section_names[i].len &&
+				g_ascii_strncasecmp(section, profile->buf + profile->section_names[i].offset, lengsection) == 0)
+			{
+				use = profile->buf + profile->section_names[i].offset + 2;
+				while (use != end && *use != CR && *use != LF)
+					use++;
+				if (use != end && *use == CR)
+					use++;
+				if (use != end && *use == LF)
+					use++;
+				found = TRUE;
+				break;
+			}
+		}
+		if (found == FALSE)
+		{
+			/*
+			 * section not found, create it
+			 */
+			newsize = profile->leng +
+				1 +
+				1 + lengsection + 1 + 1 +
+				lenval + 1;
+			if (newsize > profile->alloc_len)
+			{
+				if (Profile_Realloc(profile, newsize) == FALSE)
+				{
+					return FALSE;
+				}
+			}
+			use = profile->buf + profile->leng;
+			if (profile->leng != 0)
+			{
+				*use++ = '\n';
+				profile->leng++;
+			}
+			if (profile->num_sections >= profile->alloc_sections)
+			{
+				SECTION_NAME *new_sections;
+				size_t new_alloc;
+
+				new_alloc = profile->alloc_sections + 100;
+				new_sections = (SECTION_NAME *)g_realloc(profile->section_names, new_alloc * sizeof(SECTION_NAME));
+				if (new_sections == NULL)
+					return FALSE;
+				profile->alloc_sections = new_alloc;
+				profile->section_names = new_sections;
+			}
+			profile->section_names[profile->num_sections].offset = (use - profile->buf) + 1;
+			profile->section_names[profile->num_sections].len = lengsection;
+			profile->section_name_size += lengsection + 1;
+			profile->num_sections++;
+			profile->leng += 1 + lengsection + 1 + 1;
+			*use++ = '[';
+			while (lengsection != 0)
+			{
+				*use++ = *section++;
+				lengsection--;
+			}
+			*use++ = ']';
+			*use++ = '\n';
+			use[0] = '\0';
+			end = profile->buf + profile->leng;
+		}
+
+		/*
+		 * section found; "use" now points to the line just behind the section name
+		 */
+		found = FALSE;
+		sectstart = use;
+		while (use != end)
+		{
+			if (use == end || *use == '[')
+			{
+				/*
+				 * end of section, key not found
+				 */
+				break;
+			}
+
+			while (use != end && *use != CR && *use != LF)
+				use++;
+			if (use != end && *use == CR)
+				use++;
+			if (use != end && *use == LF)
+				use++;
+		}
+		
+		start = use;
+		pos = (size_t)(start - profile->buf);
+		oldlen = use - sectstart;
+		
+		newsize = profile->leng + lenval - oldlen;
+		if (oldlen != 0)
+			newsize++;
+		if (oldlen >= lenval)
+		{
+			memmove(start + lenval, start + oldlen, (profile->leng - pos - oldlen) * sizeof(*profile->buf));
+			UpdateOffsets(profile, start + oldlen - profile->buf, lenval - oldlen);
+			for (pos = 0; pos < lenval; pos++)
+			{
+				start[pos] = value[pos];
+			}
+			if (oldlen != 0)
+				start[pos] = '\n';
+		} else
+		{
+			if (newsize > profile->alloc_len)
+			{
+				if (Profile_Realloc(profile, newsize) == FALSE)
+				{
+					return FALSE;
+				}
+				/* end = profile->buf + profile->leng; */
+				start = profile->buf + pos;
+			}
+			memmove(start + lenval, start + oldlen, (profile->leng - pos - oldlen) * sizeof(*profile->buf));
+			UpdateOffsets(profile, start + oldlen - profile->buf, lenval - oldlen);
+			for (pos = 0; pos < lenval; pos++)
+			{
+				start[pos] = value[pos];
+			}
+			if (oldlen != 0)
+				start[pos] = '\n';
+		}
+		profile->leng = newsize;
+		profile->buf[profile->leng] = '\0';
+
+		DbgProfileSections(profile, "Profile_PutValue");
+	}
+
+	return TRUE;
+}
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -1869,6 +2073,83 @@ gboolean Profile_DeleteKey(Profile *profile, const char *section, const char *ke
 	}
 
 	return found;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+char **Profile_GetSection(Profile *profile, const char *section)
+{
+	char *use;
+	char *end;
+	size_t lengsection;
+	size_t i;
+	size_t n;
+	char *linestart;
+	char **lines = NULL;
+	
+	if (profile == NULL)
+		return NULL;
+
+	use = profile->buf;
+	end = use + profile->leng;
+
+	lengsection = strlen(section);
+
+	use = end;
+	for (i = 0; i < profile->num_sections; i++)
+	{
+		if (lengsection == profile->section_names[i].len &&
+			g_ascii_strncasecmp(section, profile->buf + profile->section_names[i].offset, lengsection) == 0)
+		{
+			use = profile->buf + profile->section_names[i].offset + 2;
+			break;
+		}
+	}
+	
+	if (use == end)
+		return NULL;
+	
+	/*
+	 * skip to end of line of section name
+	 */
+	while (use != end && *use != CR && *use != LF)
+		use++;
+	if (use != end && *use == CR)
+		use++;
+	if (use != end && *use == LF)
+		use++;
+	
+	n = 0;
+	while (use != end)
+	{
+		linestart = use;
+		
+		while (use != end && *use != CR && *use != LF)
+			use++;
+		lines = g_renew(char *, lines, n + 2);
+		if (lines == NULL)
+			return NULL;
+		lines[n] = g_strndup(linestart, use - linestart);
+		n++;
+		
+		if (use != end && *use == CR)
+			use++;
+		if (use != end && *use == LF)
+			use++;
+
+		if (use == end || *use == '[')
+		{
+			/*
+			 * end of file or start of new section reached;
+			 * we are done
+			 */
+			break;
+		}
+	}
+	if (n != 0)
+		lines[n] = NULL;
+	
+	return lines;
 }
 
 /******************************************************************************/
@@ -1962,6 +2243,13 @@ void Profile_WriteString(Profile *profile, const char *section, const char *key,
 
 /*** ---------------------------------------------------------------------- ***/
 
+void Profile_WriteStringUnquoted(Profile *profile, const char *section, const char *key, const char *str)
+{
+	Profile_PutValue(profile, section, key, str);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void Profile_WriteByte(Profile *profile, const char *section, const char *key, unsigned char val)
 {
 	if (profile == NULL)
@@ -1997,7 +2285,7 @@ void Profile_WriteCard(Profile *profile, const char *section, const char *key, u
 	{
 		char buf[20];
 
-		sprintf(buf, "%u", val);
+		sprintf(buf, "0x%x", val);
 		Profile_PutValue(profile, section, key, buf);
 	}
 }
@@ -2035,9 +2323,9 @@ void Profile_WriteBool(Profile *profile, const char *section, const char *key, g
 	if (profile == NULL)
 		return;
 	{
-		char buf[20];
+		const char *buf;
 
-		strcpy(buf, val == -1 ? "undef" : val ? "True" : "False");
+		buf = val == -1 ? "undef" : val ? profile->truestring : profile->falsestring;
 		Profile_PutValue(profile, section, key, buf);
 	}
 }
@@ -2111,6 +2399,23 @@ gboolean Profile_ReadString(Profile *profile, const char *section, const char *k
 			}
 		}
 		*dest = '\0';
+	}
+	*strp = str;
+	return found;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+gboolean Profile_ReadStringUnquoted(Profile *profile, const char *section, const char *key, char **strp)
+{
+	char *str;
+	gboolean found;
+	char delim;
+	
+	found = Profile_GetLongValue(profile, section, key, &str, &delim);
+	if (found == FALSE || str == NULL)
+	{
+		str = NULL;
 	}
 	*strp = str;
 	return found;
@@ -2297,4 +2602,3 @@ gboolean Profile_ReadBool(Profile *profile, const char *section, const char *key
 	*pval = val;
 	return found;
 }
-
