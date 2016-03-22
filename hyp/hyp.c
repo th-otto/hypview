@@ -65,17 +65,13 @@ char *hyp_compiler_version(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void chomp(char **str)
+char *chomp(char *str)
 {
-	if (*str != NULL)
+	if (str != NULL)
 	{
-		g_strchomp(*str);
-		g_strchug(*str);
+		str = g_strchug(g_strchomp(str));
 	}
-	if (empty(*str))
-	{
-		g_freep(str);
-	}
+	return str;
 }
 
 /* ------------------------------------------------------------------------- */

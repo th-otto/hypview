@@ -932,7 +932,7 @@ DWORD win32_from_errno(int err_no);
  * misc.c
  */
 char *hyp_utf8_strerror(int err);
-void chomp(char **str);
+char *chomp(char *str);
 const char *g_utf8_skipchar(const char *p);
 size_t g_utf8_str_len(const char *p, size_t len);
 

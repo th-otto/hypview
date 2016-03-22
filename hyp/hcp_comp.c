@@ -4545,11 +4545,11 @@ static void c_xref(hcp_vars *vars, int argc, char **argv)
 		strcpy(xref->name, argv[1]);
 		if (argc > 2)
 		{
-			chomp(&argv[2]);
-			check_namelen(vars, _("window title"), argv[2], FALSE);
-			if (!empty(argv[2]) && namecmp(xref->name, argv[2]) != 0)
+			char *title = chomp(argv[2]);
+			check_namelen(vars, _("window title"), title, FALSE);
+			if (!empty(title) && namecmp(xref->name, title) != 0)
 			{
-				xref->title = g_strdup(argv[2]);
+				xref->title = g_strdup(title);
 				if (G_UNLIKELY(xref->title == NULL))
 				{
 					g_free(xref);

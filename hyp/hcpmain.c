@@ -255,7 +255,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 					
 					dest_page = DEC_255(&src[3]);
 					text = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
-					chomp(&text);
+					text = chomp(text);
 					if (hypnode_valid(hyp, dest_page))
 					{
 						str = ascii_quote_nodename(hyp, dest_page);
@@ -982,7 +982,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 					
 					dest_page = DEC_255(&src[3]);
 					text = stg_quote_name(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u, FALSE);
-					chomp(&text);
+					text = chomp(text);
 					if (hypnode_valid(hyp, dest_page))
 					{
 						str = stg_quote_nodename(hyp, dest_page);
