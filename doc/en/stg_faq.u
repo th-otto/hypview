@@ -271,7 +271,7 @@
 !item [A:] There are several different reasons which affect how ST-Guide
    responds:
 !begin_itemize
-   !item (!B)ST-Guide makes no response whatsoever(!b)
+   !item ST-Guide makes no response whatsoever (!nl)
       Check whether the program in question supports this feature. If
       neccessary rename ST-Guide as Help-ACC and try that:
       !begin_xlist [Everest:] !compressed
@@ -282,18 +282,18 @@
       !item [Tempus:]  No information
       !item [xEDIT:]   No information
    !end_xlist
-   !item (!B)ST-Guide alert: "REF-file not found"(!b) (!nl)
+   !item ST-Guide alert: "REF-file not found" (!nl)
        In this case the REF-file is not located where the INF file is
        pointing.
        
        Solution: Change the REF-file entry in ST-GUIDE.INF (or move the
                  REF-file where the INF file is pointing).
-   !item (!B)ST-Guide alert: "<file>.HYP not found"(!b) (!nl)
+   !item ST-Guide alert: "<file>.HYP not found" (!nl)
        The REF-file was found, but the hypertext is not located in any
        of the paths specified in the PATHS entry in ST-GUIDE.INF.
        
        Solution: Change the entry in ST-GUIDE.INF or move the HYP file.
-   !item (!B)ST-Guide alert: "<concept> not found"(!b) (!nl)
+   !item ST-Guide alert: "<concept> not found" (!nl)
        The searched concept is not present in the REF-file.
        
        Solution: Use (!XLINK [RefLink] [reflink] [Main]) to add all desired REF-files into the

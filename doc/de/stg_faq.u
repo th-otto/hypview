@@ -299,14 +299,14 @@ Guide keine Hilfe zu diesem Begriff, wieso nicht?
 Das kann verschiedene Grnde  haben,  je  nach  dem,  wie  der
 ST-Guide reagiert:
 !begin_itemize
-!item ST-Guide reagiert berhaupt nicht
+!item ST-Guide reagiert berhaupt nicht. (!nl)
    In diesem Fall bitte prfen, ob das verwendete Programm berhaupt in
    der Lage ist, den ST-Guide zu aktivieren; gegebenenfalls ST-Guide als
    Help-ACC im Programm eintragen:
    !begin_xlist [Everest:] !compressed
    !item [CAT:]     geht per Dialog
    !item [7UP:]     geht per Dialog
-   !item Everest:] kann mittlerweile den ST-Guide ansprechen, aber nur, wenn
+   !item [Everest:] kann mittlerweile den ST-Guide ansprechen, aber nur, wenn
             kein anderes Hypertextsystem installiert ist, weil ST-Guide
             als letztes gesucht wird
    !item [QED:]     geht per Dialog (Optionen/Globales)
@@ -323,7 +323,7 @@ ST-Guide reagiert:
     Datei steht in keinem der durch PATHS angegebenen Pfade.
     
     Abhilfe: In der Datei ST-GUIDE.INF den Eintrag PATHS erweitern
-!item [ST-Guide meldet "<Begriff> nicht gefunden" (!nl)
+!item ST-Guide meldet "<Begriff> nicht gefunden" (!nl)
     Der gesuchte Begriff steht nicht in der REF-Datei.
     
     Abhilfe: Per (!XLINK [RefLink] [reflink] [Main]) alle gewnschten REF-Dateien in die
