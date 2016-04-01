@@ -275,7 +275,7 @@ Diese Option ist defaultm„žig ausgeschaltet.
 
 Ist diese Option eingeschaltet, dann wird der Baum nicht nur aus
 der Konfigurationsdatei erzeugt, sondern auch  um  die  mit  dem
-(!XLINK [@subject] [hcp] [Kommando @subject])-Kommado angegebenen Themen aus den Hypertexten erg„nzt.
+(!XLINK [@subject] [hcp] [Kommando @subject])-Kommando angegebenen Themen aus den Hypertexten erg„nzt.
 Es kann ja immer mal vorkommen, daž ein Text ein Thema angegeben
 hat, das man in seinem pers”nlichen  Baum  gar  nicht  angegeben
 hat. Normalerweise wandern  diese  Texte  dann  in  den  letzten

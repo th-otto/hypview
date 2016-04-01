@@ -788,8 +788,8 @@ Is this possible with ST-Guide?
 
 !item [Q:] I'd like to set the order my pages are read, how do I do this?
 !item [A:] Here are the commands:
-   (!XLINK [@prev] [hcp] [Command @prev]) :determines which page "Page " displays
-   (!XLINK [@next] [hcp] [Command @next]) :determines which page "Page " displays
+   (!XLINK [@prev] [hcp] [Command @prev]) :determines which page "Page <" displays
+   (!XLINK [@next] [hcp] [Command @next]) :determines which page "Page >" displays
    (!XLINK [@toc] [hcp] [Command @toc]) :determines which page "Contents" displays
 
    If the current page matches any of the above parameters then the
@@ -801,7 +801,7 @@ Is this possible with ST-Guide?
 
    These commands make it possible to create, for example, for a
    herarchical table of contents.
-   In such a structure, for example, the "Page " button could be
+   In such a structure, for example, the "Page >" button could be
    disabled even though further pages exist. HCP still automatically
    checks these pages and adds corresponding entries in the Index page.
    This has been used in this hypertext to start each new question from

@@ -697,19 +697,19 @@ pages. Matters are different when the selected cross-reference is a
 text reference. In that case,  provided the text is installed,  one
 will land in that text.
 
-!item ["" icon:]
+!item ["Contents" icon:]
 When one selects this button one moves one plane higher. Here,  for
 instance,  from   the  page   containing  'Pascal',   'Basic'   and
 'Assembler' (2nd  level) to  the page  containing  'Documentation',
 'Programming' and 'Entertainment' (1st level).
 
-!item ["" icon:]
+!item ["Page >" icon:]
 With this one moves to the sub-tree of the right-hand neighbour  on
 the next higher  level. If,  for example,  one is  in the  sub-tree
 'Programming' (the  one with  'Pascal', 'Basic'  and  'Assembler'),
 then one lands in the sub-tree 'Entertainment' (empty here).
 
-!item ["" icon:]
+!item ["Page <" icon:]
 With this one moves to the  sub-tree of the left-hand neighbour  on
 the next higher  level. If,  for example,  one is  in the  sub-tree
 'Programming' (the  one with  'Pascal', 'Basic'  and  'Assembler'),
