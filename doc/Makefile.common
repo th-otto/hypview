@@ -19,6 +19,7 @@ MV=		mv
 HC31=		hcp.exe
 HCRTF=		hcrtf
 HHC=		hhc
+CHMC=		chmc
 PCHELP=		hc
 LATEX=		latex
 PDFLATEX=	pdflatex
@@ -426,13 +427,17 @@ htmlhelp: .stamp.htmlhelp
 		for i in $(TOOL_DOCS); do \
 			$(UDO) --htmlhelp --check --force-short -o "$(HTMLHELP_DIR)$$i.html" -l $(srcdir)/$$i.u || exit 1; \
 		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.chm; \
-		if test "`type $(HHC) 2>/dev/null`" = ""; then \
+		hhc="`type -p $(CHMC) 2>/dev/null`"; \
+		if test "$$hhc" = ""; then \
+		 hhc="`type -p $(HHC) 2>/dev/null`"; \
+		fi; \
+		if test "$$hhc" = ""; then \
 		 echo "HTML Help Compiler ($(HHC)) not found" >&2; \
 		else \
 		 cwd=`pwd`; \
 		 cd $(HTMLHELP_DIR); \
-		 $(HHC) $$i.hhp; \
-		 rm -f *.htm*; \
+		 "$$hhc" $$i.hhp; \
+		 : rm -f *.htm*; \
 		 cd "$$cwd"; \
 		 $(CP) $(HTMLHELP_DIR)*.chm $(BIN_DIR)/$(OUTPUT_LANG) || exit 1; \
 		 : $(RMDIRHIER) "$(HTMLHELP_DIR)"; \
