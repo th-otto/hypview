@@ -394,6 +394,14 @@ const char *g_secure_getenv(const char *name)
 #include <shlobj.h>
 #include <lmcons.h>
 
+static char *prf_wchar_to_utf8(const wchar_t *wc)
+{
+	int len = WideCharToMultiByte(CP_UTF8, 0, wc, -1, NULL, 0, NULL, NULL);
+	char *result = g_new(char, len + 1);
+	WideCharToMultiByte(CP_UTF8, 0, wc, -1, result, len, NULL, NULL);
+	return result;
+}
+
 char *get_special_folder(int csidl)
 {
 	union
@@ -412,7 +420,9 @@ char *get_special_folder(int csidl)
 	{
 		b = SHGetPathFromIDListW(pidl, path.wc);
 		if (b)
-			retval = hyp_wchar_to_utf8(path.wc, STR0TERM);
+		{
+			retval = prf_wchar_to_utf8(path.wc);
+		}
 #ifdef G_OS_WIN32
 		CoTaskMemFree(pidl);
 #endif
@@ -540,7 +550,7 @@ static void x_init_home_dir(void)
 
 		if (GetUserNameW(buffer, &len))
 		{
-			x_user_name = hyp_wchar_to_utf8(buffer, STR0TERM);
+			x_user_name = prf_wchar_to_utf8(buffer);
 			x_real_name = g_strdup(x_user_name);
 		}
 	}
