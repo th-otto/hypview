@@ -5793,9 +5793,14 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 					warn_extra_args(vars);
 			} else
 			{
-				if (c == '\\')
+				if (c == '\\' && hyp_guess_filetype(dest) != HYP_FT_NONE)
+				{
 					hcp_warning(vars, NULL, _("Using backward slashes in external references is deprecated"));
-				*p = '/';
+					*p = '/';
+				} else
+				{
+					*p = c;
+				}
 			}
 		}
 
