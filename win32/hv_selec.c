@@ -1,30 +1,21 @@
-#include "hv_gtk.h"
+#include "hv_defs.h"
 #include "hypdebug.h"
+#include "resource.rh"
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void hv_init(void)
+void SelectAll(WINDOW_DATA *win)
 {
-	char *skin;
-	
-	/* load toolbar/skin */
-	skin = gl_profile.viewer.skin_path;
-	if (!empty(skin))
-	{
-	}
-
-	/* load markers */
-	MarkerInit();
-	RecentInit();
-}	
+	UNUSED(win);
+	/* NYI */
+}
 
 /*** ---------------------------------------------------------------------- ***/
 
-void hv_exit(void)
+void DrawSelection(WINDOW_DATA *win)
 {
-	MarkerSaveToDisk();
-	/* RecentSaveToDisk(); */
-	RecentExit();
+	UNUSED(win);
+	/* NYI */
 }

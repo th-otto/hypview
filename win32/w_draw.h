@@ -23,10 +23,11 @@ void W_Lines(HDC hdc, const POINT points[], int npoints, int style, COLORREF col
 void W_Rectangle(HDC hdc, const GRECT *gr, int linestyle, COLORREF color);
 void W_Fill_Rect(HDC hdc, const GRECT *gr, int style, COLORREF color);
 
-void W_NTextExtent(HFONT hfont, const wchar_t *text, size_t len, int *w, int *h);
-void W_TextExtent(HFONT hfont, const wchar_t *text, int *w, int *h);
+void W_NTextExtent(HDC hdc, const wchar_t *text, size_t len, int *w, int *h);
+void W_TextExtent(HDC hdc, const wchar_t *text, int *w, int *h);
 void W_ClipText(HDC hdc, GRECT *gr, const char *str, int hdir, int vdir);
 
+void w_inithdc(HDC hdc);
 HDC W_BeginPaint(HWND hwnd, PAINTSTRUCT *ps, GRECT *gr);
 void W_EndPaint(HWND hwnd, PAINTSTRUCT *ps);
 
@@ -34,6 +35,9 @@ char *W_Fontdesc(const FONT_ATTR *attr);
 gboolean W_Fontname(const char *name, FONT_ATTR *attr);
 gboolean W_Add_Font(FONT_ATTR *attr);
 void W_Font_Default(FONT_ATTR *attr);
+
+void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, _VOID *data, COLORREF fg, COLORREF bg, DWORD mode);
+void W_Draw_Picture(HDC hdc, _WORD x, _WORD y, GRECT *area, MFDB *pic, DWORD mode);
 
 #define W_PAL_WHITE    PALETTERGB(255, 255, 255)
 #define W_PAL_BLACK    PALETTERGB(0, 0, 0)
@@ -61,14 +65,21 @@ void W_Font_Default(FONT_ATTR *attr);
 #define IP_6PATT		6
 #define IP_SOLID		7
 
-#define W_PEN_SOLID            0
-#define W_PEN_LONGDASH         1
-#define W_PEN_DOT              2
-#define W_PEN_DASHDOT          3
-#define W_PEN_DASH             4
-#define W_PEN_DASHDOTDOT       5
-#define W_PEN_DOTDOT           6
-#define W_PEN_NULL             7
-#define W_PEN_USER             8
+#define W_PEN_NULL             0
+#define W_PEN_SOLID            1
+#define W_PEN_LONGDASH         2
+#define W_PEN_DOT              3
+#define W_PEN_DASHDOT          4
+#define W_PEN_DASH             5
+#define W_PEN_DASHDOTDOT       6
+#define W_PEN_USER             7
+
+typedef struct {
+	_ULONG bm_magic;
+#define BITMAP_MAGIC 0x4afcdeadl
+	_UBYTE *bm_orig_data;
+	_UBYTE *bm_data;
+	_VOID  *bm_info;
+} IBITMAP;
 
 #endif /* __W_DRAW_H__ */

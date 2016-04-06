@@ -144,6 +144,9 @@ struct _window_data_
 	char *title;						/* Window title, in utf8 encoding */
 	int x_raster;
 	int y_raster;
+	int x_margin_left, x_margin_right;
+	int y_margin_top, y_margin_bottom;
+	GRECT scroll;
 	DOCUMENT *data;
 	gboolean is_popup;
 	
@@ -154,12 +157,18 @@ struct _window_data_
 	HMENU bookmarks_menu;
 	HWND m_buttons[TO_MAX];
 	HWND textwin;
+	HDC draw_hdc;
+	HFONT font;
 	HWND searchbox;
 	HWND searchentry;
-	GSList *image_childs;
 	struct {
+		WP_UNIT x;
+		WP_UNIT y;
+		WP_UNIT w;
 		WP_UNIT h;
 	} docsize;
+	WP_UNIT scrollhpos, scrollhsize;
+	WP_UNIT scrollvpos, scrollvsize;
 	gboolean hovering_over_link;
 	WINDOW_DATA *parentwin;
 	TOOL_DATA *td;
@@ -246,6 +255,15 @@ void SwitchFont(WINDOW_DATA *win);
 void SelectFont(WINDOW_DATA *win);
 void hv_update_menu(WINDOW_DATA *win);
 void hv_update_menus(void);
+HFONT W_FontCreate(const char *name);
+
+
+/*
+ * hv_selec.c
+ */
+void SelectAll(WINDOW_DATA *win);
+void RemoveSelection(WINDOW_DATA *win);
+void DrawSelection(WINDOW_DATA *win);
 
 
 /*
@@ -258,15 +276,16 @@ void hv_win_open(WINDOW_DATA *win);
 WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
+void hv_set_font(WINDOW_DATA *win);
 void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
 void SendClose(HWND w);
 long hv_win_topline(WINDOW_DATA *win);
 void hv_win_scroll_to_line(WINDOW_DATA *win, long line);
-void hv_win_destroy_images(WINDOW_DATA *win);
 void hv_win_update_attributes(WINDOW_DATA *win);
 void hv_win_reset_text(WINDOW_DATA *win);
 void WindowCalcScroll(WINDOW_DATA *win);
+void SetWindowSlider(WINDOW_DATA *win);
 
 
 /*
@@ -364,6 +383,7 @@ void hv_recent_add(const char *path);
 void RecentUpdate(WINDOW_DATA *win);
 void on_recent_selected(WINDOW_DATA *win, int num);
 void RecentInit(void);
+void RecentExit(void);
 void RecentSaveToDisk(void);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
 void g_slist_free_full(GSList *list, void (*freefunc)(void *));
@@ -400,7 +420,7 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
 void BlockCopy(WINDOW_DATA *win);
 void BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(WINDOW_DATA *win, const char *path);
-typedef enum { remarker_top, remarker_startup, remarker_check } remarker_mode;
+typedef enum { remarker_top, remarker_startup, remarker_check, remarker_update } remarker_mode;
 int StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet);
 
 

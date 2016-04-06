@@ -1,5 +1,6 @@
 #include "hv_defs.h"
 #include "w_draw.h"
+#include "hypdebug.h"
 #include "resource.rh"
 
 #define NO_BRUSH ((HBRUSH)0)
@@ -65,15 +66,22 @@ static HBRUSH w_fill_brush(HDC hdc, int fillstyle, COLORREF color, gboolean *del
 
 /*** ---------------------------------------------------------------------- ***/
 
-HDC W_BeginPaint(HWND hwnd, PAINTSTRUCT *ps, GRECT *gr)
+void w_inithdc(HDC hdc)
 {
-	HDC hdc = BeginPaint(hwnd, ps);
-	RectToGrect(gr, &ps->rcPaint);
 	SetBkMode(hdc, OPAQUE);
 	SetBkColor(hdc, W_PAL_WHITE);
 	SetTextColor(hdc, W_PAL_BLACK);
 	SetMapMode(hdc, MM_TEXT);
 	SetTextAlign(hdc, TA_TOP | TA_LEFT);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+HDC W_BeginPaint(HWND hwnd, PAINTSTRUCT *ps, GRECT *gr)
+{
+	HDC hdc = BeginPaint(hwnd, ps);
+	RectToGrect(gr, &ps->rcPaint);
+	w_inithdc(hdc);
 	return hdc;
 }
 
@@ -160,14 +168,14 @@ static HPEN W_PenCreate(HDC hdc, int width, int penStyle, COLORREF color, _UWORD
 		style = PS_DASHDOTDOT;
 		break;
 
-	case W_PEN_DOTDOT:
-		*line_mask = 0xaaaa;
-		style = PS_DOT;
-		break;
-
 	case W_PEN_NULL:
 		*line_mask = 0;
 		style = PS_NULL;
+		break;
+
+	case W_PEN_USER:
+		*line_mask = 0xaaaa;
+		style = PS_DOT;
 		break;
 
 	default:
@@ -255,43 +263,29 @@ void W_Lines(HDC hdc, const POINT points[], int npoints, int linestyle, COLORREF
 
 /*** ---------------------------------------------------------------------- ***/
 
-void W_TextExtent(HFONT hfont, const wchar_t *text, int *w, int *h)
+void W_TextExtent(HDC hdc, const wchar_t *text, int *w, int *h)
 {
 	size_t len;
 	
 	len = wcslen(text);
-	W_NTextExtent(hfont, text, len, w, h);
+	W_NTextExtent(hdc, text, len, w, h);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void W_NTextExtent(HFONT hfont, const wchar_t *text, size_t len, int *w, int *h)
+void W_NTextExtent(HDC hdc, const wchar_t *text, size_t len, int *w, int *h)
 {
-	HDC hDC;
-	HFONT oldHfont;
+	SIZE lpSi;
 	
-	hDC = GetDC(HWND_DESKTOP);
-	oldHfont = (HFONT)SelectObject(hDC, hfont);
-
+	if (GetTextExtentPoint32W(hdc, text, len, &lpSi))
 	{
-		SIZE lpSi;
-		
-		if (GetTextExtentPointW(hDC, text, len, &lpSi))
-		{
-			*w = lpSi.cx;
-			*h = lpSi.cy;
-		} else
-		{
-			*w = 0;
-			*h = 0;
-		}
-	}
-
- 	if (oldHfont != NO_FONT)
+		*w = lpSi.cx;
+		*h = lpSi.cy;
+	} else
 	{
-		SelectObject(hDC, oldHfont);
+		*w = 0;
+		*h = 0;
 	}
-	ReleaseDC(HWND_DESKTOP, hDC);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -332,7 +326,7 @@ void W_ClipText(HDC hdc, GRECT *gr, const char *str, int hdir, int vdir)
 	GrectToRect(&r, gr);
 	wstr = hyp_utf8_to_wchar(str, STR0TERM, NULL);
 	len = wcslen(wstr);
-	DrawText(hdc, str, len, &r, flag);
+	DrawTextW(hdc, wstr, len, &r, flag);
 	g_free(wstr);
 }
 
@@ -419,4 +413,77 @@ void W_TDFrame(HDC hdc, const GRECT *r, int height, int flags)
 			W_Lines(hdc, p1, 3, W_PEN_SOLID, color);
 		}
 	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, _VOID *data, COLORREF fg, COLORREF bg, DWORD mode)
+{
+	HDC hdcMem;
+	COLORREF oldColor, oldBk;
+	IBITMAP *map;
+	BITMAP *ic;
+	HBITMAP srcBitmap;
+
+	map = (IBITMAP *)data;
+	if (map == NULL || map->bm_magic != BITMAP_MAGIC)
+	{
+		hyp_debug("W_Draw_Image: data not fixed");
+		return;
+	}
+	ic = (BITMAP *)map->bm_info;
+	oldColor = SetTextColor(hdc, fg);
+	oldBk = SetBkColor(hdc, bg);
+	srcBitmap = CreateBitmapIndirect(ic);
+	hdcMem = CreateCompatibleDC(hdc);
+	SelectObject(hdcMem, srcBitmap);
+	SetMapMode(hdcMem, GetMapMode(hdc));
+	BitBlt(hdc, x, y, w, h, hdcMem, 0, 0, mode);
+	DeleteDC(hdcMem);
+	DeleteObject(srcBitmap);
+	SetTextColor(hdc, oldColor);
+	SetBkColor(hdc, oldBk);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void W_Draw_Picture(HDC hdc, _WORD x, _WORD y, GRECT *area, MFDB *pic, DWORD mode)
+{
+	HDC hdcMem;
+	COLORREF oldColor, oldBk;
+	IBITMAP *map;
+	HBITMAP srcBitmap;
+	
+	map = (IBITMAP *)pic->fd_addr;
+	if (map == NULL || map->bm_magic != BITMAP_MAGIC)
+	{
+		hyp_debug("W_Draw_Picture: data not fixed");
+		return;
+	}
+	oldColor = SetTextColor(hdc, W_PAL_BLACK);
+	oldBk = SetBkColor(hdc, W_PAL_WHITE);
+
+	if (pic->fd_nplanes == 1)
+	{
+		BITMAP *ic;
+
+		ic = (BITMAP *)map->bm_info;
+		srcBitmap = CreateBitmapIndirect(ic);
+	} else
+	{
+		BITMAPINFO *info;
+
+		info = (BITMAPINFO *) map->bm_info;
+		/* srcBitmap = CreateBitmap(pic->fd_w, pic->fd_h, GetDeviceCaps(hdc, PLANES), GetDeviceCaps(hdc, BITSPIXEL), NULL);
+		   SetDIBits(srcBitmap, 0, pic->fd_h, map->bm_data, info, DIB_RGB_COLORS); */
+		srcBitmap = CreateDIBitmap(hdc, &info->bmiHeader, CBM_INIT, map->bm_data, info, DIB_RGB_COLORS);
+	}
+	hdcMem = CreateCompatibleDC(hdc);
+	SelectObject(hdcMem, srcBitmap);
+	SetMapMode(hdcMem, GetMapMode(hdc));
+	BitBlt(hdc, x, y, area->g_w, area->g_h, hdcMem, area->g_x, area->g_y, mode);
+	DeleteDC(hdcMem);
+	DeleteObject(srcBitmap);
+	SetTextColor(hdc, oldColor);
+	SetBkColor(hdc, oldBk);
 }

@@ -67,6 +67,7 @@ static void ApplyFont(void)
 	for (l = all_list; l; l = l->next)
 	{
 		win = (WINDOW_DATA *)l->data;
+		hv_set_font(win);
 		/* if (win->type == WIN_WINDOW) */
 		{
 			gboolean ret;
@@ -269,6 +270,39 @@ static gboolean Choose1Font(HWND parent, char **desc, const char *title)
 	}
 	ReleaseDC(HWND_DESKTOP, hdc);
 	return res;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+HFONT W_FontCreate(const char *name)
+{
+	FONT_ATTR attr;
+	LOGFONTA lf;
+	int h = GetDeviceCaps(GetDC(HWND_DESKTOP), LOGPIXELSY);
+	
+	memset(&lf, 0, sizeof(lf));
+	lf.lfWeight = FW_NORMAL;
+	lf.lfQuality = DRAFT_QUALITY;
+	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+	if (W_Fontname(name, &attr))
+	{
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
+		if (attr.textstyle & HYP_TXT_BOLD)
+		{
+			lf.lfWeight = FW_BOLD;
+		}
+		if (attr.textstyle & HYP_TXT_ITALIC)
+		{
+			lf.lfItalic = TRUE;
+		}
+		if (attr.textstyle & HYP_TXT_UNDERLINED)
+		{
+			lf.lfUnderline = TRUE;
+		}
+		lf.lfCharSet = DEFAULT_CHARSET;
+	}
+	return CreateFontIndirect(&lf);
 }
 
 /*** ---------------------------------------------------------------------- ***/

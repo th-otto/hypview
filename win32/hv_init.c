@@ -26,4 +26,5 @@ void hv_exit(void)
 {
 	MarkerSaveToDisk();
 	/* RecentSaveToDisk(); */
+	RecentExit();
 }

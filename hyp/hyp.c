@@ -124,7 +124,8 @@ void hyp_image_free(HYP_IMAGE *image)
 	{
 		if (image->decompressed)
 			W_Release_Bitmap(&image->pic.fd_addr, image->pic.fd_w, image->pic.fd_h, image->pic.fd_nplanes);
-		g_free(image->pic.fd_addr);
+		else
+			g_free(image->pic.fd_addr);
 		g_free(image);
 	}
 }

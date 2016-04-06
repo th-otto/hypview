@@ -383,6 +383,14 @@ void RecentInit(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void RecentExit(void)
+{
+	g_slist_free_full(recent_list, g_free);
+	recent_list = NULL;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void RecentSaveToDisk(void)
 {
 	int i;

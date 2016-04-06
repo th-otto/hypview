@@ -17,13 +17,6 @@ struct _viewer_colors viewer_colors;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void NOINLINE LoadConfig(void)
-{
-	HypProfile_Load();
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 static unsigned char parse_hex(const char *str)
 {
 	unsigned char val;
@@ -241,7 +234,7 @@ int main(int argc, const char **argv)
 	_set_invalid_parameter_handler(myInvalidParameterHandler);
 #endif
 	
-	LoadConfig();
+	HypProfile_Load();
 	
 	if (!ParseCommandLine(&argc, &argv))
 		return EXIT_FAILURE;

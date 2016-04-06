@@ -1,6 +1,7 @@
 #include "hv_defs.h"
 #include "w_draw.h"
 #include "windebug.h"
+#include "hypdebug.h"
 #include "resource.rh"
 
 #define WCN_Toolbar L"HV_Toolbar"
@@ -288,10 +289,16 @@ static void tool_help_create(TOOL_DATA *td, const char *text, int x, int y)
 	HWND parent;
 	int w, h;
 	wchar_t *wtext;
+	HDC hdc;
+	HFONT oldfont;
 	
 	parent = GetParent(td->hwnd);
 	wtext = hyp_utf8_to_wchar(text, STR0TERM, NULL);
-	W_TextExtent(toolbar_font.hfont, wtext, &w, &h);
+	hdc = GetDC(td->hwnd);
+	oldfont = (HFONT)SelectObject(hdc, toolbar_font.hfont);
+	W_TextExtent(hdc, wtext, &w, &h);
+	SelectObject(hdc, (HGDIOBJ)oldfont);
+	ReleaseDC(td->hwnd, hdc);
 	w += 20;
 	h += 6;
 	td->toolbar_help_hwnd = CreateWindowExW(
@@ -920,6 +927,7 @@ static void toolbar_exit(WINDOW_DATA *win)
 		g_free(td);
 		win->td = NULL;
 	}
+	g_freep(&toolbar_font_desc);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1013,15 +1021,18 @@ void toolbar_register_classes(HINSTANCE hinst)
 	wndclass.lpfnWndProc = toolbarWndProc;
 	if (RegisterClassW(&wndclass) == 0)
 	{
+		hyp_debug("can't register %s window class: %s", "toolbar", win32_errstring(GetLastError()));
 	}
+	wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_SAVEBITS;
 	wndclass.lpszClassName = WCN_ToolHelp;
 	wndclass.lpfnWndProc = toolhelpWndProc;
 	if (RegisterClassW(&wndclass) == 0)
 	{
+		hyp_debug("can't register %s window class: %s", "toolhelp", win32_errstring(GetLastError()));
 	}
 	{
 		HICON icon;
-		BITMAP bitmap = { 0 };
+		BITMAP bitmap;
 		ICONINFO info;
 		
 		icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(IDI_NEXT), IMAGE_ICON, 0, 0, LR_SHARED);

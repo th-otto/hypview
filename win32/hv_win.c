@@ -2,6 +2,7 @@
 #include "hypdebug.h"
 #include "windebug.h"
 #include "resource.rh"
+#include "w_draw.h"
 
 static char *default_geometry;
 
@@ -10,8 +11,8 @@ static TOOLBAR_ENTRY const tb_entries[] = {
 	[ TO_HISTORY ] = { TO_HISTORY, IDM_NAV_HISTORYMENU, IDI_HISTORY, N_("Show history of pages") },
 	[ TO_BOOKMARKS ] = { TO_BOOKMARKS, IDM_NAV_BOOKMARKSMENU, IDI_BOOKMARKS, N_("Show list of bookmarks") },
 	[ TO_FIRST ] = { TO_FIRST, IDM_NAV_FIRST, IDI_FIRST, N_("Goto first page") },
-	[ TO_PREV_PHYS ] = { TO_PREV_PHYS, IDM_NAV_PREVPHYS, IDI_PREVPHYS, N_("Goto next physical page") },
-	[ TO_PREV ] = { TO_PREV, IDM_NAV_PREV, IDI_PREV, N_("Goto next page") },
+	[ TO_PREV_PHYS ] = { TO_PREV_PHYS, IDM_NAV_PREVPHYS, IDI_PREVPHYS, N_("Goto previous physical page") },
+	[ TO_PREV ] = { TO_PREV, IDM_NAV_PREV, IDI_PREV, N_("Goto previous page") },
 	[ TO_HOME ] = { TO_HOME, IDM_NAV_TOC, IDI_HOME, N_("Go up one page") },
 	[ TO_NEXT ] = { TO_NEXT, IDM_NAV_NEXT, IDI_NEXT, N_("Goto next page") },
 	[ TO_NEXT_PHYS ] = { TO_NEXT_PHYS, IDM_NAV_NEXTPHYS, IDI_NEXTPHYS, N_("Goto next physical page") },
@@ -90,7 +91,7 @@ void WindowCalcScroll(WINDOW_DATA *win)
 	}
 	if (sd != NULL && sd->hwnd != 0)
 	{
-		if (td->visible)
+		if (sd->visible)
 		{
 			if (!IsWindowVisible(sd->hwnd))
 				ShowWindow(sd->hwnd, SW_SHOW);
@@ -132,38 +133,16 @@ void WindowCalcScroll(WINDOW_DATA *win)
 	if (win->textwin)
 	{
 		MoveWindow(win->textwin, r.left, r.top, r.right - r.left, r.bottom - r.top, TRUE);
+		win->scroll.g_x = r.left + win->x_margin_left;
+		win->scroll.g_y = r.top + win->y_margin_top;
+		win->scroll.g_w = (r.right - r.left) - win->x_margin_left - win->x_margin_right;
+		win->scroll.g_h = (r.bottom - r.top) - win->y_margin_top - win->y_margin_bottom;
 	}
-#if 0
-	wind_get_grect(win->whandle, WF_WORKXYWH, &win->work);
-	win->scroll.g_x = win->work.g_x + win->x_offset + win->x_margin_left;
-	win->scroll.g_y = win->work.g_y + win->y_offset + win->y_margin_top;
-	win->scroll.g_w = win->work.g_w - win->x_offset - win->x_margin_left - win->x_margin_right;
-	win->scroll.g_h = win->work.g_h - win->y_offset - win->y_margin_top - win->y_margin_bottom;
-#endif
 }
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
-
-void hv_win_destroy_images(WINDOW_DATA *win)
-{
-	GSList *l;
-	
-	for (l = win->image_childs; l; l = l->next)
-	{
-		struct hyp_gfx *gfx = (struct hyp_gfx *)l->data;
-		if (gfx->surf)
-		{
-			/* NYI */
-			gfx->surf = NULL;
-		}
-	}
-	g_slist_free(win->image_childs);
-	win->image_childs = NULL;
-}
-
-/*** ---------------------------------------------------------------------- ***/
 
 static void toolbar_status_exit(WINDOW_DATA *win)
 {
@@ -206,8 +185,8 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 			RemoveAllHistoryEntries(win);
 			all_list = g_slist_remove(all_list, win);
 		}
-		hv_win_destroy_images(win);
 		g_freep(&win->title);
+		g_free(win);
 		check_toplevels(NULL);
 	}
 }
@@ -269,6 +248,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (toplevels_open_except(win) == 0)
 		{
+			RecentSaveToDisk();
 			if (WriteProfile(win) == FALSE)
 				return FALSE;
 		}
@@ -295,6 +275,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			gl_profile.viewer.win_h = r.bottom - r.top;
 			HypProfile_SetChanged();
 			WindowCalcScroll(win);
+			SetWindowSlider(win);
 		}
 		break;
 	
@@ -480,6 +461,23 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		win32debug_msg_end("mainWndProc", message, "0");
 		return 0;
 	
+	case WM_ERASEBKGND:
+		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		win32debug_msg_end("mainWndProc", message, "FALSE");
+		return FALSE;
+	
+	case WM_PAINT:
+		{
+			PAINTSTRUCT ps;
+			GRECT gr;
+			
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			W_BeginPaint(hwnd, &ps, &gr);
+			W_EndPaint(hwnd, &ps);
+			win32debug_msg_end("mainWndProc", message, "TRUE");
+		}
+		return TRUE;
+
 	default:
 		if (message == commdlg_help)
 		{
@@ -521,6 +519,62 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 
 /*** ---------------------------------------------------------------------- ***/
 
+static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	WINDOW_DATA *win;
+	
+	win32debug_msg_print(stderr, "textWndProc", hwnd, message, wParam, lParam);
+	switch (message)
+	{
+	case WM_NCCREATE:
+		win = (WINDOW_DATA *)(((CREATESTRUCT *)lParam)->lpCreateParams);
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)win);
+		win->textwin = hwnd;
+		break;
+
+	case WM_DESTROY:
+		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		win32debug_msg_end("textWndProc", message, "FALSE");
+		win->textwin = NULL;
+		return FALSE;
+	
+	case WM_ERASEBKGND:
+		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		{
+			RECT r;
+			HBRUSH brush = CreateSolidBrush(viewer_colors.background);
+			GetClientRect(hwnd, &r);
+			FillRect((HDC)wParam, &r, brush);
+			DeleteObject(brush);
+		}
+		win32debug_msg_end("textWndProc", message, "TRUE");
+		return TRUE;
+	
+	case WM_PAINT:
+		{
+			PAINTSTRUCT ps;
+			GRECT gr;
+			DOCUMENT *doc;
+			
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			doc = (DOCUMENT *) win->data;
+			win->draw_hdc = W_BeginPaint(hwnd, &ps, &gr);
+			doc->displayProc(win);
+			DrawSelection(win);
+			W_EndPaint(hwnd, &ps);
+			win->draw_hdc = NULL;
+			win32debug_msg_end("textWndProc", message, "TRUE");
+		}
+		return TRUE;
+	}
+	
+	win32debug_msg_end("textWndProc", message, "DefWindowProc");
+	
+	return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 DOCUMENT *hypwin_doc(WINDOW_DATA *win)
 {
 	return win->data;
@@ -528,9 +582,27 @@ DOCUMENT *hypwin_doc(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void set_font_attributes(WINDOW_DATA *win)
+void hv_set_font(WINDOW_DATA *win)
 {
-	UNUSED(win);
+	const char *name = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name;
+	HDC hdc = GetDC(win->textwin);
+	TEXTMETRIC tm;
+	HFONT oldfont;
+	
+	if (win->font)
+		DeleteObject(win->font);
+	win->font = W_FontCreate(name);
+	oldfont = (HFONT)SelectObject(hdc, win->font);
+	if (GetTextMetrics(hdc, &tm))
+	{
+		win->x_raster = tm.tmAveCharWidth;
+		win->y_raster = tm.tmHeight + tm.tmExternalLeading;
+	} else
+	{
+		hyp_debug("GetTextMetrics: %s\n", win32_errstring(GetLastError()));
+	}
+	SelectObject(hdc, (HGDIOBJ)oldfont);
+	ReleaseDC(win->textwin, hdc);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -549,9 +621,9 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	
 	if (!registered)
 	{
-		WNDCLASS wndclass;
+		WNDCLASSA wndclass;
 		
-		wndclass.style = CS_BYTEALIGNCLIENT | CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+		wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 		wndclass.lpfnWndProc = mainWndProc;
 		wndclass.cbClsExtra = 0;
 		wndclass.cbWndExtra = 0;
@@ -561,9 +633,20 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		wndclass.hbrBackground = (HBRUSH) (COLOR_APPWORKSPACE + 1);
 		wndclass.lpszMenuName = NULL;
 		wndclass.lpszClassName = "hypview";
+		if (RegisterClassA(&wndclass) == 0)
+			hyp_debug("can't register %s window class: %s", "main", win32_errstring(GetLastError()));
 
-		RegisterClass(&wndclass);
+		wndclass.style = CS_DBLCLKS | CS_PARENTDC | CS_HREDRAW | CS_VREDRAW;
+		wndclass.lpfnWndProc = textWndProc;
+		wndclass.hIcon = NULL;
+		wndclass.hbrBackground = NULL;
+		wndclass.lpszClassName = "hyptext";
+		if (RegisterClassA(&wndclass) == 0)
+			hyp_debug("can't register %s window class: %s", "text", win32_errstring(GetLastError()));
+
 		toolbar_register_classes(inst);
+		
+		registered = TRUE;
 	}
 	win = g_new0(WINDOW_DATA, 1);
 	if (win == NULL)
@@ -575,12 +658,12 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	
 	if (popup)
 	{
-		style = WS_POPUP | WS_BORDER;
+		style = WS_POPUP | WS_BORDER | WS_CLIPCHILDREN;
 	} else
 	{
 		win->td = toolbar_init(win, tb_defs, (int)(sizeof(tb_defs) / sizeof(tb_defs[0])), tb_entries, (int)(sizeof(tb_entries) / sizeof(tb_entries[0])));
 		exstyle = WS_EX_OVERLAPPEDWINDOW;
-		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_HSCROLL | WS_VSCROLL | WS_SIZEBOX;
+		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_HSCROLL | WS_VSCROLL | WS_SIZEBOX | WS_CLIPCHILDREN;
 		menu = LoadMenuExW(inst, MAKEINTRESOURCEW(IDR_MAIN_MENU));
 	}
 	x = gl_profile.viewer.win_x;
@@ -610,15 +693,39 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	if (hwnd == 0)
 	{
 		g_free(win);
-		fprintf(stderr, "can't create %s window: %s\n", "main", win32_errstring(GetLastError()));
+		hyp_debug("can't create %s window: %s", "main", win32_errstring(GetLastError()));
 		return NULL;
 	}
 
 	if (win->td && win->td->visible)
 		win->td->toolbar_open(win);
+
+	CreateWindowExA(
+		0,
+		"hyptext",
+		NULL,
+		WS_CHILD|WS_VISIBLE,
+		x, y, w, h,
+		hwnd,
+		NULL,
+		inst,
+		(LPVOID)win);
+	if (win->textwin == 0)
+	{
+		g_free(win);
+		hyp_debug("can't create %s window: %s", "text", win32_errstring(GetLastError()));
+		return NULL;
+	}
 	
-	set_font_attributes(win);
+	win->y_margin_top = gl_profile.viewer.text_yoffset;
+	win->x_margin_left = gl_profile.viewer.text_xoffset;
+	win->x_margin_right = gl_profile.viewer.text_xoffset;
+	
+	hv_set_font(win);
 	hv_set_title(win, win->title);
+
+	WindowCalcScroll(win);
+	SetWindowSlider(win);
 	
 	if (!popup)
 	{
@@ -650,7 +757,7 @@ void hv_set_title(WINDOW_DATA *win, const char *title)
 
 void SendRedraw(WINDOW_DATA *win)
 {
-	InvalidateRect(win->hwnd, NULL, TRUE);
+	InvalidateRect(win->textwin, NULL, TRUE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -685,13 +792,57 @@ void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void SetWindowSlider(WINDOW_DATA *win)
+{
+	SCROLLINFO si;
+	WP_UNIT pos, range;
+	
+	pos = win->docsize.x;
+	range = win->docsize.w;
+	if (pos != win->scrollhpos || range != win->scrollhsize)
+	{
+		si.cbSize = sizeof(si);
+		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS;
+		si.nMin = 0;
+		si.nMax = range - 1;
+		if (si.nMax < 0)
+			si.nMax = 0;
+		si.nPage = win->scroll.g_w;
+		si.nPos = pos;
+		si.nTrackPos = si.nPos;
+		SetScrollInfo(win->hwnd, SB_HORZ, &si, TRUE);
+	}
+	win->scrollhpos = pos;
+	win->scrollhsize = range;
+
+	pos = win->docsize.y;
+	range = win->docsize.h - 1;
+	if (range < 0)
+		range = 0;
+	if (pos != win->scrollvpos || range != win->scrollvsize)
+	{
+		si.cbSize = sizeof(si);
+		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS;
+		si.nMin = 0;
+		si.nMax = range;
+		si.nPage = win->scroll.g_h;
+		si.nPos = pos;
+		si.nTrackPos = si.nPos;
+		SetScrollInfo(win->hwnd, SB_VERT, &si, TRUE);
+	}
+	win->scrollvpos = pos;
+	win->scrollvsize = range;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 {
 	DOCUMENT *doc = win->data;
 	
 	win->hovering_over_link = FALSE;
 	SetClassLongPtr(win->hwnd, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
-	set_font_attributes(win);
+	hv_set_font(win);
 	if (prep)
 		doc->prepNode(win, win->displayed_node);
 	hv_set_title(win, win->title);
@@ -706,6 +857,7 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 		hv_win_scroll_to_line(win, doc->start_line);
 	}
 	
+	SetWindowSlider(win);
 	ToolbarUpdate(win, FALSE);
 	SendRedraw(win);
 }

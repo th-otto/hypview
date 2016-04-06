@@ -95,14 +95,6 @@ int StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void SelectAll(WINDOW_DATA *win)
-{
-	UNUSED(win);
-	/* NYI */
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 void BlockOperation(WINDOW_DATA *win, enum blockop num)
 {
 	DOCUMENT *doc = win->data;
