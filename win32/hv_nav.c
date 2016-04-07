@@ -116,7 +116,9 @@ void HistoryPopup(WINDOW_DATA *win, int button)
 	int x, y;
 	
 	UNUSED(button);
-	if (!win->m_buttons[TO_HISTORY])
+	if (!(win->m_buttons[TO_HISTORY] & WS_VISIBLE))
+		return;
+	if ((win->m_buttons[TO_HISTORY] & WS_DISABLED))
 		return;
 	
 	menu = CreateMenu();

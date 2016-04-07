@@ -51,6 +51,13 @@ typedef struct
 	int x_off, y_off;
 } DRAWINFO;
 
+typedef struct
+{
+	int x_off, y_off;
+	int obj;
+	GRECT button;
+} POSINFO;
+
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -127,32 +134,38 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	if (!win->is_popup)
 	{
 		hv_update_menu(win);
-		EnableWindow(win->m_buttons[TO_REMARKER], doc->buttons.remarker);
-		EnableWindow(win->m_buttons[TO_BOOKMARKS], doc->buttons.bookmarks);
-		EnableWindow(win->m_buttons[TO_INFO], doc->buttons.info);
-		EnableWindow(win->m_buttons[TO_BACK], doc->buttons.back);
-		EnableWindow(win->m_buttons[TO_HISTORY], doc->buttons.history);
+#define EnableButton(obj, enable) \
+		if (enable) \
+			win->m_buttons[obj] &= ~WS_DISABLED; \
+		else \
+			win->m_buttons[obj] |= WS_DISABLED
 
-		EnableWindow(win->m_buttons[TO_CATALOG], !empty(gl_profile.viewer.catalog_file));
+		EnableButton(TO_REMARKER, doc->buttons.remarker);
+		EnableButton(TO_BOOKMARKS, doc->buttons.bookmarks);
+		EnableButton(TO_INFO, doc->buttons.info);
+		EnableButton(TO_BACK, doc->buttons.back);
+		EnableButton(TO_HISTORY, doc->buttons.history);
+
+		EnableButton(TO_CATALOG, !empty(gl_profile.viewer.catalog_file));
 
 		/* next buttons are type specific */
-		EnableWindow(win->m_buttons[TO_PREV], doc->buttons.previous);
-		EnableWindow(win->m_buttons[TO_PREV_PHYS], doc->buttons.prevphys);
-		EnableWindow(win->m_buttons[TO_HOME], doc->buttons.home);
-		EnableWindow(win->m_buttons[TO_NEXT], doc->buttons.next);
-		EnableWindow(win->m_buttons[TO_NEXT_PHYS], doc->buttons.nextphys);
-		EnableWindow(win->m_buttons[TO_FIRST], doc->buttons.first);
-		EnableWindow(win->m_buttons[TO_LAST], doc->buttons.last);
-		EnableWindow(win->m_buttons[TO_INDEX], doc->buttons.index);
-		EnableWindow(win->m_buttons[TO_HELP], doc->buttons.help);
-		EnableWindow(win->m_buttons[TO_REFERENCES], doc->buttons.references);
+		EnableButton(TO_PREV, doc->buttons.previous);
+		EnableButton(TO_PREV_PHYS, doc->buttons.prevphys);
+		EnableButton(TO_HOME, doc->buttons.home);
+		EnableButton(TO_NEXT, doc->buttons.next);
+		EnableButton(TO_NEXT_PHYS, doc->buttons.nextphys);
+		EnableButton(TO_FIRST, doc->buttons.first);
+		EnableButton(TO_LAST, doc->buttons.last);
+		EnableButton(TO_INDEX, doc->buttons.index);
+		EnableButton(TO_HELP, doc->buttons.help);
+		EnableButton(TO_REFERENCES, doc->buttons.references);
+#undef EnableButton
 	}
-	if (win->m_buttons[TO_REMARKER])
 	{
 		if (doc->buttons.remarker_running)
-			ShowWindow(win->m_buttons[TO_REMARKER], SW_SHOW);
+			win->m_buttons[TO_REMARKER] |= WS_VISIBLE;
 		else
-			ShowWindow(win->m_buttons[TO_REMARKER], SW_HIDE);
+			win->m_buttons[TO_REMARKER] &= ~WS_VISIBLE;
 	}
 	
 	if (redraw)
@@ -163,14 +176,90 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void toolbar_enum(TOOL_DATA *td, const int *defs, int num_defs, int maxx, void (*enumproc)(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata), void *specialdata)
+{
+	int def_idx;
+	int xs = TB_X_OFF;
+	int ys = TB_Y_OFF;
+	
+	def_idx = 0;
+	while (def_idx < num_defs && *defs != TB_ENDMARK)
+	{
+		switch (*defs)
+		{
+		case TB_SEPARATOR:
+			if (xs + TB_SEP_WIDTH > maxx)
+			{
+				xs = TB_X_OFF;
+				ys += TOOLHEIGHT - TB_Y_OFF;
+			}
+			enumproc(td, *defs, td->entries, xs, ys, def_idx, specialdata);
+			xs += TB_SEP_WIDTH;
+			break;
+		default:
+			if (xs + BUTTONWIDTH > maxx)
+			{
+				xs = TB_X_OFF;
+				ys += TOOLHEIGHT - TB_Y_OFF;
+			}
+			enumproc(td, *defs, td->entries, xs, ys, def_idx, specialdata);
+			xs += BUTTONWIDTH;
+			break;
+		}
+		defs++;
+		def_idx++;
+	}
+	enumproc(td, TB_ENDMARK, NULL, xs, ys, def_idx, specialdata);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void toolbar_pos(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata)
+{
+	POSINFO *dw;
+
+	UNUSED(te);
+	UNUSED(td);
+	UNUSED(def_idx);
+	
+	dw = (POSINFO *)specialdata;
+	if (entry_idx == dw->obj)
+	{
+		dw->button.g_x = xs + dw->x_off;
+		dw->button.g_y = ys + dw->y_off;
+		dw->button.g_w = BUTTONWIDTH;
+		dw->button.g_h = BUTTONHEIGHT;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret)
 {
 	WINDOW_DATA *win = pos->window;
 	RECT a, r;
-	
+	POSINFO dw;
+	TOOL_DATA *td;
+	GRECT r1;
+		
+	td = win->td;
+	if (td == NULL)
+		return;
 	UNUSED(menu);
-	GetClientRect(win->m_buttons[pos->obj], &a);
-	GetWindowRect(win->m_buttons[pos->obj], &r);
+
+	GetClientRect(td->hwnd, &r);
+	RectToGrect(&r1, &r);
+	dw.x_off = r1.g_x;
+	dw.y_off = r1.g_y;
+	dw.obj = pos->obj;
+	dw.button.g_x = 0;
+	dw.button.g_y = 0;
+	dw.button.g_w = 0;
+	dw.button.g_h = 0;
+	toolbar_enum(td, td->definitions, td->num_definitions, r1.g_w, toolbar_pos, &dw);
+	GrectToRect(&r, &dw.button);
+	a = r;
+	
 	r.top += a.bottom - a.top;
 #if _WIN32_WINNT >= 0x601
 	{
@@ -194,7 +283,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button)
 {
 	if ((int)obj < 0)
 		RemoveSearchBox(win);
-	else if (!win->m_buttons[obj] || !IsWindowEnabled(win->m_buttons[obj]))
+	else if (win->m_buttons[obj] & WS_DISABLED)
 		return;
 
 	CheckFiledate(win);		/* Check if file has changed */
@@ -574,7 +663,7 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 			HDC hdc;
 			
 			hdc = W_BeginPaint(hwnd, &ps, &gr);
-			td->toolbar_paint(hdc, td, &gr);
+			td->toolbar_paint(hdc, win, &gr);
 			W_EndPaint(hwnd, &ps);
 		}
 		win32debug_msg_end("toolbarWndProc", message, "0");
@@ -596,55 +685,29 @@ static void toolbar_refresh(TOOL_DATA *td, const GRECT *gr)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_drawicon(HDC hdc, TOOL_DATA *td, const GRECT *button, int entry_idx, gboolean selected)
+static void toolbar_drawicon(HDC hdc, WINDOW_DATA *win, const GRECT *button, int entry_idx, gboolean selected)
 {
+	TOOL_DATA *td = win->td;
 	int icon_id = td->entries[entry_idx].icon_id;
-	HICON icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(icon_id), IMAGE_ICON, 0, 0, LR_SHARED);
+	HICON icon;
 	int x = button->g_x + FRAMESIZE + (selected ? 1 : 0);
 	int y = button->g_y + FRAMESIZE + (selected ? 1 : 0);
+
+	if (!(win->m_buttons[td->entries[entry_idx].config_id] & WS_VISIBLE))
+		return;
+	icon = (HICON)LoadImageW(GetInstance(), MAKEINTRESOURCEW(icon_id), IMAGE_ICON, 0, 0, LR_SHARED);
 	DrawIconEx(hdc, x, y, icon, bitmap_width, bitmap_height, 0, 0, DI_NORMAL);
 	if (selected)
 		W_TDFrame(hdc, button, FRAMESIZE, INVERT | OUTLINE);
 	else
 		W_TDFrame(hdc, button, FRAMESIZE, OUTLINE);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void toolbar_enum(TOOL_DATA *td, const int *defs, int num_defs, int maxx, void (*enumproc)(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, int xs, int ys, int def_idx, void *specialdata), void *specialdata)
-{
-	int def_idx;
-	int xs = TB_X_OFF;
-	int ys = TB_Y_OFF;
-	
-	def_idx = 0;
-	while (def_idx < num_defs && *defs != TB_ENDMARK)
+	if (win->m_buttons[td->entries[entry_idx].config_id] & WS_DISABLED)
 	{
-		switch (*defs)
-		{
-		case TB_SEPARATOR:
-			if (xs + TB_SEP_WIDTH > maxx)
-			{
-				xs = TB_X_OFF;
-				ys += TOOLHEIGHT - TB_Y_OFF;
-			}
-			enumproc(td, *defs, td->entries, xs, ys, def_idx, specialdata);
-			xs += TB_SEP_WIDTH;
-			break;
-		default:
-			if (xs + BUTTONWIDTH > maxx)
-			{
-				xs = TB_X_OFF;
-				ys += TOOLHEIGHT - TB_Y_OFF;
-			}
-			enumproc(td, *defs, td->entries, xs, ys, def_idx, specialdata);
-			xs += BUTTONWIDTH;
-			break;
-		}
-		defs++;
-		def_idx++;
+		HANDLE oldObj = SelectObject(hdc, GetStockObject(GRAY_BRUSH));
+
+		PatBlt(hdc, x, y, bitmap_width, bitmap_height, /* (DWORD) */ 0xFA0089L);
+		SelectObject(hdc, oldObj);
 	}
-	enumproc(td, TB_ENDMARK, NULL, xs, ys, def_idx, specialdata);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -663,24 +726,25 @@ static void toolbar_draw(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, 
 		button.g_y = ys + dw->y_off;
 		button.g_w = BUTTONWIDTH;
 		button.g_h = BUTTONHEIGHT;
-		td->toolbar_drawicon(dw->hdc, td, &button, entry_idx, def_idx == td->buttondown);
+		td->toolbar_drawicon(dw->hdc, dw->win, &button, entry_idx, def_idx == td->buttondown);
 	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_paint(HDC hdc, TOOL_DATA *td, const GRECT *gr)
+static void toolbar_paint(HDC hdc, WINDOW_DATA *win, const GRECT *gr)
 {
 	DRAWINFO dw;
 	int oldmode;
 	GRECT r1;
 	RECT r;
+	TOOL_DATA *td = win->td;
 	
 	oldmode = SetBkMode(hdc, OPAQUE);
 	W_TDFrame(hdc, gr, 1, FILL | OUTLINE);
 
 	dw.hdc = hdc;
-	dw.win = NULL;
+	dw.win = win;
 	r1 = *gr;
 	GetClientRect(td->hwnd, &r);
 	RectToGrect(&r1, &r);
@@ -935,6 +999,7 @@ static void toolbar_exit(WINDOW_DATA *win)
 TOOL_DATA *toolbar_init(WINDOW_DATA *win, const int *definitions, int num_definitions, const TOOLBAR_ENTRY *entries, int num_entries)
 {
 	TOOL_DATA *td;
+	int i;
 	
 	if (win == NULL)
 		return NULL;
@@ -976,6 +1041,14 @@ TOOL_DATA *toolbar_init(WINDOW_DATA *win, const int *definitions, int num_defini
 		td->num_entries = num_entries;
 		td->ontop = TRUE;
 		td->visible = TRUE;
+		for (i = 0; i < num_entries; i++)
+			win->m_buttons[entries[i].config_id] = 0;
+		for (i = 0; i < num_definitions; i++)
+		{
+			int id = definitions[i];
+			if (id >= 0 && id < num_entries)
+				win->m_buttons[entries[id].config_id] = WS_VISIBLE;
+		}
 	}
 	win->td = td;
 	return td;

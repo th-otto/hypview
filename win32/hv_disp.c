@@ -2,8 +2,6 @@
 #include "hypdebug.h"
 #include "w_draw.h"
 
-#define vsl_ends(handle, beg, end)	
-
 #define COLOR_LIGHT_MASK 0x888888
 
 /******************************************************************************/
@@ -545,11 +543,11 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 
 #define TEXTOUT(str) \
 	{ \
-	int w, h; \
-	wchar_t *wtext = hyp_utf8_to_wchar(str, STR0TERM, NULL); \
-	W_TextExtent(hdc, wtext, &w, &h); \
-	g_free(wtext); \
-	x += w; \
+		int w, h; \
+		wchar_t *wtext = hyp_utf8_to_wchar(str, STR0TERM, NULL); \
+		W_TextExtent(hdc, wtext, &w, &h); \
+		g_free(wtext); \
+		x += w; \
 	}
 
 #define DUMPTEXT() \

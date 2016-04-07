@@ -79,7 +79,9 @@ void HypExtRefPopup(WINDOW_DATA *win, int button)
 	int x, y;
 	
 	UNUSED(button);
-	if (!win->m_buttons[TO_REFERENCES])
+	if (!(win->m_buttons[TO_REFERENCES] & WS_VISIBLE))
+		return;
+	if ((win->m_buttons[TO_REFERENCES] & WS_DISABLED))
 		return;
 	
 	menu = CreateMenu();

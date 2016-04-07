@@ -240,6 +240,8 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		win = (WINDOW_DATA *)(((CREATESTRUCT *)lParam)->lpCreateParams);
 		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)win);
 		win->hwnd = hwnd;
+		win->scrollvsize = -1;
+		win->scrollhsize = -1;
 		break;
 
 	case WM_CREATE:
@@ -265,8 +267,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		win32debug_msg_end("mainWndProc", message, "FALSE");
 		return FALSE;
 	
-	case WM_MOVE:
-	case WM_SIZE:
+	case WM_WINDOWPOSCHANGED:
 		{
 			RECT r;
 			
@@ -278,9 +279,12 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			gl_profile.viewer.win_h = r.bottom - r.top;
 			HypProfile_SetChanged();
 			WindowCalcScroll(win);
+			win->scrollvsize = -1;
+			win->scrollhsize = -1;
 			SetWindowSlider(win);
 		}
-		break;
+		win32debug_msg_end("mainWndProc", message, "FALSE");
+		return FALSE;
 	
 	case WM_INITMENUPOPUP:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
@@ -537,8 +541,8 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 
 	case WM_DESTROY:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		win32debug_msg_end("textWndProc", message, "FALSE");
 		win->textwin = NULL;
+		win32debug_msg_end("textWndProc", message, "FALSE");
 		return FALSE;
 	
 	case WM_ERASEBKGND:
@@ -571,8 +575,8 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			DrawSelection(win);
 			W_EndPaint(hwnd, &ps);
 			win->draw_hdc = NULL;
-			win32debug_msg_end("textWndProc", message, "TRUE");
 		}
+		win32debug_msg_end("textWndProc", message, "TRUE");
 		return TRUE;
 	}
 	
@@ -853,7 +857,7 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	DOCUMENT *doc = win->data;
 	
 	win->hovering_over_link = FALSE;
-	SetClassLongPtr(win->hwnd, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
+	SetClassLongPtr(win->textwin, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
 	hv_set_font(win);
 	if (prep)
 		doc->prepNode(win, win->displayed_node);

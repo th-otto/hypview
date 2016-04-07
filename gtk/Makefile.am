@@ -6,6 +6,9 @@ if WITH_GUI_GTK
 bin_PROGRAMS = hypview
 noinst_PROGRAMS = gfilesel
 endif
+if !CROSS_COMPILING
+noinst_SCRIPTS = $(build_triplet)-hypview$(EXEEXT)
+endif
 
 INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
 
@@ -73,6 +76,9 @@ hypview_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 if OS_WIN32
 hypview_DEPENDENCIES += $(LIBRCINTL_DEP)
 endif
+
+$(build_triplet)-hypview$(EXEEXT): hypview$(EXEEXT)
+	cp -a $? $@
 
 gfilesel_SOURCES = gfilesel.c
 gfilesel_LDADD = $(GTK_LIBS)

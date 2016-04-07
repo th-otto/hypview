@@ -161,7 +161,9 @@ void MarkerPopup(WINDOW_DATA *win, int button)
 	struct popup_pos popup_pos;
 	int x, y;
 	
-	if (!win->m_buttons[TO_BOOKMARKS])
+	if (!(win->m_buttons[TO_BOOKMARKS] & WS_VISIBLE))
+		return;
+	if ((win->m_buttons[TO_BOOKMARKS] & WS_DISABLED))
 		return;
 	
 	MarkerUpdate(win);

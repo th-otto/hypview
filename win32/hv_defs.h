@@ -89,7 +89,7 @@ struct _tool_data {
 	char    *help_text;			/* currently display tooltip text */
 	HWND    toolbar_help_hwnd;
 	
-	void	(*toolbar_paint)(HDC hdc, TOOL_DATA *td, const GRECT *gr);
+	void	(*toolbar_paint)(HDC hdc, WINDOW_DATA *win, const GRECT *gr);
 	int		(*toolbar_size)(TOOL_DATA *td, GRECT *r);
 	gboolean (*toolbar_mouse_move)(TOOL_DATA *td, const GRECT *gr, int mousex, int mousey);
 	void	(*toolbar_mouse_down)(TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey);
@@ -101,7 +101,7 @@ struct _tool_data {
 
 	void	(*toolbar_help_settext)(TOOL_DATA *td, const char *text, int x, int y);
 	void	(*toolbar_refresh)(TOOL_DATA *td, const GRECT *gr);
-	void	(*toolbar_drawicon)(HDC hdc, TOOL_DATA *td, const GRECT *button, int entry_idx, gboolean selected);
+	void	(*toolbar_drawicon)(HDC hdc, WINDOW_DATA *win, const GRECT *button, int entry_idx, gboolean selected);
 };
 
 typedef struct _status_data STATUS_DATA;
@@ -155,7 +155,7 @@ struct _window_data_
 	HYP_NODE *displayed_node;           /* Currently displayed node */
 	
 	HMENU bookmarks_menu;
-	HWND m_buttons[TO_MAX];
+	DWORD m_buttons[TO_MAX];
 	HWND textwin;
 	HDC draw_hdc;
 	HRGN cliprgn;
