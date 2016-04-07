@@ -212,8 +212,18 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	
 	if (gfx->style != 0)
 	{
-		vsf_interior(vdi_handle, FIS_PATTERN);
-		vsf_style(vdi_handle, gfx->style);
+		if (gfx->style > 36)
+		{
+			vsf_interior(vdi_handle, FIS_SOLID);
+		} else if (gfx->style > 24)
+		{
+			vsf_interior(vdi_handle, FIS_HATCH);
+			vsf_style(vdi_handle, gfx->style - 24);
+		} else
+		{
+			vsf_interior(vdi_handle, FIS_PATTERN);
+			vsf_style(vdi_handle, gfx->style);
+		}
 	} else
 	{
 		vsf_interior(vdi_handle, FIS_HOLLOW);

@@ -1,5 +1,6 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
+#include "w_draw.h"
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -18,6 +19,7 @@ void hv_init(void)
 	/* load markers */
 	MarkerInit();
 	RecentInit();
+	w_init_brush();
 }	
 
 /*** ---------------------------------------------------------------------- ***/
@@ -27,4 +29,5 @@ void hv_exit(void)
 	MarkerSaveToDisk();
 	/* RecentSaveToDisk(); */
 	RecentExit();
+	w_exit_brush();
 }

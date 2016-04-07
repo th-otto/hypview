@@ -3979,7 +3979,7 @@ static void c_do_box(hcp_vars *vars, int argc, char **argv, short type)
 		{
 			if (expect_number(vars, argv[4], &val))
 			{
-				if (val < 0 || val > 8)
+				if (val < 0 || val > 36)
 					hcp_error(vars, NULL, _("bad pattern"));
 				else
 					adm.style = (_WORD)val;

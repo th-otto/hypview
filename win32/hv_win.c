@@ -133,6 +133,7 @@ void WindowCalcScroll(WINDOW_DATA *win)
 	if (win->textwin)
 	{
 		MoveWindow(win->textwin, r.left, r.top, r.right - r.left, r.bottom - r.top, TRUE);
+		GetClientRect(win->textwin, &r);
 		win->scroll.g_x = r.left + win->x_margin_left;
 		win->scroll.g_y = r.top + win->y_margin_top;
 		win->scroll.g_w = (r.right - r.left) - win->x_margin_left - win->x_margin_right;
@@ -185,6 +186,8 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 			RemoveAllHistoryEntries(win);
 			all_list = g_slist_remove(all_list, win);
 		}
+		if (win->cliprgn != NULL)
+			DeleteObject(win->cliprgn);
 		g_freep(&win->title);
 		g_free(win);
 		check_toplevels(NULL);
@@ -559,6 +562,11 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			doc = (DOCUMENT *) win->data;
 			win->draw_hdc = W_BeginPaint(hwnd, &ps, &gr);
+			if (win->cliprgn == NULL)
+				win->cliprgn = CreateRectRgn(win->scroll.g_x, win->scroll.g_y, win->scroll.g_x + win->scroll.g_w, win->scroll.g_y + win->scroll.g_h);
+			else
+				SetRectRgn(win->cliprgn, win->scroll.g_x, win->scroll.g_y, win->scroll.g_x + win->scroll.g_w, win->scroll.g_y + win->scroll.g_h);
+			SelectClipRgn(win->draw_hdc, win->cliprgn);
 			doc->displayProc(win);
 			DrawSelection(win);
 			W_EndPaint(hwnd, &ps);
@@ -588,11 +596,15 @@ void hv_set_font(WINDOW_DATA *win)
 	HDC hdc = GetDC(win->textwin);
 	TEXTMETRIC tm;
 	HFONT oldfont;
+	int i;
 	
-	if (win->font)
-		DeleteObject(win->font);
-	win->font = W_FontCreate(name);
-	oldfont = (HFONT)SelectObject(hdc, win->font);
+	for (i = 0; i <= HYP_TXT_MASK; i++)
+	{
+		if (win->fonts[i])
+			DeleteObject(win->fonts[i]);
+	}
+	W_FontCreate(name, win->fonts);
+	oldfont = (HFONT)SelectObject(hdc, win->fonts[HYP_TXT_NORMAL]);
 	if (GetTextMetrics(hdc, &tm))
 	{
 		win->x_raster = tm.tmAveCharWidth;

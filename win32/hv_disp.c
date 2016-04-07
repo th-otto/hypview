@@ -2,8 +2,9 @@
 #include "hypdebug.h"
 #include "w_draw.h"
 
-#define vst_effects(handle, attr)
 #define vsl_ends(handle, beg, end)	
+
+#define COLOR_LIGHT_MASK 0x888888
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -73,44 +74,79 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void image_draw_line(HDC hdc, int x, int y, struct hyp_gfx *gfx)
+{
+	int x0, y0, x1, y1;
+	POINT xy[2];
+	int w = gfx->pixwidth;
+	int h = gfx->pixheight;
+	
+	if (gfx->width < 0)
+	{
+		/* draw from right to left */
+		x0 = x + w - 1;
+		x1 = x;
+	} else
+	{
+		/* draw from left to right */
+		x0 = x;
+		x1 = x + w - 1;
+	}
+	if (gfx->height < 0)
+	{
+		/* draw from bottom to top */
+		y0 = y + h - 1;
+		y1 = y;
+	} else
+	{
+		/* draw from top to bottom */
+		y0 = y;
+		y1 = y + h - 1;
+	}
+	
+	xy[0].x = x0;
+	xy[0].y = y0;
+	xy[1].x = x1;
+	xy[1].y = y1;
+	
+	W_Lines(hdc, xy, 2, gfx->style, viewer_colors.text);
+
+	W_Draw_Arrows(hdc, xy, 2, viewer_colors.text, gfx->begend);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
-	POINT xy[2];
 	int w, h;
-	WP_UNIT tx, ty;
 	HDC hdc = win->draw_hdc;
 	
-	tx = (gfx->x_offset - 1) * win->x_raster;
 	w = gfx->width * win->x_raster;
 	h = gfx->height * win->y_raster;
 
-	tx += x;
-	ty = y;
-	
-	if ((tx >= win->scroll.g_w && (tx + w) >= win->scroll.g_w) || (tx < 0 && (tx + w) < 0))
-		return;
-	if (ty >= win->scroll.g_h || (ty + h) < 0)
-		return;
-
-	/* rectangle */
-	xy[0].x = tx + win->scroll.g_x;
-	xy[0].y = ty + win->scroll.g_y;
-	xy[1].x = xy[0].x + w;
-	xy[1].y = xy[0].y + h;
-
-	if (w)
+	if (w == 0)
 	{
-		if (w < 0)
-			xy[1].x++;
-		else
-			xy[1].x--;
+		w = gfx->pixwidth = 1;
+	} else if (w < 0)
+	{
+		w = -w;
+		x -= w;
 	}
-	if (h)
-		xy[1].y--;
+	if (h == 0)
+	{
+		h = gfx->pixheight = 1;
+	} else if (h < 0)
+	{
+		h = -h;
+		y -= h;
+	}
+	gfx->pixwidth = w;
+	gfx->pixheight = h;
 
-	vsl_ends(hdc, gfx->begend & ARROWED, (gfx->begend >> 1) & ARROWED);
-	W_Lines(hdc, xy, 2, gfx->style, viewer_colors.text);
-	vsl_ends(hdc, 0, 0);
+	x = x + (gfx->x_offset - 1) * win->x_raster + win->scroll.g_x;
+	y = y + win->scroll.g_y;
+	
+	image_draw_line(hdc, x, y, gfx);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -126,6 +162,9 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	tx = (gfx->x_offset - 1) * win->x_raster;
 	w = gfx->width * win->x_raster;
 	h = gfx->height * win->y_raster;
+
+	gfx->pixwidth = w;
+	gfx->pixheight = h;
 
 	tx += x;
 	ty = y;
@@ -153,28 +192,12 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		if (fillstyle != IP_HOLLOW)
 			W_Fill_Rect(hdc, &gr, fillstyle, viewer_colors.text);
-		W_Rectangle(hdc, &gr, W_PEN_SOLID, viewer_colors.text);
+		if (fillstyle != IP_SOLID)
+			W_Rectangle(hdc, &gr, W_PEN_SOLID, viewer_colors.text);
 	} else
 	{
-#if 0
-		if (gfx->style != 0)
-			v_rfbox(vdi_handle, xy);
-		else
-			v_rbox(vdi_handle, xy);
-#endif
+		W_rounded_box(hdc, &gr, fillstyle, viewer_colors.text);
 	}
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
-{
-	INDEX_ENTRY *entry;
-	size_t namelen;
-
-	entry = hyp->indextable[node];
-	namelen = entry->length - SIZEOF_INDEX_ENTRY;
-	return hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -252,6 +275,18 @@ static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 
 /*** ---------------------------------------------------------------------- ***/
 
+static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
+{
+	INDEX_ENTRY *entry;
+	size_t namelen;
+
+	entry = hyp->indextable[node];
+	namelen = entry->length - SIZEOF_INDEX_ENTRY;
+	return hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void HypDisplayPage(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
@@ -277,8 +312,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 	/* standard text color */
 	SetTextColor(hdc, viewer_colors.text);
-	oldfont = (HFONT)SelectObject(hdc, win->font);
-	vst_effects(hdc, 0);
+	oldfont = (HFONT)SelectObject(hdc, (HGDIOBJ)win->fonts[HYP_TXT_NORMAL]);
 
 #define TEXTOUT(str) \
 	{ \
@@ -309,7 +343,6 @@ void HypDisplayPage(WINDOW_DATA *win)
 	lineno = 0;
 	x = sx;
 	sy = draw_graphics(win, node->gfx, lineno, sx, sy);
-	vst_effects(hdc, 0);
 	SetBkMode(hdc, TRANSPARENT);
 	
 	while (src < end)
@@ -404,21 +437,24 @@ void HypDisplayPage(WINDOW_DATA *win)
 					}
 					
 					/* set text effects for link text */
+					if (textattr & HYP_TXT_LIGHT)
+						color |= COLOR_LIGHT_MASK;
 					SetTextColor(hdc, color);
-					vst_effects(hdc, gl_profile.colors.link_effect | textattr);
+					SelectObject(hdc, (HGDIOBJ)win->fonts[(gl_profile.colors.link_effect | textattr) & HYP_TXT_MASK]);
 
 					TEXTOUT(str);
 					g_free(str);
 
-					SetTextColor(hdc, viewer_colors.text);
-					vst_effects(hdc, textattr);
+					SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? (viewer_colors.text | COLOR_LIGHT_MASK) : viewer_colors.text);
+					SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 					textstart = src;
 				}
 				break;
 				
 			case HYP_ESC_CASE_TEXTATTR:
 				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
-				vst_effects(hdc, textattr);
+				SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? (viewer_colors.text | COLOR_LIGHT_MASK) : viewer_colors.text);
+				SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 				src++;
 				textstart = src;
 				break;
@@ -458,9 +494,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 		sy = draw_graphics(win, node->gfx, lineno, sx, sy);
 	}
 	
-	vst_effects(hdc, 0);
 	SelectObject(hdc, (HGDIOBJ)oldfont);
-	UNUSED(textattr);
 	
 #undef TEXTOUT
 #undef DUMPTEXT
@@ -507,7 +541,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	hdc = GetDC(win->textwin);
 	sx = sy = 0;
 	w_inithdc(hdc);
-	oldfont = (HFONT)SelectObject(hdc, win->font);
+	oldfont = (HFONT)SelectObject(hdc, (HGDIOBJ)win->fonts[HYP_TXT_NORMAL]);
 
 #define TEXTOUT(str) \
 	{ \
@@ -538,7 +572,6 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	max_w = x;
 	old_windowline = sy / win->y_raster;
 	sy = skip_graphics(win, node->gfx, lineno, sx, sy);
-	vst_effects(hdc, 0);
 
 	g_free(node->line_ptr);
 	node->line_ptr = NULL;
@@ -599,19 +632,19 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 					}
 					
 					/* set text effects for link text */
-					vst_effects(hdc, gl_profile.colors.link_effect | textattr);
+					SelectObject(hdc, (HGDIOBJ)win->fonts[(gl_profile.colors.link_effect | textattr) & HYP_TXT_MASK]);
 
 					TEXTOUT(str);
 					g_free(str);
 
-					vst_effects(hdc, textattr);
+					SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 					textstart = src;
 				}
 				break;
 				
 			case HYP_ESC_CASE_TEXTATTR:
 				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
-				vst_effects(hdc, textattr);
+				SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 				src++;
 				textstart = src;
 				break;
@@ -668,9 +701,6 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	while (old_windowline < new_windowline)
 		node->line_ptr[old_windowline++] = linestart;
 	node->line_ptr[old_windowline] = src;
-	
-	vst_effects(hdc, 0);
-	UNUSED(textattr);
 	
 	node->width = max_w;
 	node->height = sy;

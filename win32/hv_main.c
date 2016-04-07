@@ -266,7 +266,7 @@ int main(int argc, const char **argv)
 			g_free(str);
 		}
 		
-		if (argc <= 1)
+		if (argc <= 0)
 		{
 			/* default-hypertext specified? */
 			if (gl_profile.viewer.startup == 1 &&
@@ -284,13 +284,13 @@ int main(int argc, const char **argv)
 			}
 		} else
 		{
-			if (argc == 2 && hyp_guess_filetype(argv[1]) != HYP_FT_HYP)
+			if (argc == 1 && hyp_guess_filetype(argv[0]) != HYP_FT_HYP)
 			{
-				win = search_allref(win, argv[1], FALSE);
+				win = search_allref(win, argv[0], FALSE);
 			} else
 			{
 				/* ...load this file (incl. chapter) */
-				win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, argv[0], (argc > 1 ? argv[1] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
 			}
 		}
 		if (win == NULL)

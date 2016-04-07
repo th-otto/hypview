@@ -45,7 +45,7 @@ hypview_SOURCES = \
 	hv_tbar.c \
 	hv_win.c \
 	autoloc.c \
-	w_draw.c w_draw.h \
+	w_draw.c w_draw.h pattern.h \
 	\
 	windebug.c windebug.h \
 	$(empty)

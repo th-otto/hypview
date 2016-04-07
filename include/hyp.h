@@ -250,6 +250,7 @@ typedef enum  {
 #define HYP_TXT_UNDERLINED   0x0008
 #define HYP_TXT_OUTLINED     0x0010
 #define HYP_TXT_SHADOWED     0x0020
+#define HYP_TXT_MASK         0x003f
 
 #define HYP_ESC_IS_TEXATTR(c) ((c) >= HYP_ESC_TEXTATTR_FIRST && (c) <= HYP_ESC_TEXTATTR_LAST)
 
@@ -645,9 +646,10 @@ struct hyp_gfx
 	/*
 	 * style for graphic commands
 	 * - @box/@rbox:
-	 *   - value specified in source file: 0-8
-	 *   - value used internally: 0-8
-	 *   - value written to file: 0-8
+	 *   - value specified in source file: 0-36
+	 *   - value used internally: 0-36
+	 *   - value written to file: 0-36
+	 *   (0 = hollow, 1-24 = pattern index, 25-36 = hatch index + 24; pattern index 8 is solid)
 	 * - @line:
 	 *   - value specified in source file: 1-7
 	 *   - value used internally: 1-7
@@ -687,10 +689,6 @@ struct hyp_gfx
 	int window_x, window_y;
 	int window_margin;
 	void /* cairo_surface_t */ *surf;
-#endif
-	
-#ifdef WITH_GUI_WIN32
-	HDC surf;
 #endif
 };
 

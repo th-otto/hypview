@@ -993,8 +993,7 @@ void toolbar_setfont(const char *desc)
 			g_free(toolbar_font_desc);
 		toolbar_font_desc = g_strdup(desc);
 	}
-	if (W_Fontname(toolbar_font_desc, &attr) &&
-		W_Add_Font(&attr))
+	if (W_Fontname(toolbar_font_desc, &attr))
 	{
 		toolbar_font = attr;
 	} else

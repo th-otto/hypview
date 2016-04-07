@@ -22,6 +22,8 @@ void W_TDFrame(HDC hdc, const GRECT *r, int height, int flags);
 void W_Lines(HDC hdc, const POINT points[], int npoints, int style, COLORREF color);
 void W_Rectangle(HDC hdc, const GRECT *gr, int linestyle, COLORREF color);
 void W_Fill_Rect(HDC hdc, const GRECT *gr, int style, COLORREF color);
+void W_rounded_box(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color);
+void W_Draw_Arrows(HDC hdc, POINT *xy, int npoints, COLORREF color, unsigned char line_ends);
 
 void W_NTextExtent(HDC hdc, const wchar_t *text, size_t len, int *w, int *h);
 void W_TextExtent(HDC hdc, const wchar_t *text, int *w, int *h);
@@ -33,11 +35,14 @@ void W_EndPaint(HWND hwnd, PAINTSTRUCT *ps);
 
 char *W_Fontdesc(const FONT_ATTR *attr);
 gboolean W_Fontname(const char *name, FONT_ATTR *attr);
-gboolean W_Add_Font(FONT_ATTR *attr);
 void W_Font_Default(FONT_ATTR *attr);
 
 void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, _VOID *data, COLORREF fg, COLORREF bg, DWORD mode);
 void W_Draw_Picture(HDC hdc, _WORD x, _WORD y, GRECT *area, MFDB *pic, DWORD mode);
+
+gboolean w_init_brush(void);
+void w_exit_brush(void);
+
 
 #define W_PAL_WHITE    PALETTERGB(255, 255, 255)
 #define W_PAL_BLACK    PALETTERGB(0, 0, 0)
@@ -63,7 +68,8 @@ void W_Draw_Picture(HDC hdc, _WORD x, _WORD y, GRECT *area, MFDB *pic, DWORD mod
 #define IP_4PATT		4
 #define IP_5PATT		5
 #define IP_6PATT		6
-#define IP_SOLID		7
+#define IP_7PATT		7
+#define IP_SOLID		8
 
 #define W_PEN_NULL             0
 #define W_PEN_SOLID            1

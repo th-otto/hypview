@@ -292,6 +292,7 @@ void hv_recent_add(const char *path);
 void RecentUpdate(WINDOW_DATA *win);
 void on_recent_selected(GtkAction *action, WINDOW_DATA *win);
 void RecentInit(void);
+void RecentExit(void);
 void RecentSaveToDisk(void);
 
 

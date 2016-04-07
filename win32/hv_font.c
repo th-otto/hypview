@@ -274,35 +274,34 @@ static gboolean Choose1Font(HWND parent, char **desc, const char *title)
 
 /*** ---------------------------------------------------------------------- ***/
 
-HFONT W_FontCreate(const char *name)
+void W_FontCreate(const char *name, HFONT *fonts)
 {
 	FONT_ATTR attr;
 	LOGFONTA lf;
 	int h = GetDeviceCaps(GetDC(HWND_DESKTOP), LOGPIXELSY);
+	int i;
 	
 	memset(&lf, 0, sizeof(lf));
 	lf.lfWeight = FW_NORMAL;
 	lf.lfQuality = DRAFT_QUALITY;
 	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+	lf.lfCharSet = DEFAULT_CHARSET;
 	if (W_Fontname(name, &attr))
 	{
 		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
 		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
-		if (attr.textstyle & HYP_TXT_BOLD)
+		for (i = 0; i <= HYP_TXT_MASK; i++)
 		{
-			lf.lfWeight = FW_BOLD;
+			lf.lfWeight = i & HYP_TXT_BOLD ? FW_BOLD : FW_NORMAL;
+			lf.lfItalic = i & HYP_TXT_ITALIC ? TRUE : FALSE;
+			lf.lfUnderline = i & HYP_TXT_UNDERLINED ? TRUE : FALSE;
+			fonts[i] = CreateFontIndirect(&lf);
 		}
-		if (attr.textstyle & HYP_TXT_ITALIC)
-		{
-			lf.lfItalic = TRUE;
-		}
-		if (attr.textstyle & HYP_TXT_UNDERLINED)
-		{
-			lf.lfUnderline = TRUE;
-		}
-		lf.lfCharSet = DEFAULT_CHARSET;
+	} else
+	{
+		for (i = 0; i <= HYP_TXT_MASK; i++)
+			fonts[i] = (HFONT)GetStockObject(DEVICE_DEFAULT_FONT);
 	}
-	return CreateFontIndirect(&lf);
 }
 
 /*** ---------------------------------------------------------------------- ***/

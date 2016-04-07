@@ -100,7 +100,7 @@ void hyp_decode_gfx(HYP_DOCUMENT *hyp, const unsigned char *src, struct hyp_gfx 
 		gfx->width = src[4];
 		gfx->height = src[5];
 		gfx->attr = src[6] - 1;
-		gfx->style = min(gfx->attr, 8);
+		gfx->style = gfx->attr;
 		break;
 	}
 }

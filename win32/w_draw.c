@@ -2,12 +2,73 @@
 #include "w_draw.h"
 #include "hypdebug.h"
 #include "resource.rh"
+#include "pattern.h"
+#include <math.h>
 
 #define NO_BRUSH ((HBRUSH)0)
 #define NO_FONT ((HFONT)0)
+#define NO_BITMAP ((HBITMAP)0)
 
-#define NUM_PATTERNS 37
 static HBRUSH pattern_brush[NUM_PATTERNS];
+static HBITMAP pattern_bitmap[NUM_PATTERNS];
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+void w_exit_brush(void)
+{
+	int i;
+
+	for (i = 0; i < NUM_PATTERNS; i++)
+	{
+		if (pattern_brush[i] != NO_BRUSH)
+		{
+			DeleteObject(pattern_brush[i]);
+			pattern_brush[i] = NO_BRUSH;
+		}
+		if (pattern_bitmap[i] != NO_BITMAP)
+		{
+			DeleteObject(pattern_bitmap[i]);
+			pattern_bitmap[i] = NO_BITMAP;
+		}
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+gboolean w_init_brush(void)
+{
+	int i, j;
+	HBITMAP hbmp;
+	char mask[PATTERN_SIZE];
+
+	for (i = 0; i < NUM_PATTERNS; i++)
+	{
+		BITMAP bitmap;
+		const unsigned char *data = pattern_bits + i * PATTERN_SIZE;
+		
+		for (j = 0; j < PATTERN_SIZE; j++)
+			mask[j] = ~bitrevtab[data[j]];
+		bitmap.bmType = 0;
+		bitmap.bmWidth = PATTERN_WIDTH;
+		bitmap.bmHeight = PATTERN_HEIGHT;
+		bitmap.bmWidthBytes = ((((PATTERN_WIDTH + 7) / 8) + 1) / 2) * 2;
+		bitmap.bmPlanes = 1;
+		bitmap.bmBitsPixel = 1;
+		bitmap.bmBits = mask;
+		hbmp = CreateBitmapIndirect(&bitmap);
+		pattern_bitmap[i] = hbmp;
+		if (hbmp == NO_BITMAP)
+		{
+			pattern_brush[i] = NO_BRUSH;
+		} else
+		{
+			pattern_brush[i] = CreatePatternBrush(hbmp);
+		}
+	}
+	return TRUE;
+}
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -46,10 +107,11 @@ static HBRUSH w_fill_brush(HDC hdc, int fillstyle, COLORREF color, gboolean *del
 	case IP_4PATT:
 	case IP_5PATT:
 	case IP_6PATT:
-	case  8: case  9: case 10: case 11: case 12: case 13: case 14: case 15:
+	case IP_7PATT:
+	         case  9: case 10: case 11: case 12: case 13: case 14: case 15:
 	case 16: case 17: case 18: case 19: case 20: case 21: case 22: case 23:
 	case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31:
-	case 32: case 33: case 34: case 35: case 36: case 37:
+	case 32: case 33: case 34: case 35: case 36:
 		hBrush = pattern_brush[fillstyle];
 		if (hBrush == NO_BRUSH)
 			hBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -199,6 +261,315 @@ static void W_PenDelete(HDC hdc, HPEN obj)
 	DeleteObject(pen);
 }
 
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+/*
+ * Integer sine and cosine functions.
+ */
+
+#define I_HALFPI	900 
+#define I_PI	1800
+#define I_TWOPI	3600
+
+/* Sines of angles 1 - 90 degrees normalized between 0 and 32767. */
+
+static short const sin_tbl[92] = {    
+		    0,   572,  1144,  1716,  2286,  2856,  3425,  3993, 
+		 4560,  5126,  5690,  6252,  6813,  7371,  7927,  8481, 
+		 9032,  9580, 10126, 10668, 11207, 11743, 12275, 12803,
+		13328, 13848, 14364, 14876, 15383, 15886, 16383, 16876,
+		17364, 17846, 18323, 18794, 19260, 19720, 20173, 20621,
+		21062, 21497, 21925, 22347, 22762, 23170, 23571, 23964,
+		24351, 24730, 25101, 25465, 25821, 26169, 26509, 26841,
+		27165, 27481, 27788, 28087, 28377, 28659, 28932, 29196,
+		29451, 29697, 29934, 30162, 30381, 30591, 30791, 30982,
+		31163, 31335, 31498, 31650, 31794, 31927, 32051, 32165,
+		32269, 32364, 32448, 32523, 32587, 32642, 32687, 32722,
+		32747, 32762, 32767, 32767 
+		};
+
+/*
+ * Returns integer sin between -32767 and 32767.
+ * Uses integer lookup table sintable^[].
+ * Expects angle in tenths of degree 0 - 3600.
+ * Assumes positive angles only.
+ */
+static short Isin(unsigned short angle) 
+{
+	short index;
+	unsigned short remainder, tmpsin;	/* Holder for sin. */
+	short  half;			/* 0-1 = 1st/2nd, 3rd/4th. */
+	const short *table;
+
+	half = 0;
+	while (angle >= I_PI)
+	{
+		half ^= 1;
+		angle -= I_PI;
+	}
+	if (angle >= I_HALFPI)
+		angle = I_PI - angle;	
+
+	index = angle / 10;
+	remainder = angle % 10;
+	table = &sin_tbl[index];
+	tmpsin = *table++;
+	if (remainder)		/* Add interpolation. */
+		tmpsin += (unsigned short)((unsigned short)(*table - tmpsin) * remainder) / 10;
+
+	if (half > 0)
+		return -tmpsin;
+	else
+		return tmpsin;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/*
+ * Return integer cos between -32767 and 32767.
+ */
+static short Icos(short angle) 
+{
+	return Isin(angle + I_HALFPI);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static inline int SMUL_DIV(int m1, int m2, int d1)
+{
+	int inc;
+	int x;
+	int quot, rem;
+	
+	if (d1 == 0 || d1 == m2)
+		return m1;
+	inc = 1;
+	x = m1 * m2;
+	if (x < 0)
+		inc = -inc;
+	quot = x / d1;
+	rem = x % d1;
+	if (d1 < 0)
+	{
+		d1 = -d1;
+		inc = -inc;
+	}
+	if (rem < 0)
+		rem = -rem;
+	rem += rem;
+	if (rem > d1)
+		quot += inc;
+	return quot;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void W_rounded_box(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color)
+{
+	int rdeltax, rdeltay;
+	int xc, yc, xrad, yrad;
+	int x1, y1, x2, y2;
+	int i, j;
+	POINT points[21];
+	_UWORD line_mask;
+	
+	x1 = gr->g_x;
+	y1 = gr->g_y;
+	x2 = x1 + gr->g_w - 1;
+	y2 = y1 + gr->g_h - 1;
+
+	rdeltax = (x2 - x1) / 2;
+	rdeltay = (y2 - y1) / 2;
+
+	xrad = 10;
+	if (xrad > rdeltax)
+	    xrad = rdeltax;
+
+	yrad = xrad;
+	if (yrad > rdeltay)
+	    yrad = rdeltay;
+	yrad = -yrad;
+
+	for (i = 0; i < 5; i++)
+	{
+		points[i].x = SMUL_DIV(Icos(900 - 225 * i), xrad, 32767);
+		points[i].y = SMUL_DIV(Isin(900 - 225 * i), yrad, 32767);
+	}
+
+	xc = x2 - xrad;
+	yc = y1 - yrad;
+	for (i = 4, j = 5; i >= 0; i--, j++)
+	{
+	    points[j].y = yc + points[i].y;
+	    points[j].x = xc + points[i].x;
+	}
+	xc = x1 + xrad; 
+	for (i = 0, j = 10; i < 5; i++, j++)
+	{
+	    points[j].x = xc - points[i].x;
+	    points[j].y = yc + points[i].y;
+	}
+	yc = y2 + yrad;
+	for (i = 4, j = 15; i >= 0; i--, j++)
+	{ 
+	    points[j].y = yc - points[i].y;
+	    points[j].x = xc - points[i].x;
+	}
+	xc = x2 - xrad;
+	for (i = 0, j = 0; i < 5; i++, j++)
+	{ 
+		points[j].x = xc + points[i].x;
+		points[j].y = yc - points[i].y;
+	}
+	points[20].x = points[0].x;
+	points[20].y = points[0].y;
+	
+	if (fillstyle != IP_HOLLOW)
+	{
+		gboolean del;
+		HBRUSH hBrush = w_fill_brush(hdc, fillstyle, color, &del);
+		HBRUSH oldbrush = (HBRUSH)SelectObject(hdc, (HGDIOBJ)hBrush);
+		HPEN pen;
+		pen = W_PenCreate(hdc, 1, fillstyle == IP_SOLID ? W_PEN_NULL : W_PEN_SOLID, color, &line_mask);
+		Polygon(hdc, points, 20);
+		SelectObject(hdc, (HGDIOBJ)oldbrush);
+		if (del)
+		{
+			DeleteObject(hBrush);
+		}
+		W_PenDelete(hdc, pen);
+	} else if (fillstyle != IP_SOLID)
+	{
+		W_Lines(hdc, points, 21, W_PEN_SOLID, color);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+#define vec_len(x, y) (int)sqrt((x) * (x) + (y) * (y))
+
+static void W_Draw_Arrow(HDC hdc, POINT *xy, int npoints, int inc)
+{
+	int arrow_len, arrow_wid, line_len;
+	int dx, dy;
+	int base_x, base_y, ht_x, ht_y;
+	int xybeg;
+	int i;
+	POINT triangle[4];
+	
+	if (npoints <= 1)
+		return;
+	
+	/* Set up the arrow-head length and width as a function of line width. */
+
+	arrow_len = 8;
+	arrow_wid = arrow_len / 2;
+
+	/* Find the first point which is not so close to the end point that it */
+	/* will be obscured by the arrowhead.                                  */
+
+	xybeg = 0;
+	for (i = 1; i < npoints; i++)
+	{
+		/* Find the deltas between the next point and the end point.  Transform */
+		/* to a space such that the aspect ratio is uniform and the x axis      */
+		/* distance is preserved.                                               */
+
+		xybeg += inc;
+		dx = xy[0].x - xy[xybeg].x;
+		dy = xy[0].y - xy[xybeg].y;
+
+		/* Get the length of the vector connecting the point with the end point. */
+		/* If the vector is of sufficient length, the search is over.            */
+
+		line_len = vec_len(dx, dy);
+		if (line_len >= arrow_len)
+			break;
+	}
+
+	/* If the longest vector is insufficiently long, don't draw an arrow. */
+	if (line_len < arrow_len)
+		return;
+
+	/* Rotate the arrow-head height and base vectors.  Perform calculations */
+	/* in 1000x space.                                                      */
+
+	ht_x = SMUL_DIV(arrow_len, SMUL_DIV(dx, 1000, line_len), 1000);
+	ht_y = SMUL_DIV(arrow_len, SMUL_DIV(dy, 1000, line_len), 1000);
+	base_x = SMUL_DIV(arrow_wid, SMUL_DIV(dy, -1000, line_len), 1000);
+	base_y = SMUL_DIV(arrow_wid, SMUL_DIV(dx, 1000, line_len), 1000);
+
+	/* draw the polygon */
+
+	triangle[0].x = xy[0].x + base_x - ht_x;
+	triangle[0].y = xy[0].y + base_y - ht_y;
+	triangle[1].x = xy[0].x - base_x - ht_x;
+	triangle[1].y = xy[0].y - base_y - ht_y;
+	triangle[2].x = xy[0].x;
+	triangle[2].y = xy[0].y;
+	Polygon(hdc, triangle, 3);
+
+	/* Adjust the end point and all points skipped. */
+
+	xy[0].x -= ht_x;
+	xy[0].y -= ht_y;
+
+	while ((xybeg -= inc) != 0)
+	{
+		xy[xybeg].x = xy[0].x;
+		xy[xybeg].y = xy[0].y;
+	}
+}
+
+void W_Draw_Arrows(HDC hdc, POINT *xy, int npoints, COLORREF color, unsigned char line_ends)
+{
+	int x_start, y_start, new_x_start, new_y_start;
+	HPEN pen;
+	_UWORD line_mask;
+	HBRUSH hbrush, oldbrush;
+	gboolean del;
+	
+	if (line_ends == 0)
+		return;
+	
+	/* Function "arrow" will alter the end of the line segment.  Save the */
+	/* starting point of the polyline in case two calls to "arrow" are    */
+	/* necessary.                                                         */
+	new_x_start = x_start = xy[0].x;
+	new_y_start = y_start = xy[0].y;
+	
+	pen = W_PenCreate(hdc, 1, W_PEN_NULL, color, &line_mask);
+	hbrush = w_fill_brush(hdc, IP_SOLID, color, &del);
+	oldbrush = (HBRUSH)SelectObject(hdc, (HGDIOBJ)hbrush);
+	
+	if (line_ends & (1 << 0))
+	{
+		/* draw arrow at start of line */
+		W_Draw_Arrow(hdc, xy, npoints, 1);
+		new_x_start = xy[0].x;
+		new_y_start = xy[0].y;
+	}
+	
+	if (line_ends & (1 << 1))
+	{
+		/* draw arrow at end of line */
+		xy[0].x = x_start;
+		xy[0].y = y_start;
+		W_Draw_Arrow(hdc, xy + npoints - 1, npoints, -1);
+		xy[0].x = new_x_start;
+		xy[0].y = new_y_start;
+	}
+	
+	SelectObject(hdc, (HGDIOBJ)oldbrush);
+	if (del)
+	{
+		DeleteObject(hbrush);
+	}
+	W_PenDelete(hdc, pen);
+}
+
 /*** ---------------------------------------------------------------------- ***/
 
 typedef struct {
@@ -338,14 +709,6 @@ void W_Font_Default(FONT_ATTR *attr)
 	attr->textstyle = HYP_TXT_NORMAL;
 	strcpy(attr->name, "System Font");
 	attr->hfont = (HFONT)GetStockObject(DEVICE_DEFAULT_FONT);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-gboolean W_Add_Font(FONT_ATTR *attr)
-{
-	(void) attr;
-	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/

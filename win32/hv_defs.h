@@ -158,7 +158,8 @@ struct _window_data_
 	HWND m_buttons[TO_MAX];
 	HWND textwin;
 	HDC draw_hdc;
-	HFONT font;
+	HRGN cliprgn;
+	HFONT fonts[HYP_TXT_MASK + 1];
 	HWND searchbox;
 	HWND searchentry;
 	struct {
@@ -255,7 +256,7 @@ void SwitchFont(WINDOW_DATA *win);
 void SelectFont(WINDOW_DATA *win);
 void hv_update_menu(WINDOW_DATA *win);
 void hv_update_menus(void);
-HFONT W_FontCreate(const char *name);
+void W_FontCreate(const char *name, HFONT *fonts);
 
 
 /*
