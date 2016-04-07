@@ -42,6 +42,13 @@ static int const tb_defs[] = {
 #undef indexof
 };
 
+#define K_RSHIFT        0x0001
+#define K_LSHIFT        0x0002
+#define K_SHIFT			(K_LSHIFT|K_RSHIFT)
+#define K_CTRL          0x0004
+#define K_ALT           0x0008
+#define K_CAPSLOCK		0x0010
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -226,7 +233,199 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 	}
 	return ret;
 }
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount)
+{
+	WP_UNIT old_x, old_y;
 	
+	old_x = win->docsize.x;
+	old_y = win->docsize.y;
+	
+	win->docsize.y += yamount;
+	if (win->docsize.y > (win->docsize.h - win->scroll.g_h))
+		win->docsize.y = (win->docsize.h - win->scroll.g_h);
+	if (win->docsize.y < 0)
+		win->docsize.y = 0;
+	win->docsize.y = (win->docsize.y / win->y_raster) * win->y_raster;
+	
+	win->docsize.x += xamount;
+	if (win->docsize.x > (win->docsize.w - win->scroll.g_w))
+		win->docsize.x = (win->docsize.w - win->scroll.g_w);
+	if (win->docsize.x < 0)
+		win->docsize.x = 0;
+	win->docsize.x = (win->docsize.x / win->x_raster) * win->x_raster;
+	
+	if (win->docsize.x == old_x && win->docsize.y == old_y)
+		return;
+	SetWindowSlider(win);
+	SendRedraw(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static int getkeystate(void)
+{
+	int keystate = 0;
+
+	if (GetKeyState(VK_MENU) & 0x8000)
+		keystate |= K_ALT;
+	if (GetKeyState(VK_CONTROL) & 0x8000)
+		keystate |= K_CTRL;
+	if (GetKeyState(VK_LSHIFT) & 0x8000)
+		keystate |= K_LSHIFT;
+	if (GetKeyState(VK_RSHIFT) & 0x8000)
+		keystate |= K_RSHIFT;
+	if (GetKeyState(VK_CAPITAL) & 0x8000)
+		keystate |= K_CAPSLOCK;
+	return keystate;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean key_press_event(WINDOW_DATA *win, unsigned int message, WPARAM wParam, LPARAM lParam)
+{
+	unsigned int keycode;
+	unsigned int keystate;
+	gboolean handled = FALSE;
+	DOCUMENT *doc = win->data;
+	
+	keystate = getkeystate();
+	switch (message)
+	{
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+		keycode = MapVirtualKey((lParam >> 16) & 0xff, MAPVK_VSC_TO_VK_EX);
+		if (keycode == VK_LSHIFT ||
+			keycode == VK_RSHIFT ||
+			keycode == VK_LCONTROL ||
+			keycode == VK_RCONTROL ||
+			keycode == VK_LMENU ||
+			keycode == VK_RMENU ||
+			keycode == VK_NUMLOCK ||
+			keycode == VK_SCROLL)
+			return FALSE;
+		
+		if (win->is_popup)
+		{
+			DestroyWindow(win->hwnd);
+			return TRUE;
+		}
+		if (win->popup)
+		{
+			DestroyWindow(win->popup->hwnd);
+			return TRUE;
+		}
+		handled = TRUE;
+		switch (keycode)
+		{
+		case VK_RETURN:
+			/* NYI: find position of selected link */
+			break;
+		case VK_LEFT:
+			if ((keystate & K_SHIFT) && (keystate & K_CTRL))
+				GoThisButton(win, TO_PREV);
+			else if (keystate & K_SHIFT)
+				hv_scroll_window(win, -win->scroll.g_w, 0);
+			else if (keystate & K_CTRL)
+				GoThisButton(win, TO_PREV);
+			else
+				hv_scroll_window(win, -win->x_raster, 0);
+			break;
+		case VK_RIGHT:
+			if ((keystate & K_SHIFT) && (keystate & K_CTRL))
+				GoThisButton(win, TO_NEXT);
+			else if (keystate & K_SHIFT)
+				hv_scroll_window(win, win->scroll.g_w, 0);
+			else if (keystate & K_CTRL)
+				GoThisButton(win, TO_NEXT);
+			else
+				hv_scroll_window(win, win->x_raster, 0);
+			break;
+		case VK_UP:
+			if ((keystate & K_SHIFT) && (keystate & K_CTRL))
+				GoThisButton(win, TO_PREV);
+			else if (keystate & K_SHIFT)
+				hv_scroll_window(win, 0, -win->scroll.g_h);
+			else if (keystate & K_CTRL)
+				hv_scroll_window(win, 0, -win->scroll.g_h);
+			else
+				hv_scroll_window(win, 0, -win->y_raster);
+			break;
+		case VK_DOWN:
+			if ((keystate & K_SHIFT) && (keystate & K_CTRL))
+				GoThisButton(win, TO_NEXT);
+			else if (keystate & K_SHIFT)
+				hv_scroll_window(win, 0, win->scroll.g_h);
+			else if (keystate & K_CTRL)
+				hv_scroll_window(win, 0, win->scroll.g_h);
+			else
+				hv_scroll_window(win, 0, win->y_raster);
+			break;
+		case VK_PRIOR:
+			hv_scroll_window(win, 0, -win->scroll.g_h);
+			break;
+		case VK_NEXT:
+			hv_scroll_window(win, 0, win->scroll.g_h);
+			break;
+		case VK_HOME:
+			if ((keystate & K_SHIFT) || (keystate & K_CTRL))
+				hv_scroll_window(win, -INT_MAX, -INT_MAX);
+			else
+				hv_scroll_window(win, -INT_MAX, 0);
+			break;
+		case VK_END:
+			if ((keystate & K_SHIFT) || (keystate & K_CTRL))
+				hv_scroll_window(win, -INT_MAX, INT_MAX);
+			else
+				hv_scroll_window(win, INT_MAX, 0);
+			break;
+		case VK_SUBTRACT:
+			GoThisButton(win, TO_PREV);
+			break;
+		case VK_ADD:
+			GoThisButton(win, TO_NEXT);
+			break;
+		case VK_DIVIDE:
+			GoThisButton(win, TO_PREV_PHYS);
+			break;
+		case VK_MULTIPLY:
+			GoThisButton(win, TO_NEXT_PHYS);
+			break;
+		case VK_HELP:
+			GotoHelp(win);
+			break;
+		case VK_ESCAPE:
+		case VK_BACK:
+			if (!win->searchentry || !(doc->buttons.searchbox))
+				GoThisButton(win, TO_BACK);
+			else
+				handled = FALSE;
+			break;
+		case VK_F1:				/* already handled by accelerators */
+		case VK_F2:				/* already handled by accelerators */
+		case VK_F3:				/* already handled by accelerators */
+		case VK_F4:				/* already handled by accelerators */
+		case VK_F5:				/* already handled by accelerators */
+		case VK_F6:				/* already handled by accelerators */
+		case VK_F7:				/* already handled by accelerators */
+		case VK_F8:				/* already handled by accelerators */
+		case VK_F9:				/* already handled by accelerators */
+		case VK_F10:			/* already handled by accelerators */
+		default:
+			handled = FALSE;
+			break;
+		}
+		break;
+	}
+	if (!handled && win->searchentry)
+		handled = AutolocatorKey(win, wParam, lParam);
+	return handled;
+}
+
 /*** ---------------------------------------------------------------------- ***/
 
 static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -485,6 +684,99 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		}
 		return TRUE;
 
+	case WM_VSCROLL:
+	case WM_HSCROLL:
+		{
+			long xamount = 0;
+			long yamount = 0;
+			WINDOW_DATA *win;
+			
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			UpdateWindow(win->textwin);
+
+			if (message == WM_HSCROLL)
+			{
+				switch (LOWORD(wParam))
+				{
+				case SB_TOP:
+					xamount = (-win->docsize.x);
+					break;
+				case SB_BOTTOM:
+					xamount = win->docsize.w - win->scroll.g_w - win->docsize.x;
+					break;
+				case SB_LINEUP:
+					xamount = -win->x_raster;
+					break;
+				case SB_LINEDOWN:
+					xamount = win->x_raster;
+					break;
+				case SB_PAGEUP:
+					xamount = -win->scroll.g_w;
+					break;
+				case SB_PAGEDOWN:
+					xamount = win->scroll.g_w;
+					break;
+
+				case SB_THUMBTRACK:
+				case SB_THUMBPOSITION:
+					{
+						_ULONG npos;
+
+						npos = (_ULONG)HIWORD(wParam);
+						xamount = (_LONG) npos - win->docsize.x;
+					}
+					break;
+				}
+			} else
+			{
+				switch (LOWORD(wParam))
+				{
+				case SB_TOP:
+					xamount = -win->docsize.x;
+					yamount = -win->docsize.y;
+					break;
+				case SB_BOTTOM:
+					xamount = -win->docsize.x;
+					yamount = win->docsize.h - win->scroll.g_h - win->docsize.y;
+					break;
+				case SB_LINEUP:
+					yamount = -win->y_raster;
+					break;
+				case SB_LINEDOWN:
+					yamount = win->y_raster;
+					break;
+				case SB_PAGEUP:
+					yamount = -win->scroll.g_h;
+					break;
+				case SB_PAGEDOWN:
+					yamount = win->scroll.g_h;
+					break;
+
+				case SB_THUMBTRACK:
+				case SB_THUMBPOSITION:
+					{
+						_ULONG npos;
+						npos = (_ULONG)HIWORD(wParam);
+						yamount = npos - win->docsize.y;
+					}
+					break;
+				}
+			}
+
+			hv_scroll_window(win, xamount, yamount);
+		}
+		return 0;
+
+	case WM_SYSKEYDOWN:
+	case WM_KEYDOWN:
+		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		if (key_press_event(win, message, wParam, lParam))
+		{
+			win32debug_msg_end("mainWndProc", message, "0");
+			return 0;
+		}
+		break;
+		
 	default:
 		if (message == commdlg_help)
 		{
@@ -578,6 +870,30 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		}
 		win32debug_msg_end("textWndProc", message, "TRUE");
 		return TRUE;
+
+	case WM_MOUSEWHEEL:
+		{
+			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			UpdateWindow(win->textwin);
+
+			hv_scroll_window(win, 0, -amount * win->y_raster);
+		}
+		win32debug_msg_end("textWndProc", message, "0");
+		return 0;
+	
+	case WM_MOUSEHWHEEL:
+		{
+			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			UpdateWindow(win->textwin);
+
+			hv_scroll_window(win, -amount * win->x_raster, 0);
+		}
+		win32debug_msg_end("textWndProc", message, "0");
+		return 0;
 	}
 	
 	win32debug_msg_end("textWndProc", message, "DefWindowProc");
@@ -814,15 +1130,15 @@ void SetWindowSlider(WINDOW_DATA *win)
 	WP_UNIT pos, range;
 	
 	pos = win->docsize.x;
-	range = win->docsize.w;
+	range = win->docsize.w - 1;
+	if (range < 0)
+		range = 0;
 	if (pos != win->scrollhpos || range != win->scrollhsize)
 	{
 		si.cbSize = sizeof(si);
 		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS;
 		si.nMin = 0;
-		si.nMax = range - 1;
-		if (si.nMax < 0)
-			si.nMax = 0;
+		si.nMax = range;
 		si.nPage = win->scroll.g_w;
 		si.nPos = pos;
 		si.nTrackPos = si.nPos;
