@@ -369,7 +369,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 				get_word(last_esc, src - 1, buffer);
 				if (*buffer)
 				{
-					name = hyp_conv_to_utf8(hyp_get_current_charset(), buffer, STR0TERM);
+					name = hyp_conv_to_utf8(hyp->comp_charset, buffer, STR0TERM);
 					ret = HypFindNode(doc, name);
 					if (ret != HYP_NOINDEX)
 					{

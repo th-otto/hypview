@@ -151,7 +151,15 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 {
 	SelectAll(win);
-	UNUSED(b);
+	b->start.line = 0;
+	b->start.y = 0;
+	b->start.offset = 0;
+	b->start.x = 0;
+	b->end.line = win->docsize.h / win->y_raster;
+	b->end.y = win->docsize.h;
+	b->end.offset = 0;
+	b->end.x = 0;
+	b->valid = TRUE;
 }
 
 /*** ---------------------------------------------------------------------- ***/

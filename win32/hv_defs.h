@@ -170,6 +170,7 @@ struct _window_data_
 	} docsize;
 	WP_UNIT scrollhpos, scrollhsize;
 	WP_UNIT scrollvpos, scrollvsize;
+	BLOCK selection;
 	gboolean hovering_over_link;
 	WINDOW_DATA *parentwin;
 	TOOL_DATA *td;
@@ -293,6 +294,7 @@ void SetWindowSlider(WINDOW_DATA *win);
  *	hv_click.c
  */
 void HypClick(WINDOW_DATA *win, LINK_INFO *info);
+gboolean HypFindLink(WINDOW_DATA *win, int x, int y, LINK_INFO *info, gboolean select_word);
 
 
 

@@ -49,6 +49,11 @@ static int const tb_defs[] = {
 #define K_ALT           0x0008
 #define K_CAPSLOCK		0x0010
 
+#define set_tooltip_text(hwnd, txt) /* NYI */
+
+static HCURSOR regular_cursor;
+static HCURSOR hand_cursor;
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -428,6 +433,14 @@ static gboolean key_press_event(WINDOW_DATA *win, unsigned int message, WPARAM w
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void SetWindowCursor(HWND hwnd, HCURSOR cursor)
+{
+	SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR)cursor);
+	SetCursor(cursor);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	WINDOW_DATA *win;
@@ -690,10 +703,14 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			long xamount = 0;
 			long yamount = 0;
 			WINDOW_DATA *win;
+			SCROLLINFO si;
 			
 			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			UpdateWindow(win->textwin);
 
+			si.cbSize = sizeof(si);
+			si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS|SIF_TRACKPOS;
+			
 			if (message == WM_HSCROLL)
 			{
 				switch (LOWORD(wParam))
@@ -718,13 +735,12 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 					break;
 
 				case SB_THUMBTRACK:
+					GetScrollInfo(win->hwnd, SB_HORZ, &si);
+					xamount = si.nTrackPos - win->docsize.x;
+					break;
 				case SB_THUMBPOSITION:
-					{
-						_ULONG npos;
-
-						npos = (_ULONG)HIWORD(wParam);
-						xamount = (_LONG) npos - win->docsize.x;
-					}
+					GetScrollInfo(win->hwnd, SB_HORZ, &si);
+					xamount = si.nPos - win->docsize.x;
 					break;
 				}
 			} else
@@ -753,12 +769,12 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 					break;
 
 				case SB_THUMBTRACK:
+					GetScrollInfo(win->hwnd, SB_VERT, &si);
+					yamount = si.nTrackPos - win->docsize.y;
+					break;
 				case SB_THUMBPOSITION:
-					{
-						_ULONG npos;
-						npos = (_ULONG)HIWORD(wParam);
-						yamount = npos - win->docsize.y;
-					}
+					GetScrollInfo(win->hwnd, SB_VERT, &si);
+					yamount = si.nPos - win->docsize.y;
 					break;
 				}
 			}
@@ -814,6 +830,75 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 	win32debug_msg_end("mainWndProc", message, "DefWindowProc");
 	
 	return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void set_cursor_if_appropriate(WINDOW_DATA *win, int x, int y)
+{
+	LINK_INFO info;
+	gboolean hovering = FALSE;
+	
+	if (HypFindLink(win, x, y, &info, FALSE))
+	{
+		if (info.tip)
+		{
+			set_tooltip_text(win->textwin, info.tip);
+			g_free(info.tip);
+		}
+		hovering = TRUE;
+	}
+	if (hovering != win->hovering_over_link)
+	{
+		win->hovering_over_link = hovering;
+		if (hovering)
+		{
+			SetWindowCursor(win->textwin, hand_cursor);
+		} else
+		{
+			SetWindowCursor(win->textwin, regular_cursor);
+			set_tooltip_text(win->textwin, NULL);
+		}
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean follow_if_link(WINDOW_DATA *win, int x, int y)
+{
+	LINK_INFO info;
+
+	if (HypFindLink(win, x, y, &info, !gl_profile.viewer.refonly))
+	{
+		if (info.tip)
+			g_free(info.tip);
+		HypClick(win, &info);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean on_button_release(WINDOW_DATA *win, int x, int y, int button)
+{
+	if (win->is_popup)
+	{
+		DestroyWindow(win->hwnd);
+		return TRUE;
+	}
+	
+	if (button == 1)
+	{
+		CheckFiledate(win);
+		
+		/* we shouldn't follow a link if the user has selected something */
+		if (win->selection.valid)
+			return FALSE;
+	
+		return follow_if_link(win, x, y);
+	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -894,6 +979,27 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		}
 		win32debug_msg_end("textWndProc", message, "0");
 		return 0;
+	
+	case WM_MOUSEMOVE:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			set_cursor_if_appropriate(win, x, y);
+		}
+		break;
+	
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+			int button = message == WM_LBUTTONUP ? 1 : message == WM_RBUTTONUP ? 2 : 3;
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			on_button_release(win, x, y, button);
+		}
+		break;
 	}
 	
 	win32debug_msg_end("textWndProc", message, "DefWindowProc");
@@ -955,13 +1061,16 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	{
 		WNDCLASSA wndclass;
 		
+		regular_cursor = LoadCursor(NULL, IDC_ARROW);
+		hand_cursor = LoadCursor(NULL, IDC_HAND);
+		
 		wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 		wndclass.lpfnWndProc = mainWndProc;
 		wndclass.cbClsExtra = 0;
 		wndclass.cbWndExtra = 0;
 		wndclass.hInstance = inst;
 		wndclass.hIcon = LoadIcon(inst, MAKEINTRESOURCE(IDI_MAINFRAME));
-		wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+		wndclass.hCursor = regular_cursor;
 		wndclass.hbrBackground = (HBRUSH) (COLOR_APPWORKSPACE + 1);
 		wndclass.lpszMenuName = NULL;
 		wndclass.lpszClassName = "hypview";
@@ -1136,7 +1245,7 @@ void SetWindowSlider(WINDOW_DATA *win)
 	if (pos != win->scrollhpos || range != win->scrollhsize)
 	{
 		si.cbSize = sizeof(si);
-		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS;
+		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS|SIF_TRACKPOS;
 		si.nMin = 0;
 		si.nMax = range;
 		si.nPage = win->scroll.g_w;
@@ -1154,7 +1263,7 @@ void SetWindowSlider(WINDOW_DATA *win)
 	if (pos != win->scrollvpos || range != win->scrollvsize)
 	{
 		si.cbSize = sizeof(si);
-		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS;
+		si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS|SIF_TRACKPOS;
 		si.nMin = 0;
 		si.nMax = range;
 		si.nPage = win->scroll.g_h;
@@ -1171,24 +1280,27 @@ void SetWindowSlider(WINDOW_DATA *win)
 void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 {
 	DOCUMENT *doc = win->data;
+	int visible_lines;
 	
 	win->hovering_over_link = FALSE;
-	SetClassLongPtr(win->textwin, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
+	SetWindowCursor(win->textwin, regular_cursor);
 	hv_set_font(win);
 	if (prep)
 		doc->prepNode(win, win->displayed_node);
 	hv_set_title(win, win->title);
+	win->selection.valid = FALSE;
 	
 	/* adjust window size to new dimensions */
 	if (gl_profile.viewer.adjust_winsize)
 	{
 	}
 
-	if (doc->start_line)
-	{
-		hv_win_scroll_to_line(win, doc->start_line);
-	}
-	
+	visible_lines = (win->scroll.g_h + win->y_raster - 1) / win->y_raster;
+
+	win->docsize.y = min(win->docsize.h - visible_lines * win->y_raster, doc->start_line * win->y_raster);
+	win->docsize.y = max(0, win->docsize.y);
+	win->docsize.x = 0;
+
 	SetWindowSlider(win);
 	ToolbarUpdate(win, FALSE);
 	SendRedraw(win);
