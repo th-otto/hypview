@@ -5,9 +5,9 @@ include ../Makefile.common
 if WITH_GUI_GTK
 bin_PROGRAMS = hypview
 noinst_PROGRAMS = gfilesel
-endif
 if !CROSS_COMPILING
 noinst_SCRIPTS = $(build_triplet)-hypview$(EXEEXT)
+endif
 endif
 
 INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
