@@ -173,6 +173,31 @@ void W_Fill_Rect(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void W_Invert_Rect(HDC hdc, const GRECT *gr)
+{
+	RECT re;
+
+	GrectToRect(&re, gr);
+	if (re.left < re.right)
+	{
+		int x = re.left;
+
+		re.left = re.right;
+		re.right = x;
+	}
+	if (re.top < re.bottom)
+	{
+		int x = re.top;
+
+		re.top = re.bottom;
+		re.bottom = x;
+	}
+	InvertRect(hdc, &re);
+	/* PatBlt(hdc, gr->g_x, gr->g_y, gr->g_w, gr->g_h, DSTINVERT); */
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void W_Rectangle(HDC hdc, const GRECT *gr, int linestyle, COLORREF color)
 {
 	POINT pp[5];

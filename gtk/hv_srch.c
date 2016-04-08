@@ -288,13 +288,9 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 		if (!no_message && !aborted)
 		{
 			char *str;
-			char *name;
-			gboolean converror = FALSE;
 			
-			name = hyp_utf8_to_charset(hyp_get_current_charset(), string, STR0TERM, &converror);
-			str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, name);
+			str = g_strdup_printf(_("%s: could not find\n'%s'"), gl_program_name, string);
 			show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
-			g_free(name);
 			g_free(str);
 		}
 	

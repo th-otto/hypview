@@ -24,6 +24,7 @@ void W_Rectangle(HDC hdc, const GRECT *gr, int linestyle, COLORREF color);
 void W_Fill_Rect(HDC hdc, const GRECT *gr, int style, COLORREF color);
 void W_rounded_box(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color);
 void W_Draw_Arrows(HDC hdc, POINT *xy, int npoints, COLORREF color, unsigned char line_ends);
+void W_Invert_Rect(HDC hdc, const GRECT *gr);
 
 void W_NTextExtent(HDC hdc, const wchar_t *text, size_t len, int *w, int *h);
 void W_TextExtent(HDC hdc, const wchar_t *text, int *w, int *h);

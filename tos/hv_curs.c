@@ -78,7 +78,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 			/* unwritten data? */
 			if (src > textstart)
 			{
-				_UWORD len = (_UWORD)(src - textstart);
+				size_t len = (size_t)(src - textstart);
 				char *s = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), textstart, len, NULL);
 				char *newt;
 				
@@ -110,7 +110,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 					hyp_nodenr dest_page;	/* index of target page */
 					char *str;
 					char *newt;
-					_UWORD len;
+					size_t len;
 					
 					if (*src == HYP_ESC_LINK_LINE || *src == HYP_ESC_ALINK_LINE)		/* skip line number */
 						src += 2;
@@ -177,7 +177,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 
 	if (src > textstart)
 	{
-		_UWORD len = (_UWORD)(src - textstart);
+		size_t len = (size_t)(src - textstart);
 		char *s = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), textstart, len, NULL);
 		char *newt;
 		
@@ -197,10 +197,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 	i = strlen(temp);
 	if (*temp && x_pos + width > x)
 	{
-		char *dst = temp;
-		while (*dst)
-			dst++;
-		dst--;
+		char *dst = temp + i - 1;
 
 		while (dst >= temp)
 		{

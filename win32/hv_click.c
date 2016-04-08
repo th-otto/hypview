@@ -408,7 +408,7 @@ gboolean HypFindLink(WINDOW_DATA *win, int x, int y, LINK_INFO *info, gboolean s
 
 		if (target_line && target_col)
 		{
-			if (select_word)
+			if (select_word && !win->selection.valid)
 			{
 				hyp_nodenr ret;
 				unsigned char buffer[256];

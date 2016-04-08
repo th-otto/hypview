@@ -150,7 +150,6 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 
 void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 {
-	SelectAll(win);
 	b->start.line = 0;
 	b->start.y = 0;
 	b->start.offset = 0;

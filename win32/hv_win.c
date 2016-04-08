@@ -241,7 +241,7 @@ static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount)
+gboolean hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount)
 {
 	WP_UNIT old_x, old_y;
 	
@@ -263,9 +263,10 @@ static void hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount)
 	win->docsize.x = (win->docsize.x / win->x_raster) * win->x_raster;
 	
 	if (win->docsize.x == old_x && win->docsize.y == old_y)
-		return;
+		return FALSE;
 	SetWindowSlider(win);
 	SendRedraw(win);
+	return TRUE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -903,6 +904,35 @@ static gboolean on_button_release(WINDOW_DATA *win, int x, int y, int button)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
+{
+	if (win->popup)
+	{
+		DestroyWindow(win->popup->hwnd);
+		return TRUE;
+	}
+	
+	RemoveSearchBox(win);
+	
+	if (button == 1)
+	{
+		CheckFiledate(win);
+		MouseSelection(win, x, y, (getkeystate() & K_SHIFT) != 0);
+	} else if (button == 2)
+	{
+		if (gl_profile.viewer.rightback)
+		{
+			GoThisButton(win, TO_BACK);
+		} else
+		{
+			/* NYI: context popup */
+		}
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	WINDOW_DATA *win;
@@ -986,6 +1016,18 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			int y = HIWORD(lParam);
 			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			set_cursor_if_appropriate(win, x, y);
+		}
+		break;
+	
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+			int button = message == WM_LBUTTONDOWN ? 1 : message == WM_RBUTTONDOWN ? 2 : 3;
+			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			on_button_press(win, x, y, button);
 		}
 		break;
 	
@@ -1302,6 +1344,6 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	win->docsize.x = 0;
 
 	SetWindowSlider(win);
-	ToolbarUpdate(win, FALSE);
+	ToolbarUpdate(win, TRUE);
 	SendRedraw(win);
 }

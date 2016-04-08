@@ -266,6 +266,7 @@ void W_FontCreate(const char *name, HFONT *fonts);
 void SelectAll(WINDOW_DATA *win);
 void RemoveSelection(WINDOW_DATA *win);
 void DrawSelection(WINDOW_DATA *win);
+void MouseSelection(WINDOW_DATA *win, int x, int y, gboolean extend);
 
 
 /*
@@ -288,6 +289,7 @@ void hv_win_update_attributes(WINDOW_DATA *win);
 void hv_win_reset_text(WINDOW_DATA *win);
 void WindowCalcScroll(WINDOW_DATA *win);
 void SetWindowSlider(WINDOW_DATA *win);
+gboolean hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount);
 
 
 /*

@@ -82,6 +82,7 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 		/* removes old selection */
 		if (win->selection.valid)
 			DrawSelection(win);
+		win->selection.valid = FALSE;
 
 		x = m_data->x - work.g_x;
 		y = m_data->y - work.g_y;
@@ -175,9 +176,9 @@ void MouseSelection(WINDOW_DATA *win, EVNTDATA *m_data)
 
 		/* calculate cursor position in text */
 		doc->getCursorProc(win, x, y, &newpos);
-
-		x = (short)(newpos.x - win->docsize.x * win->x_raster);
-		y = newpos.y - (win->docsize.y * win->y_raster);
+		
+		x = (short)(newpos.x - win->docsize.x);
+		y = newpos.y - (win->docsize.y);
 		if (y != oy)
 		{
 			_WORD xy[4];
