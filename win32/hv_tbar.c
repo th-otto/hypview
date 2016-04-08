@@ -78,9 +78,8 @@ void EnableMenuObj(HMENU menu, int obj, gboolean enable)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void CheckMenuObj(WINDOW_DATA *win, int obj, gboolean check)
+void CheckMenuObj(HMENU menu, int obj, gboolean check)
 {
-	HMENU menu = GetMenu(win->hwnd);
 	CheckMenuItem(menu, obj, MF_BYCOMMAND | (check ? MF_CHECKED : MF_UNCHECKED));
 }
 
@@ -133,7 +132,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	
 	if (!win->is_popup)
 	{
-		hv_update_menu(win);
+		hv_update_winmenu(win);
 #define EnableButton(obj, enable) \
 		if (enable) \
 			win->m_buttons[obj] &= ~WS_DISABLED; \

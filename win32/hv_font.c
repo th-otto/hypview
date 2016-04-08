@@ -9,34 +9,41 @@ UINT commdlg_help;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void hv_update_menu(WINDOW_DATA *win)
+void hv_update_menu(HMENU menu, DOCUMENT *doc)
+{
+	CheckMenuObj(menu, IDM_OPT_ALTFONT, gl_profile.viewer.use_xfont);
+	CheckMenuObj(menu, IDM_OPT_EXPANDSPACES, gl_profile.viewer.expand_spaces);
+	
+	EnableMenuObj(menu, IDM_NAV_BOOKMARKSMENU, doc->buttons.bookmarks);
+	EnableMenuObj(menu, IDM_FILE_OPEN, doc->buttons.load);
+	EnableMenuObj(menu, IDM_FILE_SAVE, doc->buttons.save);
+	EnableMenuObj(menu, IDM_FILE_REMARKER, doc->buttons.remarker);
+	EnableMenuObj(menu, IDM_FILE_INFO, doc->buttons.info);
+	EnableMenuObj(menu, IDM_NAV_BACK, doc->buttons.back);
+	EnableMenuObj(menu, IDM_NAV_HISTORYMENU, doc->buttons.history);
+	EnableMenuObj(menu, IDM_NAV_CLEARSTACK, doc->buttons.history);
+	EnableMenuObj(menu, IDM_FILE_CATALOG, !empty(gl_profile.viewer.catalog_file));
+	EnableMenuObj(menu, IDM_NAV_PREV, doc->buttons.previous);
+	EnableMenuObj(menu, IDM_NAV_PREVPHYS, doc->buttons.prevphys);
+	EnableMenuObj(menu, IDM_NAV_TOC, doc->buttons.home);
+	EnableMenuObj(menu, IDM_NAV_NEXT, doc->buttons.next);
+	EnableMenuObj(menu, IDM_NAV_NEXTPHYS, doc->buttons.nextphys);
+	EnableMenuObj(menu, IDM_NAV_FIRST, doc->buttons.first);
+	EnableMenuObj(menu, IDM_NAV_LAST, doc->buttons.last);
+	EnableMenuObj(menu, IDM_NAV_INDEX, doc->buttons.index);
+	EnableMenuObj(menu, IDM_NAV_HELP, doc->buttons.help);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_update_winmenu(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 	HMENU menu = GetMenu(win->hwnd);
 	
 	if (!win->is_popup)
 	{
-		CheckMenuObj(win, IDM_OPT_ALTFONT, gl_profile.viewer.use_xfont);
-		CheckMenuObj(win, IDM_OPT_EXPANDSPACES, gl_profile.viewer.expand_spaces);
-		
-		EnableMenuObj(menu, IDM_NAV_BOOKMARKSMENU, doc->buttons.bookmarks);
-		EnableMenuObj(menu, IDM_FILE_OPEN, doc->buttons.load);
-		EnableMenuObj(menu, IDM_FILE_SAVE, doc->buttons.save);
-		EnableMenuObj(menu, IDM_FILE_REMARKER, doc->buttons.remarker);
-		EnableMenuObj(menu, IDM_FILE_INFO, doc->buttons.info);
-		EnableMenuObj(menu, IDM_NAV_BACK, doc->buttons.back);
-		EnableMenuObj(menu, IDM_NAV_HISTORYMENU, doc->buttons.history);
-		EnableMenuObj(menu, IDM_NAV_CLEARSTACK, doc->buttons.history);
-		EnableMenuObj(menu, IDM_FILE_CATALOG, !empty(gl_profile.viewer.catalog_file));
-		EnableMenuObj(menu, IDM_NAV_PREV, doc->buttons.previous);
-		EnableMenuObj(menu, IDM_NAV_PREVPHYS, doc->buttons.prevphys);
-		EnableMenuObj(menu, IDM_NAV_TOC, doc->buttons.home);
-		EnableMenuObj(menu, IDM_NAV_NEXT, doc->buttons.next);
-		EnableMenuObj(menu, IDM_NAV_NEXTPHYS, doc->buttons.nextphys);
-		EnableMenuObj(menu, IDM_NAV_FIRST, doc->buttons.first);
-		EnableMenuObj(menu, IDM_NAV_LAST, doc->buttons.last);
-		EnableMenuObj(menu, IDM_NAV_INDEX, doc->buttons.index);
-		EnableMenuObj(menu, IDM_NAV_HELP, doc->buttons.help);
+		hv_update_menu(menu, doc);
 	}
 }
 
@@ -50,7 +57,7 @@ void hv_update_menus(void)
 	for (l = all_list; l; l = l->next)
 	{
 		win = (WINDOW_DATA *)l->data;
-		hv_update_menu(win);
+		hv_update_winmenu(win);
 	}
 }
 

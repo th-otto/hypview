@@ -255,7 +255,8 @@ void hv_exit(void);
 
 void SwitchFont(WINDOW_DATA *win);
 void SelectFont(WINDOW_DATA *win);
-void hv_update_menu(WINDOW_DATA *win);
+void hv_update_menu(HMENU menu, DOCUMENT *doc);
+void hv_update_winmenu(WINDOW_DATA *win);
 void hv_update_menus(void);
 void W_FontCreate(const char *name, HFONT *fonts);
 
@@ -313,7 +314,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button);
 void RemoveSearchBox(WINDOW_DATA *win);
 void position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret);
 void EnableMenuObj(HMENU menu, int obj, gboolean enable);
-void CheckMenuObj(WINDOW_DATA *win, int obj, gboolean check);
+void CheckMenuObj(HMENU menu, int obj, gboolean check);
 void toolbar_register_classes(HINSTANCE hinst);
 TOOL_DATA *toolbar_init(WINDOW_DATA *win, const int *definitions, int num_definitions, const TOOLBAR_ENTRY *entries, int num_entries);
 void toolbar_setfont(const char *desc);

@@ -459,7 +459,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 
 	case WM_CREATE:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		hv_update_menu(win);
+		hv_update_winmenu(win);
 		break;
 	
 	case WM_CLOSE:
@@ -650,7 +650,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			break;
 		case IDM_OPT_EXPANDSPACES:
 			gl_profile.viewer.expand_spaces = !gl_profile.viewer.expand_spaces;
-			hv_update_menu(win);
+			hv_update_winmenu(win);
 			{
 				DOCUMENT *doc = win->data;
 				if (doc && doc->prepNode)
@@ -906,6 +906,8 @@ static gboolean on_button_release(WINDOW_DATA *win, int x, int y, int button)
 
 static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
 {
+	DOCUMENT *doc = win->data;
+	
 	if (win->popup)
 	{
 		DestroyWindow(win->popup->hwnd);
@@ -934,6 +936,7 @@ static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
 			p.x = x;
 			p.y = y;
 			ClientToScreen(win->textwin, &p);
+			hv_update_menu(popup, doc);
 			TrackPopupMenu(popup, flags, p.x, p.y, 0, win->hwnd, NULL);
 			PostMessage(win->hwnd, WM_NULL, 0, 0);
 		}
