@@ -412,7 +412,7 @@ void HypProfile_Load(void)
 	if (!Profile_ReadBool(profile, "HypView", "MARKFILE_SAVE_ASK", &gl_profile.viewer.marken_save_ask))
 		setdefault(gl_profile.viewer.marken_save_ask = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "REFONLY", &gl_profile.viewer.refonly))
-		setdefault(gl_profile.viewer.refonly = FALSE);
+		setdefault(gl_profile.viewer.refonly = TRUE);
 	if (!Profile_ReadBool(profile, "HypView", "RIGHTBACK", &gl_profile.viewer.rightback))
 		setdefault(gl_profile.viewer.rightback = FALSE);
 	if (!Profile_ReadBool(profile, "HypView", "BACKWIND", &gl_profile.viewer.backwind))
