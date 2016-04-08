@@ -925,7 +925,17 @@ static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
 			GoThisButton(win, TO_BACK);
 		} else
 		{
-			/* NYI: context popup */
+			HMENU menu = LoadMenuW(GetInstance(), MAKEINTRESOURCEW(IDR_CONTEXT_MENU));
+			HMENU popup = GetSubMenu(menu, 0);
+			UINT flags = TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RIGHTBUTTON | TPM_NOANIMATION;
+			POINT p;
+			
+			SetForegroundWindow(win->hwnd);
+			p.x = x;
+			p.y = y;
+			ClientToScreen(win->textwin, &p);
+			TrackPopupMenu(popup, flags, p.x, p.y, 0, win->hwnd, NULL);
+			PostMessage(win->hwnd, WM_NULL, 0, 0);
 		}
 	}
 	return FALSE;

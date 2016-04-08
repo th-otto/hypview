@@ -34,12 +34,12 @@ BEGIN
 	END
 	POPUP "&Bearbeiten"
 	BEGIN
-		MENUITEM "&Alles auswählen",            IDM_EDIT_SELECTALL
-		MENUITEM "&Kopieren",                   IDM_EDIT_COPY
-		MENUITEM "&Einfügen",                   IDM_EDIT_PASTE
+		MENUITEM "&Alles auswählen\tCtrl+A",    IDM_EDIT_SELECTALL
+		MENUITEM "&Kopieren\tCtrl+C",           IDM_EDIT_COPY
+		MENUITEM "&Einfügen\tCtrl+V",           IDM_EDIT_PASTE
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Suchen",                     IDM_EDIT_FIND
-		MENUITEM "&Weitersuchen",               IDM_EDIT_FINDNEXT
+		MENUITEM "&Suchen\tCtrl+F",             IDM_EDIT_FIND
+		MENUITEM "&Weitersuchen\tCtrl+G",       IDM_EDIT_FINDNEXT
 	END
 	POPUP "&Navigieren"
 	BEGIN
@@ -92,6 +92,30 @@ BEGIN
 		MENUITEM "&Index",                    IDM_HELP_INDEX
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM "&Über",                     IDM_HELP_ABOUT
+	END
+END
+
+
+IDR_CONTEXT_MENU MENUEX PRELOAD DISCARDABLE 
+BEGIN
+	POPUP N_("&Context"), IDM_CONTEXT_POPUP
+	BEGIN
+		MENUITEM N_("Zurück\tBackSpace"),           IDM_NAV_BACK
+		MENUITEM N_("&Kopieren\tCtrl+C"),           IDM_EDIT_COPY
+		MENUITEM N_("&Einfügen\tCtrl+V"),           IDM_EDIT_PASTE
+		MENUITEM "", -1, MFT_SEPARATOR
+		MENUITEM N_("Select &All\tCtrl+A"),         IDM_EDIT_SELECTALL
+		MENUITEM "", -1, MFT_SEPARATOR
+		MENUITEM N_("&Als Text speichern...\tCtrl+S"), IDM_FILE_SAVE
+		MENUITEM "", -1, MFT_SEPARATOR
+		MENUITEM N_("&Suchen\tCtrl+F"),             IDM_EDIT_FIND
+		MENUITEM N_("&Weitersuchen\tCtrl+G"),       IDM_EDIT_FINDNEXT
+		MENUITEM N_("Stack löschen\tAlt+E"),        IDM_NAV_CLEARSTACK
+		MENUITEM N_("&Drucken\tCtrl+P"),            IDM_FILE_PRINT
+		MENUITEM "", -1, MFT_SEPARATOR
+		MENUITEM N_("&Alternativschrift\tCtrl+Z"),  IDM_OPT_ALTFONT
+		MENUITEM N_("&Zeichensatz...\tAlt+Z"),      IDM_OPT_SELECTFONT
+		MENUITEM N_("&Remarker\tAlt+R"),	    IDM_FILE_REMARKER
 	END
 END
 

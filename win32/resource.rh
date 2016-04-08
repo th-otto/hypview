@@ -1,6 +1,7 @@
 #define MY_PROGRESS_CONTROL   "MyProgressControl"
 
 #define IDR_MAIN_MENU 1
+#define IDR_CONTEXT_MENU 2
 
 #define IDI_MAINFRAME                   1
 #define IDI_BACK                        2
@@ -28,6 +29,8 @@
 
 #define IDR_ACCEL                       3000
 
+#define IDM_CONTEXT_POPUP 50
+
 #define IDM_FILE_OPEN 100
 #define IDM_FILE_SAVE 101
 #define IDM_FILE_CATALOG 102
@@ -37,6 +40,7 @@
 #define IDM_FILE_INFO 106
 #define IDM_FILE_CLOSE 107
 #define IDM_FILE_QUIT 108
+#define IDM_FILE_PRINT 109
 #define IDM_FILE_RECENT_1 110
 #define IDM_FILE_RECENT_2 111
 #define IDM_FILE_RECENT_3 112

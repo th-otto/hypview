@@ -108,12 +108,11 @@ void DrawSelection(WINDOW_DATA *win)
 static void GetMouseState(WINDOW_DATA *win, int *x, int *y, int *buttons)
 {
 	POINT p;
-	RECT r;
 	
 	GetCursorPos(&p);
-	GetWindowRect(win->textwin, &r);
-	*x = p.x - r.left;
-	*y = p.y - r.top;
+	ScreenToClient(win->textwin, &p);
+	*x = p.x;
+	*y = p.y;
 	*buttons = 0;
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		*buttons += 1;
