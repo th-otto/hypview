@@ -637,7 +637,7 @@ display  the  page  'Set   parameters'  when  either  'Parameters'   or
 !alias+ @pnode
 !index pnode
 !raw [stg] @xref "Command @node"
-!html_name command_node_hcp
+!html_name command_pnode_hcp
 
 With this command one  can generate special  pages which, when  called,
 are displayed (!U)not(!u) in the window but in a small popup menu. This can  be

@@ -612,7 +612,7 @@ verwendet wurde (sofern die zugeh”rige REF-Datei auch benutzt wird).
 !alias+ @pnode
 !index pnode
 !raw [stg] @xref "Kommando @node"
-!html_name command_node_hcp
+!html_name command_pnode_hcp
 
 Mit diesem Kommando k”nnen spezielle Seiten erzeugt werden, welche bei
 Aufruf (!U)nicht(!u) im Fenster, sondern in einem kleinen Popupmenue

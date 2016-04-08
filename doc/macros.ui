@@ -44,6 +44,13 @@
 !macro ALT (!raw [stg] [])
 !endif
 
+# htmlhelp has no index page we can link to
+!ifdest [hh]
+!macro INDEX (!1)
+!else
+!macro INDEX (!link [(!1)] [Index])
+!endif
+
 !ifdest [stg,amg]
 !macro XLINK (!xlink [(!1)] [(!2).hyp/(!3)])
 !endif
