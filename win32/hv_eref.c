@@ -77,14 +77,15 @@ void HypExtRefPopup(WINDOW_DATA *win, int button)
 	const unsigned char *end;
 	struct popup_pos popup_pos;
 	int x, y;
+	UINT flags = TPM_LEFTALIGN | TPM_TOPALIGN | (button == 1 ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON) | TPM_NOANIMATION | TPM_RETURNCMD | TPM_NONOTIFY;
+	int sel;
 	
-	UNUSED(button);
 	if (!(win->m_buttons[TO_REFERENCES] & WS_VISIBLE))
 		return;
 	if ((win->m_buttons[TO_REFERENCES] & WS_DISABLED))
 		return;
 	
-	menu = CreateMenu();
+	menu = CreatePopupMenu();
 	
 	i = 0;
 	pos = win->displayed_node->start;
@@ -98,6 +99,7 @@ void HypExtRefPopup(WINDOW_DATA *win, int button)
 			char *dest;
 			gboolean converror = FALSE;
 			size_t namelen;
+			wchar_t *wstr;
 			
 			dest_page = DEC_255(&pos[3]);
 			if (hypnode_valid(hyp, dest_page))
@@ -118,6 +120,9 @@ void HypExtRefPopup(WINDOW_DATA *win, int button)
 			{
 				g_free(dest);
 			}
+			wstr = hyp_utf8_to_wchar(text, STR0TERM, NULL);
+			AppendMenuW(menu, MF_STRING, i + 1, wstr);
+			g_free(wstr);
 			g_free(text);
 			i++;
 		}
@@ -141,8 +146,11 @@ void HypExtRefPopup(WINDOW_DATA *win, int button)
 		DestroyMenu(menu);
 		return;
 	}
+	SetForegroundWindow(win->hwnd);
+	sel = TrackPopupMenu(menu, flags, x, y, 0, win->hwnd, NULL);
 	DestroyMenu(menu);
-	xref_selected(win, -1);
+	PostMessage(win->hwnd, WM_NULL, 0, 0);
+	xref_selected(win, sel - 1);
 }
 
 /*** ---------------------------------------------------------------------- ***/
