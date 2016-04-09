@@ -313,10 +313,13 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button)
 		GotoHelp(win);
 		break;
 	case TO_HISTORY:
-		HistoryPopup(win, button);
+		HistoryPopup(win, obj, button);
 		break;
 	case TO_BACK:
-		GoBack(win);
+		if (button == 2)
+			HistoryPopup(win, obj, button);
+		else
+			GoBack(win);
 		break;
 	case TO_NEXT:
 	case TO_PREV:
@@ -562,7 +565,6 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 			td->hwnd = 0;
 		break;
 		
-	case WM_RBUTTONUP:
 	case WM_MBUTTONUP:
 		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
@@ -581,9 +583,11 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 		break;
 
 	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
 		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
 		{
+			int buttonnum = message == WM_LBUTTONUP ? 1 : message == WM_RBUTTONUP ? 2 : 3;
 			if (captured != 0)
 			{
 				tool_help_destroy(td);
@@ -591,7 +595,7 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 				captured = 0;
 				time_val = TIME_VAL;
 			}
-			td->toolbar_button_up(win);
+			td->toolbar_button_up(win, buttonnum);
 		}
 		break;
 
@@ -647,7 +651,7 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 
 			GetClientRect(hwnd, &r);
 			RectToGrect(&gr, &r);
-			if (message == WM_LBUTTONDOWN)
+			if (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN)
 				td->toolbar_mouse_down(td, TRUE, &gr, LOWORD(lParam), HIWORD(lParam));
 			if (captured == 0)
 			{
@@ -862,7 +866,7 @@ static void toolbar_mouse_down(TOOL_DATA *td, gboolean buttondown, const GRECT *
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_button_up(WINDOW_DATA *win)
+static void toolbar_button_up(WINDOW_DATA *win, int buttonnum)
 {
 	TOOL_DATA *td = win->td;
 	
@@ -881,7 +885,7 @@ static void toolbar_button_up(WINDOW_DATA *win)
 		button.g_h = BUTTONHEIGHT;
 
 		/* PostMessage(GetParent(td->hwnd), WM_COMMAND, MAKEWPARAM(td->entries[td->definitions[td->buttondown]].menu_id, 0), 0); */
-		ToolbarClick(win, (enum toolbutton)td->entries[td->definitions[td->buttondown]].config_id, 1);
+		ToolbarClick(win, (enum toolbutton)td->entries[td->definitions[td->buttondown]].config_id, buttonnum);
 		td->buttondown = -1;
 		if (td->toolbar_refresh != FUNK_NULL)
 			td->toolbar_refresh(td, &button);

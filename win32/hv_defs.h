@@ -93,7 +93,7 @@ struct _tool_data {
 	int		(*toolbar_size)(TOOL_DATA *td, GRECT *r);
 	gboolean (*toolbar_mouse_move)(TOOL_DATA *td, const GRECT *gr, int mousex, int mousey);
 	void	(*toolbar_mouse_down)(TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey);
-	void	(*toolbar_button_up)(WINDOW_DATA *win);
+	void	(*toolbar_button_up)(WINDOW_DATA *win, int button);
 	void	(*toolbar_exit)(WINDOW_DATA *win);
 	
 	void    (*toolbar_close)(WINDOW_DATA *win);
@@ -374,7 +374,7 @@ void on_bookmark_selected(WINDOW_DATA *win, int num);
  */
 void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc);
 void GoBack(WINDOW_DATA *win);
-void HistoryPopup(WINDOW_DATA *win, int button);
+void HistoryPopup(WINDOW_DATA *win, enum toolbutton obj, int button);
 void GotoHelp(WINDOW_DATA *win);
 void GotoIndex(WINDOW_DATA *win);
 void GoThisButton(WINDOW_DATA *win, enum toolbutton obj);

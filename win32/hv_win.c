@@ -627,7 +627,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			on_bookmark_selected(win, LOWORD(wParam) - IDM_NAV_BOOKMARK_1);
 			break;
 		case IDM_NAV_HISTORYMENU:
-			HistoryPopup(win, 1);
+			HistoryPopup(win, TO_HISTORY, 1);
 			break;
 		
 		case IDM_OPT_SELECTFONT:

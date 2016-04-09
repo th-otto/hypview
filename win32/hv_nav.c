@@ -107,25 +107,29 @@ static void history_selected(WINDOW_DATA *win, int sel)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HistoryPopup(WINDOW_DATA *win, int button)
+void HistoryPopup(WINDOW_DATA *win, enum toolbutton obj, int button)
 {
 	int i;
 	HMENU menu;
 	struct popup_pos popup_pos;
 	HISTORY *entry = win->history;
 	int x, y;
+	UINT flags = TPM_LEFTALIGN | TPM_TOPALIGN | (button == 1 ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON) | TPM_NOANIMATION | TPM_RETURNCMD | TPM_NONOTIFY;
+	int sel;
 	
-	UNUSED(button);
 	if (!(win->m_buttons[TO_HISTORY] & WS_VISIBLE))
 		return;
 	if ((win->m_buttons[TO_HISTORY] & WS_DISABLED))
 		return;
 	
-	menu = CreateMenu();
+	menu = CreatePopupMenu();
 	
 	i = 0;
 	while (entry)
 	{
+		wchar_t *str = hyp_utf8_to_wchar(entry->title, STR0TERM, NULL);
+		AppendMenuW(menu, MF_STRING, i + 1, str);
+		g_free(str);
 		i++;
 		entry = entry->next;
 	}
@@ -141,14 +145,17 @@ void HistoryPopup(WINDOW_DATA *win, int button)
 	}
 	
 	popup_pos.window = win;
-	popup_pos.obj = TO_HISTORY;
+	popup_pos.obj = obj;
 	if (position_popup(menu, &popup_pos, &x, &y) == FALSE)
 	{
 		DestroyMenu(menu);
 		return;
 	}
+	SetForegroundWindow(win->hwnd);
+	sel = TrackPopupMenu(menu, flags, x, y, 0, win->hwnd, NULL);
 	DestroyMenu(menu);
-	history_selected(win, -1);
+	PostMessage(win->hwnd, WM_NULL, 0, 0);
+	history_selected(win, sel - 1);
 }
 
 
