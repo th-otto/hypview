@@ -257,7 +257,7 @@ hyp_filetype AsciiCalcLines(DOCUMENT *doc, FMT_ASCII *ascii)
 	{
 		if (ascii->charset == HYP_CHARSET_UTF8 && !g_utf8_validate((const char *)start, ascii->length, NULL))
 			ascii->charset = HYP_CHARSET_BINARY_TABS;
-		if (ascii->charset == HYP_CHARSET_BINARY_TABS)
+		if (ascii->charset == HYP_CHARSET_BINARY_TABS || ascii->charset == hyp_get_current_charset())
 		{
 			/*
 			 * Heuristic to check for Atari character set.

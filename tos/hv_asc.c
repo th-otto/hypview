@@ -109,7 +109,7 @@ void AsciiGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	x += (short) (win->y_raster * win->docsize.x);
+	x += (short) (win->docsize.x);
 
 	i = 0;
 	width = 0;

@@ -114,7 +114,7 @@ void BinaryGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 		return;
 	}
 
-	x += (short) (font_cw * win->docsize.x);
+	x += (short) (win->docsize.x);
 
 	start = ascii->start + line * gl_profile.viewer.binary_columns;
 	vst_effects(vdi_handle, 0);
