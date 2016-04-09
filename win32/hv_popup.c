@@ -20,15 +20,10 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 
 		if (newdoc->gotoNodeProc(win, NULL, num))
 		{
-			char *geom;
-			
 			parentwin->popup = win;
-			geom = g_strdup_printf("+%d+%d", x, y);
-			hv_win_set_geometry(geom);
-			g_free(geom);
 			ReInitWindow(win, FALSE);
+			MoveWindow(win->hwnd, x, y, win->docsize.w + win->x_margin_left + win->x_margin_right, win->docsize.h + win->y_margin_top + win->y_margin_bottom, TRUE);
 			hv_win_open(win);
-			hv_win_set_geometry(NULL);
 		} else
 		{
 			DestroyWindow(win->hwnd);

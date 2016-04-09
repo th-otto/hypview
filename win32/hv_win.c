@@ -532,16 +532,19 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			RECT r;
 			
 			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-			GetWindowRect(hwnd, &r);
-			gl_profile.viewer.win_x = r.left;
-			gl_profile.viewer.win_y = r.top;
-			gl_profile.viewer.win_w = r.right - r.left;
-			gl_profile.viewer.win_h = r.bottom - r.top;
-			HypProfile_SetChanged();
-			WindowCalcScroll(win);
-			win->scrollvsize = -1;
-			win->scrollhsize = -1;
-			SetWindowSlider(win);
+			if (!win->is_popup)
+			{
+				GetWindowRect(hwnd, &r);
+				gl_profile.viewer.win_x = r.left;
+				gl_profile.viewer.win_y = r.top;
+				gl_profile.viewer.win_w = r.right - r.left;
+				gl_profile.viewer.win_h = r.bottom - r.top;
+				HypProfile_SetChanged();
+				WindowCalcScroll(win);
+				win->scrollvsize = -1;
+				win->scrollhsize = -1;
+				SetWindowSlider(win);
+			}
 		}
 		win32debug_msg_end("mainWndProc", message, "FALSE");
 		return FALSE;
@@ -1216,7 +1219,7 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	y = gl_profile.viewer.win_y;
 	w = gl_profile.viewer.win_w;
 	h = gl_profile.viewer.win_h;
-	if (default_geometry)
+	if (default_geometry && !popup)
 	{
 		gtk_XParseGeometry(default_geometry, &x, &y, &w, &h);
 		hv_win_set_geometry(NULL);
