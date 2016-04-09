@@ -233,17 +233,18 @@ static void toolbar_pos(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te, i
 
 /*** ---------------------------------------------------------------------- ***/
 
-void position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret)
+gboolean position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret)
 {
 	WINDOW_DATA *win = pos->window;
 	RECT a, r;
 	POSINFO dw;
 	TOOL_DATA *td;
 	GRECT r1;
-		
+	POINT p;
+	
 	td = win->td;
 	if (td == NULL)
-		return;
+		return FALSE;
 	UNUSED(menu);
 
 	GetClientRect(td->hwnd, &r);
@@ -271,8 +272,12 @@ void position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret)
 		CalculatePopupWindowPosition(&p, &s, TPM_LEFTALIGN, NULL, &r);
 	}
 #endif
-	*xret = r.left;
-	*yret = r.top;
+	p.x = r.left;
+	p.y = r.top;
+	ClientToScreen(td->hwnd, &p);
+	*xret = p.x;
+	*yret = p.y;
+	return TRUE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -586,7 +591,7 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 				captured = 0;
 				time_val = TIME_VAL;
 			}
-			td->toolbar_button_up(td);
+			td->toolbar_button_up(win);
 		}
 		break;
 
@@ -857,8 +862,10 @@ static void toolbar_mouse_down(TOOL_DATA *td, gboolean buttondown, const GRECT *
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_button_up(TOOL_DATA *td)
+static void toolbar_button_up(WINDOW_DATA *win)
 {
+	TOOL_DATA *td = win->td;
+	
 	if (td->buttondown >= 0 &&
 		td->definitions != NULL &&
 		td->buttondown < td->num_definitions &&
@@ -873,7 +880,8 @@ static void toolbar_button_up(TOOL_DATA *td)
 		button.g_w = BUTTONWIDTH;
 		button.g_h = BUTTONHEIGHT;
 
-		PostMessage(GetParent(td->hwnd), WM_COMMAND, MAKEWPARAM(td->entries[td->definitions[td->buttondown]].menu_id, 0), 0);
+		/* PostMessage(GetParent(td->hwnd), WM_COMMAND, MAKEWPARAM(td->entries[td->definitions[td->buttondown]].menu_id, 0), 0); */
+		ToolbarClick(win, (enum toolbutton)td->entries[td->definitions[td->buttondown]].config_id, 1);
 		td->buttondown = -1;
 		if (td->toolbar_refresh != FUNK_NULL)
 			td->toolbar_refresh(td, &button);

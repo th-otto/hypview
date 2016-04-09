@@ -1,5 +1,6 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
+#include "resource.rh"
 
 
 #define MAX_MARKEN		12
@@ -144,8 +145,23 @@ void on_bookmark_selected(WINDOW_DATA *win, int sel)
 
 void MarkerUpdate(WINDOW_DATA *win)
 {
-	UNUSED(win);
-	/* NYI */
+	HMENU menu;
+	int i;
+	MENUITEMINFOW info;
+	
+	menu = win->bookmarks_menu;
+	memset(&info, 0, sizeof(info));
+	info.cbSize = sizeof(info);
+	info.fMask = MIIM_STRING;
+	info.fType = MFT_STRING;
+	for (i = 0; i < MAX_MARKEN; i++)
+	{
+		char *str = g_strdup_printf("%s\tF%d", marken[i].node_name, i + 1);
+		info.dwTypeData = hyp_utf8_to_wchar(str, STR0TERM, NULL);
+		SetMenuItemInfoW(menu, i + IDM_NAV_BOOKMARK_1, FALSE, &info);
+		g_free(info.dwTypeData);
+		g_free(str);
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -155,6 +171,7 @@ void MarkerPopup(WINDOW_DATA *win, int button)
 	HMENU menu;
 	struct popup_pos popup_pos;
 	int x, y;
+	UINT flags = TPM_LEFTALIGN | TPM_TOPALIGN | (button == 1 ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON) | TPM_NOANIMATION;
 	
 	if (!(win->m_buttons[TO_BOOKMARKS] & WS_VISIBLE))
 		return;
@@ -166,9 +183,11 @@ void MarkerPopup(WINDOW_DATA *win, int button)
 	
 	popup_pos.window = win;
 	popup_pos.obj = TO_BOOKMARKS;
-	position_popup(menu, &popup_pos, &x, &y);
-	/* NYI */
-	UNUSED(button);
+	if (position_popup(menu, &popup_pos, &x, &y) == FALSE)
+		return;
+	SetForegroundWindow(win->hwnd);
+	TrackPopupMenu(menu, flags, x, y, 0, win->hwnd, NULL);
+	PostMessage(win->hwnd, WM_NULL, 0, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/

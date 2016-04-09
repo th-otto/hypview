@@ -142,7 +142,11 @@ void HistoryPopup(WINDOW_DATA *win, int button)
 	
 	popup_pos.window = win;
 	popup_pos.obj = TO_HISTORY;
-	position_popup(menu, &popup_pos, &x, &y);
+	if (position_popup(menu, &popup_pos, &x, &y) == FALSE)
+	{
+		DestroyMenu(menu);
+		return;
+	}
 	DestroyMenu(menu);
 	history_selected(win, -1);
 }

@@ -93,7 +93,7 @@ struct _tool_data {
 	int		(*toolbar_size)(TOOL_DATA *td, GRECT *r);
 	gboolean (*toolbar_mouse_move)(TOOL_DATA *td, const GRECT *gr, int mousex, int mousey);
 	void	(*toolbar_mouse_down)(TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey);
-	void	(*toolbar_button_up)(TOOL_DATA *td);
+	void	(*toolbar_button_up)(WINDOW_DATA *win);
 	void	(*toolbar_exit)(WINDOW_DATA *win);
 	
 	void    (*toolbar_close)(WINDOW_DATA *win);
@@ -155,6 +155,7 @@ struct _window_data_
 	HYP_NODE *displayed_node;           /* Currently displayed node */
 	
 	HMENU bookmarks_menu;
+	HMENU recent_menu;
 	DWORD m_buttons[TO_MAX];
 	HWND textwin;
 	HDC draw_hdc;
@@ -312,7 +313,7 @@ struct popup_pos {
 void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw);
 void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button);
 void RemoveSearchBox(WINDOW_DATA *win);
-void position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret);
+gboolean position_popup(HMENU menu, struct popup_pos *pos, int *xret, int *yret);
 void EnableMenuObj(HMENU menu, int obj, gboolean enable);
 void CheckMenuObj(HMENU menu, int obj, gboolean check);
 void toolbar_register_classes(HINSTANCE hinst);

@@ -136,7 +136,11 @@ void HypExtRefPopup(WINDOW_DATA *win, int button)
 	
 	popup_pos.window = win;
 	popup_pos.obj = TO_REFERENCES;
-	position_popup(menu, &popup_pos, &x, &y);
+	if (position_popup(menu, &popup_pos, &x, &y) == FALSE)
+	{
+		DestroyMenu(menu);
+		return;
+	}
 	DestroyMenu(menu);
 	xref_selected(win, -1);
 }

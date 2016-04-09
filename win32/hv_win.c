@@ -504,21 +504,12 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 	case WM_INITMENUPOPUP:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		{
-			MENUITEMINFO info;
+			HMENU submenu = (HMENU)wParam;
 			
-			memset(&info, 0, sizeof(info));
-			info.cbSize = sizeof(info);
-			info.fMask = MIIM_ID;
-			GetMenuItemInfo((HMENU)wParam, LOWORD(lParam), TRUE, &info);
-			switch (info.wID)
-			{
-			case IDM_FILE_RECENTMENU:
-				RecentUpdate(win);
-				break;
-			case IDM_NAV_BOOKMARKSMENU:
+			if (submenu == win->bookmarks_menu)
 				MarkerUpdate(win);
-				break;
-			}
+			else if (submenu == win->recent_menu)
+				RecentUpdate(win);
 		}
 		break;
 		
@@ -1161,10 +1152,19 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		style = WS_POPUP | WS_BORDER | WS_CLIPCHILDREN;
 	} else
 	{
+		MENUITEMINFO info;
+		
 		win->td = toolbar_init(win, tb_defs, (int)(sizeof(tb_defs) / sizeof(tb_defs[0])), tb_entries, (int)(sizeof(tb_entries) / sizeof(tb_entries[0])));
 		exstyle = WS_EX_OVERLAPPEDWINDOW;
 		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_HSCROLL | WS_VSCROLL | WS_SIZEBOX | WS_CLIPCHILDREN;
 		menu = LoadMenuExW(inst, MAKEINTRESOURCEW(IDR_MAIN_MENU));
+		memset(&info, 0, sizeof(info));
+		info.cbSize = sizeof(info);
+		info.fMask = MIIM_ID | MIIM_SUBMENU;
+		GetMenuItemInfo(menu, IDM_NAV_BOOKMARKSMENU, FALSE, &info);
+		win->bookmarks_menu = info.hSubMenu;
+		GetMenuItemInfo(menu, IDM_FILE_RECENTMENU, FALSE, &info);
+		win->recent_menu = info.hSubMenu;
 	}
 	x = gl_profile.viewer.win_x;
 	y = gl_profile.viewer.win_y;
