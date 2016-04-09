@@ -1,6 +1,7 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
 #include "localename.h"
+#include "resource.rh"
 
 #define MAX_RECENT 10
 
@@ -318,8 +319,22 @@ void CenterWindow(HWND hwnd)
 
 void RecentUpdate(WINDOW_DATA *win)
 {
-	UNUSED(win);
-	/* NYI */
+	HMENU menu;
+	int i;
+	GSList *l;
+	
+	menu = win->recent_menu;
+	for (i = 0; i < MAX_RECENT; i++)
+		RemoveMenu(menu, i + IDM_FILE_RECENT_1, MF_BYCOMMAND);
+	for (l = recent_list, i = 0; l && i < MAX_RECENT; l = l->next, i++)
+	{
+		const char *path = (const char *)l->data;
+		char *str = g_strdup_printf("%s\tCtrl+%c", path, i == 9 ? '0' : i + '1');
+		wchar_t *wstr = hyp_utf8_to_wchar(str, STR0TERM, NULL);
+		AppendMenuW(menu, MF_STRING, i + IDM_FILE_RECENT_1, wstr);
+		g_free(wstr);
+		g_free(str);
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -347,15 +362,18 @@ void hv_recent_add(const char *path)
 {
 	GSList *l, **last;
 	int count;
+	char *newpath = g_strdup(path);
 	
+	convexternalslash(newpath);
 	for (last = &recent_list, count = 0; (l = *last) != NULL; last = &(*last)->next)
 	{
 		const char *oldpath = (const char *)l->data;
-		if (filename_cmp(path, oldpath) == 0)
+		if (filename_cmp(newpath, oldpath) == 0)
 		{
 			*last = l->next;
 			l->next = recent_list;
 			recent_list = l;
+			g_free(newpath);
 			return;
 		}
 		if (++count >= MAX_RECENT)
@@ -366,7 +384,7 @@ void hv_recent_add(const char *path)
 			break;
 		}
 	}
-	recent_list = g_slist_prepend(recent_list, g_strdup(path));
+	recent_list = g_slist_prepend(recent_list, newpath);
 }
 
 /*** ---------------------------------------------------------------------- ***/
