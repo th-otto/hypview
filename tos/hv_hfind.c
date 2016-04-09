@@ -149,7 +149,7 @@ static void hypfind_page(WINDOW_DATA *win, OBJECT *tree)
 static void hypfind_text(WINDOW_DATA *win, OBJECT *tree)
 {
 	DOCUMENT *doc = win->data;
-	long line = win->docsize.y / win->y_raster;
+	long line = hv_win_topline(win);
 	char *search = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
 	
 	if (!empty(search))

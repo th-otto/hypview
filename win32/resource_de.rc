@@ -68,6 +68,8 @@ BEGIN
 			MENUITEM "bookmark-8\tF8",      IDM_NAV_BOOKMARK_7
 			MENUITEM "bookmark-9\tF9",      IDM_NAV_BOOKMARK_8
 			MENUITEM "bookmark-10\tF10",    IDM_NAV_BOOKMARK_10
+			MENUITEM "bookmark-11\tF11",    IDM_NAV_BOOKMARK_11
+			MENUITEM "bookmark-12\tF12",    IDM_NAV_BOOKMARK_12
 		END
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM "Eine Seite zurück\tBackSpace",    IDM_NAV_BACK

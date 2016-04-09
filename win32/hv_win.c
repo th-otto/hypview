@@ -421,6 +421,8 @@ static gboolean key_press_event(WINDOW_DATA *win, unsigned int message, WPARAM w
 		case VK_F8:				/* already handled by accelerators */
 		case VK_F9:				/* already handled by accelerators */
 		case VK_F10:			/* already handled by accelerators */
+		case VK_F11:			/* already handled by accelerators */
+		case VK_F12:			/* already handled by accelerators */
 		default:
 			handled = FALSE;
 			break;
@@ -629,6 +631,8 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		case IDM_NAV_BOOKMARK_8:
 		case IDM_NAV_BOOKMARK_9:
 		case IDM_NAV_BOOKMARK_10:
+		case IDM_NAV_BOOKMARK_11:
+		case IDM_NAV_BOOKMARK_12:
 			on_bookmark_selected(win, LOWORD(wParam) - IDM_NAV_BOOKMARK_1);
 			break;
 		case IDM_NAV_HISTORYMENU:
@@ -1235,9 +1239,7 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 
 long hv_win_topline(WINDOW_DATA *win)
 {
-	UNUSED(win);
-	/* NYI */
-	return 0;
+	return win->docsize.y / win->y_raster;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1281,9 +1283,7 @@ void SendClose(HWND w)
  */
 void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 {
-	UNUSED(win);
-	UNUSED(line);
-	/* NYI */
+	hv_scroll_window(win, 0, line * win->y_raster - win->docsize.y);
 }
 
 /*** ---------------------------------------------------------------------- ***/

@@ -57,6 +57,7 @@ void WindowCalcScroll(WINDOW_DATA *win);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 WINDOW_DATA *hv_win_new(DOCUMENT *doc, gboolean popup);
 void hv_win_open(WINDOW_DATA *win);
+long hv_win_topline(WINDOW_DATA *win);
 
 
 /*

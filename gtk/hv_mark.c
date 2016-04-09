@@ -2,7 +2,7 @@
 #include "hypdebug.h"
 
 
-#define MAX_MARKEN		10
+#define MAX_MARKEN		12
 #define UNKNOWN_LEN		10
 #define PATH_LEN		128
 #define NODE_LEN		40
@@ -62,24 +62,19 @@ void MarkerSave(WINDOW_DATA *win, short num)
 		else
 			break;
 	}
-	if (dst < end)
-		*dst++ = ' ';
-	if (dst < end)
-		*dst++ = ' ';
 	*dst = 0;
 
 	{
 		char ZStr[255];
 		long len;
 
-		strcpy(ZStr, "(");
+		strcpy(ZStr, " (");
 		src = hyp_basename(marken[num].path);
 		strcat(ZStr, src);
-		strcat(ZStr, ") ");
+		strcat(ZStr, ")");
 		len = strlen(ZStr);
-		if (strlen(marken[num].node_name) + len > NODE_LEN)
-			marken[num].node_name[NODE_LEN - len] = '\0';
-		strcat(marken[num].node_name, ZStr);
+		if (strlen(marken[num].node_name) + len < NODE_LEN)
+			strcat(marken[num].node_name, ZStr);
 	}
 
 	marken_change = TRUE;
@@ -240,7 +235,7 @@ void MarkerInit(void)
 	if (!empty(gl_profile.viewer.marker_path))
 	{
 		filename = path_subst(gl_profile.viewer.marker_path);
-		ret = open(filename, O_RDONLY | O_BINARY);
+		ret = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 		if (ret >= 0)
 		{
 			read(ret, marken, sizeof(MARKEN) * MAX_MARKEN);
@@ -249,7 +244,7 @@ void MarkerInit(void)
 				if (marken[i].node_name[0] == 0)
 					MarkerDelete(i);
 			}
-			close(ret);
+			hyp_utf8_close(ret);
 		}
 		g_free(filename);
 	}

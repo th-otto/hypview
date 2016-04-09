@@ -2109,6 +2109,8 @@ static GtkActionEntry const action_entries[] = {
 	{ "bookmark-8",         NULL,                    N_("free"),                            "F8",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
 	{ "bookmark-9",         NULL,                    N_("free"),                            "F9",          N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
 	{ "bookmark-10",        NULL,                    N_("free"),                            "F10",         N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-11",        NULL,                    N_("free"),                            "F11",         N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
+	{ "bookmark-12",        NULL,                    N_("free"),                            "F12",         N_("Open bookmark"),                                 G_CALLBACK(on_bookmark_selected) },
 
 	{ "recent-1",           NULL,                    NULL,                                  "<Ctrl>1",     NULL,                                                G_CALLBACK(on_recent_selected) },
 	{ "recent-2",           NULL,                    NULL,                                  "<Ctrl>2",     NULL,                                                G_CALLBACK(on_recent_selected) },
@@ -2200,6 +2202,8 @@ static char const ui_info[] =
 "        <menuitem action='bookmark-8'/>\n"
 "        <menuitem action='bookmark-9'/>\n"
 "        <menuitem action='bookmark-10'/>\n"
+"        <menuitem action='bookmark-11'/>\n"
+"        <menuitem action='bookmark-12'/>\n"
 "      </menu>\n"
 "      <separator/>\n"
 "      <menuitem action='back'/>\n"

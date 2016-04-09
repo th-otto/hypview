@@ -88,6 +88,13 @@ void SendRedrawArea(WINDOW_DATA *win, const GRECT *area)
 
 /*** ---------------------------------------------------------------------- ***/
 
+long hv_win_topline(WINDOW_DATA *win)
+{
+	return win->docsize.y / win->y_raster;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void hv_set_title(WINDOW_DATA *win, const char *wintitle)
 {
 	char *title;

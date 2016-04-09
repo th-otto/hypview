@@ -212,7 +212,7 @@ void CheckFiledate(WINDOW_DATA *win)
 		if (st.st_mtime != doc->mtime)
 		{
 			hyp_nodenr node;
-			long lineno = 0;
+			long lineno;
 			int ref_count = 0;
 			
 			node = doc->getNodeProc(win);	/* Remember current node */

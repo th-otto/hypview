@@ -118,7 +118,8 @@ static void AutolocatorUpdate(WINDOW_DATA *win, long start_line)
 
 	if (line >= 0)
 	{
-		if (line != win->docsize.y / win->y_raster)
+		long topline = hv_win_topline(win);
+		if (line != topline)
 		{
 			win->docsize.y = line * win->y_raster;
 			SendRedraw(win);
@@ -139,7 +140,7 @@ gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii)
 {
 	DOCUMENT *doc = win->data;
 	char *ptr;
-	long line = win->docsize.y / win->y_raster;
+	long line = hv_win_topline(win);
 
 	if (!ascii)
 		return FALSE;

@@ -58,11 +58,13 @@ static void ApplyFont(void)
 		if (win->type == WIN_WINDOW)
 		{
 			gboolean ret;
+			long topline;
 			
 			doc = win->data;
 			/* reload page or file */
 			graf_mouse(BUSY_BEE, NULL);
 
+			topline = hv_win_topline(win);
 			if (doc->type == HYP_FT_HYP)
 			{
 				hyp_nodenr node = doc->getNodeProc(win);
@@ -80,7 +82,7 @@ static void ApplyFont(void)
 			
 			if (ret)
 			{
-				doc->start_line = win->docsize.y / win->y_raster;
+				doc->start_line = topline;
 
 				/* forget about "fulled" state */
 				win->status &= ~WIS_FULL;
