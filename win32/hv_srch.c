@@ -44,7 +44,7 @@ WINDOW_DATA *search_allref(WINDOW_DATA *win, const char *string, gboolean no_mes
 
 	if (!gl_profile.viewer.norefbox)
 	{
-		/* NYI */
+		/* NYI: refbox */
 	}
 	
 	if (allref == NULL)

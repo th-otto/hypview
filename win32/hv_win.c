@@ -486,7 +486,7 @@ static INT_PTR CALLBACK search_dialog(HWND hwnd, UINT message, WPARAM wParam, LP
 
 static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	WINDOW_DATA *win;
+	WINDOW_DATA *win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 	
 	win32debug_msg_print(stderr, "mainWndProc", hwnd, message, wParam, lParam);
 	switch (message)
@@ -505,12 +505,10 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		break;
 
 	case WM_CREATE:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		hv_update_winmenu(win);
 		break;
 	
 	case WM_CLOSE:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (toplevels_open_except(win) == 0)
 		{
 			RecentSaveToDisk();
@@ -522,7 +520,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		return TRUE;
 
 	case WM_DESTROY:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		win32_hypview_window_finalize(win);
 		win32debug_msg_end("mainWndProc", message, "FALSE");
 		return FALSE;
@@ -531,7 +528,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		{
 			RECT r;
 			
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			if (!win->is_popup)
 			{
 				GetWindowRect(hwnd, &r);
@@ -550,7 +546,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		return FALSE;
 	
 	case WM_INITMENUPOPUP:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		{
 			HMENU submenu = (HMENU)wParam;
 			
@@ -562,7 +557,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		break;
 		
 	case WM_COMMAND:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		switch (LOWORD(wParam))
 		{
 		case IDM_FILE_OPEN:
@@ -725,7 +719,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		return 0;
 	
 	case WM_ERASEBKGND:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		win32debug_msg_end("mainWndProc", message, "FALSE");
 		return FALSE;
 	
@@ -734,7 +727,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			PAINTSTRUCT ps;
 			GRECT gr;
 			
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			W_BeginPaint(hwnd, &ps, &gr);
 			W_EndPaint(hwnd, &ps);
 			win32debug_msg_end("mainWndProc", message, "TRUE");
@@ -746,10 +738,8 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		{
 			long xamount = 0;
 			long yamount = 0;
-			WINDOW_DATA *win;
 			SCROLLINFO si;
 			
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			UpdateWindow(win->textwin);
 
 			si.cbSize = sizeof(si);
@@ -830,7 +820,6 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 	case WM_SYSKEYDOWN:
 	case WM_KEYDOWN:
 	case WM_CHAR:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (key_press_event(win, message, wParam, lParam))
 		{
 			win32debug_msg_end("mainWndProc", message, "0");
@@ -992,7 +981,7 @@ static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
 
 static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	WINDOW_DATA *win;
+	WINDOW_DATA *win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 	
 	win32debug_msg_print(stderr, "textWndProc", hwnd, message, wParam, lParam);
 	switch (message)
@@ -1004,13 +993,11 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		break;
 
 	case WM_DESTROY:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		win->textwin = NULL;
 		win32debug_msg_end("textWndProc", message, "FALSE");
 		return FALSE;
 	
 	case WM_ERASEBKGND:
-		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		{
 			RECT r;
 			HBRUSH brush = CreateSolidBrush(viewer_colors.background);
@@ -1027,7 +1014,6 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			GRECT gr;
 			DOCUMENT *doc;
 			
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			doc = (DOCUMENT *) win->data;
 			win->draw_hdc = W_BeginPaint(hwnd, &ps, &gr);
 			if (win->cliprgn == NULL)
@@ -1047,7 +1033,6 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		{
 			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
 
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			UpdateWindow(win->textwin);
 
 			hv_scroll_window(win, 0, -amount * win->y_raster);
@@ -1059,7 +1044,6 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		{
 			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
 
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			UpdateWindow(win->textwin);
 
 			hv_scroll_window(win, -amount * win->x_raster, 0);
@@ -1071,7 +1055,6 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		{
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			set_cursor_if_appropriate(win, x, y);
 		}
 		break;
@@ -1083,7 +1066,6 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
 			int button = message == WM_LBUTTONDOWN ? 1 : message == WM_RBUTTONDOWN ? 2 : 3;
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			on_button_press(win, x, y, button);
 		}
 		break;
@@ -1095,7 +1077,6 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
 			int button = message == WM_LBUTTONUP ? 1 : message == WM_RBUTTONUP ? 2 : 3;
-			win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			on_button_release(win, x, y, button);
 		}
 		break;

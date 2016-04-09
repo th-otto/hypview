@@ -8,7 +8,7 @@
 void hv_config_colors(WINDOW_DATA *win)
 {
 	UNUSED(win);
-	/* NYI */
+	/* NYI: config colors */
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -16,5 +16,5 @@ void hv_config_colors(WINDOW_DATA *win)
 void hv_preferences(WINDOW_DATA *win)
 {
 	UNUSED(win);
-	/* NYI */
+	/* NYI: preferences */
 }

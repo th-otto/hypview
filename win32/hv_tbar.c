@@ -483,7 +483,7 @@ static void toolbar_help_paint(HDC hdc, GRECT *gr, const char *text)
 
 static LRESULT CALLBACK toolhelpWndProc(HWND hwnd, unsigned int message, WPARAM wParam, LPARAM lParam)
 {
-	TOOL_DATA *td;
+	TOOL_DATA *td = (TOOL_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 	
 	win32debug_msg_print(stderr, "toolhelpWndProc", hwnd, message, wParam, lParam);
 	switch (message)
@@ -498,8 +498,7 @@ static LRESULT CALLBACK toolhelpWndProc(HWND hwnd, unsigned int message, WPARAM 
 		break;
 		
 	case WM_DESTROY:
-		td = (TOOL_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		SetWindowLongPtr(hwnd, 0, 0l);
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, 0l);
 		if (td != NULL)
 			td->toolbar_help_hwnd = NO_WINDOW;
 		break;
@@ -507,7 +506,6 @@ static LRESULT CALLBACK toolhelpWndProc(HWND hwnd, unsigned int message, WPARAM 
 	case WM_TIMER:
 		if (wParam == TIMER_ID)
 		{
-			td = (TOOL_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			if (td != NULL)
 			{
 				if (td->toolbar_help_hwnd != NO_WINDOW && !IsWindowVisible(hwnd))
@@ -523,7 +521,6 @@ static LRESULT CALLBACK toolhelpWndProc(HWND hwnd, unsigned int message, WPARAM 
 		return 0;
 		
 	case WM_PAINT:
-		td = (TOOL_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (td  != NULL)
 		{
 			GRECT gr;
@@ -547,7 +544,7 @@ static LRESULT CALLBACK toolhelpWndProc(HWND hwnd, unsigned int message, WPARAM 
 
 static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM wParam, LPARAM lParam)
 {
-	WINDOW_DATA *win;
+	WINDOW_DATA *win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 	TOOL_DATA *td;
 	
 	win32debug_msg_print(stderr, "toolbarWndProc", hwnd, message, wParam, lParam);
@@ -563,14 +560,12 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 		break;
 		
 	case WM_DESTROY:
-		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		SetWindowLongPtr(hwnd, GWLP_USERDATA, 0l);
 		if (win != NULL && (td = win->td) != NULL)
 			td->hwnd = 0;
 		break;
 		
 	case WM_MBUTTONUP:
-		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
 		{
 			if (captured != 0)
@@ -588,7 +583,6 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
-		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
 		{
 			int buttonnum = message == WM_LBUTTONUP ? 1 : message == WM_RBUTTONUP ? 2 : 3;
@@ -604,7 +598,6 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 		break;
 
 	case WM_MOUSEMOVE:
-		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
 		{
 			int x, y;
@@ -647,7 +640,6 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
-		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
 		{
 			RECT r;
@@ -667,7 +659,6 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 		break;
 
 	case WM_PAINT:
-		win = (WINDOW_DATA *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (win != NULL && (td = win->td) != NULL)
 		{
 			PAINTSTRUCT ps;

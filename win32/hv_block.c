@@ -166,7 +166,7 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 void BlockCopy(WINDOW_DATA *win)
 {
 	UNUSED(win);
-	/* NYI */
+	/* NYI: BlockCopy */
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -175,7 +175,7 @@ void BlockPaste(WINDOW_DATA *win, gboolean new_window)
 {
 	UNUSED(win);
 	UNUSED(new_window);
-	/* NYI */
+	/* NYI: BlockPaste */
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -184,5 +184,5 @@ void BlockAsciiSave(WINDOW_DATA *win, const char *path)
 {
 	UNUSED(win);
 	UNUSED(path);
-	/* NYI */
+	/* NYI: BlockAsciiSave */
 }
