@@ -160,4 +160,5 @@ void AutoLocatorPaste(WINDOW_DATA *win)
 	if (!doc->buttons.searchbox)
 		return;
 	gtk_editable_paste_clipboard(GTK_EDITABLE(win->searchentry));
+	AutolocatorUpdate(win, hv_win_topline(win));
 }

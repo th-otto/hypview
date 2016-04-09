@@ -147,7 +147,9 @@ gboolean AutolocatorKey(WINDOW_DATA *win, short kbstate, short ascii)
 
 	ptr = AutolocatorInit(win);
 	doc->autolocator_dir = 1;
-
+	if (ptr == NULL)
+		return FALSE;
+	
 	if (ascii == 8)						/* Backspace */
 	{
 		if (ptr > win->autolocator)
@@ -221,29 +223,31 @@ void AutoLocatorPaste(WINDOW_DATA *win)
 		char c, *ptr;
 
 		ptr = AutolocatorInit(win);
-
-		error = read(ret, &c, 1);
-		while (error == 1)
+		if (ptr != NULL)
 		{
-			if (c == ' ')
-			{
-				/* ignore spaces at start */
-				if (ptr != win->autolocator)
-					*ptr++ = c;
-				*ptr = 0;
-			} else if (c > ' ')
-			{
-				int maxlen = win->toolbar[TO_SEARCH].ob_spec.tedinfo->te_txtlen;
-				if ((ptr - win->autolocator) >= (maxlen - 1))
-					break;
-				*ptr++ = c;
-				*ptr = 0;
-			}
 			error = read(ret, &c, 1);
+			while (error == 1)
+			{
+				if (c == ' ')
+				{
+					/* ignore spaces at start */
+					if (ptr != win->autolocator)
+						*ptr++ = c;
+					*ptr = 0;
+				} else if (c > ' ')
+				{
+					int maxlen = win->toolbar[TO_SEARCH].ob_spec.tedinfo->te_txtlen;
+					if ((ptr - win->autolocator) >= (maxlen - 1))
+						break;
+					*ptr++ = c;
+					*ptr = 0;
+				}
+				error = read(ret, &c, 1);
+			}
 		}
 		close(ret);
 
 		ToolbarUpdate(win, FALSE);
-		AutolocatorUpdate(win, win->docsize.y / win->y_raster);
+		AutolocatorUpdate(win, hv_win_topline(win));
 	}
 }

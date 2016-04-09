@@ -332,7 +332,7 @@ void RemoveAllHistoryEntries(WINDOW_DATA *win);
 /*
  * hv_autol.c
  */
-gboolean AutolocatorKey(WINDOW_DATA *win, WPARAM wparam, LPARAM lparam);
+gboolean AutolocatorKey(WINDOW_DATA *win, unsigned int message, WPARAM wparam, LPARAM lparam);
 void AutoLocatorPaste(WINDOW_DATA *win);
 
 
@@ -397,6 +397,7 @@ void g_slist_free_full(GSList *list, void (*freefunc)(void *));
 void g_slist_free(GSList *list);
 void DlgSetText(HWND hwnd, int id, const char *str);
 char *DlgGetText(HWND hwnd, int id);
+void DlgSetTextW(HWND hwnd, int id, const wchar_t *wstr);
 wchar_t *DlgGetTextW(HWND hwnd, int id);
 gboolean DlgGetButton(HWND hwnd, int id);
 void DlgSetButton(HWND hwnd, int id, gboolean check);
@@ -404,6 +405,7 @@ void DlgEnable(HWND hwnd, int id, gboolean enable);
 
 HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name);
 INT_PTR WINAPI DialogBoxExW(HINSTANCE hInstance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param);
+LPCDLGTEMPLATE LoadDialog(HINSTANCE instance, LPCWSTR name);
 
 
 /*

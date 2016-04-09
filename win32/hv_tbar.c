@@ -109,11 +109,15 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		{
 			g_free(search);
 			ShowWindow(win->searchbox, SW_SHOW);
+			WindowCalcScroll(win);
 			return;
 		}
 	}
 	if (win->searchbox)
+	{
 		ShowWindow(win->searchbox, SW_HIDE);
+		WindowCalcScroll(win);
+	}
 	
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;

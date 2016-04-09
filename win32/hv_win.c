@@ -54,6 +54,16 @@ static int const tb_defs[] = {
 static HCURSOR regular_cursor;
 static HCURSOR hand_cursor;
 
+#define IsModifierKey(keycode) \
+	(keycode == VK_LSHIFT || \
+	 keycode == VK_RSHIFT || \
+	 keycode == VK_LCONTROL || \
+	 keycode == VK_RCONTROL || \
+	 keycode == VK_LMENU || \
+	 keycode == VK_RMENU || \
+	 keycode == VK_NUMLOCK || \
+	 keycode == VK_SCROLL)
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -80,6 +90,7 @@ void WindowCalcScroll(WINDOW_DATA *win)
 	GRECT tgr, sgr;
 	int th = 0;
 	int sh = 0;
+	int sb = 0;
 	TOOL_DATA *td;
 	STATUS_DATA *sd;
 	
@@ -101,6 +112,14 @@ void WindowCalcScroll(WINDOW_DATA *win)
 				ShowWindow(td->hwnd, SW_HIDE);
 		}
 	}
+	
+	if (win->searchbox && IsWindowVisible(win->searchbox))
+	{
+		RECT s;
+		GetClientRect(win->searchbox, &s);
+		sb = s.bottom - s.top;
+	}
+	
 	if (sd != NULL && sd->hwnd != 0)
 	{
 		if (sd->visible)
@@ -129,6 +148,12 @@ void WindowCalcScroll(WINDOW_DATA *win)
 		}
 	}
 
+	if (win->searchbox && IsWindowVisible(win->searchbox))
+	{
+		MoveWindow(win->searchbox, r.left, r.top, r.right - r.left, sb, TRUE);
+		r.top += sb;
+	}
+	
 	if (sd != NULL && sd->hwnd != 0)
 	{
 		if (sd->ontop)
@@ -305,14 +330,7 @@ static gboolean key_press_event(WINDOW_DATA *win, unsigned int message, WPARAM w
 	case WM_KEYDOWN:
 	case WM_KEYUP:
 		keycode = MapVirtualKey((lParam >> 16) & 0xff, MAPVK_VSC_TO_VK_EX);
-		if (keycode == VK_LSHIFT ||
-			keycode == VK_RSHIFT ||
-			keycode == VK_LCONTROL ||
-			keycode == VK_RCONTROL ||
-			keycode == VK_LMENU ||
-			keycode == VK_RMENU ||
-			keycode == VK_NUMLOCK ||
-			keycode == VK_SCROLL)
+		if (IsModifierKey(keycode))
 			return FALSE;
 		
 		if (win->is_popup)
@@ -430,7 +448,7 @@ static gboolean key_press_event(WINDOW_DATA *win, unsigned int message, WPARAM w
 		break;
 	}
 	if (!handled && win->searchentry)
-		handled = AutolocatorKey(win, wParam, lParam);
+		handled = AutolocatorKey(win, message, wParam, lParam);
 	return handled;
 }
 
@@ -440,6 +458,28 @@ static void SetWindowCursor(HWND hwnd, HCURSOR cursor)
 {
 	SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR)cursor);
 	SetCursor(cursor);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static INT_PTR CALLBACK search_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNUSED(hwnd);
+	switch (message)
+	{
+	case WM_CTLCOLORSTATIC:
+	case WM_CTLCOLOREDIT:
+		if (GetDlgCtrlID((HWND)lParam) == IDC_SEARCH_NOTFOUND)
+		{
+			HDC hdcStatic = (HDC) wParam;
+			SetTextColor(hdcStatic, RGB(255, 0, 0));
+			SetBkColor(hdcStatic, RGB(0,0,0));
+			SetBkMode(hdcStatic, TRANSPARENT);
+			return (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
+		}
+		break;
+	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -455,6 +495,11 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		win = (WINDOW_DATA *)(((CREATESTRUCT *)lParam)->lpCreateParams);
 		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)win);
 		win->hwnd = hwnd;
+		{
+			HINSTANCE inst = GetInstance();
+			win->searchbox = CreateDialogIndirect(inst, LoadDialog(inst, MAKEINTRESOURCEW(IDD_SEARCHBOX)), hwnd, search_dialog);
+			win->searchentry = GetDlgItem(win->searchbox, IDC_SEARCH_ENTRY);
+		}
 		win->scrollvsize = -1;
 		win->scrollhsize = -1;
 		break;
@@ -781,6 +826,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 
 	case WM_SYSKEYDOWN:
 	case WM_KEYDOWN:
+	case WM_CHAR:
 		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (key_press_event(win, message, wParam, lParam))
 		{

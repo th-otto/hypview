@@ -111,6 +111,7 @@
 #define IDD_COLORS         105
 #define IDD_PREFERENCES    106
 #define IDD_ABOUT          107
+#define IDD_SEARCHBOX      108
 
 
 #define IDC_INFO_FILE                        502
@@ -168,3 +169,5 @@
 #define IDC_COMPILE_DATE                     807
 #define IDC_COMPILER_VERSION                 808
 
+#define IDC_SEARCH_ENTRY                     900
+#define IDC_SEARCH_NOTFOUND                  901

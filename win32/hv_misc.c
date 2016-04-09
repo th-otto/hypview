@@ -38,7 +38,7 @@ HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name)
 
 /*** ---------------------------------------------------------------------- ***/
 
-INT_PTR WINAPI DialogBoxExW(HINSTANCE instance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param)
+LPCDLGTEMPLATE LoadDialog(HINSTANCE instance, LPCWSTR name)
 {
 	HRSRC hrsrc;
 	LPCWSTR type = MAKEINTRESOURCEW((DWORD)(DWORD_PTR)RT_DIALOG);
@@ -55,8 +55,18 @@ INT_PTR WINAPI DialogBoxExW(HINSTANCE instance, LPCWSTR name, HWND owner, DLGPRO
 	if (!hrsrc && lang != MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
 		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
 	if (!hrsrc)
-		return -1;
+		return 0;
 	templ = (LPCDLGTEMPLATE)LoadResource(instance, hrsrc);
+	return templ;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+INT_PTR WINAPI DialogBoxExW(HINSTANCE instance, LPCWSTR name, HWND owner, DLGPROC dlgProc, LPARAM param)
+{
+	LPCDLGTEMPLATE templ;
+	
+	templ = LoadDialog(instance, name);
 	if (!templ)
 		return -1;
 	return DialogBoxIndirectParamW(instance, templ, owner, dlgProc, param);
@@ -243,6 +253,13 @@ void DlgSetText(HWND hwnd, int id, const char *str)
 	wchar_t *wstr = hyp_utf8_to_wchar(str, STR0TERM, NULL);
 	SendDlgItemMessageW(hwnd, id, WM_SETTEXT, 0, (LPARAM)wstr);
 	g_free(wstr);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void DlgSetTextW(HWND hwnd, int id, const wchar_t *wstr)
+{
+	SendDlgItemMessageW(hwnd, id, WM_SETTEXT, 0, (LPARAM)wstr);
 }
 
 /*** ---------------------------------------------------------------------- ***/
