@@ -402,7 +402,7 @@ static char hypview_string_154[] = "";
 static char hypview_string_155[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 static char hypview_string_156[] = "";
 static char hypview_string_157[] = "";
-static char hypview_string_158[] = "Press Shit+Ctrl to Cancel";
+static char hypview_string_158[] = "Press Shift+Ctrl to Cancel";
 static char hypview_string_159[] = "";
 static char hypview_string_160[] = "";
 static char hypview_string_161[] = "[2][This file exists already.|Do you want to replace it?][Replace|Abort]";
@@ -2337,7 +2337,7 @@ static TEDINFO rs_tedinfo[] = {
 	{ hypview_string_141, hypview_string_142, hypview_string_143, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 31,31 }, /* HYPFIND_STRING */
 	{ hypview_string_152, hypview_string_153, hypview_string_154, IBM, 0, TE_LEFT, 0x1180, 0x0, -1, 8,1 },
 	{ hypview_string_155, hypview_string_156, hypview_string_157, IBM, 0, TE_LEFT, 0x1180, 0x0, -2, 32,1 }, /* REFBOX_STRING */
-	{ hypview_string_158, hypview_string_159, hypview_string_160, SMALL, 0, TE_CNTR, 0x1100, 0x0, -1, 26,1 }
+	{ hypview_string_158, hypview_string_159, hypview_string_160, SMALL, 0, TE_CNTR, 0x1100, 0x0, -1, 27,1 }
 };
 
 

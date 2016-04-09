@@ -5,19 +5,19 @@
  */
 
 /*
- * Number of Strings:        124
+ * Number of Strings:        136
  * Number of Bitblks:        0
  * Number of Iconblks:       0
  * Number of Color Iconblks: 15
  * Number of Color Icons:    29
- * Number of Tedinfos:       18
- * Number of Free Strings:   17
+ * Number of Tedinfos:       21
+ * Number of Free Strings:   20
  * Number of Free Images:    0
- * Number of Objects:        85
- * Number of Trees:          7
+ * Number of Objects:        89
+ * Number of Trees:          8
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          26042
+ * Total file size:          26446
  */
 
 #undef RSC_NAME
@@ -30,17 +30,17 @@
 #endif
 
 #if !defined(RSC_STATIC_FILE) || !RSC_STATIC_FILE
-#define NUM_STRINGS 124
-#define NUM_FRSTR 17
+#define NUM_STRINGS 136
+#define NUM_FRSTR 20
 #define NUM_UD 0
 #define NUM_IMAGES 0
 #define NUM_BB 0
 #define NUM_FRIMG 0
 #define NUM_IB 0
 #define NUM_CIB 15
-#define NUM_TI 18
-#define NUM_OBS 85
-#define NUM_TREE 7
+#define NUM_TI 21
+#define NUM_OBS 89
+#define NUM_TREE 8
 #endif
 
 
@@ -131,6 +131,9 @@
 #define HYPFIND_ALL_PAGE                   7 /* BUTTON in tree HYPFIND */
 #define HYPFIND_ALL_HYP                    8 /* BUTTON in tree HYPFIND */
 
+#define REFBOX                             7 /* form/dialog */
+#define REFBOX_STRING                      2 /* TEXT in tree REFBOX */ /* max len 31 */
+
 #define WARN_FEXIST                        0 /* Alert string */
 /* [2][Tento soubor ji¾ existuje.|Chcete jej nahradit?][Nahradit|Zru¹it] */
 
@@ -181,6 +184,15 @@
 
 #define PROGINFO_TITLE                    16 /* Free string */
 /* Programinfo... */
+
+#define HV_ERR_NO_REMARKER                17 /* Alert string */
+/* [1][No path to REMARKER configured|in HYPVIEW.INI.][Cancel] */
+
+#define HV_ERR_EXEC                       18 /* Alert string */
+/* [1][Can not execute|<%s>][Cancel] */
+
+#define HV_ERR_HYPFIND                    19 /* Alert string */
+/* [1][HypFind exited with code %d][Cancel] */
 
 
 
