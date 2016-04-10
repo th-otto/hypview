@@ -162,8 +162,55 @@ gboolean AutolocatorKey(WINDOW_DATA *win, unsigned int message, WPARAM wparam, L
 void AutoLocatorPaste(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
+	HANDLE hClipData;
+	wchar_t *Text;
+	long line = hv_win_topline(win);
 	
 	if (!doc->buttons.searchbox)
 		return;
-	/* NYI: autolocator paste */
+
+	if (OpenClipboard(win->hwnd))
+	{
+		hClipData = GetClipboardData(CF_UNICODETEXT);
+		if (hClipData != NULL)
+		{
+			if ((Text = (wchar_t *)GlobalLock(hClipData)) != NULL)
+			{
+				size_t len = GlobalSize(hClipData) / sizeof(wchar_t);
+				char *txt;
+				char *p;
+				char *newtxt;
+				char *str;
+				
+				if (len > 0 && Text[len - 1] == 0)
+					len--;
+				txt = hyp_wchar_to_utf8(Text, len);
+
+				p = strchr(txt, 0x0d);
+				if (p == NULL)
+					p = strchr(txt, 0x0a);
+				if (p != NULL)
+					*p = '\0';
+				
+				GlobalUnlock(hClipData);
+				
+				str = DlgGetText(win->searchbox, IDC_SEARCH_ENTRY);
+				/* ignore spaces at start */
+				if (empty(str))
+					g_strchug(txt);
+				newtxt = g_strconcat(str, txt, NULL);
+				DlgSetText(win->searchbox, IDC_SEARCH_ENTRY, newtxt);
+
+				g_free(newtxt);
+				g_free(str);
+				g_free(txt);
+
+				AutolocatorInit(doc);
+				doc->autolocator_dir = 1;
+				ToolbarUpdate(win, TRUE);
+				AutolocatorUpdate(win, line);
+			}
+		}
+		CloseClipboard();
+	}
 }

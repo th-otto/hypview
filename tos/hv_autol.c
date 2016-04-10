@@ -234,6 +234,9 @@ void AutoLocatorPaste(WINDOW_DATA *win)
 					if (ptr != win->autolocator)
 						*ptr++ = c;
 					*ptr = 0;
+				} else if (c == 0x0d || c == 0x0a)
+				{
+					break;
 				} else if (c > ' ')
 				{
 					int maxlen = win->toolbar[TO_SEARCH].ob_spec.tedinfo->te_txtlen;
