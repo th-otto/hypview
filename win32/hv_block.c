@@ -163,26 +163,239 @@ void BlockSelectAll(WINDOW_DATA *win, BLOCK *b)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockCopy(WINDOW_DATA *win)
+gboolean BlockCopy(WINDOW_DATA *win)
 {
-	UNUSED(win);
-	/* NYI: BlockCopy */
+	HYP_NODE *node;
+	long line;
+	ssize_t len;
+	size_t wlen;
+	char *line_buffer;
+	const char *src;
+	BLOCK b = win->selection;
+	wchar_t *data;
+	wchar_t *wtxt;
+	size_t datalen;
+	HANDLE hdata;
+	wchar_t *clipdata;
+	gboolean result;
+	
+	node = hypwin_node(win);
+	if (!node)					/* no page loaded */
+	{
+		HYP_DBG(("Error: Can't save, no page loaded"));
+		return FALSE;
+	}
+
+	if (!b.valid)
+		BlockSelectAll(win, &b);
+	
+	line = b.start.line;
+	data = NULL;
+	datalen = 0;
+	while (line <= b.end.line)
+	{
+		line_buffer = HypGetTextLine(win, node, line);
+
+		if (line_buffer != NULL)
+		{
+			len = strlen(line_buffer);
+
+			if (line == b.end.line && b.end.offset < len)
+			{
+				line_buffer[b.end.offset] = 0;
+				len = b.end.offset;
+			}
+			if (line == b.start.line)
+			{
+				if (b.start.offset > len)
+				{
+					src = line_buffer + len;
+					len = 0;
+				} else
+				{
+					src = &line_buffer[b.start.offset];
+					len -= b.start.offset;
+				}
+			} else
+			{
+				src = line_buffer;
+			}
+			
+			wtxt = hyp_utf8_to_wchar(src, len, &wlen);
+			data = g_renew(wchar_t, data, datalen + wlen + 1);
+			if (data == NULL)
+			{
+				return FALSE;
+			}
+			memcpy(data + datalen, wtxt, wlen * sizeof(*data));
+			datalen += wlen;
+			g_free(wtxt);
+			g_free(line_buffer);
+		}
+							
+		if (line != b.end.line || b.end.offset == 0)
+		{
+			data = g_renew(wchar_t, data, datalen + 3);
+			if (data == NULL)
+			{
+				return FALSE;
+			}
+			data[datalen++] = '\r';
+			data[datalen++] = '\n';
+		}
+		
+		line++;
+	}
+	
+	if (data == NULL)
+		return TRUE;
+	data[datalen++] = '\0';
+	
+	result = FALSE;
+	if ((hdata = GlobalAlloc(GMEM_MOVEABLE, datalen * sizeof(*data))) != 0)
+	{
+		if ((clipdata = (wchar_t *)GlobalLock(hdata)) != NULL)
+		{
+			memcpy(clipdata, data, datalen * sizeof(*data));
+			GlobalUnlock(hdata);
+			if (OpenClipboard(win->hwnd))
+			{
+				if (EmptyClipboard())
+				{
+					SetClipboardData(CF_UNICODETEXT, hdata);
+					result = TRUE;
+				} else
+				{
+					hyp_debug("EmptyCliboard failed: %s\n", win32_errstring(GetLastError()));
+					GlobalFree(hdata);
+				}
+				CloseClipboard();
+			} else
+			{
+				hyp_debug("OpenClipboard failed: %s\n", win32_errstring(GetLastError()));
+				GlobalFree(hdata);
+			}
+		} else
+		{
+			hyp_debug("GlobalLock failed: %s\n", win32_errstring(GetLastError()));
+			GlobalFree(hdata);
+		}
+	} else
+	{
+		hyp_debug("GlobalAlloc failed: %s\n", win32_errstring(GetLastError()));
+	}
+	g_free(data);
+	return result;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void BlockPaste(WINDOW_DATA *win, gboolean new_window)
+gboolean BlockPaste(WINDOW_DATA *win, gboolean new_window)
 {
-	UNUSED(win);
-	UNUSED(new_window);
-	/* NYI: BlockPaste */
+	gboolean result = FALSE;
+	HANDLE hClipData;
+	wchar_t *Text;
+	const char *path = "$CLIPBRD";
+	DOCUMENT *doc;
+	DOCUMENT *prev_doc;
+	gboolean add_to_hist = TRUE;
+	FMT_ASCII *ascii;
+	
+	if (OpenClipboard(win->hwnd))
+	{
+		hClipData = GetClipboardData(CF_UNICODETEXT);
+		if (hClipData != NULL)
+		{
+			if ((Text = (wchar_t *)GlobalLock(hClipData)) != NULL)
+			{
+				size_t len = GlobalSize(hClipData) / sizeof(wchar_t);
+				char *txt;
+				
+				if (len > 0 && Text[len - 1] == 0)
+					len--;
+				txt = hyp_wchar_to_utf8(Text, len);
+				
+				len = strlen(txt);
+				ascii = (FMT_ASCII *)g_malloc(sizeof(FMT_ASCII) + len);
+				if (ascii != NULL)
+				{
+					memcpy(ascii->start, txt, len);
+					ascii->start[len] = '\0';
+					
+					/* create a new document */
+					doc = g_new0(DOCUMENT, 1);
+
+					doc->path = g_strdup(path);
+					doc->buttons.load = TRUE;
+					doc->type = HYP_FT_UNKNOWN;
+					doc->ref_count = 1;
+					
+					if (new_window)
+						win = NULL;
+					new_window = FALSE;
+					if (!win)
+					{
+						win = win32_hypview_window_new(doc, FALSE);
+						new_window = TRUE;
+						add_to_hist = FALSE;
+						prev_doc = NULL;
+					} else
+					{
+						prev_doc = win->data;
+						win->data = doc;
+					}
+					
+					ascii->length = len;
+					ascii->charset =  HYP_CHARSET_UTF8;
+					if (AsciiCalcLines(doc, ascii) < 0)
+					{
+						g_free(doc);
+						win->data = prev_doc;
+						if (new_window)
+							DestroyWindow(win->hwnd);
+					} else
+					{
+						if (add_to_hist)
+							AddHistoryEntry(win, prev_doc);
+						ReInitWindow(win, TRUE);
+						hv_win_open(win);
+						result = TRUE;
+					}
+				}
+				GlobalUnlock(hClipData);
+				
+				g_free(txt);
+			}
+		}
+		CloseClipboard();
+	}
+	return result;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void BlockAsciiSave(WINDOW_DATA *win, const char *path)
 {
-	UNUSED(win);
-	UNUSED(path);
-	/* NYI: BlockAsciiSave */
+	DOCUMENT *doc = win->data;
+	int handle;
+
+	if (doc->blockProc == NULL)
+	{
+		return;
+	}
+
+	handle = hyp_utf8_open(path, O_WRONLY | O_TRUNC | O_CREAT, HYP_DEFAULT_FILEMODE);
+	if (handle < 0)
+	{
+		FileErrorErrno(path);
+	} else
+	{
+		BLOCK b = win->selection;
+
+		if (!b.valid)					/* no block selected? */
+			BlockSelectAll(win, &b);
+
+		doc->blockProc(win, BLK_ASCIISAVE, &b, &handle);
+		hyp_utf8_close(handle);
+	}
 }

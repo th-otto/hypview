@@ -426,8 +426,8 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, int x, int y);
  */
 void BlockOperation(WINDOW_DATA *win, enum blockop num);
 void BlockSelectAll(WINDOW_DATA *win, BLOCK *b);
-void BlockCopy(WINDOW_DATA *win);
-void BlockPaste(WINDOW_DATA *win, gboolean new_window);
+gboolean BlockCopy(WINDOW_DATA *win);
+gboolean BlockPaste(WINDOW_DATA *win, gboolean new_window);
 void BlockAsciiSave(WINDOW_DATA *win, const char *path);
 typedef enum { remarker_top, remarker_startup, remarker_check, remarker_update } remarker_mode;
 int StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet);

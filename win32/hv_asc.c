@@ -85,6 +85,9 @@ void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 	UNUSED(node);
 	win->docsize.w = ascii->columns * win->x_raster;
 	win->docsize.h = ascii->lines * win->y_raster;
+	g_free(win->title);
+	win->title = g_strdup(doc->path);
+	hv_set_title(win, win->title);
 }
 
 /*** ---------------------------------------------------------------------- ***/

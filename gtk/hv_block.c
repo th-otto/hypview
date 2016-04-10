@@ -221,6 +221,7 @@ static void paste_clipboard(GtkClipboard *clipboard, const char *txt, void *user
 	}
 	
 	ascii->length = len;
+	ascii->charset = hyp_get_current_charset();
 	if (AsciiCalcLines(doc, ascii) < 0)
 	{
 		g_free(doc);

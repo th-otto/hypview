@@ -245,7 +245,6 @@ hyp_filetype AsciiCalcLines(DOCUMENT *doc, FMT_ASCII *ascii)
 
 	/* init lines and columns */
 	ascii->line_ptr = NULL;
-	ascii->charset = hyp_get_current_charset();
 	ascii->lines = 0;
 	ascii->columns = 0;
 	*end = 0;
@@ -432,6 +431,7 @@ hyp_filetype AsciiLoad(DOCUMENT *doc, int handle)
 			FileError(hyp_basename(doc->path), _("while reading"));
 		} else
 		{
+			ascii->charset = hyp_get_current_charset();
 			return AsciiCalcLines(doc, ascii);
 		}
 	} else

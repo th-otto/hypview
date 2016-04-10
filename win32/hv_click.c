@@ -13,6 +13,9 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 	POINT p;
 	gboolean ctrl = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
 	
+	if (doc->type != HYP_FT_HYP)
+		return;
+	
 	if (hypnode_valid(hyp, info->dest_page))
 	{
 		switch (info->dst_type)
@@ -244,6 +247,9 @@ gboolean HypFindLink(WINDOW_DATA *win, int x, int y, LINK_INFO *info, gboolean s
 	HDC hdc;
 	HFONT oldfont;
 	gboolean found = FALSE;
+	
+	if (doc->type != HYP_FT_HYP)
+		return FALSE;
 	
 	hyp = (HYP_DOCUMENT *)doc->data;
 
