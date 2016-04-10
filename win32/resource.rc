@@ -6,6 +6,12 @@
 #include "windows.rh"
 #include "hypintl.h"
 
+#ifndef WC_LISTVIEWA
+#define WC_LISTVIEWA "SysListView32"
+#endif
+
+
+1 24 "hypview.exe.manifest"
 
 
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US

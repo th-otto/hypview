@@ -65,10 +65,8 @@ static void CALLBACK check_hypfind(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwtim
 	if (HypfindID > 0)
 	{
 		DWORD exitCode;
-		BOOL ret;
 		
-		ret = GetExitCodeProcess((HANDLE)HypfindID, &exitCode);
-		if (ret && exitCode != STILL_ACTIVE)
+		if (GetExitCodeProcess((HANDLE)HypfindID, &exitCode) && exitCode != STILL_ACTIVE)
 		{
 			CloseHandle((HANDLE)HypfindID);
 			HypfindID = -1;
@@ -98,7 +96,7 @@ static void CALLBACK check_hypfind(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwtim
 static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp, const char *name)
 {
 	DOCUMENT *doc = win->data;
-	const char *argv[8];
+	const char *argv[9];
 	int argc = 0;
 	char *filename;
 	
@@ -111,6 +109,7 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp, const char *
 		return;
 	filename = path_subst(gl_profile.general.hypfind_path);
 	argv[argc++] = filename;
+	argv[argc++] = "-q";
 	argv[argc++] = "-p";
 	argv[argc++] = name;
 	if (gl_profile.viewer.find_casesensitive)
@@ -157,7 +156,6 @@ static INT_PTR CALLBACK hypfind_dialog(HWND hwnd, UINT message, WPARAM wParam, L
 	WINDOW_DATA *win;
 	WORD notifyCode;
 
-	UNUSED(lParam);
 	switch (message)
 	{
 	case WM_CREATE:

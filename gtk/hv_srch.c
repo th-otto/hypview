@@ -159,7 +159,7 @@ static void SearchResult(WINDOW_DATA *win, RESULT_ENTRY *result_list, const char
 			g_free(displayname);
 		}
 	}
-		
+	
 	button = gtk_button_new_cancel();
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), dialog);

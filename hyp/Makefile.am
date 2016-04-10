@@ -174,6 +174,9 @@ stool_LDADD += stool_rc.res
 stool_rc.res: $(srcdir)/stool_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
 	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
+if WITH_GUI_GTK
+stool_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+endif
 
 stool.tos: stool
 	$(LN_S) $?$(EXEEXT) $@
@@ -194,6 +197,9 @@ hypfind_DEPENDENCIES += hypfind_rc.res $(LIBRCINTL_DEP)
 hypfind_LDADD += hypfind_rc.res
 hypfind_rc.res: $(srcdir)/hypfind_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
 	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+endif
+if WITH_GUI_GTK
+hypfind_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
 
 hypfind.ttp: hypfind

@@ -62,6 +62,7 @@ resource_files = \
 	$(srcdir)/resource.rh \
 	$(srcdir)/resource_en.rc \
 	$(srcdir)/resource_de.rc \
+	$(srcdir)/hypview.exe.manifest \
 	$(srcdir)/res/mail.bmp \
 	$(srcdir)/res/weblink.bmp \
 	$(empty)
