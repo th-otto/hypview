@@ -320,7 +320,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			break;
 		case 'd':
 			opts->min_ref_distance = (int)strtol(getopt_arg_r(d), NULL, 0);
-			if (opts->min_ref_distance <= 0 || !g_is_number(getopt_arg_r(d), TRUE))
+			if (opts->min_ref_distance < 0 || !g_is_number(getopt_arg_r(d), TRUE))
 				retval = bad_value("--ref-distance");
 			break;
 		case 'e':
