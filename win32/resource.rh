@@ -153,7 +153,6 @@
 #define IDC_HYPFIND_TEXT                     701
 #define IDC_HYPFIND_PAGES                    702
 #define IDC_HYPFIND_REF                      703
-#define IDC_HYPFIND_ABORT                    704
 #define IDC_HYPFIND_ALL_PAGE                 705
 #define IDC_HYPFIND_ALL_HYP                  706
 #define IDC_HYPFIND_CASE                     707

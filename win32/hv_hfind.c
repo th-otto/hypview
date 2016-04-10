@@ -2,29 +2,17 @@
 #include "resource.rh"
 
 static gboolean can_search_again;
+static char *last_search;
 static volatile int HypfindID = -1;
 static UINT_PTR hypfind_timer;
 
 /*** ---------------------------------------------------------------------- ***/
 
-static char *get_search_str(HWND dialog)
-{
-	wchar_t str[256];
-	int len;
-	
-	if ((len = GetWindowTextW(GetDlgItem(dialog, IDC_HYPFIND_TEXT), str, 256)) <= 0)
-		return NULL;
-	return hyp_wchar_to_utf8(str, len);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void hypfind_text(WINDOW_DATA *win, HWND dialog)
+static void hypfind_text(WINDOW_DATA *win, const char *search)
 {
 	DOCUMENT *doc = win->data;
 	long line = hv_win_topline(win);
 	long start_line = line;
-	char *search = get_search_str(dialog);
 	
 	if (empty(search))
 		return;
@@ -44,30 +32,25 @@ static void hypfind_text(WINDOW_DATA *win, HWND dialog)
 	{
 		MessageBeep(MB_ICONWARNING);
 	}
-	g_free(search);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_page(WINDOW_DATA *win, HWND dialog)
+static void hypfind_page(WINDOW_DATA *win, const char *name)
 {
 	DOCUMENT *doc = win->data;
-	char *name = get_search_str(dialog);
 	if (empty(name))
 		return;
 	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, TRUE, FALSE, FALSE);
-	g_free(name);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_search_allref(WINDOW_DATA *win, HWND dialog)
+static void hypfind_search_allref(WINDOW_DATA *win, const char *name)
 {
-	char *name = get_search_str(dialog);
 	if (empty(name))
 		return;
 	search_allref(win, name, FALSE);
-	g_free(name);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -82,8 +65,10 @@ static void CALLBACK check_hypfind(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwtim
 	if (HypfindID > 0)
 	{
 		DWORD exitCode;
+		BOOL ret;
 		
-		if (GetExitCodeProcess((HANDLE)HypfindID, &exitCode))
+		ret = GetExitCodeProcess((HANDLE)HypfindID, &exitCode);
+		if (ret && exitCode != STILL_ACTIVE)
 		{
 			CloseHandle((HANDLE)HypfindID);
 			HypfindID = -1;
@@ -110,12 +95,11 @@ static void CALLBACK check_hypfind(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwtim
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypfind_run_hypfind(WINDOW_DATA *win, HWND dialog, gboolean all_hyp)
+static void hypfind_run_hypfind(WINDOW_DATA *win, gboolean all_hyp, const char *name)
 {
 	DOCUMENT *doc = win->data;
 	const char *argv[8];
 	int argc = 0;
-	char *name;
 	char *filename;
 	
 	if (empty(gl_profile.general.hypfind_path))
@@ -123,7 +107,6 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, HWND dialog, gboolean all_hyp)
 		show_message(win ? win->hwnd : NULL, _("Error"), _("No path to HypFind configured"), FALSE);
 		return;
 	}
-	name = get_search_str(dialog);
 	if (empty(name))
 		return;
 	filename = path_subst(gl_profile.general.hypfind_path);
@@ -151,45 +134,121 @@ static void hypfind_run_hypfind(WINDOW_DATA *win, HWND dialog, gboolean all_hyp)
 		g_free(str);
 	}
 	g_free(filename);
-	g_free(name);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_apply(HWND hwnd)
+{
+	char *search;
+
+	gl_profile.viewer.find_casesensitive = DlgGetButton(hwnd, IDC_HYPFIND_CASE);
+	gl_profile.viewer.find_word = DlgGetButton(hwnd, IDC_HYPFIND_WORD);
+	search = DlgGetText(hwnd, IDC_HYPFIND_STRING);
+	g_free(last_search);
+	last_search = search;
+	HypProfile_SetChanged();
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static INT_PTR CALLBACK hypfind_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	WINDOW_DATA *win;
+	WORD notifyCode;
+
+	UNUSED(lParam);
+	switch (message)
+	{
+	case WM_CREATE:
+		break;
+	case WM_INITDIALOG:
+		win = (WINDOW_DATA *)lParam;
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)win);
+		CenterWindow(hwnd);
+		DlgSetText(hwnd, IDC_HYPFIND_STRING, fixnull(last_search));
+		DlgSetButton(hwnd, IDC_HYPFIND_CASE, gl_profile.viewer.find_casesensitive);
+		DlgSetButton(hwnd, IDC_HYPFIND_WORD, gl_profile.viewer.find_word);
+		return TRUE;
+	case WM_CLOSE:
+		EndDialog(hwnd, IDCANCEL);
+		DestroyWindow(hwnd);
+		return TRUE;
+	
+	case WM_COMMAND:
+		notifyCode = HIWORD(wParam);
+		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		switch (LOWORD(wParam))
+		{
+		case IDCANCEL:
+			EndDialog(hwnd, IDCANCEL);
+			DestroyWindow(hwnd);
+			return TRUE;
+		case IDC_HYPFIND_TEXT:
+			on_apply(hwnd);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			hypfind_text(win, last_search);
+			return TRUE;
+		case IDC_HYPFIND_PAGES:
+			on_apply(hwnd);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			hypfind_page(win, last_search);
+			return TRUE;
+		case IDC_HYPFIND_REF:
+			on_apply(hwnd);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			hypfind_search_allref(win, last_search);
+			return TRUE;
+		case IDC_HYPFIND_ALL_PAGE:
+			on_apply(hwnd);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			hypfind_run_hypfind(win, FALSE, last_search);
+			return TRUE;
+		case IDC_HYPFIND_ALL_HYP:
+			on_apply(hwnd);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			hypfind_run_hypfind(win, TRUE, last_search);
+			return TRUE;
+		case IDHELP:
+			if (notifyCode == BN_CLICKED)
+			{
+				Help_Contents(win);
+			}
+			break;
+		}
+		break;
+	case WM_DESTROY:
+		break;
+	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void Hypfind(WINDOW_DATA *win, gboolean again)
 {
-	HWND dialog = 0;
-	int resp = -1;
-	
 	/*
 	 * background process still running?
 	 */
 	if (HypfindID != -1)
 		return;
-
+	if (win == NULL)
+	{
+		g_freep(&last_search);
+		return;
+	}
+	
 	if (again && can_search_again)
 	{
-		hypfind_text(win, dialog);
+		hypfind_text(win, last_search);
 		return;
 	}
 
 	can_search_again = FALSE;
-	switch (resp)
-	{
-	case 1:
-		hypfind_text(win, dialog);
-		break;
-	case 2:
-		hypfind_page(win, dialog);
-		break;
-	case 3:
-		hypfind_search_allref(win, dialog);
-		break;
-	case 4:
-		hypfind_run_hypfind(win, dialog, FALSE);
-		break;
-	case 5:
-		hypfind_run_hypfind(win, dialog, TRUE);
-		break;
-	}
+	DialogBoxExW(NULL, MAKEINTRESOURCEW(IDD_HYPFIND), win->hwnd, hypfind_dialog, (LPARAM)win);
 }

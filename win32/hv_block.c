@@ -19,7 +19,7 @@ static void CALLBACK check_remarker(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwti
 	{
 		DWORD ret;
 		
-		if (GetExitCodeProcess((HANDLE)remarker_pid, &ret))
+		if (GetExitCodeProcess((HANDLE)remarker_pid, &ret) && ret != STILL_ACTIVE)
 		{
 			CloseHandle((HANDLE)remarker_pid);
 			remarker_pid = -1;

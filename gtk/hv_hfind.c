@@ -263,6 +263,7 @@ void Hypfind(WINDOW_DATA *win, gboolean again)
 	gl_profile.viewer.find_casesensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
 	button = (GtkWidget *)g_object_get_data(G_OBJECT(dialog), "find_word");
 	gl_profile.viewer.find_word = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
+	HypProfile_SetChanged();
 	
 	can_search_again = FALSE;
 	switch (resp)

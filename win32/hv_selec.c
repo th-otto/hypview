@@ -243,6 +243,7 @@ void MouseSelection(WINDOW_DATA *win, int mx, int my, gboolean extend)
 
 				oy -= scrolled_y;			/* did we scroll in y-direction? */
 				ox -= scrolled_x;			/* did we scroll in x-direction? */
+				UpdateWindow(win->textwin);
 			}
 		}
 
@@ -331,7 +332,7 @@ void MouseSelection(WINDOW_DATA *win, int mx, int my, gboolean extend)
 			 * small delay to make scrolling usable on fast machines
 			 */
 			/* XXX Add some config to this */
-			/* evnt_timer(300); */
+			Sleep(100);
 		}
 
 		end = newpos;
