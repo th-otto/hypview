@@ -1,0 +1,19 @@
+Known bugs in this version:
+
+- Very large text nodes cannot be compressed.
+  If the difference between the uncompressed and compressed size
+  of a node is more than 64K, compression fails. This is actually
+  not a bug in the compiler or the viewer, but rather a limitation
+  of the file format. This is usually not a problem unless you write
+  real huge text pages (i haven't seen a single file where this limit
+  is exceeded). It may affect hypfind however, which writes the hitlist
+  to a single page: if you run it to search for text which returns a
+  lot of hits, hcp may not be able to compile the generated file.
+
+- hcp ignores the -dN option.
+  hcp currently accepts this option for compatibility, but does not
+  use it. This may change in a future version.
+
+- hcp ignores the -bN option.
+  This option is not needed by the current implementation. There
+  is no limit on the node size other than available memory.
