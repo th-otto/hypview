@@ -1,4 +1,4 @@
-# Auto-generated: Mo 29. Feb 14:51:53 CET 2016
+# Auto-generated: So 10. Apr 11:49:21 CEST 2016
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -28,6 +28,7 @@ hyp/hcp_opts.c
 hyp/hcpmain.c
 hyp/hyp.c
 hyp/hyp_asc.c
+hyp/hyp_cfg.c
 hyp/hyp_cset.c
 hyp/hyp_err.c
 hyp/hypdoc.c
@@ -41,7 +42,6 @@ hyp/refcheck.c
 hyp/refcmds.c
 hyp/reflink.c
 hyp/stool.c
-hyp/utl_prof.c
 hyp/win32.c
 hyp/xgetopt.c
 tools/help_rc.c
@@ -53,11 +53,13 @@ tos/hv_mark.c
 tos/hv_nav.c
 tos/hv_srch.c
 tos/nf_ops.c
+win32/hv_about.c
 win32/hv_block.c
 win32/hv_click.c
 win32/hv_eref.c
 win32/hv_error.c
 win32/hv_file.c
+win32/hv_font.c
 win32/hv_fsel.c
 win32/hv_help.c
 win32/hv_hfind.c
@@ -65,3 +67,4 @@ win32/hv_main.c
 win32/hv_mark.c
 win32/hv_nav.c
 win32/hv_srch.c
+win32/hv_win.c
