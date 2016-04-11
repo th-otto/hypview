@@ -1187,7 +1187,7 @@ static char *linkname(CFG *l)
 
 /* ------------------------------------------------------------------------- */
 
-static void print_str(FILE *outfile, const char *indent, const char *str, gboolean skip_indent)
+static void print_str(FILE *outfile, const char *indent, const char *str, gboolean skip_indent, gboolean dont_quote)
 {
 	char buf[HYP_UTF8_CHARMAX + 1];
 	gboolean converror = FALSE;
@@ -1196,7 +1196,7 @@ static void print_str(FILE *outfile, const char *indent, const char *str, gboole
 		fputs(indent, outfile);
 	while (*str)
 	{
-		if (*str == '@')
+		if (*str == '@' && !dont_quote)
 		{
 			fputc('@', outfile);
 			fputc('@', outfile);
@@ -1236,7 +1236,7 @@ static void print_dir(FILE *outfile, CFG *l)
 		g_free(str);
 		g_free(title);
 		if (l->desc)
-			print_str(outfile, STR_INDENT, l->desc, TRUE);
+			print_str(outfile, STR_INDENT, l->desc, TRUE, FALSE);
 		
 		l = l->right;
 		if (l)
@@ -1301,7 +1301,7 @@ static void print_filelist(FILE *outfile, CFG *l)
 		g_free(tmp);
 		
 		if (l->desc)
-			print_str(outfile, STR_INDENT, l->desc, TRUE);
+			print_str(outfile, STR_INDENT, l->desc, TRUE, FALSE);
 		
 		l = l->list;
 		if (l)
@@ -1488,7 +1488,7 @@ static void print_index(FILE *outfile, CFG *root)
 				g_free(tmp);
 				fputs("  ", outfile);
 				if (l->database)
-					print_str(outfile, NULL, l->database, FALSE);
+					print_str(outfile, NULL, l->database, FALSE, FALSE);
 				fputs("\n", outfile);
 			}
 			g_free(info.files);
@@ -1558,7 +1558,7 @@ static void print_index_only(FILE *outfile, CFG *root)
 				g_free(tmp);
 				fputs("  ", outfile);
 				if (l->database)
-					print_str(outfile, NULL, l->database, FALSE);
+					print_str(outfile, NULL, l->database, FALSE, FALSE);
 				fputs("\n", outfile);
 			}
 			g_free(info.files);
@@ -1581,7 +1581,7 @@ static void print_helppage(FILE *outfile)
 	g_free(str);
 	hyp_utf8_fprintf_charset(outfile, output_charset, "@prev \"%s\"\n", nodename);
 	hyp_utf8_fprintf_charset(outfile, output_charset, "@next \"%s\"\n", nodename);
-	print_str(outfile, STR_INDENT, help_page, TRUE);
+	print_str(outfile, STR_INDENT, help_page, TRUE, TRUE);
 	hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode\n");
 	g_free(nodename);
 }
