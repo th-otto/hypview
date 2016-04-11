@@ -31,7 +31,7 @@
 FONTSEL_DATA *CreateFontselector(HNDL_FONT proc, short font_flag, const char *sample_text, const char *opt_button)
 {
 	FONTSEL_DATA *ptr = NULL;
-
+	
 	if (has_fonts_dialog())
 	{
 		short i;
@@ -143,8 +143,13 @@ void RemoveFontselector(FONTSEL_DATA *ptr)
 
 void FontselectorEvents(FONTSEL_DATA *ptr, EVNT *event)
 {
+	_WORD override = -1;
+	if ((event->mwhich & MU_MESAG) && event->msg[0] == WM_CLOSED)
+		override = FNTS_CANCEL;
 	if (!fnts_evnt(ptr->dialog, event, &ptr->button, &ptr->check_boxes, &ptr->id, &ptr->pt, &ptr->ratio))
 	{
+		if (override >= 0)
+			ptr->button = override;
 		if (!ptr->proc(ptr))
 			RemoveFontselector(ptr);
 	}
