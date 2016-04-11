@@ -112,6 +112,7 @@
 #define IDD_PREFERENCES    106
 #define IDD_ABOUT          107
 #define IDD_SEARCHBOX      108
+#define IDD_FONTSEL        109
 
 
 #define IDC_INFO_FILE                        502
@@ -170,3 +171,10 @@
 
 #define IDC_SEARCH_ENTRY                     900
 #define IDC_SEARCH_NOTFOUND                  901
+
+#define IDC_FONT_BOX                         950
+#define IDC_FONT_TEXT                        951
+#define IDC_FONT_BUTTON                      952
+#define IDC_XFONT_BOX                        953
+#define IDC_XFONT_TEXT                       954
+#define IDC_XFONT_BUTTON                     955

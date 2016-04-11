@@ -85,7 +85,7 @@ void SelectFont(WINDOW_DATA *win)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 15);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
-	frame = gtk_frame_new(_("Standard font: "));
+	frame = gtk_frame_new(_("Standard font:"));
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
 	
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -119,7 +119,7 @@ void SelectFont(WINDOW_DATA *win)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 15);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
-	frame = gtk_frame_new(_("Alternative font: "));
+	frame = gtk_frame_new(_("Alternative font:"));
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
 	
 	hbox = gtk_hbox_new(FALSE, 0);

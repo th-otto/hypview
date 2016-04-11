@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-10 11:49+0200\n"
+"POT-Creation-Date: 2016-04-11 11:10+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -247,11 +247,11 @@ msgstr ""
 #: ../win32/hv_error.c:112
 #: ../win32/hv_file.c:181
 #: ../win32/hv_help.c:109
-#: ../win32/hv_hfind.c:96
-#: ../win32/hv_hfind.c:123
-#: ../win32/hv_hfind.c:150
-#: ../win32/hv_srch.c:41
-#: ../win32/hv_srch.c:112
+#: ../win32/hv_hfind.c:79
+#: ../win32/hv_hfind.c:105
+#: ../win32/hv_hfind.c:132
+#: ../win32/hv_srch.c:201
+#: ../win32/hv_srch.c:272
 msgid  "Error"
 msgstr ""
 
@@ -263,7 +263,7 @@ msgstr ""
 #: ../gtk/hv_block.c:75
 #: ../gtk/hv_hfind.c:134
 #: ../win32/hv_block.c:80
-#: ../win32/hv_hfind.c:149
+#: ../win32/hv_hfind.c:131
 #, c-format
 msgid  ""
 "Can not execute\n"
@@ -325,7 +325,7 @@ msgstr ""
 #: ../gtk/hv_file.c:182
 #: ../gtk/hv_srch.c:292
 #: ../win32/hv_file.c:180
-#: ../win32/hv_srch.c:111
+#: ../win32/hv_srch.c:271
 #, c-format
 msgid  ""
 "%s: could not find\n"
@@ -337,20 +337,22 @@ msgid  "Select Fonts"
 msgstr ""
 
 #: ../gtk/hv_font.c:88
-msgid  "Standard font: "
+msgid  "Standard font:"
 msgstr ""
 
 #: ../gtk/hv_font.c:96
-#: ../win32/hv_font.c:319
+#: ../win32/hv_font.c:362
+#: ../win32/hv_font.c:390
 msgid  "Standard font"
 msgstr ""
 
 #: ../gtk/hv_font.c:122
-msgid  "Alternative font: "
+msgid  "Alternative font:"
 msgstr ""
 
 #: ../gtk/hv_font.c:130
-#: ../win32/hv_font.c:320
+#: ../win32/hv_font.c:366
+#: ../win32/hv_font.c:399
 msgid  "Alternative font"
 msgstr ""
 
@@ -398,13 +400,13 @@ msgid  "No help file found"
 msgstr ""
 
 #: ../gtk/hv_hfind.c:83
-#: ../win32/hv_hfind.c:95
+#: ../win32/hv_hfind.c:78
 #, c-format
 msgid  "HypFind exited with code %d"
 msgstr ""
 
 #: ../gtk/hv_hfind.c:108
-#: ../win32/hv_hfind.c:123
+#: ../win32/hv_hfind.c:105
 msgid  "No path to HypFind configured"
 msgstr ""
 
@@ -743,11 +745,13 @@ msgid  "Ask before saving bookmarks"
 msgstr ""
 
 #: ../gtk/hv_srch.c:78
+#: ../win32/hv_srch.c:71
 #, c-format
 msgid  "Search results: %s"
 msgstr ""
 
 #: ../gtk/hv_srch.c:108
+#: ../win32/hv_srch.c:84
 msgid  "Name"
 msgstr ""
 
@@ -756,6 +760,7 @@ msgid  "Node/Alias name"
 msgstr ""
 
 #: ../gtk/hv_srch.c:118
+#: ../win32/hv_srch.c:88
 msgid  "Description"
 msgstr ""
 
@@ -768,7 +773,7 @@ msgid  "Visible"
 msgstr ""
 
 #: ../gtk/hv_srch.c:202
-#: ../win32/hv_srch.c:41
+#: ../win32/hv_srch.c:201
 msgid  "No ALL.REF file defined"
 msgstr ""
 
@@ -3690,7 +3695,7 @@ msgstr ""
 msgid  "\tScreens\t\t\t\t\t: %4ld\n"
 msgstr ""
 
-#: ../tos/dl_init.c:157
+#: ../tos/dl_init.c:203
 #, c-format
 msgid  "[1][Error while loading |'%s'.][Cancel]"
 msgstr "[1][Impossible de trouver '%s'.][Annuler]"

@@ -185,6 +185,66 @@ gboolean W_Fontname(const char *name, FONT_ATTR *attr)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void W_FontCreate(const char *name, HFONT *fonts)
+{
+	FONT_ATTR attr;
+	LOGFONTA lf;
+	int h = GetDeviceCaps(GetDC(HWND_DESKTOP), LOGPIXELSY);
+	int i;
+	
+	memset(&lf, 0, sizeof(lf));
+	lf.lfWeight = FW_NORMAL;
+	lf.lfQuality = DRAFT_QUALITY;
+	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+	lf.lfCharSet = DEFAULT_CHARSET;
+	if (W_Fontname(name, &attr))
+	{
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
+		for (i = 0; i <= HYP_TXT_MASK; i++)
+		{
+			lf.lfWeight = i & HYP_TXT_BOLD ? FW_BOLD : FW_NORMAL;
+			lf.lfItalic = i & HYP_TXT_ITALIC ? TRUE : FALSE;
+			lf.lfUnderline = i & HYP_TXT_UNDERLINED ? TRUE : FALSE;
+			fonts[i] = CreateFontIndirect(&lf);
+		}
+	} else
+	{
+		for (i = 0; i <= HYP_TXT_MASK; i++)
+			fonts[i] = (HFONT)GetStockObject(DEVICE_DEFAULT_FONT);
+	}
+}
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+/*** ---------------------------------------------------------------------- ***/
+
+static HFONT W_FontCreate1(const char *name)
+{
+	FONT_ATTR attr;
+	LOGFONTA lf;
+	int h = GetDeviceCaps(GetDC(HWND_DESKTOP), LOGPIXELSY);
+	HFONT font;
+	
+	memset(&lf, 0, sizeof(lf));
+	lf.lfWeight = FW_NORMAL;
+	lf.lfQuality = DRAFT_QUALITY;
+	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+	lf.lfCharSet = DEFAULT_CHARSET;
+	if (W_Fontname(name, &attr))
+	{
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
+		font = CreateFontIndirect(&lf);
+	} else
+	{
+		font = (HFONT)GetStockObject(DEVICE_DEFAULT_FONT);
+	}
+	return font;
+}
+
 static UINT_PTR CALLBACK select_font_hook(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	UNUSED(wparam);
@@ -281,34 +341,96 @@ static gboolean Choose1Font(HWND parent, char **desc, const char *title)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void W_FontCreate(const char *name, HFONT *fonts)
+static INT_PTR CALLBACK font_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	FONT_ATTR attr;
-	LOGFONTA lf;
-	int h = GetDeviceCaps(GetDC(HWND_DESKTOP), LOGPIXELSY);
-	int i;
+	WORD notifyCode;
+	WINDOW_DATA *win;
+	static HBRUSH bg_brush;
+	static HFONT font;
+	static HFONT xfont;
 	
-	memset(&lf, 0, sizeof(lf));
-	lf.lfWeight = FW_NORMAL;
-	lf.lfQuality = DRAFT_QUALITY;
-	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
-	lf.lfCharSet = DEFAULT_CHARSET;
-	if (W_Fontname(name, &attr))
+	UNUSED(lParam);
+	switch (message)
 	{
-		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
-		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
-		for (i = 0; i <= HYP_TXT_MASK; i++)
+	case WM_CREATE:
+		break;
+	case WM_INITDIALOG:
+		win = (WINDOW_DATA *)lParam;
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)win);
+		CenterWindow(hwnd);
+		DlgSetText(hwnd, IDC_FONT_BUTTON, gl_profile.viewer.font_name);
+		DlgSetText(hwnd, IDC_FONT_TEXT, _("Standard font"));
+		font = W_FontCreate1(gl_profile.viewer.font_name);
+		SendDlgItemMessage(hwnd, IDC_FONT_TEXT, WM_SETFONT, (WPARAM)font, FALSE);
+		DlgSetText(hwnd, IDC_XFONT_BUTTON, gl_profile.viewer.xfont_name);
+		DlgSetText(hwnd, IDC_XFONT_TEXT, _("Alternative font"));
+		xfont = W_FontCreate1(gl_profile.viewer.xfont_name);
+		SendDlgItemMessage(hwnd, IDC_XFONT_TEXT, WM_SETFONT, (WPARAM)xfont, FALSE);
+		bg_brush = CreateSolidBrush(viewer_colors.background);
+		return TRUE;
+	case WM_CLOSE:
+		EndDialog(hwnd, IDCANCEL);
+		DestroyWindow(hwnd);
+		return TRUE;
+	case WM_COMMAND:
+		notifyCode = HIWORD(wParam);
+		win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		switch (LOWORD(wParam))
 		{
-			lf.lfWeight = i & HYP_TXT_BOLD ? FW_BOLD : FW_NORMAL;
-			lf.lfItalic = i & HYP_TXT_ITALIC ? TRUE : FALSE;
-			lf.lfUnderline = i & HYP_TXT_UNDERLINED ? TRUE : FALSE;
-			fonts[i] = CreateFontIndirect(&lf);
+		case IDCANCEL:
+			EndDialog(hwnd, IDCANCEL);
+			DestroyWindow(hwnd);
+			return TRUE;
+		case IDOK:
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			SwitchFont(win);
+			break;
+		case IDC_FONT_BUTTON:
+			if (Choose1Font(hwnd, &gl_profile.viewer.font_name, _("Standard font")))
+			{
+				DeleteObject(font);
+				font = W_FontCreate1(gl_profile.viewer.font_name);
+				SendDlgItemMessage(hwnd, IDC_FONT_TEXT, WM_SETFONT, (WPARAM)font, TRUE);
+				DlgSetText(hwnd, IDC_FONT_BUTTON, gl_profile.viewer.font_name);
+			}
+			break;
+		case IDC_XFONT_BUTTON:
+			if (Choose1Font(hwnd, &gl_profile.viewer.xfont_name, _("Alternative font")))
+			{
+				DeleteObject(xfont);
+				xfont = W_FontCreate1(gl_profile.viewer.xfont_name);
+				SendDlgItemMessage(hwnd, IDC_XFONT_TEXT, WM_SETFONT, (WPARAM)xfont, TRUE);
+				DlgSetText(hwnd, IDC_XFONT_BUTTON, gl_profile.viewer.xfont_name);
+			}
+			break;
+		case IDHELP:
+			if (notifyCode == BN_CLICKED)
+			{
+				Help_Contents(win);
+			}
+			break;
 		}
-	} else
-	{
-		for (i = 0; i <= HYP_TXT_MASK; i++)
-			fonts[i] = (HFONT)GetStockObject(DEVICE_DEFAULT_FONT);
+		break;
+	case WM_DESTROY:
+		DeleteObject(bg_brush);
+		DeleteObject(font);
+		DeleteObject(xfont);
+		break;
+	case WM_CTLCOLORSTATIC:
+	case WM_CTLCOLOREDIT:
+		if (GetDlgCtrlID((HWND)lParam) == IDC_FONT_TEXT ||
+			GetDlgCtrlID((HWND)lParam) == IDC_XFONT_TEXT)
+		{
+			HDC hdcStatic = (HDC) wParam;
+			SetTextColor(hdcStatic, viewer_colors.text);
+			SetBkColor(hdcStatic, viewer_colors.background);
+			SetBkMode(hdcStatic, TRANSPARENT);
+			return (INT_PTR)bg_brush;
+		}
+		break;
 	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -316,6 +438,5 @@ void W_FontCreate(const char *name, HFONT *fonts)
 void SelectFont(WINDOW_DATA *win)
 {
 	HWND parent = win ? win->hwnd : 0;
-	Choose1Font(parent, &gl_profile.viewer.font_name, _("Standard font"));
-	Choose1Font(parent, &gl_profile.viewer.xfont_name, _("Alternative font"));
+	DialogBoxExW(NULL, MAKEINTRESOURCEW(IDD_FONTSEL), parent, font_dialog, (LPARAM)win);
 }

@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-10 11:49+0200\n"
+"POT-Creation-Date: 2016-04-11 11:10+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -261,11 +261,11 @@ msgstr ""
 #: ../win32/hv_error.c:112
 #: ../win32/hv_file.c:181
 #: ../win32/hv_help.c:109
-#: ../win32/hv_hfind.c:96
-#: ../win32/hv_hfind.c:123
-#: ../win32/hv_hfind.c:150
-#: ../win32/hv_srch.c:41
-#: ../win32/hv_srch.c:112
+#: ../win32/hv_hfind.c:79
+#: ../win32/hv_hfind.c:105
+#: ../win32/hv_hfind.c:132
+#: ../win32/hv_srch.c:201
+#: ../win32/hv_srch.c:272
 msgid  "Error"
 msgstr "Fehler"
 
@@ -277,7 +277,7 @@ msgstr "Pfad zu REMARKER nicht definiert"
 #: ../gtk/hv_block.c:75
 #: ../gtk/hv_hfind.c:134
 #: ../win32/hv_block.c:80
-#: ../win32/hv_hfind.c:149
+#: ../win32/hv_hfind.c:131
 #, c-format
 msgid  ""
 "Can not execute\n"
@@ -345,7 +345,7 @@ msgstr "nicht gefunden"
 #: ../gtk/hv_file.c:182
 #: ../gtk/hv_srch.c:292
 #: ../win32/hv_file.c:180
-#: ../win32/hv_srch.c:111
+#: ../win32/hv_srch.c:271
 #, c-format
 msgid  ""
 "%s: could not find\n"
@@ -357,23 +357,25 @@ msgstr ""
 
 #: ../gtk/hv_font.c:78
 msgid  "Select Fonts"
-msgstr "Zeinensätze auswählen"
+msgstr "Zeichensätze auswählen"
 
 #: ../gtk/hv_font.c:88
-msgid  "Standard font: "
-msgstr "Standard-Zeichensatz: "
+msgid  "Standard font:"
+msgstr "Standard-Zeichensatz:"
 
 #: ../gtk/hv_font.c:96
-#: ../win32/hv_font.c:319
+#: ../win32/hv_font.c:362
+#: ../win32/hv_font.c:390
 msgid  "Standard font"
 msgstr "Standard-Zeichensatz"
 
 #: ../gtk/hv_font.c:122
-msgid  "Alternative font: "
-msgstr "Alternativer Zeichensatz: "
+msgid  "Alternative font:"
+msgstr "Alternativer Zeichensatz:"
 
 #: ../gtk/hv_font.c:130
-#: ../win32/hv_font.c:320
+#: ../win32/hv_font.c:366
+#: ../win32/hv_font.c:399
 msgid  "Alternative font"
 msgstr "Alternativer Zeichensatz"
 
@@ -427,13 +429,13 @@ msgid  "No help file found"
 msgstr "Hilfe-Datei nicht gefunden!"
 
 #: ../gtk/hv_hfind.c:83
-#: ../win32/hv_hfind.c:95
+#: ../win32/hv_hfind.c:78
 #, c-format
 msgid  "HypFind exited with code %d"
 msgstr "HypFind endete mit Return-Code %d"
 
 #: ../gtk/hv_hfind.c:108
-#: ../win32/hv_hfind.c:123
+#: ../win32/hv_hfind.c:105
 msgid  "No path to HypFind configured"
 msgstr "Kein Pfad für HypFind konfiguriert"
 
@@ -801,11 +803,13 @@ msgid  "Ask before saving bookmarks"
 msgstr "Vor sichern der Lesezeichen nachfragen"
 
 #: ../gtk/hv_srch.c:78
+#: ../win32/hv_srch.c:71
 #, c-format
 msgid  "Search results: %s"
 msgstr "Such-Ergebnisse: %s"
 
 #: ../gtk/hv_srch.c:108
+#: ../win32/hv_srch.c:84
 msgid  "Name"
 msgstr "Name"
 
@@ -814,6 +818,7 @@ msgid  "Node/Alias name"
 msgstr "Seiten/Alias Name"
 
 #: ../gtk/hv_srch.c:118
+#: ../win32/hv_srch.c:88
 msgid  "Description"
 msgstr "Beschreibung"
 
@@ -826,7 +831,7 @@ msgid  "Visible"
 msgstr "Sichtbar"
 
 #: ../gtk/hv_srch.c:202
-#: ../win32/hv_srch.c:41
+#: ../win32/hv_srch.c:201
 msgid  "No ALL.REF file defined"
 msgstr "Pfad zu ALL.REF nicht definiert"
 
@@ -3878,7 +3883,7 @@ msgstr ""
 msgid  "\tScreens\t\t\t\t\t: %4ld\n"
 msgstr "\tScreens\t\t\t\t\t: %4ld\n"
 
-#: ../tos/dl_init.c:157
+#: ../tos/dl_init.c:203
 #, c-format
 msgid  "[1][Error while loading |'%s'.][Cancel]"
 msgstr "[1][Fehler beim Laden von |'%s'.][Abbruch]"
