@@ -627,7 +627,7 @@ msgstr "Unbekanntes Format"
 
 #: ../gtk/hv_prefs.c:179
 msgid  "Select Colors"
-msgstr "Farben ausählen"
+msgstr "Farben auswählen"
 
 #: ../gtk/hv_prefs.c:190
 msgid  "Window background"

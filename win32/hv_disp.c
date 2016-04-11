@@ -435,7 +435,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 					}
 					
 					/* set text effects for link text */
-					if (textattr & HYP_TXT_LIGHT)
+					if ((gl_profile.colors.link_effect | textattr) & HYP_TXT_LIGHT)
 						color |= COLOR_LIGHT_MASK;
 					SetTextColor(hdc, color);
 					SelectObject(hdc, (HGDIOBJ)win->fonts[(gl_profile.colors.link_effect | textattr) & HYP_TXT_MASK]);
@@ -443,7 +443,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 					TEXTOUT(str);
 					g_free(str);
 
-					SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? (viewer_colors.text | COLOR_LIGHT_MASK) : viewer_colors.text);
+					SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? viewer_colors.ghosted : viewer_colors.text);
 					SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 					textstart = src;
 				}
@@ -451,7 +451,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 				
 			case HYP_ESC_CASE_TEXTATTR:
 				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
-				SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? (viewer_colors.text | COLOR_LIGHT_MASK) : viewer_colors.text);
+				SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? viewer_colors.ghosted : viewer_colors.text);
 				SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 				src++;
 				textstart = src;

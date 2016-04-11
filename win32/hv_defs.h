@@ -58,6 +58,7 @@ struct _viewer_colors {
 	COLORREF quit;             /* Displays references to {@ quit } in the specified color */
 	COLORREF close;            /* Displays references to {@ close } in the specified color */
 	COLORREF error;            /* used to display invalid links in hypertext files */
+	COLORREF ghosted;          /* used to display light text attribute */
 };
 
 typedef struct
@@ -260,6 +261,7 @@ void hv_update_menu(HMENU menu, DOCUMENT *doc);
 void hv_update_winmenu(WINDOW_DATA *win);
 void hv_update_menus(void);
 void W_FontCreate(const char *name, HFONT *fonts);
+HFONT W_FontCreate1(const char *name);
 
 
 /*
@@ -292,6 +294,7 @@ void hv_win_reset_text(WINDOW_DATA *win);
 void WindowCalcScroll(WINDOW_DATA *win);
 void SetWindowSlider(WINDOW_DATA *win);
 gboolean hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount);
+gboolean hv_commdlg_help(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 /*

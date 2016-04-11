@@ -484,6 +484,46 @@ static INT_PTR CALLBACK search_dialog(HWND hwnd, UINT message, WPARAM wParam, LP
 
 /*** ---------------------------------------------------------------------- ***/
 
+gboolean hv_commdlg_help(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNUSED(hwnd);
+	UNUSED(wParam);
+	if (message == commdlg_help)
+	{
+		DWORD *p = (DWORD *)lParam;
+		
+		if (p == NULL)
+		{
+			HYP_DBG(("HELP %x %lx", wParam, lParam));
+		} else if (*p == sizeof(CHOOSECOLORW))
+		{
+			Help_Show(NULL, "colorselector");
+		} else if (*p == sizeof(CHOOSEFONTW))
+		{
+			Help_Show(NULL, "fontselector");
+		} else if (*p == sizeof(FINDREPLACEW))
+		{
+			Help_Show(NULL, "findselector");
+		} else if (*p == sizeof(OPENFILENAMEW) || *p == OPENFILENAME_SIZE_VERSION_400)
+		{
+			Help_Show(NULL, "fileselector");
+		} else if (*p == sizeof(PAGESETUPDLGW))
+		{
+			Help_Show(NULL, "pagesetupselector");
+		} else if (*p == sizeof(PRINTDLGW))
+		{
+			Help_Show(NULL, "printerselector");
+		} else
+		{
+			HYP_DBG(("HELP %x %lx: %ld", wParam, lParam, *p));
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
@@ -828,36 +868,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		break;
 		
 	default:
-		if (message == commdlg_help)
-		{
-			DWORD *p = (DWORD *)lParam;
-			
-			if (p == NULL)
-			{
-				HYP_DBG(("HELP %x %lx", wParam, lParam));
-			} else if (*p == sizeof(CHOOSECOLORW))
-			{
-				Help_Show(NULL, "colorselector");
-			} else if (*p == sizeof(CHOOSEFONTW))
-			{
-				Help_Show(NULL, "fontselector");
-			} else if (*p == sizeof(FINDREPLACEW))
-			{
-				Help_Show(NULL, "findselector");
-			} else if (*p == sizeof(OPENFILENAMEW) || *p == OPENFILENAME_SIZE_VERSION_400)
-			{
-				Help_Show(NULL, "fileselector");
-			} else if (*p == sizeof(PAGESETUPDLGW))
-			{
-				Help_Show(NULL, "pagesetupselector");
-			} else if (*p == sizeof(PRINTDLGW))
-			{
-				Help_Show(NULL, "printerselector");
-			} else
-			{
-				HYP_DBG(("HELP %x %lx: %ld", wParam, lParam, *p));
-			}
-		}
+		hv_commdlg_help(hwnd, message, wParam, lParam);
 		break;
 	}
 

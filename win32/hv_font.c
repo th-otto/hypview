@@ -219,9 +219,7 @@ void W_FontCreate(const char *name, HFONT *fonts)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-/*** ---------------------------------------------------------------------- ***/
-
-static HFONT W_FontCreate1(const char *name)
+HFONT W_FontCreate1(const char *name)
 {
 	FONT_ATTR attr;
 	LOGFONTA lf;
@@ -349,7 +347,6 @@ static INT_PTR CALLBACK font_dialog(HWND hwnd, UINT message, WPARAM wParam, LPAR
 	static HFONT font;
 	static HFONT xfont;
 	
-	UNUSED(lParam);
 	switch (message)
 	{
 	case WM_CREATE:
@@ -407,7 +404,7 @@ static INT_PTR CALLBACK font_dialog(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		case IDHELP:
 			if (notifyCode == BN_CLICKED)
 			{
-				Help_Contents(win);
+				Help_Show(win, _("Select Fonts"));
 			}
 			break;
 		}
@@ -428,6 +425,10 @@ static INT_PTR CALLBACK font_dialog(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			SetBkMode(hdcStatic, TRANSPARENT);
 			return (INT_PTR)bg_brush;
 		}
+		break;
+		
+	default:
+		hv_commdlg_help(hwnd, message, wParam, lParam);
 		break;
 	}
 	return FALSE;
