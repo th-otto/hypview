@@ -99,9 +99,6 @@ static void set_color(GtkWidget *dialog, const char *buttonname, char **valp)
 
 static void color_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
 {
-	WINDOW_DATA *win;
-	DOCUMENT *doc;
-	GSList *l;
 	GtkToggleButton *toggle;
 	int effect;
 	UNUSED(w);
@@ -141,19 +138,7 @@ static void color_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dia
 		gl_profile.colors.link_effect = effect;
 		HypProfile_SetChanged();
 		
-		for (l = all_list; l; l = l->next)
-		{
-			win = (WINDOW_DATA *)l->data;
-			/* if (win->type == WIN_WINDOW) */
-			{
-				doc = win->data;
-				/* reload page or file */
-
-				doc->start_line = hv_win_topline(win);
-				hv_win_update_attributes(win);
-				ReInitWindow(win, TRUE);
-			}
-		}
+		SwitchFont(NULL, FALSE);
 		break;
 	case GTK_RESPONSE_DELETE_EVENT:
 	case GTK_RESPONSE_CANCEL:
@@ -464,6 +449,7 @@ static void prefs_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dia
 		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "marken_save_ask");
 		gl_profile.viewer.marken_save_ask = gtk_toggle_button_get_active(button);
 		
+		SwitchFont(NULL, TRUE);
 		HypProfile_SetChanged();
 		break;
 	case GTK_RESPONSE_DELETE_EVENT:

@@ -84,3 +84,35 @@ void RemoveNodes(HYP_DOCUMENT *hyp)
 		}
 	}
 }
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Remove pictures from cache
+ */
+void RemovePictures(HYP_DOCUMENT *hyp, gboolean reload)
+{
+	hyp_nodenr i;
+
+	if (hyp->cache == NULL)
+		return;
+	for (i = 0; i < hyp->num_index; i++)
+	{
+		if (hyp->cache[i] != NULL && hyp->indextable[i]->type == HYP_NODE_IMAGE)
+		{
+			hyp_image_free((HYP_IMAGE *)hyp->cache[i]);
+			hyp->cache[i] = NULL;
+		}
+	}
+	if (reload)
+	{
+		for (i = 0; i < hyp->num_index; i++)
+		{
+			if (hyp->cache[i] != NULL && HYP_NODE_IS_TEXT(hyp->indextable[i]->type))
+			{
+				hyp_free_graphics(hyp->cache[i]);
+				hyp_prep_graphics(hyp, hyp->cache[i]);
+			}
+		}
+	}
+}

@@ -240,7 +240,7 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 	
 	UNUSED(x);
 	pic = (HYP_IMAGE *)AskCache(hyp, gfx->extern_node_index);
-
+	
 	if (pic && pic->decompressed)
 	{
 		/*

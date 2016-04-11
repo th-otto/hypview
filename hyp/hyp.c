@@ -102,16 +102,7 @@ void hyp_node_free(HYP_NODE *node)
 	if (node != NULL)
 	{
 		g_free(node->line_ptr);
-		{
-			struct hyp_gfx *gfx, *next;
-			
-			for (gfx = node->gfx; gfx != NULL; gfx = next)
-			{
-				next = gfx->next;
-				g_free(gfx);
-			}
-		}
-	
+		hyp_free_graphics(node);
 		g_free(node);
 	}
 }

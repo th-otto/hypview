@@ -699,6 +699,7 @@ struct hyp_gfx
 
 void hyp_decode_gfx(HYP_DOCUMENT *hyp, const unsigned char *src, struct hyp_gfx *adm);
 gboolean hyp_prep_graphics(HYP_DOCUMENT *hyp, HYP_NODE *node);
+void hyp_free_graphics(HYP_NODE *node);
 gboolean W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
 void W_Release_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
 _WORD GetNumPlanes(void);
@@ -798,6 +799,7 @@ void ClearCache(HYP_DOCUMENT *hyp);
 gboolean TellCache(HYP_DOCUMENT *hyp, hyp_nodenr node_num, HYP_NODE *node);
 HYP_NODE *AskCache(HYP_DOCUMENT *hyp, hyp_nodenr node_num);
 void RemoveNodes(HYP_DOCUMENT *hyp);
+void RemovePictures(HYP_DOCUMENT *hyp, gboolean reload);
 
 
 /*

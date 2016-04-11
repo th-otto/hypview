@@ -859,7 +859,7 @@ static void on_switch_font(GtkAction *action, WINDOW_DATA *win)
 {
 	gl_profile.viewer.use_xfont = gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action)) && gl_profile.viewer.xfont_name != NULL;
 	HypProfile_SetChanged();
-	SwitchFont(win);
+	SwitchFont(win, FALSE);
 }
 
 /*** ---------------------------------------------------------------------- ***/

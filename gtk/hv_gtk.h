@@ -175,7 +175,7 @@ void hv_exit(void);
 /*
  * hv_font.c
  */
-void SwitchFont(WINDOW_DATA *win);
+void SwitchFont(WINDOW_DATA *win, gboolean clearcache);
 void SelectFont(WINDOW_DATA *win);
 
 

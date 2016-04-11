@@ -5,7 +5,7 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static void ApplyFont(void)
+static void ApplyFont(gboolean clearcache)
 {
 	WINDOW_DATA *win;
 	DOCUMENT *doc;
@@ -19,17 +19,25 @@ static void ApplyFont(void)
 		{
 			gboolean ret;
 			long topline;
+			hyp_nodenr node_num;
 			
 			doc = win->data;
 			/* reload page or file */
 
 			topline = hv_win_topline(win);
-			ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(win));
+			node_num = doc->getNodeProc(win);
+			if (clearcache && doc->type == HYP_FT_HYP)
+			{
+				HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+				RemovePictures(hyp, TRUE);
+			}
+			ret = doc->gotoNodeProc(win, NULL, node_num);
 			
 			if (ret)
 			{
 				doc->start_line = topline;
 
+				hv_win_update_attributes(win);
 				ReInitWindow(win, TRUE);
 			}
 		}
@@ -38,11 +46,11 @@ static void ApplyFont(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SwitchFont(WINDOW_DATA *win)
+void SwitchFont(WINDOW_DATA *win, gboolean clearcache)
 {
 	UNUSED(win);
 	gl_profile.viewer.use_xfont = gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_name != NULL;
-	ApplyFont();
+	ApplyFont(clearcache);
 	HypProfile_SetChanged();
 }
 
@@ -168,7 +176,7 @@ void SelectFont(WINDOW_DATA *win)
 		fontname = gtk_font_button_get_font_name(GTK_FONT_BUTTON(xfont_button));
 		g_free(gl_profile.viewer.xfont_name);
 		gl_profile.viewer.xfont_name = g_strdup(fontname);
-		SwitchFont(win);
+		SwitchFont(win, FALSE);
 	}
 	gtk_widget_destroy(dialog);
 }
