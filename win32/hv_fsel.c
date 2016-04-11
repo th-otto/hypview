@@ -1,7 +1,7 @@
 #include "hv_defs.h"
 
-#define IDS_SELECT_HYPERTEXT _("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n")
-#define IDS_SELECT_TEXTFILES _("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n")
+char const hypertext_file_filter[] = N_("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n");
+char const text_file_filter[] = N_("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n");
 
 #define G_SEARCHPATH_SEPARATOR_S ";"
 
@@ -74,7 +74,7 @@ static wchar_t *hv_file_selector_add_filter(const char *filter)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean choose_file(HWND parent, char **name, gboolean save, const char *title, const char *filter)
+gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const char *title, const char *filter)
 {
 	OPENFILENAMEW ofn;
 	gboolean retV;
@@ -85,6 +85,8 @@ static gboolean choose_file(HWND parent, char **name, gboolean save, const char 
 	wchar_t *wfilter;
 	wchar_t dirname[wmax];
 	const char *base;
+	char *realname;
+	char *freeme = NULL;
 	
 	commdlg_help = RegisterWindowMessageW(HELPMSGSTRINGW);
 	
@@ -92,8 +94,15 @@ static gboolean choose_file(HWND parent, char **name, gboolean save, const char 
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = parent;
 	ofn.hInstance = 0;
-	base = hyp_basename(*name);
-	wpath = hyp_utf8_to_wchar(*name, base - *name, NULL);
+	if (mode == file_dirsel)
+	{
+		realname = freeme = g_build_filename(*name, "*.*", NULL);
+	} else
+	{
+		realname = *name;
+	}
+	base = hyp_basename(realname);
+	wpath = hyp_utf8_to_wchar(realname, base - realname, NULL);
 	wcsncpy(dirname, wpath, wmax);
 	g_free(wpath);
 	wpath = hyp_utf8_to_wchar(base, STR0TERM, NULL);
@@ -112,10 +121,13 @@ static gboolean choose_file(HWND parent, char **name, gboolean save, const char 
 	ofn.lpstrTitle = wtitle;
 	wfilter = hv_file_selector_add_filter(filter);
 	ofn.lpstrFilter = wfilter;
-	if (save)
+	if (mode == file_save)
 	{
 		ofn.Flags |= OFN_OVERWRITEPROMPT;
 		retV = GetSaveFileNameW(&ofn);
+	} else if (mode == file_dirsel)
+	{
+		retV = GetOpenFileNameW(&ofn);
 	} else
 	{
 		ofn.Flags |= OFN_FILEMUSTEXIST;
@@ -129,7 +141,7 @@ static gboolean choose_file(HWND parent, char **name, gboolean save, const char 
 		if (err == CDERR_STRUCTSIZE)
 		{
 			ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400;
-			if (save)
+			if (mode == file_save)
 				retV = GetSaveFileNameW(&ofn);
 			else
 				retV = GetOpenFileNameW(&ofn);
@@ -137,10 +149,17 @@ static gboolean choose_file(HWND parent, char **name, gboolean save, const char 
 	}
 	g_free(wtitle);
 	g_free(wfilter);
+	g_free(freeme);
 	if (retV)
 	{
 		g_free(*name);
 		*name = hyp_wchar_to_utf8(szName, STR0TERM);
+		if (mode == file_dirsel)
+		{
+			freeme = hyp_path_get_dirname(*name);
+			g_free(*name);
+			*name = freeme;
+		}
 	}
 	return retV;
 }
@@ -167,7 +186,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 		g_free(subst);
 	}
 	
-	if (choose_file(parent, &name, FALSE, _("Open Hypertext..."), IDS_SELECT_HYPERTEXT))
+	if (choose_file(parent, &name, file_open, _("Open Hypertext..."), _(hypertext_file_filter)))
 	{
 		hv_recent_add(name);
 		win = OpenFileInWindow(win, name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
@@ -185,7 +204,7 @@ void SelectFileSave(WINDOW_DATA *win)
 	HWND parent = win ? win->hwnd : NULL;
 	filepath = replace_ext(doc->path, NULL, ".txt");
 	
-	if (choose_file(parent, &filepath, TRUE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
+	if (choose_file(parent, &filepath, file_save, _("Save ASCII text as"), _(text_file_filter)))
 	{
 #if 0
 		int ret;

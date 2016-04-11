@@ -342,6 +342,15 @@ void AutoLocatorPaste(WINDOW_DATA *win);
 /*
  * hv_fsel.c
  */
+enum choose_file_mode {
+	file_open,
+	file_save,
+	file_dirsel
+};
+
+extern char const hypertext_file_filter[];
+extern char const text_file_filter[];
+gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const char *title, const char *filter);
 WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win);
 void SelectFileSave(WINDOW_DATA *win);
 

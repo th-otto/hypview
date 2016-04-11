@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-11 11:10+0200\n"
+"POT-Creation-Date: 2016-04-11 16:43+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <halgara@yahoo.de>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -333,6 +333,7 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_font.c:78
+#: ../win32/hv_font.c:407
 msgid  "Select Fonts"
 msgstr ""
 
@@ -341,8 +342,8 @@ msgid  "Standard font:"
 msgstr ""
 
 #: ../gtk/hv_font.c:96
-#: ../win32/hv_font.c:362
-#: ../win32/hv_font.c:390
+#: ../win32/hv_font.c:359
+#: ../win32/hv_font.c:387
 msgid  "Standard font"
 msgstr ""
 
@@ -351,8 +352,8 @@ msgid  "Alternative font:"
 msgstr ""
 
 #: ../gtk/hv_font.c:130
-#: ../win32/hv_font.c:366
-#: ../win32/hv_font.c:399
+#: ../win32/hv_font.c:363
+#: ../win32/hv_font.c:396
 msgid  "Alternative font"
 msgstr ""
 
@@ -378,17 +379,17 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_fsel.c:212
-#: ../win32/hv_fsel.c:170
+#: ../win32/hv_fsel.c:189
 msgid  "Open Hypertext..."
 msgstr ""
 
 #: ../gtk/hv_fsel.c:241
-#: ../win32/hv_fsel.c:188
+#: ../win32/hv_fsel.c:207
 msgid  "Save ASCII text as"
 msgstr ""
 
 #: ../gtk/hv_fsel.c:249
-#: ../win32/hv_fsel.c:197
+#: ../win32/hv_fsel.c:216
 msgid  ""
 "This file exists already.\n"
 "Do you want to replace it?"
@@ -519,7 +520,7 @@ msgid  "Open <FILE> in a new window"
 msgstr ""
 
 #: ../gtk/hv_main.c:81
-#: ../win32/hv_main.c:185
+#: ../win32/hv_main.c:187
 #, c-format
 msgid  "%s is Open Source (see %s for further information).\n"
 msgstr ""
@@ -3719,7 +3720,7 @@ msgstr ""
 msgid  "can't find %s: %s"
 msgstr ""
 
-#: ../win32/hv_main.c:160
+#: ../win32/hv_main.c:162
 #, c-format
 msgid  ""
 "HypView Win32 Version %s\n"

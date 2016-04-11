@@ -10,6 +10,19 @@ struct color_params {
 };
 static COLORREF custcolors[16];
 
+struct pref_params {
+	WINDOW_DATA *win;
+	char *hypfold;
+	char *default_file;
+	char *catalog_file;
+	int startup;
+	gboolean rightback;
+	gboolean transparent_pics;
+	gboolean check_time;
+	gboolean alink_newwin;
+	gboolean marken_save_ask;
+};
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -278,8 +291,121 @@ void hv_config_colors(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+static INT_PTR CALLBACK preference_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	WORD notifyCode;
+	WINDOW_DATA *win;
+	struct pref_params *params;
+	
+	params = (struct pref_params *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+	switch (message)
+	{
+	case WM_CREATE:
+		break;
+	case WM_INITDIALOG:
+		params = (struct pref_params *)lParam;
+		win = params->win;
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)params);
+		CenterWindow(hwnd);
+		DlgSetText(hwnd, IDC_HYPFOLD, hyp_basename(params->hypfold));
+		DlgSetText(hwnd, IDC_DEFAULT_FILE, hyp_basename(params->default_file));
+		DlgSetText(hwnd, IDC_CATALOG_FILE, hyp_basename(params->catalog_file));
+		DlgSetButton(hwnd, IDC_PREF_FILE_SELECTOR, params->startup == 0);
+		DlgSetButton(hwnd, IDC_PREF_DEFAULT_TEXT, params->startup == 1);
+		DlgSetButton(hwnd, IDC_PREF_LAST_FILE, params->startup == 2);
+		DlgSetButton(hwnd, IDC_PREF_RIGHTBACK, params->rightback);
+		DlgSetButton(hwnd, IDC_PREF_TRANSPARENT, params->transparent_pics);
+		DlgSetButton(hwnd, IDC_PREF_CHECK_TIME, params->check_time);
+		DlgSetButton(hwnd, IDC_PREF_ALINK_NEWWIN, params->alink_newwin);
+		DlgSetButton(hwnd, IDC_PREF_MARKEN_SAVE_ASK, params->marken_save_ask);
+		return TRUE;
+	case WM_CLOSE:
+		EndDialog(hwnd, IDCANCEL);
+		DestroyWindow(hwnd);
+		return TRUE;
+	case WM_COMMAND:
+		notifyCode = HIWORD(wParam);
+		win = params->win;
+		switch (LOWORD(wParam))
+		{
+		case IDCANCEL:
+			EndDialog(hwnd, IDCANCEL);
+			DestroyWindow(hwnd);
+			return TRUE;
+		case IDOK:
+			if (DlgGetButton(hwnd, IDC_PREF_FILE_SELECTOR)) gl_profile.viewer.startup = 0;
+			if (DlgGetButton(hwnd, IDC_PREF_DEFAULT_TEXT)) gl_profile.viewer.startup = 1;
+			if (DlgGetButton(hwnd, IDC_PREF_LAST_FILE)) gl_profile.viewer.startup = 2;
+			gl_profile.viewer.rightback = DlgGetButton(hwnd, IDC_PREF_RIGHTBACK);
+			gl_profile.viewer.transparent_pics = DlgGetButton(hwnd, IDC_PREF_TRANSPARENT);
+			gl_profile.viewer.check_time = DlgGetButton(hwnd, IDC_PREF_CHECK_TIME);
+			gl_profile.viewer.alink_newwin = DlgGetButton(hwnd, IDC_PREF_ALINK_NEWWIN);
+			gl_profile.viewer.marken_save_ask = DlgGetButton(hwnd, IDC_PREF_MARKEN_SAVE_ASK);
+			g_free(gl_profile.general.hypfold);
+			gl_profile.general.hypfold = path_unsubst(params->hypfold, FALSE);
+			g_free(gl_profile.viewer.default_file);
+			gl_profile.viewer.default_file = path_unsubst(params->default_file, TRUE);
+			g_free(gl_profile.viewer.catalog_file);
+			gl_profile.viewer.catalog_file = path_unsubst(params->catalog_file, TRUE);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			HypProfile_SetChanged();
+			SwitchFont(win);
+			break;
+		case IDC_HYPFOLD:
+			if (choose_file(hwnd, &params->hypfold, file_dirsel, _("Path for Hypertexts"), NULL))
+			{
+				DlgSetText(hwnd, IDC_HYPFOLD, hyp_basename(params->hypfold));
+			}
+			break;
+		case IDC_DEFAULT_FILE:
+			if (choose_file(hwnd, &params->default_file, file_open, _("Default-Hypertext"), _(hypertext_file_filter)))
+			{
+				DlgSetText(hwnd, IDC_DEFAULT_FILE, hyp_basename(params->default_file));
+			}
+			break;
+		case IDC_CATALOG_FILE:
+			if (choose_file(hwnd, &params->catalog_file, file_open, _("Catalog file"), _(hypertext_file_filter)))
+			{
+				DlgSetText(hwnd, IDC_CATALOG_FILE, hyp_basename(params->catalog_file));
+			}
+			break;
+		case IDHELP:
+			if (notifyCode == BN_CLICKED)
+			{
+				Help_Show(win, _("Preferences"));
+			}
+			break;
+		}
+		break;
+	case WM_DESTROY:
+		g_free(params->hypfold);
+		g_free(params->default_file);
+		g_free(params->catalog_file);
+		break;
+	default:
+		hv_commdlg_help(hwnd, message, wParam, lParam);
+		break;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void hv_preferences(WINDOW_DATA *win)
 {
-	UNUSED(win);
-	/* NYI: preferences */
+	struct pref_params params;
+	
+	HWND parent = win ? win->hwnd : 0;
+	params.win = win;
+	params.hypfold = path_subst(gl_profile.general.hypfold);
+	params.default_file = path_subst(gl_profile.viewer.default_file);
+	params.catalog_file = path_subst(gl_profile.viewer.catalog_file);
+	params.startup = gl_profile.viewer.startup;
+	params.rightback = gl_profile.viewer.rightback;
+	params.transparent_pics = gl_profile.viewer.transparent_pics;
+	params.check_time = gl_profile.viewer.check_time;
+	params.alink_newwin = gl_profile.viewer.alink_newwin;
+	params.marken_save_ask = gl_profile.viewer.marken_save_ask;
+	DialogBoxExW(NULL, MAKEINTRESOURCEW(IDD_PREFERENCES), parent, preference_dialog, (LPARAM)&params);
 }

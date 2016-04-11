@@ -218,3 +218,15 @@
 #define IDC_LINK_UNDERLINED                 1036
 #define IDC_LINK_OUTLINED                   1037
 #define IDC_LINK_SHADOWED                   1038
+
+#define IDC_HYPFOLD                         1100
+#define IDC_DEFAULT_FILE                    1101
+#define IDC_CATALOG_FILE                    1102
+#define IDC_PREF_FILE_SELECTOR              1103
+#define IDC_PREF_DEFAULT_TEXT               1104
+#define IDC_PREF_LAST_FILE                  1105
+#define IDC_PREF_RIGHTBACK                  1106
+#define IDC_PREF_TRANSPARENT                1107
+#define IDC_PREF_CHECK_TIME                 1108
+#define IDC_PREF_ALINK_NEWWIN               1109
+#define IDC_PREF_MARKEN_SAVE_ASK            1110

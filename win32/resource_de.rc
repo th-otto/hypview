@@ -236,3 +236,29 @@ BEGIN
         DEFPUSHBUTTON   N_("&OK"), IDOK, 190,275,50,14, WS_GROUP
         PUSHBUTTON      N_("&Abbruch"), IDCANCEL, 250,275,50,14, WS_GROUP
 END
+
+
+IDD_PREFERENCES DIALOG PRELOAD DISCARDABLE 0, 0, 210, 245
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_3DLOOK
+CAPTION N_("Einstellungen")
+FONT 8, "MS Sans Serif"
+BEGIN
+        LTEXT           N_("Pfad für Hypertexte"), IDC_STATIC, 5,10,70,8, SS_NOPREFIX
+        PUSHBUTTON      "xxxxxxxxxxxx", IDC_HYPFOLD, 85,7,50,14, WS_GROUP
+        LTEXT           N_("Default-Hypertext"), IDC_STATIC, 5,30,70,8, SS_NOPREFIX
+        PUSHBUTTON      "xxxxxxxxxxxx", IDC_DEFAULT_FILE, 85,27,50,14, WS_GROUP
+        LTEXT           N_("Katalog Datei"), IDC_STATIC, 5,50,70,8, SS_NOPREFIX
+        PUSHBUTTON      "xxxxxxxxxxxx", IDC_CATALOG_FILE, 85,47,50,14, WS_GROUP
+	GROUPBOX	N_("Bei Programmstart"), IDC_STATIC, 5,65,200,60
+        AUTORADIOBUTTON N_("Dateiauswahl anzeigen"), IDC_PREF_FILE_SELECTOR, 15,75,150,14, WS_GROUP
+        AUTORADIOBUTTON N_("Standard-Hypertext laden"), IDC_PREF_DEFAULT_TEXT, 15,91,150,14
+        AUTORADIOBUTTON N_("Zuletzt verwendeten Hypertext laden"), IDC_PREF_LAST_FILE, 15,107,150,14
+	GROUPBOX	N_("Veschiedenes"), IDC_STATIC, 5,130,200,92
+        AUTOCHECKBOX    N_("Rechte Maustaste ist 'Zurück'"), IDC_PREF_RIGHTBACK, 15,140,150,14, WS_GROUP
+        AUTOCHECKBOX    N_("Bilder transparent anzeigen"), IDC_PREF_TRANSPARENT, 15,156,150,14, WS_GROUP
+        AUTOCHECKBOX    N_("Änderungszeit von Dateien überwachen"), IDC_PREF_CHECK_TIME, 15,172,150,14, WS_GROUP
+        AUTOCHECKBOX    N_("ALINKs in einem neuen Fenster öffnen"), IDC_PREF_ALINK_NEWWIN, 15,188,150,14, WS_GROUP
+        AUTOCHECKBOX    N_("Vor sichern der Lesezeichen nachfragen"), IDC_PREF_MARKEN_SAVE_ASK, 15,204,150,14, WS_GROUP
+        DEFPUSHBUTTON   N_("&OK"), IDOK, 90,225,50,14, WS_GROUP
+        PUSHBUTTON      N_("&Abbruch"), IDCANCEL, 150,225,50,14, WS_GROUP
+END
