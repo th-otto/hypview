@@ -99,7 +99,7 @@ void FlipIconify(void)
 	_WORD msg[8];
 	_WORD top;
 	
-	if (!has_iconify)
+	if (!has_iconify())
 		return;
 
 	wind_get_int(DESK, WF_TOP, &top);

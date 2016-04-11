@@ -33,9 +33,6 @@ _WORD phchar;
 _WORD pwbox;
 _WORD phbox;
 
-_WORD has_wlffp = 0;
-_WORD has_form_popup = 0;
-_WORD has_iconify = 0;
 _WORD __magix = 0;
 _WORD __geneva = 0;
 
@@ -132,6 +129,55 @@ void singletos_fail_loop(void)
 	}
 }
 
+/*
+   Bit 0:           wdlg_xx()-funktions are available (1)
+   Bit 1:           lbox_xx()-funktions are available (1)
+   Bit 2:           fnts_xx()-funktions are available (1)
+   Bit 3:           fslx_xx()-funktions are available (1)
+   Bit 4:           pdlg_xx()-funktions are available (1)
+ */
+int has_fonts_dialog(void)
+{
+	_WORD has, dummy;
+	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
+	return has & 4;
+}
+
+int has_listbox_dialog(void)
+{
+	_WORD has, dummy;
+	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
+	return has & 3;
+}
+
+int has_window_dialogs(void)
+{
+	_WORD has, dummy;
+	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
+	return has & 1;
+}
+
+int has_filesel_dialog(void)
+{
+	_WORD has, dummy;
+	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
+	return has & 8;
+}
+
+int has_form_popup(void)
+{
+	_WORD has, dummy;
+	appl_xgetinfo(AES_MENU, &dummy, &has, &dummy, &dummy);
+	return has;
+}
+
+int has_iconify(void)
+{
+	_WORD has, dummy;
+	appl_xgetinfo(AES_WINDOW, &has, &dummy, &dummy, &dummy);
+	return has & 0x80;
+}
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -175,20 +221,6 @@ int DoAesInit(void)
 	{
 		_WORD dummy, level;
 		
-		/*
-		   Bit 0:           wdlg_xx()-funktions are available (1)
-		   Bit 1:           lbox_xx()-funktions are available (1)
-		   Bit 2:           fnts_xx()-funktions are available (1)
-		   Bit 3:           fslx_xx()-funktions are available (1)
-		   Bit 4:           pdlg_xx()-funktions are available (1)
-		 */
-		appl_xgetinfo(AES_WDIALOG, &has_wlffp, &dummy, &dummy, &dummy);
-		
-		appl_xgetinfo(AES_MENU, &dummy, &has_form_popup, &dummy, &dummy);
-
-		appl_xgetinfo(AES_WINDOW, &has_iconify, &dummy, &dummy, &dummy);
-		has_iconify &= 0x80;
-
 		if (appl_xgetinfo(AES_SHELL, &level, &dummy, &dummy, &dummy) && (level & 0x00FF) >= 9)
 			shel_write(SHW_MSGREC, 1, 1, "", "");			/* we understand AP_TERM! */
 	}
@@ -207,7 +239,7 @@ int DoAesInit(void)
 	iconified_tree = dial_library_tree;
 #if 0
 	/* center iconify-icon */
-	if (has_iconify)
+	if (has_iconify())
 	{
 		GRECT icon= { 0, 0, 72, 72 };
 		_WORD w, h, dummy;

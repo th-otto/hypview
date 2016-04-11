@@ -196,11 +196,12 @@ struct _fontsel_data_
  * dl_init.c
  */
 extern	_WORD aes_handle, aes_fontid, aes_fontsize, pwchar, phchar, pwbox, phbox;
-extern	_WORD has_wlffp, has_iconify, has_form_popup;
-#define has_fonts_dialog() (has_wlffp & 4)
-#define has_listbox_dialog() (has_wlffp & 3)
-#define has_window_dialogs() (has_wlffp & 1)
-#define has_filesel_dialog() (has_wlffp & 8)
+int has_iconify(void);
+int has_fonts_dialog(void);
+int has_listbox_dialog(void);
+int has_window_dialogs(void);
+int has_filesel_dialog(void);
+int has_form_popup(void);
 extern _WORD __magix;
 #if USE_GLOBAL_VDI
 extern	_WORD vdi_handle;

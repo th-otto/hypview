@@ -162,7 +162,7 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 			short kind = CLOSER | MOVER | NAME | SMALLER;
 			GRECT big;
 
-			if (!has_iconify)
+			if (!has_iconify())
 				kind &= ~SMALLER;
 
 			form_center_grect(tree, &big);

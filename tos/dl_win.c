@@ -59,7 +59,7 @@ WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, WP_UNIT 
 		form_alert(1, rs_string(DI_MEMORY_ERROR));
 		return NULL;
 	}
-	if (!has_iconify)
+	if (!has_iconify())
 		kind &= ~SMALLER;				/* filter out SMALLER */
 	ptr->type = WIN_WINDOW;
 	ptr->status = 0;

@@ -607,7 +607,7 @@ _WORD popup_select(OBJECT *tree, _WORD mx, _WORD my)
 	_BOOL in_rect = FALSE;
 	
 #if 0
-	if (has_wlffp != 0 || has_form_popup)
+	if (has_window_dialogs() || has_form_popup())
 		return form_popup(tree, mx, my);
 #endif
 	
