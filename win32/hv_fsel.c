@@ -202,13 +202,23 @@ void SelectFileSave(WINDOW_DATA *win)
 	DOCUMENT *doc = win->data;
 	char *filepath;
 	HWND parent = win ? win->hwnd : NULL;
-	filepath = replace_ext(doc->path, NULL, ".txt");
+	
+	if (gl_profile.viewer.output_dir)
+	{
+		char *name = replace_ext(hyp_basename(doc->path), NULL, ".txt");
+		filepath = g_build_filename(gl_profile.viewer.output_dir, name, NULL);
+		g_free(name);
+	} else
+	{
+		filepath = replace_ext(doc->path, NULL, ".txt");
+	}
 	
 	if (choose_file(parent, &filepath, file_save, _("Save ASCII text as"), _(text_file_filter)))
 	{
 #if 0
 		int ret;
 
+		/* no need to check; fileselector already did it */
 		ret = hyp_utf8_open(filepath, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 		if (ret >= 0)
 		{
@@ -218,7 +228,12 @@ void SelectFileSave(WINDOW_DATA *win)
 		}
 		if (ret < 0)
 #endif
+		{
+			g_free(gl_profile.viewer.output_dir);
+			gl_profile.viewer.output_dir = hyp_path_get_dirname(filepath);
+			HypProfile_SetChanged();
 			BlockAsciiSave(win, filepath);
+		}
 	}
 	g_free(filepath);
 }

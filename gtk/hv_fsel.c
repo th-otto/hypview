@@ -227,7 +227,15 @@ void SelectFileSave(WINDOW_DATA *win)
 	GtkWidget *parent = GTK_WIDGET(win);
 	GtkTextIter start, end;
 	
-	filepath = replace_ext(doc->path, NULL, ".txt");
+	if (gl_profile.viewer.output_dir)
+	{
+		char *name = replace_ext(hyp_basename(doc->path), NULL, ".txt");
+		filepath = g_build_filename(gl_profile.viewer.output_dir, name, NULL);
+		g_free(name);
+	} else
+	{
+		filepath = replace_ext(doc->path, NULL, ".txt");
+	}
 	
 	/*
 	 * the text widget will loose the selection when something gets selected
@@ -250,7 +258,12 @@ void SelectFileSave(WINDOW_DATA *win)
 				ret = -1;
 		}
 		if (ret < 0)
+		{
+			g_free(gl_profile.viewer.output_dir);
+			gl_profile.viewer.output_dir = hyp_path_get_dirname(filepath);
+			HypProfile_SetChanged();
 			BlockAsciiSave(win, filepath, &start, &end);
+		}
 	}
 	g_free(filepath);
 }
