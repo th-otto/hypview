@@ -78,15 +78,15 @@ BEGIN
 	POPUP N_("&Options"), IDM_OPT_MENU
 	BEGIN
 		MENUITEM N_("&Font...\tAlt+Z"),             IDM_OPT_SELECTFONT
-		MENUITEM N_("&Colors..."),                  IDM_OPT_SELECTCOLORS
+		MENUITEM N_("&Colors...\tAlt+C"),           IDM_OPT_SELECTCOLORS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM N_("&Output..."),                  IDM_OPT_OUTPUT
+		MENUITEM N_("&Output...\tAlt+O"),           IDM_OPT_OUTPUT
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM N_("&Alternative font\tCtrl+Z"),   IDM_OPT_ALTFONT
 		MENUITEM N_("&Expand multiple spaces\tCtrl+L"),  IDM_OPT_EXPANDSPACES
 		// MENUITEM N_("&Scale bitmaps\tCtrl+B"),   IDM_OPT_SCALEBITMAPS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM N_("&Settings..."),                IDM_OPT_PREFERENCES
+		MENUITEM N_("&Settings...\tAlt+S"),         IDM_OPT_PREFERENCES
 	END
 	POPUP N_("&Help"), IDM_HELP_MENU
 	BEGIN

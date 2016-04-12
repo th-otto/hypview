@@ -2124,9 +2124,9 @@ static GtkActionEntry const action_entries[] = {
 	{ "recent-10",          NULL,                    NULL,                                  "<Ctrl>0",     NULL,                                                G_CALLBACK(on_recent_selected) },
 
 	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Alt>Z",      NULL,                                                G_CALLBACK(on_font_select) },
-	{ "selectcolors",       NULL,                    N_("_Colors..."),                      NULL,          NULL,                                                G_CALLBACK(on_color_select) },
-	{ "outputconfig",       NULL,                    N_("_Output..."),                      NULL,          NULL,                                                G_CALLBACK(on_output_settings) },
-	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    NULL,          NULL,                                                G_CALLBACK(on_preferences) },
+	{ "selectcolors",       NULL,                    N_("_Colors..."),                      "<Alt>C",      NULL,                                                G_CALLBACK(on_color_select) },
+	{ "outputconfig",       NULL,                    N_("_Output..."),                      "<Alt>O",      NULL,                                                G_CALLBACK(on_output_settings) },
+	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    "<Alt>S,       NULL,                                                G_CALLBACK(on_preferences) },
 
 	{ "helpcontents",       "gtk-info",              N_("_Contents"),                       NULL,          NULL,                                                G_CALLBACK(on_help_contents) },
 	{ "helpindex",          "gtk-index",             N_("_Index"),                          NULL,          NULL,                                                G_CALLBACK(on_help_index) },

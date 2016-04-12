@@ -1259,6 +1259,7 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	}
 	
 	win->y_margin_top = gl_profile.viewer.text_yoffset;
+	win->y_margin_bottom = gl_profile.viewer.text_yoffset;
 	win->x_margin_left = gl_profile.viewer.text_xoffset;
 	win->x_margin_right = gl_profile.viewer.text_xoffset;
 	

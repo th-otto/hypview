@@ -78,22 +78,22 @@ BEGIN
 	POPUP "&Optionen", IDM_OPT_MENU
 	BEGIN
 		MENUITEM "&Zeichensatz...\tAlt+Z",     IDM_OPT_SELECTFONT
-		MENUITEM "&Farben...",                 IDM_OPT_SELECTCOLORS
+		MENUITEM "&Farben...\tAlt+C",          IDM_OPT_SELECTCOLORS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Ausgabe...",                IDM_OPT_OUTPUT
+		MENUITEM "&Ausgabe...\tAlt+O",         IDM_OPT_OUTPUT
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Alternativschrift\tCtrl+Z",  IDM_OPT_ALTFONT
+		MENUITEM "&Alternativschrift\tCtrl+Z", IDM_OPT_ALTFONT
 		MENUITEM "&Mehrfachleerzeichen expandieren\tCtrl+L",  IDM_OPT_EXPANDSPACES
 		// MENUITEM "&Bitmaps skalieren\tCtrl+B",     IDM_OPT_SCALEBITMAPS
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Einstellungen...",               IDM_OPT_PREFERENCES
+		MENUITEM "&Einstellungen...\tAlt+S",   IDM_OPT_PREFERENCES
 	END
 	POPUP "&Hilfe", IDM_HELP_MENU
 	BEGIN
-		MENUITEM "&Inhalt",                   IDM_HELP_CONTENTS
-		MENUITEM "&Index",                    IDM_HELP_INDEX
+		MENUITEM "&Inhalt",                    IDM_HELP_CONTENTS
+		MENUITEM "&Index",                     IDM_HELP_INDEX
 		MENUITEM "", -1, MFT_SEPARATOR
-		MENUITEM "&Über",                     IDM_HELP_ABOUT
+		MENUITEM "&Über",                      IDM_HELP_ABOUT
 	END
 END
 
