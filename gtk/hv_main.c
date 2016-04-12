@@ -439,6 +439,12 @@ static void g_application_impl_method_call(
 	{
 		win = all_list ? (GtkHypviewWindow *)all_list->data : NULL;
 		result = g_variant_new("(o)", win ? win->object_path : "");
+#if 0
+		GVariantBuilder b;
+		g_variant_builder_init(&b, G_VARIANT_TYPE_TUPLE);
+		g_variant_builder_add_value(&b, g_variant_new_object_path(win ? win->object_path : ""));
+		result = g_variant_builder_end(&b);
+#endif
 	}
 	
 	if (strcmp(method_name, "Quit") == 0)

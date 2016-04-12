@@ -502,7 +502,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 	if (ret != SIZEOF_HYP_HEADER)
 	{
 		/* error... */
-		HYP_DBG(("Error %s in read(%s)", strerror(errno), printnull(doc->path)));
+		HYP_DBG(("Error %s in read(%s)", hyp_utf8_strerror(errno), printnull(doc->path)));
 		*err = HYP_FT_UNKNOWN;
 		return NULL;
 	}

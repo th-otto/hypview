@@ -78,7 +78,7 @@ gboolean BinaryBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, v
 			ret = write(*handle, src, len);
 			if (ret != len)
 			{
-				HYP_DBG(("Error %s while writing file. Abort.", strerror(errno)));
+				HYP_DBG(("Error %s while writing file. Abort.", hyp_utf8_strerror(errno)));
 				return FALSE;
 			}
 		}

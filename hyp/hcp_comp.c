@@ -314,6 +314,7 @@ __attribute__((noreturn))
 __attribute__((noinline))
 static void oom(hcp_vars *vars)
 {
+	/* no hyp_utf8_xx here; it might call malloc again */
 	fputs(strerror(ENOMEM), stderr);
 	fputs("\n", stderr);
 	vars->error_count++;
@@ -577,17 +578,17 @@ static void hcp_error_va(hcp_vars *vars, const FILE_LOCATION *loc, const char *f
 {
 	if (vars->errorfile == stderr)
 		flush_status_output(vars);
-	fprintf(vars->errorfile, _("error: "));
+	hyp_utf8_fprintf(vars->errorfile, _("error: "));
 	if (loc == NULL && vars->include_stack != NULL)
 		loc = &vars->include_stack->loc;
 	if (loc != NULL)
 	{
 		if (loc->id == 0 && loc->lineno == 0)
-			fprintf(vars->errorfile, "%s: ", _("<command-line>"));
+			hyp_utf8_fprintf(vars->errorfile, "%s: ", _("<command-line>"));
 		else
-			fprintf(vars->errorfile, "%s:%lu: ", file_lookup_name(vars, loc->id), loc->lineno);
+			hyp_utf8_fprintf(vars->errorfile, "%s:%lu: ", file_lookup_name(vars, loc->id), loc->lineno);
 	}
-	vfprintf(vars->errorfile, format, args);
+	hyp_utf8_vfprintf(vars->errorfile, format, args);
 	fputs("\n", vars->errorfile);
 	vars->error_count++;
 }
@@ -1672,7 +1673,7 @@ static gboolean read_c_include(hcp_vars *vars, const char *filename)
 	infile = hyp_utf8_fopen(filename, "rb");
 	if (infile == NULL)
 	{
-		hcp_error(vars, NULL, "%s: %s", filename, strerror(errno));
+		hcp_error(vars, NULL, "%s: %s", filename, hyp_utf8_strerror(errno));
 		return FALSE;
 	}
 	hcp_status_file(vars, filename);
@@ -4186,9 +4187,9 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 			} else
 			{
 				if (!vars->opts->read_images)
-					hcp_warning(vars, NULL, _("can't open file '%s': %s"), filename, strerror(errno));
+					hcp_warning(vars, NULL, _("can't open file '%s': %s"), filename, hyp_utf8_strerror(errno));
 				else
-					hcp_error(vars, NULL, _("can't open file '%s': %s"), filename, strerror(errno));
+					hcp_error(vars, NULL, _("can't open file '%s': %s"), filename, hyp_utf8_strerror(errno));
 			}
 			if (exists && vars->opts->read_images)
 			{
@@ -6550,7 +6551,7 @@ static gboolean pass(hcp_vars *vars, const char *filename)
 	infile = hyp_utf8_fopen(filename, "rb");
 	if (infile == NULL)
 	{
-		hcp_error(vars, NULL, "%s: %s", filename, strerror(errno));
+		hcp_error(vars, NULL, "%s: %s", filename, hyp_utf8_strerror(errno));
 		return FALSE;
 	}
 	
@@ -7023,7 +7024,7 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 	size = lseek(handle, 0, SEEK_END);
 	if (size == (size_t)-1)
 	{
-		hcp_error(vars, NULL, _("%s: can't determine size: %s"), file_lookup_name(vars, id), strerror(errno));
+		hcp_error(vars, NULL, _("%s: can't determine size: %s"), file_lookup_name(vars, id), hyp_utf8_strerror(errno));
 		return HYP_PIC_UNKNOWN;
 	}
 	if (size == 0)
@@ -7211,7 +7212,7 @@ static gboolean write_images(hcp_vars *vars)
 			fd = hyp_utf8_open(filename, O_RDONLY|O_BINARY, HYP_DEFAULT_FILEMODE);
 			if (fd < 0)
 			{
-				hcp_error(vars, NULL, _("can't open file '%s': %s"), filename, strerror(errno));
+				hcp_error(vars, NULL, _("can't open file '%s': %s"), filename, hyp_utf8_strerror(errno));
 				retval = FALSE;
 			} else
 			{
@@ -7308,7 +7309,7 @@ static gboolean write_references(hcp_vars *vars)
 		reffile = hyp_utf8_fopen(filename, "wb");
 		if (reffile == NULL)
 		{
-			hcp_error(vars, NULL, "%s: %s", filename, strerror(errno));
+			hcp_error(vars, NULL, "%s: %s", filename, hyp_utf8_strerror(errno));
 			retval = FALSE;
 		}
 	}
@@ -7579,7 +7580,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 		vars->outfile = hyp_utf8_fopen(vars->hyp->file, "wb");
 		if (vars->outfile == NULL)
 		{
-			hcp_error(vars, NULL, "%s: %s", vars->hyp->file, strerror(errno));
+			hcp_error(vars, NULL, "%s: %s", vars->hyp->file, hyp_utf8_strerror(errno));
 			retval = FALSE;
 		}
 	}

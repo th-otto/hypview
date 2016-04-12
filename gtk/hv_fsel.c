@@ -1,5 +1,6 @@
 #define GDK_DISABLE_DEPRECATION_WARNINGS
 #include "hv_gtk.h"
+#include "hypdebug.h"
 
 /*
  * filters for file chooser.
@@ -8,8 +9,9 @@
  * If a display string is not defined, the extension list is used.
  * An extension list may specify several wildcard specifications separated by spaces.
  */
-#define IDS_SELECT_HYPERTEXT _("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n")
-#define IDS_SELECT_TEXTFILES _("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n")
+char const hypertext_file_filter[] = N_("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n");
+char const text_file_filter[] = N_("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n");
+char const stg_file_filter[] = N_("*.stg|ST-Guide files (*.stg)\n*.*|All files (*.*)\n");
 
 
 /******************************************************************************/
@@ -116,7 +118,7 @@ void hv_file_selector_add_filter(GtkWidget *selector, const char *filter)
 
 void hv_file_selector_add_hypfilter(GtkWidget *selector)
 {
-	hv_file_selector_add_filter(selector, IDS_SELECT_HYPERTEXT);
+	hv_file_selector_add_filter(selector, _(hypertext_file_filter));
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -209,7 +211,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 		g_free(subst);
 	}
 	
-	if (choose_file(parent, &name, FALSE, _("Open Hypertext..."), IDS_SELECT_HYPERTEXT))
+	if (choose_file(parent, &name, FALSE, _("Open Hypertext..."), _(hypertext_file_filter)))
 	{
 		hv_recent_add(name);
 		win = OpenFileInWindow(win, name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
@@ -220,50 +222,51 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SelectFileSave(WINDOW_DATA *win)
+char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 {
 	DOCUMENT *doc = win->data;
 	char *filepath;
 	GtkWidget *parent = GTK_WIDGET(win);
-	GtkTextIter start, end;
+	const char *defext;
+	const char *filter;
+	const char *title;
+	
+	switch (type)
+	{
+	case HYP_FT_ASCII:
+		defext = HYP_EXT_TXT;
+		filter = _(text_file_filter);
+		title = _("Save ASCII text as");
+		break;
+	case HYP_FT_STG:
+		defext = HYP_EXT_STG;
+		filter = _(stg_file_filter);
+		title = _("Recompile to");
+		break;
+	default:
+		unreachable();
+		return NULL;
+	}
 	
 	if (gl_profile.output.output_dir)
 	{
-		char *name = replace_ext(hyp_basename(doc->path), NULL, ".txt");
+		char *name = replace_ext(hyp_basename(doc->path), NULL, defext);
 		filepath = g_build_filename(gl_profile.output.output_dir, name, NULL);
 		g_free(name);
 	} else
 	{
-		filepath = replace_ext(doc->path, NULL, ".txt");
+		filepath = replace_ext(doc->path, NULL, defext);
 	}
 	
-	/*
-	 * the text widget will loose the selection when something gets selected
-	 * in the file chooser, so save the selection bound now
-	 */
-	if (gtk_text_buffer_get_has_selection(win->text_buffer))
-		gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
-	else
-		gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
-
-	if (choose_file(parent, &filepath, TRUE, _("Save ASCII text as"), IDS_SELECT_TEXTFILES))
+	if (choose_file(parent, &filepath, TRUE, title, filter))
 	{
-		int ret;
-
-		ret = hyp_utf8_open(filepath, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-		if (ret >= 0)
-		{
-			hyp_utf8_close(ret);
-			if (ask_yesno(parent, _("This file exists already.\nDo you want to replace it?")))
-				ret = -1;
-		}
-		if (ret < 0)
-		{
-			g_free(gl_profile.output.output_dir);
-			gl_profile.output.output_dir = hyp_path_get_dirname(filepath);
-			HypProfile_SetChanged();
-			BlockAsciiSave(win, filepath, &start, &end);
-		}
+		g_free(gl_profile.output.output_dir);
+		gl_profile.output.output_dir = hyp_path_get_dirname(filepath);
+		HypProfile_SetChanged();
+	} else
+	{
+		g_free(filepath);
+		filepath = NULL;
 	}
-	g_free(filepath);
+	return filepath;
 }

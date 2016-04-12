@@ -135,9 +135,9 @@ void SelectFileSave(WINDOW_DATA *win)
 
 	subst = path_subst(gl_profile.general.path_list);
 	CreatePathList(paths, subst);
-	filepath = replace_ext(doc->path, NULL, ".txt");
+	filepath = replace_ext(doc->path, NULL, HYP_EXT_TXT);
 
-	OpenFileselector(SaveFile_FSLX, rs_string(FSLX_SAVE), filepath, paths, "*.txt\0", 0, win);
+	OpenFileselector(SaveFile_FSLX, rs_string(FSLX_SAVE), filepath, paths, "*" HYP_EXT_TXT "\0", 0, win);
 	g_free(filepath);
 	g_free(subst);
 }

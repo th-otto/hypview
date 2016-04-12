@@ -69,7 +69,7 @@ gboolean HypBlockOperations(WINDOW_DATA *win, hyp_blockop op, BLOCK *block, void
 					g_free(line_buffer);
 					if (ret != len)
 					{
-						HYP_DBG(("Error %s writing file. Abort.", strerror(errno)));
+						HYP_DBG(("Error %s writing file. Abort.", hyp_utf8_strerror(errno)));
 						return FALSE;
 					}
 				}

@@ -302,7 +302,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button)
 		SelectFileLoad(win);
 		break;
 	case TO_SAVE:
-		SelectFileSave(win);
+		BlockOperation(win, CO_SAVE);
 		break;
 	case TO_INDEX:
 		GotoIndex(win);

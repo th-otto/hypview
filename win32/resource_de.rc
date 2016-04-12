@@ -8,6 +8,7 @@ BEGIN
 		MENUITEM "&Hypertext öffnen...\tCtrl+O",	IDM_FILE_OPEN
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM "&Als Text speichern...\tCtrl+S",	IDM_FILE_SAVE
+		MENUITEM "&Rekompilieren...\tCtrl+R",        	IDM_FILE_RECOMPILE
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM "&Katalog\tAlt+K",		IDM_FILE_CATALOG
 		MENUITEM "&Standard-Datei\tAlt+D",	IDM_FILE_DEFAULT

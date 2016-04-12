@@ -297,6 +297,7 @@ typedef struct
 #define HYP_EXT_REF ".ref"
 #define HYP_EXT_STG ".stg"
 #define HYP_EXT_RSC ".rsc"
+#define HYP_EXT_TXT ".txt"
 #define HYP_EXT_GUIDE ".guide"
 
 /*

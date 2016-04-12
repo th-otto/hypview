@@ -45,6 +45,8 @@ hypview_SOURCES = \
 	hv_tbar.c \
 	hv_win.c \
 	autoloc.c \
+	hv_recomp.c \
+	hcp_opts.c \
 	w_draw.c w_draw.h pattern.h \
 	\
 	windebug.c windebug.h \

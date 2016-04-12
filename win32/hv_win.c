@@ -603,7 +603,39 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			SelectFileLoad(win);
 			break;
 		case IDM_FILE_SAVE:
-			SelectFileSave(win);
+			{
+				char *filename;
+				gboolean selection_only = FALSE;
+				DOCUMENT *doc = win->data;
+				
+				if (win->selection.valid)
+					selection_only = TRUE;
+				filename = SelectFileSave(win, HYP_FT_ASCII);
+				if (filename)
+				{
+					if (doc->type == HYP_FT_HYP && !selection_only)
+						hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_ASCII);
+					else
+						BlockAsciiSave(win, filename);
+					g_free(filename);
+				}
+			}
+			break;
+		case IDM_FILE_RECOMPILE:
+			{
+				char *filename;
+				DOCUMENT *doc = win->data;
+				
+				if (doc->type == HYP_FT_HYP)
+				{
+					filename = SelectFileSave(win, HYP_FT_STG);
+					if (filename)
+					{
+						hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_STG);
+						g_free(filename);
+					}
+				}
+			}
 			break;
 		case IDM_FILE_CATALOG:
 			GoThisButton(win, TO_CATALOG);

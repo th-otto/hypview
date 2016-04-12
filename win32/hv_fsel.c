@@ -1,7 +1,9 @@
 #include "hv_defs.h"
+#include "hypdebug.h"
 
 char const hypertext_file_filter[] = N_("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n");
 char const text_file_filter[] = N_("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n");
+char const stg_file_filter[] = N_("*.stg|ST-Guide files (*.stg)\n*.*|All files (*.*)\n");
 
 #define G_SEARCHPATH_SEPARATOR_S ";"
 
@@ -197,43 +199,51 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SelectFileSave(WINDOW_DATA *win)
+char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 {
 	DOCUMENT *doc = win->data;
 	char *filepath;
 	HWND parent = win ? win->hwnd : NULL;
+	const char *defext;
+	const char *filter;
+	const char *title;
+	
+	switch (type)
+	{
+	case HYP_FT_ASCII:
+		defext = HYP_EXT_TXT;
+		filter = _(text_file_filter);
+		title = _("Save ASCII text as");
+		break;
+	case HYP_FT_STG:
+		defext = HYP_EXT_STG;
+		filter = _(stg_file_filter);
+		title = _("Recompile to");
+		break;
+	default:
+		unreachable();
+		return NULL;
+	}
 	
 	if (gl_profile.output.output_dir)
 	{
-		char *name = replace_ext(hyp_basename(doc->path), NULL, ".txt");
+		char *name = replace_ext(hyp_basename(doc->path), NULL, defext);
 		filepath = g_build_filename(gl_profile.output.output_dir, name, NULL);
 		g_free(name);
 	} else
 	{
-		filepath = replace_ext(doc->path, NULL, ".txt");
+		filepath = replace_ext(doc->path, NULL, defext);
 	}
 	
-	if (choose_file(parent, &filepath, file_save, _("Save ASCII text as"), _(text_file_filter)))
+	if (choose_file(parent, &filepath, file_save, title, filter))
 	{
-#if 0
-		int ret;
-
-		/* no need to check; fileselector already did it */
-		ret = hyp_utf8_open(filepath, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-		if (ret >= 0)
-		{
-			hyp_utf8_close(ret);
-			if (ask_yesno(parent, _("This file exists already.\nDo you want to replace it?")))
-				ret = -1;
-		}
-		if (ret < 0)
-#endif
-		{
-			g_free(gl_profile.output.output_dir);
-			gl_profile.output.output_dir = hyp_path_get_dirname(filepath);
-			HypProfile_SetChanged();
-			BlockAsciiSave(win, filepath);
-		}
+		g_free(gl_profile.output.output_dir);
+		gl_profile.output.output_dir = hyp_path_get_dirname(filepath);
+		HypProfile_SetChanged();
+	} else
+	{
+		g_free(filepath);
+		filepath = NULL;
 	}
-	g_free(filepath);
+	return filepath;
 }

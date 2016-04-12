@@ -8,6 +8,7 @@ BEGIN
 		MENUITEM N_("&Open Hypertext...\tCtrl+O"),	IDM_FILE_OPEN
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM N_("&Save text...\tCtrl+S"),	        IDM_FILE_SAVE
+		MENUITEM N_("&Recompile...\tCtrl+R"),	        IDM_FILE_RECOMPILE
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM N_("&Catalog\tAlt+K"),		        IDM_FILE_CATALOG
 		MENUITEM N_("&Default file\tAlt+D"),	        IDM_FILE_DEFAULT

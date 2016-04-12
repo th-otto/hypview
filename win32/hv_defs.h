@@ -352,7 +352,7 @@ extern char const hypertext_file_filter[];
 extern char const text_file_filter[];
 gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const char *title, const char *filter);
 WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win);
-void SelectFileSave(WINDOW_DATA *win);
+char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type);
 
 
 /*
@@ -457,6 +457,12 @@ void DocumentInfos(WINDOW_DATA *win);
 void hv_config_colors(WINDOW_DATA *win);
 void hv_preferences(WINDOW_DATA *win);
 void hv_config_output(WINDOW_DATA *win);
+
+
+/*
+ * hv_recomp.c
+ */
+gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filetype type);
 
 
 #endif /* __HV_DEFS_H__ */

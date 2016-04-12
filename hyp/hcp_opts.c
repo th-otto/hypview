@@ -157,6 +157,7 @@ void hcp_opts_copy(hcp_opts *opts, const hcp_opts *src)
 	opts->output_filename = g_strdup(src->output_filename);
 	opts->error_filename = g_strdup(src->error_filename);
 	opts->image_name_prefix = g_strdup(src->image_name_prefix);
+	opts->output_dir = g_strdup(src->output_dir);
 	opts->uses = NULL;
 	hcp_copy_uses(&opts->uses, src->uses);
 }
@@ -652,6 +653,7 @@ void hcp_opts_free(hcp_opts *opts)
 	g_freep(&opts->output_filename);
 	g_freep(&opts->error_filename);
 	g_freep(&opts->image_name_prefix);
+	g_freep(&opts->output_dir);
 	hcp_free_uses(&opts->uses);
 	if (opts->errorfile != NULL)
 	{

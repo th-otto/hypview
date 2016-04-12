@@ -239,7 +239,7 @@ void AutoLocatorPaste(WINDOW_DATA *win);
  * hv_fsel.c
  */
 WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win);
-void SelectFileSave(WINDOW_DATA *win);
+char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type);
 void hv_file_selector_add_filter(GtkWidget *selector, const char *filter);
 void hv_file_selector_add_hypfilter(GtkWidget *selector);
 
@@ -333,6 +333,12 @@ void DocumentInfos(WINDOW_DATA *win);
 void hv_config_colors(WINDOW_DATA *win);
 void hv_preferences(WINDOW_DATA *win);
 void hv_config_output(WINDOW_DATA *win);
+
+
+/*
+ * hv_recomp.c
+ */
+gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filetype type);
 
 
 #endif /* __HV_GTK_H__ */

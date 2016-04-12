@@ -68,6 +68,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "xref"), doc->buttons.references);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "help"), doc->buttons.help);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "save"), doc->buttons.save);
+		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "recompile"), doc->buttons.save && doc->type == HYP_FT_HYP);
 
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "remarker"), doc->buttons.remarker);
 	}
@@ -122,7 +123,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button, guint32 eve
 		SelectFileLoad(win);
 		break;
 	case TO_SAVE:
-		SelectFileSave(win);
+		BlockOperation(win, CO_SAVE);
 		break;
 	case TO_INDEX:
 		GotoIndex(win);

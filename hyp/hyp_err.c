@@ -7,7 +7,7 @@
 
 void FileErrorNr(const char *path, int err_no)
 {
-	FileError(path, strerror(err_no));
+	FileError(path, hyp_utf8_strerror(err_no));
 }
 
 /*** ---------------------------------------------------------------------- ***/

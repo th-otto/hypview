@@ -68,6 +68,8 @@ hypview_SOURCES = \
 	hv_tbar.c \
 	hv_win.c \
 	autoloc.c \
+	hv_recomp.c \
+	hcp_opts.c \
 	$(empty)
 
 hypview_DEPENDENCIES = $(LIBHYP_DEP) $(LIBHYPDOC_DEP)

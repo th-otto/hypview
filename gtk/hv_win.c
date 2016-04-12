@@ -55,6 +55,7 @@ static const gchar org_gtk_hypview_xml[] =
     "<interface name='org.gtk.hypviewwindow'>"
       "<method name='ToFront'/>"
       "<method name='Close'/>"
+      "<method name='Quit'/>"
       "<method name='Back'/>"
       "<method name='First'/>"
       "<method name='Prev'/>"
@@ -222,6 +223,8 @@ static void g_application_impl_method_call(
 	
 	else if (strcmp(method_name, "Close") == 0)
 		do_action(win, "close");
+	else if (strcmp(method_name, "Quit") == 0)
+		do_action(win, "quit");
 	
 	else if (strcmp(method_name, "Back") == 0)
 		do_action(win, "back");
@@ -824,8 +827,54 @@ static void on_select_source(GtkAction *action, WINDOW_DATA *win)
 
 static void on_save(GtkAction *action, WINDOW_DATA *win)
 {
+	char *filename;
+	GtkTextIter start, end;
+	gboolean selection_only = FALSE;
+	DOCUMENT *doc = win->data;
+	
 	UNUSED(action);
-	SelectFileSave(win);
+
+	/*
+	 * the text widget will loose the selection when something gets selected
+	 * in the file chooser, so save the selection bound now
+	 */
+	if (gtk_text_buffer_get_has_selection(win->text_buffer))
+	{
+		gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
+		selection_only = TRUE;
+	} else
+	{
+		gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
+	}
+	
+	filename = SelectFileSave(win, HYP_FT_ASCII);
+	if (filename)
+	{
+		if (doc->type == HYP_FT_HYP && !selection_only)
+			hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_ASCII);
+		else
+			BlockAsciiSave(win, filename, &start, &end);
+		g_free(filename);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void on_recompile(GtkAction *action, WINDOW_DATA *win)
+{
+	char *filename;
+	DOCUMENT *doc = win->data;
+	
+	UNUSED(action);
+
+	if (doc->type != HYP_FT_HYP)
+		return;
+	filename = SelectFileSave(win, HYP_FT_STG);
+	if (filename)
+	{
+		hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_STG);
+		g_free(filename);
+	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1200,7 +1249,7 @@ static gboolean tb_button_clicked(GtkWidget *w, GdkEventButton *event, gpointer 
 		WINDOW_DATA *win = (WINDOW_DATA *)user_data;
 		void *pbutton = g_object_get_data(G_OBJECT(w), "buttonnumber");
 		enum toolbutton button_num = (enum toolbutton)(int)(intptr_t)pbutton;
-		ToolbarClick(win, button_num, event->button, event->time);
+		do_action(win, tb_action_names[button_num]);
 		return TRUE;
 	}
 	return FALSE;
@@ -1958,7 +2007,7 @@ static GtkTextTagTable *create_tags(void)
 	create_link_tag(table, "rx", gl_profile.colors.rx);
 	create_link_tag(table, "rxs", gl_profile.colors.rxs);
 	create_link_tag(table, "quit", gl_profile.colors.quit);
-	create_link_tag(table, "close", gl_profile.colors.quit);
+	create_link_tag(table, "close", gl_profile.colors.close);
 
 	return table;
 }
@@ -2070,6 +2119,7 @@ static GtkActionEntry const action_entries[] = {
 	 */
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_save) },
+	{ "recompile",          "hv-save",               N_("_Recompile..."),                   "<Ctrl>R",     N_("Recompile to ST-Guide format"),                  G_CALLBACK(on_recompile) },
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
 	{ "remarker",           "hv-remarker",           N_("_Run Remarker"),                   "<Alt>R",      N_("Start Remarker"),                                G_CALLBACK(on_remarker) },
 	{ "close",              "gtk-close",             N_("_Close"),                          "<Ctrl>U",     NULL,                                                G_CALLBACK(on_close) },
@@ -2145,6 +2195,7 @@ static char const ui_info[] =
 "      <menuitem action='open'/>\n"
 "      <separator/>\n"
 "      <menuitem action='save'/>\n"
+"      <menuitem action='recompile'/>\n"
 "      <separator/>\n"
 "      <menuitem action='catalog' />\n"
 "      <menuitem action='defaultfile' />\n"

@@ -102,7 +102,15 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 	switch (num)
 	{
 	case CO_SAVE:
-		SelectFileSave(win);
+		{
+			char *filename;
+			filename = SelectFileSave(win, HYP_FT_ASCII);
+			if (filename)
+			{
+				BlockAsciiSave(win, filename);
+				g_free(filename);
+			}
+		}
 		break;
 	case CO_BACK:
 		GoBack(win);

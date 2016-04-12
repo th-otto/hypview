@@ -17,6 +17,7 @@ void hv_update_menu(HMENU menu, DOCUMENT *doc)
 	EnableMenuObj(menu, IDM_NAV_BOOKMARKSMENU, doc->buttons.bookmarks);
 	EnableMenuObj(menu, IDM_FILE_OPEN, doc->buttons.load);
 	EnableMenuObj(menu, IDM_FILE_SAVE, doc->buttons.save);
+	EnableMenuObj(menu, IDM_FILE_RECOMPILE, doc->buttons.save && doc->type == HYP_FT_HYP);
 	EnableMenuObj(menu, IDM_FILE_REMARKER, doc->buttons.remarker);
 	EnableMenuObj(menu, IDM_FILE_INFO, doc->buttons.info);
 	EnableMenuObj(menu, IDM_NAV_BACK, doc->buttons.back);

@@ -107,7 +107,26 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 	switch (num)
 	{
 	case CO_SAVE:
-		SelectFileSave(win);
+		{
+			char *filename;
+			GtkTextIter start, end;
+			
+			/*
+			 * the text widget will loose the selection when something gets selected
+			 * in the file chooser, so save the selection bound now
+			 */
+			if (gtk_text_buffer_get_has_selection(win->text_buffer))
+				gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
+			else
+				gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
+
+			filename = SelectFileSave(win, HYP_FT_ASCII);
+			if (filename)
+			{
+				BlockAsciiSave(win, filename, &start, &end);
+				g_free(filename);
+			}
+		}
 		break;
 	case CO_BACK:
 		GoBack(win);
