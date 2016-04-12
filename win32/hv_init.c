@@ -26,7 +26,7 @@ void hv_init(void)
 
 void hv_exit(void)
 {
-	MarkerSaveToDisk();
+	MarkerSaveToDisk(gl_profile.viewer.marken_save_ask);
 	/* RecentSaveToDisk(); */
 	RecentExit();
 	w_exit_brush();

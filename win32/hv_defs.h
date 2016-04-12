@@ -376,7 +376,7 @@ void MarkerSave(WINDOW_DATA *win, short num);
 void MarkerShow(WINDOW_DATA *win, short num, gboolean new_window);
 void MarkerPopup(WINDOW_DATA *win, int button);
 void MarkerUpdate(WINDOW_DATA *win);
-void MarkerSaveToDisk(void);
+void MarkerSaveToDisk(gboolean ask);
 void MarkerInit(void);
 void on_bookmark_selected(WINDOW_DATA *win, int num);
 

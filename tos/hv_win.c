@@ -363,6 +363,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				gl_profile.viewer.last_node = doc->getNodeProc(win);
 				g_free(gl_profile.viewer.last_file);
 				gl_profile.viewer.last_file = g_strdup(doc->path);
+				MarkerSaveToDisk(gl_profile.viewer.marken_save_ask);
 			}
 		}
 		break;

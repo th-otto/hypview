@@ -187,7 +187,7 @@ void MarkerPopup(WINDOW_DATA *win, int button, guint32 event_time)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void MarkerSaveToDisk(void)
+void MarkerSaveToDisk(gboolean ask)
 {
 	char *filename;
 	
@@ -198,7 +198,7 @@ void MarkerSaveToDisk(void)
 	{
 		int ret;
 
-		if (gl_profile.viewer.marken_save_ask)
+		if (ask)
 		{
 			if (ask_yesno(top_window(), _("Save bookmarks?")) == FALSE)
 				return;
@@ -209,6 +209,7 @@ void MarkerSaveToDisk(void)
 		{
 			write(ret, marken, sizeof(MARKEN) * MAX_MARKEN);
 			close(ret);
+			marken_change = FALSE;
 		} else
 		{
 			HYP_DBG(("Error %ld: saving %s", ret, printnull(filename)));

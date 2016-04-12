@@ -114,6 +114,7 @@ void DoUserEvents(EVNT *event)
 			}
 			RemoveItems();
 			modal_items = -1;
+			MarkerSaveToDisk(FALSE);
 			va_proto_init(NULL);
 			break;
 
