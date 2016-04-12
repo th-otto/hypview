@@ -23,7 +23,6 @@ typedef struct {
 		char *marker_path;          /* Default file to save mark files to */
 		int startup;				/* 0=show selector, 1=load default_file, 2=load last file */
 		char *last_file;
-		char *output_dir;
 		unsigned short last_node;
 		char *printer;              /* external print application */
 #ifdef WITH_GUI_GEM
@@ -66,6 +65,14 @@ typedef struct {
 #endif
 	} viewer;
 
+	struct {
+		char *output_dir;
+		HYP_CHARSET output_charset;
+		gboolean bracket_links;
+		gboolean all_links;
+		gboolean output_index;
+	} output;
+	
 	struct {
 		char *background;           /* window background color */
 		char *text;                 /* Displays text in the specified color */

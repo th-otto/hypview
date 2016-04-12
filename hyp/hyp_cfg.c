@@ -300,8 +300,6 @@ void HypProfile_Load(void)
 		{}
 	if (!Profile_ReadString(profile, "HypView", "LASTFILE", &gl_profile.viewer.last_file))
 		gl_profile.viewer.last_file = NULL;
-	if (!Profile_ReadString(profile, "HypView", "OUTPUT_DIR", &gl_profile.viewer.output_dir))
-		gl_profile.viewer.output_dir = NULL;
 	if (!Profile_ReadInt(profile, "HypView", "STARTUP", &gl_profile.viewer.startup))
 		setdefault(gl_profile.viewer.startup = 1);
 	
@@ -343,6 +341,25 @@ void HypProfile_Load(void)
 #endif
 	if (!Profile_ReadBool(profile, "HypView", "USE_XFONT", &gl_profile.viewer.use_xfont))
 		setdefault(gl_profile.viewer.use_xfont = FALSE);
+
+	if (!Profile_ReadString(profile, "Output", "OUTPUT_DIR", &gl_profile.output.output_dir))
+		gl_profile.output.output_dir = NULL;
+	{
+		char *s;
+		if (!Profile_ReadString(profile, "Output", "OUTPUT_CHARSET", &s))
+			s = NULL;
+		if (s == NULL || strcmp(s, "system") == 0)
+			gl_profile.output.output_charset = HYP_CHARSET_NONE;
+		else
+			gl_profile.output.output_charset = hyp_charset_from_name(s);
+		g_free(s);
+	}
+	if (!Profile_ReadBool(profile, "Output", "bracket_links", &gl_profile.output.bracket_links))
+		setdefault(gl_profile.output.bracket_links = FALSE);
+	if (!Profile_ReadBool(profile, "Output", "all_links", &gl_profile.output.all_links))
+		setdefault(gl_profile.output.all_links = FALSE);
+	if (!Profile_ReadBool(profile, "Output", "output_index", &gl_profile.output.output_index))
+		setdefault(gl_profile.output.output_index = FALSE);
 
 #if 0
 	if (!Profile_ReadString(profile, "Colors", "COLOR0", &gl_profile.colors.color[G_WHITE]))
@@ -577,7 +594,6 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteString(profile, "HypView", "PRINTER", gl_profile.viewer.printer);
 	Profile_WriteString(profile, "HypView", "EXTVIEW", gl_profile.viewer.extview);
 	Profile_WriteString(profile, "HypView", "LASTFILE", gl_profile.viewer.last_file);
-	Profile_WriteString(profile, "HypView", "OUTPUT_DIR", gl_profile.viewer.output_dir);
 	Profile_WriteInt(profile, "HypView", "STARTUP", gl_profile.viewer.startup);
 	Profile_WriteInt(profile, "HypView", "WINSIZE.X", gl_profile.viewer.win_x);
 	Profile_WriteInt(profile, "HypView", "WINSIZE.Y", gl_profile.viewer.win_y);
@@ -636,6 +652,12 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteString(profile, "Colors", "close", gl_profile.colors.close);
 	Profile_WriteString(profile, "Colors", "ghosted", gl_profile.colors.ghosted);
 
+	Profile_WriteString(profile, "Output", "OUTPUT_DIR", gl_profile.output.output_dir);
+	Profile_WriteString(profile, "Output", "OUTPUT_CHARSET", gl_profile.output.output_charset == HYP_CHARSET_NONE ? "system" : hyp_charset_name(gl_profile.output.output_charset));
+	Profile_WriteBool(profile, "Output", "bracket_links", gl_profile.output.bracket_links);
+	Profile_WriteBool(profile, "Output", "all_links", gl_profile.output.all_links);
+	Profile_WriteBool(profile, "Output", "output_index", gl_profile.output.output_index);
+
 	Profile_WriteString(profile, "Remarker", "REMARKER", gl_profile.remarker.path);
 	Profile_WriteBool(profile, "Remarker", "RunOnStartup", gl_profile.remarker.run_on_startup);
 
@@ -683,7 +705,6 @@ void HypProfile_Delete(void)
 	g_freep(&gl_profile.viewer.default_file);
 	g_freep(&gl_profile.viewer.catalog_file);
 	g_freep(&gl_profile.viewer.last_file);
-	g_freep(&gl_profile.viewer.output_dir);
 	g_freep(&gl_profile.viewer.printer);
 	g_freep(&gl_profile.viewer.extview);
 	g_freep(&gl_profile.viewer.skin_path);
@@ -695,6 +716,8 @@ void HypProfile_Delete(void)
 #ifdef WITH_GUI_GEM
 	g_freep(&gl_profile.viewer.applname);
 #endif
+
+	g_freep(&gl_profile.output.output_dir);
 
 	g_freep(&gl_profile.colors.background);
 	g_freep(&gl_profile.colors.text);

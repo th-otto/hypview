@@ -227,10 +227,10 @@ void SelectFileSave(WINDOW_DATA *win)
 	GtkWidget *parent = GTK_WIDGET(win);
 	GtkTextIter start, end;
 	
-	if (gl_profile.viewer.output_dir)
+	if (gl_profile.output.output_dir)
 	{
 		char *name = replace_ext(hyp_basename(doc->path), NULL, ".txt");
-		filepath = g_build_filename(gl_profile.viewer.output_dir, name, NULL);
+		filepath = g_build_filename(gl_profile.output.output_dir, name, NULL);
 		g_free(name);
 	} else
 	{
@@ -259,8 +259,8 @@ void SelectFileSave(WINDOW_DATA *win)
 		}
 		if (ret < 0)
 		{
-			g_free(gl_profile.viewer.output_dir);
-			gl_profile.viewer.output_dir = hyp_path_get_dirname(filepath);
+			g_free(gl_profile.output.output_dir);
+			gl_profile.output.output_dir = hyp_path_get_dirname(filepath);
 			HypProfile_SetChanged();
 			BlockAsciiSave(win, filepath, &start, &end);
 		}

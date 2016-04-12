@@ -1,6 +1,18 @@
 #include "hv_gtk.h"
 #include "hypdebug.h"
 
+/*-----------------------------------------------------------------------*/
+
+static void ComboboxReset(GtkWidget *obj)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(obj));
+	
+	g_return_if_fail(model != NULL);
+	while (gtk_tree_model_get_iter_first(model, &iter))
+		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(obj), 0);
+}
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -625,6 +637,170 @@ void hv_preferences(WINDOW_DATA *win)
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
 	
 	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(prefs_dialog_response), dialog);
+	
+	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
+	gtk_widget_show_all(dialog);
+	resp = gtk_dialog_run(GTK_DIALOG(dialog));
+	
+	if (IsResponseOk(resp))
+	{
+	}
+	gtk_widget_destroy(dialog);
+}
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+static struct {
+	const char *name;
+	HYP_CHARSET charset;
+} const charset_choices[] = {
+	{ N_("System Default"), HYP_CHARSET_NONE },
+	{ N_("Windows CP1252"), HYP_CHARSET_CP1252 },
+	{ N_("Atari ST"), HYP_CHARSET_ATARI },
+	{ N_("Mac-Roman"), HYP_CHARSET_MACROMAN },
+	{ N_("OS/2 CP850"), HYP_CHARSET_CP850 },
+	{ N_("UTF-8"), HYP_CHARSET_UTF8 }
+};
+
+static void output_dialog_response(GtkWidget *w, gint response_id, GtkWidget *dialog)
+{
+ 	GtkToggleButton *button;
+	int val;
+	GtkComboBox *charset;
+	
+	UNUSED(w);
+	switch (response_id)
+	{
+	case GTK_RESPONSE_HELP:
+		break;
+	case GTK_RESPONSE_APPLY:
+	case GTK_RESPONSE_ACCEPT:
+	case GTK_RESPONSE_OK:
+	case GTK_RESPONSE_YES:
+		charset = (GtkComboBox *)g_object_get_data(G_OBJECT(dialog), "charset");
+		val = gtk_combo_box_get_active(GTK_COMBO_BOX(charset));
+		if (val >= 0 && val < (int)(sizeof(charset_choices) / sizeof(charset_choices[0])))
+			gl_profile.output.output_charset = charset_choices[val].charset;
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "bracket_links");
+		gl_profile.output.bracket_links = gtk_toggle_button_get_active(button);
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "all_links");
+		gl_profile.output.all_links = gtk_toggle_button_get_active(button);
+		button = (GtkToggleButton *)g_object_get_data(G_OBJECT(dialog), "output_index");
+		gl_profile.output.output_index = gtk_toggle_button_get_active(button);
+		
+		HypProfile_SetChanged();
+		break;
+	case GTK_RESPONSE_DELETE_EVENT:
+	case GTK_RESPONSE_CANCEL:
+	case GTK_RESPONSE_CLOSE:
+	case GTK_RESPONSE_NO:
+		break;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_config_output(WINDOW_DATA *win)
+{
+	GtkWidget *dialog, *vbox, *hbox, *frame, *vbox1;
+	GtkWidget *button;
+	GtkWidget *charset;
+	gint resp;
+	int i, val;
+	
+	dialog = gtk_dialog_new();
+	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("output-dialog"));
+	g_signal_connect_swapped(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_hide), dialog);
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Output Settings"));
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox, TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	frame = gtk_frame_new(_("Character Set"));
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+
+	vbox1 = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 0);
+	gtk_container_add(GTK_CONTAINER(frame), vbox1);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
+
+	charset = gtk_combo_box_text_new();
+	g_object_set_data(G_OBJECT(dialog), "charset", charset);
+	gtk_box_pack_start(GTK_BOX(hbox), charset, TRUE, TRUE, 0);
+	ComboboxReset(charset);
+	val = 0;
+	for (i = 0; i < (int)(sizeof(charset_choices) / sizeof(charset_choices[0])); i++)
+	{
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(charset), _(charset_choices[i].name));
+		if (gl_profile.output.output_charset == charset_choices[i].charset)
+			val = i;
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(charset), val);
+	
+	frame = gtk_frame_new(_("Text Output"));
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+
+	vbox1 = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 0);
+	gtk_container_add(GTK_CONTAINER(frame), vbox1);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
+
+	button = gtk_check_button_new_with_mnemonic(_("Output LINK as \"[LINK]\""));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.output.bracket_links);
+	g_object_set_data(G_OBJECT(dialog), "bracket_links", button);
+
+	frame = gtk_frame_new(_("Recompile"));
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+
+	vbox1 = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 0);
+	gtk_container_add(GTK_CONTAINER(frame), vbox1);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
+
+	button = gtk_check_button_new_with_mnemonic(_("Output all links (even @{x link x})"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.output.all_links);
+	g_object_set_data(G_OBJECT(dialog), "all_links", button);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
+
+	button = gtk_check_button_new_with_mnemonic(_("Always output index page"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, TRUE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), gl_profile.output.output_index);
+	g_object_set_data(G_OBJECT(dialog), "output_index", button);
+
+	button = gtk_button_new_ok();
+	gtk_widget_set_can_default(button, TRUE);
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_OK);
+	gtk_widget_grab_default(button);
+	
+	button = gtk_button_new_cancel();
+	gtk_widget_set_can_default(button, TRUE);
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
+	
+	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(output_dialog_response), dialog);
 	
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(win));
 	gtk_widget_show_all(dialog);

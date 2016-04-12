@@ -244,11 +244,11 @@ CAPTION N_("Einstellungen")
 FONT 8, "MS Sans Serif"
 BEGIN
         LTEXT           N_("Pfad für Hypertexte"), IDC_STATIC, 5,10,70,8, SS_NOPREFIX
-        PUSHBUTTON      "xxxxxxxxxxxx", IDC_HYPFOLD, 85,7,50,14, WS_GROUP
+        PUSHBUTTON      "", IDC_HYPFOLD, 85,7,50,14, WS_GROUP
         LTEXT           N_("Default-Hypertext"), IDC_STATIC, 5,30,70,8, SS_NOPREFIX
-        PUSHBUTTON      "xxxxxxxxxxxx", IDC_DEFAULT_FILE, 85,27,50,14, WS_GROUP
+        PUSHBUTTON      "", IDC_DEFAULT_FILE, 85,27,50,14, WS_GROUP
         LTEXT           N_("Katalog Datei"), IDC_STATIC, 5,50,70,8, SS_NOPREFIX
-        PUSHBUTTON      "xxxxxxxxxxxx", IDC_CATALOG_FILE, 85,47,50,14, WS_GROUP
+        PUSHBUTTON      "", IDC_CATALOG_FILE, 85,47,50,14, WS_GROUP
 	GROUPBOX	N_("Bei Programmstart"), IDC_STATIC, 5,65,200,60
         AUTORADIOBUTTON N_("Dateiauswahl anzeigen"), IDC_PREF_FILE_SELECTOR, 15,75,150,14, WS_GROUP
         AUTORADIOBUTTON N_("Standard-Hypertext laden"), IDC_PREF_DEFAULT_TEXT, 15,91,150,14
@@ -261,4 +261,21 @@ BEGIN
         AUTOCHECKBOX    N_("Vor sichern der Lesezeichen nachfragen"), IDC_PREF_MARKEN_SAVE_ASK, 15,204,150,14, WS_GROUP
         DEFPUSHBUTTON   N_("&OK"), IDOK, 90,225,50,14, WS_GROUP
         PUSHBUTTON      N_("&Abbruch"), IDCANCEL, 150,225,50,14, WS_GROUP
+END
+
+
+IDD_OUTPUT DIALOG PRELOAD DISCARDABLE 0, 0, 210, 155
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_3DLOOK
+CAPTION N_("Ausgabeoptionen")
+FONT 8, "MS Sans Serif"
+BEGIN
+	GROUPBOX	N_("Zeichensatz"), IDC_STATIC, 5,10,200,30
+	COMBOBOX        IDC_OUTPUT_CHARSET, 15,20,180,200, CBS_DROPDOWNLIST | WS_GROUP | WS_TABSTOP
+	GROUPBOX	N_("Textausgabe"), IDC_STATIC, 5,46,200,30
+        AUTOCHECKBOX    N_("LINK als ""[LINK]"" ausgeben"), IDC_OUTPUT_BRACKET_LINKS, 15,56,150,14, WS_GROUP
+	GROUPBOX	N_("Recompilieren"), IDC_STATIC, 5,82,200,46
+        AUTOCHECKBOX    N_("Alle links ausgeben (auch @{x link x})"), IDC_OUTPUT_ALL_LINKS, 15,92,150,14, WS_GROUP
+        AUTOCHECKBOX    N_("Indexseite immer mit ausgeben"), IDC_OUTPUT_INDEX, 15,108,150,14, WS_GROUP
+        DEFPUSHBUTTON   N_("&OK"), IDOK, 90,135,50,14, WS_GROUP
+        PUSHBUTTON      N_("&Abbruch"), IDCANCEL, 150,135,50,14, WS_GROUP
 END

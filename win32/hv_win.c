@@ -719,7 +719,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			hv_config_colors(win);
 			break;
 		case IDM_OPT_OUTPUT:
-			HYP_DBG(("NYI: on_output_settings"));
+			hv_config_output(win);
 			break;
 		case IDM_OPT_ALTFONT:
 			gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont;

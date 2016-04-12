@@ -230,3 +230,8 @@
 #define IDC_PREF_CHECK_TIME                 1108
 #define IDC_PREF_ALINK_NEWWIN               1109
 #define IDC_PREF_MARKEN_SAVE_ASK            1110
+
+#define IDC_OUTPUT_CHARSET                  1200
+#define IDC_OUTPUT_BRACKET_LINKS            1201
+#define IDC_OUTPUT_ALL_LINKS                1202
+#define IDC_OUTPUT_INDEX                    1203

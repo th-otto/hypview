@@ -849,8 +849,7 @@ static void on_color_select(GtkAction *action, WINDOW_DATA *win)
 static void on_output_settings(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
-	UNUSED(win);
-	HYP_DBG(("NYI: on_output_settings"));
+	hv_config_output(win);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -2061,7 +2060,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "FileMenu",           NULL,      N_("_File"), 0, 0, 0 },
 	{ "EditMenu",           NULL,      N_("_Edit"), 0, 0, 0 },
 	{ "NavigateMenu",       NULL,      N_("_Navigate"), 0, 0, 0 },
-	{ "OptionsMenu",        NULL,      N_("_Options"), 0, 0, 0 },
+	{ "OptionsMenu",        NULL,      N_("Options"), 0, 0, 0 },
 	{ "HelpMenu",           NULL,      N_("_Help"), 0, 0, 0 },
 	{ "RecentMenu",         NULL,                    N_("Open _Recent"),                    NULL,          0,                                                   G_CALLBACK(on_recent_menu) },
 	{ "BookmarksMenu",      "hv-bookmarks",          N_("Bookmarks"),                       NULL,          N_("Show list of bookmarks"),                        G_CALLBACK(on_bookmarks_menu) },
@@ -2126,7 +2125,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Alt>Z",      NULL,                                                G_CALLBACK(on_font_select) },
 	{ "selectcolors",       NULL,                    N_("_Colors..."),                      "<Alt>C",      NULL,                                                G_CALLBACK(on_color_select) },
 	{ "outputconfig",       NULL,                    N_("_Output..."),                      "<Alt>O",      NULL,                                                G_CALLBACK(on_output_settings) },
-	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    "<Alt>S,       NULL,                                                G_CALLBACK(on_preferences) },
+	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    "<Alt>S",      NULL,                                                G_CALLBACK(on_preferences) },
 
 	{ "helpcontents",       "gtk-info",              N_("_Contents"),                       NULL,          NULL,                                                G_CALLBACK(on_help_contents) },
 	{ "helpindex",          "gtk-index",             N_("_Index"),                          NULL,          NULL,                                                G_CALLBACK(on_help_index) },

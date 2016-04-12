@@ -23,6 +23,12 @@ struct pref_params {
 	gboolean marken_save_ask;
 };
 
+struct output_params {
+	WINDOW_DATA *win;
+	HYP_CHARSET charset;
+	gboolean bracket_links;
+};
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -395,8 +401,8 @@ static INT_PTR CALLBACK preference_dialog(HWND hwnd, UINT message, WPARAM wParam
 void hv_preferences(WINDOW_DATA *win)
 {
 	struct pref_params params;
-	
 	HWND parent = win ? win->hwnd : 0;
+	
 	params.win = win;
 	params.hypfold = path_subst(gl_profile.general.hypfold);
 	params.default_file = path_subst(gl_profile.viewer.default_file);
@@ -408,4 +414,103 @@ void hv_preferences(WINDOW_DATA *win)
 	params.alink_newwin = gl_profile.viewer.alink_newwin;
 	params.marken_save_ask = gl_profile.viewer.marken_save_ask;
 	DialogBoxExW(NULL, MAKEINTRESOURCEW(IDD_PREFERENCES), parent, preference_dialog, (LPARAM)&params);
+}
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+static struct {
+	const char *name;
+	HYP_CHARSET charset;
+} const charset_choices[] = {
+	{ N_("System Default"), HYP_CHARSET_NONE },
+	{ N_("Windows CP1252"), HYP_CHARSET_CP1252 },
+	{ N_("Atari ST"), HYP_CHARSET_ATARI },
+	{ N_("Mac-Roman"), HYP_CHARSET_MACROMAN },
+	{ N_("OS/2 CP850"), HYP_CHARSET_CP850 },
+	{ N_("UTF-8"), HYP_CHARSET_UTF8 }
+};
+
+static INT_PTR CALLBACK output_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	WORD notifyCode;
+	WINDOW_DATA *win;
+	struct output_params *params;
+	int i;
+	int val;
+	
+	params = (struct output_params *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+	switch (message)
+	{
+	case WM_CREATE:
+		break;
+	case WM_INITDIALOG:
+		params = (struct output_params *)lParam;
+		win = params->win;
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)params);
+		CenterWindow(hwnd);
+		SendDlgItemMessage(hwnd, IDC_OUTPUT_CHARSET, CB_RESETCONTENT, 0, 0);
+		val = 0;
+		for (i = 0; i < (int)(sizeof(charset_choices) / sizeof(charset_choices[0])); i++)
+		{
+			SendDlgItemMessage(hwnd, IDC_OUTPUT_CHARSET, CB_ADDSTRING, 0, (LPARAM)_(charset_choices[i].name));
+			if (params->charset == charset_choices[i].charset)
+				val = i;
+		}
+		SendDlgItemMessage(hwnd, IDC_OUTPUT_CHARSET, CB_SETCURSEL, val, 0);
+		DlgSetButton(hwnd, IDC_OUTPUT_BRACKET_LINKS, params->bracket_links);
+		return TRUE;
+	case WM_CLOSE:
+		EndDialog(hwnd, IDCANCEL);
+		DestroyWindow(hwnd);
+		return TRUE;
+	case WM_COMMAND:
+		notifyCode = HIWORD(wParam);
+		win = params->win;
+		switch (LOWORD(wParam))
+		{
+		case IDCANCEL:
+			EndDialog(hwnd, IDCANCEL);
+			DestroyWindow(hwnd);
+			return TRUE;
+		case IDOK:
+			val = (int) SendDlgItemMessage(hwnd, IDC_OUTPUT_CHARSET, CB_GETCURSEL, 0, 0);
+			if (val >= 0 && val < (int)(sizeof(charset_choices) / sizeof(charset_choices[0])))
+				params->charset = charset_choices[val].charset;
+			params->bracket_links = DlgGetButton(hwnd, IDC_OUTPUT_BRACKET_LINKS);
+			EndDialog(hwnd, IDOK);
+			DestroyWindow(hwnd);
+			gl_profile.output.output_charset = params->charset;
+			gl_profile.output.bracket_links = params->bracket_links;
+			HypProfile_SetChanged();
+			break;
+		case IDHELP:
+			if (notifyCode == BN_CLICKED)
+			{
+				Help_Show(win, _("Output Settings"));
+			}
+			break;
+		}
+		break;
+	case WM_DESTROY:
+		break;
+	default:
+		hv_commdlg_help(hwnd, message, wParam, lParam);
+		break;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void hv_config_output(WINDOW_DATA *win)
+{
+	struct output_params params;
+	HWND parent = win ? win->hwnd : 0;
+	
+	params.win = win;
+	params.charset = gl_profile.output.output_charset;
+	params.bracket_links =  gl_profile.output.bracket_links;
+	DialogBoxExW(NULL, MAKEINTRESOURCEW(IDD_OUTPUT), parent, output_dialog, (LPARAM)&params);
 }

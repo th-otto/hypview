@@ -1,7 +1,6 @@
 #ifndef __HYP_H__
 #define __HYP_H__
 
-#include "hypcfg.h"
 #include <dirent.h>
 
 
@@ -125,6 +124,9 @@ typedef enum {
 
 	HYP_CHARSET_MAX = HYP_CHARSET_BINARY_TABS
 } HYP_CHARSET;
+
+
+#include "hypcfg.h"
 
 
 /* Valid values for INDEX_ENTRY->type */
