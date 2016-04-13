@@ -892,10 +892,7 @@ static gboolean stg_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 	{
 		const unsigned char *src;
 		const unsigned char *end;
-		INDEX_ENTRY *entry;
 		
-		entry = hyp->indextable[node];
-				
 		end = nodeptr->end;
 
 		/*
@@ -930,16 +927,15 @@ static gboolean stg_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 				case HYP_ESC_ALINK_LINE:
 					{
 						hyp_nodenr dest_page;
-						unsigned char type;
 						hyp_lineno line = 0;
 						char *dest;
 						
-						type = *src;
 						line = DEC_255(&src[1]);
 						src += 2;
 						dest_page = DEC_255(&src[1]);
 						src += 3;
 						dest = NULL;
+						str = NULL;
 						if (hypnode_valid(hyp, dest_page))
 						{
 							INDEX_ENTRY *dest_entry = hyp->indextable[dest_page];
@@ -1016,19 +1012,23 @@ static gboolean stg_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 											last = &(*last)->next;
 										sym = g_new(symtab_entry, 1);
 										if (sym == NULL)
-											return FALSE;
-										sym->nodename = dest;
-										dest = NULL;
-										sym->type = REF_LABELNAME;
-										sym->name = str;
-										str = NULL;
-										sym->lineno = line;
-										sym->freeme = TRUE;
-										sym->from_ref = FALSE;
-										sym->from_idx = node == hyp->index_page;
-										sym->referenced = FALSE;
-										sym->next = NULL;
-										*last = sym;
+										{
+											retval = FALSE;
+										} else
+										{
+											sym->nodename = dest;
+											dest = NULL;
+											sym->type = REF_LABELNAME;
+											sym->name = str;
+											str = NULL;
+											sym->lineno = line;
+											sym->freeme = TRUE;
+											sym->from_ref = FALSE;
+											sym->from_idx = node == hyp->index_page;
+											sym->referenced = FALSE;
+											sym->next = NULL;
+											*last = sym;
+										}
 									}
 								}
 							}
