@@ -2270,7 +2270,7 @@ static gboolean load_uses_from_ref(hcp_vars *vars, REF_FILE *ref)
 			case REF_NODENAME:
 			case REF_ALIASNAME:
 			case REF_LABELNAME:
-				str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+				str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name.hyp, STR0TERM);
 				lab = add_label(vars, str, l_uses);
 				if (G_UNLIKELY(lab == NULL))
 				{
@@ -5723,6 +5723,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 	gboolean have_lineno = FALSE;
 	char *dest;
 	char *text;
+	gboolean same_node;
 	
 	if (argc < 3)
 	{
@@ -5737,7 +5738,8 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		return len;
 
 	target = vars->hcp_pass == 1 ? vars->p1_node_counter : vars->p2_node_counter;
-	if (namecmp(dest, vars->label_table[vars->node_table[target]->labindex]->name) == 0)
+	same_node = namecmp(dest, vars->label_table[vars->node_table[target]->labindex]->name) == 0;
+	if (same_node && argc == 3)
 	{
 		if (vars->hcp_pass == 1)
 			hcp_warning(vars, NULL, _("link to current node"));
@@ -7645,7 +7647,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 			for (l = 0; l < vars->p1_lab_counter; l++)
 			{
 				lab = vars->label_table[l];
-				if (!lab->referenced && !lab->add_to_ref && lab->type != l_uses)
+				if (!lab->referenced && !lab->add_to_ref && lab->type != l_uses && (lab->type != l_index || vars->gen_index))
 					hcp_warning(vars, &lab->source_location, _("not referenced: %s"), lab->name);
 			}
 		}

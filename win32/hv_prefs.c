@@ -161,7 +161,7 @@ static INT_PTR CALLBACK colors_dialog(HWND hwnd, UINT message, WPARAM wParam, LP
 			EndDialog(hwnd, IDOK);
 			DestroyWindow(hwnd);
 			HypProfile_SetChanged();
-			SwitchFont(win);
+			SwitchFont(win, FALSE);
 			break;
 		case IDC_COLOR_BG_BUTTON:
 			choose_color(hwnd, IDC_COLOR_BG_TEXT, &params->colors.background);
@@ -356,7 +356,7 @@ static INT_PTR CALLBACK preference_dialog(HWND hwnd, UINT message, WPARAM wParam
 			EndDialog(hwnd, IDOK);
 			DestroyWindow(hwnd);
 			HypProfile_SetChanged();
-			SwitchFont(win);
+			SwitchFont(win, FALSE);
 			break;
 		case IDC_HYPFOLD:
 			if (choose_file(hwnd, &params->hypfold, file_dirsel, _("Path for Hypertexts"), NULL))

@@ -87,6 +87,8 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	hcp_opts *opts = &_opts;
 	gboolean retval = TRUE;
 
+	is_MASTER = getenv("TO_MASTER") != NULL;
+	
 	output_charset = gl_profile.output.output_charset;
 	if (output_charset == HYP_CHARSET_NONE)
 		output_charset = hyp_get_current_charset();
@@ -97,7 +99,7 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	opts->gen_index = gl_profile.output.output_index;
 	opts->output_filename = g_strdup(output_filename);
 	opts->bracket_links = gl_profile.output.bracket_links;
-	opts->autoreferences = !gl_profile.output.all_links;
+	opts->all_links = gl_profile.output.all_links;
 	if (retval != FALSE)
 	{
 		if (opts->read_images)
@@ -120,5 +122,7 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	}
 	hcp_opts_free(opts);
 
+	SwitchFont(NULL, TRUE);
+	
 	return retval;
 }

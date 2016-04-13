@@ -591,6 +591,7 @@ int main(int argc, const char **argv)
 		retval = EXIT_FAILURE;
 	if (hcp_opts_parse(opts, argc, argv, OPTS_FROM_COMMANDLINE) == FALSE)
 		retval = EXIT_FAILURE;
+	opts->all_links = !opts->autoreferences;
 	
 	if (retval != EXIT_SUCCESS)
 	{

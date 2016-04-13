@@ -755,7 +755,7 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			break;
 		case IDM_OPT_ALTFONT:
 			gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont;
-			SwitchFont(win);
+			SwitchFont(win, FALSE);
 			break;
 		case IDM_OPT_EXPANDSPACES:
 			gl_profile.viewer.expand_spaces = !gl_profile.viewer.expand_spaces;

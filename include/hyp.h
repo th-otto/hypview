@@ -340,7 +340,10 @@ typedef enum
 
 typedef struct {
 	hyp_reftype type;
-	const unsigned char *name;
+	union {
+		const unsigned char *hyp;
+		char *utf8;
+	} name;
 	hyp_lineno lineno; /* only valid if type == REF_LABELNAME */
 } REF_ENTRY;
 
@@ -368,6 +371,7 @@ typedef struct
 {
 	size_t data_size;
 	REF_MODULE *modules;
+	gboolean is_converted;
 	char *filename; /* local filename we are reading/writing */
 	unsigned char data[1];
 } REF_FILE;
@@ -851,7 +855,7 @@ typedef struct _result_entry_
 
 REF_FILE *ref_load(const char *filename, int handle, gboolean verbose);
 int ref_num_modules(REF_FILE *ref);
-char *ref_findnode(REF_FILE *ref, const char *string, hyp_lineno *line, gboolean only_first);
+char *ref_findnode(REF_FILE *ref, const char *string, hyp_lineno *line, gboolean only_first, gboolean *freename);
 RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, gboolean *aborted);
 void ref_close(REF_FILE *ref);
 void ref_freeresults(RESULT_ENTRY *list);
@@ -866,6 +870,7 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 gboolean ref_write_header(int ref_handle);
 gboolean ref_write_trailer(int ref_handle);
 const char *ref_osname(HYP_OS os);
+void ref_conv_to_utf8(REF_FILE *ref);
 
 
 /*

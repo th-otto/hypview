@@ -255,7 +255,7 @@ void hv_exit(void);
  */
 #define FONT_NAME_LEN 256
 
-void SwitchFont(WINDOW_DATA *win);
+void SwitchFont(WINDOW_DATA *win, gboolean clearcache);
 void SelectFont(WINDOW_DATA *win);
 void hv_update_menu(HMENU menu, DOCUMENT *doc);
 void hv_update_winmenu(WINDOW_DATA *win);

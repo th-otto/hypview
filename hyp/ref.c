@@ -5,12 +5,31 @@
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+static char *ref_name(REF_FILE *ref, REF_MODULE *mod, const REF_ENTRY *entry, char **freeme)
+{
+	char *str;
+	
+	if (ref->is_converted || mod->charset == HYP_CHARSET_UTF8)
+	{
+		str = entry->name.utf8;
+		*freeme = NULL;
+	} else
+	{
+		str = hyp_conv_to_utf8(mod->charset, entry->name.hyp, STR0TERM);
+		*freeme = str;
+	}
+	return str;
+}
+
+/* ------------------------------------------------------------------------- */
+
 gboolean ref_list(REF_FILE *ref, FILE *outfile, gboolean all)
 {
 	REF_MODULE *mod;
 	long num;
 	char *str;
-
+	char *freeme;
+	
 	for (mod = ref->modules; mod != NULL; mod = mod->next)
 	{
 		hyp_utf8_fprintf(outfile, _("Hypertext file: %s with %ld entries\n"),
@@ -18,38 +37,40 @@ gboolean ref_list(REF_FILE *ref, FILE *outfile, gboolean all)
 			mod->num_entries);
 		for (num = 0; num < mod->num_entries; num++)
 		{
-			switch (mod->entries[num].type)
+			const REF_ENTRY *entry = &mod->entries[num];
+			
+			switch (entry->type)
 			{
 			case REF_FILENAME:
 				if (all)
 				{
-					str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+					str = ref_name(ref, mod, entry, &freeme);
 					hyp_utf8_fprintf(outfile, _(" Module         %s\n"), str);
-					g_free(str);
+					g_free(freeme);
 				}
 				break;
 			case REF_NODENAME:
 				if (all)
 				{
-					str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+					str = ref_name(ref, mod, entry, &freeme);
 					hyp_utf8_fprintf(outfile, _(" Node           %s\n"), str);
-					g_free(str);
+					g_free(freeme);
 				}
 				break;
 			case REF_ALIASNAME:
 				if (all)
 				{
-					str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+					str = ref_name(ref, mod, entry, &freeme);
 					hyp_utf8_fprintf(outfile, _(" Alias          %s\n"), str);
-					g_free(str);
+					g_free(freeme);
 				}
 				break;
 			case REF_LABELNAME:
 				if (all)
 				{
-					str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+					str = ref_name(ref, mod, entry, &freeme);
 					hyp_utf8_fprintf(outfile, _(" Label %5u    %s\n"), mod->entries[num].lineno, str);
-					g_free(str);
+					g_free(freeme);
 				}
 				break;
 			case REF_DATABASE:
@@ -67,21 +88,21 @@ gboolean ref_list(REF_FILE *ref, FILE *outfile, gboolean all)
 			case REF_TITLE:
 				if (all)
 				{
-					str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+					str = ref_name(ref, mod, entry, &freeme);
 					hyp_utf8_fprintf(outfile, _(" Title          %s\n"), str);
-					g_free(str);
+					g_free(freeme);
 				}
 				break;
 			case REF_UNKNOWN:
 			default:
 				if (all)
 				{
-					str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
-					hyp_utf8_fprintf(outfile, _(" Unknown REF type %u: %s\n"), mod->entries[num].type, str);
-					g_free(str);
+					str = ref_name(ref, mod, entry, &freeme);
+					hyp_utf8_fprintf(outfile, _(" Unknown REF type %u: %s\n"), entry->type, str);
+					g_free(freeme);
 				} else
 				{
-					hyp_utf8_fprintf(outfile, _(" Unknown REF type %u\n"), mod->entries[num].type);
+					hyp_utf8_fprintf(outfile, _(" Unknown REF type %u\n"), entry->type);
 				}
 				break;
 			}
@@ -195,7 +216,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 				return FALSE;
 			}
 			module->entries[num].type = (hyp_reftype) type;
-			module->entries[num].name = pos;
+			module->entries[num].name.hyp = pos;
 			module->entries[num].lineno = 0;
 			size -= 2;
 			/* FIXME: restrict strcmps() & strcpys() to result string size, entry size & ref->data_size */
@@ -215,9 +236,9 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 				/* if file extension is missing: append '.hyp' */
 				if (strrchr(module->filename, '.') == NULL)
 				{
-					 str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
-					 g_free(module->filename);
-					 module->filename = str;
+					str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
+					g_free(module->filename);
+					module->filename = str;
 				}
 				break;
 			case REF_NODENAME:
@@ -361,9 +382,9 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			/* if file extension is missing: append '.hyp' */
 			if (strrchr(module->filename, '.') == NULL)
 			{
-				 str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
-				 g_free(module->filename);
-				 module->filename = str;
+				str = g_strconcat(module->filename, HYP_EXT_HYP, NULL);
+				g_free(module->filename);
+				module->filename = str;
 			}
 			module->had_filename = TRUE;
 			
@@ -407,7 +428,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			 * add entry to table, but dont update module_len yet,
 			 * since the data is not contained in module->data
 			 */
-			module->entries[num].name = module->module_filename;
+			module->entries[num].name.hyp = module->module_filename;
 			module->entries[num].type = REF_FILENAME;
 			module->entries[num].lineno = 0;
 			num++;
@@ -439,6 +460,7 @@ REF_FILE *ref_new(const char *filename, size_t size)
 	{
 		ref->data_size = size;
 		ref->filename = g_strdup(filename);
+		ref->is_converted = FALSE;
 		ref->modules = NULL;
 	}
 	return ref;
@@ -516,11 +538,65 @@ void ref_close(REF_FILE *ref)
 		next = module->next;
 		g_free(module->filename);
 		g_free(module->database);
+		if (ref->is_converted && module->charset != HYP_CHARSET_UTF8)
+		{
+			long num;
+			for (num = 0; num < module->num_entries; num++)
+			{
+				switch (module->entries[num].type)
+				{
+				case REF_FILENAME:
+				case REF_NODENAME:
+				case REF_ALIASNAME:
+				case REF_LABELNAME:
+				case REF_TITLE:
+				case REF_UNKNOWN:
+					g_free(module->entries[num].name.utf8);
+					break;
+				default:
+					break;
+				}
+			}
+		}
 		g_free(module->entries);
 		g_free(module);
 	}
 	g_free(ref->filename);
 	g_free(ref);
+}
+
+/* ------------------------------------------------------------------------- */
+
+void ref_conv_to_utf8(REF_FILE *ref)
+{
+	REF_MODULE *module;
+	
+	if (ref == NULL || ref->is_converted)
+		return;
+	for (module = ref->modules; module != NULL; module = module->next)
+	{
+		if (module->charset != HYP_CHARSET_UTF8)
+		{
+			long num;
+			for (num = 0; num < module->num_entries; num++)
+			{
+				switch (module->entries[num].type)
+				{
+				case REF_FILENAME:
+				case REF_NODENAME:
+				case REF_ALIASNAME:
+				case REF_LABELNAME:
+				case REF_TITLE:
+				case REF_UNKNOWN:
+					module->entries[num].name.utf8 = hyp_conv_to_utf8(module->charset, module->entries[num].name.hyp, STR0TERM);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	ref->is_converted = TRUE;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -555,13 +631,15 @@ char *ref_hyp_basename(const char *filename)
 /*
  * Find node by name in (first module of) REF file.
  */
-char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean only_first)
+char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean only_first, gboolean *freename)
 {
 	hyp_nodenr node_num;
 	REF_MODULE *mod;
 	char *name;
+	char *freeme;
 	int res;
 	
+	*freename = FALSE;
 	if (ref == NULL)
 		return FALSE;
 	for (mod = ref->modules; mod != NULL; mod = mod->next)
@@ -573,7 +651,7 @@ char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean
 			case REF_NODENAME:
 			case REF_ALIASNAME:
 			case REF_LABELNAME:
-				name = hyp_conv_to_utf8(mod->charset, mod->entries[node_num].name, STR0TERM);
+				name = ref_name(ref, mod, &mod->entries[node_num], &freeme);
 				res = strcmp(name, search);
 				if (res == 0)
 				{
@@ -586,12 +664,13 @@ char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean
 							if (mod->entries[node_num].type == REF_NODENAME)
 								break;
 						}
-						g_free(name);
-						name = hyp_conv_to_utf8(mod->charset, mod->entries[node_num].name, STR0TERM);
+						g_free(freeme);
+						name = ref_name(ref, mod, &mod->entries[node_num], &freeme);
 					}
+					*freename = freeme != NULL;
 					return name;
 				}
-				g_free(name);
+				g_free(freeme);
 				break;
 			case REF_FILENAME:
 			case REF_DATABASE:
@@ -626,6 +705,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, 
 	int res;
 	char *name;
 	gboolean foundone;
+	char *freeme;
 	
 	*num_results = 0;
 	*aborted = FALSE;
@@ -643,6 +723,8 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, 
 		prototype.dbase_description = mod->database;
 		for (num = 0; num < mod->num_entries; num++)
 		{
+			const REF_ENTRY *entry = &mod->entries[num];
+			
 			foundone = FALSE;
 #ifdef WITH_GUI_GEM
 			if ((Kbshift(-1) & (K_LSHIFT|K_CTRL)) == (K_LSHIFT|K_CTRL))
@@ -653,32 +735,32 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, 
 				return NULL;
 			}
 #endif
-			switch (mod->entries[num].type)
+			switch (entry->type)
 			{
 			case REF_FILENAME:
 				break;
 			case REF_NODENAME:
-				name = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+				name = ref_name(ref, mod, entry, &freeme);
 				g_free(prototype.node_name);
-				prototype.node_name = name;
+				prototype.node_name = freeme ? freeme : g_strdup(name);
 				res = strcmp(name, string);
 				foundone = res == 0;
 				break;
 			case REF_ALIASNAME:
 			case REF_LABELNAME:
-				name = hyp_conv_to_utf8(mod->charset, mod->entries[num].name, STR0TERM);
+				name = ref_name(ref, mod, entry, &freeme);
 				res = strcmp(name, string);
 				if (res == 0)
 				{
 					foundone = TRUE;
-					if (mod->entries[num].type == REF_LABELNAME)
-						prototype.label_name = name;
+					if (entry->type == REF_LABELNAME)
+						prototype.label_name = freeme ? freeme : g_strdup(name);
 					else
-						prototype.alias_name = name;
-					name = NULL;
-					prototype.lineno = mod->entries[num].lineno;
+						prototype.alias_name = freeme ? freeme : g_strdup(name);
+					freeme = NULL;
+					prototype.lineno = entry->lineno;
 				}
-				g_free(name);
+				g_free(freeme);
 				break;
 			case REF_DATABASE:
 			case REF_OS:

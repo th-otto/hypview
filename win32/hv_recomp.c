@@ -120,5 +120,7 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	}
 	hcp_opts_free(opts);
 
+	SwitchFont(NULL, TRUE);
+	
 	return retval;
 }

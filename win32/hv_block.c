@@ -139,7 +139,7 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 		break;
 	case CO_SWITCH_FONT:
 		gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont;
-		SwitchFont(win);
+		SwitchFont(win, FALSE);
 		break;
 	case CO_SELECT_FONT:
 		SelectFont(win);

@@ -69,6 +69,7 @@ typedef struct {
 	char *output_dir;
 	HYP_CHARSET output_charset;
 	gboolean bracket_links;
+	gboolean all_links;
 	int optind;
 } hcp_opts;
 

@@ -1,18 +1,31 @@
+typedef struct _symtab_entry symtab_entry;
+struct _symtab_entry {
+	char *nodename;
+	hyp_lineno lineno;
+	hyp_reftype type;
+	char *name;
+	gboolean freeme;
+	gboolean from_ref;
+	gboolean from_idx;
+	gboolean referenced;
+	symtab_entry *next;
+};
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-static char *stg_quote_name(HYP_CHARSET charset, const unsigned char *name, size_t len, gboolean convslash)
+static char *stg_quote_name(const char *name, gboolean convslash)
 {
 	char *str, *ret;
-	char *buf;
+	size_t len;
 	
-	buf = hyp_conv_to_utf8(charset, name, len);
-	len = strlen(buf);
+	if (name == NULL)
+		return NULL;
+	len = strlen(name);
 	str = ret = g_new(char, len * 2 + 1);
 	if (str != NULL)
 	{
-		name = (const unsigned char *) buf;
 		while (*name)
 		{
 			if (*name == '\\')
@@ -39,7 +52,6 @@ static char *stg_quote_name(HYP_CHARSET charset, const unsigned char *name, size
 		*str++ = '\0';
 		ret = g_renew(char, ret, str - ret);
 	}
-	g_free(buf);
 	return ret;
 }
 
@@ -50,10 +62,13 @@ static char *stg_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 	INDEX_ENTRY *entry;
 	size_t namelen;
 	char *p;
+	char *buf;
 	
 	entry = hyp->indextable[node];
 	namelen = entry->length - SIZEOF_INDEX_ENTRY;
-	p = stg_quote_name(hyp->comp_charset, entry->name, namelen, entry->type == HYP_NODE_EXTERNAL_REF);
+	buf = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
+	p = stg_quote_name(buf, entry->type == HYP_NODE_EXTERNAL_REF);
+	g_free(buf);
 	return p;
 }
 
@@ -296,7 +311,76 @@ static void stg_out_graphics(hcp_opts *opts, HYP_DOCUMENT *hyp, struct hyp_gfx *
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
+static symtab_entry *sym_find(symtab_entry *sym, const char *search, hyp_reftype type)
+{
+	while (sym != NULL)
+	{
+		if (type == sym->type && strcmp(sym->nodename, search) == 0)
+			return sym;
+		sym = sym->next;
+	}
+	return NULL;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static const char *sym_typename(const symtab_entry *sym)
+{
+	if (sym->from_ref && sym->from_idx)
+		return "ari";
+	if (sym->from_ref)
+		return "ar";
+	if (sym->from_idx)
+		return "i";
+	return "a";
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void stg_out_labels(hcp_opts *opts, HYP_DOCUMENT *hyp, const INDEX_ENTRY *entry, long lineno, symtab_entry *syms)
+{
+	char *nodename;
+	symtab_entry *sym;
+	
+	nodename = hyp_conv_to_utf8(hyp->comp_charset, entry->name, entry->length - SIZEOF_INDEX_ENTRY);
+	sym = sym_find(syms, nodename, REF_LABELNAME);
+	while (sym)
+	{
+		if (sym->lineno == lineno)
+		{
+			char *str = stg_quote_name(sym->name, FALSE);
+			hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@symbol %s \"%s\"%s", sym_typename(sym), str, stg_nl);
+			g_free(str);
+			sym->referenced = TRUE;
+		}
+		sym = sym_find(sym->next, nodename, REF_LABELNAME);
+	}
+	g_free(nodename);
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void stg_out_alias(hcp_opts *opts, HYP_DOCUMENT *hyp, const INDEX_ENTRY *entry, symtab_entry *syms)
+{
+	char *nodename;
+	symtab_entry *sym;
+	
+	nodename = hyp_conv_to_utf8(hyp->comp_charset, entry->name, entry->length - SIZEOF_INDEX_ENTRY);
+	sym = sym_find(syms, nodename, REF_ALIASNAME);
+	while (sym)
+	{
+		char *str = stg_quote_name(sym->name, FALSE);
+		hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@symbol %s \"%s\"%s", sym_typename(sym), str, stg_nl);
+		g_free(str);
+		sym->referenced = TRUE;
+		sym = sym_find(sym->next, nodename, REF_ALIASNAME);
+	}
+	g_free(nodename);
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, symtab_entry *syms)
 {
 	char *str;
 	gboolean at_bol;
@@ -332,26 +416,30 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		const unsigned char *src;
 		const unsigned char *end;
 		const unsigned char *textstart;
+		INDEX_ENTRY *entry;
 		
+		entry = hyp->indextable[node];
 		{
-			INDEX_ENTRY *entry;
-			
-			entry = hyp->indextable[node];
-
 			hyp_node_find_windowtitle(nodeptr);
 			
 			str = stg_quote_nodename(hyp, node);
 			if (nodeptr->window_title)
 			{
-				char *title = stg_quote_name(hyp->comp_charset, nodeptr->window_title, STR0TERM, FALSE);
+				char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+				char *title = stg_quote_name(buf, FALSE);
 				hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s \"%s\" \"%s\"%s", entry->type == HYP_NODE_INTERNAL ? "@node" : "@pnode", str, title, stg_nl);
 				g_free(title);
+				g_free(buf);
 			} else
 			{
 				hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s \"%s\"%s", entry->type == HYP_NODE_INTERNAL ? "@node" : "@pnode", str, stg_nl);
 			}
 			g_free(str);
-
+			/*
+			 * check for alias names in ref file
+			 */
+			stg_out_alias(opts, hyp, entry, syms);
+			
 			if (entry->type == HYP_NODE_INTERNAL)
 			{
 				if (hypnode_valid(hyp, entry->next) &&
@@ -427,9 +515,12 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 				{
 					hyp_nodenr dest_page;
 					char *text;
+					char *buf;
 					
 					dest_page = DEC_255(&src[3]);
-					text = stg_quote_name(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u, FALSE);
+					buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
+					text = stg_quote_name(buf, FALSE);
+					g_free(buf);
 					text = chomp(text);
 					if (hypnode_valid(hyp, dest_page))
 					{
@@ -461,6 +552,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		in_tree = -1;
 		textattr = 0;
 		lineno = 0;
+		stg_out_labels(opts, hyp, entry, lineno, syms);
 		stg_out_graphics(opts, hyp, hyp_gfx, lineno);
 		
 		while (retval && src < end)
@@ -576,10 +668,14 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 							}
 						} else
 						{
+							char *buf;
+							
 							len = *src - HYP_STRLEN_OFFSET;
 							src++;
 							textstart = src;
-							str = stg_quote_name(hyp->comp_charset, src, len, FALSE);
+							buf = hyp_conv_to_utf8(hyp->comp_charset, src, len);
+							str = stg_quote_name(buf, FALSE);
+							g_free(buf);
 							src += len;
 							if (hypnode_valid(hyp, dest_page))
 							{
@@ -597,7 +693,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						case HYP_ESC_ALINK:
 							if (!print_target)
 								hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@{\"%s\" %s}", str, cmd);
-							else if (!str_equal /* || node == hyp->index_page */ || !opts->autoreferences)
+							else if (!str_equal /* || node == hyp->index_page */ || opts->all_links)
 								hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@{\"%s\" %s \"%s\"}", str, cmd, dest);
 							else
 								stg_out_str(opts->outfile, hyp->comp_charset, textstart, len);
@@ -620,7 +716,35 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 									}
 								}
 								if (!is_rsc_link)
-									hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@{\"%s\" %s \"%s\" %u}", str, cmd, dest, line + 1);
+								{
+									symtab_entry *sym;
+									const char *label;
+									
+									label = NULL;
+									/*
+									 * fixme: dest is already quoted here, sym->nodename is not
+									 */
+									sym = sym_find(syms, dest, REF_LABELNAME);
+									while (sym)
+									{
+										if (sym->lineno == line && !sym->from_idx)
+										{
+											label = sym->name;
+											sym->referenced = TRUE;
+											break;
+										}
+										sym = sym_find(sym->next, dest, REF_LABELNAME);
+									}
+									if (label)
+									{
+										char *quoted = stg_quote_name(label, FALSE);
+										hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@{\"%s\" %s \"%s\" \"%s\"}", str, cmd, dest, quoted);
+										g_free(quoted);
+									} else
+									{
+										hyp_utf8_fprintf_charset(opts->outfile, output_charset, "@{\"%s\" %s \"%s\" %u}", str, cmd, dest, line + 1);
+									}
+								}
 							}
 							break;
 						}
@@ -706,6 +830,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 				fputs(stg_nl, opts->outfile);
 				at_bol = TRUE;
 				++lineno;
+				stg_out_labels(opts, hyp, entry, lineno, syms);
 				stg_out_graphics(opts, hyp, hyp_gfx, lineno);
 				src++;
 				textstart = src;
@@ -721,6 +846,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		FLUSHLINE();
 		FLUSHTREE();
 		++lineno;
+		stg_out_labels(opts, hyp, entry, lineno, syms);
 		stg_out_graphics(opts, hyp, hyp_gfx, lineno);
 		
 		if (hyp_gfx != NULL)
@@ -750,6 +876,188 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 #undef DUMPTEXT
 #undef FLUSHLINE
 #undef FLUSHTREE
+	return retval;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean stg_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, symtab_entry **syms)
+{
+	char *str;
+	long lineno;
+	HYP_NODE *nodeptr;
+	gboolean retval = TRUE;
+	
+	if ((nodeptr = hyp_loadtext(hyp, node)) != NULL)
+	{
+		const unsigned char *src;
+		const unsigned char *end;
+		INDEX_ENTRY *entry;
+		
+		entry = hyp->indextable[node];
+				
+		end = nodeptr->end;
+
+		/*
+		 * now output data
+		 */
+		src = nodeptr->start;
+		lineno = 0;
+		
+		while (retval && src < end)
+		{
+			if (*src == HYP_ESC)
+			{
+				src++;
+				switch (*src)
+				{
+				case HYP_ESC_ESC:
+				case HYP_ESC_WINDOWTITLE:
+				case HYP_ESC_CASE_DATA:
+				case HYP_ESC_EXTERNAL_REFS:
+				case HYP_ESC_OBJTABLE:
+				case HYP_ESC_PIC:
+				case HYP_ESC_LINE:
+				case HYP_ESC_BOX:
+				case HYP_ESC_RBOX:
+				case HYP_ESC_CASE_TEXTATTR:
+				case HYP_ESC_LINK:
+				case HYP_ESC_ALINK:
+					src = hyp_skip_esc(src - 1);
+					break;
+				
+				case HYP_ESC_LINK_LINE:
+				case HYP_ESC_ALINK_LINE:
+					{
+						hyp_nodenr dest_page;
+						unsigned char type;
+						hyp_lineno line = 0;
+						char *dest;
+						
+						type = *src;
+						line = DEC_255(&src[1]);
+						src += 2;
+						dest_page = DEC_255(&src[1]);
+						src += 3;
+						dest = NULL;
+						if (hypnode_valid(hyp, dest_page))
+						{
+							INDEX_ENTRY *dest_entry = hyp->indextable[dest_page];
+							
+							switch ((hyp_indextype) dest_entry->type)
+							{
+							case HYP_NODE_INTERNAL:
+							case HYP_NODE_POPUP:
+								dest = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
+								break;
+							case HYP_NODE_EXTERNAL_REF:
+							case HYP_NODE_REXX_COMMAND:
+							case HYP_NODE_REXX_SCRIPT:
+							case HYP_NODE_SYSTEM_ARGUMENT:
+							case HYP_NODE_IMAGE:
+							case HYP_NODE_QUIT:
+							case HYP_NODE_CLOSE:
+							default:
+							case HYP_NODE_EOF:
+								break;
+							}
+						}
+						if (dest)
+						{
+							if (*src <= HYP_STRLEN_OFFSET)
+							{
+								src++;
+								str = g_strdup(dest);
+							} else
+							{
+								size_t len;
+	
+								len = *src - HYP_STRLEN_OFFSET;
+								src++;
+								str = hyp_conv_to_utf8(hyp->comp_charset, src, len);
+								src += len;
+							}
+							{
+								gboolean is_xref = FALSE;
+								
+								char *p = (opts->compat_flags & STG_ALLOW_FOLDERS_IN_XREFS ? strrslash : strslash)(dest);
+								if (p != NULL)
+								{
+									hyp_filetype ft;
+									*p = '\0';
+									ft = hyp_guess_filetype(dest);
+									if (ft == HYP_FT_HYP || ft == HYP_FT_RSC)
+									{
+										is_xref = TRUE;
+									} else
+									{
+										*p = '/';
+									}
+								}
+								if (!is_xref)
+								{
+									symtab_entry *sym;
+									
+									sym = sym_find(*syms, dest, REF_LABELNAME);
+									while (sym != NULL)
+									{
+										if (strcmp(sym->name, str) == 0)
+											break;
+										if (sym->lineno == line && sym->from_ref)
+											break;
+										sym = sym_find(sym->next, dest, REF_LABELNAME);
+									}
+									if (sym == NULL)
+									{
+										symtab_entry **last = syms;
+										symtab_entry *sym;
+										
+										while (*last)
+											last = &(*last)->next;
+										sym = g_new(symtab_entry, 1);
+										if (sym == NULL)
+											return FALSE;
+										sym->nodename = dest;
+										dest = NULL;
+										sym->type = REF_LABELNAME;
+										sym->name = str;
+										str = NULL;
+										sym->lineno = line;
+										sym->freeme = TRUE;
+										sym->from_ref = FALSE;
+										sym->from_idx = node == hyp->index_page;
+										sym->referenced = FALSE;
+										sym->next = NULL;
+										*last = sym;
+									}
+								}
+							}
+						}
+						g_free(dest);
+						g_free(str);
+					}
+					break;
+					
+				default:
+					break;
+				}
+			} else if (*src == HYP_EOL)
+			{
+				++lineno;
+				src++;
+			} else
+			{
+				src++;
+			}
+		}
+		++lineno;
+		
+		hyp_node_free(nodeptr);
+	} else
+	{
+		hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
+	}
+
 	return retval;
 }
 
@@ -942,12 +1250,99 @@ done:
 
 /* ------------------------------------------------------------------------- */
 
+static symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
+{
+	symtab_entry *syms = NULL;
+	symtab_entry **last = &syms;
+	symtab_entry *sym;
+	
+	/* load REF if not done already */
+	if (hyp->ref == NULL)
+	{
+		char *filename;
+		int ret;
+
+		filename = replace_ext(hyp->file, HYP_EXT_HYP, HYP_EXT_REF);
+
+		ret = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+		if (ret >= 0)
+		{
+			hyp->ref = ref_load(filename, ret, FALSE);
+			hyp_utf8_close(ret);
+		}
+		g_free(filename);
+	}
+	ref_conv_to_utf8(hyp->ref);
+	if (hyp->ref != NULL)
+	{
+		hyp_nodenr node_num;
+		REF_MODULE *mod;
+		char *nodename = NULL;
+		const REF_ENTRY *entry;
+		
+		for (mod = hyp->ref->modules; mod != NULL; mod = mod->next)
+		{
+			for (node_num = 0; node_num < mod->num_entries; node_num++)
+			{
+				entry = &mod->entries[node_num];
+				
+				if (entry->type == REF_NODENAME)
+				{
+					nodename = entry->name.utf8;
+				} else if (entry->type != REF_ALIASNAME && entry->type != REF_LABELNAME)
+				{
+					continue;
+				}
+				sym = g_new(symtab_entry, 1);
+				if (sym == NULL)
+					return syms;
+				sym->nodename = nodename;
+				sym->type = entry->type;
+				sym->name = entry->name.utf8;
+				sym->lineno = entry->lineno;
+				sym->freeme = FALSE;
+				sym->from_ref = TRUE;
+				sym->from_idx = FALSE;
+				sym->referenced = FALSE;
+				sym->next = NULL;
+				*last = sym;
+				last = &(sym)->next;
+			}
+			/* only search the first module */
+			break;
+		}
+	}
+	return syms;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void free_symtab(symtab_entry *sym)
+{
+	symtab_entry *next;
+	
+	while (sym)
+	{
+		if (sym->freeme)
+		{
+			g_free(sym->nodename);
+			g_free(sym->name);
+		}
+		next = sym->next;
+		g_free(sym);
+		sym = next;
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean recompile_stg(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv)
 {
 	hyp_nodenr node;
 	INDEX_ENTRY *entry;
 	gboolean ret;
 	hcp_opts hyp_opts;
+	symtab_entry *syms;
 	
 	UNUSED(argc);
 	UNUSED(argv);
@@ -968,22 +1363,30 @@ static gboolean recompile_stg(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 		InitCache(hyp);
 	
 	/* load REF if not done already */
-	if (hyp->ref == NULL)
+	syms = ref_loadsyms(hyp);
+	
+	for (node = 0; node < hyp->num_index; node++)
 	{
-		char *filename;
-		int ret;
-
-		filename = replace_ext(hyp->file, HYP_EXT_HYP, HYP_EXT_REF);
-
-		ret = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-		if (ret >= 0)
+		entry = hyp->indextable[node];
+		switch ((hyp_indextype) entry->type)
 		{
-			hyp->ref = ref_load(filename, ret, FALSE);
-			hyp_utf8_close(ret);
+		case HYP_NODE_INTERNAL:
+		case HYP_NODE_POPUP:
+			ret &= stg_check_links(hyp, &hyp_opts, node, &syms);
+			break;
+		case HYP_NODE_IMAGE:
+		case HYP_NODE_EXTERNAL_REF:
+		case HYP_NODE_SYSTEM_ARGUMENT:
+		case HYP_NODE_REXX_SCRIPT:
+		case HYP_NODE_REXX_COMMAND:
+		case HYP_NODE_QUIT:
+		case HYP_NODE_CLOSE:
+		case HYP_NODE_EOF:
+		default:
+			break;
 		}
-		g_free(filename);
 	}
-
+	
 	for (node = 0; node < hyp->num_index; node++)
 	{
 		entry = hyp->indextable[node];
@@ -1006,10 +1409,10 @@ static gboolean recompile_stg(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 		switch ((hyp_indextype) entry->type)
 		{
 		case HYP_NODE_INTERNAL:
-			ret &= stg_out_node(hyp, &hyp_opts, node);
+			ret &= stg_out_node(hyp, &hyp_opts, node, syms);
 			break;
 		case HYP_NODE_POPUP:
-			ret &= stg_out_node(hyp, &hyp_opts, node);
+			ret &= stg_out_node(hyp, &hyp_opts, node, syms);
 			break;
 		case HYP_NODE_IMAGE:
 			if (opts->read_images)
@@ -1037,5 +1440,19 @@ static gboolean recompile_stg(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 	hyp_opts.outfile = NULL;
 	hyp_opts.errorfile = NULL;
 	hcp_opts_free(&hyp_opts);
+
+	{
+		symtab_entry *sym;
+		
+		for (sym = syms; sym != NULL; sym = sym->next)
+		{
+			if (!sym->referenced && sym->type != REF_NODENAME)
+			{
+				hyp_utf8_fprintf_charset(opts->outfile, output_charset, "##symbol unused: \"%s\" \"%s\"%s", sym->nodename, sym->name, stg_nl);
+			}
+		}
+	}
+		
+	free_symtab(syms);
 	return ret;
 }

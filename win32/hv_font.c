@@ -64,7 +64,7 @@ void hv_update_menus(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void ApplyFont(void)
+static void ApplyFont(gboolean clearcache)
 {
 	WINDOW_DATA *win;
 	DOCUMENT *doc;
@@ -80,12 +80,19 @@ static void ApplyFont(void)
 		{
 			gboolean ret;
 			long topline;
+			hyp_nodenr node_num;
 			
 			doc = win->data;
 			/* reload page or file */
 
 			topline = hv_win_topline(win);
-			ret = doc->gotoNodeProc(win, NULL, doc->getNodeProc(win));
+			node_num = doc->getNodeProc(win);
+			if (clearcache && doc->type == HYP_FT_HYP)
+			{
+				HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+				RemovePictures(hyp, TRUE);
+			}
+			ret = doc->gotoNodeProc(win, NULL, node_num);
 			
 			if (ret)
 			{
@@ -99,11 +106,11 @@ static void ApplyFont(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void SwitchFont(WINDOW_DATA *win)
+void SwitchFont(WINDOW_DATA *win, gboolean clearcache)
 {
 	UNUSED(win);
 	gl_profile.viewer.use_xfont = gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_name != NULL;
-	ApplyFont();
+	ApplyFont(clearcache);
 	HypProfile_SetChanged();
 }
 
@@ -382,7 +389,7 @@ static INT_PTR CALLBACK font_dialog(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		case IDOK:
 			EndDialog(hwnd, IDOK);
 			DestroyWindow(hwnd);
-			SwitchFont(win);
+			SwitchFont(win, FALSE);
 			break;
 		case IDC_FONT_BUTTON:
 			if (Choose1Font(hwnd, &gl_profile.viewer.font_name, _("Standard font")))
