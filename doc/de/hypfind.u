@@ -42,7 +42,7 @@
 # ------------------------------------------------------
 # Set the subject for the ST-Guide
 # ------------------------------------------------------
-!!ifdest [stg,amg]
+!ifdest [stg,amg]
 !begin_raw
 @subject "Dokumentation/ST-Guide"
 @options "+z -t4 +g -i -s"
