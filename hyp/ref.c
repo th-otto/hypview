@@ -553,6 +553,9 @@ void ref_close(REF_FILE *ref)
 				case REF_UNKNOWN:
 					g_free(module->entries[num].name.utf8);
 					break;
+				case REF_DATABASE:
+				case REF_OS:
+				case REF_CHARSET:
 				default:
 					break;
 				}
@@ -590,6 +593,9 @@ void ref_conv_to_utf8(REF_FILE *ref)
 				case REF_UNKNOWN:
 					module->entries[num].name.utf8 = hyp_conv_to_utf8(module->charset, module->entries[num].name.hyp, STR0TERM);
 					break;
+				case REF_DATABASE:
+				case REF_OS:
+				case REF_CHARSET:
 				default:
 					break;
 				}

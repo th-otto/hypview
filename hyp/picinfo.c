@@ -205,6 +205,40 @@ static gboolean identify_file(const char *filename)
 		hyp_utf8_fprintf(stdout, "%s: Portable Network Graphic %ux%u%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, unsupported);
 		break;;
 		
+	case FT_UNKNOWN:
+	case FT_EXEC_FIRST:
+	case FT_EXEC:
+	case FT_TOS:
+	case FT_TTP:
+	case FT_PRG:
+	case FT_GTP:
+	case FT_EXEC_LAST:
+	case FT_PICTURE_FIRST:
+	case FT_PICTURE_LAST:
+	case FT_ARCHIVE_FIRST:
+	case FT_ARC:
+	case FT_ZOO:
+	case FT_LZH:
+	case FT_ZIP:
+	case FT_ARJ:
+	case FT_ARCHIVE_LAST:
+	case FT_DOC_FIRST:
+	case FT_ASCII:
+	case FT_WORDPLUS:
+	case FT_SIGDOC:
+	case FT_DOC_LAST:
+	case FT_FONT_FIRST:
+	case FT_GEMFNT:
+	case FT_SIGFNT:
+	case FT_FONT_LAST:
+	case FT_MISC_FIRST:
+	case FT_EMPTY:
+	case FT_DRI:
+	case FT_DRILIB:
+	case FT_BOBJECT:
+	case FT_RSC:
+	case FT_GFA2:
+	case FT_GFA3:
 	default:
 		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unknown picture format"));
 		break;;

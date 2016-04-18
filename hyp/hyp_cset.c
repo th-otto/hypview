@@ -120,6 +120,10 @@ HYP_CHARSET hyp_default_charset(HYP_OS os)
 		return HYP_CHARSET_CP1252;
 	case HYP_OS_UNIX:
 		return HYP_CHARSET_UTF8;
+	case HYP_OS_RES1:
+	case HYP_OS_RES2:
+	case HYP_OS_RES3:
+	case HYP_OS_RES4:
 	default:
 		/*
 		 * this should not happen at all
@@ -1491,6 +1495,8 @@ int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format,
 		g_free(str);
 		break;
 	case HYP_CHARSET_NONE:
+	case HYP_CHARSET_BINARY:
+	case HYP_CHARSET_BINARY_TABS:
 	default:
 		res = vfprintf(fp, format, args);
 		break;

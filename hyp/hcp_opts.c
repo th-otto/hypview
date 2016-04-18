@@ -35,53 +35,97 @@
 #define DEFAULT_VERBOSITY 2
 
 
-#define OPT_DUMP 1024
-#define OPT_PRINT_UNKNOWN 1025
-#define OPT_CHARSET 1026
-#define OPT_LONG_FILENAMES 1027
+enum hcp_option {
+	OPT_HELP = 'h',
+	OPT_VERSION = 'V',
+	OPT_AUTOREF = 'a',
+	OPT_NO_AUTOREF = OPT_AUTOREF + 256,
+	OPT_BLOCKSIZE = 'b',
+	OPT_COMPRESSION = 'c',
+	OPT_NO_COMPRESSION = OPT_COMPRESSION + 256,
+	OPT_REF_DISTANCE = 'd',
+	OPT_ERRORFILE = 'e',
+	OPT_ALIAS_IN_INDEX = 'f',
+	OPT_NO_ALIAS_IN_INDEX = OPT_ALIAS_IN_INDEX + 256,
+	OPT_ALABEL_IN_INDEX = 'g',
+	OPT_NO_ALABEL_IN_INDEX = OPT_ALABEL_IN_INDEX + 256,
+	OPT_INDEX = 'i',
+	OPT_NO_INDEX = OPT_INDEX + 256,
+	OPT_INDEX_WIDTH = 'j',
+	OPT_COMPAT_FLAGS = 'k',
+	OPT_LIST = 'l',
+	OPT_IMAGES = 'm',
+	OPT_NO_IMAGES = OPT_IMAGES + 256,
+	OPT_NODES_IN_INDEX = 'n',
+	OPT_NO_NODES_IN_INDEX = OPT_NODES_IN_INDEX + 256,
+	OPT_OUTPUTFILE = 'o',
+	OPT_PICFORMAT = 'p',
+	OPT_QUIET = 'q',
+	OPT_RECOMPILE = 'r',
+	OPT_SPLIT = 's',
+	OPT_NO_SPLIT = OPT_SPLIT + 256,
+	OPT_TABWIDTH = 't',
+	OPT_USES = 'u',
+	OPT_VIEW = 'v',
+	OPT_WAIT = 'w',
+	OPT_TITLE_IN_INDEX = 'x',
+	OPT_NO_TITLE_IN_INDEX = OPT_TITLE_IN_INDEX + 256,
+	OPT_CASEINSENSITIVE_FIRST = 'y',
+	OPT_NO_CASEINSENSITIVE_FIRST = OPT_CASEINSENSITIVE_FIRST + 256,
+	OPT_REFERENCES = 'z',
+	OPT_NO_REFERENCES = OPT_REFERENCES + 256,
+	
+	OPT_SETVAR = 0,
+	OPT_OPTERROR = '?',
+	OPT_DUMP = 1024,
+	OPT_PRINT_UNKNOWN,
+	OPT_CHARSET,
+	OPT_LONG_FILENAMES,
+	OPT_NO_LONG_FILENAMES
+};
 
 static struct option const long_options[] = {
-	{ "autoref", no_argument, NULL, 'a' },
-	{ "no-autoref", no_argument, NULL, 'a' + 256 },
-	{ "blocksize", required_argument, NULL, 'b' },
-	{ "compression", no_argument, NULL, 'c' },
-	{ "no-compression", no_argument, NULL, 'c' + 256 },
-	{ "ref-distance", required_argument, NULL, 'd' },
-	{ "errorfile", required_argument, NULL, 'e' },
-	{ "alias-in-index", no_argument, NULL, 'f' },
-	{ "no->alias-in-index", no_argument, NULL, 'f' + 256 },
-	{ "alabel-in-index", no_argument, NULL, 'g' },
-	{ "no-alabel-in-index", no_argument, NULL, 'g' + 256 },
-	{ "index", no_argument, NULL, 'i' },
-	{ "no-index", no_argument, NULL, 'i' + 256 },
-	{ "index-width", required_argument, NULL, 'j' },
-	{ "compat-flags", required_argument, NULL, 'k' },
-	{ "list", optional_argument, NULL, 'l' },
-	{ "images", no_argument, NULL, 'm' },
-	{ "no-images", no_argument, NULL, 'm' + 256 },
-	{ "no-nodes-in-index", no_argument, NULL, 'n' },
-	{ "output", required_argument, NULL, 'o' },
-	{ "pic-format", required_argument, NULL, 'p' },
-	{ "quiet", no_argument, NULL, 'q' },
-	{ "recompile", no_argument, NULL, 'r' },
-	{ "split", no_argument, NULL, 's' },
-	{ "no-split", no_argument, NULL, 's' + 256 },
-	{ "tabwidth", required_argument, NULL, 't' },
-	{ "uses", required_argument, NULL, 'u' },
-	{ "view", no_argument, NULL, 'v' },
-	{ "wait", optional_argument, NULL, 'w' },
-	{ "title-in-index", no_argument, NULL, 'x' },
-	{ "no-title-in-index", no_argument, NULL, 'x' + 256 },
-	{ "caseinsensitive-first", no_argument, NULL, 'y' },
-	{ "no-caseinsensitive-first", no_argument, NULL, 'y' + 256 },
-	{ "references", no_argument, NULL, 'z' },
-	{ "no-references", no_argument, NULL, 'z' + 256 },
+	{ "autoref", no_argument, NULL, OPT_AUTOREF },
+	{ "no-autoref", no_argument, NULL, OPT_NO_AUTOREF },
+	{ "blocksize", required_argument, NULL, OPT_BLOCKSIZE },
+	{ "compression", no_argument, NULL, OPT_COMPRESSION },
+	{ "no-compression", no_argument, NULL, OPT_NO_COMPRESSION },
+	{ "ref-distance", required_argument, NULL, OPT_REF_DISTANCE },
+	{ "errorfile", required_argument, NULL, OPT_ERRORFILE },
+	{ "alias-in-index", no_argument, NULL, OPT_ALIAS_IN_INDEX },
+	{ "no->alias-in-index", no_argument, NULL, OPT_NO_ALIAS_IN_INDEX },
+	{ "alabel-in-index", no_argument, NULL, OPT_ALABEL_IN_INDEX },
+	{ "no-alabel-in-index", no_argument, NULL, OPT_NO_ALABEL_IN_INDEX },
+	{ "index", no_argument, NULL, OPT_INDEX },
+	{ "no-index", no_argument, NULL, OPT_NO_INDEX },
+	{ "index-width", required_argument, NULL, OPT_INDEX_WIDTH },
+	{ "compat-flags", required_argument, NULL, OPT_COMPAT_FLAGS },
+	{ "list", optional_argument, NULL, OPT_LIST },
+	{ "images", no_argument, NULL, OPT_IMAGES },
+	{ "no-images", no_argument, NULL, OPT_NO_IMAGES },
+	{ "no-nodes-in-index", no_argument, NULL, OPT_NO_NODES_IN_INDEX },
+	{ "output", required_argument, NULL, OPT_OUTPUTFILE },
+	{ "pic-format", required_argument, NULL, OPT_PICFORMAT },
+	{ "quiet", no_argument, NULL, OPT_QUIET },
+	{ "recompile", no_argument, NULL, OPT_RECOMPILE },
+	{ "split", no_argument, NULL, OPT_SPLIT },
+	{ "no-split", no_argument, NULL, OPT_NO_SPLIT },
+	{ "tabwidth", required_argument, NULL, OPT_TABWIDTH },
+	{ "uses", required_argument, NULL, OPT_USES },
+	{ "view", no_argument, NULL, OPT_VIEW },
+	{ "wait", optional_argument, NULL, OPT_WAIT },
+	{ "title-in-index", no_argument, NULL, OPT_TITLE_IN_INDEX },
+	{ "no-title-in-index", no_argument, NULL, OPT_NO_TITLE_IN_INDEX },
+	{ "caseinsensitive-first", no_argument, NULL, OPT_CASEINSENSITIVE_FIRST },
+	{ "no-caseinsensitive-first", no_argument, NULL, OPT_NO_CASEINSENSITIVE_FIRST },
+	{ "references", no_argument, NULL, OPT_REFERENCES },
+	{ "no-references", no_argument, NULL, OPT_NO_REFERENCES },
 	{ "charset", required_argument, NULL, OPT_CHARSET },
 	{ "long-filenames", no_argument, NULL, OPT_LONG_FILENAMES },
-	{ "no-long-filenames", no_argument, NULL, OPT_LONG_FILENAMES + 256 },
+	{ "no-long-filenames", no_argument, NULL, OPT_NO_LONG_FILENAMES },
 	
-	{ "help", no_argument, NULL, 'h' },
-	{ "version", no_argument, NULL, 'V' },
+	{ "help", no_argument, NULL, OPT_HELP },
+	{ "version", no_argument, NULL, OPT_VERSION },
 	
 	/* undocumented options, for debugging purposes only */
 	{ "dump", no_argument, NULL, OPT_DUMP },
@@ -293,15 +337,15 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 	getopt_init_r(gl_program_name, &d);
 	while ((c = getopt_long_only_r(argc, argv, "ab:cd:e:fgij:k:l::mno:p:qrst:u:vw::xyzhV?", long_options, NULL, d)) != EOF)
 	{
-		switch (c)
+		switch ((enum hcp_option)c)
 		{
-		case 'a':
+		case OPT_AUTOREF:
 			opts->autoreferences = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'a' + 256:
+		case OPT_NO_AUTOREF:
 			opts->autoreferences = FALSE;
 			break;
-		case 'b':
+		case OPT_BLOCKSIZE:
 			if (origin == OPTS_FROM_SOURCE)
 			{
 				retval = not_here(origin, "--blocksize");
@@ -313,18 +357,18 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				hcp_usage_warning(_("--blocksize is no longer supported"));
 			}
 			break;
-		case 'c':
+		case OPT_COMPRESSION:
 			opts->compression = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'c' + 256:
+		case OPT_NO_COMPRESSION:
 			opts->compression = FALSE;
 			break;
-		case 'd':
+		case OPT_REF_DISTANCE:
 			opts->min_ref_distance = (int)strtol(getopt_arg_r(d), NULL, 0);
 			if (opts->min_ref_distance < 0 || !g_is_number(getopt_arg_r(d), TRUE))
 				retval = bad_value("--ref-distance");
 			break;
-		case 'e':
+		case OPT_ERRORFILE:
 			if (origin != OPTS_FROM_COMMANDLINE && origin != OPTS_FROM_ENV)
 			{
 				retval = not_here(origin, "--errorfile");
@@ -334,35 +378,35 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				opts->error_filename = g_strdup(getopt_arg_r(d));
 			}
 			break;
-		case 'f':
+		case OPT_ALIAS_IN_INDEX:
 			opts->alias_to_index = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'f' + 256:
+		case OPT_NO_ALIAS_IN_INDEX:
 			opts->alias_to_index = FALSE;
 			break;
-		case 'g':
+		case OPT_ALABEL_IN_INDEX:
 			opts->alabel_to_index = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'g' + 256:
+		case OPT_NO_ALABEL_IN_INDEX:
 			opts->alabel_to_index = FALSE;
 			break;
-		case 'i':
+		case OPT_INDEX:
 			opts->gen_index = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'i' + 256:
+		case OPT_NO_INDEX:
 			opts->gen_index = FALSE;
 			break;
-		case 'j':
+		case OPT_INDEX_WIDTH:
 			opts->index_width = (int)strtol(getopt_arg_r(d), NULL, 0);
 			if (opts->index_width < 0 || !g_is_number(getopt_arg_r(d), TRUE))
 				retval = bad_value("--index-width");
 			break;
-		case 'k':
+		case OPT_COMPAT_FLAGS:
 			opts->compat_flags = (int)strtoul(getopt_arg_r(d), NULL, 0);
 			if (!g_is_number(getopt_arg_r(d), TRUE))
 				retval = bad_value("--compat-flags");
 			break;
-		case 'l':
+		case OPT_LIST:
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
 			{
 				retval = not_here(origin, "--list");
@@ -387,19 +431,19 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				}
 			}
 			break;
-		case 'm':
+		case OPT_IMAGES:
 			opts->read_images = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'm' + 256:
+		case OPT_NO_IMAGES:
 			opts->read_images = FALSE;
 			break;
-		case 'n':
+		case OPT_NODES_IN_INDEX:
 			opts->nodes_to_index = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'n' + 256:
+		case OPT_NO_NODES_IN_INDEX:
 			opts->nodes_to_index = FALSE;
 			break;
-		case 'o':
+		case OPT_OUTPUTFILE:
 			if (origin != OPTS_FROM_COMMANDLINE && origin != OPTS_FROM_ENV)
 			{
 				retval = not_here(origin, "--output");
@@ -409,7 +453,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				opts->output_filename = g_strdup(getopt_arg_r(d));
 			}
 			break;
-		case 'p':
+		case OPT_PICFORMAT:
 			if (g_ascii_strncasecmp(getopt_arg_r(d), "orig", 4) == 0)
 			{
 				val = HYP_PIC_ORIG;
@@ -436,40 +480,40 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				opts->pic_format = (hyp_pic_format) val;
 			}
 			break;
-		case 'q':
+		case OPT_QUIET:
 			if (getopt_on_r(d))
 				opts->verbose++;
 			else
 				opts->verbose--;
 			break;
-		case 'r':
+		case OPT_RECOMPILE:
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
 				retval = not_here(origin, "--recompile");
 			else
 				opts->do_recompile = TRUE;
 			break;
-		case 's':
+		case OPT_SPLIT:
 			opts->split_lines = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 's' + 256:
+		case OPT_NO_SPLIT:
 			opts->split_lines = FALSE;
 			break;
-		case 't':
+		case OPT_TABWIDTH:
 			opts->tabwidth = (int)strtol(getopt_arg_r(d), NULL, 0);
 			if (opts->tabwidth < 1 || opts->tabwidth > 9 || !g_is_number(getopt_arg_r(d), TRUE))
 				retval = bad_value("--tabwidth");
 			break;
-		case 'u':
+		case OPT_USES:
 			if (hcp_add_uses(&opts->uses, getopt_arg_r(d)) == NULL)
 				retval = FALSE;
 			break;
-		case 'v':
+		case OPT_VIEW:
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
 				retval = not_here(origin, "--view");
 			else
 				opts->do_ascii_recomp = TRUE;
 			break;
-		case 'w':
+		case OPT_WAIT:
 			if (origin == OPTS_FROM_SOURCE)
 				retval = not_here(origin, "--wait");
 			else if (getopt_arg_r(d) != NULL)
@@ -477,25 +521,25 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			else
 				opts->wait_key = 2;
 			break;
-		case 'x':
+		case OPT_TITLE_IN_INDEX:
 			opts->title_for_index = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'x' + 256:
+		case OPT_NO_TITLE_IN_INDEX:
 			opts->title_for_index = FALSE;
 			break;
-		case 'y':
+		case OPT_CASEINSENSITIVE_FIRST:
 			opts->caseinsensitive_first = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case 'y' + 256:
+		case OPT_NO_CASEINSENSITIVE_FIRST:
 			opts->caseinsensitive_first = TRUE;
 			break;
-		case 'z':
+		case OPT_REFERENCES:
 			if (getopt_on_r(d))
 				opts->write_references++;
 			else
 				opts->write_references--;
 			break;
-		case 'z' + 256:
+		case OPT_NO_REFERENCES:
 			opts->write_references = DEFAULT_WRITE_REFERENCES;
 			break;
 		
@@ -514,7 +558,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			}
 			break;
 
-		case 'h':
+		case OPT_HELP:
 			if (origin == OPTS_FROM_SOURCE)
 			{
 				/*
@@ -530,7 +574,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				opts->do_help = TRUE;
 			}
 			break;
-		case 'V':
+		case OPT_VERSION:
 			if (origin == OPTS_FROM_SOURCE)
 				retval = not_here(origin, "--version");
 			else
@@ -549,11 +593,11 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			opts->long_filenames = TRUE;
 			break;
 		
-		case OPT_LONG_FILENAMES + 256:
+		case OPT_NO_LONG_FILENAMES:
 			opts->long_filenames = FALSE;
 			break;
 		
-		case '?':
+		case OPT_OPTERROR:
 			if (getopt_opt_r(d) == '?')
 			{
 				if (origin == OPTS_FROM_SOURCE)
@@ -566,7 +610,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			}
 			break;
 		
-		case 0:
+		case OPT_SETVAR:
 			/* option which just sets a var */
 			break;
 		

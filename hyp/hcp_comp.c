@@ -1650,6 +1650,37 @@ static gboolean c_include_scan(hcp_vars *vars, C_INPUT *in)
 				}
 			}
 			break;
+		case T_EOF:
+		case T_EXCLAMATION:
+		case T_DOLLAR:
+		case T_MOD:
+		case T_AND:
+		case T_LPAREN:
+		case T_RPAREN:
+		case T_MUL:
+		case T_PLUS:
+		case T_COMMA:
+		case T_MINUS:
+		case T_PERIOD:
+		case T_DIV:
+		case T_COLON:
+		case T_SEMI:
+		case T_LESS:
+		case T_EQUAL:
+		case T_GREATER:
+		case T_QUEST:
+		case T_AT:
+		case T_LBRACKET:
+		case T_BACKSLASH:
+		case T_RBRACKET:
+		case T_LBRACE:
+		case T_OR:
+		case T_RBRACE:
+		case T_TILDE:
+		case T_NUMCONST:
+		case T_CHARCONST:
+		case T_STRCONST:
+		case T_ID:
 		default:
 			break;
 		}
@@ -7071,6 +7102,57 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 		hcp_error(vars, NULL, _("%s: unknown file format"), file_lookup_name(vars, id));
 		g_free(buf);
 		return HYP_PIC_UNKNOWN;
+
+	case FT_EXEC_FIRST:
+	case FT_EXEC:
+	case FT_TOS:
+	case FT_TTP:
+	case FT_PRG:
+	case FT_GTP:
+	case FT_EXEC_LAST:
+	case FT_PICTURE_FIRST:
+	case FT_DEGAS_LOW:
+	case FT_DEGAS_MED:
+	case FT_DEGAS_HIGH:
+	case FT_NEO:
+	case FT_COLSTAR:
+	case FT_STAD:
+	case FT_IMAGIC_LOW:
+	case FT_IMAGIC_MED:
+	case FT_IMAGIC_HIGH:
+	case FT_SCREEN:
+	case FT_ICO:
+	case FT_CALAMUS_PAGE:
+	case FT_GIF:
+	case FT_TIFF:
+	case FT_TARGA:
+	case FT_PBM:
+	case FT_PNG:
+	case FT_PICTURE_LAST:
+	case FT_ARCHIVE_FIRST:
+	case FT_ARC:
+	case FT_ZOO:
+	case FT_LZH:
+	case FT_ZIP:
+	case FT_ARJ:
+	case FT_ARCHIVE_LAST:
+	case FT_DOC_FIRST:
+	case FT_ASCII:
+	case FT_WORDPLUS:
+	case FT_SIGDOC:
+	case FT_DOC_LAST:
+	case FT_FONT_FIRST:
+	case FT_GEMFNT:
+	case FT_SIGFNT:
+	case FT_FONT_LAST:
+	case FT_MISC_FIRST:
+	case FT_EMPTY:
+	case FT_DRI:
+	case FT_DRILIB:
+	case FT_BOBJECT:
+	case FT_RSC:
+	case FT_GFA2:
+	case FT_GFA3:
 	default:
 		if (pic_format >= FT_PICTURE_FIRST && pic_format < FT_PICTURE_LAST)
 			hcp_error(vars, NULL, "%s: %s", file_lookup_name(vars, id), _("unsupported picture format"));
