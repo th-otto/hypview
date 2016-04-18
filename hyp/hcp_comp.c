@@ -7592,8 +7592,6 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 		if (vars->hyp->subject == NULL && !vars->for_amguide)
 			hcp_warning(vars, &vars->first_loc, _("Please add a @subject-command to this text"));
 		
-		hcp_start_pass(vars, 2);
-		
 		if (retval)
 		{
 			/* write header & index */
@@ -7605,6 +7603,8 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 				warn_converror(vars, &vars->first_loc, 0);
 		}
 		vars->seek_offset = ftell(vars->outfile);
+		
+		hcp_start_pass(vars, 2);
 		
 		if (retval)
 			retval = pass(vars, filename);
