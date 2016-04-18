@@ -927,7 +927,7 @@ static gboolean stg_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 				case HYP_ESC_ALINK_LINE:
 					{
 						hyp_nodenr dest_page;
-						hyp_lineno line = 0;
+						hyp_lineno line;
 						char *dest;
 						
 						line = DEC_255(&src[1]);

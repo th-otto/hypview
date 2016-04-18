@@ -5869,7 +5869,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		}
 	}
 	type = have_lineno ? (alink ? HYP_ESC_ALINK_LINE : HYP_ESC_LINK_LINE) : (alink ? HYP_ESC_ALINK : HYP_ESC_LINK);
-	return addlink(vars, type, text, entry ? entry->name : NULL, target, lineno);
+	return addlink(vars, type, text, entry ? entry->name : NULL, target, lineno > 0 ? lineno - 1 : 0);
 }
 
 /* ------------------------------------------------------------------------- */
