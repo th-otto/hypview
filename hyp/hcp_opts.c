@@ -49,8 +49,8 @@ enum hcp_option {
 	OPT_NO_ALIAS_IN_INDEX = OPT_ALIAS_IN_INDEX + 256,
 	OPT_ALABEL_IN_INDEX = 'g',
 	OPT_NO_ALABEL_IN_INDEX = OPT_ALABEL_IN_INDEX + 256,
-	OPT_INDEX = 'i',
-	OPT_NO_INDEX = OPT_INDEX + 256,
+	OPT_GEN_INDEX = 'i',
+	OPT_NO_GEN_INDEX = OPT_GEN_INDEX + 256,
 	OPT_INDEX_WIDTH = 'j',
 	OPT_COMPAT_FLAGS = 'k',
 	OPT_LIST = 'l',
@@ -78,6 +78,7 @@ enum hcp_option {
 	OPT_SETVAR = 0,
 	OPT_OPTERROR = '?',
 	OPT_DUMP = 1024,
+	OPT_RECOMPILE_HTML,
 	OPT_PRINT_UNKNOWN,
 	OPT_CHARSET,
 	OPT_LONG_FILENAMES,
@@ -96,8 +97,8 @@ static struct option const long_options[] = {
 	{ "no->alias-in-index", no_argument, NULL, OPT_NO_ALIAS_IN_INDEX },
 	{ "alabel-in-index", no_argument, NULL, OPT_ALABEL_IN_INDEX },
 	{ "no-alabel-in-index", no_argument, NULL, OPT_NO_ALABEL_IN_INDEX },
-	{ "index", no_argument, NULL, OPT_INDEX },
-	{ "no-index", no_argument, NULL, OPT_NO_INDEX },
+	{ "index", no_argument, NULL, OPT_GEN_INDEX },
+	{ "no-index", no_argument, NULL, OPT_NO_GEN_INDEX },
 	{ "index-width", required_argument, NULL, OPT_INDEX_WIDTH },
 	{ "compat-flags", required_argument, NULL, OPT_COMPAT_FLAGS },
 	{ "list", optional_argument, NULL, OPT_LIST },
@@ -113,6 +114,7 @@ static struct option const long_options[] = {
 	{ "tabwidth", required_argument, NULL, OPT_TABWIDTH },
 	{ "uses", required_argument, NULL, OPT_USES },
 	{ "view", no_argument, NULL, OPT_VIEW },
+	{ "html", no_argument, NULL, OPT_RECOMPILE_HTML },
 	{ "wait", optional_argument, NULL, OPT_WAIT },
 	{ "title-in-index", no_argument, NULL, OPT_TITLE_IN_INDEX },
 	{ "no-title-in-index", no_argument, NULL, OPT_NO_TITLE_IN_INDEX },
@@ -140,11 +142,9 @@ void hcp_opts_init(hcp_opts *opts)
 {
 	memset(opts, 0, sizeof(*opts));
 	
-	opts->do_ascii_recomp = FALSE;
+	opts->recompile_format = HYP_FT_NONE;
 	opts->do_list = FALSE;
-	opts->do_recompile = FALSE;
 	opts->do_compile = FALSE;
-	opts->do_dump = FALSE;
 	opts->list_flags = LIST_ALL;
 	opts->do_help = FALSE;
 	opts->do_version = FALSE;
@@ -309,6 +309,10 @@ hyp_pic_format hcp_pic_format_from_name(const char *name)
 		return HYP_PIC_IMG;
 	if (g_ascii_strcasecmp(name, "bmp") == 0)
 		return HYP_PIC_BMP;
+	if (g_ascii_strcasecmp(name, "gif") == 0)
+		return HYP_PIC_GIF;
+	if (g_ascii_strcasecmp(name, "png") == 0)
+		return HYP_PIC_PNG;
 	return HYP_PIC_UNKNOWN;
 }
 
@@ -322,6 +326,8 @@ const char *hcp_pic_format_to_name(hyp_pic_format format)
 		case HYP_PIC_ICN: return "icn";
 		case HYP_PIC_IMG: return "img";
 		case HYP_PIC_BMP: return "bmp";
+		case HYP_PIC_GIF: return "gif";
+		case HYP_PIC_PNG: return "png";
 	}
 	return NULL;
 }
@@ -390,11 +396,27 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 		case OPT_NO_ALABEL_IN_INDEX:
 			opts->alabel_to_index = FALSE;
 			break;
-		case OPT_INDEX:
-			opts->gen_index = getopt_on_r(d) ? TRUE : FALSE;
+		case OPT_GEN_INDEX:
+			/*
+			 * FIXME: ST-Guide seems to always write -i to the @options string;
+			 * we should ignore it completely in this case
+			 */
+			/*
+			 * when recompiling, do not overwrite the option specified on the commandline
+			 */
+			if (opts->recompile_format == HYP_FT_NONE || origin != OPTS_FROM_SOURCE)
+				opts->gen_index = getopt_on_r(d) ? TRUE : FALSE;
 			break;
-		case OPT_NO_INDEX:
-			opts->gen_index = FALSE;
+		case OPT_NO_GEN_INDEX:
+			/*
+			 * FIXME: ST-Guide seems to always write -i to the @options string;
+			 * we should ignore it completely in this case
+			 */
+			/*
+			 * when recompiling, do not overwrite the option specified on the commandline
+			 */
+			if (opts->recompile_format == HYP_FT_NONE || origin != OPTS_FROM_SOURCE)
+				opts->gen_index = FALSE;
 			break;
 		case OPT_INDEX_WIDTH:
 			opts->index_width = (int)strtol(getopt_arg_r(d), NULL, 0);
@@ -490,7 +512,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
 				retval = not_here(origin, "--recompile");
 			else
-				opts->do_recompile = TRUE;
+				opts->recompile_format = HYP_FT_STG;
 			break;
 		case OPT_SPLIT:
 			opts->split_lines = getopt_on_r(d) ? TRUE : FALSE;
@@ -511,7 +533,13 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
 				retval = not_here(origin, "--view");
 			else
-				opts->do_ascii_recomp = TRUE;
+				opts->recompile_format = HYP_FT_ASCII;
+			break;
+		case OPT_RECOMPILE_HTML:
+			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
+				retval = not_here(origin, "--html");
+			else
+				opts->recompile_format = HYP_FT_HTML;
 			break;
 		case OPT_WAIT:
 			if (origin == OPTS_FROM_SOURCE)
@@ -582,7 +610,7 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			break;
 		
 		case OPT_DUMP:
-			opts->do_dump = TRUE;
+			opts->recompile_format = HYP_FT_BINARY;
 			break;
 			
 		case OPT_PRINT_UNKNOWN:

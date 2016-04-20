@@ -1,4 +1,4 @@
-# Auto-generated: Di 12. Apr 12:03:24 CEST 2016
+# Auto-generated: Di 19. Apr 17:25:26 CEST 2016
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -17,6 +17,7 @@ gtk/hv_main.c
 gtk/hv_mark.c
 gtk/hv_nav.c
 gtk/hv_prefs.c
+gtk/hv_recomp.c
 gtk/hv_srch.c
 gtk/hv_win.c
 gtk/hypview.desktop.in
@@ -36,6 +37,10 @@ hyp/hypfind.c
 hyp/icn2ico.c
 hyp/icn2img.c
 hyp/img2bmp.c
+hyp/outasc.h
+hyp/outdump.h
+hyp/outhtml.h
+hyp/outstg.h
 hyp/picinfo.c
 hyp/ref.c
 hyp/refcheck.c
@@ -67,5 +72,6 @@ win32/hv_main.c
 win32/hv_mark.c
 win32/hv_nav.c
 win32/hv_prefs.c
+win32/hv_recomp.c
 win32/hv_srch.c
 win32/hv_win.c

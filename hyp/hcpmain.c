@@ -101,7 +101,12 @@ static void print_usage(FILE *out)
 
 #include "outasc.h"
 #include "outstg.h"
+#include "outhtml.h"
 #include "outdump.h"
+
+/* ------------------------------------------------------------------------- */
+
+/* uses check_long_filenames() from outasc.h */
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -115,6 +120,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 	char *output_filename = NULL;
 	hyp_filetype type = HYP_FT_NONE;
 	int handle;
+	hcp_opts hyp_opts;
 	
 	if ((opts->errorfile == NULL || opts->errorfile == stderr) && opts->error_filename != NULL)
 	{
@@ -194,14 +200,23 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 		hyp_utf8_fprintf(stdout, _("recompiling %s to %s\n"), filename, output_filename);
 	}
 	
-	retval = func(hyp, opts, argc, argv);
+	hcp_opts_copy(&hyp_opts, opts);
+	g_free(hyp_opts.output_filename);
+	hyp_opts.output_filename = output_filename;
+	if (hyp->hcp_options != NULL)
+	{
+		hcp_opts_parse_string(&hyp_opts, hyp->hcp_options, OPTS_FROM_SOURCE);
+	}
+	retval = func(hyp, &hyp_opts, argc, argv);
+	hyp_opts.outfile = NULL;
+	hyp_opts.errorfile = NULL;
+	hcp_opts_free(&hyp_opts);
 	hyp_unref(hyp);
 	hyp_utf8_close(handle);
 	if (output_filename)
 	{
 		hyp_utf8_fclose(opts->outfile);
 		opts->outfile = NULL;
-		g_free(output_filename);
 	}
 	g_freep(&opts->output_dir);
 	
@@ -604,7 +619,7 @@ int main(int argc, const char **argv)
 	} else
 	{
 		int num_args;
-		int num_opts = (opts->do_list > 0) + (opts->do_ascii_recomp > 0) + (opts->do_recompile > 0) + (opts->do_compile > 0);
+		int num_opts = (opts->do_list > 0) + (opts->recompile_format != HYP_FT_NONE) + (opts->do_compile > 0);
 		
 		c = opts->optind;
 		num_args = argc - c;
@@ -649,7 +664,7 @@ int main(int argc, const char **argv)
 					else if (c < argc)
 						hyp_utf8_fprintf(opts->outfile, "\n\n");
 				}
-			} else if (opts->do_ascii_recomp)
+			} else if (opts->recompile_format == HYP_FT_ASCII)
 			{
 				const char *filename = argv[c++];
 
@@ -662,7 +677,7 @@ int main(int argc, const char **argv)
 				{
 					retval = EXIT_FAILURE;
 				}
-			} else if (opts->do_recompile)
+			} else if (opts->recompile_format == HYP_FT_STG)
 			{
 				if (opts->output_charset != HYP_CHARSET_NONE)
 					output_charset = opts->output_charset;
@@ -677,10 +692,34 @@ int main(int argc, const char **argv)
 						retval = EXIT_FAILURE;
 						break;
 					}
-					else if (c < argc)
+					if (c < argc)
+					{
 						hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s%s", stg_nl, stg_nl);
+					}
 				}
-			} else if (opts->do_dump)
+			} else if (opts->recompile_format == HYP_FT_HTML)
+			{
+				if (opts->output_charset != HYP_CHARSET_NONE)
+					output_charset = opts->output_charset;
+				while (c < argc)
+				{
+					const char *filename = argv[c++];
+					stg_nl = (opts->output_filename == NULL || output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					if (num_args > 1)
+						hyp_utf8_fprintf_charset(opts->outfile, output_charset, _("<!-- File: %s -->%s"), filename, stg_nl);
+					/* if ((opts->outfile == NULL || opts->outfile == stdout) && opts->output_filename == NULL)
+						opts->output_filename = replace_ext(filename, NULL, HYP_EXT_HTML); */
+					if (recompile(filename, opts, recompile_html, 0, NULL, HYP_EXT_HTML) == FALSE)
+					{
+						retval = EXIT_FAILURE;
+						break;
+					}
+					if (c < argc)
+					{
+						hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s%s", stg_nl, stg_nl);
+					}
+				}
+			} else if (opts->recompile_format == HYP_FT_BINARY)
 			{
 				const char *filename = argv[c++];
 				

@@ -18,4 +18,6 @@ Dies ist @{U}  auch   unterstrichener  @{u} Text.
 Dies ist @{I}kursiver@{i} Text.
 Dies ist @{O}umrandeter@{o} Text.
 Dies ist @{S}schattierter@{s} Text.
+Dies ist @{U}unterstrichener und @{B}fetter@{b}@{u} Text.
+Dies ist @{B}fetter und @{U}unterstrichener@{b}@{u} Text.
 @endnode

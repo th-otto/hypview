@@ -7201,9 +7201,10 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 		}
 		vars->page_alloced = newsize;
 	}
-	if (pic.pi_planes <= 8 &&	/* truecolor is not converted */
-		pic.pi_planes != 1 &&	/* interleaved and standard formats are identical for monochrome */
-		format != HYP_PIC_ICN)	/* ICN reader reads in standard format already */
+	if (pic.pi_planes <= 8 &&		/* truecolor is not converted */
+		pic.pi_planes != 1 &&		/* interleaved and standard formats are identical for monochrome */
+		format != HYP_PIC_ICN &&	/* ICN reader reads in standard format already */
+		format != HYP_PIC_GIF)		/* GIF reader does it own allocation */
 	{
 		/* need a separate buffer for conversion interleaved -> standard */
 		planebuf = g_new0(unsigned char, pic.pi_picsize);
@@ -7237,7 +7238,16 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 		if (bmp_unpack(planebuf, buf + pic.pi_dataoffset, &pic) == FALSE)
 			format = HYP_PIC_UNKNOWN;
 		break;
+	case HYP_PIC_GIF:
+		{
+			unsigned char *dest = NULL;
+			if (gif_unpack(&dest, buf, &pic) == FALSE || dest == NULL)
+				format = HYP_PIC_UNKNOWN;
+			planebuf = to_free = dest;
+		}
+		break;
 	case HYP_PIC_UNKNOWN:
+	case HYP_PIC_PNG:
 		unreachable();
 		break;
 	}

@@ -299,6 +299,7 @@ typedef struct
 #define HYP_EXT_RSC ".rsc"
 #define HYP_EXT_TXT ".txt"
 #define HYP_EXT_GUIDE ".guide"
+#define HYP_EXT_HTML ".html"
 
 /*
  * The values original ST-Guide uses,
@@ -548,7 +549,8 @@ typedef enum {
 	HYP_FT_CHEADER,				/* C header file */
 	HYP_FT_STG,					/* ST-Guide source file */
 	HYP_FT_GUIDE,				/* AmigaGuide source file */
-	HYP_FT_IMAGE				/* some image format */
+	HYP_FT_IMAGE,				/* some image format */
+	HYP_FT_HTML					/* some HTML format */
 } hyp_filetype;
 
 
@@ -563,7 +565,9 @@ typedef enum {
 	HYP_PIC_ICN = 2,
 	HYP_PIC_IMG = 3,
 	HYP_PIC_BMP = 4,
-	HYP_PIC_LAST = HYP_PIC_BMP
+	HYP_PIC_GIF = 5,
+	HYP_PIC_PNG = 6,
+	HYP_PIC_LAST = HYP_PIC_PNG
 } hyp_pic_format;
 
 /*

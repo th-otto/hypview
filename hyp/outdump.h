@@ -6,13 +6,14 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 {
 	char *str;
 	HYP_NODE *nodeptr;
+	FILE *outfile = opts->outfile;
 	
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
 		str = hyp_conv_to_utf8(hyp->comp_charset, textstart, src - textstart); \
 		if (str != NULL) \
-			hyp_utf8_fprintf(opts->outfile, _("Text: <%s>\n"), str); \
+			hyp_utf8_fprintf(outfile, _("Text: <%s>\n"), str); \
 		g_free(str); \
 	}
 
@@ -35,20 +36,20 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 				switch (*src)
 				{
 				case HYP_ESC_ESC:
-					hyp_utf8_fprintf(opts->outfile, _("<ESC>\n"));
+					hyp_utf8_fprintf(outfile, _("<ESC>\n"));
 					src++;
 					break;
 				
 				case HYP_ESC_WINDOWTITLE:
 					src++;
 					str = hyp_conv_to_utf8(hyp->comp_charset, src, STR0TERM);
-					hyp_utf8_fprintf(opts->outfile, _("Title: %s\n"), str);
+					hyp_utf8_fprintf(outfile, _("Title: %s\n"), str);
 					g_free(str);
 					src += ustrlen(src) + 1;
 					break;
 
 				case HYP_ESC_CASE_DATA:
-					hyp_utf8_fprintf(opts->outfile, _("Data: type %u, len %u\n"), src[0], src[1]);
+					hyp_utf8_fprintf(outfile, _("Data: type %u, len %u\n"), src[0], src[1]);
 					src += src[1] - 1;
 					break;
 				
@@ -89,16 +90,16 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						switch (type)
 						{
 						case HYP_ESC_LINK:
-							hyp_utf8_fprintf(opts->outfile, _("Link: \"%s\" %u \"%s\"\n"), str, dest_page, dest);
+							hyp_utf8_fprintf(outfile, _("Link: \"%s\" %u \"%s\"\n"), str, dest_page, dest);
 							break;
 						case HYP_ESC_LINK_LINE:
-							hyp_utf8_fprintf(opts->outfile, _("Link: \"%s\" %u \"%s\" %u\n"), str, dest_page, dest, line);
+							hyp_utf8_fprintf(outfile, _("Link: \"%s\" %u \"%s\" %u\n"), str, dest_page, dest, line);
 							break;
 						case HYP_ESC_ALINK:
-							hyp_utf8_fprintf(opts->outfile, _("ALink: \"%s\" %u \"%s\"\n"), str, dest_page, dest);
+							hyp_utf8_fprintf(outfile, _("ALink: \"%s\" %u \"%s\"\n"), str, dest_page, dest);
 							break;
 						case HYP_ESC_ALINK_LINE:
-							hyp_utf8_fprintf(opts->outfile, _("ALink: \"%s\" %u \"%s\" %u\n"), str, dest_page, dest, line);
+							hyp_utf8_fprintf(outfile, _("ALink: \"%s\" %u \"%s\" %u\n"), str, dest_page, dest, line);
 							break;
 						}
 						g_free(dest);
@@ -121,7 +122,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						{
 							str = hyp_invalid_page(dest_page);
 						}
-						hyp_utf8_fprintf(opts->outfile, _("XRef \"%s\" \"%s\"\n"), text, str);
+						hyp_utf8_fprintf(outfile, _("XRef \"%s\" \"%s\"\n"), text, str);
 						g_free(str);
 						g_free(text);
 						src += src[1] - 1;
@@ -145,7 +146,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						{
 							str = hyp_invalid_page(dest_page);
 						}
-						hyp_utf8_fprintf(opts->outfile, _("Tree: tree=%d, obj=%d, line=%u: \"%s\"\n"), tree, obj, line, str);
+						hyp_utf8_fprintf(outfile, _("Tree: tree=%d, obj=%d, line=%u: \"%s\"\n"), tree, obj, line, str);
 						g_free(str);
 						src += 9;
 					}
@@ -166,7 +167,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						width = src[6];
 						height = src[7];
 						islimage = hyp->comp_vers >= 3 && src[6] == 1;
-						hyp_utf8_fprintf(opts->outfile, _("%s: x=%d, y=%d, w=%d, h=%d, num=%u\n"),
+						hyp_utf8_fprintf(outfile, _("%s: x=%d, y=%d, w=%d, h=%d, num=%u\n"),
 							islimage ? _("limage") : _("image"),
 							x_offset, y_offset, width, height, num);
 						src += 8;
@@ -186,7 +187,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						width = src[4];
 						height = src[5];
 						attr = src[6];
-						hyp_utf8_fprintf(opts->outfile, _("Line: x=%d, y=%d, w=%d, h=%d, attr=0x%02x, begend=%x, style=%d\n"),
+						hyp_utf8_fprintf(outfile, _("Line: x=%d, y=%d, w=%d, h=%d, attr=0x%02x, begend=%x, style=%d\n"),
 							x_offset, y_offset, width - 128, height - 1, attr, (attr - 1) & 7, min(max(((attr - 1) >> 3), 0), 6) + 1);
 						src += 7;
 					}
@@ -206,26 +207,26 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						width = src[4];
 						height = src[5];
 						attr = src[6];
-						hyp_utf8_fprintf(opts->outfile, _("%s: x=%d, y=%d, w=%d, h=%d, attr=%u\n"),
+						hyp_utf8_fprintf(outfile, _("%s: x=%d, y=%d, w=%d, h=%d, attr=%u\n"),
 							*src == HYP_ESC_BOX ? _("Box") : _("RBox"), x_offset, y_offset, width, height, attr);
 						src += 7;
 					}
 					break;
 					
 				case HYP_ESC_CASE_TEXTATTR:
-					hyp_utf8_fprintf(opts->outfile, _("Textattr: $%x\n"), *src - HYP_ESC_TEXTATTR_FIRST);
+					hyp_utf8_fprintf(outfile, _("Textattr: $%x\n"), *src - HYP_ESC_TEXTATTR_FIRST);
 					src++;
 					break;
 				
 				default:
-					hyp_utf8_fprintf(opts->outfile, _("<unknown hex esc $%02x>\n"), *src);
+					hyp_utf8_fprintf(outfile, _("<unknown hex esc $%02x>\n"), *src);
 					break;
 				}
 				textstart = src;
 			} else if (*src == HYP_EOL)
 			{
 				DUMPTEXT();
-				hyp_utf8_fprintf(opts->outfile, _("<EOL>\n"));
+				hyp_utf8_fprintf(outfile, _("<EOL>\n"));
 				src++;
 				textstart = src;
 			} else
@@ -238,7 +239,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		hyp_node_free(nodeptr);
 	} else
 	{
-		hyp_utf8_fprintf(opts->outfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
+		hyp_utf8_fprintf(outfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
 	}
 
 #undef DUMPTEXT
@@ -247,7 +248,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean dump_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
+static gboolean dump_image(HYP_DOCUMENT *hyp, FILE *outfile, hyp_nodenr node)
 {
 	unsigned char *data;
 	unsigned char hyp_pic_raw[SIZEOF_HYP_PICTURE];
@@ -264,12 +265,12 @@ static gboolean dump_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 	
 	hyp_pic_get_header(&hyp_pic, hyp_pic_raw);
 
-	hyp_utf8_fprintf(opts->outfile, _("  Width: %d\n"), hyp_pic.width);
-	hyp_utf8_fprintf(opts->outfile, _("  Height: %d\n"), hyp_pic.height);
-	hyp_utf8_fprintf(opts->outfile, _("  Planes: %d\n"), hyp_pic.planes);
-	hyp_utf8_fprintf(opts->outfile, _("  Plane Mask: $%02x\n"), hyp_pic.plane_pic);
-	hyp_utf8_fprintf(opts->outfile, _("  Plane On-Off: $%02x\n"), hyp_pic.plane_on_off);
-	hyp_utf8_fprintf(opts->outfile, _("  Filler: $%02x\n"), hyp_pic.filler);
+	hyp_utf8_fprintf(outfile, _("  Width: %d\n"), hyp_pic.width);
+	hyp_utf8_fprintf(outfile, _("  Height: %d\n"), hyp_pic.height);
+	hyp_utf8_fprintf(outfile, _("  Planes: %d\n"), hyp_pic.planes);
+	hyp_utf8_fprintf(outfile, _("  Plane Mask: $%02x\n"), hyp_pic.plane_pic);
+	hyp_utf8_fprintf(outfile, _("  Plane On-Off: $%02x\n"), hyp_pic.plane_on_off);
+	hyp_utf8_fprintf(outfile, _("  Filler: $%02x\n"), hyp_pic.filler);
 	
 	goto done;
 error:
@@ -347,11 +348,12 @@ static gboolean recompile_dump(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 	gboolean ret;
 	gboolean found;
 	int i;
+	FILE *outfile = opts->outfile;
 	
-	dump_globals(hyp, opts->outfile);
-	hyp_utf8_fprintf(opts->outfile, _("Index nodes: %u\n"), hyp->num_index);
-	hyp_utf8_fprintf(opts->outfile, _("Index table size: %ld\n"), hyp->itable_size);
-	hyp_utf8_fprintf(opts->outfile, "\n\n");
+	dump_globals(hyp, outfile);
+	hyp_utf8_fprintf(outfile, _("Index nodes: %u\n"), hyp->num_index);
+	hyp_utf8_fprintf(outfile, _("Index table size: %ld\n"), hyp->itable_size);
+	hyp_utf8_fprintf(outfile, "\n\n");
 	
 	ret = TRUE;
 	for (node = 0; node < hyp->num_index; node++)
@@ -386,9 +388,9 @@ static gboolean recompile_dump(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 		compressed_size = GetCompressedSize(hyp, node);
 		size = GetDataSize(hyp, node);
 		namelen = entry->length - SIZEOF_INDEX_ENTRY;
-		hyp_utf8_fprintf(opts->outfile, _("Index entry %u:\n"), node);
+		hyp_utf8_fprintf(outfile, _("Index entry %u:\n"), node);
 		str = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
-		hyp_utf8_fprintf(opts->outfile, _("  Name: %s"), str);
+		hyp_utf8_fprintf(outfile, _("  Name: %s"), str);
 		slen = hyp->comp_charset == HYP_CHARSET_UTF8 ? strlen(str) : g_utf8_str_len(str, STR0TERM);
 		g_free(str);
 		if (namelen > 0)
@@ -401,65 +403,65 @@ static gboolean recompile_dump(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 			{
 				size_t i;
 				
-				hyp_utf8_fprintf(opts->outfile, " (");
+				hyp_utf8_fprintf(outfile, " (");
 				for (i = slen; i < namelen; i++)
 				{
 					if (i != slen)
-						hyp_utf8_fprintf(opts->outfile, " ");
-					hyp_utf8_fprintf(opts->outfile, "$%02x", entry->name[i]);
+						hyp_utf8_fprintf(outfile, " ");
+					hyp_utf8_fprintf(outfile, "$%02x", entry->name[i]);
 				}
-				hyp_utf8_fprintf(opts->outfile, ")");
+				hyp_utf8_fprintf(outfile, ")");
 			}
 		}
-		hyp_utf8_fprintf(opts->outfile, "\n");
-		hyp_utf8_fprintf(opts->outfile, _("  Entry length: %u\n"), entry->length);
-		hyp_utf8_fprintf(opts->outfile, _("  Offset: %ld $%lx\n"), entry->seek_offset, entry->seek_offset);
-		hyp_utf8_fprintf(opts->outfile, _("  Compressed: %ld $%lx\n"), compressed_size, compressed_size);
-		hyp_utf8_fprintf(opts->outfile, _("  Uncompressed: %ld $%lx\n"), size, size);
-		hyp_utf8_fprintf(opts->outfile, _("  Next: %u $%04x\n"), entry->next, entry->next);
-		hyp_utf8_fprintf(opts->outfile, _("  Previous: %u $%04x\n"), entry->previous, entry->previous);
-		hyp_utf8_fprintf(opts->outfile, _("  Up: %u $%04x\n"), entry->toc_index, entry->toc_index);
+		hyp_utf8_fprintf(outfile, "\n");
+		hyp_utf8_fprintf(outfile, _("  Entry length: %u\n"), entry->length);
+		hyp_utf8_fprintf(outfile, _("  Offset: %ld $%lx\n"), entry->seek_offset, entry->seek_offset);
+		hyp_utf8_fprintf(outfile, _("  Compressed: %ld $%lx\n"), compressed_size, compressed_size);
+		hyp_utf8_fprintf(outfile, _("  Uncompressed: %ld $%lx\n"), size, size);
+		hyp_utf8_fprintf(outfile, _("  Next: %u $%04x\n"), entry->next, entry->next);
+		hyp_utf8_fprintf(outfile, _("  Previous: %u $%04x\n"), entry->previous, entry->previous);
+		hyp_utf8_fprintf(outfile, _("  Up: %u $%04x\n"), entry->toc_index, entry->toc_index);
 		
 		switch ((hyp_indextype) entry->type)
 		{
 		case HYP_NODE_INTERNAL:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: internal node\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: internal node\n"));
 			ret &= dump_node(hyp, opts, node);
 			break;
 		case HYP_NODE_POPUP:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: pop-up node\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: pop-up node\n"));
 			ret &= dump_node(hyp, opts, node);
 			break;
 		case HYP_NODE_EXTERNAL_REF:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: external node\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: external node\n"));
 			break;
 		case HYP_NODE_IMAGE:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: image\n"));
-			ret &= dump_image(hyp, opts, node);
+			hyp_utf8_fprintf(outfile, _("  Type: image\n"));
+			ret &= dump_image(hyp, outfile, node);
 			break;
 		case HYP_NODE_SYSTEM_ARGUMENT:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: system node\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: system node\n"));
 			break;
 		case HYP_NODE_REXX_SCRIPT:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: REXX script\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: REXX script\n"));
 			break;
 		case HYP_NODE_REXX_COMMAND:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: REXX command\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: REXX command\n"));
 			break;
 		case HYP_NODE_QUIT:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: quit\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: quit\n"));
 			break;
 		case HYP_NODE_CLOSE:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: close\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: close\n"));
 			break;
 		case HYP_NODE_EOF:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: EOF\n"));
+			hyp_utf8_fprintf(outfile, _("  Type: EOF\n"));
 			break;
 		default:
-			hyp_utf8_fprintf(opts->outfile, _("  Type: unknown type %u\n"), entry->type);
+			hyp_utf8_fprintf(outfile, _("  Type: unknown type %u\n"), entry->type);
 			break;
 		}
-		hyp_utf8_fprintf(opts->outfile, "\n\n");
+		hyp_utf8_fprintf(outfile, "\n\n");
 	}
 	
 	for (i = 0; i < argc; i++)

@@ -30,11 +30,9 @@ struct _uses {
 
 
 typedef struct {
-	gboolean do_ascii_recomp;
 	gboolean do_list;
-	gboolean do_recompile;
+	hyp_filetype recompile_format;
 	gboolean do_compile;
-	gboolean do_dump;
 	gboolean do_help;
 	gboolean do_version;
 	unsigned int list_flags;
