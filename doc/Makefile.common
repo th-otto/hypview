@@ -488,6 +488,7 @@ win4 winhelp4: .stamp.winhelp4
 		 done; \
 		 $(CP) $(srcdir)/images/help.ico "$(WINHELP4_DIR)help.ico"; \
 		 $(CP) $(srcdir)/images/*.bmp "$(WINHELP4_DIR)images"; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.HLP $(BIN_DIR)/$(OUTPUT_LANG)/*.CNT; \
 		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.hlp $(BIN_DIR)/$(OUTPUT_LANG)/*.cnt; \
 		 -chmod -f +w $(BIN_DIR)/$(OUTPUT_LANG)/*.fts $(BIN_DIR)/$(OUTPUT_LANG)/*.FTS 2>/dev/null; \
 		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.gid $(BIN_DIR)/$(OUTPUT_LANG)/*.GID; \
@@ -501,7 +502,11 @@ win4 winhelp4: .stamp.winhelp4
 		   for i in $(TOOL_DOCS); do \
 			$(HCRTF) -x -NG $$i.hpj; \
 			$(HCRTF) -x -NG $$i.hpj; \
-			$(CP) "$$i.HLP" "$(BIN_DIR)/$(OUTPUT_LANG)/$$i.hlp" || cat "$$i.err"; \
+			u=`echo $$i | tr '[[:lower:]]' '[[:upper:]]'`; \
+			if test -f "$$u.HLP" -a ! -f "$$i.hlp"; then \
+				mv "$$u.HLP" "$$i.hlp"; \
+			fi; \
+			$(CP) "$$i.hlp" "$(BIN_DIR)/$(OUTPUT_LANG)/$$i.hlp" || cat "$$i.err"; \
 			$(CP) "$$i.cnt" "$(BIN_DIR)/$(OUTPUT_LANG)/$$i.cnt" || exit 1; \
 		   done; \
 		   ); \
