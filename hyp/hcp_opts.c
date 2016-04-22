@@ -109,6 +109,7 @@ static struct option const long_options[] = {
 	{ "pic-format", required_argument, NULL, OPT_PICFORMAT },
 	{ "quiet", no_argument, NULL, OPT_QUIET },
 	{ "recompile", no_argument, NULL, OPT_RECOMPILE },
+	{ "stg", no_argument, NULL, OPT_RECOMPILE },
 	{ "split", no_argument, NULL, OPT_SPLIT },
 	{ "no-split", no_argument, NULL, OPT_NO_SPLIT },
 	{ "tabwidth", required_argument, NULL, OPT_TABWIDTH },

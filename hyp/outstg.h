@@ -890,8 +890,10 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 			}
 		}
 		
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode%s%s%s", stg_nl, stg_nl, stg_nl);
-		
+		hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode%s", stg_nl);
+		if (node < hyp->last_text_page)
+			hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s", stg_nl, stg_nl);
+			
 		hyp_node_free(nodeptr);
 	} else
 	{
