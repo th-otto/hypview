@@ -25,6 +25,12 @@ HMENU WINAPI LoadMenuExW(HINSTANCE instance, LPCWSTR name)
  	
 	if (!instance)
 		instance = GetInstance();
+	/*
+	 * the lookup code returns NEUTRAL for eg LANG=C,
+	 * but FindResource would return the UI language default
+	 */
+	if (lang == MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
+		lang = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 	hrsrc = FindResourceExW(instance, type, name, lang);
 	if (!hrsrc && SUBLANGID(lang) != SUBLANG_DEFAULT)
 		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_DEFAULT));
@@ -48,6 +54,12 @@ LPCDLGTEMPLATE LoadDialog(HINSTANCE instance, LPCWSTR name)
 	
 	if (!instance)
 		instance = GetInstance();
+	/*
+	 * the lookup code returns NEUTRAL for eg LANG=C,
+	 * but FindResource would return the UI language default
+	 */
+	if (lang == MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL))
+		lang = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 	hrsrc = FindResourceExW(instance, type, name, lang);
 	if (!hrsrc && SUBLANGID(lang) != SUBLANG_DEFAULT)
 		hrsrc = FindResourceExW(instance, type, name, MAKELANGID(PRIMARYLANGID(lang), SUBLANG_DEFAULT));

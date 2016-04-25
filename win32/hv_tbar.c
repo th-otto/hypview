@@ -779,7 +779,7 @@ static void toolbar_click(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te,
 				{
 					const char *comment;
 					
-					comment = te[entry_idx].comment;
+					comment = _(te[entry_idx].comment);
 					if (comment != NULL)
 					{
 						td->toolbar_help_settext(td, comment, xs, ys);
