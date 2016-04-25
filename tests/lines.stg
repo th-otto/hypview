@@ -65,4 +65,26 @@ diagonal line right to left
 
 
 
+Solid line
+@line 5 20 0 0 1
+
+Linestyle longdash (2)
+@line 5 20 0 0 2
+
+Linestyle dot (3)
+@line 5 20 0 0 3
+
+Linestyle dashdot (4)
+@line 5 20 0 0 4
+
+Linestyle dash (5)
+@line 5 20 0 0 5
+
+Linestyle dash2dot (6)
+@line 5 20 0 0 6
+
+Linestyle user (7)
+@line 5 20 0 0 7
+
+end
 @endnode

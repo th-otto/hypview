@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="CP1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+          "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+<meta http-equiv="content-type" content="text/html;charset=CP1252" />
+<head>
+</head>
+<body>
+<div style="width:75ex;">
+<textarea id="code" rows="10" cols="80">
+ctx.beginPath();
+ctx.moveTo(0,50);
+ctx.lineTo(100,50);
+ctx.stroke();
+</textarea>
+<div class="playable-buttons">
+  <input id="edit" type="button" value="Edit" />
+  <input id="reset" type="button" value="Reset" />
+</div>
+<canvas id="canvas" width="400" height="200" class="playable-canvas">
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var textarea = document.getElementById("code");
+var reset = document.getElementById("reset");
+var edit = document.getElementById("edit");
+var code = textarea.value;
+
+function drawCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  eval(textarea.value);
+}
+
+reset.addEventListener("click", function() {
+  textarea.value = code;
+  drawCanvas();
+});
+
+edit.addEventListener("click", function() {
+  textarea.focus();
+})
+
+textarea.addEventListener("input", drawCanvas);
+window.addEventListener("load", drawCanvas);
+</script
+</canvas>
+</div>
+</body>
+</html>
