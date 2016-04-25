@@ -35,6 +35,7 @@ libhyp_a_SOURCES = \
 	sorttab.h \
 	gunichar.h \
 	\
+	base64.c \
 	cache.c \
 	ext_refs.c \
 	hyp.c \

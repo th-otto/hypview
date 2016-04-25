@@ -1,11 +1,12 @@
 /*****************************************************************************
- * windows/pattern.h
+ * pattern.h
  *****************************************************************************/
 
 #define PATTERN_WIDTH 16
 #define PATTERN_HEIGHT 16
 #define PATTERN_SIZE (PATTERN_HEIGHT * PATTERN_WIDTH / 8)
 #define NUM_PATTERNS 37
+
 static unsigned char const pattern_bits[NUM_PATTERNS * PATTERN_SIZE] = {
  /* FIS_HOLLOW */
  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
