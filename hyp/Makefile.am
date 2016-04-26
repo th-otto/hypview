@@ -100,7 +100,7 @@ hcp_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
-	outasc.h outstg.h outdump.h \
+	outasc.h outstg.h outdump.h outhtml.h htmljs.h \
 	$(UTIL_SRC)
 
 EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
