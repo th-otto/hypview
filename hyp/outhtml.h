@@ -1,3 +1,6 @@
+#include "base64.h"
+#include "pattern.h"
+
 #define HTML_DOCTYPE_OLD              0           /* HTML 3.2 */
 #define HTML_DOCTYPE_STRICT           1           /* HTML 4.01 */
 #define HTML_DOCTYPE_TRANS            2           /* HTML 4.01 Transitional */
@@ -17,16 +20,17 @@ static char const html_nav_index_png[] = "images/iindex.png";
 static char const html_nav_help_png[] = "images/ihelp.png";
 static char const html_nav_info_png[] = "images/iinfo.png";
 static char const html_hyp_info_id[] = "hyp_info";
+static char const html_nav_dimensions[] = " width=\"32\" height=\"21\"";
+
+static char const html_referer_url[] = "";
 static char const html_nav_load_href[] = "../libhyp/";
 static char const hypview_css_name[] = "_hypview.css";
 static char const hypview_js_name[] = "_hypview.js";
 static char const html_view_rsc_href[] = "rscview.cgi";
+static int html_doctype = HTML_DOCTYPE_XSTRICT;
+
 static const char *html_closer = " />";
 static const char *html_name_attr = "id";
-static char const html_nav_dimensions[] = " width=\"32\" height=\"21\"";
-
-static char const html_referer_url[] = "";
-static int html_doctype = HTML_DOCTYPE_XSTRICT;
 
 /*
  * style names used
@@ -311,8 +315,8 @@ static void html_out_gfx(hcp_opts *opts, FILE *outfile, HYP_DOCUMENT *hyp, struc
 		++(*gfx_id);
 		id = g_strdup_printf("hypview_gfx_%d", *gfx_id);
 		fprintf(outfile,
-			"<canvas class=\"%s\" id=\"%s\"\">"
-			"<script>drawLine('%s', %d, %d, %d, %d, %d, %d);</script>"
+			"<canvas class=\"%s\" id=\"%s\">"
+			"<script type=\"text/javascript\">drawLine('%s', %d, %d, %d, %d, %d, %d);</script>"
 			"</canvas>",
 			html_graphics_style,
 			id,
@@ -328,8 +332,8 @@ static void html_out_gfx(hcp_opts *opts, FILE *outfile, HYP_DOCUMENT *hyp, struc
 		++(*gfx_id);
 		id = g_strdup_printf("hypview_gfx_%d", *gfx_id);
 		fprintf(outfile,
-			"<canvas class=\"%s\" id=\"%s\"\">"
-			"<script>drawBox('%s', %d, %d, %d, %d, %d);</script>"
+			"<canvas class=\"%s\" id=\"%s\">"
+			"<script type=\"text/javascript\">drawBox('%s', %d, %d, %d, %d, %d);</script>"
 			"</canvas>",
 			html_graphics_style,
 			id,
@@ -418,8 +422,9 @@ static const char *html_basename(const char *name)
 /* ------------------------------------------------------------------------- */
 
 /*
- * disallow certain characters that might clash with
- * the filesystem, and also any non-ascii characters
+ * Disallow certain characters that might clash with
+ * the filesystem or uri escape sequences, and also any non-ascii characters.
+ * For simplicity, this is done in-place.
  */
 static void html_convert_filename(char *filename)
 {
@@ -430,8 +435,14 @@ static void html_convert_filename(char *filename)
 	{
 		if (c == ' ' ||
 			c == ':' ||
+			c == '%' ||
 			c == '?' ||
 			c == '/' ||
+			c == '&' ||
+			c == '<' ||
+			c == '>' ||
+			c == '"' ||
+			c == '\'' ||
 			c == '\\' ||
 			c >= 0x7f ||
 			c < 0x20)
@@ -509,12 +520,11 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 static gboolean html_out_stylesheet(hcp_opts *opts, FILE *outfile, gboolean do_inline)
 {
 	FILE *out;
-	const char *charset = hyp_charset_name(HYP_CHARSET_UTF8);
 	
 	if (do_inline)
 	{
 		out = outfile;
-		fprintf(out, "<style type=\"text/css\" charset=\"%s\">%s", charset, stg_nl);
+		fprintf(out, "<style type=\"text/css\">%s", stg_nl);
 	} else
 	{
 		char *fname;
@@ -522,9 +532,9 @@ static gboolean html_out_stylesheet(hcp_opts *opts, FILE *outfile, gboolean do_i
 		struct stat st;
 		
 		if (html_doctype >= HTML_DOCTYPE_XSTRICT)
-			fprintf(outfile, "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" charset=\"%s\"%s%s", hypview_css_name, charset, html_closer, stg_nl);
+			fprintf(outfile, "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"%s%s", hypview_css_name, html_closer, stg_nl);
 		else
-			fprintf(outfile, "<style type=\"text/css\" href=\"%s\" charset=\"%s\"></style>%s", hypview_css_name, charset, stg_nl);
+			fprintf(outfile, "<style type=\"text/css\" href=\"%s\"></style>%s", hypview_css_name, stg_nl);
 		fname = g_build_filename(opts->output_dir, hypview_css_name, NULL);
 		exists = hyp_utf8_stat(fname, &st) == 0;
 		if (exists)
@@ -764,7 +774,7 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 	if (do_inline)
 	{
 		out = outfile;
-		fprintf(out, "<script type=\"text/javascript\" charset=\"%s\">%s", charset, stg_nl);
+		fprintf(out, "<script type=\"text/javascript\">%s", stg_nl);
 		if (html_doctype >= HTML_DOCTYPE_XSTRICT)
 			fprintf(out, "//<![CDATA[%s", stg_nl);
 	} else
@@ -795,6 +805,46 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 	
 	fprintf(out, "\"use strict;\"%s", stg_nl);
 
+	fprintf(out, "var patterns = [%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAADEDgAAxA4AAAAAAAAAAAAAAAAAAP///wB3dwAA//8AAN3dAAD//wAAd3cAAP//AADd3QAA//8AAHd3AAD//wAA3d0AAP//AAB3dwAA//8AAN3dAAD//wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wCqqgAA//8AAKqqAAD//wAAqqoAAP//AACqqgAA//8AAKqqAAD//wAAqqoAAP//AACqqgAA//8AAKqqAAD//wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wCqqgAAd3cAAKqqAADd3QAAqqoAAHd3AACqqgAA3d0AAKqqAAB3dwAAqqoAAN3dAACqqgAAd3cAAKqqAADd3QAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wBVVQAAqqoAAFVVAACqqgAAVVUAAKqqAABVVQAAqqoAAFVVAACqqgAAVVUAAKqqAABVVQAAqqoAAFVVAACqqgAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAREQAAqqoAAEREAACqqgAAEREAAKqqAABERAAAqqoAABERAACqqgAAREQAAKqqAAAREQAAqqoAAEREAACqqgAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAqqoAAAAAAACqqgAAAAAAAKqqAAAAAAAAqqoAAAAAAACqqgAAAAAAAKqqAAAAAAAAqqoAAAAAAACqqgAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAIiIAAAAAAACIiAAAAAAAACIiAAAAAAAAiIgAAAAAAAAiIgAAAAAAAIiIAAAAAAAAIiIAAAAAAACIiAAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wDv7wAA7+8AAO/vAAAAAAAA/v4AAP7+AAD+/gAAAAAAAO/vAADv7wAA7+8AAAAAAAD+/gAA/v4AAP7+AAAAAAAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD39wAA7+8AANfXAAC7uwAAfX0AAP7+AAD9/QAA+/sAAPf3AADv7wAA19cAALu7AAB9fQAA/v4AAP39AAD7+wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wC+vgAAf38AAP//AAD//wAA6+sAAPf3AAD//wAA//8AAL6+AAB/fwAA//8AAP//AADr6wAA9/cAAP//AAD//wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wBfXwAAqqoAAPv7AAD7+wAA9fUAAKqqAAC/vwAAv78AAF9fAACqqgAA+/sAAPv7AAD19QAAqqoAAL+/AAC/vwAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD7+wAA//8AAL+/AADf3wAA7+8AAP//AAD+/gAA/f0AAPv7AAD//wAAv78AAN/fAADv7wAA//8AAP7+AAD9/QAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD/+QAAM88AAHJOAAB+fgAA5+cAAOTkAACcnAAAn5kAAP/5AAAzzwAAck4AAH5+AADn5wAA5OQAAJycAACfmQAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//wAA//4AAP//AAD3/wAA//8AAP/fAAD//wAA//8AAP//AAD//gAA//8AAPf/AAD//wAA/98AAP//AAD//wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wBwcAAAOTkAAJOTAAAHBwAADg4AAJycAADJyQAA4OAAAHBwAAA5OQAAk5MAAAcHAAAODgAAnJwAAMnJAADg4AAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//wAA7u4AAH19AAC7uwAA19cAAO7uAAD//wAAqqoAAP//AADu7gAAfX0AALu7AADX1wAA7u4AAP//AACqqgAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//wAA7e4AAP//AADv7wAA//8AAKqqAAD//wAA7+8AAP//AADu7gAA//8AAO/vAAD//wAAqqoAAP//AADv7wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAODgAADg4AAG5uAAAREQAA4OAAAODgAADm5gAAEREAAA4OAAAODgAAbm4AABERAADg4AAA4OAAAObmAAAREQAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wA4OAAA19cAAO/vAADv7wAAg4MAAH19AAD+/gAA/v4AADg4AADX1wAA7+8AAO/vAACDgwAAfX0AAP7+AAD+/gAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD+/gAA/v4AAH9/AACfnwAA5+cAANvbAAC9vQAAfn4AAP7+AAD+/gAAf38AAJ+fAADn5wAA29sAAL29AAB+fgAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAPDwAADw8AAA8PAAAPDwAA8PAAAPDwAADw8AAA8PAAAA8PAAAPDwAADw8AAA8PAADw8AAA8PAAAPDwAADw8AAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wDHxwAAg4MAAAEBAAAAAAAAAQEAAIODAADHxwAA7+8AAMfHAACDgwAAAQEAAAAAAAABAQAAg4MAAMfHAADv7wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAu7sAAN3dAADu7gAAAAAAAN3dAAC7uwAAd3cAAAAAAAC7uwAA3d0AAO7uAAAAAAAA3d0AALu7AAB3dwAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD+/gAA/f0AAPv7AAD39wAA7+8AAN/fAAC/vwAAf38AAP7+AAD9/QAA+/sAAPf3AADv7wAA398AAL+/AAB/fwAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wDz8wAA5+cAAM/PAACfnwAAPz8AAH5+AAD8/AAA+fkAAPPzAADn5wAAz88AAJ+fAAA/PwAAfn4AAPz8AAD5+QAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wDb2wAA5+cAAOfnAADb2wAAvb0AAH5+AAB+fgAAvb0AANvbAADn5wAA5+cAANvbAAC9vQAAfn4AAH5+AAC9vQAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAD+/gAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAAAAAAAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAAAAAAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAD+/gAAAAAAAP7+AAD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAAAAAAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//gAA//0AAP/7AAD/9wAA/+8AAP/fAAD/vwAA/38AAP7/AAD9/wAA+/8AAPf/AADv/wAA3/8AAL//AAB//wAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wB//AAA//gAAP/xAAD/4wAA/8cAAP+PAAD/HwAA/j8AAPx/AAD4/wAA8f8AAOP/AADH/wAAj/8AAB//AAA//gAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wB//gAAv/0AAN/7AADv9wAA9+8AAPvfAAD9vwAA/n8AAP5/AAD9vwAA+98AAPfvAADv9wAA3/sAAL/9AAB//gAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//gAA//4AAP/+AAD//gAA//4AAP/+AAD//gAA//4AAP/+AAD//gAA//4AAP/+AAD//gAA//4AAP/+AAD//gAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAAAAAAA',%s", stg_nl);
+	fprintf(out, "  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAD+/gAAAAAAAP7+AAD+/gAA/v4AAP7+AAD+/gAA/v4AAP7+AAAAAAAA'%s", stg_nl);
+	fprintf(out, "];%s", stg_nl);
+
 	fprintf(out, "function showPopup (id) {%s", stg_nl);
 	fprintf(out, "  var a = document.getElementById(id + '_content');%s", stg_nl);
 	fprintf(out, "  if (a.style.display == 'none' || a.style.display == '') {%s", stg_nl);
@@ -820,15 +870,15 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 
 	fprintf(out, "function getQueryVariable(variable)%s", stg_nl);
 	fprintf(out, "{%s", stg_nl);
-	fprintf(out, "    var query = window.location.search.substring(1);%s", stg_nl);
-	fprintf(out, "    var vars = query.split('&');%s", stg_nl);
-	fprintf(out, "    for (var i = 0; i < vars.length; i++) {%s", stg_nl);
-	fprintf(out, "        var pair = vars[i].split('=');%s", stg_nl);
-	fprintf(out, "        if (decodeURIComponent(pair[0]) == variable) {%s", stg_nl);
-	fprintf(out, "            return decodeURIComponent(pair[1]);%s", stg_nl);
-	fprintf(out, "        }%s", stg_nl);
+	fprintf(out, "  var query = window.location.search.substring(1);%s", stg_nl);
+	fprintf(out, "  var vars = query.split('&');%s", stg_nl);
+	fprintf(out, "  for (var i = 0; i < vars.length; i++) {%s", stg_nl);
+	fprintf(out, "    var pair = vars[i].split('=');%s", stg_nl);
+	fprintf(out, "    if (decodeURIComponent(pair[0]) == variable) {%s", stg_nl);
+	fprintf(out, "      return decodeURIComponent(pair[1]);%s", stg_nl);
 	fprintf(out, "    }%s", stg_nl);
-	fprintf(out, "    return '';%s", stg_nl);
+	fprintf(out, "  }%s", stg_nl);
+	fprintf(out, "  return '';%s", stg_nl);
 	fprintf(out, "}%s", stg_nl);
 	fprintf(out, "var lang;%s", stg_nl);
 	fprintf(out, "var languages = ['en', 'de'];%s", stg_nl);
@@ -865,6 +915,9 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 	fprintf(out, "  if (l == '')%s", stg_nl);
 	fprintf(out, "    l = 'en';%s", stg_nl);
 	fprintf(out, "  lang = l;%s", stg_nl);
+	fprintf(out, "  var html = document.getElementsByTagName('html')[0];%s", stg_nl);
+	fprintf(out, "  html.setAttribute('lang', lang);%s", stg_nl);
+	fprintf(out, "  html.setAttribute('xml:lang', lang);%s", stg_nl);
 	fprintf(out, "}%s", stg_nl);
 	fprintf(out, "getLanguage();%s", stg_nl);
 
@@ -898,39 +951,39 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 	fprintf(out, "    xoffset += width;%s", stg_nl);
 	fprintf(out, "    /* draw from right to left */%s", stg_nl);
 	fprintf(out, "    width = (-width) * xraster;%s", stg_nl);
-	fprintf(out, "    x0 = width;%s", stg_nl);
-	fprintf(out, "    x1 = 0;%s", stg_nl);
+	fprintf(out, "    x0 = width + 0.5;%s", stg_nl);
+	fprintf(out, "    x1 = 0.5;%s", stg_nl);
 	fprintf(out, "  } else if (width == 0)%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
 	fprintf(out, "    /* vertical line */%s", stg_nl);
 	fprintf(out, "    width = 1;%s", stg_nl);
-	fprintf(out, "    x0 = 0;%s", stg_nl);
-	fprintf(out, "    x1 = 0;%s", stg_nl);
+	fprintf(out, "    x0 = 0.5;%s", stg_nl);
+	fprintf(out, "    x1 = 0.5;%s", stg_nl);
 	fprintf(out, "  } else%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
 	fprintf(out, "    /* draw from left to right */%s", stg_nl);
 	fprintf(out, "    width = width * xraster;%s", stg_nl);
-	fprintf(out, "    x0 = 0;%s", stg_nl);
-	fprintf(out, "    x1 = width;%s", stg_nl);
+	fprintf(out, "    x0 = 0.5;%s", stg_nl);
+	fprintf(out, "    x1 = width + 0.5;%s", stg_nl);
 	fprintf(out, "  }%s", stg_nl);
 	fprintf(out, "  if (height < 0)%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
 	fprintf(out, "    /* draw from bottom to top */%s", stg_nl);
 	fprintf(out, "    height = (-height) * yraster;%s", stg_nl);
-	fprintf(out, "    y0 = height;%s", stg_nl);
-	fprintf(out, "    y1 = 0;%s", stg_nl);
+	fprintf(out, "    y0 = height + 0.5;%s", stg_nl);
+	fprintf(out, "    y1 = 0.5;%s", stg_nl);
 	fprintf(out, "  } else if (height == 0)%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
 	fprintf(out, "    /* horizontal line */%s", stg_nl);
 	fprintf(out, "    height = 1;%s", stg_nl);
-	fprintf(out, "    y0 = 0;%s", stg_nl);
-	fprintf(out, "    y1 = 0;%s", stg_nl);
+	fprintf(out, "    y0 = 0.5;%s", stg_nl);
+	fprintf(out, "    y1 = 0.5;%s", stg_nl);
 	fprintf(out, "  } else%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
 	fprintf(out, "    /* draw from top to bottom */%s", stg_nl);
 	fprintf(out, "    height = height * yraster;%s", stg_nl);
-	fprintf(out, "    y0 = 0;%s", stg_nl);
-	fprintf(out, "    y1 = height;%s", stg_nl);
+	fprintf(out, "    y0 = 0.5;%s", stg_nl);
+	fprintf(out, "    y1 = height + 0.5;%s", stg_nl);
 	fprintf(out, "  }%s", stg_nl);
 	fprintf(out, "  c.width = width + 1;%s", stg_nl);
 	fprintf(out, "  c.height = height + 1;%s", stg_nl);
@@ -980,7 +1033,25 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 
 	fprintf(out, "function roundedBox(ctx, width, height)%s", stg_nl);
 	fprintf(out, "{%s", stg_nl);
-	fprintf(out, "    ctx.rect(0, 0, width, height);%s", stg_nl);
+	fprintf(out, "  var deltax, deltay, xrad, yrad;%s", stg_nl);
+	fprintf(out, "  rdeltax = width / 2;%s", stg_nl);
+	fprintf(out, "  rdeltay = height / 2;%s", stg_nl);
+	fprintf(out, "  xrad = 15;%s", stg_nl);
+	fprintf(out, "  if (xrad > rdeltax)%s", stg_nl);
+	fprintf(out, "    xrad = rdeltax;%s", stg_nl);
+	fprintf(out, "  yrad = xrad;%s", stg_nl);
+	fprintf(out, "  if (yrad > rdeltay)%s", stg_nl);
+	fprintf(out, "    yrad = rdeltay;%s", stg_nl);
+	fprintf(out, "  ctx.beginPath();%s", stg_nl);
+	fprintf(out, "  ctx.moveTo(0.5, 0.5 + yrad);%s", stg_nl);
+	fprintf(out, "  ctx.quadraticCurveTo(0.5, 0.5, 0.5 + xrad, 0.5);%s", stg_nl);
+	fprintf(out, "  ctx.lineTo(width + 0.5 - xrad, 0.5);%s", stg_nl);
+	fprintf(out, "  ctx.quadraticCurveTo(width + 0.5, 0.5, width + 0.5, 0.5 + yrad);%s", stg_nl);
+	fprintf(out, "  ctx.lineTo(width + 0.5, height + 0.5 - yrad);%s", stg_nl);
+	fprintf(out, "  ctx.quadraticCurveTo(width + 0.5, height + 0.5, width + 0.5 - xrad, height + 0.5);%s", stg_nl);
+	fprintf(out, "  ctx.lineTo(0.5 + xrad, height + 0.5);%s", stg_nl);
+	fprintf(out, "  ctx.quadraticCurveTo(0.5, height + 0.5, 0.5, height + 0.5 - yrad);%s", stg_nl);
+	fprintf(out, "  ctx.lineTo(0.5, 0.5 + yrad);%s", stg_nl);
 	fprintf(out, "}%s", stg_nl);
 
 	fprintf(out, "function drawBox(id, xoffset, width, height, fillstyle, rounded)%s", stg_nl);
@@ -1023,13 +1094,24 @@ static gboolean html_out_javascript(hcp_opts *opts, FILE *outfile, gboolean do_i
 	fprintf(out, "    roundedBox(ctx, width, height);%s", stg_nl);
 	fprintf(out, "  } else%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
-	fprintf(out, "    ctx.rect(0, 0, width, height);%s", stg_nl);
+	fprintf(out, "    ctx.rect(0.5, 0.5, width, height);%s", stg_nl);
 	fprintf(out, "  }%s", stg_nl);
 	fprintf(out, "  if (fillstyle != 0)%s", stg_nl);
 	fprintf(out, "  {%s", stg_nl);
 	fprintf(out, "    if ((fillstyle >= 1 && fillstyle <= 7) || (fillstyle >= 9 && fillstyle <= 36))%s", stg_nl);
 	fprintf(out, "    {%s", stg_nl);
-	fprintf(out, "      ctx.fill();%s", stg_nl);
+	fprintf(out, "      var img;%s", stg_nl);
+	fprintf(out, "      img = new Image();%s", stg_nl);
+	fprintf(out, "      img.src = patterns[fillstyle];%s", stg_nl);
+	fprintf(out, "      img.onload = function() {%s", stg_nl);
+	fprintf(out, "        ctx.fillStyle = ctx.createPattern(img, 'repeat');%s", stg_nl);
+	fprintf(out, "        ctx.fill();%s", stg_nl);
+	fprintf(out, "        if (fillstyle != 8)%s", stg_nl);
+	fprintf(out, "        {%s", stg_nl);
+	fprintf(out, "          ctx.stroke();%s", stg_nl);
+	fprintf(out, "        }%s", stg_nl);
+	fprintf(out, "      };%s", stg_nl);
+	fprintf(out, "      return;%s", stg_nl);
 	fprintf(out, "    } else%s", stg_nl);
 	fprintf(out, "    {%s", stg_nl);
 	fprintf(out, "      ctx.fill();%s", stg_nl);
@@ -1074,7 +1156,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	alt = N_("Back");
 	fprintf(outfile,
 		"<li style=\"position:absolute;left:0px;\">"
-		"<a href=\"javascript: window.history.go(-1)\" class=\"%s\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"javascript: window.history.go(-1)\" class=\"%s\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		html_nav_img_style, html_nav_back_png, alt, alt, html_nav_dimensions, html_closer, stg_nl);
 	
@@ -1092,7 +1174,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	}
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:40px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"p\" rel=\"prev\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"p\" rel=\"prev\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_prev_png, title, title, html_nav_dimensions, html_closer, stg_nl);
 	g_free(title);
@@ -1112,7 +1194,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	}
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:80px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"t\" rel=\"up\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"t\" rel=\"up\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_toc_png, title, title, html_nav_dimensions, html_closer, stg_nl);
 	g_free(title);
@@ -1132,7 +1214,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	}
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:120px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"n\" rel=\"next\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"n\" rel=\"next\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_next_png, title, title, html_nav_dimensions, html_closer, stg_nl);
 	g_free(title);
@@ -1152,7 +1234,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	}
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:160px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"x\" rel=\"index\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"x\" rel=\"index\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_index_png, title, title, html_nav_dimensions, html_closer, stg_nl);
 	g_free(title);
@@ -1171,7 +1253,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	}
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:200px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"c\" rel=\"bookmark\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"c\" rel=\"bookmark\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_xref_png, title, title, html_nav_dimensions, html_closer, stg_nl);
 	g_free(title);
@@ -1191,7 +1273,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	}
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:240px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"h\" rel=\"help\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"h\" rel=\"help\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_help_png, title, title, html_nav_dimensions, html_closer, stg_nl);
 	g_free(title);
@@ -1202,7 +1284,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	disabled = "";
 	hyp_utf8_fprintf_charset(outfile, output_charset,
 		"<li style=\"position:absolute;left:280px;\">"
-		"<a href=\"%s\" class=\"%s%s\" onclick=\"showInfo()\" accesskey=\"i\" rel=\"copyright\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" onclick=\"showInfo()\" accesskey=\"i\" rel=\"copyright\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		str, html_nav_img_style, disabled, html_nav_info_png, alt, alt, html_nav_dimensions, html_closer, stg_nl);
 	g_free(str);
@@ -1211,7 +1293,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfil
 	disabled = "";
 	fprintf(outfile,
 		"<li style=\"position:absolute;left:340px;\">"
-		"<a href=\"%s\" class=\"%s%s\" accesskey=\"o\"><img src=\"%s\" alt=\"%s\" title=\"%s\"%s%s</a>"
+		"<a href=\"%s\" class=\"%s%s\" accesskey=\"o\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>%s",
 		html_nav_load_href, html_nav_img_style, disabled, html_nav_load_png, alt, alt, html_nav_dimensions, html_closer, stg_nl);
 	
@@ -1238,19 +1320,21 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, co
 	{
 	case HTML_DOCTYPE_OLD:
 		fprintf(outfile, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">%s", stg_nl);
-		fprintf(outfile, "<html>%s", stg_nl);
+		fprintf(outfile, "<html lang=\"en\">%s", stg_nl);
 		break;
 	case HTML_DOCTYPE_TRANS:
 		fprintf(outfile, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"%s", stg_nl);
 		fprintf(outfile, "        \"http://www.w3.org/TR/html4/loose.dtd\">%s", stg_nl);
-		fprintf(outfile, "<html>%s", stg_nl);
+		fprintf(outfile, "<html lang=\"en\">%s", stg_nl);
 		break;
 	
 	case HTML_DOCTYPE_XSTRICT:
+#if 0
 		fprintf(outfile, "<?xml version=\"1.0\" encoding=\"%s\"?>%s", charset, stg_nl);
+#endif
 		fprintf(outfile, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"%s", stg_nl);
 		fprintf(outfile, "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">%s", stg_nl);
-		fprintf(outfile, "<html xmlns=\"http://www.w3.org/1999/xhtml\"");
+		fprintf(outfile, "<html xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"");
 		if (hyp_gfx != NULL)
 			fprintf(outfile, " xmlns:svg=\"http://www.w3.org/2000/svg\"");
 		fprintf(outfile, ">%s", stg_nl);
@@ -1259,10 +1343,11 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, co
 	default:
 		fprintf(outfile, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"%s", stg_nl);
 		fprintf(outfile, "          \"http://www.w3.org/TR/html4/strict.dtd\">%s", stg_nl);
-		fprintf(outfile, "<html>%s", stg_nl);
+		fprintf(outfile, "<html lang=\"en\">%s", stg_nl);
 		break;
 	case HTML_DOCTYPE_HTML5:
-		fprintf(outfile, "<!DOCTYPE html%s", stg_nl);
+		fprintf(outfile, "<!DOCTYPE html>%s", stg_nl);
+		fprintf(outfile, "<html xml:lang=\"en\" lang=\"en\">%s", stg_nl);
 		break;
 	case HTML_DOCTYPE_FRAME:
 	case HTML_DOCTYPE_XFRAME:
@@ -1299,7 +1384,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, co
 			node != hyp->first_text_page)
 		{
 			str = html_filename_for_node(hyp, opts, hyp->first_text_page, TRUE);
-			hyp_utf8_fprintf_charset(outfile, output_charset, "<link href=\"%s\" rel=\"first\"%s%s", str, html_closer, stg_nl);
+			hyp_utf8_fprintf_charset(outfile, output_charset, "<link href=\"%s\" rel=\"%s\"%s%s", str, html_doctype >= HTML_DOCTYPE_XSTRICT ? "start" : "first", html_closer, stg_nl);
 			g_free(str);
 		}
 		
@@ -1331,7 +1416,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, co
 			node != hyp->last_text_page)
 		{
 			str = html_filename_for_node(hyp, opts, hyp->last_text_page, TRUE);
-			hyp_utf8_fprintf_charset(outfile, output_charset, "<link href=\"%s\" rel=\"last\"%s%s", str, html_closer, stg_nl);
+			hyp_utf8_fprintf_charset(outfile, output_charset, "<link href=\"%s\" rel=\"%s\"%s%s", str, html_doctype >= HTML_DOCTYPE_XSTRICT ? "end" : "last", html_closer, stg_nl);
 			g_free(str);
 		}
 		
@@ -1358,18 +1443,18 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, co
 			g_free(str);
 		}
 
-		str = g_strdup("");
+		str = g_strdup("javascript: showInfo();");
 		hyp_utf8_fprintf_charset(outfile, output_charset, "<link href=\"%s\" rel=\"copyright\"%s%s", str, html_closer, stg_nl);
 		g_free(str);
 	}
 	
 	html_out_stylesheet(opts, outfile, FALSE);
-	html_out_javascript(opts, outfile, TRUE);
+	html_out_javascript(opts, outfile, FALSE);
 	
 	if (html_doctype >= HTML_DOCTYPE_HTML5)
 	{
 		fprintf(outfile, "<!--[if lt IE 9]>%s", stg_nl);
-		fprintf(outfile, "<script src=\"http://html5shiv.googlecode.com/svn/trunk/html5.js\"></script>%s", stg_nl);
+		fprintf(outfile, "<script src=\"http://html5shiv.googlecode.com/svn/trunk/html5.js\" type=\"text/javascript\"></script>%s", stg_nl);
 		fprintf(outfile, "<![endif]-->%s", stg_nl);
 	}
 
@@ -2069,6 +2154,55 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node
 
 /* ------------------------------------------------------------------------- */
 
+#if 0
+static void create_patterns(void)
+{
+	Base64 *enc;
+	unsigned char data[PATTERN_WIDTH * PATTERN_HEIGHT * 4];
+	int x, y;
+	int px, py;
+	int i;
+	unsigned char r = 0, g = 0, b = 0, a = 0xff;
+	const unsigned char *pbits;
+	unsigned char *dst;
+	int dst_stride = PATTERN_WIDTH * 4;
+	
+	enc = Base64_New();
+	for (i = 0; i < NUM_PATTERNS; i++)
+	{
+		py = 0;
+		pbits = pattern_bits + i * PATTERN_SIZE;
+		for (y = 0; y < PATTERN_HEIGHT; y++)
+		{
+			dst = data + y * dst_stride;
+			px = 0;
+			for (x = 0; x < PATTERN_WIDTH; x++)
+			{
+				dst[0] = r;
+				dst[1] = g;
+				dst[2] = b;
+				if (pbits[(px >> 3) & 1] & (0x80 >> (px & 7)))
+					dst[3] = a;
+				else
+					dst[3] = 0;
+				px++;
+				dst += 4;
+			}
+			pbits += PATTERN_WIDTH / 8;
+			py++;
+			if (py == PATTERN_HEIGHT)
+			{
+				py = 0;
+				pbits = pattern_bits;
+			}
+		}
+		Base64_Encode(enc, data, sizeof(data));
+		printf("  '%s',\n", Base64_EncodedMessage(enc));
+	}
+	exit(0);
+}
+#endif
+
 static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv)
 {
 	hyp_nodenr node;
@@ -2096,6 +2230,10 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 	
 	/* load REF if not done already */
 	syms = ref_loadsyms(hyp);
+	
+#if 0
+	create_patterns();
+#endif
 	
 	for (node = 0; node < hyp->num_index; node++)
 	{
@@ -2184,3 +2322,17 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 	free_symtab(syms);
 	return ret;
 }
+
+/*
+      var img = new Image();
+      img.src = 'https://mdn.mozillademos.org/files/222/Canvas_createpattern.png';
+      img.onload = function() {
+        ctx.fillStyle = ctx.createPattern(img, 'repeat');
+        ctx.fill();
+        if (fillstyle != 8)
+        {
+          ctx.stroke();
+        }
+      };
+      return;
+*/

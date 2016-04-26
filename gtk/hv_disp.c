@@ -560,8 +560,8 @@ static void rounded_box(cairo_t *cr, struct hyp_gfx *gfx)
 	yc = y1 - yrad;
 	for (i = 4, j = 5; i >= 0; i--, j++)
 	{
-	    points[j].y = yc + points[i].y;
 	    points[j].x = xc + points[i].x;
+	    points[j].y = yc + points[i].y;
 	}
 	xc = x1 + xrad; 
 	for (i = 0, j = 10; i < 5; i++, j++)
@@ -572,8 +572,8 @@ static void rounded_box(cairo_t *cr, struct hyp_gfx *gfx)
 	yc = y2 + yrad;
 	for (i = 4, j = 15; i >= 0; i--, j++)
 	{ 
-	    points[j].y = yc - points[i].y;
 	    points[j].x = xc - points[i].x;
+	    points[j].y = yc - points[i].y;
 	}
 	xc = x2 - xrad;
 	for (i = 0, j = 0; i < 5; i++, j++)

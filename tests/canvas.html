@@ -10,7 +10,9 @@
 <textarea id="code" rows="10" cols="80">
 ctx.beginPath();
 ctx.moveTo(0,50);
-ctx.lineTo(100,50);
+ctx.lineTo(0, 15);
+ctx.quadraticCurveTo(0, 0, 15, 0);
+ctx.lineTo(50, 0);
 ctx.stroke();
 </textarea>
 <div class="playable-buttons">
