@@ -579,12 +579,23 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 		
 		g_free(buf);
 		buf = NULL;
-		if (!gif_fwrite(fp, conv, &pic) ||
-			fflush(fp) != 0 ||
-			ferror(fp))
+		if (out)
 		{
-			FileErrorErrno(pic.pi_name);
-			goto error;
+			buf = gif_pack(conv, &pic);
+			if (buf)
+			{
+				g_string_set_size(out, pic.pi_datasize);
+				memcpy(out->str, buf, pic.pi_datasize);
+			}
+		} else
+		{
+			if (!gif_fwrite(fp, conv, &pic) ||
+				fflush(fp) != 0 ||
+				ferror(fp))
+			{
+				FileErrorErrno(pic.pi_name);
+				goto error;
+			}
 		}
 		break;
 

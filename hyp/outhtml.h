@@ -69,7 +69,7 @@ struct html_xref {
 	struct html_xref *next;
 };
 
-#define HTML_DEFAULT_PIC_TYPE HYP_PIC_BMP
+#define HTML_DEFAULT_PIC_TYPE HYP_PIC_GIF
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */

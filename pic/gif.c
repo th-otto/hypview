@@ -129,7 +129,10 @@ struct pixelCursor
 struct gif_dest
 {
 	/* This structure controls output of uncompressed GIF raster */
-	FILE *outfile;						/* The file to which to output */
+	unsigned char *outbuf;				/* The file to which to output */
+	size_t outbuf_len;
+	size_t outbuf_size;
+	gboolean alloc_error;
 	struct byteBuffer byteBuffer;		/* Where the full bytes go */
 	struct codeBuffer codeBuffer;
 	int width, height;
@@ -315,13 +318,41 @@ static FILE *outf;
 /* GIF output                                                                    */
 /*********************************************************************************/
 
+static gboolean gif_enlarge(struct gif_dest *gif, size_t len)
+{
+	if ((gif->outbuf_len + len) > gif->outbuf_size)
+	{
+		size_t newsize;
+		unsigned char *newbuf;
+
+		if (gif->alloc_error)
+			return FALSE;
+		newsize = gif->outbuf_size + len + 1024;
+		newbuf = g_renew(unsigned char, gif->outbuf, newsize);
+		if (newbuf == NULL)
+		{
+			gif->alloc_error = TRUE;
+			return FALSE;
+		}
+		gif->outbuf = newbuf;
+		gif->outbuf_size = newsize;
+	}
+	return TRUE;
+}
+
+static void gif_putc(struct gif_dest *gif, unsigned char c)
+{
+	if (gif_enlarge(gif, 1))
+		gif->outbuf[gif->outbuf_len++] = c;
+}
+
 /*
  * Write out a word to the GIF file
  */
-static void Putword(int w, FILE *fp)
+static void Putword(struct gif_dest *gif, int w)
 {
-	fputc(w & 0xff, fp);
-	fputc((w >> 8) & 0xff, fp);
+	gif_putc(gif, w & 0xff);
+	gif_putc(gif, (w >> 8) & 0xff);
 }
 
 
@@ -501,20 +532,19 @@ static __inline int GIFNextPixel(struct gif_dest *gif)
 }
 
 
-
 /*----------------------------------------------------------------------------
    Write out extension for transparent color index.
 -----------------------------------------------------------------------------*/
 static void write_transparent_color_index_extension(struct gif_dest *gif, int Transparent)
 {
-	fputc('!', gif->outfile);
-	fputc(0xf9, gif->outfile);
-	fputc(4, gif->outfile);
-	fputc(1, gif->outfile);
-	fputc(0, gif->outfile);
-	fputc(0, gif->outfile);
-	fputc(Transparent, gif->outfile);
-	fputc(0, gif->outfile);
+	gif_putc(gif, '!');
+	gif_putc(gif, 0xf9);
+	gif_putc(gif, 4);
+	gif_putc(gif, 1);
+	gif_putc(gif, 0);
+	gif_putc(gif, 0);
+	gif_putc(gif, Transparent);
+	gif_putc(gif, 0);
 }
 
 
@@ -526,8 +556,8 @@ static void write_comment_extension(struct gif_dest *gif, const char comment[])
 {
 	const char *segment;
 
-	fputc('!', gif->outfile);						/* Identifies an extension */
-	fputc(0xfe, gif->outfile);					/* Identifies a comment */
+	gif_putc(gif, '!');						/* Identifies an extension */
+	gif_putc(gif, 0xfe);					/* Identifies a comment */
 
 	/* Write it out in segments no longer than 255 characters */
 	for (segment = comment; segment < comment + strlen(comment); segment += 255)
@@ -535,12 +565,15 @@ static void write_comment_extension(struct gif_dest *gif, const char comment[])
 		int length_this_segment = (int) strlen(segment);
 		if (length_this_segment > 255)
 			length_this_segment = 255;
-		fputc(length_this_segment, gif->outfile);
-
-		fwrite(segment, 1, length_this_segment, gif->outfile);
+		gif_putc(gif, length_this_segment);
+		if (gif_enlarge(gif, length_this_segment))
+		{
+			memcpy(gif->outbuf + gif->outbuf_len, segment, length_this_segment);
+			gif->outbuf_len += length_this_segment;
+		}
 	}
 
-	fputc(0, gif->outfile);						/* No more comment blocks in this extension */
+	gif_putc(gif, 0);						/* No more comment blocks in this extension */
 }
 
 
@@ -605,8 +638,12 @@ static void byteBuffer_flush(struct gif_dest *gif)
 {
 	if (gif->byteBuffer.count > 0)
 	{
-		fputc(gif->byteBuffer.count, gif->outfile);
-		fwrite(gif->byteBuffer.buffer, 1, gif->byteBuffer.count, gif->outfile);
+		gif_putc(gif, gif->byteBuffer.count);
+		if (gif_enlarge(gif, gif->byteBuffer.count))
+		{
+			memcpy(gif->outbuf + gif->outbuf_len, gif->byteBuffer.buffer, gif->byteBuffer.count);
+			gif->outbuf_len += gif->byteBuffer.count;
+		}		
 		gif->byteBuffer.count = 0;
 	}
 }
@@ -986,14 +1023,19 @@ writeGifHeader(struct gif_dest *gif,
 	int ColorMapSize = 1 << BitsPerPixel;
 
 	/* Write the Magic header */
+	gif_putc(gif, 'G');
+	gif_putc(gif, 'I');
+	gif_putc(gif, 'F');
+	gif_putc(gif, '8');
 	if (transparent != -1 || comment)
-		fwrite("GIF89a", 1, 6, gif->outfile);
+		gif_putc(gif, '9');
 	else
-		fwrite("GIF87a", 1, 6, gif->outfile);
+		gif_putc(gif, '7');
+	gif_putc(gif, 'a');
 
 	/* Write out the screen width and height */
-	Putword(gif->width, gif->outfile);
-	Putword(gif->height, gif->outfile);
+	Putword(gif, gif->width);
+	Putword(gif, gif->height);
 
 	/* Indicate that there is a global color map */
 	B = LOCALCOLORMAP;							/* Yes, there is a color map */
@@ -1005,13 +1047,13 @@ writeGifHeader(struct gif_dest *gif,
 	B |= (BitsPerPixel - 1);
 
 	/* Write it out */
-	fputc(B, gif->outfile);
+	gif_putc(gif, B);
 
 	/* Write out the Background color */
-	fputc(Background, gif->outfile);
+	gif_putc(gif, Background);
 
 	/* Byte of 0's (future expansion) */
-	fputc(0, gif->outfile);
+	gif_putc(gif, 0);
 
 	{
 		/* Write out the Global Color Map */
@@ -1019,19 +1061,19 @@ writeGifHeader(struct gif_dest *gif,
 
 		if (Resolution == 1)
 		{
-			fputc(0, gif->outfile);
-			fputc(0, gif->outfile);
-			fputc(0, gif->outfile);
-			fputc(GIFMAXVAL, gif->outfile);
-			fputc(GIFMAXVAL, gif->outfile);
-			fputc(GIFMAXVAL, gif->outfile);
+			gif_putc(gif, 0);
+			gif_putc(gif, 0);
+			gif_putc(gif, 0);
+			gif_putc(gif, GIFMAXVAL);
+			gif_putc(gif, GIFMAXVAL);
+			gif_putc(gif, GIFMAXVAL);
 		} else
 		{
 			for (i = 0; i < ColorMapSize; ++i)
 			{
-				fputc(gif->pic->pi_palette[i].r, gif->outfile);
-				fputc(gif->pic->pi_palette[i].g, gif->outfile);
-				fputc(gif->pic->pi_palette[i].b, gif->outfile);
+				gif_putc(gif, gif->pic->pi_palette[i].r);
+				gif_putc(gif, gif->pic->pi_palette[i].g);
+				gif_putc(gif, gif->pic->pi_palette[i].b);
 			}
 		}
 	}
@@ -1049,19 +1091,19 @@ static void writeImageHeader(struct gif_dest *gif,
 	unsigned int topOffset,
 	unsigned int initCodeSize)
 {
-	Putword(leftOffset, gif->outfile);
-	Putword(topOffset, gif->outfile);
-	Putword(gif->width, gif->outfile);
-	Putword(gif->height, gif->outfile);
+	Putword(gif, leftOffset);
+	Putword(gif, topOffset);
+	Putword(gif, gif->width);
+	Putword(gif, gif->height);
 
 	/* Write out whether or not the image is interlaced */
 	if (gif->pixelCursor.interlace)
-		fputc(INTERLACE, gif->outfile);
+		gif_putc(gif, INTERLACE);
 	else
-		fputc(0x00, gif->outfile);
+		gif_putc(gif, 0x00);
 
 	/* Write out the initial code size */
-	fputc(initCodeSize, gif->outfile);
+	gif_putc(gif, initCodeSize);
 }
 
 
@@ -1081,7 +1123,7 @@ static gboolean GIFEncode(struct gif_dest *gif, int background, int transparent,
 	writeGifHeader(gif, background, bitsPerPixel, transparent, comment);
 
 	/* Write an Image separator */
-	fputc(',', gif->outfile);
+	gif_putc(gif, ',');
 
 	/* Write the Image header */
 	writeImageHeader(gif, leftOffset, topOffset, initCodeSize);
@@ -1093,14 +1135,11 @@ static gboolean GIFEncode(struct gif_dest *gif, int background, int transparent,
 		write_raster_LZW(gif);
 
 	/* Write out a zero length data block (to end the series) */
-	fputc(0, gif->outfile);
+	gif_putc(gif, 0);
 
 	/* Write the GIF file terminator */
-	fputc(';', gif->outfile);
+	gif_putc(gif, ';');
 
-	if (fflush(gif->outfile) != 0 ||
-		ferror(gif->outfile))
-		return FALSE;
 	return TRUE;
 }
 
@@ -1117,7 +1156,6 @@ gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic)
 	gif = g_new0(struct gif_dest, 1);
 	if (gif == NULL)
 		return FALSE;
-	gif->outfile = fp;
 	gif->pic = pic;
 	gif->width = pic->pi_width;
 	gif->height = pic->pi_height;
@@ -1128,6 +1166,47 @@ gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic)
 	
 	/* All set, let's do it. */
 	ret = GIFEncode(gif, 0, transparent, comment);
+	if (gif->alloc_error ||
+		(size_t)fwrite(gif->outbuf, 1, gif->outbuf_len, fp) != gif->outbuf_len ||
+		fflush(fp) != 0 ||
+		ferror(fp))
+	{
+		ret = FALSE;
+	}
+	pic->pi_datasize = gif->outbuf_len;
+	g_free(gif->outbuf);
+	g_free(gif);
+	return ret;
+}
+
+
+unsigned char *gif_pack(const unsigned char *src, PICTURE *pic)
+{
+	const char *comment = NULL;
+	int transparent = -1;
+	struct gif_dest *gif;
+	unsigned char *ret;
+	
+	gif = g_new0(struct gif_dest, 1);
+	if (gif == NULL)
+		return NULL;
+	gif->pic = pic;
+	gif->width = pic->pi_width;
+	gif->height = pic->pi_height;
+	gif->pixels = src;
+
+	/* Set some global variables for bumpPixel() */
+	initPixelCursor(&gif->pixelCursor, pic->pi_width, pic->pi_height, FALSE);
+	
+	/* All set, let's do it. */
+	if (GIFEncode(gif, 0, transparent, comment) == FALSE ||
+		gif->alloc_error)
+	{
+		g_free(gif->outbuf);
+		gif->outbuf = NULL;
+	}
+	pic->pi_datasize = gif->outbuf_len;
+	ret = gif->outbuf;
 	g_free(gif);
 	return ret;
 }
