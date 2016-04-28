@@ -936,6 +936,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic
 					memset(rp, 0, dstrowsize);
 					for (l = 0; l < j; l++)
 						*rp++ = ~src[l];
+					dest += dstrowsize;
 				}
 			}
 			break;
@@ -1185,10 +1186,13 @@ long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 	short i, j;
 	long datasize = 0;
 	unsigned long dstrowsize;
+	unsigned long k;
+	unsigned char *rp;
 	
 	dest += pic->pi_dataoffset;
 	
 	dstrowsize = bmp_rowsize(pic, 1);
+	k = pic_rowsize(pic, 1);
 	if (pic->pi_compressed != BMP_RGB)
 	{
 	} else
@@ -1199,32 +1203,19 @@ long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 		 * BMP is stored upside down,
 		 * start from the end
 		 */
-		long picsize = dstrowsize * pic->pi_height;
-		src += picsize;
+		src += k * pic->pi_height;
 		{
 			short l;
 
 			j = (((pic->pi_width) + 7) >> 3);
 			for (i = pic->pi_height; --i >= 0; )
 			{
-				src -= dstrowsize;
+				src -= k;
+				rp = dest;
+				memset(rp, 0, dstrowsize);
 				for (l = 0; l < j; l++)
-					*dest++ = ~src[l];
-				switch (j & 3)
-				{
-				case 1:
-					*dest++ = '\0';
-					*dest++ = '\0';
-					*dest++ = '\0';
-					break;
-				case 2:
-					*dest++ = '\0';
-					*dest++ = '\0';
-					break;
-				case 3:
-					*dest++ = '\0';
-					break;
-				}
+					*rp++ = ~src[l];
+				dest += dstrowsize;
 			}
 		}
 		datasize = (long)pic->pi_height * dstrowsize;
