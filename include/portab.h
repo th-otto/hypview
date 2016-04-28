@@ -275,12 +275,29 @@ _BOOL is_big_endian (void);
 #else
 #include <stdint.h>
 #endif
+
+#ifndef G_GNUC_EXTENSION
+#if __GNUC_PREREQ (2,8)
+#define G_GNUC_EXTENSION __extension__
+#else
+#define G_GNUC_EXTENSION
+#endif
+#endif
+
 #ifndef __G_LIB_H__
 typedef int gboolean;
 typedef uint32_t gunichar;
 typedef unsigned short gunichar2;
 typedef void *gpointer;
 typedef const void *gconstpointer;
+G_GNUC_EXTENSION typedef signed long long gint64;
+G_GNUC_EXTENSION typedef unsigned long long guint64;
+typedef size_t gsize;
+#if defined(_WIN64) || defined(__WIN64__) || defined(_M_X64) || defined(_M_AMD64)
+typedef gint64 gssize;
+#else
+typedef int gssize;
+#endif
 #endif
 
 #ifdef __cplusplus

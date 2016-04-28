@@ -4,6 +4,7 @@
 #include "picture.h"
 #include "hcp.h"
 
+#include "../hyp/outcomm.h"
 #include "../hyp/outasc.h"
 #include "../hyp/outstg.h"
 

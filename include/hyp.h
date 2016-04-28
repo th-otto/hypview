@@ -895,6 +895,7 @@ int __attribute__((format(printf, 1, 2))) hyp_utf8_printf(const char *format, ..
 int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format, va_list args);
 int __attribute__((format(printf, 3, 4))) hyp_utf8_fprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format, ...);
 int __attribute__((format(printf, 2, 3))) hyp_utf8_printf_charset(HYP_CHARSET charset, const char *format, ...);
+int __attribute__((format(printf, 3, 4))) hyp_utf8_sprintf_charset(GString *str, HYP_CHARSET charset, const char *format, ...);
 
 char *hyp_utf8_to_charset(HYP_CHARSET charset, const void *src, size_t len, gboolean *converror);
 char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t len, gboolean *converror);

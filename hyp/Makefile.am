@@ -8,18 +8,23 @@ include ../Makefile.common
 noinst_LIBRARIES = libhyp.a libhypdoc.a
 bin_PROGRAMS = reflink refcheck hcp stool hypfind
 
+noinst_PROGRAMS = hypview.cgi
+noinst_SCRIPTS = 
+SRVDIR = /srv/www/htdocs/hypview
+
+
 if OS_TOS
 bin_SCRIPTS = reflink.ttp refcheck.ttp hcp.ttp stool.tos hypfind.ttp
 endif
 if !CROSS_COMPILING
-noinst_SCRIPTS = $(build_triplet)-hcp$(EXEEXT) \
-		 $(build_triplet)-hypfind$(EXEEXT) \
-		 $(build_triplet)-stool$(EXEEXT)
+noinst_SCRIPTS += $(build_triplet)-hcp$(EXEEXT) \
+		  $(build_triplet)-hypfind$(EXEEXT) \
+		  $(build_triplet)-stool$(EXEEXT)
 endif
 
 EXTRA_DIST = gfx.s genmaptab.c
 
-noinst_PROGRAMS = img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpicon
+noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpicon
 
 INCLUDES = -I$(hyp_srcdir)/include
 AM_CPPFLAGS = $(GLIB_CFLAGS) \
@@ -126,6 +131,34 @@ $(build_triplet)-hcp$(EXEEXT): hcp$(EXEEXT)
 	cp -a $? $@
 
 
+hypview_cgi_SOURCES = \
+	cgi.c \
+	hcp_opts.c \
+	hcp_comp.c \
+	kwset.c \
+	hobstack.c \
+	refcmds.c \
+	outasc.h outstg.h outdump.h outhtml.h htmljs.h \
+	$(UTIL_SRC)
+
+hypview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
+hypview_cgi_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if OS_WIN32
+hypview_cgi_SOURCES += hcp_rc.rc
+hypview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
+hypview_cgi_LDADD += hcp_rc.res
+endif
+if WITH_GUI_GTK
+hypview_cgi_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+endif
+hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA_hypview_cgi_DEPENDENCIES) 
+	@rm -f hypview.cgi$(EXEEXT)
+	$(AM_V_CCLD)$(hypview_cgi_LINK) $(hypview_cgi_OBJECTS) $(hypview_cgi_LDADD) $(LIBS); \
+	if test -d "$(SRVDIR)"; then \
+	   echo "installing $@ in $(SRVDIR)"; \
+	   cp -a $@ "$(SRVDIR)/hypview.cgi"; \
+	fi
+	
 reflink_SOURCES = \
 	reflink.c \
 	refcmds.c \

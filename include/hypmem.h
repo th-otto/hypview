@@ -164,7 +164,32 @@ GSList *g_slist_append(GSList *list, gpointer data);
 void g_slist_free_full(GSList *list, void (*freefunc)(void *));
 void g_slist_free(GSList *list);
 
+int g_ascii_xdigit_value(char c);
+
+struct _GString
+{
+  char  *str;
+  gsize len;
+  gsize allocated_len;
+};
+typedef struct _GString GString;
+GString *g_string_insert_c(GString *string, gssize pos, char c);
+GString *g_string_append_c(GString *string, char c);
+GString *g_string_sized_new(gsize dfl_size);
+GString *g_string_new(const char *init);
+GString *g_string_insert_len(GString *string, gssize pos, const char *val, gssize len);
+GString *g_string_append_len(GString * string, const char *val, gssize len);
+GString *g_string_append(GString *string, const char *val);
+char *g_string_free(GString *string, gboolean free_segment);
+void g_string_append_vprintf(GString *string, const char *format, va_list args) __attribute__((format(printf, 2, 0)));
+void g_string_append_printf(GString *string, const char *format, ...) __attribute__((format(printf, 2, 3)));
+GString *g_string_truncate(GString *string, gsize len);
+GString *g_string_set_size(GString *string, gsize len);
+
 #endif /* HAVE_GLIB */
+
+char *hyp_uri_unescape_segment(const char *escaped_string, const char *escaped_string_end, const char *illegal_characters);
+char *hyp_uri_unescape_string(const char *escaped_string, const char *illegal_characters);
 
 #undef g_utf8_next_char
 #define g_utf8_next_char(p) ((p) + _hyp_utf8_skip_data[*(const unsigned char *)(p)])

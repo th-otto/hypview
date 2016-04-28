@@ -1506,6 +1506,68 @@ int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format,
 
 /*** ---------------------------------------------------------------------- ***/
 
+int hyp_utf8_sprintf_charset(GString *s, HYP_CHARSET charset, const char *format, ...)
+{
+	char *str;
+	char *dst;
+	gboolean converror = FALSE;
+	va_list args;
+	
+	if (s == NULL)
+		return EOF;
+
+	va_start(args, format);
+	
+	switch (charset)
+	{
+	case HYP_CHARSET_UTF8:
+		dst = g_strdup_vprintf(format, args);
+		break;
+	case HYP_CHARSET_ATARI:
+		str = g_strdup_vprintf(format, args);
+		if (str == NULL)
+			return EOF;
+		dst = hyp_conv_to_atari(str, strlen(str), &converror);
+		g_free(str);
+		break;
+	case HYP_CHARSET_CP850:
+		str = g_strdup_vprintf(format, args);
+		if (str == NULL)
+			return EOF;
+		dst = hyp_conv_to_cp850(str, strlen(str), &converror);
+		g_free(str);
+		break;
+	case HYP_CHARSET_MACROMAN:
+		str = g_strdup_vprintf(format, args);
+		if (str == NULL)
+			return EOF;
+		dst = hyp_conv_to_macroman(str, strlen(str), &converror);
+		g_free(str);
+		break;
+	case HYP_CHARSET_CP1252:
+		str = g_strdup_vprintf(format, args);
+		if (str == NULL)
+			return EOF;
+		dst = hyp_conv_to_cp1252(str, strlen(str), &converror);
+		g_free(str);
+		break;
+	case HYP_CHARSET_NONE:
+	case HYP_CHARSET_BINARY:
+	case HYP_CHARSET_BINARY_TABS:
+	default:
+		dst = g_strdup_vprintf(format, args);
+		break;
+	}
+	va_end(args);
+	if (dst == NULL)
+		return EOF;
+	g_string_append(s, dst);
+	g_free(dst);
+	return 0;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 int hyp_utf8_printf_charset(HYP_CHARSET charset, const char *format, ...)
 {
 	va_list args;

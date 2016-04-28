@@ -68,6 +68,7 @@ typedef struct {
 	HYP_CHARSET output_charset;
 	gboolean bracket_links;
 	gboolean all_links;
+	gboolean for_cgi;
 	int optind;
 } hcp_opts;
 

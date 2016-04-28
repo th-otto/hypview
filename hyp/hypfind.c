@@ -15,7 +15,6 @@ char const gl_program_version[] = HYP_VERSION;
 
 static char const hypfind_stg[] = "hypfind" HYP_EXT_STG;
 static char const hypfind_hyp[] = HYP_FILENAME_HYPFIND;
-static char const stg_nl[] = "\n";
 
 /*
  * Jump table structures.
@@ -627,11 +626,11 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 		linktext = nodename;
 	}
 	target = hyp_basename(hyp->file);
-	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\" %ld}%s", target, linktext, target, nodename, nodeptr->height, stg_nl);
+	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\" %ld}\n", target, linktext, target, nodename, nodeptr->height);
 	fputs(": ", opts->outfile);
 	stg_out_str(opts->outfile, opts->output_charset, text, match, match + opts->pattern_len);
-	fputs(stg_nl, opts->outfile);
-	fputs(stg_nl, opts->outfile);
+	fputs("\n", opts->outfile);
+	fputs("\n", opts->outfile);
 	
 	if (nodename != linktext)
 		g_free(nodename);
@@ -1146,29 +1145,29 @@ int main(int argc, const char **argv)
 		{
 			char *str, *str2;
 			
-			hyp_utf8_fprintf(opts->outfile, "@if VERSION >= 6%s", stg_nl);
-			hyp_utf8_fprintf(opts->outfile, "@os %s%s", hyp_osname(hyp_get_current_os()), stg_nl);
-			hyp_utf8_fprintf(opts->outfile, "@charset %s%s", hyp_charset_name(hyp_get_current_charset()), stg_nl);
-			hyp_utf8_fprintf(opts->outfile, "@inputenc %s%s", hyp_charset_name(opts->output_charset), stg_nl);
-			hyp_utf8_fprintf(opts->outfile, "@endif%s", stg_nl);
+			hyp_utf8_fprintf(opts->outfile, "@if VERSION >= 6\n");
+			hyp_utf8_fprintf(opts->outfile, "@os %s\n", hyp_osname(hyp_get_current_os()));
+			hyp_utf8_fprintf(opts->outfile, "@charset %s\n", hyp_charset_name(hyp_get_current_charset()));
+			hyp_utf8_fprintf(opts->outfile, "@inputenc %s\n", hyp_charset_name(opts->output_charset));
+			hyp_utf8_fprintf(opts->outfile, "@endif\n");
 			
 			str = stg_quote_name(gl_profile.hypfind.database, STR0TERM);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@database \"%s\"%s", str, stg_nl);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@database \"%s\"\n", str);
 			g_free(str);
 			str = stg_quote_name(gl_profile.hypfind.subject, STR0TERM);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@subject \"%s\"%s", str, stg_nl);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@subject \"%s\"\n", str);
 			g_free(str);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@author \"Program %s\"%s", gl_program_name, stg_nl);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@$VER: %s 1.00 (@:__DATE__)%s", hypfind_hyp, stg_nl);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@options \"-s -i\"%s", stg_nl);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "%s", stg_nl);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@author \"Program %s\"\n", gl_program_name);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@$VER: %s 1.00 (@:__DATE__)\n", hypfind_hyp);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@options \"-s -i\"\n");
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "\n");
 
 			str = stg_quote_name(gl_profile.hypfind.title, STR0TERM);
 			str2 = stg_quote_name(opts->pattern, STR0TERM);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@node Main \"%s%s\"%s", str, str2, stg_nl);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@node Main \"%s%s\"\n", str, str2);
 			g_free(str2);
 			g_free(str);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "%s", stg_nl);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "\n");
 		}
 		
 		if (retval == 0)
@@ -1205,7 +1204,7 @@ int main(int argc, const char **argv)
 		
 		if (retval == 0)
 		{
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@endnode%s", stg_nl);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@endnode\n");
 		}
 		
 		if (opts->outfile != NULL && opts->outfile != stdout)

@@ -16,12 +16,12 @@
 @next "Einleitung"
 
 @remark 531x39x2
-@limage "rtr_img_00010.img" 5
+@limage "rtr_banner.img" 5
                                     von
                               @{"Armin Diedering" LINK "Armin Diedering"}
 
 @remark 216x177x2
-@limage "rtr_img_00009.img" 25
+@limage "rtr_logo.img" 25
    Einleitung   Funktionsprinzip   History   Rechtliches   Registrierung
 @endnode
 
@@ -67,7 +67,7 @@ exportieren, die RTR-Datei mit einen ASCII-Editor übersetzen und dann die
 RTR-Datei wieder importieren ---> fertig ist die übersetzte Resource.
 
 @remark 325x181x16
-@image "rtr_img_00008.img" 1
+@image "rtr_dialog.img" 1
 
 @endnode
 

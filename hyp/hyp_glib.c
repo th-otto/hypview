@@ -21,6 +21,11 @@
 # define NAN HUGE_VAL
 #endif
 
+#undef min
+#define	min(a, b)	((a) < (b) ? (a) : (b))
+#undef max
+#define	max(a, b)	((a) > (b) ? (a) : (b))
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -532,7 +537,374 @@ void g_slist_free(GSList *list)
 	g_slist_free_full(list, 0);
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+int g_ascii_xdigit_value(char c)
+{
+	if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
+	if (c >= '0' && c <= '9')
+		return c - '0';
+	return -1;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+#define MY_MAXSIZE ((gsize)-1)
+
+static inline gsize nearest_power(gsize base, gsize num)
+{
+	if (num > MY_MAXSIZE / 2)
+	{
+		return MY_MAXSIZE;
+	} else
+	{
+		gsize n = base;
+
+		while (n < num)
+			n <<= 1;
+
+		return n;
+	}
+}
+
+static void g_string_maybe_expand(GString *string, gsize len)
+{
+	if (string->len + len >= string->allocated_len)
+	{
+		string->allocated_len = nearest_power(1, string->len + len + 1);
+		string->str = g_renew(char, string->str, string->allocated_len);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_insert_c(GString *string, gssize pos, char c)
+{
+	if (string == NULL)
+		return NULL;
+
+	g_string_maybe_expand(string, 1);
+
+	if (pos < 0)
+		pos = string->len;
+	else if ((gsize)pos > string->len)
+		return string;
+
+	/* If not just an append, move the old stuff */
+	if ((gsize)pos < string->len)
+		memmove(string->str + pos + 1, string->str + pos, string->len - pos);
+
+	string->str[pos] = c;
+	string->len += 1;
+	string->str[string->len] = 0;
+
+	return string;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_append_c(GString *string, char c)
+{
+	if (string == NULL)
+		return NULL;
+
+	return g_string_insert_c(string, -1, c);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_sized_new(gsize dfl_size)
+{
+	GString *string = g_new(GString, 1);
+
+	string->allocated_len = 0;
+	string->len = 0;
+	string->str = NULL;
+
+	g_string_maybe_expand(string, max(dfl_size, 2));
+	string->str[0] = 0;
+
+	return string;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_new(const char *init)
+{
+	GString *string;
+
+	if (init == NULL || *init == '\0')
+		string = g_string_sized_new(2);
+	else
+	{
+		gsize len;
+
+		len = strlen(init);
+		string = g_string_sized_new(len + 2);
+
+		g_string_append_len(string, init, len);
+	}
+
+	return string;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_insert_len(GString *string, gssize pos, const char *val, gssize len)
+{
+	if (string == NULL)
+		return NULL;
+	if (len != 0 && val == NULL)
+		return string;
+
+	if (len == 0)
+		return string;
+
+	if (len < 0)
+		len = strlen(val);
+
+	if (pos < 0)
+		pos = string->len;
+	else if ((gsize)pos > string->len)
+		return string;
+
+	/* Check whether val represents a substring of string.
+	 * This test probably violates chapter and verse of the C standards,
+	 * since ">=" and "<=" are only valid when val really is a substring.
+	 * In practice, it will work on modern archs.
+	 */
+	if (G_UNLIKELY(val >= string->str && val <= string->str + string->len))
+	{
+		gsize offset = val - string->str;
+		gsize precount = 0;
+
+		g_string_maybe_expand(string, len);
+		val = string->str + offset;
+		/* At this point, val is valid again.  */
+
+		/* Open up space where we are going to insert.  */
+		if ((gsize)pos < string->len)
+			memmove(string->str + pos + len, string->str + pos, string->len - pos);
+
+		/* Move the source part before the gap, if any.  */
+		if (offset < (gsize)pos)
+		{
+			precount = min((gsize)len, (gsize)pos - offset);
+			memcpy(string->str + pos, val, precount);
+		}
+
+		/* Move the source part after the gap, if any.  */
+		if ((gsize)len > precount)
+			memcpy(string->str + pos + precount, val + /* Already moved: */ precount + /* Space opened up: */ len,
+				   len - precount);
+	} else
+	{
+		g_string_maybe_expand(string, len);
+
+		/* If we aren't appending at the end, move a hunk
+		 * of the old string to the end, opening up space
+		 */
+		if ((gsize)pos < string->len)
+			memmove(string->str + pos + len, string->str + pos, string->len - pos);
+
+		/* insert the new string */
+		if (len == 1)
+			string->str[pos] = *val;
+		else
+			memcpy(string->str + pos, val, len);
+	}
+
+	string->len += len;
+
+	string->str[string->len] = 0;
+
+	return string;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+char *g_string_free(GString *string, gboolean free_segment)
+{
+	char *segment;
+
+	if (string == NULL)
+		return NULL;
+
+	if (free_segment)
+	{
+		g_free(string->str);
+		segment = NULL;
+	} else
+		segment = string->str;
+
+	g_free(string);
+
+	return segment;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_append_len(GString *string, const char *val, gssize len)
+{
+	return g_string_insert_len(string, -1, val, len);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_append(GString *string, const char *val)
+{
+	return g_string_insert_len(string, -1, val, -1);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void g_string_append_vprintf(GString *string, const char *format, va_list args)
+{
+	char *buf;
+	gssize len;
+
+	if (string == NULL)
+		return;
+	if (format == NULL)
+		return;
+
+	buf = g_strdup_vprintf(format, args);
+	if (buf == NULL)
+		return;
+	len = strlen(buf);
+	
+	if (len > 0)
+	{
+		g_string_maybe_expand(string, len);
+		memcpy(string->str + string->len, buf, len + 1);
+		string->len += len;
+		g_free(buf);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void g_string_append_printf(GString *string, const char *format, ...)
+{
+	va_list args;
+
+	va_start(args, format);
+	g_string_append_vprintf(string, format, args);
+	va_end(args);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_truncate(GString *string, gsize len)
+{
+	if (string == NULL)
+		return NULL;
+
+	string->len = min(len, string->len);
+	string->str[string->len] = 0;
+
+	return string;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GString *g_string_set_size(GString *string, gsize len)
+{
+	if (string == NULL)
+		return NULL;
+
+	if (len >= string->allocated_len)
+		g_string_maybe_expand(string, len - string->len);
+
+	string->len = len;
+	string->str[len] = 0;
+
+	return string;
+}
+
 #endif /* HAVE_GLIB */
+
+/*** ---------------------------------------------------------------------- ***/
+
+static int unescape_character(const char *scanner)
+{
+	int first_digit;
+	int second_digit;
+
+	first_digit = g_ascii_xdigit_value(*scanner++);
+	if (first_digit < 0)
+		return -1;
+
+	second_digit = g_ascii_xdigit_value(*scanner++);
+	if (second_digit < 0)
+		return -1;
+
+	return (first_digit << 4) | second_digit;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+char *hyp_uri_unescape_segment(const char *escaped_string, const char *escaped_string_end, const char *illegal_characters)
+{
+	const char *in;
+	char *out, *result;
+	int character;
+
+	if (escaped_string == NULL)
+		return NULL;
+
+	if (escaped_string_end == NULL)
+		escaped_string_end = escaped_string + strlen(escaped_string);
+
+	result = g_new(char, escaped_string_end - escaped_string + 1);
+
+	out = result;
+	for (in = escaped_string; in < escaped_string_end; in++)
+	{
+		character = *in;
+
+		if (character == '%')
+		{
+			in++;
+
+			if (escaped_string_end - in < 2)
+			{
+				/* Invalid escaped char (to short) */
+				g_free(result);
+				return NULL;
+			}
+
+			character = unescape_character(in);
+
+			/* Check for an illegal character. We consider '\0' illegal here. */
+			if (character <= 0 || (illegal_characters != NULL && strchr(illegal_characters, (char) character) != NULL))
+			{
+				g_free(result);
+				return NULL;
+			}
+
+			in++;						/* The other char will be eaten in the loop header */
+		} else if (character == '+')
+		{
+			character = ' ';
+		}
+		*out++ = (char) character;
+	}
+
+	*out = '\0';
+
+	return result;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+char *hyp_uri_unescape_string(const char *escaped_string, const char *illegal_characters)
+{
+	return hyp_uri_unescape_segment(escaped_string, NULL, illegal_characters);
+}
 
 /*** ---------------------------------------------------------------------- ***/
 

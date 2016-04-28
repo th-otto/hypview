@@ -99,14 +99,11 @@ static void print_usage(FILE *out)
 
 #define CMDLINE_VERSION 1
 
+#include "outcomm.h"
 #include "outasc.h"
 #include "outstg.h"
 #include "outhtml.h"
 #include "outdump.h"
-
-/* ------------------------------------------------------------------------- */
-
-/* uses check_long_filenames() from outasc.h */
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
