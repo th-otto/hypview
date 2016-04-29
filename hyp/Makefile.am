@@ -33,6 +33,8 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) \
 libhyp_a_SOURCES = \
 	casefold.h \
 	cp_1252.h \
+	cp_1250.h \
+	cp_latin1.h \
 	cp_850.h \
 	cp_atari.h \
 	cp_mac.h \

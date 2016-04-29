@@ -28,25 +28,52 @@ for example <a href="/hypview/hypview.cgi?url=http://jaysoft.atari.org/docs/atar
 <tr>
 <td>
 <em>Show images</em><br>
-<input type="radio" name="hideimages" value="0" checked="checked"> yes<br>
-<input type="radio" name="hideimages" value="1"> no<br>
 </td>
 <td>
 Show menu<br>
+</td>
+</tr>
+<tr>
+<td>
+<input type="radio" name="hideimages" value="0" checked="checked"> yes<br>
+</td>
+<td>
 <input type="radio" name="hidemenu" value="0" checked="checked"> yes<br>
+</td>
+</tr>
+<tr>
+<td>
+<input type="radio" name="hideimages" value="1"> no<br>
+</td>
+<td>
 <input type="radio" name="hidemenu" value="1"> no<br>
 </td>
 </tr>
-<tr style="vertical-align: bottom;">
-<td style="border-spacing: 30px;">
-<br>
-Output encoding:<br>
-<input type="radio" name="charset" value="latin1" checked="checked"> latin1 (ISO-8859-1)<br>
-<input type="radio" name="charset" value="latin2"> latin2 (ISO-8859-2)<br>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td>
+Output encoding:
+</td>
+</tr>
+<tr>
+<td>
+<input type="radio" name="charset" value="latin1"> latin1 (ISO-8859-1)
 </td>
 <td>
-<input type="radio" name="charset" value="cp1250"> Windows 1250<br>
-<input type="radio" name="charset" value="utf8"> UTF8<br>
+<input type="radio" name="charset" value="cp1252"> Windows 1252
+</td>
+</tr>
+<tr>
+<td>
+<input type="radio" name="charset" value="latin2"> latin2 (ISO-8859-2)
+</td>
+<td>
+<input type="radio" name="charset" value="cp1250"> Windows 1250
+</td>
+</tr>
+<tr>
+<td>
+<input type="radio" name="charset" value="utf8" checked="checked"> UTF8
 </td>
 </tr>
 </table>
