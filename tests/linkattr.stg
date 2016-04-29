@@ -11,7 +11,7 @@
 @node "Main"
 Link to @{"internal Page" link "Page 1"}
 Link to @{"Popup" link "popup"}
-Link to @{"external Page" link "hcp.hyp/Main"}
+Link to @{"external Page" link "patterns.hyp/Main"}
 Say @{"hello" system "echo hello"}
 Link to @{"REXX command" rx "echo rexx command"}
 Link to @{"REXX script" rxs "echo rexx script"}

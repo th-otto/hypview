@@ -48,6 +48,7 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	INDEX_ENTRY *entry;
 	gboolean ret;
 	symtab_entry *syms;
+	char *destname;
 	
 	ret = TRUE;
 	
@@ -58,7 +59,9 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 
 	if (!hypnode_valid(hyp, output_node))
 	{
-		hyp_utf8_sprintf_charset(out, output_charset, _("node index %u invalid"), output_node);
+		html_out_header(NULL, opts, out, _("Invalid Node index"), output_node, NULL, NULL, TRUE);
+		hyp_utf8_sprintf_charset(out, output_charset, _("node index %u invalid\n"), output_node);
+		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
 			
@@ -117,13 +120,48 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 		}
 		break;
 	case HYP_NODE_EXTERNAL_REF:
-	case HYP_NODE_SYSTEM_ARGUMENT:
-	case HYP_NODE_REXX_SCRIPT:
-	case HYP_NODE_REXX_COMMAND:
-	case HYP_NODE_QUIT:
-	case HYP_NODE_CLOSE:
-	case HYP_NODE_EOF:
+		html_out_header(NULL, opts, out, "@{ link }", node, NULL, NULL, FALSE);
+		destname = html_quote_nodename(hyp, node);
+		hyp_utf8_sprintf_charset(out, output_charset, "@{ link \"%s\"}\n", destname);
+		g_free(destname);
+		html_out_trailer(out, FALSE);
 		break;
+	case HYP_NODE_SYSTEM_ARGUMENT:
+		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, FALSE);
+		destname = html_quote_nodename(hyp, node);
+		hyp_utf8_sprintf_charset(out, output_charset, "@{ system \"%s\"}\n", destname);
+		g_free(destname);
+		html_out_trailer(out, FALSE);
+		break;
+	case HYP_NODE_REXX_SCRIPT:
+		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, FALSE);
+		destname = html_quote_nodename(hyp, node);
+		hyp_utf8_sprintf_charset(out, output_charset, "@{ rxs \"%s\"}\n", destname);
+		g_free(destname);
+		html_out_trailer(out, FALSE);
+		break;
+	case HYP_NODE_REXX_COMMAND:
+		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, FALSE);
+		destname = html_quote_nodename(hyp, node);
+		hyp_utf8_sprintf_charset(out, output_charset, "@{ rx \"%s\"}\n", destname);
+		g_free(destname);
+		html_out_trailer(out, FALSE);
+		break;
+	case HYP_NODE_QUIT:
+		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, FALSE);
+		destname = html_quote_nodename(hyp, node);
+		hyp_utf8_sprintf_charset(out, output_charset, "@{ quit \"%s\"}\n", destname);
+		g_free(destname);
+		html_out_trailer(out, FALSE);
+		break;
+	case HYP_NODE_CLOSE:
+		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, FALSE);
+		destname = html_quote_nodename(hyp, node);
+		hyp_utf8_sprintf_charset(out, output_charset, "@{ close \"%s\"}\n", destname);
+		g_free(destname);
+		html_out_trailer(out, FALSE);
+		break;
+	case HYP_NODE_EOF:
 	default:
 		if (opts->print_unknown)
 			hyp_utf8_fprintf(opts->errorfile, _("unknown index entry type %u\n"), entry->type);
@@ -138,6 +176,7 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	return ret;
 }
 
+/* ------------------------------------------------------------------------- */
 
 static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hyp_nodenr node, hyp_pic_format *pic_format)
 {
@@ -153,7 +192,9 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 
 	if (handle < 0)
 	{
+		html_out_header(NULL, opts, out, _("404 not found"), HYP_NOINDEX, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, output_charset, "%s: %s: %s\n", gl_program_name, filename, hyp_utf8_strerror(errno));
+		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
 
@@ -161,7 +202,9 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	if (hyp == NULL)
 	{
 		hyp_utf8_close(handle);
-		hyp_utf8_sprintf_charset(out, output_charset, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
+		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, TRUE);
+		hyp_utf8_sprintf_charset(out, output_charset, "%s: %s: %s\n", gl_program_name, filename, _("not a HYP file"));
+		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
 	hyp->file = filename;
@@ -170,11 +213,13 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	{
 		hyp_unref(hyp);
 		hyp_utf8_close(handle);
-		hyp_utf8_sprintf_charset(out, output_charset, _("%s: fatal: protected hypertext: %s\n"), gl_program_name, filename);
+		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, NULL, NULL, TRUE);
+		hyp_utf8_sprintf_charset(out, output_charset, _("%s: fatal: %s: %s\n"), gl_program_name, _("protected hypertext"), hyp_basename(filename));
+		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
-	if (hyp->comp_vers > HCP_COMPILER_VERSION)
-		hyp_utf8_sprintf_charset(out, output_charset, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
+	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
+		hyp_utf8_fprintf(opts->errorfile, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
 	dir = NULL;
 	if (empty(dir))
 	{
@@ -210,6 +255,25 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 
 /* ------------------------------------------------------------------------- */
 
+static gboolean uri_has_scheme(const char *uri)
+{
+	gboolean colon = FALSE;
+	
+	if (uri == NULL)
+		return FALSE;
+	while (*uri)
+	{
+		if (*uri == ':')
+			colon = TRUE;
+		else if (*uri == '/')
+			return colon;
+		uri++;
+	}
+	return colon;
+}
+
+/* ------------------------------------------------------------------------- */
+
 static void html_out_response_header(FILE *out, HYP_CHARSET charset, unsigned long len, hyp_pic_format pic_format)
 {
 	const char *mimetype;
@@ -217,13 +281,13 @@ static void html_out_response_header(FILE *out, HYP_CHARSET charset, unsigned lo
 	mimetype = hcp_pic_format_to_mimetype(pic_format);
 	if (mimetype)
 	{
-		fprintf(out, "Content-Type: %s\r\n", mimetype);
+		fprintf(out, "Content-Type: %s\015\012", mimetype);
 	} else
 	{
-		fprintf(out, "Content-Type: text/html;charset=%s\r\n", hyp_charset_name(charset));
+		fprintf(out, "Content-Type: text/html;charset=%s\015\012", hyp_charset_name(charset));
 	}
-	fprintf(out, "Content-Length: %lu\r\n", len);
-	fprintf(out, "\r\n");
+	fprintf(out, "Content-Length: %lu\015\012", len);
+	fprintf(out, "\015\012");
 }
 
 /*****************************************************************************/
@@ -275,16 +339,14 @@ int main(int unused_argc, const char **unused_argv)
 	query = getenv("QUERY_STRING");
 	if (query == NULL)
 	{
-		html_out_header(NULL, opts, body, NULL, 0, NULL, NULL);
-		g_string_append(body, "no query string\n");
-		html_out_trailer(body);
+		html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, TRUE);
+		g_string_append(body, _("no query string\n"));
+		html_out_trailer(body, TRUE);
 	} else
 	{
 		const char *arg;
 		char *url = NULL;
 		char *lang = NULL;
-		int hidemenu = 0;
-		int hideimages = 0;
 		hyp_nodenr node = 0;
 		
 		arg = strtok(query, "&");
@@ -307,10 +369,10 @@ int main(int unused_argc, const char **unused_argv)
 						output_charset = HYP_CHARSET_UTF8;
 				} else if (strcmp(arg, "hidemenu") == 0)
 				{
-					hidemenu = (int)strtol(val, NULL, 10);
+					hidemenu = (int)strtol(val, NULL, 10) != 0;
 				} else if (strcmp(arg, "hideimages") == 0)
 				{
-					hideimages = (int)strtol(val, NULL, 10);
+					hideimages = (int)strtol(val, NULL, 10) != 0;
 				} else if (strcmp(arg, "index") == 0)
 				{
 					node = (int)strtol(val, NULL, 10);
@@ -322,21 +384,46 @@ int main(int unused_argc, const char **unused_argv)
 		
 		if (empty(url))
 		{
-			html_out_header(NULL, opts, body, NULL, 0, NULL, NULL);
-			g_string_append(body, "missing url\n");
-			html_out_trailer(body);
+			html_out_header(NULL, opts, body, _("400 Bad Request"), HYP_NOINDEX, NULL, NULL, TRUE);
+			g_string_append_printf(body, "%s\n", _("missing url"));
+			html_out_trailer(body, TRUE);
 		} else
 		{
 			char *filename = hyp_uri_unescape_string(url, NULL);
 			
 			stg_nl = "\n";
-			html_referer_url = filename;
-			opts->read_images = hideimages == 0;
-			if (recompile(filename, opts, body, node, &pic_format) == FALSE)
+			if (filename[0] == '/')
 			{
-				retval = EXIT_FAILURE;
+				html_referer_url = filename;
+				filename = g_strconcat(getenv("DOCUMENT_ROOT"), filename, NULL);
+			} else if (g_ascii_strncasecmp(filename, "file:", 5) == 0 ||
+				(!is_MASTER && !uri_has_scheme(filename)))
+			{
+				html_out_header(NULL, opts, body, _("400 Bad Request"), HYP_NOINDEX, NULL, NULL, TRUE);
+				g_string_append(body, _(
+					"Sorry, this type of\n"
+					"<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
+					"<a href=\"http://www.iana.org/assignments/uri-schemes.html\">scheme</a>\n"
+					"(<q>file</q>) is not\n"
+					"supported by this service. Please check that you entered the URL correctly.\n"
+				));
+				html_out_trailer(body, TRUE);
+				g_free(filename);
+				filename = NULL;
+			} else
+			{
+				html_referer_url = g_strdup(filename);
 			}
-			g_free(filename);
+			if (filename)
+			{
+				opts->read_images = !hideimages;
+				if (recompile(filename, opts, body, node, &pic_format) == FALSE)
+				{
+					retval = EXIT_FAILURE;
+				}
+				g_free(filename);
+			}
+			g_freep(&html_referer_url);
 		}
 
 		g_free(url);

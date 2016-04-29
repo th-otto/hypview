@@ -2,6 +2,7 @@
 <html xml:lang="en" lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta charset="UTF-8" />
 <title>libhyp home</title>
 </head>
 <body>

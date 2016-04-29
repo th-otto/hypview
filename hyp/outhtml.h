@@ -24,10 +24,13 @@ static char const html_nav_dimensions[] = " width=\"32\" height=\"21\"";
 
 static char *html_referer_url;
 static const char *cgi_scriptname = "hypview.cgi";
-static char const html_nav_load_href[] = "../libhyp/";
+static char const html_nav_load_href[] = "index.php";
 static char const hypview_css_name[] = "_hypview.css";
 static char const hypview_js_name[] = "_hypview.js";
 static char const html_view_rsc_href[] = "rscview.cgi";
+
+static gboolean hidemenu = FALSE;
+static gboolean hideimages = FALSE;
 
 static int html_doctype = HTML_DOCTYPE_XSTRICT;
 static const char *html_closer = " />";
@@ -50,6 +53,7 @@ static char const html_node_style[] = "hypview_node";
 static char const html_pnode_style[] = "hypview_pnode";
 static char const html_dropdown_pnode_style[] = "hypview_dropdown_pnode";
 static char const html_dropdown_info_style[] = "hypview_dropdown_info";
+static char const html_error_note_style[] = "hypview_error_note";
 static char const html_rx_link_style[] = "hypview_rx";
 static char const html_rxs_link_style[] = "hypview_rxs";
 static char const html_system_link_style[] = "hypview_system";
@@ -61,6 +65,8 @@ static char const html_xref_link_style[] = "hypview_xref";
 static char const html_popup_link_style[] = "hypview_popup";
 static char const html_graphics_style[] = "hypview_graphics";
 static char const html_dropdown_style[] = "hypview_dropdown";
+static char const html_image_style[] = "hypview_image";
+static char const html_limage_style[] = "hypview_limage";
 
 
 struct html_xref {
@@ -277,32 +283,54 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 		{
 			char *fname;
 			char *quoted;
+			char *alt;
 			if (!hypnode_valid(hyp, gfx->extern_node_index))
+			{
 				fname = hyp_invalid_page(gfx->extern_node_index);
-			else if (hyp->indextable[gfx->extern_node_index]->type != HYP_NODE_IMAGE)
+				alt = html_quote_name(fname, TRUE);
+			} else if (hyp->indextable[gfx->extern_node_index]->type != HYP_NODE_IMAGE)
+			{
 				fname = g_strdup_printf(_("<non-image node #%u>"), gfx->extern_node_index);
-			else if (opts->for_cgi)
-				fname = opts->read_images ? g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index) : g_strdup("");
-			else
+				alt = html_quote_name(fname, TRUE);
+			} else if (opts->for_cgi)
+			{
+				if (opts->read_images)
+				{
+					fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+					alt = g_strdup_printf("index=%u", gfx->extern_node_index);
+				} else
+				{
+					fname = g_strdup("");
+					alt = html_quote_name(fname, TRUE);
+				}
+			} else
+			{
 				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+				alt = html_quote_name(fname, TRUE);
+			}
 			quoted = html_quote_name(fname, TRUE);
 			if (gfx->islimage)
 			{
-				hyp_utf8_sprintf_charset(out, output_charset, "<div align=\"center\"><img src=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, output_charset, "<div class=\"%s\" align=\"center\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+					html_limage_style,
 					quoted,
+					alt,
 					gfx->pixwidth,
 					gfx->pixheight,
 					html_closer);
 			} else
 			{
-				hyp_utf8_sprintf_charset(out, output_charset, "<div style=\"position:fixed; left:%dch;\"><img src=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, output_charset, "<div class=\"%s\" style=\"position:fixed; left:%dch;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+					html_image_style,
 					gfx->x_offset > 0 ? gfx->x_offset - 1 : 0,
 					quoted,
+					alt,
 					gfx->pixwidth,
 					gfx->pixheight,
 					html_closer);
 			}
 			g_free(quoted);
+			g_free(alt);
 			g_free(fname);
 		}
 		break;
@@ -450,6 +478,17 @@ static void html_convert_filename(char *filename)
 
 /* ------------------------------------------------------------------------- */
 
+static char *html_cgi_params(void)
+{
+	return g_strconcat(
+		hidemenu ? "&hidemenu=1" : "",
+		hideimages ? "&hideimages=1" : "",
+		"&charset=", hyp_charset_name(output_charset),
+		NULL);
+}
+	
+/* ------------------------------------------------------------------------- */
+
 /*
  * TODO: check wether long filenames are supported
  */
@@ -503,7 +542,11 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 		
 		if (opts->for_cgi)
 		{
-			p = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, node);
+			char *params = html_cgi_params();
+			char *tmp = g_strdup_printf("%s?url=%s%s&index=%u", cgi_scriptname, html_referer_url, params, node);
+			p = html_quote_name(tmp, FALSE);
+			g_free(tmp);
+			g_free(params);
 		} else
 		{
 			p = html_quote_name(filename, entry->type == HYP_NODE_EXTERNAL_REF);
@@ -534,7 +577,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 		if (html_doctype >= HTML_DOCTYPE_XSTRICT)
 			g_string_append_printf(outstr, "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"%s\n", hypview_css_name, html_closer);
 		else
-			g_string_append_printf(outstr, "<style type=\"text/css\" href=\"%s\"></style>\n", hypview_css_name);
+			g_string_append_printf(outstr, "<style type=\"text/css\">@import url(\"%s\");</style>\n", hypview_css_name);
 		if (opts->for_cgi)
 			return TRUE;
 		fname = g_build_filename(opts->output_dir, hypview_css_name, NULL);
@@ -554,7 +597,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 		if (opts->verbose >= 2 && opts->outfile != stdout)
 			hyp_utf8_fprintf(stdout, _("writing %s\n"), hypview_css_name);
 		g_free(fname);
-		out = g_string_new(NULL);
+		out = g_string_sized_new(5000);
 	}
 	
 	g_string_append(out, "body {\n");
@@ -664,7 +707,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append_printf(out, ".%s {\n", html_toolbar_style);
 	g_string_append(out, "  position:fixed;\n");
 	g_string_append(out, "  top:0;\n");
-	g_string_append(out, "  width:100%%;\n");
+	g_string_append(out, "  width:100%;\n");
 	g_string_append(out, "  height:28px;\n");
 	g_string_append(out, "  overflow:hidden;\n");
 	g_string_append(out, "  z-index:2;\n");
@@ -713,7 +756,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append_printf(out, ".%s {\n", html_dropdown_pnode_style);
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "  z-index:2;\n");
+	g_string_append(out, "  z-index:3;\n");
 	g_string_append(out, "  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n");
 	g_string_append(out, "  border: solid 1px;\n");
 	g_string_append(out, "  display:none;\n");
@@ -725,7 +768,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append_printf(out, ".%s {\n", html_dropdown_info_style);
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "  z-index:2;\n");
+	g_string_append(out, "  z-index:4;\n");
 	g_string_append(out, "  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n");
 	g_string_append(out, "  border: solid 1px;\n");
 	g_string_append(out, "  display:none;\n");
@@ -734,6 +777,10 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "  padding: 3px 6px;\n");
 	g_string_append(out, "}\n");
 
+	g_string_append(out, "/* style used for error messages */\n");
+	g_string_append_printf(out, ".%s {\n", html_error_note_style);
+	g_string_append(out, "}\n");
+	
 	g_string_append(out, "/* style used for the outer element of popups */\n");
 	g_string_append_printf(out, ".%s {\n", html_dropdown_style);
 	g_string_append(out, "  position:relative;\n");
@@ -749,6 +796,18 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "  margin: 0;\n");
 	g_string_append(out, "  position: absolute;\n");
 	g_string_append(out, "  display: inline;\n");
+	g_string_append(out, "  z-index:1;\n");
+	g_string_append(out, "}\n");
+
+	g_string_append(out, "/* style used for @image elements */\n");
+	g_string_append_printf(out, ".%s {\n", html_image_style);
+	g_string_append(out, "  margin: 0;\n");
+	g_string_append(out, "  z-index:1;\n");
+	g_string_append(out, "}\n");
+
+	g_string_append(out, "/* style used for @limage elements */\n");
+	g_string_append_printf(out, ".%s {\n", html_limage_style);
+	g_string_append(out, "  margin: 0;\n");
 	g_string_append(out, "  z-index:1;\n");
 	g_string_append(out, "}\n");
 
@@ -807,7 +866,7 @@ static gboolean html_out_javascript(hcp_opts *opts, GString *outstr, gboolean do
 		if (opts->verbose >= 2 && opts->outfile != stdout)
 			hyp_utf8_fprintf(stdout, _("writing %s\n"), hypview_js_name);
 		g_free(fname);
-		out = g_string_new(NULL);
+		out = g_string_sized_new(sizeof(html_javascript_code));
 	}
 	
 	g_string_append(out, html_javascript_code);
@@ -1007,10 +1066,10 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 
 	g_string_append(out, "</div>\n");
 }
-	
+
 /* ------------------------------------------------------------------------- */
 
-static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, struct hyp_gfx *hyp_gfx, struct html_xref *xrefs)
+static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, struct hyp_gfx *hyp_gfx, struct html_xref *xrefs, gboolean for_error)
 {
 	const char *charset = hyp_charset_name(output_charset);
 	INDEX_ENTRY *entry = hyp ? hyp->indextable[node] : NULL;
@@ -1058,11 +1117,13 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	hyp_utf8_sprintf_charset(out, output_charset, "<!-- %s -->\n", HYP_COPYRIGHT);
 	if (hyp != NULL && node == 0)
 		html_out_globals(hyp, out);
-	hyp_utf8_sprintf_charset(out, output_charset, _("<!-- Node #%u -->\n"), node);
+	if (node != HYP_NOINDEX)
+		hyp_utf8_sprintf_charset(out, output_charset, _("<!-- Node #%u -->\n"), node);
 	g_string_append(out, "<head>\n");
-	g_string_append_printf(out, "<meta http-equiv=\"content-type\" content=\"text/html;charset=%s\"%s\n", charset, html_closer);
 	if (html_doctype >= HTML_DOCTYPE_HTML5)
 		g_string_append_printf(out, "<meta charset=\"%s\"%s\n", charset, html_closer);
+	else
+		g_string_append_printf(out, "<meta http-equiv=\"content-type\" content=\"text/html;charset=%s\"%s\n", charset, html_closer);
 	g_string_append_printf(out, "<meta name=\"GENERATOR\" content=\"%s %s\"%s\n", gl_program_name, gl_program_version, html_closer);
 	if (hyp && hyp->author != NULL)
 	{
@@ -1161,17 +1222,23 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 	g_string_append(out, "</head>\n");
 	g_string_append(out, "<body>\n");
-	g_string_append_printf(out, "<div style=\"width:%dex;\">\n", hyp ? hyp->line_width : HYP_STGUIDE_DEFAULT_LINEWIDTH);
+	if (hyp)
+		g_string_append_printf(out, "<div style=\"width:%dex;\">\n", hyp ? hyp->line_width : HYP_STGUIDE_DEFAULT_LINEWIDTH);
 
-	if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
+	if (for_error)
+	{
+		g_string_append_printf(out, "<div class=\"%s\">\n", html_error_note_style);
+		g_string_append(out, "<p>\n");
+	} else if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
 	{
 		html_out_nav_toolbar(hyp, opts, out, node, xrefs);
 		g_string_append_printf(out, "<div class=\"%s\">\n", html_node_style);
+		g_string_append(out, "<pre>\n");
 	} else
 	{
 		g_string_append_printf(out, "<div class=\"%s\">\n", html_pnode_style);
+		g_string_append(out, "<pre>\n");
 	}
-	g_string_append(out, "<pre>\n");
 
 	if (hyp)
 	{
@@ -1227,11 +1294,18 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_trailer(GString *out)
+static void html_out_trailer(GString *out, gboolean for_error)
 {
-	g_string_append(out, "</pre>\n");
-	g_string_append(out, "</div>\n");
-	g_string_append(out, "</div>\n");
+	if (for_error)
+	{
+		g_string_append(out, "</p>\n");
+		g_string_append(out, "</div>\n");
+	} else
+	{
+		g_string_append(out, "</pre>\n");
+		g_string_append(out, "</div>\n");
+		g_string_append(out, "</div>\n");
+	}
 	g_string_append(out, "</body>\n");
 	g_string_append(out, "</html>\n");
 }
@@ -1280,7 +1354,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		INDEX_ENTRY *entry;
 		struct html_xref *xrefs = NULL;
 		struct html_xref **last_xref = &xrefs;
-
+		
 		{
 		char *title;
 		
@@ -1399,7 +1473,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		}
 
 		if (!for_inline)
-			html_out_header(hyp, opts, out, title, node, hyp_gfx, xrefs);
+			html_out_header(hyp, opts, out, title, node, hyp_gfx, xrefs, FALSE);
 
 		g_free(title);
 		}
@@ -1555,11 +1629,30 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 										hyp_utf8_sprintf_charset(out, output_charset, "<a%s href=\"%s&file=%s&tree=%u\">%s></a>", style, html_view_rsc_href, destname, line, str);
 									} else if (hyp_guess_filetype(destname) == HYP_FT_HYP)
 									{
-										char *base = replace_ext(hyp_basename(destname), HYP_EXT_HYP, NULL);
 										is_xref = TRUE;
-										html_convert_filename(base);
-										hyp_utf8_sprintf_charset(out, output_charset, "<a%s href=\"../%s/%s.html\">%s></a>", style, base, base, str);
-										g_free(base);
+										if (opts->for_cgi)
+										{
+											char *dir = hyp_path_get_dirname(html_referer_url);
+											char *base = g_strdup(hyp_basename(destname));
+											char *ref, *quoted;
+											char *params = html_cgi_params();
+											ref = g_strconcat(dir, *dir ? "/" : "", base, params, NULL);
+											quoted = html_quote_name(ref, FALSE);
+											hyp_utf8_sprintf_charset(out, output_charset, "<a%s href=\"%s?url=%s\">%s></a>", style, cgi_scriptname, quoted, str);
+											g_free(quoted);
+											g_free(ref);
+											g_free(params);
+											g_free(base);
+											g_free(dir);
+										} else
+										{
+											char *base = replace_ext(hyp_basename(destname), HYP_EXT_HYP, "");
+											char *quoted = html_quote_name(base, FALSE);
+											html_convert_filename(base);
+											hyp_utf8_sprintf_charset(out, output_charset, "<a%s href=\"../%s/%s.html\">%s></a>", style, quoted, quoted, str);
+											g_free(quoted);
+											g_free(base);
+										}
 									}
 									if (!is_xref)
 										*p = c;
@@ -1625,13 +1718,13 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							}
 							break;
 						case HYP_NODE_REXX_COMMAND:
-							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"%s\">%s</a>", html_rx_link_style, destname, str);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execRx('%s')\">%s</a>", html_rxs_link_style, destname, str);
 							break;
 						case HYP_NODE_REXX_SCRIPT:
-							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"%s\">%s</a>", html_rxs_link_style, destname, str);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execRxs('%s')\">%s</a>", html_system_link_style, destname, str);
 							break;
 						case HYP_NODE_SYSTEM_ARGUMENT:
-							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"%s\">%s</a>", html_system_link_style, destname, str);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execSystem('%s')\">%s</a>", html_rx_link_style, destname, str);
 							break;
 						case HYP_NODE_IMAGE:
 							/* that would be an inline image; currently not supported by compiler */
@@ -1645,7 +1738,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript: window.close()\">%s</a>", html_close_link_style, str);
 							break;
 						default:
-							hyp_utf8_sprintf_charset(out, output_charset, _("<a class=\"%s\" href=\"%s\">link to unknown node type %u</a>"), html_error_link_style, destfilename, hyp->indextable[dest_page]->type);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"%s\">%s %u</a>", html_error_link_style, destfilename, _("link to unknown node type"), hyp->indextable[dest_page]->type);
 							break;
 						}
 
@@ -1784,7 +1877,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		
 		if (!for_inline)
 		{
-			html_out_trailer(out);
+			html_out_trailer(out, FALSE);
 		
 			if (node < hyp->last_text_page && opts->outfile == stdout)
 				g_string_append(out, "\n\n");
@@ -1985,7 +2078,9 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 		}
 		write_strout(out, opts->outfile);
 	}
-		
+	
+	g_string_free(out, TRUE);
+	
 	free_symtab(syms);
 	return ret;
 }

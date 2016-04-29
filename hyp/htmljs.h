@@ -318,4 +318,19 @@ static char const html_javascript_code[] =
 	"    ctx.stroke();\n"
 	"  }\n"
 	"}\n"
+
+	"function execSystem(cmd)\n"
+	"{\n"
+	"  window.confirm('Execute ' + cmd);\n"
+	"}\n"
+
+	"function execRx(cmd)\n"
+	"{\n"
+	"  window.confirm('Execute REXX command ' + cmd);\n"
+	"}\n"
+
+	"function execRxs(cmd)\n"
+	"{\n"
+	"  window.confirm('Execute REXX script ' + cmd);\n"
+	"}\n"
 ;
