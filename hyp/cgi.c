@@ -7,10 +7,31 @@
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
+#include <curl/curl.h>
+#include <sys/time.h>
+#include <utime.h>
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hcpview.cgi";
 char const gl_program_version[] = HYP_VERSION;
+
+static char const cgi_cachedir[] = "cache";
+
+struct curl_parms {
+	const char *filename;
+	FILE *fp;
+	hcp_opts *opts;
+	char *cachedir;
+};
+
+#define ALLOWED_PROTOS ( \
+	CURLPROTO_FTP | \
+	CURLPROTO_FTPS | \
+	CURLPROTO_HTTP | \
+	CURLPROTO_HTTPS | \
+	CURLPROTO_SCP | \
+	CURLPROTO_SFTP | \
+	CURLPROTO_TFTP)
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -239,6 +260,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	hcp_opts_copy(&hyp_opts, opts);
 	if (hyp->hcp_options != NULL)
 	{
+		/* TODO: redirect error messages from option parsing to HTML body */
 		hcp_opts_parse_string(&hyp_opts, hyp->hcp_options, OPTS_FROM_SOURCE);
 	}
 	g_freep(&hyp_opts.output_filename);
@@ -294,6 +316,72 @@ static void html_out_response_header(FILE *out, HYP_CHARSET charset, unsigned lo
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+static size_t mycurl_write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
+{
+	struct curl_parms *parms = (struct curl_parms *) userdata;
+	
+	if (size == 0 || nmemb == 0)
+		return 0;
+	if (parms->fp == NULL)
+	{
+		parms->fp = hyp_utf8_fopen(parms->filename, "wb");
+		if (parms->fp == NULL && errno == ENOENT)
+		{
+			mkdir(parms->cachedir, 0750);
+			parms->fp = hyp_utf8_fopen(parms->filename, "wb");
+		}
+		if (parms->fp == NULL)
+			hyp_utf8_fprintf(parms->opts->errorfile, "%s: %s\n", parms->filename, hyp_utf8_strerror(errno));
+	}
+	if (parms->fp == NULL)
+		return 0;
+	return fwrite(ptr, size, nmemb, parms->fp);
+}
+
+/* ------------------------------------------------------------------------- */
+
+static int mycurl_trace(CURL *handle, curl_infotype type, char *data, size_t size, void *userdata)
+{
+	struct curl_parms *parms = (struct curl_parms *) userdata;
+
+	UNUSED(handle);
+	switch (type)
+	{
+	case CURLINFO_TEXT:
+		hyp_utf8_fprintf(parms->opts->errorfile, "== Info: %s", data);
+		if (size == 0 || data[size - 1] != '\n')
+			fputc('\n', parms->opts->errorfile);
+		break;
+	case CURLINFO_HEADER_OUT:
+		hyp_utf8_fprintf(parms->opts->errorfile, "=> Send header %ld\n", (long)size);
+		fwrite(data, 1, size, parms->opts->errorfile);
+		break;
+	case CURLINFO_DATA_OUT:
+		hyp_utf8_fprintf(parms->opts->errorfile, "=> Send data %ld\n", (long)size);
+		break;
+	case CURLINFO_SSL_DATA_OUT:
+		hyp_utf8_fprintf(parms->opts->errorfile, "=> Send SSL data %ld\n", (long)size);
+		break;
+	case CURLINFO_HEADER_IN:
+		hyp_utf8_fprintf(parms->opts->errorfile, "<= Recv header %ld\n", (long)size);
+		fwrite(data, 1, size, parms->opts->errorfile);
+		break;
+	case CURLINFO_DATA_IN:
+		hyp_utf8_fprintf(parms->opts->errorfile, "<= Recv data %ld\n", (long)size);
+		break;
+	case CURLINFO_SSL_DATA_IN:
+		hyp_utf8_fprintf(parms->opts->errorfile, "<= Recv SSL data %ld\n", (long)size);
+		break;
+	default:
+		break;
+ 	}
+	return 0;
+}
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
+
 #include "hypmain.h"
 
 int main(int unused_argc, const char **unused_argv)
@@ -305,13 +393,14 @@ int main(int unused_argc, const char **unused_argv)
 	char *query;
 	GString *body;
 	hyp_pic_format pic_format = HYP_PIC_UNKNOWN;
+	CURL *curl = NULL;
 	
 	UNUSED(unused_argc);
 	UNUSED(unused_argv);
 	is_MASTER = getenv("TO_MASTER") != NULL;
 	
 	output_charset = hyp_get_current_charset();
-	HypProfile_Load();
+	HypProfile_Load(FALSE);
 	
 	hcp_opts_init(opts);
 	opts->tabwidth = gl_profile.viewer.ascii_tab_size;
@@ -320,7 +409,9 @@ int main(int unused_argc, const char **unused_argv)
 	opts->all_links = !opts->autoreferences;
 
 	g_freep(&opts->error_filename);
-	opts->errorfile = stdout;
+	opts->errorfile = fopen("hypview.log", "a");
+	if (opts->errorfile == NULL)
+		opts->errorfile = stdout;
 	g_freep(&opts->output_filename);
 	opts->outfile = stdout;
 	opts->pic_format = HTML_DEFAULT_PIC_TYPE;
@@ -382,39 +473,138 @@ int main(int unused_argc, const char **unused_argv)
 			arg = strtok(NULL, "&");
 		}
 		
-		if (empty(url))
-		{
-			html_out_header(NULL, opts, body, _("400 Bad Request"), HYP_NOINDEX, NULL, NULL, TRUE);
-			g_string_append_printf(body, "%s\n", _("missing url"));
-			html_out_trailer(body, TRUE);
-		} else
 		{
 			char *filename = hyp_uri_unescape_string(url, NULL);
+			char *scheme = empty(filename) ? g_strdup("undefined") : uri_has_scheme(filename) ? g_strndup(filename, strchr(filename, ':') - filename) : g_strdup("file");
 			
 			stg_nl = "\n";
-			if (filename[0] == '/')
+			if (filename && filename[0] == '/')
 			{
 				html_referer_url = filename;
 				filename = g_strconcat(getenv("DOCUMENT_ROOT"), filename, NULL);
-			} else if (g_ascii_strncasecmp(filename, "file:", 5) == 0 ||
-				(!is_MASTER && !uri_has_scheme(filename)))
+			} else if (empty(filename) || g_ascii_strcasecmp(scheme, "file") == 0)
 			{
+				/*
+				 * disallow file URIs, they would resolve to local files on the WEB server
+				 */
 				html_out_header(NULL, opts, body, _("400 Bad Request"), HYP_NOINDEX, NULL, NULL, TRUE);
-				g_string_append(body, _(
+				g_string_append_printf(body, _(
 					"Sorry, this type of\n"
 					"<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
 					"<a href=\"http://www.iana.org/assignments/uri-schemes.html\">scheme</a>\n"
-					"(<q>file</q>) is not\n"
+					"(<q>%s</q>) is not\n"
 					"supported by this service. Please check that you entered the URL correctly.\n"
-				));
+				), scheme);
 				html_out_trailer(body, TRUE);
 				g_free(filename);
 				filename = NULL;
 			} else
 			{
 				html_referer_url = g_strdup(filename);
+				if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK ||
+					(curl = curl_easy_init()) == NULL)
+				{
+					html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, TRUE);
+					g_string_append(body, _("could not initialize curl\n"));
+					html_out_trailer(body, TRUE);
+					retval = EXIT_FAILURE;
+				} else
+				{
+					char *dir;
+					char *local_filename;
+					struct curl_parms parms;
+					struct stat st;
+					long ft = -1;
+					long unmet = -1;
+					long respcode = 0;
+					CURLcode curlcode;
+					double size = 0;
+					char err[CURL_ERROR_SIZE];
+					
+					curl_easy_setopt(curl, CURLOPT_URL, filename);
+					curl_easy_setopt(curl, CURLOPT_REFERER, filename);
+					dir = hyp_path_get_dirname(getenv("SCRIPT_FILENAME"));
+					parms.cachedir = g_build_filename(dir, cgi_cachedir, NULL);
+					local_filename = g_build_filename(parms.cachedir, hyp_basename(filename), NULL);
+					g_free(dir);
+					parms.filename = local_filename;
+					parms.fp = NULL;
+					parms.opts = opts;
+					curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, mycurl_write_callback);
+					curl_easy_setopt(curl, CURLOPT_WRITEDATA, &parms);
+					curl_easy_setopt(curl, CURLOPT_STDERR, opts->errorfile);
+					curl_easy_setopt(curl, CURLOPT_PROTOCOLS, ALLOWED_PROTOS);
+					curl_easy_setopt(curl, CURLOPT_ENCODING, "");
+					curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, (long)1);
+					curl_easy_setopt(curl, CURLOPT_FILETIME, (long)1);
+					curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, mycurl_trace);
+					curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &parms);
+					*err = 0;
+					curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, err);
+					
+					/* set this to 1 to activate debug code above */
+					curl_easy_setopt(curl, CURLOPT_VERBOSE, (long)0);
+
+					if (hyp_utf8_stat(local_filename, &st) == 0)
+					{
+						curlcode = curl_easy_setopt(curl, CURLOPT_TIMECONDITION, (long)CURL_TIMECOND_IFMODSINCE);
+						curlcode = curl_easy_setopt(curl, CURLOPT_TIMEVALUE, (long)st.st_mtime);
+					}
+					
+					/*
+					 * TODO: reject attempts to connect to local addresses
+					 */
+					curlcode = curl_easy_perform(curl);
+					
+					curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &respcode);
+					curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
+					curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &size);
+					hyp_utf8_fprintf(opts->errorfile, "%s: %d %ld %ld %ld: %s\n", filename, curlcode, respcode, (long)size, unmet, err);
+					
+					if (parms.fp)
+					{
+						hyp_utf8_fclose(parms.fp);
+						parms.fp = NULL;
+					}
+					
+					if (curlcode != CURLE_OK)
+					{
+						html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, TRUE);
+						g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
+						html_out_trailer(body, TRUE);
+						unlink(local_filename);
+						g_free(local_filename);
+						local_filename = NULL;
+					} else if (respcode != 200 && respcode != 304)
+					{
+						/* most likely the downloaded data will contain the error page */
+						parms.fp = hyp_utf8_fopen(local_filename, "rb");
+						if (parms.fp != NULL)
+						{
+							size_t nread;
+							
+							while ((nread = fread(err, 1, sizeof(err), parms.fp)) > 0)
+								g_string_append_len(body, err, nread);
+							hyp_utf8_fclose(parms.fp);
+						}
+						unlink(local_filename);
+						g_free(local_filename);
+						local_filename = NULL;
+					} else
+					{
+						if (curl_easy_getinfo(curl, CURLINFO_FILETIME, &ft) == CURLE_OK && ft != -1)
+						{
+							struct utimbuf ut;
+							ut.actime = ut.modtime = ft;
+							utime(local_filename, &ut);
+						}
+					}
+					g_free(filename);
+					filename = local_filename;
+					g_free(parms.cachedir);
+				}
 			}
-			if (filename)
+			if (filename && retval == EXIT_SUCCESS)
 			{
 				opts->read_images = !hideimages;
 				if (recompile(filename, opts, body, node, &pic_format) == FALSE)
@@ -423,6 +613,7 @@ int main(int unused_argc, const char **unused_argv)
 				}
 				g_free(filename);
 			}
+			g_free(scheme);
 			g_freep(&html_referer_url);
 		}
 
@@ -435,6 +626,12 @@ int main(int unused_argc, const char **unused_argv)
 	g_string_free(body, TRUE);
 	
 	hcp_opts_free(opts);
+	
+	if (curl)
+	{
+		curl_easy_cleanup(curl);
+		curl_global_cleanup();
+	}
 	
 	HypProfile_Delete();
 	x_free_resources();

@@ -456,6 +456,7 @@ static void html_convert_filename(char *filename)
 			c == ':' ||
 			c == '%' ||
 			c == '?' ||
+			c == '*' ||
 			c == '/' ||
 			c == '&' ||
 			c == '<' ||
@@ -518,8 +519,7 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 	
 	/*
 	 * don't do conversion for external entries,
-	 * as they contain arguments to commands like "rx"
-	 * and nodenames of external files
+	 * as they contain nodenames of external files
 	 */
 	if (entry->type != HYP_NODE_EXTERNAL_REF)
 	{
@@ -739,8 +739,6 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	
 	g_string_append(out, "/* style used for the body of regular nodes */\n");
 	g_string_append_printf(out, ".%s {\n", html_node_style);
-	g_string_append(out, "  position:absolute;\n");
-	g_string_append(out, "  top:32px;\n");
 	g_string_append(out, "  z-index:1;\n");
 	g_string_append(out, "}\n");
 	
@@ -1231,8 +1229,14 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		g_string_append(out, "<p>\n");
 	} else if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
 	{
-		html_out_nav_toolbar(hyp, opts, out, node, xrefs);
-		g_string_append_printf(out, "<div class=\"%s\">\n", html_node_style);
+		if (hidemenu)
+		{
+			g_string_append_printf(out, "<div class=\"%s\">\n", html_node_style);
+		} else
+		{
+			html_out_nav_toolbar(hyp, opts, out, node, xrefs);
+			g_string_append_printf(out, "<div class=\"%s\" style=\"position:absolute; top:32px;\">\n", html_node_style);
+		}
 		g_string_append(out, "<pre>\n");
 	} else
 	{
@@ -1718,13 +1722,13 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							}
 							break;
 						case HYP_NODE_REXX_COMMAND:
-							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execRx('%s')\">%s</a>", html_rxs_link_style, destname, str);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execRx('%s', '%s')\">%s</a>", html_rxs_link_style, _("Execute REXX command"), destname, str);
 							break;
 						case HYP_NODE_REXX_SCRIPT:
-							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execRxs('%s')\">%s</a>", html_system_link_style, destname, str);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execRxs('%s', '%s')\">%s</a>", html_system_link_style, _("Execute REXX script"), destname, str);
 							break;
 						case HYP_NODE_SYSTEM_ARGUMENT:
-							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execSystem('%s')\">%s</a>", html_rx_link_style, destname, str);
+							hyp_utf8_sprintf_charset(out, output_charset, "<a class=\"%s\" href=\"javascript:execSystem('%s', '%s')\">%s</a>", html_rx_link_style, _("Execute"), destname, str);
 							break;
 						case HYP_NODE_IMAGE:
 							/* that would be an inline image; currently not supported by compiler */

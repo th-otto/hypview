@@ -236,7 +236,7 @@ int main(int argc, const char **argv)
 	_set_invalid_parameter_handler(myInvalidParameterHandler);
 #endif
 	
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	
 	if (!ParseCommandLine(&argc, &argv))
 		return EXIT_FAILURE;

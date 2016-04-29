@@ -8,8 +8,12 @@ include ../Makefile.common
 noinst_LIBRARIES = libhyp.a libhypdoc.a
 bin_PROGRAMS = reflink refcheck hcp stool hypfind
 
-noinst_PROGRAMS = hypview.cgi
+noinst_PROGRAMS = 
 noinst_SCRIPTS = 
+
+if HAVE_CURL
+noinst_PROGRAMS += hypview.cgi
+endif
 SRVDIR = /srv/www/htdocs/hypview
 
 
@@ -27,7 +31,7 @@ EXTRA_DIST = gfx.s genmaptab.c
 noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpicon
 
 INCLUDES = -I$(hyp_srcdir)/include
-AM_CPPFLAGS = $(GLIB_CFLAGS) \
+AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 
 libhyp_a_SOURCES = \
@@ -144,14 +148,15 @@ hypview_cgi_SOURCES = \
 	$(UTIL_SRC)
 
 hypview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-hypview_cgi_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+hypview_cgi_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
 if OS_WIN32
 hypview_cgi_SOURCES += hcp_rc.rc
 hypview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
 hypview_cgi_LDADD += hcp_rc.res
 endif
+hypview_cgi_LDFLAGS = -Wl,-rpath,$(CURL_LIBDIR)
 if WITH_GUI_GTK
-hypview_cgi_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+hypview_cgi_LDFLAGS += -Wl,-rpath,$(GTK_LIBDIR)
 endif
 hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA_hypview_cgi_DEPENDENCIES) 
 	@rm -f hypview.cgi$(EXEEXT)

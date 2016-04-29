@@ -833,7 +833,7 @@ int main(int argc, const char **argv)
 	opts.catalog = 0;
 	opts.refname = NULL;
 	
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	
 	if (!refcheck_opts_parse(&opts, argc, argv, OPTS_FROM_COMMANDLINE))
 		retval = 1;

@@ -583,7 +583,7 @@ int main(int argc, char **argv)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 #endif
 
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 
 	g_set_prgname(gl_program_name);
 	if (stat(desktop_filename, &s) == 0)

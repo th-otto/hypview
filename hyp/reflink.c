@@ -87,7 +87,7 @@ int main(int argc, const char **argv)
 	gboolean do_version = FALSE;
 	gboolean verbose = TRUE;
 
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	
 	getopt_init_r(gl_program_name, &d);
 	while ((c = getopt_long_only_r(argc, argv, "aAmMdDeEfFlLhV?", long_options, NULL, d)) != EOF)

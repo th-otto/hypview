@@ -595,7 +595,7 @@ int main(int argc, const char **argv)
 	is_MASTER = getenv("TO_MASTER") != NULL;
 	
 	output_charset = hyp_get_current_charset();
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	
 	hcp_opts_init(opts);
 	opts->tabwidth = gl_profile.viewer.ascii_tab_size;

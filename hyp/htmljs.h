@@ -218,8 +218,8 @@ static char const html_javascript_code[] =
 	"      break;\n"
 	"    }\n"
 	"  } catch (e)\n"
-	                  /* setLineDash not supported, but not much we can do about it */
 	"  {\n"
+	                  /* setLineDash not supported, but not much we can do about it */
 	"  }\n"
 	"  ctx.beginPath();\n"
 	"  ctx.moveTo(x0, y0);\n"
@@ -276,6 +276,8 @@ static char const html_javascript_code[] =
 	"  var yraster = s.offsetHeight;\n"
 	"  width = width * xraster;\n"
 	"  height = height * yraster;\n"
+	"  c.width = width + 1;\n"
+	"  c.height = height + 1;\n"
 	"  c.style.left = ((xoffset - 1) * xraster).toString() + 'px';\n"
 	"  ctx.lineWidth = 1;\n"
 	"  ctx.shadowBlur = 0;\n"
@@ -319,18 +321,18 @@ static char const html_javascript_code[] =
 	"  }\n"
 	"}\n"
 
-	"function execSystem(cmd)\n"
+	"function execSystem(title, cmd)\n"
 	"{\n"
-	"  window.confirm('Execute ' + cmd);\n"
+	"  window.confirm(title + ' ' + cmd);\n"
 	"}\n"
 
-	"function execRx(cmd)\n"
+	"function execRx(title, cmd)\n"
 	"{\n"
-	"  window.confirm('Execute REXX command ' + cmd);\n"
+	"  window.confirm(title + ' ' + cmd);\n"
 	"}\n"
 
-	"function execRxs(cmd)\n"
+	"function execRxs(title, cmd)\n"
 	"{\n"
-	"  window.confirm('Execute REXX script ' + cmd);\n"
+	"  window.confirm(title + ' ' + cmd);\n"
 	"}\n"
 ;

@@ -134,7 +134,7 @@ static void ValidateColors(void)
 
 static void LoadConfig(void)
 {
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	/*
 	 * as long as there are no configuration dialogs,
 	 * throw away the contents of the ini file,

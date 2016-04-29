@@ -1078,7 +1078,7 @@ int main(int argc, const char **argv)
 	
 	is_MASTER = getenv("TO_MASTER") != NULL;
 	
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	
 	{
 		char *dirname = path_subst(gl_profile.general.hypfold);

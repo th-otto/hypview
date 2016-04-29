@@ -136,7 +136,7 @@ extern HypProfile gl_profile;
 char *path_subst(const char *path);
 char *path_unsubst(const char *path, gboolean subst_hypfold);
 
-void HypProfile_Load(void);
+void HypProfile_Load(gboolean save_if_new);
 gboolean HypProfile_Save(gboolean report_error);
 void HypProfile_Delete(void);
 void HypProfile_SetChanged(void);

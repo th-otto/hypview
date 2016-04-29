@@ -1970,7 +1970,7 @@ int main(int argc, const char **argv)
 	int c;
 	char *outfile_name = NULL;
 	
-	HypProfile_Load();
+	HypProfile_Load(TRUE);
 	
 	do_shrink = -1;
 	do_pullup = -1;

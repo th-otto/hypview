@@ -241,7 +241,7 @@ char *path_unsubst(const char *path, gboolean subst_hypfold)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void HypProfile_Load(void)
+void HypProfile_Load(gboolean save_if_new)
 {
 	char *fname;
 	Profile *profile;
@@ -536,7 +536,7 @@ void HypProfile_Load(void)
 
 	gl_profile.viewer.ascii_break_len = min(LINE_BUF - 1, max(0, gl_profile.viewer.ascii_break_len));
 	
-	if (gl_profile.changed)
+	if (gl_profile.changed && save_if_new)
 		HypProfile_Save(FALSE);
 }
 
