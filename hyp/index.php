@@ -49,11 +49,12 @@ Show menu<br>
 <input type="radio" name="hidemenu" value="1"> no<br>
 </td>
 </tr>
-<tr><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr>
 <td>
 Output encoding:
 </td>
+<td>&nbsp;</td>
 </tr>
 <tr>
 <td>
@@ -75,6 +76,7 @@ Output encoding:
 <td>
 <input type="radio" name="charset" value="utf8" checked="checked"> UTF8
 </td>
+<td>&nbsp;</td>
 </tr>
 </table>
 
