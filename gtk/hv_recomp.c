@@ -3,10 +3,12 @@
 #include "hcp_opts.h"
 #include "picture.h"
 #include "hcp.h"
+#include "hv_vers.h"
 
 #include "../hyp/outcomm.h"
 #include "../hyp/outasc.h"
 #include "../hyp/outstg.h"
+#include "../hyp/outhtml.h"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -89,13 +91,15 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	gboolean retval = TRUE;
 
 	is_MASTER = getenv("TO_MASTER") != NULL;
+	js_written = FALSE;
+	css_written = FALSE;
 	
-	output_charset = gl_profile.output.output_charset;
-	if (output_charset == HYP_CHARSET_NONE)
-		output_charset = hyp_get_current_charset();
 	hcp_opts_init(opts);
 	if (!hcp_opts_parse_string(opts, gl_profile.hcp.options, OPTS_FROM_CONFIG))
 		retval = FALSE;
+	opts->output_charset = gl_profile.output.output_charset;
+	if (opts->output_charset == HYP_CHARSET_NONE)
+		opts->output_charset = hyp_get_current_charset();
 	opts->tabwidth = gl_profile.viewer.ascii_tab_size;
 	opts->gen_index = gl_profile.output.output_index;
 	opts->output_filename = g_strdup(output_filename);
@@ -115,6 +119,9 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 			break;
 		case HYP_FT_STG:
 			retval = recompile(hyp, opts, recompile_stg);
+			break;
+		case HYP_FT_HTML:
+			retval = recompile(hyp, opts, recompile_html);
 			break;
 		default:
 			retval = FALSE;

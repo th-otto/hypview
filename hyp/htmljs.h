@@ -64,6 +64,16 @@ static char const html_javascript_code[] =
 	"  }\n"
 	"}\n"
 
+	"function showXrefs () {\n"
+	"  var id = 'hyp_xrefs';\n"
+	"  var a = document.getElementById(id + '_content');\n"
+	"  if (a.style.display == 'none' || a.style.display == '') {\n"
+	"    a.style.display = 'inline-block';\n"
+	"  } else {\n"
+	"    a.style.display = 'none';\n"
+	"  }\n"
+	"}\n"
+
 	"function getQueryVariable(variable)\n"
 	"{\n"
 	"  var query = window.location.search.substring(1);\n"

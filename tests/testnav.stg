@@ -13,6 +13,9 @@
 
 
 @node "Main" "Dokumentation zu ResourceTextReplacer Version 1.0"
+@xref "st-guide.hyp/Main" "ST-Guide Dokumentation"
+@xref "stool.hyp/Main" "STool Dokumentation"
+@xref "reflink.hyp/Main" "Reflink Dokumentation"
 @next "Einleitung"
 
 @remark 531x39x2

@@ -11,6 +11,25 @@ body {
 	background-color: #cccccc;
 }
 </style>
+<script type="text/javascript">
+function submitUrl()
+{
+	var f = document.getElementById('hypviewform');
+	f.method = 'get';
+	f.enctype = "application/x-www-form-urlencoded";
+	var fileinput = document.getElementById('file');
+	fileinput.disabled = true;
+	f.submit();
+	fileinput.disabled = false;
+}
+function submitFile()
+{
+	var f = document.getElementById('hypviewform');
+	f.method = 'post';
+	f.enctype = "multipart/form-data";
+	f.submit();
+}
+</script>
 </head>
 <body>
 <div>
@@ -22,7 +41,7 @@ HYP View Web Service<span style="font-size: 13pt"> - provided by <a href="http:/
 <em>Want to browse .HYP files in an HTML browser?</em><br />
 <br />
 
-<form action="hypview.cgi" method="get" enctype="multipart/form-data" id="hypviewform">
+<form action="hypview.cgi" method="get" id="hypviewform">
 <table>
 <tr style="vertical-align: top;">
 <td>
@@ -31,7 +50,7 @@ Type in URL of a .HYP file (it must be remotely accessible from that URL<br />
 for example <a href="/hypview/hypview.cgi?url=http://jaysoft.atari.org/docs/ataripf.hyp">http://jaysoft.atari.org/docs/ataripf.hyp</a>):
 <br />
 <input type="text" id="url" name="url" size="60" tabindex="1" style="margin-top: 1ex;" />
-<input style="background-color: #cccccc; font-weight: bold;" type="submit" value="View" onclick="document.getElementById('hypviewform').method='get';" /><br />
+<input style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitUrl();" /><br />
 </fieldset>
 <br />
 <b>OR</b><br />
@@ -39,7 +58,7 @@ for example <a href="/hypview/hypview.cgi?url=http://jaysoft.atari.org/docs/atar
 <fieldset>
 Choose a .HYP file for upload <br />
 <input type="file" id="file" name="file" size="60" style="margin-top: 1ex;" />
-<input style="background-color: #cccccc; font-weight: bold;" type="submit" value="View" onclick="document.getElementById('hypviewform').method='post';" /><br />
+<input style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitFile();" /><br />
 </fieldset>
 <br />
 <br />
