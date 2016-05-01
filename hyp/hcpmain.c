@@ -594,7 +594,6 @@ int main(int argc, const char **argv)
 	
 	is_MASTER = getenv("TO_MASTER") != NULL;
 	
-	output_charset = hyp_get_current_charset();
 	HypProfile_Load(TRUE);
 	
 	hcp_opts_init(opts);
@@ -651,6 +650,8 @@ int main(int argc, const char **argv)
 				/*
 				 * maybe TODO: handle -o~ here
 				 */
+				if (opts->output_charset == HYP_CHARSET_NONE)
+					opts->output_charset = hyp_get_current_charset();
 				while (c < argc)
 				{
 					const char *filename = argv[c++];
@@ -665,8 +666,8 @@ int main(int argc, const char **argv)
 			{
 				const char *filename = argv[c++];
 
-				if (opts->output_charset != HYP_CHARSET_NONE)
-					output_charset = opts->output_charset;
+				if (opts->output_charset == HYP_CHARSET_NONE)
+					opts->output_charset = hyp_get_current_charset();
 				/*
 				 * args beyond filename are node names to display
 				 */
@@ -676,14 +677,14 @@ int main(int argc, const char **argv)
 				}
 			} else if (opts->recompile_format == HYP_FT_STG)
 			{
-				if (opts->output_charset != HYP_CHARSET_NONE)
-					output_charset = opts->output_charset;
+				if (opts->output_charset == HYP_CHARSET_NONE)
+					opts->output_charset = hyp_get_current_charset();
 				while (c < argc)
 				{
 					const char *filename = argv[c++];
-					stg_nl = (opts->output_filename == NULL || output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					stg_nl = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
 					if (num_args > 1)
-						hyp_utf8_fprintf_charset(opts->outfile, output_charset, _("@remark File: %s%s"), filename, stg_nl);
+						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, _("@remark File: %s%s"), filename, stg_nl);
 					if (recompile(filename, opts, recompile_stg, 0, NULL, HYP_EXT_STG) == FALSE)
 					{
 						retval = EXIT_FAILURE;
@@ -691,19 +692,19 @@ int main(int argc, const char **argv)
 					}
 					if (c < argc)
 					{
-						hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s%s", stg_nl, stg_nl);
+						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "%s%s", stg_nl, stg_nl);
 					}
 				}
 			} else if (opts->recompile_format == HYP_FT_HTML)
 			{
-				if (opts->output_charset != HYP_CHARSET_NONE)
-					output_charset = opts->output_charset;
+				if (opts->output_charset == HYP_CHARSET_NONE)
+					opts->output_charset = hyp_get_current_charset();
 				while (c < argc)
 				{
 					const char *filename = argv[c++];
-					stg_nl = (opts->output_filename == NULL || output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					stg_nl = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
 					if (num_args > 1)
-						hyp_utf8_fprintf_charset(opts->outfile, output_charset, _("<!-- File: %s -->%s"), filename, stg_nl);
+						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, _("<!-- File: %s -->%s"), filename, stg_nl);
 					/* if ((opts->outfile == NULL || opts->outfile == stdout) && opts->output_filename == NULL)
 						opts->output_filename = replace_ext(filename, NULL, HYP_EXT_HTML); */
 					if (recompile(filename, opts, recompile_html, 0, NULL, HYP_EXT_HTML) == FALSE)
@@ -713,13 +714,15 @@ int main(int argc, const char **argv)
 					}
 					if (c < argc)
 					{
-						hyp_utf8_fprintf_charset(opts->outfile, output_charset, "%s%s", stg_nl, stg_nl);
+						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "%s%s", stg_nl, stg_nl);
 					}
 				}
 			} else if (opts->recompile_format == HYP_FT_BINARY)
 			{
 				const char *filename = argv[c++];
 				
+				if (opts->output_charset == HYP_CHARSET_NONE)
+					opts->output_charset = hyp_get_current_charset();
 				/*
 				 * args beyond filename are node names to display
 				 */

@@ -1,6 +1,5 @@
 static const char *stg_nl;
 static gboolean is_MASTER;
-static HYP_CHARSET output_charset;
 
 typedef gboolean (*recompile_func)(HYP_DOCUMENT *hyp, hcp_opts *opt, int argc, const char **argv);
 

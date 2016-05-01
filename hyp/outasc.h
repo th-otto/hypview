@@ -14,7 +14,7 @@ static char *ascii_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 /* ------------------------------------------------------------------------- */
 
-static void ascii_out_text(FILE *outfile, const char *text, unsigned char textattr)
+static void ascii_out_text(hcp_opts *opts, FILE *outfile, const char *text, unsigned char textattr)
 {
 	const char *p = text;
 	int i;
@@ -28,7 +28,7 @@ static void ascii_out_text(FILE *outfile, const char *text, unsigned char textat
 			fputc('_', outfile);
 			fputc('\b', outfile);
 		}
-		p = hyp_utf8_conv_char(output_charset, p, buf, &converror);
+		p = hyp_utf8_conv_char(opts->output_charset, p, buf, &converror);
 		for (i = 0; buf[i] != 0; i++)
 			fputc(buf[i], outfile);
 		if (textattr & HYP_TXT_BOLD)
@@ -42,10 +42,10 @@ static void ascii_out_text(FILE *outfile, const char *text, unsigned char textat
 
 /* ------------------------------------------------------------------------- */
 
-static void ascii_out_str(HYP_DOCUMENT *hyp, FILE *outfile, const unsigned char *str, size_t len, unsigned char textattr)
+static void ascii_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, const unsigned char *str, size_t len, unsigned char textattr)
 {
 	char *text = hyp_conv_to_utf8(hyp->comp_charset, str, len);
-	ascii_out_text(outfile, text, textattr);
+	ascii_out_text(opts, outfile, text, textattr);
 	g_free(text);
 }
 
@@ -79,7 +79,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
-		ascii_out_str(hyp, outfile, textstart, src - textstart, manlike ? textattr : 0); \
+		ascii_out_str(hyp, opts, outfile, textstart, src - textstart, manlike ? textattr : 0); \
 		at_bol = FALSE; \
 	}
 #define FLUSHLINE() \
@@ -91,7 +91,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 #define FLUSHTREE() \
 	if (in_tree != -1) \
 	{ \
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s", stg_nl); \
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s", stg_nl); \
 		in_tree = -1; \
 		at_bol = TRUE; \
 	}
@@ -117,7 +117,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 		title = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
 		if (title == NULL)
 			title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node]->name, STR0TERM);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s", title, stg_nl);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s%s", title, stg_nl);
 		g_free(title);
 		
 		end = nodeptr->end;
@@ -153,9 +153,9 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 						str = hyp_invalid_page(dest_page);
 					}
 					if (empty(text) || strcmp(str, text) == 0)
-						hyp_utf8_fprintf_charset(outfile, output_charset, "See also: %s%s", str, stg_nl);
+						hyp_utf8_fprintf_charset(outfile, opts->output_charset, "See also: %s%s", str, stg_nl);
 					else
-						hyp_utf8_fprintf_charset(outfile, output_charset, "See also: %s%s", text, stg_nl);
+						hyp_utf8_fprintf_charset(outfile, opts->output_charset, "See also: %s%s", text, stg_nl);
 					g_free(str);
 					g_free(text);
 				}
@@ -245,12 +245,12 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 						FLUSHTREE();
 						if (opts->bracket_links)
 						{
-							ascii_out_text(outfile, "[", linkattr);
-							ascii_out_text(outfile, str, linkattr);
-							ascii_out_text(outfile, "]", linkattr);
+							ascii_out_text(opts, outfile, "[", linkattr);
+							ascii_out_text(opts, outfile, str, linkattr);
+							ascii_out_text(opts, outfile, "]", linkattr);
 						} else
 						{
-							ascii_out_text(outfile, str, linkattr);
+							ascii_out_text(opts, outfile, str, linkattr);
 						}
 						g_free(dest);
 						g_free(str);
@@ -411,7 +411,7 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 		case HYP_NODE_INTERNAL:
 		case HYP_NODE_POPUP:
 			ret &= ascii_out_node(hyp, opts, node);
-			hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s%s", stg_nl, stg_nl, stg_nl);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s%s%s", stg_nl, stg_nl, stg_nl);
 			break;
 		case HYP_NODE_IMAGE:
 		case HYP_NODE_EXTERNAL_REF:

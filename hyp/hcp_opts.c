@@ -578,11 +578,14 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				retval = not_here(origin, "--charset");
 			} else
 			{
-				opts->output_charset = hyp_charset_from_name(getopt_arg_r(d));
-				if (opts->output_charset == HYP_CHARSET_NONE)
+				HYP_CHARSET output_charset = hyp_charset_from_name(getopt_arg_r(d));
+				if (output_charset == HYP_CHARSET_NONE)
 				{
 					hcp_usage_error(_("unrecognized character set %s"), getopt_arg_r(d));
 					retval = FALSE;
+				} else
+				{
+					opts->output_charset = output_charset;
 				}
 			}
 			break;

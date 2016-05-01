@@ -109,7 +109,7 @@ so wird deren Inhalt ausgegeben und <F> wird ignoriert.
 
 Das -v Kommando zeigt aus dem als Eingabedatei angegebenen Hypertext alle
 Seiten, oder falls angegeben, bestimmte Seiten in Form von ASCII-Text an
-oder schreibt sie in die mit @{"-o" LINK "Option o"} als Ausgabedatei angegebene Datei, etwa
+oder schreibt sie in die mit (!link [-o] [Option o]) als Ausgabedatei angegebene Datei, etwa
 um sie anschlieûend ausdrucken zu kînnen.
 
 (!U)Beispiele(!u):
@@ -246,7 +246,7 @@ mit Referenzen ÅberfÅllt werden, denn hierdurch werden "ÅberflÅssige" weil
 mehrfache Referenzen eingespart.
 
 Defaultwert:    1, also eine Markierung pro Zeile
-Setzbar:        HCP_OPT, Kommandozeile, @{"@options" LINK "Kommando @options"}
+Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option e: Fehlerdatei
@@ -363,7 +363,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !index -kVAL
 !html_name option_k_hcp
 
-Mit dieser Option kann das Verhalten des @{"ST-Guide" LINK "st-guide.hyp/Main"} beeinfluût werden. VAL
+Mit dieser Option kann das Verhalten des ST-Guide beeinfluût werden. VAL
 ist dabei als Bitvektor ausgelegt:
 
 !begin_xlist [Bit 0:]

@@ -76,7 +76,7 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	
 	ret = TRUE;
 	
-	if (output_charset == HYP_CHARSET_ATARI && opts->errorfile != stdout)
+	if (opts->output_charset == HYP_CHARSET_ATARI && opts->errorfile != stdout)
 	{
 		hyp_utf8_fprintf(opts->errorfile, _("warning: writing html output in atari encoding might not work with non-atari browsers\n"));
 	}
@@ -84,7 +84,7 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	if (!hypnode_valid(hyp, output_node))
 	{
 		html_out_header(NULL, opts, out, _("Invalid Node index"), output_node, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, output_charset, _("node index %u invalid\n"), output_node);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, _("node index %u invalid\n"), output_node);
 		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
@@ -139,49 +139,49 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 				*pic_format = format_from_pic(opts, entry, HTML_DEFAULT_PIC_TYPE);
 			} else
 			{
-				hyp_utf8_sprintf_charset(out, output_charset, "%s", hyp_utf8_strerror(errno));
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "%s", hyp_utf8_strerror(errno));
 			}
 		}
 		break;
 	case HYP_NODE_EXTERNAL_REF:
 		html_out_header(NULL, opts, out, "@{ link }", node, NULL, NULL, FALSE);
 		destname = html_quote_nodename(hyp, node);
-		hyp_utf8_sprintf_charset(out, output_charset, "@{ link \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ link \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(out, FALSE);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
 		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, FALSE);
 		destname = html_quote_nodename(hyp, node);
-		hyp_utf8_sprintf_charset(out, output_charset, "@{ system \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ system \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(out, FALSE);
 		break;
 	case HYP_NODE_REXX_SCRIPT:
 		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, FALSE);
 		destname = html_quote_nodename(hyp, node);
-		hyp_utf8_sprintf_charset(out, output_charset, "@{ rxs \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rxs \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(out, FALSE);
 		break;
 	case HYP_NODE_REXX_COMMAND:
 		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, FALSE);
 		destname = html_quote_nodename(hyp, node);
-		hyp_utf8_sprintf_charset(out, output_charset, "@{ rx \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rx \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(out, FALSE);
 		break;
 	case HYP_NODE_QUIT:
 		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, FALSE);
 		destname = html_quote_nodename(hyp, node);
-		hyp_utf8_sprintf_charset(out, output_charset, "@{ quit \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ quit \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(out, FALSE);
 		break;
 	case HYP_NODE_CLOSE:
 		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, FALSE);
 		destname = html_quote_nodename(hyp, node);
-		hyp_utf8_sprintf_charset(out, output_charset, "@{ close \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ close \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(out, FALSE);
 		break;
@@ -217,7 +217,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	if (handle < 0)
 	{
 		html_out_header(NULL, opts, out, _("404 not found"), HYP_NOINDEX, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, output_charset, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
 		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
@@ -241,7 +241,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 #else
 			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL,TRUE);
 			ref_close(ref);
-			hyp_utf8_sprintf_charset(out, output_charset, "Listing of ref files not yet supported");
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "Listing of ref files not yet supported");
 			html_out_trailer(out, FALSE);
 			ret = TRUE;
 #endif
@@ -249,7 +249,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		}
 		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, output_charset, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
 		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
@@ -260,7 +260,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		hyp_unref(hyp);
 		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, output_charset, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
+		hyp_utf8_sprintf_charset(out, opts->output_charset, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
 		html_out_trailer(out, TRUE);
 		return FALSE;
 	}
@@ -426,7 +426,6 @@ int main(int unused_argc, const char **unused_argv)
 	UNUSED(unused_argv);
 	is_MASTER = getenv("TO_MASTER") != NULL;
 	
-	output_charset = hyp_get_current_charset();
 	HypProfile_Load(FALSE);
 	
 	hcp_opts_init(opts);
@@ -447,10 +446,7 @@ int main(int unused_argc, const char **unused_argv)
 	opts->hideimages = FALSE;
 	opts->cgi_cached = FALSE;
 	
-	if (opts->output_charset != HYP_CHARSET_NONE)
-		output_charset = opts->output_charset;
-
-	html_init(out);
+	html_init(opts);
 
 	body = g_string_new(NULL);
 	cgiInit(body);
@@ -462,9 +458,9 @@ int main(int unused_argc, const char **unused_argv)
 	
 	if ((val = cgiFormString("charset")) != NULL)
 	{
-		output_charset = hyp_charset_from_name(val);
-		if (output_charset == HYP_CHARSET_NONE)
-			output_charset = HYP_CHARSET_UTF8;
+		opts->output_charset = hyp_charset_from_name(val);
+		if (opts->output_charset == HYP_CHARSET_NONE)
+			opts->output_charset = HYP_CHARSET_UTF8;
 		g_free(val);
 	}
 	if ((val = cgiFormString("hidemenu")) != NULL)
@@ -758,7 +754,7 @@ int main(int unused_argc, const char **unused_argv)
 	}
 #endif
 		
-	html_out_response_header(out, output_charset, body->len, pic_format);
+	html_out_response_header(out, opts->output_charset, body->len, pic_format);
 	cgiExit();
 	write_strout(body, out);
 	g_string_free(body, TRUE);
