@@ -42,15 +42,31 @@ HYP View Web Service<span style="font-size: 13pt"> - provided by <a href="http:/
 <br />
 
 <form action="hypview.cgi" method="get" id="hypviewform">
+
+<noscript>
+<p><span style="color:red">
+<b>Your browser does not support JavaScript</b>
+<br />
+This service will not work without JavaScript enabled.
+</span>
+<br />
+<br /></p>
+</noscript>
+
 <table>
 <tr style="vertical-align: top;">
 <td>
 <fieldset>
 Type in URL of a .HYP file (it must be remotely accessible from that URL<br />
-for example <a href="/hypview/hypview.cgi?url=http://jaysoft.atari.org/docs/ataripf.hyp">http://jaysoft.atari.org/docs/ataripf.hyp</a>):
+for example <a href="hypview.cgi?url=/hyp/ataripf.hyp">http://www.tho-otto.de/hyp/ataripf.hyp</a>):
 <br />
 <input type="text" id="url" name="url" size="60" tabindex="1" style="margin-top: 1ex;" />
-<input style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitUrl();" /><br />
+<input id="submiturl" style="background-color: #cccccc; font-weight: bold; visibility: hidden;" type="button" value="View" onclick="submitUrl();" />
+<noscript>
+<input type="submit" style="background-color: #cccccc; font-weight: bold;" value="View" />
+</noscript>
+<script>document.getElementById('submiturl').style.visibility="visible";</script>
+<br />
 </fieldset>
 <br />
 <b>OR</b><br />
@@ -58,7 +74,7 @@ for example <a href="/hypview/hypview.cgi?url=http://jaysoft.atari.org/docs/atar
 <fieldset>
 Choose a .HYP file for upload <br />
 <input type="file" id="file" name="file" size="60" style="margin-top: 1ex;" />
-<input style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitFile();" /><br />
+<input id="submitfile" style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitFile();" /><br />
 </fieldset>
 <br />
 <br />
@@ -94,29 +110,18 @@ Show menu<br />
 <td>
 Output encoding:
 </td>
-<td>&nbsp;</td>
-</tr>
-<tr>
 <td>
-<input type="radio" name="charset" value="latin1" /> latin1 (ISO-8859-1)
+<select id="output_charset" name="charset">
+<option value="latin1"> latin1 (ISO-8859-1) (Western Europe)</option>
+<option value="latin2"> latin2 (ISO-8859-2) (Central Europe)</option>
+<!-- <option value="latin5"> latin5 (ISO-8859-5) (Cyrillic)</option> NYI -->
+<option value="cp1250"> Windows 1250 (Central Europe)</option>
+<!-- <option value="cp1251"> Windows 1251 (Cyrillic)</option> NYI -->
+<option value="cp1252"> Windows 1252 (Western Europe)</option>
+<option value="atarist"> Atari-ST (might not work on non-Atari Browser)</option>
+<option value="utf8" selected="selected"> UTF-8 (Unicode, Worldwide)</option>
+</select>
 </td>
-<td>
-<input type="radio" name="charset" value="cp1252" /> Windows 1252
-</td>
-</tr>
-<tr>
-<td>
-<input type="radio" name="charset" value="latin2" /> latin2 (ISO-8859-2)
-</td>
-<td>
-<input type="radio" name="charset" value="cp1250" /> Windows 1250
-</td>
-</tr>
-<tr>
-<td>
-<input type="radio" name="charset" value="utf8" checked="checked" /> UTF8
-</td>
-<td>&nbsp;</td>
 </tr>
 </table>
 </fieldset>
@@ -151,5 +156,6 @@ Keyboard navigation (only when menu is on using HTML 4.x accesskey attribute):
 </form>
 
 </div>
+
 </body>
 </html>
