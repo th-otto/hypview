@@ -29,9 +29,6 @@ static char const hypview_css_name[] = "_hypview.css";
 static char const hypview_js_name[] = "_hypview.js";
 static char const html_view_rsc_href[] = "rscview.cgi";
 
-static gboolean hidemenu = FALSE;
-static gboolean hideimages = FALSE;
-
 static int html_doctype = HTML_DOCTYPE_XSTRICT;
 static const char *html_closer = " />";
 static const char *html_name_attr = "id";
@@ -296,7 +293,10 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 			{
 				if (opts->read_images)
 				{
-					fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+					if (opts->cgi_cached)
+						fname = g_strdup_printf("%s?url=%s&index=%u&cached=1", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+					else
+						fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
 					alt = g_strdup_printf("index=%u", gfx->extern_node_index);
 				} else
 				{
@@ -479,12 +479,13 @@ static void html_convert_filename(char *filename)
 
 /* ------------------------------------------------------------------------- */
 
-static char *html_cgi_params(void)
+static char *html_cgi_params(hcp_opts *opts)
 {
 	return g_strconcat(
-		hidemenu ? "&hidemenu=1" : "",
-		hideimages ? "&hideimages=1" : "",
+		opts->hidemenu ? "&hidemenu=1" : "",
+		opts->hideimages ? "&hideimages=1" : "",
 		"&charset=", hyp_charset_name(output_charset),
+		opts->cgi_cached ? "&cached=1" : "",
 		NULL);
 }
 	
@@ -542,7 +543,7 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 		
 		if (opts->for_cgi)
 		{
-			char *params = html_cgi_params();
+			char *params = html_cgi_params(opts);
 			char *tmp = g_strdup_printf("%s?url=%s%s&index=%u", cgi_scriptname, html_referer_url, params, node);
 			p = html_quote_name(tmp, FALSE);
 			g_free(tmp);
@@ -1229,7 +1230,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		g_string_append(out, "<p>\n");
 	} else if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
 	{
-		if (hidemenu)
+		if (opts->hidemenu)
 		{
 			g_string_append_printf(out, "<div class=\"%s\">\n", html_node_style);
 		} else
@@ -1639,7 +1640,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 											char *dir = hyp_path_get_dirname(html_referer_url);
 											char *base = g_strdup(hyp_basename(destname));
 											char *ref, *quoted;
-											char *params = html_cgi_params();
+											char *params = html_cgi_params(opts);
 											ref = g_strconcat(dir, *dir ? "/" : "", base, params, NULL);
 											quoted = html_quote_name(ref, FALSE);
 											hyp_utf8_sprintf_charset(out, output_charset, "<a%s href=\"%s?url=%s\">%s></a>", style, cgi_scriptname, quoted, str);

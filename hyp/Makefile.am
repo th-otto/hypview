@@ -145,6 +145,7 @@ hypview_cgi_SOURCES = \
 	hobstack.c \
 	refcmds.c \
 	outasc.h outstg.h outdump.h outhtml.h htmljs.h \
+	cgic.c cgic.h \
 	$(UTIL_SRC)
 
 hypview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)

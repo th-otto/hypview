@@ -66,10 +66,15 @@ typedef struct {
 	char *image_name_prefix;
 	char *output_dir;
 	HYP_CHARSET output_charset;
-	gboolean bracket_links;
 	gboolean all_links;
-	gboolean for_cgi;
 	int optind;
+	/* for ascii output only: */
+	gboolean bracket_links;
+	/* for html out only: */
+	gboolean for_cgi;
+	gboolean hidemenu;
+	gboolean hideimages;
+	gboolean cgi_cached;
 } hcp_opts;
 
 /*
