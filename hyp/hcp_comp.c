@@ -3657,8 +3657,6 @@ static void c_charset(hcp_vars *vars, int argc, char **argv)
 		return;
 	}
 	vars->hyp->comp_charset = charset;
-	if (vars->hyp->comp_os == HYP_OS_ATARI && charset != HYP_CHARSET_ATARI && vars->opts->warn_compat && vars->hcp_pass == 1)
-		hcp_warning(vars, NULL, _("ST-Guide may not be able to display character set %s"), hyp_charset_name(charset));
 }
 
 /* ------------------------------------------------------------------------- */
@@ -7683,6 +7681,9 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 	{
 		if (vars->hyp->subject == NULL && !vars->for_amguide)
 			hcp_warning(vars, &vars->first_loc, _("Please add a @subject-command to this text"));
+		
+		if (vars->hyp->comp_charset != HYP_CHARSET_ATARI && vars->opts->warn_compat)
+			hcp_warning(vars, NULL, _("ST-Guide may not be able to display character set %s"), hyp_charset_name(vars->hyp->comp_charset));
 		
 		if (retval)
 		{
