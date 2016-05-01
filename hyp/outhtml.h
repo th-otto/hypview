@@ -1105,7 +1105,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 	switch (xref->desttype)
 	{
 	case HYP_NODE_EOF:
-		hyp_utf8_sprintf_charset(out, opts->output_charset, _("<a class=\"%s\" href=\"%s\">%s</a>"), html_error_link_style, xref->destfilename, xref->destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"%s\">%s</a>", html_error_link_style, xref->destfilename, xref->destname);
 		break;
 	case HYP_NODE_INTERNAL:
 	case HYP_NODE_POPUP:
@@ -1223,7 +1223,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"javascript:execRxs('%s', '%s')\">%s</a>", html_system_link_style, _("Execute REXX script"), xref->destname, xref->text);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"javascript:execSystem('%s', '%s')\">%s</a>", html_rx_link_style, _("Execute"), xref->destname, xref->text);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"javascript:execSystem('%s', '%s')\">%s</a>", html_rx_link_style, _("Execute command"), xref->destname, xref->text);
 		break;
 	case HYP_NODE_IMAGE:
 		/* that would be an inline image; currently not supported by compiler */

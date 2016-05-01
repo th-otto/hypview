@@ -8,7 +8,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-20 18:34+0200\n"
+"POT-Creation-Date: 2016-05-02 01:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -286,7 +286,7 @@ msgid  "No application defined to handle %s."
 msgstr ""
 
 #: ../gtk/hv_click.c:142
-#: ../gtk/hv_disp.c:1304
+#: ../gtk/hv_disp.c:1168
 #: ../win32/hv_click.c:133
 #: ../win32/hv_click.c:369
 #, c-format
@@ -828,26 +828,26 @@ msgstr ""
 msgid  "Always output index page"
 msgstr ""
 
-#: ../gtk/hv_recomp.c:32
-#: ../hyp/hcpmain.c:156
-#: ../hyp/hypfind.c:892
-#: ../win32/hv_recomp.c:32
+#: ../gtk/hv_recomp.c:35
+#: ../hyp/hcpmain.c:153
+#: ../hyp/hypfind.c:891
+#: ../win32/hv_recomp.c:35
 #, c-format
 msgid  "%s: fatal: protected hypertext: %s\n"
 msgstr ""
 
-#: ../gtk/hv_recomp.c:36
-#: ../hyp/hcpmain.c:160
-#: ../hyp/hcpmain.c:277
-#: ../hyp/hypfind.c:896
-#: ../win32/hv_recomp.c:36
+#: ../gtk/hv_recomp.c:39
+#: ../hyp/hcpmain.c:157
+#: ../hyp/hcpmain.c:274
+#: ../hyp/hypfind.c:895
+#: ../win32/hv_recomp.c:39
 #, c-format
 msgid  "%s: warning: %s created by compiler version %u\n"
 msgstr ""
 
-#: ../gtk/hv_recomp.c:69
-#: ../hyp/hcpmain.c:200
-#: ../win32/hv_recomp.c:69
+#: ../gtk/hv_recomp.c:72
+#: ../hyp/hcpmain.c:197
+#: ../win32/hv_recomp.c:72
 #, c-format
 msgid  "recompiling %s to %s\n"
 msgstr ""
@@ -901,6 +901,7 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_win.c:1856
+#: ../hyp/outhtml.h:933
 msgid  "Back"
 msgstr ""
 
@@ -1030,6 +1031,7 @@ msgid  "_Open Hypertext..."
 msgstr ""
 
 #: ../gtk/hv_win.c:2120
+#: ../hyp/outhtml.h:1075
 #: ../win32/hv_win.c:25
 msgid  "Load a file"
 msgstr ""
@@ -1056,6 +1058,7 @@ msgid  "_File info..."
 msgstr ""
 
 #: ../gtk/hv_win.c:2123
+#: ../hyp/outhtml.h:1061
 #: ../win32/hv_win.c:24
 msgid  "Show info about hypertext"
 msgstr ""
@@ -1241,7 +1244,7 @@ msgstr ""
 #: ../hyp/bmp2img.c:56
 #: ../hyp/gif2bmp.c:59
 #: ../hyp/hcpmain.c:21
-#: ../hyp/hypfind.c:78
+#: ../hyp/hypfind.c:77
 #: ../hyp/icn2ico.c:96
 #: ../hyp/icn2img.c:56
 #: ../hyp/img2bmp.c:56
@@ -1278,7 +1281,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:121
 #: ../hyp/bmp2img.c:120
 #: ../hyp/gif2bmp.c:122
-#: ../hyp/hcp_opts.c:495
+#: ../hyp/hcp_opts.c:496
 #: ../hyp/icn2ico.c:162
 #: ../hyp/icn2img.c:119
 #: ../hyp/img2bmp.c:120
@@ -1289,7 +1292,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:126
 #: ../hyp/bmp2img.c:125
 #: ../hyp/gif2bmp.c:127
-#: ../hyp/hcp_comp.c:7158
+#: ../hyp/hcp_comp.c:7156
 #: ../hyp/icn2ico.c:167
 #: ../hyp/icn2img.c:124
 #: ../hyp/img2bmp.c:125
@@ -1339,7 +1342,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:258
 #: ../hyp/bmp2img.c:248
 #: ../hyp/gif2bmp.c:267
-#: ../hyp/hcpmain.c:646
+#: ../hyp/hcpmain.c:642
 #: ../hyp/icn2ico.c:303
 #: ../hyp/icn2img.c:255
 #: ../hyp/img2bmp.c:250
@@ -1403,7 +1406,7 @@ msgid  "duplicate %s"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:722
-#: ../hyp/hcp_comp.c:5352
+#: ../hyp/hcp_comp.c:5350
 #, c-format
 msgid  "%s longer than %d chars, truncated"
 msgstr ""
@@ -1428,7 +1431,7 @@ msgid  "%s redefined"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:1735
-#: ../hyp/hcp_comp.c:7078
+#: ../hyp/hcp_comp.c:7076
 #, c-format
 msgid  "%s: read error"
 msgstr ""
@@ -1457,8 +1460,8 @@ msgstr ""
 
 #: ../hyp/hcp_comp.c:2326
 #: ../hyp/hcp_comp.c:2400
-#: ../hyp/hcp_comp.c:4496
-#: ../hyp/hcp_comp.c:5853
+#: ../hyp/hcp_comp.c:4494
+#: ../hyp/hcp_comp.c:5851
 #, c-format
 msgid  "too many labels (max. %lu)"
 msgstr ""
@@ -1498,8 +1501,8 @@ msgid  "missing second operand"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:2683
-#: ../hyp/hcp_comp.c:4187
-#: ../hyp/hcp_comp.c:4417
+#: ../hyp/hcp_comp.c:4185
+#: ../hyp/hcp_comp.c:4415
 msgid  "filename"
 msgstr ""
 
@@ -1523,8 +1526,8 @@ msgstr ""
 #: ../hyp/hcp_comp.c:3108
 #: ../hyp/hcp_comp.c:3313
 #: ../hyp/hcp_comp.c:3376
-#: ../hyp/hcp_comp.c:4456
-#: ../hyp/hcp_comp.c:4561
+#: ../hyp/hcp_comp.c:4454
+#: ../hyp/hcp_comp.c:4559
 msgid  "nodename"
 msgstr ""
 
@@ -1550,7 +1553,7 @@ msgstr ""
 #: ../hyp/hcp_comp.c:2802
 #: ../hyp/hcp_comp.c:3000
 #: ../hyp/hcp_comp.c:3005
-#: ../hyp/hcp_comp.c:4581
+#: ../hyp/hcp_comp.c:4579
 msgid  "window title"
 msgstr ""
 
@@ -1577,16 +1580,16 @@ msgid  "symbol name"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:3230
-#: ../hyp/hcp_comp.c:6683
+#: ../hyp/hcp_comp.c:6681
 #, c-format
 msgid  "%s ignored outside @node"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:3236
-#: ../hyp/hcp_comp.c:3906
-#: ../hyp/hcp_comp.c:6686
-#: ../hyp/hcp_comp.c:6699
-#: ../hyp/hcp_comp.c:6709
+#: ../hyp/hcp_comp.c:3904
+#: ../hyp/hcp_comp.c:6684
+#: ../hyp/hcp_comp.c:6697
+#: ../hyp/hcp_comp.c:6707
 #, c-format
 msgid  "%s not allowed in @pnode"
 msgstr ""
@@ -1604,7 +1607,7 @@ msgid  "version string"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:3477
-#: ../hyp/hcp_comp.c:6488
+#: ../hyp/hcp_comp.c:6486
 #, c-format
 msgid  "undefined variable %s"
 msgstr ""
@@ -1627,179 +1630,174 @@ msgid  "unrecognized os %s"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:3656
-#: ../hyp/hcp_comp.c:3683
-#: ../hyp/hcp_opts.c:583
+#: ../hyp/hcp_comp.c:3681
+#: ../hyp/hcp_opts.c:584
 #, c-format
 msgid  "unrecognized character set %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3661
-#, c-format
-msgid  "ST-Guide may not be able to display character set %s"
-msgstr ""
-
-#: ../hyp/hcp_comp.c:3716
-#: ../hyp/hcp_comp.c:3795
-#: ../hyp/hcp_comp.c:3835
-#: ../hyp/hcp_comp.c:3923
+#: ../hyp/hcp_comp.c:3714
+#: ../hyp/hcp_comp.c:3793
+#: ../hyp/hcp_comp.c:3833
+#: ../hyp/hcp_comp.c:3921
 #, c-format
 msgid  "redefined alias %s at %s:%lu (ignored)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3717
-#: ../hyp/hcp_comp.c:3835
-#: ../hyp/hcp_comp.c:3924
+#: ../hyp/hcp_comp.c:3715
+#: ../hyp/hcp_comp.c:3833
+#: ../hyp/hcp_comp.c:3922
 #, c-format
 msgid  "redefined nodename %s at %s:%lu (ignored)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3718
-#: ../hyp/hcp_comp.c:3758
-#: ../hyp/hcp_comp.c:3795
-#: ../hyp/hcp_comp.c:3925
-#: ../hyp/hcp_comp.c:3934
+#: ../hyp/hcp_comp.c:3716
+#: ../hyp/hcp_comp.c:3756
+#: ../hyp/hcp_comp.c:3793
+#: ../hyp/hcp_comp.c:3923
+#: ../hyp/hcp_comp.c:3932
 #, c-format
 msgid  "redefined label %s at %s:%lu (ignored)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3752
+#: ../hyp/hcp_comp.c:3750
 msgid  "label names must not be numbers"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3874
+#: ../hyp/hcp_comp.c:3872
 msgid  "symbol flags"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3896
+#: ../hyp/hcp_comp.c:3894
 #, c-format
 msgid  "illegal flag '%c' for symbol"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3988
-#: ../hyp/hcp_comp.c:4084
-#: ../hyp/hcp_comp.c:4250
+#: ../hyp/hcp_comp.c:3986
+#: ../hyp/hcp_comp.c:4082
+#: ../hyp/hcp_comp.c:4248
 msgid  "X-Position out of range"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:3996
-#: ../hyp/hcp_comp.c:4092
-#: ../hyp/hcp_comp.c:4346
+#: ../hyp/hcp_comp.c:3994
+#: ../hyp/hcp_comp.c:4090
+#: ../hyp/hcp_comp.c:4344
 msgid  "bad width"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4004
-#: ../hyp/hcp_comp.c:4100
+#: ../hyp/hcp_comp.c:4002
+#: ../hyp/hcp_comp.c:4098
 msgid  "bad height"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4015
+#: ../hyp/hcp_comp.c:4013
 msgid  "bad pattern"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4112
+#: ../hyp/hcp_comp.c:4110
 msgid  "bad type"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4122
+#: ../hyp/hcp_comp.c:4120
 msgid  "bad style"
 msgstr ""
 
+#: ../hyp/hcp_comp.c:4219
 #: ../hyp/hcp_comp.c:4221
-#: ../hyp/hcp_comp.c:4223
-#: ../hyp/hcp_comp.c:7309
+#: ../hyp/hcp_comp.c:7307
 #, c-format
 msgid  "can't open file '%s': %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4245
+#: ../hyp/hcp_comp.c:4243
 #, c-format
 msgid  "image-file %s already used as sourcefile"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4352
+#: ../hyp/hcp_comp.c:4350
 msgid  "width may not be accepted by ST-Guide"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4379
+#: ../hyp/hcp_comp.c:4377
 msgid  "illegal tabsize"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4387
+#: ../hyp/hcp_comp.c:4385
 msgid  "@tabsize will only affect this node"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4451
+#: ../hyp/hcp_comp.c:4449
 msgid  "label"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4477
+#: ../hyp/hcp_comp.c:4475
 #, c-format
 msgid  "redefined extern name %s at %s:%lu"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4518
-#: ../hyp/hcp_comp.c:5863
-#: ../hyp/hcp_comp.c:6143
+#: ../hyp/hcp_comp.c:4516
+#: ../hyp/hcp_comp.c:5861
+#: ../hyp/hcp_comp.c:6141
 msgid  "bad line number"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4603
+#: ../hyp/hcp_comp.c:4601
 msgid  "ST-Guide may not be able to display more than 12 @xref items"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4867
+#: ../hyp/hcp_comp.c:4865
 msgid  "no nodes found"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4881
-#: ../hyp/hcp_comp.c:4895
-#: ../hyp/hcp_comp.c:4949
-#: ../hyp/hcp_comp.c:4968
-#: ../hyp/hcp_comp.c:4983
+#: ../hyp/hcp_comp.c:4879
+#: ../hyp/hcp_comp.c:4893
+#: ../hyp/hcp_comp.c:4947
+#: ../hyp/hcp_comp.c:4966
+#: ../hyp/hcp_comp.c:4981
 #, c-format
 msgid  "%s node-name not found: %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4884
-#: ../hyp/hcp_comp.c:4898
-#: ../hyp/hcp_comp.c:4912
+#: ../hyp/hcp_comp.c:4882
+#: ../hyp/hcp_comp.c:4896
+#: ../hyp/hcp_comp.c:4910
 #, c-format
 msgid  "%s node %s must not be popup-node"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:4953
-#: ../hyp/hcp_comp.c:4972
-#: ../hyp/hcp_comp.c:4987
+#: ../hyp/hcp_comp.c:4951
+#: ../hyp/hcp_comp.c:4970
+#: ../hyp/hcp_comp.c:4985
 #, c-format
 msgid  "%s-link in %s is a popup"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5008
+#: ../hyp/hcp_comp.c:5006
 #, c-format
 msgid  "node-name %s for tree not found (object ignored)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5011
+#: ../hyp/hcp_comp.c:5009
 #, c-format
 msgid  "node %s for object-tree must not be popup-node (object ignored)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5022
-#: ../hyp/hcp_comp.c:5082
+#: ../hyp/hcp_comp.c:5020
+#: ../hyp/hcp_comp.c:5080
 #, c-format
 msgid  "label '%s' not found in node %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5098
+#: ../hyp/hcp_comp.c:5096
 #, c-format
 msgid  "line number %u exceeds page size %u in %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5352
+#: ../hyp/hcp_comp.c:5350
 msgid  "text"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5489
+#: ../hyp/hcp_comp.c:5487
 msgid  "empty index page"
 msgstr ""
 
@@ -1813,228 +1811,233 @@ msgstr ""
 #.
 #. * @{ <attributes> }
 #.
-#: ../hyp/hcp_comp.c:5630
+#: ../hyp/hcp_comp.c:5628
 #, c-format
 msgid  "already active: %c"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5639
+#: ../hyp/hcp_comp.c:5637
 #, c-format
 msgid  "not active: %c"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5696
+#: ../hyp/hcp_comp.c:5694
 #, c-format
 msgid  "illegal textattribute %c"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5768
+#: ../hyp/hcp_comp.c:5766
 msgid  "link"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5776
+#: ../hyp/hcp_comp.c:5774
 msgid  "link to current node"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5810
+#: ../hyp/hcp_comp.c:5808
 #, c-format
 msgid  "Define %s not found. Resource-Link ignored"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5832
+#: ../hyp/hcp_comp.c:5830
 msgid  "Using backward slashes in external references is deprecated"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:5924
-#: ../hyp/hcp_comp.c:6044
+#: ../hyp/hcp_comp.c:5922
+#: ../hyp/hcp_comp.c:6042
 msgid  "command"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6132
+#: ../hyp/hcp_comp.c:6130
 #, c-format
 msgid  "Define %s not found (object ignored)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6404
+#: ../hyp/hcp_comp.c:6402
 msgid  "missing command"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6424
-#: ../hyp/hcp_comp.c:6454
+#: ../hyp/hcp_comp.c:6422
+#: ../hyp/hcp_comp.c:6452
 #, c-format
 msgid  "@{%s} not implemented"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6427
-#: ../hyp/hcp_comp.c:6457
+#: ../hyp/hcp_comp.c:6425
+#: ../hyp/hcp_comp.c:6455
 #, c-format
 msgid  "unknown command '%s'"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6598
+#: ../hyp/hcp_comp.c:6596
 msgid  "Recursive include detected"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6655
+#: ../hyp/hcp_comp.c:6653
 #, c-format
 msgid  "illegal command %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6673
+#: ../hyp/hcp_comp.c:6671
 #, c-format
 msgid  "%s command ignored after first @node"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6696
+#: ../hyp/hcp_comp.c:6694
 #, c-format
 msgid  "%s not allowed here"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6727
+#: ../hyp/hcp_comp.c:6725
 msgid  "plain text outside node ignored"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6748
+#: ../hyp/hcp_comp.c:6746
 msgid  "missing @endif"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6749
+#: ../hyp/hcp_comp.c:6747
 #, c-format
 msgid  "last @if: %s line %lu\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6803
+#: ../hyp/hcp_comp.c:6801
 msgid  "Pass 1: "
 msgstr ""
 
-#: ../hyp/hcp_comp.c:6803
+#: ../hyp/hcp_comp.c:6801
 msgid  "Pass 2: "
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7060
+#: ../hyp/hcp_comp.c:7058
 #, c-format
 msgid  "%s: can't determine size: %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7065
+#: ../hyp/hcp_comp.c:7063
 #, c-format
 msgid  "%s: empty file"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7102
+#: ../hyp/hcp_comp.c:7100
 #, c-format
 msgid  "%s: unknown file format"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7160
+#: ../hyp/hcp_comp.c:7158
 #, c-format
 msgid  "%s: not a picture format"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7170
+#: ../hyp/hcp_comp.c:7168
 #, c-format
 msgid  "%d colors"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7172
+#: ../hyp/hcp_comp.c:7170
 msgid  "hicolor"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7174
+#: ../hyp/hcp_comp.c:7172
 msgid  "truecolor"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7175
+#: ../hyp/hcp_comp.c:7173
 #, c-format
 msgid  "%s: unsupported number of colors (%d planes, %s)"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7259
+#: ../hyp/hcp_comp.c:7257
 #, c-format
 msgid  "%s: can't unpack"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7292
+#: ../hyp/hcp_comp.c:7290
 msgid  "Image : "
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7395
+#: ../hyp/hcp_comp.c:7393
 msgid  "Writing reference-file"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7489
+#: ../hyp/hcp_comp.c:7487
 msgid  "error writing references file"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7506
+#: ../hyp/hcp_comp.c:7504
 msgid  "Updating default-reference-file"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7642
+#: ../hyp/hcp_comp.c:7640
 msgid  "would overwrite input file"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7650
+#: ../hyp/hcp_comp.c:7648
 #, c-format
 msgid  "compiling %s to %s\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7685
+#: ../hyp/hcp_comp.c:7683
 msgid  "Please add a @subject-command to this text"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7723
+#: ../hyp/hcp_comp.c:7686
 #, c-format
-msgid  "internal nodes: %u\n"
+msgid  "ST-Guide may not be able to display character set %s"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:7724
 #, c-format
-msgid  "external nodes: %u\n"
+msgid  "internal nodes: %u\n"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:7725
 #, c-format
-msgid  "images        : %u\n"
+msgid  "external nodes: %u\n"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:7726
 #, c-format
-msgid  "other nodes   : %u\n"
+msgid  "images        : %u\n"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:7727
 #, c-format
+msgid  "other nodes   : %u\n"
+msgstr ""
+
+#: ../hyp/hcp_comp.c:7728
+#, c-format
 msgid  "autorefs      : %lu\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7729
+#: ../hyp/hcp_comp.c:7730
 #, c-format
 msgid  "Refs generated: %lu\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7731
+#: ../hyp/hcp_comp.c:7732
 #, c-format
 msgid  "compression   : %lu (%lu%%)\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7743
+#: ../hyp/hcp_comp.c:7744
 #, c-format
 msgid  "not referenced: %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:7749
+#: ../hyp/hcp_comp.c:7750
 msgid  "cannot start pass2"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:275
-#: ../hyp/hcp_opts.c:278
-#: ../hyp/hcp_opts.c:281
-#: ../hyp/hcp_opts.c:284
-#: ../hyp/hypfind.c:145
-#: ../hyp/hypfind.c:148
-#: ../hyp/hypfind.c:151
-#: ../hyp/hypfind.c:154
+#: ../hyp/hcp_opts.c:276
+#: ../hyp/hcp_opts.c:279
+#: ../hyp/hcp_opts.c:282
+#: ../hyp/hcp_opts.c:285
+#: ../hyp/hypfind.c:144
+#: ../hyp/hypfind.c:147
+#: ../hyp/hypfind.c:150
+#: ../hyp/hypfind.c:153
 #: ../hyp/refcheck.c:631
 #: ../hyp/refcheck.c:634
 #: ../hyp/refcheck.c:637
@@ -2042,43 +2045,43 @@ msgstr ""
 msgid  "%s can not be specified %s"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:275
-#: ../hyp/hypfind.c:145
+#: ../hyp/hcp_opts.c:276
+#: ../hyp/hypfind.c:144
 #: ../hyp/refcheck.c:631
 msgid  "on the command line"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:278
-#: ../hyp/hypfind.c:148
+#: ../hyp/hcp_opts.c:279
+#: ../hyp/hypfind.c:147
 #: ../hyp/refcheck.c:634
 msgid  "in the environment"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:281
-#: ../hyp/hypfind.c:151
+#: ../hyp/hcp_opts.c:282
+#: ../hyp/hypfind.c:150
 #: ../hyp/refcheck.c:637
 msgid  "in the configuration file"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:284
-#: ../hyp/hypfind.c:154
+#: ../hyp/hcp_opts.c:285
+#: ../hyp/hypfind.c:153
 msgid  "in the source file"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:293
+#: ../hyp/hcp_opts.c:294
 #, c-format
 msgid  "bad value for %s"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:363
+#: ../hyp/hcp_opts.c:364
 msgid  "--blocksize is no longer supported"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:450
+#: ../hyp/hcp_opts.c:451
 msgid  "listing flags"
 msgstr ""
 
-#: ../hyp/hcp_opts.c:657
+#: ../hyp/hcp_opts.c:661
 msgid  "input files"
 msgstr ""
 
@@ -2093,7 +2096,7 @@ msgid  "or:    %s -v [-oFILE] hypertext-file node1 node2 ...\n"
 msgstr ""
 
 #: ../hyp/hcpmain.c:66
-#: ../hyp/hypfind.c:114
+#: ../hyp/hypfind.c:113
 #: ../hyp/refcheck.c:99
 #: ../hyp/reflink.c:51
 #: ../hyp/stool.c:1943
@@ -2214,114 +2217,114 @@ msgstr ""
 msgid  "  -V, --version                 print version and exit\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:147
-#: ../hyp/hcpmain.c:271
-#: ../hyp/hypfind.c:885
+#: ../hyp/hcpmain.c:144
+#: ../hyp/hcpmain.c:268
+#: ../hyp/hypfind.c:884
 #, c-format
 msgid  "%s: %s: not a HYP file\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:286
+#: ../hyp/hcpmain.c:283
 msgid  "    #   toc  next  prev type                    offset  packed   size   len name\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:287
+#: ../hyp/hcpmain.c:284
 msgid  "--------------------------------------------------------------------------------\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:302
-#: ../hyp/hcpmain.c:466
+#: ../hyp/hcpmain.c:299
+#: ../hyp/hcpmain.c:463
 msgid  "internal node"
 msgstr ""
 
-#: ../hyp/hcpmain.c:313
-#: ../hyp/hcpmain.c:476
+#: ../hyp/hcpmain.c:310
+#: ../hyp/hcpmain.c:473
 msgid  "pop-up node"
 msgstr ""
 
-#: ../hyp/hcpmain.c:324
-#: ../hyp/hcpmain.c:486
+#: ../hyp/hcpmain.c:321
+#: ../hyp/hcpmain.c:483
 msgid  "external node"
 msgstr ""
 
-#: ../hyp/hcpmain.c:339
-#: ../hyp/hcpmain.c:496
+#: ../hyp/hcpmain.c:336
+#: ../hyp/hcpmain.c:493
 #: ../hyp/outdump.h:171
 msgid  "image"
 msgstr ""
 
-#: ../hyp/hcpmain.c:354
+#: ../hyp/hcpmain.c:351
 #, c-format
 msgid  " mask=$%02x on-off=$%02x)"
 msgstr ""
 
-#: ../hyp/hcpmain.c:357
+#: ../hyp/hcpmain.c:354
 msgid  " (decode error)"
 msgstr ""
 
-#: ../hyp/hcpmain.c:362
+#: ../hyp/hcpmain.c:359
 msgid  " (no data)"
 msgstr ""
 
-#: ../hyp/hcpmain.c:373
-#: ../hyp/hcpmain.c:506
+#: ../hyp/hcpmain.c:370
+#: ../hyp/hcpmain.c:503
 msgid  "system node"
 msgstr ""
 
-#: ../hyp/hcpmain.c:384
-#: ../hyp/hcpmain.c:516
+#: ../hyp/hcpmain.c:381
+#: ../hyp/hcpmain.c:513
 msgid  "REXX script"
 msgstr ""
 
-#: ../hyp/hcpmain.c:395
-#: ../hyp/hcpmain.c:526
+#: ../hyp/hcpmain.c:392
+#: ../hyp/hcpmain.c:523
 msgid  "REXX command"
 msgstr ""
 
-#: ../hyp/hcpmain.c:406
-#: ../hyp/hcpmain.c:536
+#: ../hyp/hcpmain.c:403
+#: ../hyp/hcpmain.c:533
 msgid  "quit node"
 msgstr ""
 
-#: ../hyp/hcpmain.c:417
-#: ../hyp/hcpmain.c:546
+#: ../hyp/hcpmain.c:414
+#: ../hyp/hcpmain.c:543
 msgid  "close node"
 msgstr ""
 
-#: ../hyp/hcpmain.c:428
-#: ../hyp/hcpmain.c:556
+#: ../hyp/hcpmain.c:425
+#: ../hyp/hcpmain.c:553
 msgid  "EOF entry"
 msgstr ""
 
-#: ../hyp/hcpmain.c:436
-#: ../hyp/hcpmain.c:564
+#: ../hyp/hcpmain.c:433
+#: ../hyp/hcpmain.c:561
 #, c-format
 msgid  "unknown type %u"
 msgstr ""
 
-#: ../hyp/hcpmain.c:451
+#: ../hyp/hcpmain.c:448
 msgid  "type                    offset  packed   size   name\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:452
+#: ../hyp/hcpmain.c:449
 msgid  "----------------------------------------------------\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:639
+#: ../hyp/hcpmain.c:635
 msgid  "only one of -lrv may be specified"
 msgstr ""
 
-#: ../hyp/hcpmain.c:661
+#: ../hyp/hcpmain.c:659
 #, c-format
 msgid  "File: %s\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:689
+#: ../hyp/hcpmain.c:687
 #, c-format
 msgid  "@remark File: %s%s"
 msgstr ""
 
-#: ../hyp/hcpmain.c:709
+#: ../hyp/hcpmain.c:707
 #, c-format
 msgid  "<!-- File: %s -->%s"
 msgstr ""
@@ -2344,7 +2347,7 @@ msgid  "Version %s for %s, %s"
 msgstr ""
 
 #: ../hyp/hyp.c:133
-#: ../hyp/hyp_cset.c:378
+#: ../hyp/hyp_cset.c:380
 #: ../hyp/stool.c:54
 msgid  "Unknown"
 msgstr ""
@@ -2380,7 +2383,7 @@ msgstr ""
 msgid  "%s: could not create directory %s: %s\n"
 msgstr ""
 
-#: ../hyp/hyp_cset.c:382
+#: ../hyp/hyp_cset.c:384
 #, c-format
 msgid  "Charset 0x%02x"
 msgstr ""
@@ -2400,119 +2403,118 @@ msgstr ""
 msgid  "no start page found."
 msgstr ""
 
-#: ../hyp/hypfind.c:113
+#: ../hyp/hypfind.c:112
 #, c-format
 msgid  "usage: %s [-cqiIw] -p <pattern> file...\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:115
+#: ../hyp/hypfind.c:114
 msgid  "  -c, --compile                       do not compile output file\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:116
+#: ../hyp/hypfind.c:115
 msgid  "  -q, --quiet                         suppress output messages\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:117
+#: ../hyp/hypfind.c:116
 msgid  "  -I, --casesensitive                 case-sensitive search\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:118
+#: ../hyp/hypfind.c:117
 msgid  "  -i, --ignore-case                   ignore case distinctions (default)\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:119
+#: ../hyp/hypfind.c:118
 msgid  "  -p, --pattern <pattern>             text to search for\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:120
+#: ../hyp/hypfind.c:119
 msgid  "  -w, --word                          force PATTERN to match only whole words\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:121
+#: ../hyp/hypfind.c:120
 #: ../hyp/refcheck.c:119
 msgid  "  -h, --help                          print help and exit\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:122
+#: ../hyp/hypfind.c:121
 #: ../hyp/refcheck.c:120
 msgid  "  -V, --version                       print version and exit\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:763
-#: ../hyp/outasc.h:401
+#: ../hyp/hypfind.c:762
+#: ../hyp/outasc.h:311
 #: ../hyp/outdump.h:222
-#: ../hyp/outhtml.h:1241
-#: ../hyp/outstg.h:847
+#: ../hyp/outhtml.h:1886
+#: ../hyp/outstg.h:733
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:847
-#: ../hyp/outhtml.h:1424
-#: ../hyp/outstg.h:1462
+#: ../hyp/hypfind.c:846
+#: ../hyp/outhtml.h:2126
+#: ../hyp/outstg.h:884
 #, c-format
 msgid  "unknown index entry type %u\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:911
+#: ../hyp/hypfind.c:910
 #, c-format
 msgid  " %lu matches"
 msgstr ""
 
-#: ../hyp/hypfind.c:964
+#: ../hyp/hypfind.c:963
 #: ../hyp/stool.c:1876
 #, c-format
 msgid  "can't find %s: %s\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:968
+#: ../hyp/hypfind.c:967
 #: ../hyp/stool.c:1880
 #, c-format
 msgid  "hcp exit code was %d\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:1008
+#: ../hyp/hypfind.c:1007
 msgid  "can only search for one pattern"
 msgstr ""
 
-#: ../hyp/hypfind.c:1108
+#: ../hyp/hypfind.c:1107
 msgid  "missing search pattern"
 msgstr ""
 
-#: ../hyp/hypfind.c:1112
+#: ../hyp/hypfind.c:1111
 msgid  "empty search pattern"
 msgstr ""
 
-#: ../hyp/hypfind.c:1177
+#: ../hyp/hypfind.c:1176
 #, c-format
 msgid  "searching for <%s>%s...\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:1177
+#: ../hyp/hypfind.c:1176
 msgid  " as word"
 msgstr ""
 
-#: ../hyp/hypfind.c:1222
+#: ../hyp/hypfind.c:1221
 #, c-format
 msgid  "%s: No matches for this pattern!\n"
 msgstr ""
 
-#: ../hyp/hypfind.c:1230
+#: ../hyp/hypfind.c:1229
 #, c-format
 msgid  "%lu matches total in %lu files\n"
 msgstr ""
 
-#: ../hyp/outasc.h:430
+#: ../hyp/outasc.h:340
 #: ../hyp/outdump.h:242
-#: ../hyp/outhtml.h:1308
-#: ../hyp/outstg.h:898
-#: ../hyp/outstg.h:1079
+#: ../hyp/outhtml.h:1963
+#: ../hyp/outstg.h:786
 #, c-format
 msgid  "%s: Node %u: failed to decode\n"
 msgstr ""
 
-#: ../hyp/outasc.h:523
+#: ../hyp/outasc.h:433
 #: ../hyp/outdump.h:471
 #, c-format
 msgid  "'%s' not found.\n"
@@ -2798,85 +2800,121 @@ msgstr ""
 msgid  "  Type: unknown type %u\n"
 msgstr ""
 
-#: ../hyp/outhtml.h:178
+#: ../hyp/outhtml.h:232
 #, c-format
-msgid  "<!-- ST-Guide flags: $%04x -->%s"
+msgid  "<!-- ST-Guide flags: $%04x -->\n"
 msgstr ""
 
-#: ../hyp/outhtml.h:248
-#: ../hyp/outstg.h:289
+#: ../hyp/outhtml.h:300
+#: ../hyp/outstg.h:188
 #, c-format
 msgid  "<non-image node #%u>"
 msgstr ""
 
-#: ../hyp/outhtml.h:427
-#: ../hyp/outhtml.h:849
+#: ../hyp/outhtml.h:609
+#: ../hyp/outhtml.h:890
+#: ../hyp/outhtml.h:1578
 #, c-format
 msgid  "writing %s\n"
 msgstr ""
 
-#: ../hyp/outhtml.h:681
-#, c-format
-msgid  "<!-- Node #%u -->%s"
+#: ../hyp/outhtml.h:948
+msgid  "Previous page"
 msgstr ""
 
-#: ../hyp/outhtml.h:1074
-#, c-format
-msgid  "<a href=\"\">link to unknown node type %u</a>"
+#: ../hyp/outhtml.h:968
+msgid  "Up"
 msgstr ""
 
-#: ../hyp/outhtml.h:1352
+#: ../hyp/outhtml.h:988
+msgid  "Next page"
+msgstr ""
+
+#: ../hyp/outhtml.h:1008
+msgid  "Index page"
+msgstr ""
+
+#: ../hyp/outhtml.h:1022
+#: ../hyp/outhtml.h:1028
+msgid  "Cross references"
+msgstr ""
+
+#: ../hyp/outhtml.h:1049
+msgid  "Help page"
+msgstr ""
+
+#: ../hyp/outhtml.h:1220
+msgid  "Execute REXX command"
+msgstr ""
+
+#: ../hyp/outhtml.h:1223
+msgid  "Execute REXX script"
+msgstr ""
+
+#: ../hyp/outhtml.h:1226
+msgid  "Execute command"
+msgstr ""
+
+#: ../hyp/outhtml.h:1240
+msgid  "link to unknown node type"
+msgstr ""
+
+#: ../hyp/outhtml.h:1296
+#, c-format
+msgid  "<!-- Node #%u -->\n"
+msgstr ""
+
+#: ../hyp/outhtml.h:1432
+#, c-format
+msgid  "Topic       : %s\n"
+msgstr ""
+
+#: ../hyp/outhtml.h:1435
+#, c-format
+msgid  "Author      : %s\n"
+msgstr ""
+
+#: ../hyp/outhtml.h:1438
+#, c-format
+msgid  "Version     : %s\n"
+msgstr ""
+
+#: ../hyp/outhtml.h:1441
+#, c-format
+msgid  "Subject     : %s\n"
+msgstr ""
+
+#: ../hyp/outhtml.h:1443
+#, c-format
+msgid  ""
+"Nodes       : %u\n"
+"Index Size  : %ld\n"
+"HCP-Version : %u\n"
+"Compiled on : %s\n"
+"@charset    : %s\n"
+"@default    : %s\n"
+"@help       : %s\n"
+"@options    : %s\n"
+"@width      : %u"
+msgstr ""
+
+#: ../hyp/outhtml.h:1469
+#, c-format
+msgid  "@hostname   : %s\n"
+msgstr ""
+
+#: ../hyp/outhtml.h:2049
 msgid  "warning: writing html output in atari encoding might not work with non-atari browsers\n"
 msgstr ""
 
-#: ../hyp/outstg.h:138
+#: ../hyp/outstg.h:125
 #, c-format
 msgid  "ST-Guide flags: $%04x%s"
 msgstr ""
 
-#: ../hyp/outstg.h:258
-#, c-format
-msgid  "warning: GEM images are not displayable in HTML, using %s instead\n"
-msgstr ""
-
-#: ../hyp/outstg.h:264
-#, c-format
-msgid  "warning: PNG not supported on this platform, using %s instead\n"
-msgstr ""
-
-#: ../hyp/outstg.h:270
-#, c-format
-msgid  "unknown image source type, using %s instead\n"
-msgstr ""
-
-#: ../hyp/outstg.h:642
+#: ../hyp/outstg.h:528
 #, c-format
 msgid  "link to unknown node type %u\n"
-msgstr ""
-
-#: ../hyp/outstg.h:1110
-#, c-format
-msgid  "failed to load image node %u"
-msgstr ""
-
-#: ../hyp/outstg.h:1125
-#, c-format
-msgid  "failed to cache compressed image data for %u"
-msgstr ""
-
-#: ../hyp/outstg.h:1140
-#, c-format
-msgid  "failed to decode image header for %u"
-msgstr ""
-
-#: ../hyp/outstg.h:1157
-#, c-format
-msgid  "format error in image of node %u: %dx%dx%d datasize=%ld picsize=%ld\n"
-msgstr ""
-
-#: ../hyp/outstg.h:1273
-#, c-format
-msgid  "wrote image %s (%dx%dx%d)\n"
 msgstr ""
 
 #: ../hyp/ref.c:35
