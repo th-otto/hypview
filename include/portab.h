@@ -296,7 +296,7 @@ typedef size_t gsize;
 #if defined(_WIN64) || defined(__WIN64__) || defined(_M_X64) || defined(_M_AMD64)
 typedef gint64 gssize;
 #else
-typedef int gssize;
+typedef long gssize;
 #endif
 #endif
 
