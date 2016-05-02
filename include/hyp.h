@@ -236,6 +236,7 @@ typedef enum  {
 #define HYP_ESC_DATA5			0x2d	/* data block */
 #define HYP_ESC_DATA6			0x2e	/* data block */
 #define HYP_ESC_DATA7			0x2f	/* data block */
+#define HYP_ESC_DITHERMASK	    HYP_ESC_DATA7 /* seems to be used for dithermask; undocumented */
 #define HYP_ESC_EXTERNAL_REFS	0x30	/* external data block */
 #define HYP_ESC_OBJTABLE		0x31	/* table with objects */
 #define HYP_ESC_PIC 			0x32	/* picture */

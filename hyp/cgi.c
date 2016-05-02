@@ -457,10 +457,10 @@ int main(int unused_argc, const char **unused_argv)
 	if ((val = cgiFormString("charset")) != NULL)
 	{
 		opts->output_charset = hyp_charset_from_name(val);
-		if (opts->output_charset == HYP_CHARSET_NONE)
-			opts->output_charset = HYP_CHARSET_UTF8;
 		g_free(val);
 	}
+	if (opts->output_charset == HYP_CHARSET_NONE)
+		opts->output_charset = HYP_CHARSET_UTF8;
 	if ((val = cgiFormString("hidemenu")) != NULL)
 	{
 		opts->hidemenu = (int)strtol(val, NULL, 10) != 0;

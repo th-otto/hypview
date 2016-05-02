@@ -155,6 +155,12 @@ Keyboard navigation (only when menu is on using HTML 4.x accesskey attribute):
 </table>
 </form>
 
+Some popular Hypertexts:
+<ul>
+<li><a href="hypview.cgi?url=/hyp/tosde.hyp">Die Anleitung zum TOS (german)</a></li>
+<li><a href="hypview.cgi?url=/hyp/tosen.hyp">The documentation for TOS (english)</a></li>
+</ul>
+
 </div>
 
 </body>

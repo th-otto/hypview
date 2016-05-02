@@ -848,7 +848,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 	}
 
 	/*
-	 * find standard help page name if not speficied in file
+	 * find standard help page name if not specified in file
 	 */
 	if (!hypnode_valid(hyp, hyp->help_page))
 	{
