@@ -19,10 +19,12 @@ char const gl_program_version[] = HYP_VERSION;
 static gboolean do_help = FALSE;
 static gboolean do_version = FALSE;
 static int compress = -1;
+static gboolean convert_palette = FALSE;
 
 static struct option const long_options[] = {
 	{ "compress", no_argument, NULL, 'c' },
 	{ "no-compress", no_argument, NULL, 'c' + 256 },
+	{ "palette", no_argument, NULL, 'p' },
 	
 	{ "help", no_argument, NULL, 'h' },
 	{ "version", no_argument, NULL, 'V' },
@@ -81,6 +83,12 @@ static void print_usage(FILE *out)
 {
 	print_version(out);
 	hyp_utf8_fprintf(out, _("usage: %s [-options] file1 [file2 ...]\n"), gl_program_name);
+	hyp_utf8_fprintf(out, _("options:\n"));
+	hyp_utf8_fprintf(out, _("  -c, --compress                compress the output\n"));
+	hyp_utf8_fprintf(out, _("      --no-compress             do not compress the output\n"));
+	hyp_utf8_fprintf(out, _("  -p, --palette                 convert palette to gem default\n"));
+	hyp_utf8_fprintf(out, _("  -h, --help                    print help and exit\n"));
+	hyp_utf8_fprintf(out, _("  -V, --version                 print version and exit\n"));
 }
 
 /*****************************************************************************/
@@ -141,6 +149,12 @@ static gboolean conv_file(const char *filename)
 	
 	g_free(buf);
 	buf = NULL;
+	
+	if (convert_palette)
+	{
+		pic_match_stdpal(&pic, dest);
+	}
+	
 	if (compress == 1)
 		pic.pi_compressed = 1;
 	else if (compress == 0)
@@ -203,7 +217,7 @@ int main(int argc, const char **argv)
 	struct _getopt_data *d;
 	
 	getopt_init_r(gl_program_name, &d);
-	while ((c = getopt_long_only_r(argc, argv, "chV?", long_options, NULL, d)) != EOF)
+	while ((c = getopt_long_only_r(argc, argv, "cphV?", long_options, NULL, d)) != EOF)
 	{
 		switch (c)
 		{
@@ -214,6 +228,10 @@ int main(int argc, const char **argv)
 			compress = FALSE;
 			break;
 		
+		case 'p':
+			convert_palette = TRUE;
+			break;
+
 		case 'h':
 			do_help = TRUE;
 			break;

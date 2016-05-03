@@ -34,7 +34,7 @@ LOCAL TOSPALETTE const palet1 = {
 	{ 0x00, 0x00 }
 };
 
-LOCAL PALETTE const std256_palette = {
+PALETTE const std256_palette = {
 	{ 0xff, 0xff, 0xff }, /*   0 == WHITE (0) */
 	{ 0xff, 0x00, 0x00 }, /*   1 == RED (2) */
 	{ 0x00, 0xff, 0x00 }, /*   2 == GREEN (3) */

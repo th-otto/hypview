@@ -94,6 +94,9 @@ typedef enum pic_filetype {
 	FT_LZH,
 	FT_ZIP,
 	FT_ARJ,
+	FT_TAR,
+	FT_GZ,
+	FT_BZ2,
 	FT_ARCHIVE_LAST,
 	
 	/* documents */
@@ -159,6 +162,8 @@ typedef struct {
 #endif
 } PICTURE;
 
+
+extern PALETTE const std256_palette;
 
 /*** GEM IMG -------------------------------------------------------------- ***/
 
@@ -338,6 +343,9 @@ void pic_vdi_to_rgbcolor(_WORD vdi[3]);
 void err_bmp_rle(const char *path);
 
 void pic_free(PICTURE *pic);
+
+unsigned long pic_pal_stddiff(const PICTURE *pic);
+gboolean pic_match_stdpal(PICTURE *pic, unsigned char *buf);
 
 EXTERN_C_END
 

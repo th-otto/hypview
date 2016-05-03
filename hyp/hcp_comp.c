@@ -4277,6 +4277,9 @@ static hyp_pic_format get_image_type(hcp_vars *vars, int handle, FILELIST *f, PI
 	case FT_LZH:
 	case FT_ZIP:
 	case FT_ARJ:
+	case FT_TAR:
+	case FT_GZ:
+	case FT_BZ2:
 	case FT_ARCHIVE_LAST:
 	case FT_DOC_FIRST:
 	case FT_ASCII:
@@ -4485,13 +4488,10 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 			 */
 			adm.type = HYP_ESC_BOX;
 			/*
-			 * centered boxes NYI
+			 * offset == 0 for centered images not supported by box command
 			 */
 			if (adm.x_offset == 0)
 				adm.x_offset = 1;
-			/*
-			 * TODO fetch real image here for size information
-			 */
 			adm.width = 1;
 			adm.height = 1;
 			adm.style = 1;

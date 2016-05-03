@@ -154,6 +154,8 @@ struct gif_dest
 	long int out_count;					/* # of codes output (for debugging) */
 
 	PICTURE *pic;
+	const unsigned char *coltab;
+	const unsigned char *revtab;
 	const unsigned char *pixels;
 };
 
@@ -296,6 +298,8 @@ struct gif_src {
 	struct gifScreen screen;
 	PICTURE *pic;
 	gboolean got_colormap;
+	const unsigned char *coltab;
+	const unsigned char *revtab;
 	
 	/* the most recently read DataBlock was an EOD marker, i.e. had
 	   zero length */
@@ -398,6 +402,7 @@ static __inline int GifGetPixel(struct gif_dest *gif, int x, int y)
 		if (pos[2] & mask) color |= 0x02;
 		if (pos[4] & mask) color |= 0x04;
 		if (pos[6] & mask) color |= 0x08;
+		color = gif->revtab[color];
 		break;
 	case 8:
 		pos += (x >> 4) << 4;
@@ -411,6 +416,7 @@ static __inline int GifGetPixel(struct gif_dest *gif, int x, int y)
 		if (pos[10] & mask) color |= 0x20;
 		if (pos[12] & mask) color |= 0x40;
 		if (pos[14] & mask) color |= 0x80;
+		color = gif->revtab[color];
 		break;
 	}
 	
@@ -1071,9 +1077,9 @@ writeGifHeader(struct gif_dest *gif,
 		{
 			for (i = 0; i < ColorMapSize; ++i)
 			{
-				gif_putc(gif, gif->pic->pi_palette[i].r);
-				gif_putc(gif, gif->pic->pi_palette[i].g);
-				gif_putc(gif, gif->pic->pi_palette[i].b);
+				gif_putc(gif, gif->pic->pi_palette[gif->coltab[i]].r);
+				gif_putc(gif, gif->pic->pi_palette[gif->coltab[i]].g);
+				gif_putc(gif, gif->pic->pi_palette[gif->coltab[i]].b);
 			}
 		}
 	}
@@ -1160,7 +1166,9 @@ gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic)
 	gif->width = pic->pi_width;
 	gif->height = pic->pi_height;
 	gif->pixels = src;
-
+	gif->coltab = pic->pi_planes == 4 ? bmp_coltab4 : bmp_coltab8;
+	gif->revtab = pic->pi_planes == 4 ? bmp_revtab4 : bmp_revtab8;
+	
 	/* Set some global variables for bumpPixel() */
 	initPixelCursor(&gif->pixelCursor, pic->pi_width, pic->pi_height, FALSE);
 	
@@ -1194,6 +1202,8 @@ unsigned char *gif_pack(const unsigned char *src, PICTURE *pic)
 	gif->width = pic->pi_width;
 	gif->height = pic->pi_height;
 	gif->pixels = src;
+	gif->coltab = pic->pi_planes == 4 ? bmp_coltab4 : bmp_coltab8;
+	gif->revtab = pic->pi_planes == 4 ? bmp_revtab4 : bmp_revtab8;
 
 	/* Set some global variables for bumpPixel() */
 	initPixelCursor(&gif->pixelCursor, pic->pi_width, pic->pi_height, FALSE);
@@ -2131,7 +2141,7 @@ static void readImageData(struct gif_src *gif, PALETTE cmap, unsigned int cmapSi
 			GIF_ERROR((gif, "Premature end of file; no proper GIF closing"));
 			return;
 		default:
-			addPixelToRaster(gif, rc, cmap, cmapSize);
+			addPixelToRaster(gif, gif->coltab[rc], cmap, cmapSize);
 			break;
 		}
 	}
@@ -2393,6 +2403,31 @@ static gboolean convertImage(struct gif_src *gif, int skipIt)
 		{
 			/* writePnm(gif, gif->screen.hasGray, gif->screen.hasColor); */
 		}
+		if (gif->pic->pi_planes == 4)
+		{
+			PALETTE pal;
+			int i;
+			
+			for (i = 0; i < 16; i++)
+			{
+				pal[i] = gif->pic->pi_palette[bmp_revtab4[i]];
+			}
+			for (i = 0; i < 16; i++)
+			{
+				gif->pic->pi_palette[i] = pal[i];
+			}
+		} else
+		{
+			PALETTE pal;
+			int i;
+			
+			for (i = 0; i < 256; i++)
+			{
+				pal[i] = gif->pic->pi_palette[bmp_revtab8[i]];
+			}
+			for (i = 0; i < 256; i++)
+				gif->pic->pi_palette[i] = pal[i];
+		}
 	}
 	return TRUE;
 }
@@ -2428,6 +2463,8 @@ static gboolean convertImages(struct gif_src *gif, gboolean allImages, int reque
 	/* We've read through the GIF terminator character */
 
 	initGif89(&gif89);
+	gif->coltab = gif->pic->pi_planes == 4 ? bmp_coltab4 : bmp_coltab8;
+	gif->revtab = gif->pic->pi_planes == 4 ? bmp_revtab4 : bmp_revtab8;
 
 	if (readGifHeader(gif) == FALSE)
 		return FALSE;
