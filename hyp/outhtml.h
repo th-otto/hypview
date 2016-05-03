@@ -335,8 +335,9 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 				*dithermask ? " %" : "", dithermask);
 			if (gfx->islimage)
 			{
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" align=\"center\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" align=\"center\" style=\"width:%dex;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
 					html_limage_style,
+					hyp->line_width,
 					quoted,
 					alt,
 					gfx->pixwidth,
@@ -948,6 +949,8 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	const char *disabled;
 	const char *void_href = "javascript:void(0);";
 	const char *click;
+	int xpos = 0;
+	const int button_w = 40;
 	
 	g_string_append_printf(out, "<div class=\"%s\">\n", html_toolbar_style);
 	
@@ -957,10 +960,12 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	g_string_append(out, "<ul>\n");
 	alt = _("Back");
 	g_string_append_printf(out,
-		"<li style=\"position:absolute;left:0px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"javascript: window.history.go(-1)\" class=\"%s\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		html_nav_img_style, html_nav_back_png, alt, alt, html_nav_dimensions, html_closer);
+	xpos += button_w;
 	
 	if (hypnode_valid(hyp, entry->previous) &&
 		node != entry->previous)
@@ -975,12 +980,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:40px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"p\" rel=\"prev\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, html_nav_prev_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
+	xpos += button_w;
 	
 	if (hypnode_valid(hyp, entry->toc_index) &&
 		node != entry->toc_index)
@@ -995,12 +1002,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:80px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"t\" rel=\"up\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, html_nav_toc_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
+	xpos += button_w;
 
 	if (hypnode_valid(hyp, entry->next) &&
 		node != entry->next)
@@ -1015,12 +1024,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:120px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"n\" rel=\"next\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, html_nav_next_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
+	xpos += button_w;
 
 	if (hypnode_valid(hyp, hyp->index_page) &&
 		node != hyp->index_page)
@@ -1035,12 +1046,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:160px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"x\" rel=\"index\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, html_nav_index_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
+	xpos += button_w;
 
 	if (xrefs != NULL)
 	{
@@ -1056,12 +1069,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		click = "";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:200px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\"%s accesskey=\"c\" rel=\"bookmark\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, click, html_nav_xref_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
+	xpos += button_w;
 
 	if (hypnode_valid(hyp, hyp->help_page) &&
 		node != hyp->help_page)
@@ -1076,22 +1091,26 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:240px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"h\" rel=\"help\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, html_nav_help_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
+	xpos += button_w;
 
 	alt = _("Show info about hypertext");
 	str = g_strdup(void_href);
 	disabled = "";
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:280px;\">"
+		"<li style=\"position:absolute;left:%dpx;\">"
 		"<a href=\"%s\" class=\"%s%s\" onclick=\"showInfo();\" accesskey=\"i\" rel=\"copyright\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
+		xpos,
 		str, html_nav_img_style, disabled, html_nav_info_png, alt, alt, html_nav_dimensions, html_closer);
 	g_free(str);
+	xpos += button_w + 20;
 
 	if (opts->for_cgi)
 	{
@@ -1100,12 +1119,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		alt = _("Load a file");
 		disabled = "";
 		g_string_append_printf(out,
-			"<li style=\"position:absolute;left:340px;\">"
+			"<li style=\"position:absolute;left:%dpx;\">"
 			"<a href=\"%s\" class=\"%s%s\" accesskey=\"o\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 			"</li>\n",
+			xpos,
 			html_nav_load_href, html_nav_img_style, disabled, html_nav_load_png, alt, alt, html_nav_dimensions, html_closer);
+		xpos += button_w;
 	
-		g_string_append(out, "<li style=\"position:absolute;left:380px;\">\n");
+		g_string_append_printf(out, "<li style=\"position:absolute;left:%dpx;\">\n", xpos);
 		str = html_quote_name(html_referer_url, FALSE);
 		g_string_append_printf(out, "<input type=\"hidden\" name=\"url\" value=\"%s\"%s\n", str, html_closer);
 		g_free(str);
@@ -1517,11 +1538,25 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_trailer(GString *out, hcp_opts *opts, hyp_nodenr node, gboolean for_error)
+static void html_out_trailer(GString *out, hcp_opts *opts, hyp_nodenr node, gboolean for_error, gboolean warn_gfx)
 {
 	if (node == 0 && opts->output_charset == HYP_CHARSET_ATARI && opts->for_cgi)
 	{
-		g_string_append_printf(out, "\n\n<span class=\"%s\">%s</span>\n", _("warning: writing html output in atari encoding might not work with non-atari browsers"), html_error_note_style);
+		hyp_utf8_sprintf_charset(out, opts->output_charset,
+			"\n\n<span class=\"%s\">%s</span>\n", _("warning: writing html output in atari encoding might not work with non-atari browsers"), html_error_note_style);
+	}
+	if (warn_gfx)
+	{
+		hyp_utf8_sprintf_charset(out, opts->output_charset,
+			"<noscript>\n"
+			"<p><span style=\"color:red\">\n"
+			"<b>%s</b>\n"
+			"%s\n"
+			"</span>\n"
+			"<br /></p>\n"
+			"</noscript>\n",
+			_("Your browser does not support JavaScript"),
+			_("Graphics commands on this page cannot be displayed"));
 	}
 	if (for_error)
 	{
@@ -1581,6 +1616,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		struct html_xref *xrefs = NULL;
 		struct html_xref **last_xref = &xrefs;
 		unsigned short dithermask;
+		gboolean needs_javascript = FALSE;
 		
 		{
 		char *title;
@@ -1656,6 +1692,9 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							adm->format = format_from_pic(opts, hyp->indextable[adm->extern_node_index], HTML_DEFAULT_PIC_TYPE);
 							adm->dithermask = dithermask;
 							dithermask = 0;
+						} else
+						{
+							needs_javascript = TRUE;
 						}
 					}
 				}
@@ -1974,6 +2013,14 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 			}
 		}
 		
+		if (!for_inline)
+		{
+			html_out_trailer(out, opts, node, FALSE, needs_javascript);
+		
+			if (node < hyp->last_text_page && opts->outfile == stdout)
+				g_string_append(out, "\n\n");
+		}
+		
 		{
 			struct html_xref *xref, *next;
 			
@@ -1988,14 +2035,6 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		}
 		
 		hyp_node_free(nodeptr);
-		
-		if (!for_inline)
-		{
-			html_out_trailer(out, opts, node, FALSE);
-		
-			if (node < hyp->last_text_page && opts->outfile == stdout)
-				g_string_append(out, "\n\n");
-		}
 		
 		if (outfp)
 		{
