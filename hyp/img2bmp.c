@@ -18,9 +18,12 @@ char const gl_program_version[] = HYP_VERSION;
 
 static gboolean do_help = FALSE;
 static gboolean do_version = FALSE;
+static gboolean convert_palette = FALSE;
 
 
 static struct option const long_options[] = {
+	{ "palette", no_argument, NULL, 'p' },
+	
 	{ "help", no_argument, NULL, 'h' },
 	{ "version", no_argument, NULL, 'V' },
 	
@@ -78,6 +81,10 @@ static void print_usage(FILE *out)
 {
 	print_version(out);
 	hyp_utf8_fprintf(out, _("usage: %s [-options] file1 [file2 ...]\n"), gl_program_name);
+	hyp_utf8_fprintf(out, _("options:\n"));
+	hyp_utf8_fprintf(out, _("  -p, --palette                 convert palette to gem default\n"));
+	hyp_utf8_fprintf(out, _("  -h, --help                    print help and exit\n"));
+	hyp_utf8_fprintf(out, _("  -V, --version                 print version and exit\n"));
 }
 
 /*****************************************************************************/
@@ -140,7 +147,14 @@ static gboolean conv_file(const char *filename)
 	
 	g_free(buf);
 	buf = NULL;
+
+	if (convert_palette)
+	{
+		pic_match_stdpal(&pic, dest);
+	}
+	
 	pic.pi_compressed = 0;
+
 	headerlen = bmp_header(&buf, &pic, pic.pi_planes == 4 ? bmp_coltab4 : bmp_coltab8);
 	if (buf == NULL)
 	{

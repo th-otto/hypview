@@ -135,8 +135,16 @@ unsigned char const bmp_revtab8[256] = {
 };
 
 	/* FF 88 99 BB	AA EE CC DD  00 77 11 33  22 66 44 55 */
-unsigned char const bmp_coltab4[16] = { 15, 9, 10, 11, 12, 13, 14, 8, 7, 1, 2, 3, 4, 5, 6, 0 };
-unsigned char const bmp_revtab4[16] = { 15, 9, 10, 11, 12, 13, 14, 8, 7, 1, 2, 3, 4, 5, 6, 0 };
+#if 0
+unsigned char const bmp_coltab4[16] = { 15,  9, 10, 11, 12, 13, 14, 8, 7, 1,  2,  3,  4,  5,  6,  0 };
+unsigned char const bmp_revtab4[16] = { 15,  9, 10, 11, 12, 13, 14, 8, 7, 1,  2,  3,  4,  5,  6,  0 };
+#elif 0
+unsigned char const bmp_coltab4[16] = { 15,  1,  2,  3, 12,  5,  6, 7, 8, 9, 10, 11,  4, 13, 14,  0 };
+unsigned char const bmp_revtab4[16] = { 15,  1,  2,  3, 12,  5,  6, 7, 8, 9, 10, 11,  4, 13, 14,  0 };
+#else
+unsigned char const bmp_coltab4[16] = {  0,  1,  2,  3,  4,  5,  6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+unsigned char const bmp_revtab4[16] = {  0,  1,  2,  3,  4,  5,  6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+#endif
 
 static struct _rgb const win2_palette[2] = {
 	{	0,	 0,   0 },

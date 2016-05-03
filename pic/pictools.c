@@ -8,6 +8,7 @@
 
 #include <picture.h>
 
+/*** ---------------------------------------------------------------------- ***/
 
 unsigned long pic_pal_stddiff(const PICTURE *pic)
 {
@@ -15,17 +16,15 @@ unsigned long pic_pal_stddiff(const PICTURE *pic)
 	unsigned long sum, diff;
 	const struct _rgb *rgbi, *rgbp;
 	unsigned int dr, dg, db;
-	const unsigned char *tab;
 	
 	if (pic->pi_planes != 4 && pic->pi_planes != 8)
 		return 0;
-	tab = pic->pi_planes == 4 ? bmp_coltab4 : bmp_coltab8;
 	ncolors = 1 << pic->pi_planes;
 	sum = 0;
 	for (color = 0; color < ncolors; color++)
 	{
 		rgbp = &pic->pi_palette[color];
-		rgbi = &std256_palette[tab[color]];
+		rgbi = &std256_palette[color];
 		if (rgbi->r >= rgbp->r)
 			dr = rgbi->r - rgbp->r;
 		else
@@ -44,21 +43,22 @@ unsigned long pic_pal_stddiff(const PICTURE *pic)
 	return sum;
 }
 
+/*** ---------------------------------------------------------------------- ***/
 
-static void matchpal(const PALETTE dst, const PALETTE src, unsigned char *pixel)
+static void matchpal(const PALETTE dst, const PALETTE src, unsigned char *pixel, int ncolors)
 {
-	_WORD i, j;
+	int i, j;
 	_UWORD dr, dg, db;
 	_ULONG diff, mindiff;
 	const struct _rgb *rgbi, *rgbp;
 	_UBYTE best;
 	
-	for (i = 0; i < 256; i++)
+	for (i = 0; i < ncolors; i++)
 	{
 		rgbp = &src[i];
 		mindiff = 0x4000000UL;
 		best = i;
-		for (j = 0; j < 256; j++)
+		for (j = 0; j < ncolors; j++)
 		{
 			rgbi = &dst[j];
 			if (rgbi->r >= rgbp->r)
@@ -80,6 +80,15 @@ static void matchpal(const PALETTE dst, const PALETTE src, unsigned char *pixel)
 				mindiff = diff;
 			}	
 		}
+#if 0 /* test output */
+		if (i < 16)
+		{
+			rgbi = &dst[best];
+			printf("map %d #%02x%02x%02x -> %d #%02x%02x%02x\n",
+				i, rgbp->r, rgbp->g, rgbp->b,
+				best, rgbi->r, rgbi->g, rgbi->b);
+		}
+#endif
 		pixel[i] = best;
 	}
 }
@@ -90,7 +99,7 @@ static void copy_block(unsigned char *dst, const unsigned char *src, const PICTU
 {
 	_UWORD mask;
 	_UBYTE color, colmask;
-	_ULONG srclinesize, dstlinesize, offset;
+	_ULONG srclinesize, offset;
 	_WORD x, y, p;
 	const unsigned char *ptr;
 	unsigned char *dptr;
@@ -99,8 +108,6 @@ static void copy_block(unsigned char *dst, const unsigned char *src, const PICTU
 	static unsigned char const masktab[8] = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 	
 	srclinesize = (_ULONG)((w + 15) >> 4) * (_ULONG)pic->pi_planes * 2;
-	dstlinesize = srclinesize;
-	printf("size %lu %lu\n", pic->pi_picsize, dstlinesize * h);
 	for (y = 0; y < h; y++)
 	{
 		for (x = 0; x < w; x++)
@@ -134,15 +141,24 @@ static void copy_block(unsigned char *dst, const unsigned char *src, const PICTU
 	}
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
 gboolean pic_match_stdpal(PICTURE *pic, unsigned char *buf)
 {
 	unsigned char *tmp;
 	unsigned char pixels[256];
+	int ncolors;
 	
+	if (pic->pi_planes == 4)
+		ncolors = 16;
+	else if (pic->pi_planes == 8)
+		ncolors = 256;
+	else
+		return TRUE;
 	tmp = g_new0(unsigned char, pic->pi_picsize);
 	if (tmp == NULL)
 		return FALSE;
-	matchpal(std256_palette, pic->pi_palette, pixels);
+	matchpal(std256_palette, pic->pi_palette, pixels, ncolors);
 	copy_block(tmp, buf, pic, pixels);
 	memcpy(buf, tmp, pic->pi_picsize);
 	g_free(tmp);
