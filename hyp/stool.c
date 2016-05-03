@@ -646,7 +646,7 @@ static gboolean maybe_load_hypfile(const char *filename, void *data)
 			g_free(l);
 			return TRUE;
 		}
-		if ((hyp = hyp_load(handle, &err)) == NULL)
+		if ((hyp = hyp_load(filename, handle, &err)) == NULL)
 		{
 			hyp_utf8_close(handle);
 			g_free(l);

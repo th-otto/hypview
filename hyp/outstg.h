@@ -174,41 +174,45 @@ static gboolean stg_out_attr(FILE *outfile, unsigned char oldattr, unsigned char
 
 /* ------------------------------------------------------------------------- */
 
-static void stg_out_gfx(hcp_opts *opts, FILE *outfile, HYP_DOCUMENT *hyp, struct hyp_gfx *adm)
+static void stg_out_gfx(hcp_opts *opts, FILE *outfile, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 {
-	switch (adm->type)
+	switch (gfx->type)
 	{
 	case HYP_ESC_PIC:
 		{
 			char *fname;
+			char *dithermask;
 			
-			if (!hypnode_valid(hyp, adm->extern_node_index))
-				fname = hyp_invalid_page(adm->extern_node_index);
-			else if (hyp->indextable[adm->extern_node_index]->type != HYP_NODE_IMAGE)
-				fname = g_strdup_printf(_("<non-image node #%u>"), adm->extern_node_index);
+			dithermask = format_dithermask(gfx->dithermask);
+			if (!hypnode_valid(hyp, gfx->extern_node_index))
+				fname = hyp_invalid_page(gfx->extern_node_index);
+			else if (hyp->indextable[gfx->extern_node_index]->type != HYP_NODE_IMAGE)
+				fname = g_strdup_printf(_("<non-image node #%u>"), gfx->extern_node_index);
 			else
-				fname = image_name(adm->format, hyp, adm->extern_node_index, opts->image_name_prefix);
-			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "@remark %ux%ux%u%s", adm->pixwidth, adm->pixheight, 1 << adm->planes, stg_nl);
-			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s \"%s\" %d%s",
-				adm->islimage ? "@limage" : "@image",
+				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "@remark %ux%ux%u $%04x%s", gfx->pixwidth, gfx->pixheight, 1 << gfx->planes, gfx->dithermask, stg_nl);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s \"%s\" %d%s%s%s",
+				gfx->islimage ? "@limage" : "@image",
 				fname,
-				adm->x_offset,
+				gfx->x_offset,
+				*dithermask ? " %" : "", dithermask,
 				stg_nl);
 			g_free(fname);
+			g_free(dithermask);
 		}
 		break;
 	case HYP_ESC_LINE:
 		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "@line %d %d %d %d %d%s",
-			adm->x_offset, adm->width, adm->height,
-			adm->begend,
-			adm->style,
+			gfx->x_offset, gfx->width, gfx->height,
+			gfx->begend,
+			gfx->style,
 			stg_nl);
 		break;
 	case HYP_ESC_BOX:
 	case HYP_ESC_RBOX:
 		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s %d %d %d %d%s",
-			adm->type == HYP_ESC_BOX ? "@box" : "@rbox",
-			adm->x_offset, adm->width, adm->height, adm->style,
+			gfx->type == HYP_ESC_BOX ? "@box" : "@rbox",
+			gfx->x_offset, gfx->width, gfx->height, gfx->style,
 			stg_nl);
 		break;
 	}
@@ -325,6 +329,7 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 		const unsigned char *end;
 		const unsigned char *textstart;
 		INDEX_ENTRY *entry;
+	 	unsigned short dithermask;
 		
 		entry = hyp->indextable[node];
 		{
@@ -383,12 +388,12 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 		if (node == hyp->index_page)
 			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "@autorefon%s", stg_nl);
 
-		end = nodeptr->end;
-
 		/*
 		 * scan through esc commands, gathering graphic commands
 		 */
 		src = nodeptr->start;
+		end = nodeptr->end;
+		dithermask = 0;
 		while (retval && src < end && *src == HYP_ESC)
 		{
 			switch (src[1])
@@ -410,9 +415,13 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 					} else
 					{
 						*last = adm;
-						hyp_decode_gfx(hyp, src + 1, adm);
+						hyp_decode_gfx(hyp, src + 1, adm, opts->errorfile, opts->read_images);
 						if (adm->type == HYP_ESC_PIC)
+						{
 							adm->format = format_from_pic(opts, hyp->indextable[adm->extern_node_index], STG_DEFAULT_PIC_TYPE);
+							adm->dithermask = dithermask;
+							dithermask = 0;
+						}
 					}
 				}
 				break;
@@ -444,6 +453,10 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 					g_free(str);
 					g_free(text);
 				}
+				break;
+			case HYP_ESC_DITHERMASK:
+				if (src[2] == 5u)
+					dithermask = short_from_chars(&src[3]);
 				break;
 			default:
 				break;
@@ -489,7 +502,10 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 				case HYP_ESC_CASE_DATA:
 					FLUSHTREE();
 					FLUSHLINE();
-					src += src[1] - 1;
+					if (src[1] < 3u)
+						src += 2;
+					else
+						src += src[1] - 1;
 					break;
 				
 				case HYP_ESC_LINK:

@@ -1,0 +1,12 @@
+@subject Keins
+
+@node Main Hello
+
+@image st-guide.img 5 %1
+@image st-guide.img 15 %01
+@image st-guide.img 25 %0000000000000001
+@image st-guide.img 35 %10
+@image st-guide.img 45 %1000000000000000
+
+@endnode
+

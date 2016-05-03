@@ -174,7 +174,7 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 		return HYP_FT_UNKNOWN;
 	}
 
-	if ((hyp = hyp_load(handle, &ftype)) == NULL)
+	if ((hyp = hyp_load(doc->path, handle, &ftype)) == NULL)
 	{
 		if (ref != NULL)
 			hyp_utf8_close(handle);
@@ -187,7 +187,6 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 
 	doc->data = hyp;
 	hyp->ref = ref;
-	hyp->file = doc->path;
 
 	doc->type = HYP_FT_HYP;
 	doc->displayProc = HypDisplayPage;

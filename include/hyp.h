@@ -443,6 +443,12 @@ typedef struct
 typedef struct {
 	hyp_nodenr number;          /* Page number of this entry */
 	gboolean decompressed;
+	gboolean incomplete;		/* TRUE if not all planes present */
+	gboolean warned;
+	unsigned char plane_pic;    /* available planes bit vector */
+	unsigned char plane_on_off; /* filled plane bit vector */
+	unsigned long data_size;	/* size of the decompressed image data, including header */
+	unsigned long image_size;	/* size of the image after applying plane masks */
 	MFDB pic;
 } HYP_IMAGE;
 
@@ -669,6 +675,12 @@ struct hyp_gfx
 	 */
  	unsigned char style;
 	
+	/*
+	 * for images only: dithermask
+	 *   - value specified in source file: %bitmask
+	 */
+ 	unsigned short dithermask;
+
 	/* TRUE for @limage only */
 	gboolean islimage;
 	
@@ -709,7 +721,8 @@ struct hyp_gfx
  * gfx.c
  */
 
-void hyp_decode_gfx(HYP_DOCUMENT *hyp, const unsigned char *src, struct hyp_gfx *adm);
+void hyp_decode_gfx(HYP_DOCUMENT *hyp, const unsigned char *src, struct hyp_gfx *adm, FILE *errorfile, gboolean read_images);
+void hyp_pic_apply_planemasks(HYP_IMAGE *pic, unsigned char *buf);
 gboolean hyp_prep_graphics(HYP_DOCUMENT *hyp, HYP_NODE *node);
 void hyp_free_graphics(HYP_NODE *node);
 gboolean W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
@@ -733,7 +746,7 @@ void hyp_image_free(HYP_IMAGE *image);
 
 HYP_DOCUMENT *hyp_new(void);
 void hyp_delete(HYP_DOCUMENT *hyp);
-HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err);
+HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err);
 HYP_DOCUMENT *hyp_ref(HYP_DOCUMENT *hyp);
 HYP_DOCUMENT *hyp_unref(HYP_DOCUMENT *hyp);
 
@@ -817,7 +830,7 @@ void RemovePictures(HYP_DOCUMENT *hyp, gboolean reload);
 /*
  * prepare.c
  */
-void hyp_pic_get_header(HYP_PICTURE *hyp_pic, const unsigned char *hyp_pic_raw);
+gboolean hyp_pic_get_header(HYP_IMAGE *image, const unsigned char *hyp_pic_raw, FILE *errorfile);
 
 
 /*

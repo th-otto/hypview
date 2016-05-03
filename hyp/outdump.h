@@ -49,8 +49,18 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 					break;
 
 				case HYP_ESC_CASE_DATA:
-					hyp_utf8_fprintf(outfile, _("Data: type %u, len %u\n"), src[0], src[1]);
-					src += src[1] - 1;
+					if (*src == HYP_ESC_DITHERMASK && src[1] == 5)
+						hyp_utf8_fprintf(outfile, _("Dithermask: %04x\n"), (unsigned short)short_from_chars(&src[2]));
+					else
+						hyp_utf8_fprintf(outfile, _("Data: type %u, len %u%s\n"), src[0], src[1], src[1] < 3u ? _(" (truncated data)") : "");
+					/* must be at least ESC + type + len */
+					if (src[1] < 5u)
+					{
+						src += 2;
+					} else
+					{
+						src += src[1] - 1;
+					}
 					break;
 				
 				case HYP_ESC_LINK:
@@ -122,10 +132,13 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 						{
 							str = hyp_invalid_page(dest_page);
 						}
-						hyp_utf8_fprintf(outfile, _("XRef \"%s\" \"%s\"\n"), text, str);
+						hyp_utf8_fprintf(outfile, _("XRef \"%s\" \"%s\"%s\n"), text, str, src[1] < 6u ? _(" (truncated data)") : "");
 						g_free(str);
 						g_free(text);
-						src += src[1] - 1;
+						if (src[1] < 5u)
+							src += 4;
+						else
+							src += src[1] - 1;
 					}
 					break;
 					
@@ -239,7 +252,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 		hyp_node_free(nodeptr);
 	} else
 	{
-		hyp_utf8_fprintf(outfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
+		hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
 	}
 
 #undef DUMPTEXT
@@ -248,13 +261,16 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean dump_image(HYP_DOCUMENT *hyp, FILE *outfile, hyp_nodenr node)
+static gboolean dump_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 {
 	unsigned char *data;
 	unsigned char hyp_pic_raw[SIZEOF_HYP_PICTURE];
-	HYP_PICTURE hyp_pic;
 	gboolean retval = TRUE;
+	HYP_IMAGE _image;
+	HYP_IMAGE *image = &_image;
+	FILE *outfile = opts->outfile;
 	
+	memset(image, 0, sizeof(*image));
 	data = hyp_loaddata(hyp, node);
 
 	if (data == NULL)
@@ -263,14 +279,15 @@ static gboolean dump_image(HYP_DOCUMENT *hyp, FILE *outfile, hyp_nodenr node)
 	if (!GetEntryBytes(hyp, node, data, hyp_pic_raw, SIZEOF_HYP_PICTURE))
 		goto error;
 	
-	hyp_pic_get_header(&hyp_pic, hyp_pic_raw);
-
-	hyp_utf8_fprintf(outfile, _("  Width: %d\n"), hyp_pic.width);
-	hyp_utf8_fprintf(outfile, _("  Height: %d\n"), hyp_pic.height);
-	hyp_utf8_fprintf(outfile, _("  Planes: %d\n"), hyp_pic.planes);
-	hyp_utf8_fprintf(outfile, _("  Plane Mask: $%02x\n"), hyp_pic.plane_pic);
-	hyp_utf8_fprintf(outfile, _("  Plane On-Off: $%02x\n"), hyp_pic.plane_on_off);
-	hyp_utf8_fprintf(outfile, _("  Filler: $%02x\n"), hyp_pic.filler);
+	image->number = node;
+	image->data_size = GetDataSize(hyp, node);
+	hyp_pic_get_header(image, hyp_pic_raw, opts->errorfile);
+	hyp_utf8_fprintf(outfile, _("  Width: %d\n"), image->pic.fd_w);
+	hyp_utf8_fprintf(outfile, _("  Height: %d\n"), image->pic.fd_h);
+	hyp_utf8_fprintf(outfile, _("  Planes: %d\n"), image->pic.fd_nplanes);
+	hyp_utf8_fprintf(outfile, _("  Plane Mask: $%02x\n"), image->plane_pic);
+	hyp_utf8_fprintf(outfile, _("  Plane On-Off: $%02x\n"), image->plane_on_off);
+	hyp_utf8_fprintf(outfile, _("  Filler: $%02x\n"), hyp_pic_raw[7]);
 	
 	goto done;
 error:
@@ -437,7 +454,7 @@ static gboolean recompile_dump(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 			break;
 		case HYP_NODE_IMAGE:
 			hyp_utf8_fprintf(outfile, _("  Type: image\n"));
-			ret &= dump_image(hyp, outfile, node);
+			ret &= dump_image(hyp, opts, node);
 			break;
 		case HYP_NODE_SYSTEM_ARGUMENT:
 			hyp_utf8_fprintf(outfile, _("  Type: system node\n"));

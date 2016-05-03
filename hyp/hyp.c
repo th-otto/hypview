@@ -507,7 +507,7 @@ char *hyp_invalid_page(hyp_nodenr page)
 
 /* ------------------------------------------------------------------------- */
 
-HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
+HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 {
 	HYP_DOCUMENT *hyp;
 	HYP_HEADER head;
@@ -528,7 +528,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 	if (ret != SIZEOF_HYP_HEADER)
 	{
 		/* error... */
-		HYP_DBG(("Error %s in read(%s)", hyp_utf8_strerror(errno), printnull(doc->path)));
+		HYP_DBG(("Error %s in read(%s)", hyp_utf8_strerror(errno), printnull(filename)));
 		*err = HYP_FT_UNKNOWN;
 		return NULL;
 	}
@@ -539,7 +539,7 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 	head.compiler_vers = rawhead[10];
 	head.compiler_os = rawhead[11];
 	
-	HYP_DBG(("hyp-Header: Magic %08lx (%c%c%c%c) itable_size %lu itable_num %u vers %d sys %d\n",
+	HYP_DBG(("hyp-Header: Magic %08lx (%c%c%c%c) itable_size %lu itable_num %u vers %d sys %d",
 		head.magic, rawhead[0], rawhead[1], rawhead[2], rawhead[3],
 		head.itable_size,
 		head.itable_num,
@@ -568,7 +568,8 @@ HYP_DOCUMENT *hyp_load(int handle, hyp_filetype *err)
 		return NULL;
 	}
 	hyp->handle = handle;
-
+	hyp->file = filename;
+	
 	hyp->num_index = head.itable_num;
 	hyp->itable_size = head.itable_size;
 	hyp->comp_vers = head.compiler_vers;

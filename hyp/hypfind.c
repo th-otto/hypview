@@ -701,7 +701,10 @@ static gboolean search_node(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, HYP_NO
 				break;
 
 			case HYP_ESC_CASE_DATA:
-				src += src[1] - 1;
+				if (src[1] < 3u)
+					src += 2;
+				else
+					src += src[1] - 1;
 				break;
 			
 			case HYP_ESC_LINK:
@@ -733,7 +736,10 @@ static gboolean search_node(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, HYP_NO
 				break;
 				
 			case HYP_ESC_EXTERNAL_REFS:
-				src += src[1] - 1;
+				if (src[1] < 5u)
+					src += 4;
+				else
+					src += src[1] - 1;
 				break;
 				
 			case HYP_ESC_OBJTABLE:
@@ -869,13 +875,12 @@ static gboolean process_file(const char *filename, struct hypfind_opts *opts)
 		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, filename, hyp_utf8_strerror(errno));
 		return FALSE;
 	}
-	hyp = hyp_load(handle, &ftype);
+	hyp = hyp_load(filename, handle, &ftype);
 	if (hyp == NULL)
 	{
 		hyp_utf8_close(handle);
 		return FALSE;
 	}
-	hyp->file = filename;
 	
 	if (ftype != HYP_FT_HYP)
 	{
@@ -1075,8 +1080,6 @@ int main(int argc, const char **argv)
 	opts->errorfile = stderr;
 	opts->output_charset = hyp_get_current_charset();
 	bm_init(&opts->deltapat, NULL, TRUE);
-	
-	is_MASTER = getenv("TO_MASTER") != NULL;
 	
 	HypProfile_Load(TRUE);
 	

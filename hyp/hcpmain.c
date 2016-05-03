@@ -137,14 +137,13 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 		return FALSE;
 	}
 
-	hyp = hyp_load(handle, &type);
+	hyp = hyp_load(filename, handle, &type);
 	if (hyp == NULL)
 	{
 		hyp_utf8_close(handle);
 		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
 		return FALSE;
 	}
-	hyp->file = filename;
 	
 	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
 	{
@@ -246,7 +245,7 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 		return FALSE;
 	}
 
-	hyp = hyp_load(handle, &type);
+	hyp = hyp_load(filename, handle, &type);
 
 	if (hyp == NULL)
 	{
@@ -268,7 +267,6 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
 		return FALSE;
 	}
-	hyp->file = filename;
 	
 	if (hyp->comp_vers > HCP_COMPILER_VERSION)
 		hyp_utf8_fprintf(opts->errorfile, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
@@ -328,7 +326,7 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 					{
 						unsigned char *data;
 						unsigned char hyp_pic_raw[SIZEOF_HYP_PICTURE];
-						HYP_PICTURE hyp_pic;
+						HYP_IMAGE image;
 						
 						str = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
 						hyp_utf8_fprintf(opts->outfile, long_list_format,
@@ -340,15 +338,20 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 						{
 							if (GetEntryBytes(hyp, node, data, hyp_pic_raw, SIZEOF_HYP_PICTURE))
 							{
-								hyp_pic_get_header(&hyp_pic, hyp_pic_raw);
-								hyp_utf8_fprintf(opts->outfile, " (%ux%u", hyp_pic.width, hyp_pic.height);
-								if (hyp_pic.planes <= 8)
-									hyp_utf8_fprintf(opts->outfile, "x%u", 1 << hyp_pic.planes);
-								else if (hyp_pic.planes <= 16)
-									hyp_utf8_fprintf(opts->outfile, " hicolor-%u", hyp_pic.planes);
+								memset(&image, 0, sizeof(image));
+								image.number = node;
+								image.data_size = GetDataSize(hyp, node);
+								hyp_pic_get_header(&image, hyp_pic_raw, opts->errorfile);
+								hyp_utf8_fprintf(opts->outfile, " (%ux%u", image.pic.fd_w, image.pic.fd_h);
+								if (image.pic.fd_nplanes <= 8)
+									hyp_utf8_fprintf(opts->outfile, "x%u", 1 << image.pic.fd_nplanes);
+								else if (image.pic.fd_nplanes <= 16)
+									hyp_utf8_fprintf(opts->outfile, " hicolor-%u", image.pic.fd_nplanes);
 								else
-									hyp_utf8_fprintf(opts->outfile, " truecolor-%u", hyp_pic.planes);
-								hyp_utf8_fprintf(opts->outfile, _(" mask=$%02x on-off=$%02x)"), hyp_pic.plane_pic, hyp_pic.plane_on_off);
+									hyp_utf8_fprintf(opts->outfile, " truecolor-%u", image.pic.fd_nplanes);
+								hyp_utf8_fprintf(opts->outfile, _(" mask=$%02x on-off=$%02x%s)"),
+									image.plane_pic, image.plane_on_off,
+									image.incomplete ? _(" (incomplete)") : "");
 							} else
 							{
 								hyp_utf8_fprintf(opts->outfile, _(" (decode error)"));
@@ -591,8 +594,6 @@ int main(int argc, const char **argv)
 	hcp_opts _opts;
 	hcp_opts *opts = &_opts;
 	int wait_key;
-	
-	is_MASTER = getenv("TO_MASTER") != NULL;
 	
 	HypProfile_Load(TRUE);
 	

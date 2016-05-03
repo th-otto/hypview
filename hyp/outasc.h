@@ -202,7 +202,10 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 				case HYP_ESC_CASE_DATA:
 					FLUSHTREE();
 					FLUSHLINE();
-					src += src[1] - 1;
+					if (src[1] < 3u)
+						src += 2;
+					else
+						src += src[1] - 1;
 					break;
 				
 				case HYP_ESC_LINK:
@@ -262,7 +265,10 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 					FLUSHTREE();
 					FLUSHLINE();
 					/* @xref already output */
-					src += src[1] - 1;
+					if (src[1] < 5u)
+						src += 4;
+					else
+						src += src[1] - 1;
 					break;
 					
 				case HYP_ESC_OBJTABLE:

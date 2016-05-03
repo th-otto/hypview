@@ -80,8 +80,16 @@ const unsigned char *hyp_skip_esc(const unsigned char *pos)
 		pos += (pos[3] - HYP_STRLEN_OFFSET + 1) + 3;
 		break;
 	case HYP_ESC_EXTERNAL_REFS:			/* up to 12 xref entries */
+		if (pos[1] < 5u)
+			pos += 4;
+		else
+			pos += pos[1] - 1;			/* skip data */
+		break;
 	case HYP_ESC_CASE_DATA:				/* data blocks */
-		pos += pos[1] - 1;				/* skip data */
+		if (pos[1] < 3u)
+			pos += 2;
+		else
+			pos += pos[1] - 1;			/* skip data */
 		break;
 	case HYP_ESC_WINDOWTITLE:
 		pos += ustrlen(pos) + 1;		/* @title, skip data */
@@ -93,7 +101,7 @@ const unsigned char *hyp_skip_esc(const unsigned char *pos)
 		pos++;
 		break;
 	default:
-		HYP_DBG(("unknown Tag: %u,", *pos));
+		HYP_DBG(("unknown Tag: %u", *pos));
 		break;
 	}
 	return pos;

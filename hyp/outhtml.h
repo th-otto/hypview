@@ -1,5 +1,4 @@
 #include "base64.h"
-#include "pattern.h"
 
 #define HTML_DOCTYPE_OLD              0           /* HTML 3.2 */
 #define HTML_DOCTYPE_STRICT           1           /* HTML 4.01 */
@@ -291,13 +290,20 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 			char *fname;
 			char *quoted;
 			char *alt;
+			char *dithermask;
+			char *origfname;
+			char *origquoted;
+			
+			dithermask = format_dithermask(gfx->dithermask);
 			if (!hypnode_valid(hyp, gfx->extern_node_index))
 			{
 				fname = hyp_invalid_page(gfx->extern_node_index);
+				origfname = fname;
 				alt = html_quote_name(fname, TRUE);
 			} else if (hyp->indextable[gfx->extern_node_index]->type != HYP_NODE_IMAGE)
 			{
 				fname = g_strdup_printf(_("<non-image node #%u>"), gfx->extern_node_index);
+				origfname = fname;
 				alt = html_quote_name(fname, TRUE);
 			} else if (opts->for_cgi)
 			{
@@ -313,12 +319,20 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 					fname = g_strdup("");
 					alt = html_quote_name(fname, TRUE);
 				}
+				origfname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
 			} else
 			{
 				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+				origfname = fname;
 				alt = html_quote_name(fname, TRUE);
 			}
 			quoted = html_quote_name(fname, TRUE);
+			origquoted = html_quote_name(origfname, TRUE);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- %s \"%s\" %d%s%s -->",
+				gfx->islimage ? "@limage" : "@image",
+				origfname,
+				gfx->x_offset,
+				*dithermask ? " %" : "", dithermask);
 			if (gfx->islimage)
 			{
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" align=\"center\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
@@ -339,12 +353,20 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 					gfx->pixheight,
 					html_closer);
 			}
+			g_free(origquoted);
 			g_free(quoted);
 			g_free(alt);
+			if (origfname != fname)
+				g_free(origfname);
 			g_free(fname);
+			g_free(dithermask);
 		}
 		break;
 	case HYP_ESC_LINE:
+		g_string_append_printf(out, "<!-- @line %d %d %d %d %d -->",
+			gfx->x_offset, gfx->width, gfx->height,
+			gfx->begend,
+			gfx->style);
 		++(*gfx_id);
 		id = g_strdup_printf("hypview_gfx_%d", *gfx_id);
 		g_string_append_printf(out,
@@ -362,6 +384,9 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 		break;
 	case HYP_ESC_BOX:
 	case HYP_ESC_RBOX:
+		g_string_append_printf(out, "<!-- %s %d %d %d %d -->",
+			gfx->type == HYP_ESC_BOX ? "@box" : "@rbox",
+			gfx->x_offset, gfx->width, gfx->height, gfx->style);
 		++(*gfx_id);
 		id = g_strdup_printf("hypview_gfx_%d", *gfx_id);
 		g_string_append_printf(out,
@@ -1492,8 +1517,12 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_trailer(GString *out, gboolean for_error)
+static void html_out_trailer(GString *out, hcp_opts *opts, hyp_nodenr node, gboolean for_error)
 {
+	if (node == 0 && opts->output_charset == HYP_CHARSET_ATARI && opts->for_cgi)
+	{
+		g_string_append_printf(out, "\n\n<span class=\"%s\">%s</span>\n", _("warning: writing html output in atari encoding might not work with non-atari browsers"), html_error_note_style);
+	}
 	if (for_error)
 	{
 		g_string_append(out, "</p>\n");
@@ -1551,6 +1580,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		INDEX_ENTRY *entry;
 		struct html_xref *xrefs = NULL;
 		struct html_xref **last_xref = &xrefs;
+		unsigned short dithermask;
 		
 		{
 		char *title;
@@ -1593,12 +1623,12 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 			title = html_quote_nodename(hyp, node);
 		}
 
-		end = nodeptr->end;
-
 		/*
 		 * scan through esc commands, gathering graphic commands
 		 */
 		src = nodeptr->start;
+		end = nodeptr->end;
+		dithermask = 0;
 		while (retval && src < end && *src == HYP_ESC)
 		{
 			switch (src[1])
@@ -1620,9 +1650,13 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					} else
 					{
 						*last = adm;
-						hyp_decode_gfx(hyp, src + 1, adm);
+						hyp_decode_gfx(hyp, src + 1, adm, opts->errorfile, opts->read_images);
 						if (adm->type == HYP_ESC_PIC)
+						{
 							adm->format = format_from_pic(opts, hyp->indextable[adm->extern_node_index], HTML_DEFAULT_PIC_TYPE);
+							adm->dithermask = dithermask;
+							dithermask = 0;
+						}
 					}
 				}
 				break;
@@ -1676,6 +1710,10 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 						last_xref = &(xref)->next;
 					}
 				}
+				break;
+			case HYP_ESC_DITHERMASK:
+				if (src[2] == 5u)
+					dithermask = short_from_chars(&src[3]);
 				break;
 			default:
 				break;
@@ -1732,7 +1770,10 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 				case HYP_ESC_CASE_DATA:
 					FLUSHTREE();
 					FLUSHLINE();
-					src += src[1] - 1;
+					if (src[1] < 3u)
+						src += 2;
+					else
+						src += src[1] - 1;
 					break;
 				
 				case HYP_ESC_LINK:
@@ -1822,7 +1863,10 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					FLUSHTREE();
 					FLUSHLINE();
 					/* @xref already output */
-					src += src[1] - 1;
+					if (src[1] < 5u)
+						src += 4;
+					else
+						src += src[1] - 1;
 					break;
 					
 				case HYP_ESC_OBJTABLE:
@@ -1947,7 +1991,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		
 		if (!for_inline)
 		{
-			html_out_trailer(out, FALSE);
+			html_out_trailer(out, opts, node, FALSE);
 		
 			if (node < hyp->last_text_page && opts->outfile == stdout)
 				g_string_append(out, "\n\n");
@@ -1972,6 +2016,8 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 /* ------------------------------------------------------------------------- */
 
 #if 0
+#include "pattern.h"
+
 static void create_patterns(void)
 {
 	Base64 *enc;

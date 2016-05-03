@@ -74,16 +74,11 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	
 	ret = TRUE;
 	
-	if (opts->output_charset == HYP_CHARSET_ATARI && opts->errorfile != stdout)
-	{
-		hyp_utf8_fprintf(opts->errorfile, _("warning: writing html output in atari encoding might not work with non-atari browsers\n"));
-	}
-
 	if (!hypnode_valid(hyp, output_node))
 	{
 		html_out_header(NULL, opts, out, _("Invalid Node index"), output_node, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("node index %u invalid\n"), output_node);
-		html_out_trailer(out, TRUE);
+		html_out_trailer(out, opts, HYP_NOINDEX, TRUE);
 		return FALSE;
 	}
 			
@@ -120,7 +115,7 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	}
 	
 	node = output_node;
-	entry = hyp->indextable[node];
+	entry = hyp->indextable[output_node];
 	switch ((hyp_indextype) entry->type)
 	{
 	case HYP_NODE_INTERNAL:
@@ -146,42 +141,42 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ link \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, FALSE);
+		html_out_trailer(out, opts, node, FALSE);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
 		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ system \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, FALSE);
+		html_out_trailer(out, opts, node, FALSE);
 		break;
 	case HYP_NODE_REXX_SCRIPT:
 		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rxs \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, FALSE);
+		html_out_trailer(out, opts, node, FALSE);
 		break;
 	case HYP_NODE_REXX_COMMAND:
 		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rx \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, FALSE);
+		html_out_trailer(out, opts, node, FALSE);
 		break;
 	case HYP_NODE_QUIT:
 		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ quit \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, FALSE);
+		html_out_trailer(out, opts, node, FALSE);
 		break;
 	case HYP_NODE_CLOSE:
 		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ close \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, FALSE);
+		html_out_trailer(out, opts, node, FALSE);
 		break;
 	case HYP_NODE_EOF:
 	default:
@@ -216,11 +211,11 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	{
 		html_out_header(NULL, opts, out, _("404 not found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
-		html_out_trailer(out, TRUE);
+		html_out_trailer(out, opts, HYP_NOINDEX, TRUE);
 		return FALSE;
 	}
 
-	hyp = hyp_load(handle, &type);
+	hyp = hyp_load(filename, handle, &type);
 	if (hyp == NULL)
 	{
 		REF_FILE *ref = ref_load(filename, handle, FALSE);
@@ -235,12 +230,12 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE);
 			ret = ref_list(ref, opts->outfile, opts->list_flags != 0);
 			ref_close(ref);
-			html_out_trailer(out, FALSE);
+			html_out_trailer(out, opts, 0, FALSE);
 #else
 			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 			ref_close(ref);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, "Listing of ref files not yet supported");
-			html_out_trailer(out, FALSE);
+			html_out_trailer(out, opts, 0, FALSE);
 			ret = TRUE;
 #endif
 			return ret;
@@ -248,10 +243,9 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
-		html_out_trailer(out, TRUE);
+		html_out_trailer(out, opts, 0, TRUE);
 		return FALSE;
 	}
-	hyp->file = filename;
 	
 	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
 	{
@@ -259,7 +253,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
-		html_out_trailer(out, TRUE);
+		html_out_trailer(out, opts, HYP_NOINDEX, TRUE);
 		return FALSE;
 	}
 	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
@@ -422,7 +416,6 @@ int main(int unused_argc, const char **unused_argv)
 	
 	UNUSED(unused_argc);
 	UNUSED(unused_argv);
-	is_MASTER = getenv("TO_MASTER") != NULL;
 	
 	HypProfile_Load(FALSE);
 	
@@ -436,6 +429,8 @@ int main(int unused_argc, const char **unused_argv)
 	opts->errorfile = fopen("hypview.log", "a");
 	if (opts->errorfile == NULL)
 		opts->errorfile = stdout;
+	else
+		dup2(2, fileno(opts->errorfile));
 	g_freep(&opts->output_filename);
 	opts->outfile = out;
 	opts->pic_format = HTML_DEFAULT_PIC_TYPE;
@@ -506,7 +501,7 @@ int main(int unused_argc, const char **unused_argv)
 				"(<q>%s</q>) is not\n"
 				"supported by this service. Please check that you entered the URL correctly.\n"
 			), scheme);
-			html_out_trailer(body, TRUE);
+			html_out_trailer(body, opts, HYP_NOINDEX, TRUE);
 			g_free(filename);
 			filename = NULL;
 		} else
@@ -517,7 +512,7 @@ int main(int unused_argc, const char **unused_argv)
 			{
 				html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 				g_string_append(body, _("could not initialize curl\n"));
-				html_out_trailer(body, TRUE);
+				html_out_trailer(body, opts, HYP_NOINDEX, TRUE);
 				retval = EXIT_FAILURE;
 			} else
 			{
@@ -596,7 +591,7 @@ int main(int unused_argc, const char **unused_argv)
 					{
 						html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 						g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
-						html_out_trailer(body, TRUE);
+						html_out_trailer(body, opts, HYP_NOINDEX, TRUE);
 						unlink(local_filename);
 						g_free(local_filename);
 						local_filename = NULL;
@@ -662,7 +657,7 @@ int main(int unused_argc, const char **unused_argv)
 				"(<q>%s</q>) is not\n"
 				"supported by this service. Please check that you entered the URL correctly.\n"
 			), scheme);
-			html_out_trailer(body, TRUE);
+			html_out_trailer(body, opts, HYP_NOINDEX, TRUE);
 		} else
 		{
 			char *dir = hyp_path_get_dirname(cgiScriptFilename);

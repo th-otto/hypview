@@ -1,5 +1,5 @@
 static const char *stg_nl;
-static gboolean is_MASTER;
+static gboolean is_MASTER = TRUE;
 
 typedef gboolean (*recompile_func)(HYP_DOCUMENT *hyp, hcp_opts *opt, int argc, const char **argv);
 
@@ -22,6 +22,12 @@ struct _symtab_entry {
 	gboolean referenced;
 	symtab_entry *next;
 };
+
+/*
+ * Map from VDI colors to ST standard pixel values, 4 planes.
+ * Only used to construct the %dithermask
+ */
+static unsigned int const vdi_maptab16[16] = { 0, 15, 1, 2, 4, 6, 3, 5, 7,  8,  9, 10, 12, 14, 11, 13 };
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -98,6 +104,30 @@ static gboolean check_long_filenames(const char *dir)
 	}
 	
 	return FALSE;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static char *format_dithermask(unsigned short dithermask)
+{
+	char *buf, *ret;
+	int color;
+	
+	ret = buf = g_new(char, 17);
+	for (color = 0; color < 16 && dithermask != 0; color++)
+	{
+		unsigned short mask = (1 << vdi_maptab16[color]);
+		if (dithermask & mask)
+		{
+			*buf++ = '1';
+			dithermask &= ~mask;
+		} else
+		{
+			*buf++ = '0';
+		}
+	}
+	*buf = '\0';
+	return ret;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -384,15 +414,14 @@ static gboolean sym_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic_format default_format, GString *out)
 {
 	unsigned char *data;
-	long data_size;
 	unsigned char *buf = NULL;
 	unsigned char *conv = NULL;
 	FILE *fp = NULL;
 	gboolean retval = TRUE;
-	HYP_PICTURE hyp_pic;
 	hyp_pic_format format;
 	PICTURE pic;
 	long header_size;
+	long data_size;
 	HYP_IMAGE *image;
 	
 	pic_init(&pic);
@@ -414,6 +443,7 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 		}
 		image->number = node;
 		image->pic.fd_addr = data;
+		image->data_size = GetDataSize(hyp, node);
 		if (!TellCache(hyp, node, (HYP_NODE *) image))
 		{
 			g_free(image);
@@ -426,38 +456,45 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 		ASSERT(!image->decompressed);
 		data = (unsigned char *)image->pic.fd_addr;
 	}
-	data_size = GetDataSize(hyp, node);
-	buf = g_new(unsigned char, data_size);
+	buf = g_new(unsigned char, image->data_size);
 	if (buf == NULL)
 		goto error;
-	if (data_size < SIZEOF_HYP_PICTURE ||
-		!GetEntryBytes(hyp, node, data, buf, data_size))
+	if (image->data_size < SIZEOF_HYP_PICTURE ||
+		!GetEntryBytes(hyp, node, data, buf, image->data_size))
 	{
 		hyp_utf8_fprintf(opts->errorfile, _("failed to decode image header for %u"), node);
 		goto error;
 	}
 	
-	hyp_pic_get_header(&hyp_pic, buf);
+	if (hyp_pic_get_header(image, buf, opts->errorfile) == FALSE)
+		goto error;
+	if (image->incomplete)
+	{
+		unsigned char *newbuf = g_renew(unsigned char, buf, image->image_size);
+		if (newbuf == NULL)
+			goto error;
+		buf = newbuf;
+	}
+	hyp_pic_apply_planemasks(image, buf);
 	
 	format = format_from_pic(opts, hyp->indextable[node], default_format);
-	data_size -= SIZEOF_HYP_PICTURE;
 	
-	pic.pi_width = hyp_pic.width;
-	pic.pi_height = hyp_pic.height;
-	pic.pi_planes = hyp_pic.planes;
+	pic.pi_width = image->pic.fd_w;
+	pic.pi_height = image->pic.fd_h;
+	pic.pi_planes = image->pic.fd_nplanes;
 	pic.pi_compressed = 1;
 	pic_stdpalette(pic.pi_palette, pic.pi_planes);
 	pic_calcsize(&pic);
-	if (data_size != pic.pi_picsize)
+	if (image->image_size != (unsigned long)pic.pi_picsize + SIZEOF_HYP_PICTURE)
 	{
-		hyp_utf8_fprintf(opts->errorfile, _("format error in image of node %u: %dx%dx%d datasize=%ld picsize=%ld\n"), node, hyp_pic.width, hyp_pic.height, hyp_pic.planes, data_size, pic.pi_picsize);
+		hyp_utf8_fprintf(opts->errorfile, _("format error in image of node %u: %dx%dx%d datasize=%ld picsize=%ld\n"), node, image->pic.fd_w, image->pic.fd_h, image->pic.fd_nplanes, image->image_size, pic.pi_picsize);
 		goto error;
 	}
 	pic.pi_name = image_name(format, hyp, node, opts->image_name_prefix);
 	if (empty(pic.pi_name))
 		goto error;
 	
-	conv = g_new(_UBYTE, data_size);
+	conv = g_new(_UBYTE, pic.pi_picsize);
 	if (conv == NULL)
 		goto error;
 	

@@ -13,9 +13,16 @@ typedef struct _filelist FILELIST;
 struct _filelist {
 	FILELIST *next;
 	hyp_filetype type;
-	gboolean first_use;
+	gboolean first_use;				/* for counting images during pass 2 */
 	hyp_nodenr extern_node_index;
 	FILE_ID id;
+	FILE_LOCATION first_reference;	/* for error reporting */
+	struct {
+		hyp_pic_format format;
+		int width;
+		int height;
+		int planes;
+	} pic;
 	char name[1];
 };
 
@@ -306,6 +313,12 @@ struct hcp_command {
 #define xlink_target     previous
 
 
+/*
+ * Map from VDI colors to ST standard pixel values, 4 planes.
+ * Only used to construct the %dithermask
+ */
+static unsigned int const vdi_maptab16[16] = { 0, 15, 1, 2, 4, 6, 3, 5, 7,  8,  9, 10, 12, 14, 11, 13 };
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
@@ -396,6 +409,18 @@ static FILELIST *file_listadd(hcp_vars *vars, const char *name, hyp_filetype *ty
 	f->id = vars->last_fileid;
 	f->type = *type;
 	f->first_use = TRUE;
+	if (vars->include_stack)
+	{
+		f->first_reference = vars->include_stack->loc;
+	} else
+	{
+		f->first_reference.id = 0;
+		f->first_reference.lineno = 0;
+	}
+	f->pic.format = HYP_PIC_UNKNOWN;
+	f->pic.width = 0;
+	f->pic.height = 0;
+	f->pic.planes = 0;
 	strcpy(f->name, name);
 	f->next = vars->filelist;
 	vars->filelist = f;
@@ -595,7 +620,8 @@ static void hcp_error_va(hcp_vars *vars, const FILE_LOCATION *loc, const char *f
 
 /* ------------------------------------------------------------------------- */
 
-static void __attribute__((format(printf, 3, 4))) hcp_error(hcp_vars *vars, const FILE_LOCATION *loc, const char *format, ...)
+__attribute__((format(printf, 3, 4)))
+static void hcp_error(hcp_vars *vars, const FILE_LOCATION *loc, const char *format, ...)
 {
 	va_list args;
 	
@@ -627,7 +653,8 @@ static void hcp_warning_va(hcp_vars *vars, const FILE_LOCATION *loc, const char 
 
 /* ------------------------------------------------------------------------- */
 
-static void __attribute__((format(printf, 3, 4))) hcp_warning(hcp_vars *vars, const FILE_LOCATION *loc, const char *format, ...)
+__attribute__((format(printf, 3, 4)))
+static void hcp_warning(hcp_vars *vars, const FILE_LOCATION *loc, const char *format, ...)
 {
 	va_list args;
 	
@@ -2457,7 +2484,7 @@ static gboolean load_uses(hcp_vars *vars)
 			load_uses_from_ref(vars, ref);
 			ref_close(ref);
 			hyp_utf8_close(handle);
-		} else if ((hyp = hyp_load(handle, &ftype)) != NULL)
+		} else if ((hyp = hyp_load(path, handle, &ftype)) != NULL)
 		{
 			hyp->file = path;
 			if (hyp->comp_vers > HCP_COMPILER_VERSION)
@@ -2878,6 +2905,14 @@ static void c_do_node(hcp_vars *vars, int argc, char **argv, gboolean is_popup)
 			switch (a->type)
 			{
 			case HYP_ESC_PIC:
+				if (a->dithermask != 0)
+				{
+					addbyte(vars, HYP_ESC);
+					addbyte(vars, HYP_ESC_DITHERMASK);
+					addbyte(vars, 5u);
+					addbyte(vars, a->dithermask >> 8);
+					addbyte(vars, a->dithermask);
+				}
 				addbyte(vars, HYP_ESC);
 				addbyte(vars, a->type);
 				addenc255(vars, vars->extern_table[a->extern_node_index]->pic_node_index);	/* the real index, updated in finish_pass1 */
@@ -4150,6 +4185,146 @@ static void c_line(hcp_vars *vars, int argc, char **argv)
 
 /* ------------------------------------------------------------------------- */
 
+static hyp_pic_format get_image_type(hcp_vars *vars, int handle, FILELIST *f, PICTURE *pic, unsigned char **bufp)
+{
+	size_t size;
+	size_t ret;
+	pic_filetype pic_format;
+	hyp_pic_format format;
+	
+	*bufp = NULL;
+	size = lseek(handle, 0, SEEK_END);
+	if (size == (size_t)-1)
+	{
+		hcp_error(vars, &f->first_reference, _("%s: can't determine size: %s"), f->name, hyp_utf8_strerror(errno));
+		return HYP_PIC_UNKNOWN;
+	}
+	if (size == 0)
+	{
+		hcp_error(vars, &f->first_reference, _("%s: empty file"), f->name);
+		return HYP_PIC_UNKNOWN;
+	}
+	*bufp = g_new(unsigned char, size);
+	if (*bufp == NULL)
+	{
+		oom(vars);
+		return HYP_PIC_UNKNOWN;
+	}
+	lseek(handle, 0, SEEK_SET);
+	ret = read(handle, *bufp, size);
+	if (ret != size)
+	{
+		hcp_error(vars, &f->first_reference, _("%s: read error"), f->name);
+		return HYP_PIC_UNKNOWN;
+	}
+	
+	pic_init(pic);
+	pic->pi_filesize = size;
+	pic_format = pic_type(pic, *bufp, size);
+	
+	switch (pic_format)
+	{
+	case FT_IFF:
+		format = HYP_PIC_IFF;
+		break;
+	case FT_ICN:
+		format = HYP_PIC_ICN;
+		break;
+	case FT_IMG:
+		format = HYP_PIC_IMG;
+		break;
+	case FT_BMP:
+		format = HYP_PIC_BMP;
+		break;
+	case FT_PNG:
+		format = HYP_PIC_PNG;
+#ifndef HAVE_PNG
+		hcp_error(vars, &f->first_reference, _("%s: PNG not supported on this platform"), f->name);
+#endif
+		break;
+	case FT_UNKNOWN:
+		hcp_error(vars, &f->first_reference, _("%s: unknown file format"), f->name);
+		return HYP_PIC_UNKNOWN;
+
+	case FT_EXEC_FIRST:
+	case FT_EXEC:
+	case FT_TOS:
+	case FT_TTP:
+	case FT_PRG:
+	case FT_GTP:
+	case FT_EXEC_LAST:
+	case FT_PICTURE_FIRST:
+	case FT_DEGAS_LOW:
+	case FT_DEGAS_MED:
+	case FT_DEGAS_HIGH:
+	case FT_NEO:
+	case FT_COLSTAR:
+	case FT_STAD:
+	case FT_IMAGIC_LOW:
+	case FT_IMAGIC_MED:
+	case FT_IMAGIC_HIGH:
+	case FT_SCREEN:
+	case FT_ICO:
+	case FT_CALAMUS_PAGE:
+	case FT_GIF:
+	case FT_TIFF:
+	case FT_TARGA:
+	case FT_PBM:
+	case FT_PICTURE_LAST:
+	case FT_ARCHIVE_FIRST:
+	case FT_ARC:
+	case FT_ZOO:
+	case FT_LZH:
+	case FT_ZIP:
+	case FT_ARJ:
+	case FT_ARCHIVE_LAST:
+	case FT_DOC_FIRST:
+	case FT_ASCII:
+	case FT_WORDPLUS:
+	case FT_SIGDOC:
+	case FT_DOC_LAST:
+	case FT_FONT_FIRST:
+	case FT_GEMFNT:
+	case FT_SIGFNT:
+	case FT_FONT_LAST:
+	case FT_MISC_FIRST:
+	case FT_EMPTY:
+	case FT_DRI:
+	case FT_DRILIB:
+	case FT_BOBJECT:
+	case FT_RSC:
+	case FT_GFA2:
+	case FT_GFA3:
+	default:
+		if (pic_format >= FT_PICTURE_FIRST && pic_format < FT_PICTURE_LAST)
+			hcp_error(vars, &f->first_reference, "%s: %s", f->name, _("unsupported picture format"));
+		else
+			hcp_error(vars, &f->first_reference, _("%s: not a picture format"), f->name);
+		return HYP_PIC_UNKNOWN;
+	}
+	
+	if (pic->pi_planes != 1 && pic->pi_planes != 4 && pic->pi_planes != 8 && pic->pi_planes != 24 && pic->pi_planes != 32)
+	{
+		char *colors;
+		
+		if (pic->pi_planes <= 8)
+			colors = g_strdup_printf(_("%d colors"), 1 << pic->pi_planes);
+		else if (pic->pi_planes <= 16)
+			colors = g_strdup(_("hicolor"));
+		else
+			colors = g_strdup(_("truecolor"));
+		hcp_error(vars, &f->first_reference, _("%s: unsupported number of colors (%d planes, %s)"), f->name, pic->pi_planes, colors);
+		g_free(colors);
+		return HYP_PIC_UNKNOWN;
+	}
+
+	f->pic.format = format;
+	f->pic.width = pic->pi_width;
+	f->pic.height = pic->pi_height;
+	f->pic.planes = pic->pi_planes;
+	return format;
+}
+	
 /*
  * @image <file> <X-Offset> [%<dither-mask>]
  * @limage <file> <X-Offset> [%<dither-mask>]
@@ -4204,6 +4379,7 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 			const char *name;
 			INDEX_ENTRY *entry;
 			int fd;
+			PICTURE pic;
 			
 			adm.extern_node_index = vars->p1_external_node_counter;
 			f->extern_node_index = adm.extern_node_index;
@@ -4212,7 +4388,15 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 			if (fd >= 0)
 			{
 				exists = TRUE;
+				if (vars->opts->read_images)
+				{
+					unsigned char *buf;
+					f->pic.format = get_image_type(vars, fd, f, &pic, &buf);
+					g_free(buf);
+				}
 				hyp_utf8_close(fd);
+				if (vars->opts->warn_compat && f->pic.format != HYP_PIC_UNKNOWN && f->pic.planes > 8)
+					hcp_warning(vars, NULL, _("ST-Guide is not able to display images with %d planes"), f->pic.planes);
 			} else
 			{
 				if (!vars->opts->read_images)
@@ -4226,9 +4410,6 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 				if (G_UNLIKELY(entry == NULL))
 					return;
 				entry->pic_file_id = adm.id;
-				/*
-				 * TODO: parse dithermask. probably written to "previous" member of index entry?
-				 */
 			} else
 			{
 				f->extern_node_index = adm.extern_node_index = HYP_NOINDEX;
@@ -4250,6 +4431,51 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 				adm.x_offset = (_WORD)val;
 			if (val == 0)
 				vars->uses_limage = TRUE;
+		}
+		
+		if (argc > 3)
+		{
+			const char *s = argv[3];
+			int bit = 0;
+			gboolean err = FALSE;
+			
+			if (*s == '%')
+				s++;
+			while (*s)
+			{
+				if (bit >= 16)
+					err = TRUE;
+				else if (*s == '1')
+					adm.dithermask |= 1 << vdi_maptab16[bit];
+				else if (*s != '0')
+					err = TRUE;
+				s++;
+				bit++;
+			}
+			if (err)
+			{
+				hcp_error(vars, NULL, _("invalid dithermask '%s'"), argv[3]);
+				adm.dithermask = 0;
+			} else if (f->pic.format == HYP_PIC_UNKNOWN)
+			{
+				adm.dithermask = 0;
+			} else if (f->pic.planes <= 1 || f->pic.planes > 8)
+			{
+				hcp_error(vars, NULL, _("dithermask not applyable to images with %d planes"), f->pic.planes);
+				adm.dithermask = 0;
+			} else if (bit > (1 << f->pic.planes))
+			{
+				hcp_error(vars, NULL, _("too many bits in dithermask"));
+				adm.dithermask = 0;
+			} else if (adm.dithermask == 0)
+			{
+				hcp_warning(vars, NULL, _("empty dithermask will be ignored"));
+				adm.dithermask = 0;
+			} else if (adm.dithermask == (1 << f->pic.planes) - 1)
+			{
+				hcp_warning(vars, NULL, _("ignoring dithermask of all black"));
+				adm.dithermask = 0;
+			}
 		}
 				
 		if (!exists || !vars->opts->read_images)
@@ -4285,7 +4511,9 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 		*last = a;
 		
 		/* account for gfx escape */
-		vars->page_used += adm.type == HYP_ESC_PIC ? 9 : 8;
+		vars->page_used += 9;
+		if (adm.dithermask != 0)
+			vars->page_used += 5;
 	} else
 	{
 		FILELIST *f;
@@ -7040,141 +7268,25 @@ static gboolean update_index(hcp_vars *vars)
 
 /* ------------------------------------------------------------------------- */
 
-static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
+static hyp_pic_format load_image(hcp_vars *vars, int handle, FILELIST *f)
 {
 	PICTURE pic;
-	size_t size;
 	unsigned char *buf;
 	unsigned char *planebuf = NULL;
 	unsigned char *to_free = NULL;
-	size_t ret;
-	pic_filetype pic_format;
 	hyp_pic_format format;
 	size_t newsize;
+	unsigned char planemask;
 	
-	size = lseek(handle, 0, SEEK_END);
-	if (size == (size_t)-1)
+	format = get_image_type(vars, handle, f, &pic, &buf);
+#ifndef HAVE_PNG
+	if (format == HYP_PIC_PNG)
 	{
-		hcp_error(vars, NULL, _("%s: can't determine size: %s"), file_lookup_name(vars, id), hyp_utf8_strerror(errno));
-		return HYP_PIC_UNKNOWN;
-	}
-	if (size == 0)
-	{
-		hcp_error(vars, NULL, _("%s: empty file"), file_lookup_name(vars, id));
-		return HYP_PIC_UNKNOWN;
-	}
-	buf = g_new(unsigned char, size);
-	if (buf == NULL)
-	{
-		oom(vars);
-		return HYP_PIC_UNKNOWN;
-	}
-	lseek(handle, 0, SEEK_SET);
-	ret = read(handle, buf, size);
-	if (ret != size)
-	{
-		hcp_error(vars, NULL, _("%s: read error"), file_lookup_name(vars, id));
+		/* error already issued in pass 1 */
 		g_free(buf);
 		return HYP_PIC_UNKNOWN;
 	}
-	
-	pic_init(&pic);
-	pic.pi_filesize = size;
-	pic_format = pic_type(&pic, buf, size);
-	
-	switch (pic_format)
-	{
-	case FT_IFF:
-		format = HYP_PIC_IFF;
-		break;
-	case FT_ICN:
-		format = HYP_PIC_ICN;
-		break;
-	case FT_IMG:
-		format = HYP_PIC_IMG;
-		break;
-	case FT_BMP:
-		format = HYP_PIC_BMP;
-		break;
-	case FT_UNKNOWN:
-		hcp_error(vars, NULL, _("%s: unknown file format"), file_lookup_name(vars, id));
-		g_free(buf);
-		return HYP_PIC_UNKNOWN;
-
-	case FT_EXEC_FIRST:
-	case FT_EXEC:
-	case FT_TOS:
-	case FT_TTP:
-	case FT_PRG:
-	case FT_GTP:
-	case FT_EXEC_LAST:
-	case FT_PICTURE_FIRST:
-	case FT_DEGAS_LOW:
-	case FT_DEGAS_MED:
-	case FT_DEGAS_HIGH:
-	case FT_NEO:
-	case FT_COLSTAR:
-	case FT_STAD:
-	case FT_IMAGIC_LOW:
-	case FT_IMAGIC_MED:
-	case FT_IMAGIC_HIGH:
-	case FT_SCREEN:
-	case FT_ICO:
-	case FT_CALAMUS_PAGE:
-	case FT_GIF:
-	case FT_TIFF:
-	case FT_TARGA:
-	case FT_PBM:
-	case FT_PNG:
-	case FT_PICTURE_LAST:
-	case FT_ARCHIVE_FIRST:
-	case FT_ARC:
-	case FT_ZOO:
-	case FT_LZH:
-	case FT_ZIP:
-	case FT_ARJ:
-	case FT_ARCHIVE_LAST:
-	case FT_DOC_FIRST:
-	case FT_ASCII:
-	case FT_WORDPLUS:
-	case FT_SIGDOC:
-	case FT_DOC_LAST:
-	case FT_FONT_FIRST:
-	case FT_GEMFNT:
-	case FT_SIGFNT:
-	case FT_FONT_LAST:
-	case FT_MISC_FIRST:
-	case FT_EMPTY:
-	case FT_DRI:
-	case FT_DRILIB:
-	case FT_BOBJECT:
-	case FT_RSC:
-	case FT_GFA2:
-	case FT_GFA3:
-	default:
-		if (pic_format >= FT_PICTURE_FIRST && pic_format < FT_PICTURE_LAST)
-			hcp_error(vars, NULL, "%s: %s", file_lookup_name(vars, id), _("unsupported picture format"));
-		else
-			hcp_error(vars, NULL, _("%s: not a picture format"), file_lookup_name(vars, id));
-		g_free(buf);
-		return HYP_PIC_UNKNOWN;
-	}
-	
-	if (pic.pi_planes != 1 && pic.pi_planes != 4 && pic.pi_planes != 8 && pic.pi_planes != 24 && pic.pi_planes != 32)
-	{
-		char *colors;
-		
-		if (pic.pi_planes <= 8)
-			colors = g_strdup_printf(_("%d colors"), 1 << pic.pi_planes);
-		else if (pic.pi_planes <= 16)
-			colors = g_strdup(_("hicolor"));
-		else
-			colors = g_strdup(_("truecolor"));
-		hcp_error(vars, NULL, _("%s: unsupported number of colors (%d planes, %s)"), file_lookup_name(vars, id), pic.pi_planes, colors);
-		g_free(colors);
-		g_free(buf);
-		return HYP_PIC_UNKNOWN;
-	}
+#endif
 	
 	vars->in_node = TRUE;
 	vars->page_used = 0;
@@ -7183,7 +7295,8 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 	addbyte(vars, pic.pi_height >> 8);
 	addbyte(vars, pic.pi_height & 0xff);
 	addbyte(vars, pic.pi_planes);
-	addbyte(vars, 0xff); /* planemask */
+	planemask = pic.pi_planes <= 8 ? (1u << pic.pi_planes) - 1 : 0xff;
+	addbyte(vars, planemask); /* planemask */
 	addbyte(vars, 0x00); /* planeonoff */
 	addbyte(vars, 0x00); /* filler */
 	
@@ -7244,8 +7357,14 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 			planebuf = to_free = dest;
 		}
 		break;
-	case HYP_PIC_UNKNOWN:
 	case HYP_PIC_PNG:
+#ifdef HAVE_PNG
+		NYI();
+#else
+		unreachable();
+#endif
+		break;
+	case HYP_PIC_UNKNOWN:
 		unreachable();
 		break;
 	}
@@ -7254,7 +7373,7 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILE_ID id)
 	{
 		g_free(to_free);
 		g_free(buf);
-		hcp_error(vars, NULL, _("%s: can't unpack"), file_lookup_name(vars, id));
+		hcp_error(vars, &f->first_reference, _("%s: can't unpack"), f->name);
 		return HYP_PIC_UNKNOWN;
 	}
 	
@@ -7279,8 +7398,7 @@ static gboolean write_images(hcp_vars *vars)
 	unsigned int left = vars->stats.image_count;
 	hyp_nodenr i;
 	INDEX_ENTRY *entry;
-	FILE_ID id;
-	const char *filename;
+	FILELIST *f;
 	int fd;
 	gboolean retval = TRUE;
 	hyp_pic_format format;
@@ -7298,18 +7416,18 @@ static gboolean write_images(hcp_vars *vars)
 			/* seek_offset already updated in pass2 */
 			break;
 		case HYP_NODE_IMAGE:
-			id = entry->pic_file_id;
 			left--;
-			filename = file_lookup_name(vars, id);
-			fd = hyp_utf8_open(filename, O_RDONLY|O_BINARY, HYP_DEFAULT_FILEMODE);
+			f = file_lookup(vars, entry->pic_file_id);
+			ASSERT(f);
+			fd = hyp_utf8_open(f->name, O_RDONLY|O_BINARY, HYP_DEFAULT_FILEMODE);
 			if (fd < 0)
 			{
-				hcp_error(vars, NULL, _("can't open file '%s': %s"), filename, hyp_utf8_strerror(errno));
+				hcp_error(vars, &f->first_reference, _("can't open file '%s': %s"), f->name, hyp_utf8_strerror(errno));
 				retval = FALSE;
 			} else
 			{
-				hcp_status_image(vars, filename, left);
-				format = load_image(vars, fd, id);
+				hcp_status_image(vars, f->name, left);
+				format = load_image(vars, fd, f);
 				if (format == HYP_PIC_UNKNOWN)
 					retval = FALSE;
 				entry->pic_entry_type = format; /* used only for recompiling */
