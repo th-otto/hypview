@@ -12,15 +12,19 @@ body {
 }
 </style>
 <script type="text/javascript">
-function submitUrl()
+function submitUrl(url)
 {
 	var f = document.getElementById('hypviewform');
 	f.method = 'get';
 	f.enctype = "application/x-www-form-urlencoded";
 	var fileinput = document.getElementById('file');
+	var urlinput = document.getElementById('url');
 	fileinput.disabled = true;
+	var oldvalue = urlinput.value;
+	urlinput.value = url;
 	f.submit();
 	fileinput.disabled = false;
+	urlinput.value = oldvalue;
 }
 function submitFile()
 {
@@ -45,9 +49,9 @@ HYP View Web Service<span style="font-size: 13pt"> - provided by <a href="http:/
 
 <noscript>
 <p><span style="color:red">
-<b>Your browser does not support JavaScript</b>
+<b>Your browser does not support JavaScript.</b>
 <br />
-This service will not work without JavaScript enabled.
+Some features will not work without JavaScript enabled.
 </span>
 <br />
 <br /></p>
@@ -61,13 +65,15 @@ Type in URL of a .HYP file (it must be remotely accessible from that URL<br />
 for example <a href="hypview.cgi?url=/hyp/ataripf.hyp">http://www.tho-otto.de/hyp/ataripf.hyp</a>):
 <br />
 <input type="text" id="url" name="url" size="60" tabindex="1" style="margin-top: 1ex;" />
-<input id="submiturl" style="background-color: #cccccc; font-weight: bold; visibility: hidden;" type="button" value="View" onclick="submitUrl();" />
+<input id="submiturl" style="background-color: #cccccc; font-weight: bold; visibility: hidden;" type="button" value="View" onclick="submitUrl(document.getElementById('url').value);" />
 <noscript>
-<input type="submit" style="background-color: #cccccc; font-weight: bold;" value="View" />
+<div id="submitnoscript"><span><input type="submit" style="background-color: #cccccc; font-weight: bold;" value="View" /></span></div>
 </noscript>
-<script>document.getElementById('submiturl').style.visibility="visible";</script>
-<br />
+<script type="text/javascript">
+document.getElementById('submiturl').style.visibility="visible";
+</script>
 </fieldset>
+<div id="uploadbox" style="display:none;">
 <br />
 <b>OR</b><br />
 <br />
@@ -77,6 +83,10 @@ Choose a .HYP file for upload <br />
 <input id="submitfile" style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitFile();" /><br />
 </fieldset>
 <br />
+</div>
+<script type="text/javascript">
+document.getElementById('uploadbox').style.display="block";
+</script>
 <br />
 
 <fieldset>
@@ -86,7 +96,10 @@ Choose a .HYP file for upload <br />
 <em>Show images</em><br />
 </td>
 <td>
-Show menu<br />
+<em>Show menu</em><br />
+</td>
+<td style="padding-left: 2ex">
+<input type="checkbox" name="showstg" value="1" /> Show ST-Guide source<br />
 </td>
 </tr>
 <tr>
@@ -107,7 +120,7 @@ Show menu<br />
 </tr>
 <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr>
-<td>
+<td colspan="2">
 Output encoding:
 </td>
 <td>
@@ -155,11 +168,33 @@ Keyboard navigation (only when menu is on using HTML 4.x accesskey attribute):
 </table>
 </form>
 
-Some popular Hypertexts:
-<ul>
-<li><a href="hypview.cgi?url=/hyp/tosde.hyp">Die Anleitung zum TOS (german)</a></li>
-<li><a href="hypview.cgi?url=/hyp/tosen.hyp">The documentation for TOS (english)</a></li>
-</ul>
+<?php
+$hypdir = '/hyp';
+echo "Some popular Hypertexts:\n";
+echo "<ul>\n";
+echo "<li><a href=\"javascript: submitUrl('$hypdir/tosde.hyp');\">Die Anleitung zum TOS (german)</a></li>\n";
+echo "<li><a href=\"javascript: submitUrl('$hypdir/tosen.hyp');\">The documentation for TOS (english)</a></li>\n";
+echo "</ul>\n";
+
+if ($dir = opendir($_SERVER['DOCUMENT_ROOT'] . $hypdir))
+{
+	echo "Local files:\n\n";
+	echo "<ul>\n";
+	$files = array();
+	while (false !== ($entry = readdir($dir))) {
+		if ($entry == ".") continue;
+		if ($entry == "..") continue;
+		if (!fnmatch("*.hyp", $entry)) continue;
+		$files[] = $entry;
+    }
+    sort($files);
+    foreach ($files as $entry) {
+    	echo "<li><a href=\"javascript: submitUrl('$hypdir/$entry');\">$entry</a></li>\n";
+    }
+ 	closedir($dir);
+	echo "</ul>\n";
+}
+?>
 
 </div>
 

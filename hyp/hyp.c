@@ -306,14 +306,14 @@ char *hyp_find_file(const char *path)
 			if (*list != '\0')
 				list++;
 			ret = hyp_utf8_open(real_path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-#if defined(HAVE_GLIB) && defined(G_OS_UNIX) /* should be: if filesystem of <dir> is case-sensitive */
+#if defined(G_OS_UNIX) /* should be: if filesystem of <dir> is case-sensitive */
 			/*
 			 * filenames from external references are unpredictable,
 			 * try lowercase version, too.
 			 */
 			if (ret < 0)
 			{
-				char *lower = g_utf8_strdown(filename, -1);
+				char *lower = hyp_utf8_strdown(filename, -1);
 				if (strcmp(lower, filename) != 0)
 				{
 					g_free(real_path);

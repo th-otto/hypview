@@ -61,8 +61,8 @@ const char _hyp_utf8_skip_data[256] = {
       : G_UNICODE_UNASSIGNED))
 
 
-#define IS(Type, Class)	(((guint)1 << (Type)) & (Class))
-#define OR(Type, Rest)	(((guint)1 << (Type)) | (Rest))
+#define IS(Type, Class)	(((unsigned int)1 << (Type)) & (Class))
+#define OR(Type, Rest)	(((unsigned int)1 << (Type)) | (Rest))
 
 
 
@@ -609,6 +609,230 @@ static const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 
 #include "casefold.h"
 
+typedef enum
+{
+	LOCALE_NORMAL,
+	LOCALE_TURKIC,
+	LOCALE_LITHUANIAN
+} LocaleType;
+
+static LocaleType get_locale_type(void)
+{
+#ifdef G_OS_WIN32
+	char *tem = g_win32_getlocale();
+	char locale[2];
+
+	locale[0] = tem[0];
+	locale[1] = tem[1];
+	g_free(tem);
+#else
+	const char *locale = setlocale(LC_CTYPE, NULL);
+
+	if (locale == NULL)
+		return LOCALE_NORMAL;
+#endif
+	switch (locale[0])
+	{
+	case 'a':
+		if (locale[1] == 'z')
+			return LOCALE_TURKIC;
+		break;
+	case 'l':
+		if (locale[1] == 't')
+			return LOCALE_LITHUANIAN;
+		break;
+	case 't':
+		if (locale[1] == 'r')
+			return LOCALE_TURKIC;
+		break;
+	}
+
+	return LOCALE_NORMAL;
+}
+
+/* traverses the string checking for characters with combining class == 230
+ * until a base character is found
+ */
+#if 0
+static gboolean has_more_above(const char *str)
+{
+	const char *p = str;
+	int combining_class;
+
+	while (*p)
+	{
+		combining_class = g_unichar_combining_class(hyp_utf8_get_char(p));
+		if (combining_class == 230)
+			return TRUE;
+		else if (combining_class == 0)
+			break;
+
+		p = g_utf8_next_char(p);
+	}
+
+	return FALSE;
+}
+#else
+#define has_more_above(p) 0
+#endif
+
+static int output_special_case(char *out_buffer, int offset, int type, int which)
+{
+	const char *p = special_case_table + offset;
+	int len;
+
+	if (type != G_UNICODE_TITLECASE_LETTER)
+		p = g_utf8_next_char(p);
+
+	if (which == 1)
+		p += strlen(p) + 1;
+
+	len = strlen(p);
+	if (out_buffer)
+		memcpy(out_buffer, p, len);
+
+	return len;
+}
+
+static gsize real_tolower(const char *str, gssize max_len, char *out_buffer, LocaleType locale_type)
+{
+	const char *p = str;
+	const char *last = NULL;
+	gsize len = 0;
+	char dummybuf[HYP_UTF8_CHARMAX];
+	
+	while ((max_len < 0 || p < str + max_len) && *p)
+	{
+		h_unichar_t c = hyp_utf8_get_char(p);
+		int t = TYPE(c);
+		h_unichar_t val;
+
+		last = p;
+		p = g_utf8_next_char(p);
+
+		if (locale_type == LOCALE_TURKIC && c == 'I')
+		{
+			if (hyp_utf8_get_char(p) == 0x0307)
+			{
+				/* I + COMBINING DOT ABOVE => i (U+0069) */
+				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0069);
+				p = g_utf8_next_char(p);
+			} else
+			{
+				/* I => LATIN SMALL LETTER DOTLESS I */
+				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x131);
+			}
+		}
+		/* Introduce an explicit dot above when lowercasing capital I's and J's
+		 * whenever there are more accents above. [SpecialCasing.txt] */
+		else if (locale_type == LOCALE_LITHUANIAN && (c == 0x00cc || c == 0x00cd || c == 0x0128))
+		{
+			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0069);
+			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0307);
+
+			switch (c)
+			{
+			case 0x00cc:
+				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0300);
+				break;
+			case 0x00cd:
+				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0301);
+				break;
+			case 0x0128:
+				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0303);
+				break;
+			}
+		} else if (locale_type == LOCALE_LITHUANIAN && (c == 'I' || c == 'J' || c == 0x012e) && has_more_above(p))
+		{
+			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, g_unichar_tolower(c));
+			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0307);
+		} else if (c == 0x03A3)			/* GREEK CAPITAL LETTER SIGMA */
+		{
+			if ((max_len < 0 || p < str + max_len) && *p)
+			{
+				h_unichar_t next_c = hyp_utf8_get_char(p);
+				int next_type = TYPE(next_c);
+
+				/* SIGMA mapps differently depending on whether it is
+				 * final or not. The following simplified test would
+				 * fail in the case of combining marks following the
+				 * sigma, but I don't think that occurs in real text.
+				 * The test here matches that in ICU.
+				 */
+				if (ISALPHA(next_type))	/* Lu,Ll,Lt,Lm,Lo */
+					val = 0x3c3;		/* GREEK SMALL SIGMA */
+				else
+					val = 0x3c2;		/* GREEK SMALL FINAL SIGMA */
+			} else
+				val = 0x3c2;			/* GREEK SMALL FINAL SIGMA */
+
+			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, val);
+		} else if (IS(t, OR(G_UNICODE_UPPERCASE_LETTER, OR(G_UNICODE_TITLECASE_LETTER, 0))))
+		{
+			val = ATTTABLE(c >> 8, c & 0xff);
+
+			if (val >= 0x1000000)
+			{
+				len += output_special_case(out_buffer ? out_buffer + len : NULL, val - 0x1000000, t, 0);
+			} else
+			{
+				if (t == G_UNICODE_TITLECASE_LETTER)
+				{
+					unsigned int i;
+
+					for (i = 0; i < G_N_ELEMENTS(title_table); ++i)
+					{
+						if (title_table[i][0] == c)
+						{
+							val = title_table[i][2];
+							break;
+						}
+					}
+				}
+
+				/* Not all uppercase letters are guaranteed to have a lowercase
+				 * equivalent.  If this is the case, val will be zero. */
+				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, val ? val : c);
+			}
+		} else
+		{
+			gsize char_len = _hyp_utf8_skip_data[(unsigned char)*last];
+
+			if (out_buffer)
+				memcpy(out_buffer + len, last, char_len);
+
+			len += char_len;
+		}
+
+	}
+
+	return len;
+}
+
+char *hyp_utf8_strdown(const char *str, gssize len)
+{
+	gsize result_len;
+	LocaleType locale_type;
+	char *result;
+	
+	if (str == NULL)
+		return NULL;
+
+	locale_type = get_locale_type();
+
+	/*
+	 * We use a two pass approach to keep memory management simple
+	 */
+	result_len = real_tolower(str, len, NULL, locale_type);
+	result = g_new(char, result_len + 1);
+	real_tolower(str, len, result, locale_type);
+	result[result_len] = '\0';
+
+	return result;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 char *hyp_utf8_casefold(const char *str, size_t len)
 {
 	char *result;
@@ -931,7 +1155,7 @@ gboolean g_unichar_isupper(h_unichar_t c)
 /*** ---------------------------------------------------------------------- ***/
 
 #ifndef HAVE_GLIB
-gboolean g_unichar_islower(gunichar c)
+gboolean g_unichar_islower(h_unichar_t c)
 {
 	return TYPE(c) == G_UNICODE_LOWERCASE_LETTER;
 }

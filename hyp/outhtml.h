@@ -1130,7 +1130,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		str = html_quote_name(html_referer_url, FALSE);
 		g_string_append_printf(out, "<input type=\"hidden\" name=\"url\" value=\"%s\"%s\n", str, html_closer);
 		g_free(str);
-		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" name=\"q\" size=\"10\" value=\"\"%s\n", html_closer);
+		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" name=\"q\" size=\"10\" value=\"\" placeholder=\"Search\"%s\n", html_closer);
 		g_string_append(out, "</li>\n");
 	}
 	g_string_append(out, "</ul>\n");
@@ -1162,46 +1162,54 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 		if (xref->desttype == HYP_NODE_EXTERNAL_REF)
 		{
 			char *p = ((hyp->st_guide_flags & STG_ALLOW_FOLDERS_IN_XREFS) ? strrslash : strslash)(xref->destname);
+			char c = '\0';
+			hyp_filetype ft;
 			style = g_strdup_printf(" class=\"%s\"", html_xref_link_style);
 			if (p != NULL)
 			{
-				char c = *p;
+				c = *p;
 				*p = '\0';
-				is_xref = hyp_guess_filetype(xref->destname) != HYP_FT_NONE;
-				if (hyp_guess_filetype(xref->destname) == HYP_FT_RSC)
-				{
-					is_xref = TRUE;
-					hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s&file=%s&tree=%u\">%s></a>", style, html_view_rsc_href, xref->destname, xref->line, xref->text);
-				} else if (hyp_guess_filetype(xref->destname) == HYP_FT_HYP)
-				{
-					is_xref = TRUE;
-					if (opts->for_cgi)
-					{
-						char *dir = hyp_path_get_dirname(html_referer_url);
-						char *base = g_strdup(hyp_basename(xref->destname));
-						char *ref, *quoted;
-						char *params = html_cgi_params(opts);
-						ref = g_strconcat(dir, *dir ? "/" : "", base, params, NULL);
-						quoted = html_quote_name(ref, FALSE);
-						hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s?url=%s\">%s</a>", style, cgi_scriptname, quoted, xref->text);
-						g_free(quoted);
-						g_free(ref);
-						g_free(params);
-						g_free(base);
-						g_free(dir);
-					} else
-					{
-						char *base = replace_ext(hyp_basename(xref->destname), HYP_EXT_HYP, "");
-						char *quoted = html_quote_name(base, FALSE);
-						html_convert_filename(base);
-						hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"../%s/%s.html\">%s</a>", style, quoted, quoted, xref->text);
-						g_free(quoted);
-						g_free(base);
-					}
-				}
-				if (!is_xref)
-					*p = c;
 			}
+			ft = hyp_guess_filetype(xref->destname);
+			is_xref = ft != HYP_FT_NONE;
+			if (ft == HYP_FT_RSC)
+			{
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s&file=%s&tree=%u\">%s></a>", style, html_view_rsc_href, xref->destname, xref->line, xref->text);
+			} else if (ft == HYP_FT_HYP)
+			{
+				/*
+				 * basename here is as specified in the link,
+				 * which is often all uppercase.
+				 * Always convert to lowercase first.
+				 */
+				char *base = hyp_utf8_strdown(hyp_basename(xref->destname), STR0TERM);
+				if (opts->for_cgi)
+				{
+					char *dir = hyp_path_get_dirname(html_referer_url);
+					char *ref, *quoted;
+					char *params = html_cgi_params(opts);
+					
+					ref = g_strconcat(dir, *dir ? "/" : "", base, params, NULL);
+					quoted = html_quote_name(ref, FALSE);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s?url=%s\">%s</a>", style, cgi_scriptname, quoted, xref->text);
+					g_free(quoted);
+					g_free(ref);
+					g_free(params);
+					g_free(dir);
+				} else
+				{
+					char *htmlbase = replace_ext(base, HYP_EXT_HYP, "");
+					char *quoted;
+					html_convert_filename(htmlbase);
+					quoted = html_quote_name(htmlbase, FALSE);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"../%s/%s.html\">%s</a>", style, quoted, quoted, xref->text);
+					g_free(quoted);
+					g_free(htmlbase);
+				}
+				g_free(base);
+			}
+			if (p)
+				*p = c;
 		} else if (xref->desttype == HYP_NODE_POPUP)
 		{
 			style = g_strdup_printf(" class=\"%s\"", html_popup_link_style);
@@ -1506,7 +1514,6 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		                        hyp->line_width);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s\n", str);
 		g_free(str);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "</span></span>");
 		{
 			HYP_HOSTNAME *h;
 			for (h = hyp->hostname; h != NULL; h = h->next)
@@ -1516,6 +1523,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 				g_free(str);
 			}
 		}
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "</span></span>");
 	}
 
 	if (hyp && xrefs)

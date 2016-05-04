@@ -923,6 +923,7 @@ char *hyp_utf8_casefold(const char *str, size_t len);
 gboolean g_unichar_isupper(h_unichar_t c);
 gboolean g_unichar_islower(h_unichar_t c);
 size_t hyp_unichar_to_utf8(char *buf, h_unichar_t wc);
+char *hyp_utf8_strdown(const char *str, gssize len);
 
 h_unichar_t g_unichar_tolower(h_unichar_t ch);
 h_unichar_t g_unichar_toupper(h_unichar_t ch);
