@@ -44,185 +44,210 @@ unsigned long pic_pal_stddiff(const PICTURE *pic)
 	return sum;
 }
 
-#if 0 /* experimental */
-static double H(double q)
-{
-	double value;
+/*** ---------------------------------------------------------------------- ***/
 
-	if (q > 0.008856)
-	{
-		value = pow(q, 0.333333);
-		return value;
-	} else
-	{
-		value = 7.787 * q + 0.137931;
-		return value;
-	}
+typedef struct {
+	double r;
+	double g;
+	double b;
+} color_RGB;
+
+typedef struct {
+	double X;
+	double Y;
+	double Z;
+} color_XYZ;
+
+typedef struct {
+	double L;
+	double a;
+	double b;
+} color_Lab;
+
+
+static void _RGB(color_RGB *c, unsigned char r, unsigned char g, unsigned char b)
+{
+	c->r = r / 255.0;
+	c->g = g / 255.0;
+	c->b = b / 255.0;
 }
 
-static double RGB2LAB(int R_value, int G_value, int B_value, int R_value2, int G_value2, int B_value2)
+/*** ---------------------------------------------------------------------- ***/
+
+static void rgb2xyz(color_XYZ *xyz, const color_RGB *rgb)
 {
-	double RGB[3];
-	double XYZ[3];
-	double Lab[3];
-	double RGB2[3];
-	double XYZ2[3];
-	double Lab2[3];
-	double adapt[3];
-	double value;
-
-	/* maybe change to global, XYZ[0] = X_value */
-
-	adapt[0] = 0.950467;
-	adapt[1] = 1.000000;
-	adapt[2] = 1.088969;
-
-	RGB[0] = R_value / 255.0;
-	RGB[1] = G_value / 255.0;
-	RGB[2] = B_value / 255.0;
-
-	XYZ[0] = 0.412424 * RGB[0] + 0.357579 * RGB[1] + 0.180464 * RGB[2];
-	XYZ[1] = 0.212656 * RGB[0] + 0.715158 * RGB[1] + 0.0721856 * RGB[2];
-	XYZ[2] = 0.0193324 * RGB[0] + 0.119193 * RGB[1] + 0.950444 * RGB[2];
-
-	Lab[0] = 116 * H(XYZ[1] / adapt[1]) - 16;
-	Lab[1] = 500 * (H(XYZ[0] / adapt[0]) - H(XYZ[1] / adapt[1]));
-	Lab[2] = 200 * (H(XYZ[1] / adapt[1]) - H(XYZ[2] / adapt[2]));
-
-	RGB2[0] = R_value2 / 255.0;
-	RGB2[1] = G_value2 / 255.0;
-	RGB2[2] = B_value2 / 255.0;
-
-	XYZ2[0] = 0.412424 * RGB2[0] + 0.357579 * RGB2[1] + 0.180464 * RGB2[2];
-	XYZ2[1] = 0.212656 * RGB2[0] + 0.715158 * RGB2[1] + 0.0721856 * RGB2[2];
-	XYZ2[2] = 0.0193324 * RGB2[0] + 0.119193 * RGB2[1] + 0.950444 * RGB2[2];
-
-	Lab2[0] = 116 * H(XYZ2[1] / adapt[1]) - 16;
-	Lab2[1] = 500 * (H(XYZ2[0] / adapt[0]) - H(XYZ2[1] / adapt[1]));
-	Lab2[2] = 200 * (H(XYZ2[1] / adapt[1]) - H(XYZ2[2] / adapt[2]));
-
-	value = pow((Lab[0] - Lab2[0]), 2) + pow((Lab[1] - Lab2[1]), 2) + pow((Lab[2] - Lab2[2]), 2);
-
-/*
-	if ( Lab2[0] > 903.3*0.008856 ) 
-		trans[1] = pow ( (Lab2[0]+16)*0.00862, 3);
-	else
-		trans[1] = Lab2[0] * 0.001107;
-
-	if ( trans[1] > 0.008856 )
-		transf[1] = (Lab2[0]+16)*0.00862;
-	else
-		transf[1] = (903.3*trans[1]+16)*0.00862;
-
-	transf[0] = Lab2[1] * 0.002 + transf[1];
-	transf[2] = transf[1] - Lab2[2] * 0.005;
-
-	if ( pow( transf[0], 3 ) > 0.008856 )
-		trans[0] = pow( transf[0], 3 );
-	else
-		trans[0] =  ((116 * transf[0]) - 16) * 0.001107;
-
-	if ( pow( transf[2], 3 ) > 0.008856 )
-		trans[2] = pow( transf[2], 3 );
-	else
-		trans[2] =  ((116 * transf[2]) - 16) * 0.001107;
-
-	newXYZ[0] = trans[0] * adapt[0];
-	newXYZ[1] = trans[1] * adapt[1];
-	newXYZ[2] = trans[2] * adapt[2];
-
-	newRGB[0] = 3.24071 * newXYZ[0] + (-1.53726) * newXYZ[1] + (-0.498571) * newXYZ[2];
-	newRGB[1] = (-0.969258) * newXYZ[0] + 1.87599 * newXYZ[1] + 0.0415557 * newXYZ[2];
-	newRGB[2] = 0.0556352 * newXYZ[0] + (-0.203996) * newXYZ[1] + 1.05707 * newXYZ[2];
+	double r, g, b;
 	
-	newRGB[0] *= 255;
-	newRGB[1] *= 255;
-	newRGB[2] *= 255;
+	if (rgb->r > 0.04045)
+		r = pow((rgb->r + 0.055) / 1.055, 2.4);
+	else
+		r = rgb->r / 12.92;
+	if (rgb->g > 0.04045)
+		g = pow((rgb->g + 0.055) / 1.055, 2.4);
+	else
+		g = rgb->g / 12.92;
+	if (rgb->b > 0.04045)
+		b = pow((rgb->b + 0.055) / 1.055, 2.4);
+	else
+		b = rgb->b / 12.92;
 
-	printf("r=%d g=%d b=%d nr=%.f ng=%.f nb=%.f\n",R_value,G_value,B_value,newRGB[0],newRGB[1],newRGB[2]);
-*/
-	return value;
-}
+	r = r * 100;
+	g = g * 100;
+	b = b * 100;
 
-static void rgb2lab(unsigned char r, unsigned char g, unsigned char b, double lab[3])
-{
-	double eps = 216. / 24389.;
-	double k = 24389. / 27.;
-	/* reference white D50 */
-	double xr = 0.964221;
-	double yr = 1.0;
-	double zr = 0.825211;
-	/* reference white D65 */
-	/* xr = 0.95047; yr = 1.0; zr = 1.08883; */
-	double rgb[3];
-	double x, y, z, fx, fy, fz;
-
-	/* RGB to XYZ */
-	rgb[0] = r / 255.0;
-	rgb[1] = g / 255.0;
-	rgb[2] = b / 255.0;
-
-	/* assuming sRGB (D65) */
-	rgb[0] = (rgb[0] <= 0.04045) ? (rgb[0] / 12.92) : pow((rgb[0] + 0.055) / 1.055, 2.4);
-	rgb[1] = (rgb[1] <= 0.04045) ? (rgb[1] / 12.92) : pow((rgb[1] + 0.055) / 1.055, 2.4);
-	rgb[2] = (rgb[2] <= 0.04045) ? (rgb[2] / 12.92) : pow((rgb[2] + 0.055) / 1.055, 2.4);
-
-	/* sRGB D50 */
+	/* sRGB D50
 	x = 0.4360747 * rgb[0] + 0.3850649 * rgb[1] + 0.1430804 * rgb[2];
 	y = 0.2225045 * rgb[0] + 0.7168786 * rgb[1] + 0.0606169 * rgb[2];
 	z = 0.0139322 * rgb[0] + 0.0971045 * rgb[1] + 0.7141733 * rgb[2];
+	*/
+	
 	/* sRGB D65 */
-	/* x =  0.412453*rgb[0] + 0.357580*rgb[1] + 0.180423*rgb[2];
-	   y =  0.212671*rgb[0] + 0.715160*rgb[1] + 0.072169*rgb[2];
-	   z =  0.019334*rgb[0] + 0.119193*rgb[1] + 0.950227*rgb[2];
-	 */
-
-	/* XYZ to Lab */
-	xr = x / xr;
-	yr = y / yr;
-	zr = z / zr;
-
-	fx = (xr > eps) ? pow(xr, 1 / 3) : ((k * xr + 16) / 116);
-	fy = (yr > eps) ? pow(yr, 1 / 3) : ((k * yr + 16) / 116);
-	fz = (zr > eps) ? pow(zr, 1 / 3) : ((k * zr + 16) / 116);
-
-	lab[0] = round((116 * fy) - 16);
-	lab[1] = round(500 * (fx - fy));
-	lab[2] = round(200 * (fy - fz));
+	xyz->X = r * 0.412453 + g * 0.357580 + b * 0.180423;
+	xyz->Y = r * 0.212671 + g * 0.715160 + b * 0.072169;
+	xyz->Z = r * 0.019334 + g * 0.119193 + b * 0.950227;
 }
-#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void xyz2lab(color_Lab *c, const color_XYZ *xyz)
+{
+	double X = xyz->X / 95.047;
+	double Y = xyz->Y / 100.000;
+	double Z = xyz->Z / 108.883;
+
+	if (X > 0.008856)
+		X = pow(X, 1.0 / 3);
+	else
+		X = (7.787 * X) + (16.0 / 116);
+	if (Y > 0.008856)
+		Y = pow(Y, 1.0 / 3);
+	else
+		Y = (7.787 * Y) + (16.0 / 116);
+	if (Z > 0.008856)
+		Z = pow(Z, 1.0 / 3);
+	else
+		Z = (7.787 * Z) + (16.0 / 116);
+
+	c->L = (116 * Y) - 16;
+	c->a = 500 * (X - Y);
+	c->b = 200 * (Y - Z);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void rgb2lab(color_Lab *lab, const color_RGB *rgb)
+{
+	color_XYZ xyz;
+	rgb2xyz(&xyz, rgb);
+	xyz2lab(lab, &xyz);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/*
+  Calculates the Delta E (CIE2000) of two colors. Colors are given in Lab tuples.
+*/
+
+#define degrees(x) ((x) * (180.0 / M_PI))
+#define radians(x) ((x) * (M_PI / 180.0))
+
+static double delta_e_cie2000(const color_Lab *color1, const color_Lab *color2)
+{
+	const double Kl = 1.0;
+	const double Kc = 1.0;
+	const double Kh = 1.0;
+
+	double L1 = color1->L;
+	double a1 = color1->a;
+	double b1 = color1->b;
+	double L2 = color2->L;
+	double a2 = color2->a;
+	double b2 = color2->b;
+
+	double avg_Lp, C1, C2, avg_C1_C2, G, a1p, a2p, C1p, C2p, avg_C1p_C2p, h1p, h2p, avg_Hp, T;
+	double diff_h2p_h1p, delta_hp, delta_Lp, delta_Cp, delta_Hp;
+	double S_L, S_C, S_H;
+	double delta_ro, R_C, R_T;
+
+	double delta_E;
+
+	avg_Lp = (L1 + L2) / 2.0;
+	C1 = sqrt(pow(a1, 2) + pow(b1, 2));
+	C2 = sqrt(pow(a2, 2) + pow(b2, 2));
+	avg_C1_C2 = (C1 + C2) / 2.0;
+
+	G = 0.5 * (1 - sqrt(pow(avg_C1_C2, 7.0) / (pow(avg_C1_C2, 7.0) + pow(25.0, 7.0))));
+
+	a1p = (1.0 + G) * a1;
+	a2p = (1.0 + G) * a2;
+	C1p = sqrt(pow(a1p, 2) + pow(b1, 2));
+	C2p = sqrt(pow(a2p, 2) + pow(b2, 2));
+	avg_C1p_C2p = (C1p + C2p) / 2.0;
+
+	h1p = degrees(atan2(b1, a1p));
+	if (h1p < 0)
+		h1p += 360.0;
+
+	h2p = degrees(atan2(b2, a2p));
+	if (h2p < 0)
+		h2p += 360.0;
+
+	if (fabs(h1p - h2p) > 180)
+		avg_Hp = (h1p + h2p + 360) / 2.0;
+	else
+		avg_Hp = (h1p + h2p) / 2.0;
+
+	T = 1 - 0.17 * cos(radians(avg_Hp - 30)) + 0.24 * cos(radians(2 * avg_Hp)) + 0.32 * cos(radians(3 * avg_Hp + 6)) - 0.2 * cos(radians(4 * avg_Hp - 63));
+
+	diff_h2p_h1p = h2p - h1p;
+	if (fabs(diff_h2p_h1p) <= 180)
+		delta_hp = diff_h2p_h1p;
+	else if (fabs(diff_h2p_h1p) > 180 && h2p <= h1p)
+		delta_hp = diff_h2p_h1p + 360;
+	else
+		delta_hp = diff_h2p_h1p - 360;
+
+	delta_Lp = L2 - L1;
+	delta_Cp = C2p - C1p;
+	delta_Hp = 2 * sqrt(C2p * C1p) * sin(radians(delta_hp) / 2.0);
+
+	S_L = 1 + ((0.015 * pow(avg_Lp - 50, 2)) / sqrt(20 + pow(avg_Lp - 50, 2.0)));
+	S_C = 1 + 0.045 * avg_C1p_C2p;
+	S_H = 1 + 0.015 * avg_C1p_C2p * T;
+
+	delta_ro = 30 * exp(-(pow(((avg_Hp - 275) / 25), 2.0)));
+	R_C = sqrt((pow(avg_C1p_C2p, 7.0)) / (pow(avg_C1p_C2p, 7.0) + pow(25.0, 7.0)));
+	R_T = -2 * R_C * sin(2 * radians(delta_ro));
+
+	delta_E = sqrt(pow(delta_Lp / (S_L * Kl), 2) + pow(delta_Cp / (S_C * Kc), 2) + pow(delta_Hp / (S_H * Kh), 2) + R_T * (delta_Cp / (S_C * Kc)) * (delta_Hp / (S_H * Kh)));
+
+	return delta_E;
+}
 
 /*** ---------------------------------------------------------------------- ***/
 
 static void matchpal(const PALETTE dst, const PALETTE src, unsigned char *pixel, int ncolors)
 {
 	int i, j;
-	_UWORD dr, dg, db;
-	_ULONG diff, mindiff;
+	color_RGB c;
+	color_Lab c1, c2;
+	double diff, mindiff;
 	const struct _rgb *rgbi, *rgbp;
 	_UBYTE best;
 	
 	for (i = 0; i < ncolors; i++)
 	{
 		rgbp = &src[i];
-		mindiff = 0x4000000UL;
+		_RGB(&c, rgbp->r, rgbp->g, rgbp->b);
+		rgb2lab(&c1, &c);
+		mindiff = 4000000.;
 		best = i;
 		for (j = 0; j < ncolors && mindiff != 0; j++)
 		{
 			rgbi = &dst[j];
-			if (rgbi->r >= rgbp->r)
-				dr = rgbi->r - rgbp->r;
-			else
-				dr = rgbp->r - rgbi->r;
-			if (rgbi->g >= rgbp->g)
-				dg = rgbi->g - rgbp->g;
-			else
-				dg = rgbp->g - rgbi->g;
-			if (rgbi->b >= rgbp->b)
-				db = rgbi->b - rgbp->b;
-			else
-				db = rgbp->b - rgbi->b;
-			diff = (_ULONG)(dr * dr) + (_ULONG)(dg * dg) + (_ULONG)(db * db);
+			_RGB(&c, rgbi->r, rgbi->g, rgbi->b);
+			rgb2lab(&c2, &c);
+			diff = delta_e_cie2000(&c1, &c2);
 			if (diff < mindiff)
 			{
 				best = j;
@@ -233,7 +258,7 @@ static void matchpal(const PALETTE dst, const PALETTE src, unsigned char *pixel,
 		if (i < 16)
 		{
 			rgbi = &dst[best];
-			printf("map %d #%02x%02x%02x -> %d #%02x%02x%02x %lu\n",
+			printf("map %d #%02x%02x%02x -> %d #%02x%02x%02x %f\n",
 				i, rgbp->r, rgbp->g, rgbp->b,
 				best, rgbi->r, rgbi->g, rgbi->b, mindiff);
 		}
