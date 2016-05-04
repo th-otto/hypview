@@ -67,6 +67,7 @@
 # create title page + table of contents
 !begin_node HypFind: Search utility
 !html_name hypfind_main
+!raw [stg,amg] @alias "Main"
 
 !raw [stg] @box 3 68 4 0
 ~ (!nl)

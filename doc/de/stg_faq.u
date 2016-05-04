@@ -54,6 +54,7 @@
 !alias FAQInhaltsverzeichnis
 !ignore_toptoc
 !html_name stgfaq_main
+!raw [stg,amg] @alias "Main"
 
 !begin_center
 (!U)FAQ - Fragen zum ST-Guide(!u)

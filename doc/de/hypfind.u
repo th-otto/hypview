@@ -68,6 +68,7 @@
 
 !begin_node HypFind: Such-Werkzeug
 !html_name hypfind_main
+!raw [stg,amg] @alias "Main"
 
 !raw [stg] @box 3 68 3 0
 ~ (!nl)

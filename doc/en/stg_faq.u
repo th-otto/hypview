@@ -59,6 +59,7 @@
 
 !begin_node ST-Guide questions and answers
 !html_name stgfaq_main
+!raw [stg,amg] @alias "Main"
 !ignore_toptoc
 !raw [stg] @xref "ST-Guide.HYP/Main" "ST-Guide Documentation"
 !raw [stg] @xref "HCP.HYP/Main" "HCP Documentation"
