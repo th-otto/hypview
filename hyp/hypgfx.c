@@ -167,7 +167,7 @@ void hyp_pic_apply_planemasks(HYP_IMAGE *pic, unsigned char *buf)
 static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 {
 	hyp_nodenr node = gfx->extern_node_index;
-	long data_size;
+	unsigned long data_size;
 	unsigned char *buf;
 	void *image;
 	HYP_IMAGE *pic;
@@ -180,6 +180,15 @@ static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 		return TRUE;
 	
 	data_size = pic->data_size;
+	if (data_size > pic->image_size)
+	{
+		/*
+		 * something went wrong. should have been checked in hyp_pic_get_header already.
+		 * Just update it so that we dont try to decode more bytes than we allocated.
+		 */
+		HYP_DBG(("%s:%d: trying to decode %ld bytes for image only %ld long", hyp_basename(__FILE__), __LINE__, data_size, pic->image_size));
+		data_size = pic->image_size;
+	}
 	buf = g_new(unsigned char, pic->image_size);
 	if (buf == NULL)
 	{
