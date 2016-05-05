@@ -62,13 +62,26 @@ gboolean hyp_pic_get_header(HYP_IMAGE *image, const unsigned char *hyp_pic_raw, 
 			 */
 			if (errorfile && !image->warned)
 			{
+				/* FIXME: won't see any message in the GUI */
 				hyp_utf8_fprintf(errorfile, _("wrong image size for node %u: %lu, should be %lu%s\n"),
-				image->number, image->data_size, image_size,
-				image_size > image->data_size ? _("( corrupted)") : "");
+					image->number, image->data_size, image_size,
+					image_size > image->data_size ? _("( corrupted)") : "");
 				image->warned = TRUE;
 			}
 			if (image_size > image->data_size)
+			{
+				/*
+				 * data in file is too short, reject it
+				 */
 				return FALSE;
+			}
+			/*
+			 * data in file is longer than expected.
+			 * Must update the datasize because we later allocate
+			 * only the needed size for the image buffer,
+			 * and would otherwise try to decode too much data.
+			 */
+			image->data_size = image_size;
 		}
 		image->image_size = SIZEOF_HYP_PICTURE + planesize * image->pic.fd_nplanes;
 	} else
