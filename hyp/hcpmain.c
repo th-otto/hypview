@@ -109,6 +109,16 @@ static void print_usage(FILE *out)
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+static void warn_if_empty(HYP_DOCUMENT *hyp, hcp_opts *opts)
+{
+	if (hyp->first_text_page == HYP_NOINDEX)
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s does not have any text pages\n"), _("warning: "), hyp->file);
+	if (hyp->comp_vers > HCP_COMPILER_VERSION)
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func func, int argc, const char **argv, const char *defext)
 {
 	gboolean retval;
@@ -144,6 +154,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
 		return FALSE;
 	}
+	warn_if_empty(hyp, opts);
 	
 	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
 	{
@@ -152,8 +163,6 @@ static gboolean recompile(const char *filename, hcp_opts *opts, recompile_func f
 		hyp_utf8_fprintf(opts->errorfile, _("%s: fatal: protected hypertext: %s\n"), gl_program_name, filename);
 		return FALSE;
 	}
-	if (hyp->comp_vers > HCP_COMPILER_VERSION)
-		hyp_utf8_fprintf(opts->errorfile, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
 	if ((opts->outfile == NULL || opts->outfile == stdout) && opts->output_filename != NULL)
 	{
 		if (strcmp(opts->output_filename, HCP_OUTPUT_WILDCARD) == 0)
@@ -268,8 +277,7 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 		return FALSE;
 	}
 	
-	if (hyp->comp_vers > HCP_COMPILER_VERSION)
-		hyp_utf8_fprintf(opts->errorfile, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
+	warn_if_empty(hyp, opts);
 	
 	dump_globals(hyp, opts->outfile);
 	
@@ -338,20 +346,17 @@ static gboolean list_entries(const char *filename, hcp_opts *opts)
 						{
 							if (GetEntryBytes(hyp, node, data, hyp_pic_raw, SIZEOF_HYP_PICTURE))
 							{
+								char *colors;
 								memset(&image, 0, sizeof(image));
 								image.number = node;
 								image.data_size = GetDataSize(hyp, node);
 								hyp_pic_get_header(&image, hyp_pic_raw, opts->errorfile);
-								hyp_utf8_fprintf(opts->outfile, " (%ux%u", image.pic.fd_w, image.pic.fd_h);
-								if (image.pic.fd_nplanes <= 8)
-									hyp_utf8_fprintf(opts->outfile, "x%u", 1 << image.pic.fd_nplanes);
-								else if (image.pic.fd_nplanes <= 16)
-									hyp_utf8_fprintf(opts->outfile, " hicolor-%u", image.pic.fd_nplanes);
-								else
-									hyp_utf8_fprintf(opts->outfile, " truecolor-%u", image.pic.fd_nplanes);
-								hyp_utf8_fprintf(opts->outfile, _(" mask=$%02x on-off=$%02x%s)"),
+								colors = pic_colornameformat(image.pic.fd_nplanes);
+								hyp_utf8_fprintf(opts->outfile, _(" (%ux%u%s mask=$%02x on-off=$%02x%s)"),
+									image.pic.fd_w, image.pic.fd_h, colors,
 									image.plane_pic, image.plane_on_off,
 									image.incomplete ? _(" (incomplete)") : "");
+								g_free(colors);
 							} else
 							{
 								hyp_utf8_fprintf(opts->outfile, _(" (decode error)"));
@@ -683,9 +688,15 @@ int main(int argc, const char **argv)
 				while (c < argc)
 				{
 					const char *filename = argv[c++];
+					GString *out;
 					stg_nl = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					out = g_string_new(NULL);
 					if (num_args > 1)
-						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, _("@remark File: %s%s"), filename, stg_nl);
+					{
+						hyp_utf8_sprintf_charset(out, opts->output_charset, _("@remark File: %s\n"), filename);
+						write_strout(out, opts->outfile);
+						g_string_truncate(out, 0);
+					}
 					if (recompile(filename, opts, recompile_stg, 0, NULL, HYP_EXT_STG) == FALSE)
 					{
 						retval = EXIT_FAILURE;
@@ -693,8 +704,11 @@ int main(int argc, const char **argv)
 					}
 					if (c < argc)
 					{
-						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "%s%s", stg_nl, stg_nl);
+						g_string_append(out, "\n\n");
+						write_strout(out, opts->outfile);
+						g_string_truncate(out, 0);
 					}
+					g_string_free(out, TRUE);
 				}
 			} else if (opts->recompile_format == HYP_FT_HTML)
 			{
@@ -703,9 +717,15 @@ int main(int argc, const char **argv)
 				while (c < argc)
 				{
 					const char *filename = argv[c++];
+					GString *out;
 					stg_nl = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					out = g_string_new(NULL);
 					if (num_args > 1)
-						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, _("<!-- File: %s -->%s"), filename, stg_nl);
+					{
+						hyp_utf8_sprintf_charset(out, opts->output_charset, _("<!-- File: %s -->\n"), filename);
+						write_strout(out, opts->outfile);
+						g_string_truncate(out, 0);
+					}
 					/* if ((opts->outfile == NULL || opts->outfile == stdout) && opts->output_filename == NULL)
 						opts->output_filename = replace_ext(filename, NULL, HYP_EXT_HTML); */
 					if (recompile(filename, opts, recompile_html, 0, NULL, HYP_EXT_HTML) == FALSE)
@@ -715,8 +735,11 @@ int main(int argc, const char **argv)
 					}
 					if (c < argc)
 					{
-						hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "%s%s", stg_nl, stg_nl);
+						g_string_append(out, "\n\n");
+						write_strout(out, opts->outfile);
+						g_string_truncate(out, 0);
 					}
+					g_string_free(out, TRUE);
 				}
 			} else if (opts->recompile_format == HYP_FT_BINARY)
 			{

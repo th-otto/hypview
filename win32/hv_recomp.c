@@ -36,7 +36,7 @@ static gboolean recompile(HYP_DOCUMENT *hyp, hcp_opts *opts, recompile_func func
 		return FALSE;
 	}
 	if (hyp->comp_vers > HCP_COMPILER_VERSION)
-		hyp_utf8_fprintf(opts->errorfile, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
 	if ((opts->outfile == NULL || opts->outfile == stdout) && opts->output_filename != NULL)
 	{
 		output_filename = g_strdup(opts->output_filename);

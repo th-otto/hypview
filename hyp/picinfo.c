@@ -99,7 +99,7 @@ static gboolean identify_file(const char *filename)
 	FILE *fp = NULL;
 	gboolean retval = TRUE;
 	pic_filetype pic_format;
-	char colors[40];
+	char *colors;
 	const char *compressed;
 	const char *unsupported;
 	char colordiff[40];
@@ -135,12 +135,7 @@ static gboolean identify_file(const char *filename)
 	pic_format = pic_type(&pic, buf, size);
 	g_free(buf);
 	buf = NULL;
-	if (pic.pi_planes <= 8)
-		sprintf(colors, "x%u", 1 << pic.pi_planes);
-	else if (pic.pi_planes <= 16)
-		sprintf(colors, " hicolor-%u", pic.pi_planes);
-	else
-		sprintf(colors, " truecolor-%u", pic.pi_planes);
+	colors = pic_colornameformat(pic.pi_planes);
 	compressed = pic.pi_compressed ? _(" (compressed)") : _(" (uncompressed)");
 	unsupported = pic.pi_unsupported ? _(" (unsupported)") : "";
 	colordiff[0] = '\0';
@@ -258,6 +253,7 @@ static gboolean identify_file(const char *filename)
 		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unknown picture format"));
 		break;
 	}
+	g_free(colors);
 	
 	if (show_palette && pic_format >= FT_PICTURE_FIRST && pic_format <= FT_PICTURE_LAST && pic.pi_planes <= 8)
 	{

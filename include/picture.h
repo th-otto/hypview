@@ -346,6 +346,7 @@ void pic_free(PICTURE *pic);
 
 unsigned long pic_pal_stddiff(const PICTURE *pic);
 gboolean pic_match_stdpal(PICTURE *pic, unsigned char *buf);
+char *pic_colornameformat(int planes);
 
 EXTERN_C_END
 

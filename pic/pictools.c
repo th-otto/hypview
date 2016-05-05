@@ -65,7 +65,7 @@ typedef struct {
 } color_Lab;
 
 
-static void _RGB(color_RGB *c, unsigned char r, unsigned char g, unsigned char b)
+static void to_RGB(color_RGB *c, unsigned char r, unsigned char g, unsigned char b)
 {
 	c->r = r / 255.0;
 	c->g = g / 255.0;
@@ -238,14 +238,14 @@ static void matchpal(const PALETTE dst, const PALETTE src, unsigned char *pixel,
 	for (i = 0; i < ncolors; i++)
 	{
 		rgbp = &src[i];
-		_RGB(&c, rgbp->r, rgbp->g, rgbp->b);
+		to_RGB(&c, rgbp->r, rgbp->g, rgbp->b);
 		rgb2lab(&c1, &c);
 		mindiff = 4000000.;
 		best = i;
 		for (j = 0; j < ncolors && mindiff != 0; j++)
 		{
 			rgbi = &dst[j];
-			_RGB(&c, rgbi->r, rgbi->g, rgbi->b);
+			to_RGB(&c, rgbi->r, rgbi->g, rgbi->b);
 			rgb2lab(&c2, &c);
 			diff = delta_e_cie2000(&c1, &c2);
 			if (diff < mindiff)

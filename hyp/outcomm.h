@@ -200,13 +200,13 @@ static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pi
 	if (default_format != HYP_PIC_IMG && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
 	{
 		format = default_format;
-		hyp_utf8_fprintf(opts->errorfile, _("warning: GEM images are not displayable in HTML, using %s instead\n"), hcp_pic_format_to_name(default_format));
+		hyp_utf8_fprintf(opts->errorfile, _("%sGEM images are not displayable in HTML, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format));
 	}
 #ifndef HAVE_PNG
 	if (format == HYP_PIC_PNG)
 	{
 		format = default_format;
-		hyp_utf8_fprintf(opts->errorfile, _("warning: PNG not supported on this platform, using %s instead\n"), hcp_pic_format_to_name(default_format));
+		hyp_utf8_fprintf(opts->errorfile, _("%sPNG not supported on this platform, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format));
 	}
 #endif
 	if (format < 1 || format > HYP_PIC_LAST)
@@ -487,7 +487,9 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 	pic_calcsize(&pic);
 	if (image->image_size != (unsigned long)pic.pi_picsize + SIZEOF_HYP_PICTURE)
 	{
-		hyp_utf8_fprintf(opts->errorfile, _("format error in image of node %u: %dx%dx%d datasize=%ld picsize=%ld\n"), node, image->pic.fd_w, image->pic.fd_h, image->pic.fd_nplanes, image->image_size, pic.pi_picsize);
+		char *colors = pic_colornameformat(image->pic.fd_nplanes);
+		hyp_utf8_fprintf(opts->errorfile, _("format error in image of node %u: %dx%d%s datasize=%ld picsize=%ld\n"), node, image->pic.fd_w, image->pic.fd_h, colors, image->image_size, pic.pi_picsize);
+		g_free(colors);
 		goto error;
 	}
 	pic.pi_name = image_name(format, hyp, node, opts->image_name_prefix);
@@ -645,7 +647,11 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 		hyp_utf8_fclose(fp);
 	fp = NULL;
 	if (opts->verbose >= 2 && opts->outfile != stdout)
-		hyp_utf8_fprintf(stdout, _("wrote image %s (%dx%dx%d)\n"), pic.pi_name, pic.pi_width, pic.pi_height, 1 << pic.pi_planes);
+	{
+		char *colors = pic_colornameformat(pic.pi_planes);
+		hyp_utf8_fprintf(stdout, _("wrote image %s (%dx%d%s)\n"), pic.pi_name, pic.pi_width, pic.pi_height, colors);
+		g_free(colors);
+	}
 	goto done;
 error:
 	retval = FALSE;

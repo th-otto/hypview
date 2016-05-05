@@ -420,6 +420,7 @@ typedef struct
 	hyp_nodenr index_page;      /* Page number of hypertext index */
 	hyp_nodenr default_page;    /* Page number of default page (@default) */
 	hyp_nodenr help_page;       /* Page number of help page */
+	hyp_nodenr main_page;       /* Page number of main page */
 	REF_FILE *ref;              /* Pointer to REF file structure */
 	hyp_nodenr first_text_page; /* first node number with text */
 	hyp_nodenr last_text_page;  /* last node number with text */

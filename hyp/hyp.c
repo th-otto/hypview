@@ -27,8 +27,10 @@ char *hyp_compiler_version(void)
 #define stringify(x) stringify1(x)
 
 #if defined(_MSC_VER)
-#  if _MSC_VER > 1800
+#  if _MSC_VER >= 2000
 	return g_strdup_printf("MS Visual Studio, Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
+#  elif _MSC_VER >= 1900
+	return g_strdup_printf("Visual Studio 2015, Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
 #  elif _MSC_VER >= 1800
 	return g_strdup_printf("Visual Studio 2013, Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
 #  elif _MSC_VER >= 1700
@@ -45,9 +47,15 @@ char *hyp_compiler_version(void)
 	return g_strdup_printf("Visual Studio 2002 Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
 #  elif _MSC_VER >= 1200
 	return g_strdup_printf("Visual Studio 6.0 Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
+#  elif _MSC_VER >= 1100
+	return g_strdup_printf("Visual Studio 5.0 Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
 #  else
 	return g_strdup_printf("Ancient VC++ Compiler-Version %d.%d (%s)", _MSC_VER / 100, _MSC_VER % 100, bitvers);
 #  endif
+#elif defined(__INTEL_COMPILER)
+	return g_strdup_printf("ICC version %d.%d.%d (%s)", __INTEL_COMPILER / 100, (__INTEL_COMPILER / 10) %10), __INTEL_COMPILER % 10, bitvers);
+#elif defined(__clang__)
+	return g_strdup_printf("clang version %s.%s.%s (%s)", stringify(__clang_major__), stringify(__clang_minor__), stringify(__clang_patchlevel__), bitvers);
 #elif defined(__GNUC__)
 	return g_strdup_printf("GNU-C version %s.%s.%s (%s)", stringify(__GNUC__), stringify(__GNUC_MINOR__), stringify(__GNUC_PATCHLEVEL__), bitvers);
 #elif defined(__AHCC__)
@@ -488,6 +496,7 @@ HYP_DOCUMENT *hyp_new(void)
 	
 	hyp->default_page = HYP_NOINDEX;
 	hyp->help_page = HYP_NOINDEX;
+	hyp->main_page = HYP_NOINDEX;
 	hyp->index_page = HYP_NOINDEX;
 	hyp->first_text_page = HYP_NOINDEX;
 	hyp->last_text_page = HYP_NOINDEX;
@@ -865,6 +874,15 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 		hyp->index_page = find_nr_by_title(hyp, hyp_default_index_node_name);
 	}
 	
+	/*
+	 * Find main page. Note that there is no
+	 * command to specify a different name in the file.
+	 */
+	if (!hypnode_valid(hyp, hyp->main_page))
+	{
+		hyp->main_page = find_nr_by_title(hyp, hyp_default_main_node_name);
+	}
+	
 	/* there is no standard name for a default page */
 	
 	/*
@@ -876,6 +894,9 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 	hyp->first_text_page = hyp_first_text_page(hyp);
 	hyp->last_text_page = hyp_last_text_page(hyp);
 
+	if (!hypnode_valid(hyp, hyp->main_page))
+		hyp->main_page = hyp->first_text_page;
+	
 	*err = HYP_FT_HYP;
 	return hyp;
 }

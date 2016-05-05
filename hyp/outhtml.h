@@ -335,7 +335,7 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 				*dithermask ? " %" : "", dithermask);
 			if (gfx->islimage)
 			{
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" align=\"center\" style=\"width:%dex;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" align=\"center\" style=\"width:%dex;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>\n",
 					html_limage_style,
 					hyp->line_width,
 					quoted,
@@ -345,7 +345,7 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 					html_closer);
 			} else
 			{
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" style=\"position:fixed; left:%dch;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" style=\"position:absolute; left:%dch;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>",
 					html_image_style,
 					gfx->x_offset > 0 ? gfx->x_offset - 1 : 0,
 					quoted,
@@ -408,7 +408,42 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_graphics(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, long lineno, int *gfx_id)
+#ifdef CGI_VERSION
+static void html_out_stg_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, char *fname)
+{
+	char *origfname;
+	char *quoted;
+	char *origquoted;
+	
+	/*
+	 * the source output is embedded in a html doc
+	 */
+	origfname = fname;
+	if (hypnode_valid(hyp, gfx->extern_node_index) &&
+		hyp->indextable[gfx->extern_node_index]->type == HYP_NODE_IMAGE)
+	{
+		if (opts->cgi_cached)
+			fname = g_strdup_printf("%s?url=%s&index=%u&cached=1", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+		else
+			fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+	}
+	quoted = html_quote_name(fname, TRUE);
+	origquoted = html_quote_name(origfname, TRUE);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, "%s \"<a href=\"%s\">%s</a>\" %d",
+		gfx->islimage ? "@limage" : "@image",
+		quoted,
+		origquoted,
+		gfx->x_offset);
+	g_free(origquoted);
+	g_free(quoted);
+	if (fname != origfname)
+		g_free(fname);
+}
+#endif
+
+/* ------------------------------------------------------------------------- */
+
+static void html_out_graphics(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct hyp_gfx *gfx, long lineno, int *gfx_id)
 {
 	while (gfx != NULL)
 	{
@@ -423,7 +458,7 @@ static void html_out_graphics(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, s
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_labels(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, const INDEX_ENTRY *entry, long lineno, symtab_entry *syms)
+static void html_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const INDEX_ENTRY *entry, long lineno, symtab_entry *syms)
 {
 	char *nodename;
 	symtab_entry *sym;
@@ -522,6 +557,7 @@ static char *html_cgi_params(hcp_opts *opts)
 		opts->hideimages ? "&hideimages=1" : "",
 		"&charset=", hyp_charset_name(opts->output_charset),
 		opts->cgi_cached ? "&cached=1" : "",
+		opts->showstg ? "&showstg=1" : "",
 		NULL);
 }
 	
@@ -538,7 +574,7 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 	
 	entry = hyp->indextable[node];
 	namelen = entry->length - SIZEOF_INDEX_ENTRY;
-	if (node == 0)
+	if (node == hyp->main_page)
 	{
 		filename = g_strdup(html_basename(opts->output_filename));
 	} else
@@ -568,7 +604,7 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 	 * do not use that for html, as it might clash
 	 * with "index.html".
 	 */
-	if (g_ascii_strcasecmp(filename, "index.html") == 0 && node != 0)
+	if (g_ascii_strcasecmp(filename, "index.html") == 0 && node != hyp->main_page)
 	{
 		g_free(filename);
 		filename = g_strdup_printf("index_%s", html_basename(opts->output_filename));
@@ -615,11 +651,11 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 			g_string_append_printf(outstr, "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"%s\n", hypview_css_name, html_closer);
 		else
 			g_string_append_printf(outstr, "<style type=\"text/css\">@import url(\"%s\");</style>\n", hypview_css_name);
-		if (opts->for_cgi)
+		if (opts->for_cgi || css_written)
 			return TRUE;
 		fname = g_build_filename(opts->output_dir, hypview_css_name, NULL);
 		exists = hyp_utf8_stat(fname, &st) == 0;
-		if (exists && (!force_overwrite || css_written))
+		if (exists && !force_overwrite)
 		{
 			g_free(fname);
 			return TRUE;
@@ -636,12 +672,13 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 		css_written = TRUE;
 		g_free(fname);
 		out = g_string_sized_new(5000);
+		g_string_append_printf(out, "/* This file was automatically generated by %s version %s */\n\n", gl_program_name, gl_program_version);
 	}
 	
 	g_string_append(out, "body {\n");
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "}");
+	g_string_append(out, "}\n");
 	
 	g_string_append(out, "/* style used to display links to internal nodes */\n");
 	g_string_append(out, "a:link, a:visited {\n");
@@ -748,7 +785,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "  width:100%;\n");
 	g_string_append(out, "  height:28px;\n");
 	g_string_append(out, "  overflow:hidden;\n");
-	g_string_append(out, "  z-index:2;\n");
+	g_string_append(out, "  z-index:3;\n");
 	g_string_append(out, "  margin:0;\n");
 	g_string_append(out, "  padding:0;\n");
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
@@ -777,14 +814,14 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	
 	g_string_append(out, "/* style used for the body of regular nodes */\n");
 	g_string_append_printf(out, ".%s {\n", html_node_style);
-	g_string_append(out, "  z-index:1;\n");
+	g_string_append(out, "  z-index:2;\n");
 	g_string_append(out, "}\n");
 	
 	g_string_append(out, "/* style used for the body of popup nodes */\n");
 	g_string_append_printf(out, ".%s {\n", html_pnode_style);
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "  z-index:2;\n");
+	g_string_append(out, "  z-index:3;\n");
 	g_string_append(out, "  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n");
 	g_string_append(out, "}\n");
 	
@@ -792,7 +829,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append_printf(out, ".%s {\n", html_dropdown_pnode_style);
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "  z-index:3;\n");
+	g_string_append(out, "  z-index:4;\n");
 	g_string_append(out, "  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n");
 	g_string_append(out, "  border: solid 1px;\n");
 	g_string_append(out, "  display:none;\n");
@@ -804,7 +841,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append_printf(out, ".%s {\n", html_dropdown_info_style);
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "  z-index:4;\n");
+	g_string_append(out, "  z-index:5;\n");
 	g_string_append(out, "  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n");
 	g_string_append(out, "  border: solid 1px;\n");
 	g_string_append(out, "  display:none;\n");
@@ -817,7 +854,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append_printf(out, ".%s {\n", html_dropdown_xrefs_style);
 	g_string_append_printf(out, "  background-color: %s;\n", gl_profile.colors.background);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.text);
-	g_string_append(out, "  z-index:4;\n");
+	g_string_append(out, "  z-index:5;\n");
 	g_string_append(out, "  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n");
 	g_string_append(out, "  border: solid 1px;\n");
 	g_string_append(out, "  display:none;\n");
@@ -896,11 +933,11 @@ static gboolean html_out_javascript(hcp_opts *opts, GString *outstr, gboolean do
 		struct stat st;
 		
 		hyp_utf8_sprintf_charset(outstr, opts->output_charset, "<script type=\"text/javascript\" src=\"%s\" charset=\"%s\"></script>\n", hypview_js_name, charset);
-		if (opts->for_cgi)
+		if (opts->for_cgi || js_written)
 			return TRUE;
 		fname = g_build_filename(opts->output_dir, hypview_js_name, NULL);
 		exists = hyp_utf8_stat(fname, &st) == 0;
-		if (exists && (!force_overwrite || js_written))
+		if (exists && !force_overwrite)
 		{
 			g_free(fname);
 			return TRUE;
@@ -916,7 +953,8 @@ static gboolean html_out_javascript(hcp_opts *opts, GString *outstr, gboolean do
 			hyp_utf8_fprintf(stdout, _("writing %s\n"), hypview_js_name);
 		js_written = TRUE;
 		g_free(fname);
-		out = g_string_sized_new(sizeof(html_javascript_code));
+		out = g_string_sized_new(sizeof(html_javascript_code) + 200);
+		g_string_append_printf(out, "/* This file was automatically generated by %s version %s */\n\n", gl_program_name, gl_program_version);
 	}
 	
 	g_string_append(out, html_javascript_code);
@@ -1055,16 +1093,14 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	g_free(str);
 	xpos += button_w;
 
+	title = g_strdup(_("Cross references"));
+	str = g_strdup(void_href);
 	if (xrefs != NULL)
 	{
-		title = g_strdup(_("Cross references"));
-		str = g_strdup(void_href);
 		disabled = "";
 		click = " onclick=\"showXrefs();\"";
 	} else
 	{
-		title = g_strdup(_("Cross references"));
-		str = g_strdup(void_href);
 		disabled = "_disabled";
 		click = "";
 	}
@@ -1116,7 +1152,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	{
 		char *str;
 		
-		alt = _("Load a file");
+		alt = _("View a new file");
 		disabled = "";
 		g_string_append_printf(out,
 			"<li style=\"position:absolute;left:%dpx;\">"
@@ -1344,7 +1380,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	}
 	g_string_append_printf(out, "<!-- This file was automatically generated by %s version %s -->\n", gl_program_name, gl_program_version);
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- %s -->\n", HYP_COPYRIGHT);
-	if (hyp != NULL && node == 0)
+	if (hyp != NULL && node == hyp->main_page)
 		html_out_globals(hyp, opts, out);
 	if (node != HYP_NOINDEX)
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("<!-- Node #%u -->\n"), node);
@@ -1452,7 +1488,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	g_string_append(out, "</head>\n");
 	g_string_append(out, "<body>\n");
 	if (hyp)
-		g_string_append_printf(out, "<div style=\"width:%dex;\">\n", hyp ? hyp->line_width : HYP_STGUIDE_DEFAULT_LINEWIDTH);
+		g_string_append_printf(out, "<div style=\"width:%dex;\">\n", hyp->line_width);
 
 	if (for_error)
 	{
@@ -1524,6 +1560,10 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 			}
 		}
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "</span></span>");
+		if (opts->showstg && node == 0)
+		{
+			stg_out_globals(hyp, opts, out);
+		}
 	}
 
 	if (hyp && xrefs)
@@ -1546,12 +1586,12 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_trailer(GString *out, hcp_opts *opts, hyp_nodenr node, gboolean for_error, gboolean warn_gfx)
+static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean for_error, gboolean warn_gfx)
 {
-	if (node == 0 && opts->output_charset == HYP_CHARSET_ATARI && opts->for_cgi)
+	if (hyp != NULL && node == hyp->main_page && opts->output_charset == HYP_CHARSET_ATARI && opts->for_cgi)
 	{
 		hyp_utf8_sprintf_charset(out, opts->output_charset,
-			"\n\n<span class=\"%s\">%s</span>\n", _("warning: writing html output in atari encoding might not work with non-atari browsers"), html_error_note_style);
+			"\n\n<span class=\"%s\">%s%s</span>\n", _("warning: "), _("writing html output in atari encoding might not work with non-atari browsers"), html_error_note_style);
 	}
 	if (warn_gfx)
 	{
@@ -1629,13 +1669,13 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		{
 		char *title;
 		
-		if (!for_inline && opts->outfile != stdout && node != 0)
+		if (!for_inline && opts->outfile != stdout && node != hyp->main_page)
 		{
 			char *name = html_filename_for_node(hyp, opts, node, FALSE);
 			char *output_filename;
 			
 			/*
-			 * the first file was alreday created in the main loop,
+			 * the first file was already created in the main loop,
 			 * create the output file for the next node
 			 */
 			output_filename = g_build_filename(opts->output_dir, name, NULL);
@@ -1773,257 +1813,274 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 
 		g_free(title);
 		}
-		
-		/*
-		 * check for alias names in ref file
-		 */
-		html_out_alias(out, hyp, opts, entry, syms);
-		
-		/*
-		 * now output data
-		 */
-		src = nodeptr->start;
-		textstart = src;
-		at_bol = TRUE;
-		in_tree = -1;
-		textattr = 0;
-		lineno = 0;
-		html_out_labels(out, hyp, opts, entry, lineno, syms);
-		html_out_graphics(opts, out, hyp, hyp_gfx, lineno, &gfx_id);
-		
-		while (retval && src < end)
+
+		if (opts->showstg)
 		{
-			if (*src == HYP_ESC)
+			retval = stg_out_nodedata(hyp, opts, out, nodeptr, syms);
+			if (hyp_gfx != NULL)
 			{
-				DUMPTEXT();
-				src++;
-				switch (*src)
+				struct hyp_gfx *gfx, *next;
+				
+				for (gfx = hyp_gfx; gfx != NULL; gfx = next)
 				{
-				case HYP_ESC_ESC:
-					FLUSHTREE();
-					g_string_append(out, "&#x1b;");
-					at_bol = FALSE;
+					next = gfx->next;
+					g_free(gfx);
+				}
+				hyp_gfx = NULL;
+			}
+		} else
+		{
+			/*
+			 * check for alias names in ref file
+			 */
+			html_out_alias(out, hyp, opts, entry, syms);
+			
+			/*
+			 * now output data
+			 */
+			src = nodeptr->start;
+			textstart = src;
+			at_bol = TRUE;
+			in_tree = -1;
+			textattr = 0;
+			lineno = 0;
+			html_out_labels(hyp, opts, out, entry, lineno, syms);
+			html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
+			
+			while (retval && src < end)
+			{
+				if (*src == HYP_ESC)
+				{
+					DUMPTEXT();
 					src++;
-					break;
-				
-				case HYP_ESC_WINDOWTITLE:
-					src++;
-					FLUSHTREE();
-					FLUSHLINE();
-					/* @title already output */
-					src += ustrlen(src) + 1;
-					break;
-
-				case HYP_ESC_CASE_DATA:
-					FLUSHTREE();
-					FLUSHLINE();
-					if (src[1] < 3u)
-						src += 2;
-					else
-						src += src[1] - 1;
-					break;
-				
-				case HYP_ESC_LINK:
-				case HYP_ESC_LINK_LINE:
-				case HYP_ESC_ALINK:
-				case HYP_ESC_ALINK_LINE:
+					switch (*src)
 					{
-						unsigned char type;
-						size_t len;
-						gboolean str_equal;
-						struct html_xref xref;
-						
-						xref.line = 0;
-						type = *src;
-						if (type == HYP_ESC_LINK_LINE || type == HYP_ESC_ALINK_LINE)
-						{
-							xref.line = DEC_255(&src[1]);
+					case HYP_ESC_ESC:
+						FLUSHTREE();
+						g_string_append(out, "&#x1b;");
+						at_bol = FALSE;
+						src++;
+						break;
+					
+					case HYP_ESC_WINDOWTITLE:
+						src++;
+						FLUSHTREE();
+						FLUSHLINE();
+						/* @title already output */
+						src += ustrlen(src) + 1;
+						break;
+	
+					case HYP_ESC_CASE_DATA:
+						FLUSHTREE();
+						FLUSHLINE();
+						if (src[1] < 3u)
 							src += 2;
-						}
-						xref.dest_page = DEC_255(&src[1]);
-						src += 3;
-						if (hypnode_valid(hyp, xref.dest_page))
+						else
+							src += src[1] - 1;
+						break;
+					
+					case HYP_ESC_LINK:
+					case HYP_ESC_LINK_LINE:
+					case HYP_ESC_ALINK:
+					case HYP_ESC_ALINK_LINE:
 						{
-							INDEX_ENTRY *dest_entry = hyp->indextable[xref.dest_page];
-							xref.destfilename = html_filename_for_node(hyp, opts, xref.dest_page, TRUE);
-							xref.destname = html_quote_nodename(hyp, xref.dest_page);
-							xref.desttype = (hyp_indextype) dest_entry->type;
-						} else
-						{
-							xref.destfilename = g_strdup("/nonexistent.html");
-							xref.text = hyp_invalid_page(xref.dest_page);
-							xref.destname = html_quote_name(xref.text, FALSE);
-							g_free(xref.text);
-							xref.desttype = HYP_NODE_EOF;
-						}
-
-						if (*src <= HYP_STRLEN_OFFSET)
-						{
-							src++;
-							if (hypnode_valid(hyp, xref.dest_page))
-							{
-								INDEX_ENTRY *entry = hyp->indextable[xref.dest_page];
-								len = entry->length - SIZEOF_INDEX_ENTRY;
-								textstart = entry->name;
-								xref.text = html_quote_nodename(hyp, xref.dest_page);
-								str_equal = entry->type == HYP_NODE_INTERNAL;
-							} else
-							{
-								textstart = (const unsigned char *)xref.text;
-								str_equal = FALSE;
-								xref.text = g_strdup(xref.destname);
-								len = strlen(xref.text);
-							}
-						} else
-						{
-							char *buf;
+							unsigned char type;
+							size_t len;
+							gboolean str_equal;
+							struct html_xref xref;
 							
-							len = *src - HYP_STRLEN_OFFSET;
-							src++;
-							textstart = src;
-							buf = hyp_conv_to_utf8(hyp->comp_charset, src, len);
-							xref.text = html_quote_name(buf, FALSE);
-							g_free(buf);
-							src += len;
+							xref.line = 0;
+							type = *src;
+							if (type == HYP_ESC_LINK_LINE || type == HYP_ESC_ALINK_LINE)
+							{
+								xref.line = DEC_255(&src[1]);
+								src += 2;
+							}
+							xref.dest_page = DEC_255(&src[1]);
+							src += 3;
 							if (hypnode_valid(hyp, xref.dest_page))
 							{
 								INDEX_ENTRY *dest_entry = hyp->indextable[xref.dest_page];
-								str_equal = dest_entry->type == HYP_NODE_INTERNAL && strcmp(xref.text, xref.destname) == 0;
+								xref.destfilename = html_filename_for_node(hyp, opts, xref.dest_page, TRUE);
+								xref.destname = html_quote_nodename(hyp, xref.dest_page);
+								xref.desttype = (hyp_indextype) dest_entry->type;
 							} else
 							{
-								str_equal = FALSE;
+								xref.destfilename = g_strdup("/nonexistent.html");
+								xref.text = hyp_invalid_page(xref.dest_page);
+								xref.destname = html_quote_name(xref.text, FALSE);
+								g_free(xref.text);
+								xref.desttype = HYP_NODE_EOF;
 							}
-						}
-						FLUSHTREE();
-						UNUSED(str_equal);
-						
-						html_generate_href(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE);
-
-						g_free(xref.destname);
-						g_free(xref.destfilename);
-						g_free(xref.text);
-						at_bol = FALSE;
-					}
-					break;
-					
-				case HYP_ESC_EXTERNAL_REFS:
-					FLUSHTREE();
-					FLUSHLINE();
-					/* @xref already output */
-					if (src[1] < 5u)
-						src += 4;
-					else
-						src += src[1] - 1;
-					break;
-					
-				case HYP_ESC_OBJTABLE:
-					{
-						hyp_nodenr dest_page;
-						_WORD tree, obj;
-						hyp_lineno line;
-						
-						line = DEC_255(&src[1]);
-						tree = DEC_255(&src[3]);
-						obj = DEC_255(&src[5]);
-						dest_page = DEC_255(&src[7]);
-						if (hypnode_valid(hyp, dest_page))
-						{
-							str = html_quote_nodename(hyp, dest_page);
-						} else
-						{
-							str = hyp_invalid_page(dest_page);
-						}
-						FLUSHLINE();
-						if (tree != in_tree)
-						{
+	
+							if (*src <= HYP_STRLEN_OFFSET)
+							{
+								src++;
+								if (hypnode_valid(hyp, xref.dest_page))
+								{
+									INDEX_ENTRY *entry = hyp->indextable[xref.dest_page];
+									len = entry->length - SIZEOF_INDEX_ENTRY;
+									textstart = entry->name;
+									xref.text = html_quote_nodename(hyp, xref.dest_page);
+									str_equal = entry->type == HYP_NODE_INTERNAL;
+								} else
+								{
+									textstart = (const unsigned char *)xref.text;
+									str_equal = FALSE;
+									xref.text = g_strdup(xref.destname);
+									len = strlen(xref.text);
+								}
+							} else
+							{
+								char *buf;
+								
+								len = *src - HYP_STRLEN_OFFSET;
+								src++;
+								textstart = src;
+								buf = hyp_conv_to_utf8(hyp->comp_charset, src, len);
+								xref.text = html_quote_name(buf, FALSE);
+								g_free(buf);
+								src += len;
+								if (hypnode_valid(hyp, xref.dest_page))
+								{
+									INDEX_ENTRY *dest_entry = hyp->indextable[xref.dest_page];
+									str_equal = dest_entry->type == HYP_NODE_INTERNAL && strcmp(xref.text, xref.destname) == 0;
+								} else
+								{
+									str_equal = FALSE;
+								}
+							}
 							FLUSHTREE();
-							hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- begin tree %d\n", tree);
-							in_tree = tree;
+							UNUSED(str_equal);
+							
+							html_generate_href(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE);
+	
+							g_free(xref.destname);
+							g_free(xref.destfilename);
+							g_free(xref.text);
+							at_bol = FALSE;
 						}
-						hyp_utf8_sprintf_charset(out, opts->output_charset, "   %d \"%s\" %u\n", obj, str, line);
-						g_free(str);
-						src += 9;
+						break;
+						
+					case HYP_ESC_EXTERNAL_REFS:
+						FLUSHTREE();
+						FLUSHLINE();
+						/* @xref already output */
+						if (src[1] < 5u)
+							src += 4;
+						else
+							src += src[1] - 1;
+						break;
+						
+					case HYP_ESC_OBJTABLE:
+						{
+							hyp_nodenr dest_page;
+							_WORD tree, obj;
+							hyp_lineno line;
+							
+							line = DEC_255(&src[1]);
+							tree = DEC_255(&src[3]);
+							obj = DEC_255(&src[5]);
+							dest_page = DEC_255(&src[7]);
+							if (hypnode_valid(hyp, dest_page))
+							{
+								str = html_quote_nodename(hyp, dest_page);
+							} else
+							{
+								str = hyp_invalid_page(dest_page);
+							}
+							FLUSHLINE();
+							if (tree != in_tree)
+							{
+								FLUSHTREE();
+								hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- begin tree %d\n", tree);
+								in_tree = tree;
+							}
+							hyp_utf8_sprintf_charset(out, opts->output_charset, "   %d \"%s\" %u\n", obj, str, line);
+							g_free(str);
+							src += 9;
+						}
+						break;
+						
+					case HYP_ESC_PIC:
+						FLUSHTREE();
+						FLUSHLINE();
+						src += 8;
+						break;
+						
+					case HYP_ESC_LINE:
+						FLUSHTREE();
+						FLUSHLINE();
+						src += 7;
+						break;
+						
+					case HYP_ESC_BOX:
+					case HYP_ESC_RBOX:
+						FLUSHTREE();
+						FLUSHLINE();
+						src += 7;
+						break;
+						
+					case HYP_ESC_CASE_TEXTATTR:
+						if (html_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
+							at_bol = FALSE;
+						textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+						src++;
+						break;
+					
+					default:
+						if (opts->print_unknown)
+							hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+						break;
 					}
-					break;
-					
-				case HYP_ESC_PIC:
-					FLUSHTREE();
-					FLUSHLINE();
-					src += 8;
-					break;
-					
-				case HYP_ESC_LINE:
-					FLUSHTREE();
-					FLUSHLINE();
-					src += 7;
-					break;
-					
-				case HYP_ESC_BOX:
-				case HYP_ESC_RBOX:
-					FLUSHTREE();
-					FLUSHLINE();
-					src += 7;
-					break;
-					
-				case HYP_ESC_CASE_TEXTATTR:
-					if (html_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
-						at_bol = FALSE;
-					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
-					src++;
-					break;
-				
-				default:
-					if (opts->print_unknown)
-						hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
-					break;
-				}
-				textstart = src;
-			} else if (*src == HYP_EOL)
-			{
-				FLUSHTREE();
-				DUMPTEXT();
-				g_string_append_c(out, '\n');
-				at_bol = TRUE;
-				++lineno;
-				html_out_labels(out, hyp, opts, entry, lineno, syms);
-				html_out_graphics(opts, out, hyp, hyp_gfx, lineno, &gfx_id);
-				src++;
-				textstart = src;
-			} else
-			{
-				FLUSHTREE();
-				src++;
-			}
-		}
-		DUMPTEXT();
-		if (html_out_attr(out, textattr, 0))
-			at_bol = FALSE;
-		FLUSHLINE();
-		FLUSHTREE();
-		++lineno;
-		html_out_labels(out, hyp, opts, entry, lineno, syms);
-		html_out_graphics(opts, out, hyp, hyp_gfx, lineno, &gfx_id);
-		
-		if (hyp_gfx != NULL)
-		{
-			struct hyp_gfx *gfx, *next;
-			
-			for (gfx = hyp_gfx; gfx != NULL; gfx = next)
-			{
-				if (!gfx->used)
+					textstart = src;
+				} else if (*src == HYP_EOL)
 				{
-					hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- gfx unused: ");
-					html_out_gfx(opts, out, hyp, gfx, &gfx_id);
-					hyp_utf8_sprintf_charset(out, opts->output_charset, "-->\n");
+					FLUSHTREE();
+					DUMPTEXT();
+					g_string_append_c(out, '\n');
+					at_bol = TRUE;
+					++lineno;
+					html_out_labels(hyp, opts, out, entry, lineno, syms);
+					html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
+					src++;
+					textstart = src;
+				} else
+				{
+					FLUSHTREE();
+					src++;
 				}
-				next = gfx->next;
-				g_free(gfx);
+			}
+			DUMPTEXT();
+			if (html_out_attr(out, textattr, 0))
+				at_bol = FALSE;
+			FLUSHLINE();
+			FLUSHTREE();
+			++lineno;
+			html_out_labels(hyp, opts, out, entry, lineno, syms);
+			html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
+			
+			if (hyp_gfx != NULL)
+			{
+				struct hyp_gfx *gfx, *next;
+				
+				for (gfx = hyp_gfx; gfx != NULL; gfx = next)
+				{
+					if (!gfx->used)
+					{
+						hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- gfx unused: ");
+						html_out_gfx(opts, out, hyp, gfx, &gfx_id);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, "-->\n");
+					}
+					next = gfx->next;
+					g_free(gfx);
+				}
 			}
 		}
-		
+					
 		if (!for_inline)
 		{
-			html_out_trailer(out, opts, node, FALSE, needs_javascript);
+			html_out_trailer(hyp, opts, out, node, FALSE, needs_javascript && !opts->showstg);
 		
 			if (node < hyp->last_text_page && opts->outfile == stdout)
 				g_string_append(out, "\n\n");
@@ -2139,7 +2196,7 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 	
 	if (opts->output_charset == HYP_CHARSET_ATARI && opts->errorfile != stdout)
 	{
-		hyp_utf8_fprintf(opts->errorfile, _("warning: writing html output in atari encoding might not work with non-atari browsers\n"));
+		hyp_utf8_fprintf(opts->errorfile, "%s%s\n", _("warning: "), _("writing html output in atari encoding might not work with non-atari browsers"));
 	}
 			
 	if (opts->read_images && hyp->cache == NULL)
@@ -2197,8 +2254,6 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 		switch ((hyp_indextype) entry->type)
 		{
 		case HYP_NODE_INTERNAL:
-			ret &= html_out_node(hyp, opts, out, node, syms, FALSE);
-			break;
 		case HYP_NODE_POPUP:
 			ret &= html_out_node(hyp, opts, out, node, syms, FALSE);
 			break;
@@ -2219,7 +2274,7 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 				hyp_utf8_fprintf(opts->errorfile, _("unknown index entry type %u\n"), entry->type);
 			break;
 		}
-		if (node == 0 || opts->outfile == stdout)
+		if (node == hyp->main_page || opts->outfile == stdout)
 			write_strout(out, opts->outfile);
 		g_string_truncate(out, 0);
 	}

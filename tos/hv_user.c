@@ -1080,7 +1080,7 @@ static _WORD const rgb_to_vdi_tab[256] = {
  941,  945,  949,  952,  956,  960,  964,  968,  972,  976,  980,  984,  988,  992,  996, 1000
 };
 
-static PALETTE const std256_palette = {
+PALETTE const std256_palette = {
 	{ 0xff, 0xff, 0xff }, /*   0 == WHITE (0) */
 	{ 0xff, 0x00, 0x00 }, /*   1 == RED (2) */
 	{ 0x00, 0xff, 0x00 }, /*   2 == GREEN (3) */

@@ -1,5 +1,6 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
+#include "picture.h"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -34,8 +35,9 @@ gboolean hyp_pic_get_header(HYP_IMAGE *image, const unsigned char *hyp_pic_raw, 
 	{
 		if (errorfile)
 		{
-			/* FIXME: correct message for planes > 8 */
-			hyp_utf8_fprintf(errorfile, _("unsupported picture format %dx%dx%lu in node %u\n"), image->pic.fd_w, image->pic.fd_h, (1UL << image->pic.fd_nplanes), image->number);
+			char *colors = pic_colornameformat(image->pic.fd_nplanes);
+			hyp_utf8_fprintf(errorfile, _("unsupported picture format %dx%d%s in node %u\n"), image->pic.fd_w, image->pic.fd_h, colors, image->number);
+			g_free(colors);
 		}
 		return FALSE;
 	}

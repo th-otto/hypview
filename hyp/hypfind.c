@@ -897,7 +897,7 @@ static gboolean process_file(const char *filename, struct hypfind_opts *opts)
 		return FALSE;
 	}
 	if (hyp->comp_vers > HCP_COMPILER_VERSION)
-		hyp_utf8_fprintf(opts->errorfile, _("%s: warning: %s created by compiler version %u\n"), gl_program_name, hyp->file, hyp->comp_vers);
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
 	if (opts->verbose)
 	{
 		hyp_utf8_fprintf(stdout, "%s: ", filename);

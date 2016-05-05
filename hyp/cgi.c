@@ -13,7 +13,7 @@
 #include "cgic.h"
 #include "hv_vers.h"
 
-char const gl_program_name[] = "hcpview.cgi";
+char const gl_program_name[] = "hypview.cgi";
 char const gl_program_version[] = HYP_VERSION;
 
 static char const cgi_cachedir[] = "cache";
@@ -38,9 +38,11 @@ struct curl_parms {
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+#define CGI_VERSION 1
 #define CMDLINE_VERSION 1
 
 #include "outcomm.h"
+#include "outstg.h"
 #include "outhtml.h"
 
 /* ------------------------------------------------------------------------- */
@@ -74,11 +76,18 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	
 	ret = TRUE;
 	
+	if (hyp->first_text_page == HYP_NOINDEX)
+	{
+		html_out_header(NULL, opts, out, _("Corrupt HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, _("%s%s does not have any text pages\n"), _("error: "), hyp_basename(hyp->file));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+		return FALSE;
+	}
 	if (!hypnode_valid(hyp, output_node))
 	{
 		html_out_header(NULL, opts, out, _("Invalid Node index"), output_node, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("node index %u invalid\n"), output_node);
-		html_out_trailer(out, opts, HYP_NOINDEX, TRUE, FALSE);
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
 		return FALSE;
 	}
 			
@@ -141,42 +150,42 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ link \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, opts, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
 		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ system \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, opts, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_REXX_SCRIPT:
 		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rxs \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, opts, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_REXX_COMMAND:
 		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rx \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, opts, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_QUIT:
 		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ quit \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, opts, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_CLOSE:
 		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, syms, FALSE);
 		destname = html_quote_nodename(hyp, node);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ close \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(out, opts, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_EOF:
 	default:
@@ -211,7 +220,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	{
 		html_out_header(NULL, opts, out, _("404 not found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
-		html_out_trailer(out, opts, HYP_NOINDEX, TRUE, FALSE);
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
 		return FALSE;
 	}
 
@@ -230,12 +239,12 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE);
 			ret = ref_list(ref, opts->outfile, opts->list_flags != 0);
 			ref_close(ref);
-			html_out_trailer(out, opts, 0, FALSE, FALSE);
+			html_out_trailer(NULL; opts, out, 0, FALSE, FALSE);
 #else
 			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 			ref_close(ref);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, "Listing of ref files not yet supported");
-			html_out_trailer(out, opts, 0, FALSE, FALSE);
+			html_out_trailer(NULL, opts, out, 0, FALSE, FALSE);
 			ret = TRUE;
 #endif
 			return ret;
@@ -243,7 +252,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
-		html_out_trailer(out, opts, 0, TRUE, FALSE);
+		html_out_trailer(NULL, opts, out, 0, TRUE, FALSE);
 		return FALSE;
 	}
 	
@@ -253,11 +262,11 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
-		html_out_trailer(out, opts, HYP_NOINDEX, TRUE, FALSE);
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
 		return FALSE;
 	}
 	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
-		hyp_utf8_fprintf(opts->errorfile, _("warning: %s created by compiler version %u\n"), hyp->file, hyp->comp_vers);
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
 	dir = NULL;
 	if (empty(dir))
 	{
@@ -267,6 +276,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	opts->long_filenames = TRUE;
 	(void) check_long_filenames;
 	(void) recompile_html;
+	(void) recompile_stg;
 	opts->output_dir = dir;
 	if (opts->long_filenames)
 	{
@@ -399,9 +409,11 @@ static int mycurl_trace(CURL *handle, curl_infotype type, char *data, size_t siz
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-#include "hypmain.h"
+/*
+ * this module does not get any parameters, so we don't need our wrappers */
+/* #include "hypmain.h" */
 
-int main(int unused_argc, const char **unused_argv)
+int main(void)
 {
 	int retval = EXIT_SUCCESS;
 	hcp_opts _opts;
@@ -414,9 +426,22 @@ int main(int unused_argc, const char **unused_argv)
 	hyp_nodenr node = 0;
 	char *val;
 	
-	UNUSED(unused_argc);
-	UNUSED(unused_argv);
-	
+#ifdef __WIN32__
+	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+#endif
+
+	_crtinit();
+
+#ifdef HAVE_SETLOCALE
+	setlocale(LC_ALL, "");
+#endif
+
+#ifdef ENABLE_NLS
+	bindtextdomain(GETTEXT_PACKAGE, xs_get_locale_dir());
+	textdomain(GETTEXT_PACKAGE);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+#endif
+
 	HypProfile_Load(FALSE);
 	
 	hcp_opts_init(opts);
@@ -438,6 +463,7 @@ int main(int unused_argc, const char **unused_argv)
 	opts->hidemenu = FALSE;
 	opts->hideimages = FALSE;
 	opts->cgi_cached = FALSE;
+	opts->showstg = FALSE;
 	
 	html_init(opts);
 
@@ -461,6 +487,11 @@ int main(int unused_argc, const char **unused_argv)
 		opts->hidemenu = (int)strtol(val, NULL, 10) != 0;
 		g_free(val);
 	}
+	if ((val = cgiFormString("showstg")) != NULL)
+	{
+		opts->showstg = (int)strtol(val, NULL, 10) != 0;
+		g_free(val);
+	}
 	if ((val = cgiFormString("hideimages")) != NULL)
 	{
 		opts->hideimages = (int)strtol(val, NULL, 10) != 0;
@@ -476,7 +507,7 @@ int main(int unused_argc, const char **unused_argv)
 		opts->cgi_cached = (int)strtol(val, NULL, 10) != 0;
 		g_free(val);
 	}
-	opts->read_images = !opts->hideimages;
+	opts->read_images = !opts->hideimages || opts->showstg;
 	
 	if (g_ascii_strcasecmp(cgiRequestMethod, "GET") == 0)
 	{
@@ -494,14 +525,14 @@ int main(int unused_argc, const char **unused_argv)
 			 * disallow file URIs, they would resolve to local files on the WEB server
 			 */
 			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-			g_string_append_printf(body, _(
-				"Sorry, this type of\n"
-				"<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
-				"<a href=\"http://www.iana.org/assignments/uri-schemes.html\">scheme</a>\n"
-				"(<q>%s</q>) is not\n"
-				"supported by this service. Please check that you entered the URL correctly.\n"
-			), scheme);
-			html_out_trailer(body, opts, HYP_NOINDEX, TRUE, FALSE);
+			g_string_append_printf(body,
+				_("Sorry, this type of\n"
+				  "<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
+				  "<a href=\"http://www.iana.org/assignments/uri-schemes.html\">scheme</a>\n"
+				  "(<q>%s</q>) is not\n"
+				  "supported by this service. Please check that you entered the URL correctly.\n"),
+				scheme);
+			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
 			g_free(filename);
 			filename = NULL;
 		} else
@@ -512,7 +543,7 @@ int main(int unused_argc, const char **unused_argv)
 			{
 				html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 				g_string_append(body, _("could not initialize curl\n"));
-				html_out_trailer(body, opts, HYP_NOINDEX, TRUE, FALSE);
+				html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
 				retval = EXIT_FAILURE;
 			} else
 			{
@@ -591,7 +622,7 @@ int main(int unused_argc, const char **unused_argv)
 					{
 						html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 						g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
-						html_out_trailer(body, opts, HYP_NOINDEX, TRUE, FALSE);
+						html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
 						unlink(local_filename);
 						g_free(local_filename);
 						local_filename = NULL;
@@ -650,14 +681,14 @@ int main(int unused_argc, const char **unused_argv)
 		{
 			const char *scheme = "undefined";
 			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-			g_string_append_printf(body, _(
-				"Sorry, this type of\n"
-				"<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
-				"<a href=\"http://www.iana.org/assignments/uri-schemes.html\">scheme</a>\n"
-				"(<q>%s</q>) is not\n"
-				"supported by this service. Please check that you entered the URL correctly.\n"
-			), scheme);
-			html_out_trailer(body, opts, HYP_NOINDEX, TRUE, FALSE);
+			g_string_append_printf(body,
+				_("Sorry, this type of\n"
+				  "<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
+				  "<a href=\"http://www.iana.org/assignments/uri-schemes.html\">scheme</a>\n"
+				  "(<q>%s</q>) is not\n"
+				  "supported by this service. Please check that you entered the URL correctly.\n"),
+				scheme);
+			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
 		} else
 		{
 			char *dir = hyp_path_get_dirname(cgiScriptFilename);
@@ -729,24 +760,6 @@ int main(int unused_argc, const char **unused_argv)
 		g_freep(&html_referer_url);
 	}
 	
-#if 0
-	{
-		int i;
-		extern char **environ;
-		
-		g_string_append(body, "<body>\n");
-		g_string_append(body, "<pre>\n");
-		g_string_append(body, "Env:\n");
-		for (i = 0; environ[i] != NULL; i++)
-		{
-			g_string_append_printf(body, "%s\n", environ[i]);
-		}
-		g_string_append_printf(body, "url: %s\n", cgiFormString("url"));
-		g_string_append(body, "</pre>\n");
-		g_string_append(body, "</body>\n");
-	}
-#endif
-		
 	html_out_response_header(out, opts->output_charset, body->len, pic_format);
 	cgiExit();
 	write_strout(body, out);
@@ -763,6 +776,12 @@ int main(int unused_argc, const char **unused_argv)
 	
 	HypProfile_Delete();
 	x_free_resources();
+
+#ifdef ENABLE_NLS
+	xs_locale_exit();
+#endif
+
+	_crtexit();
 
 	return retval;
 }

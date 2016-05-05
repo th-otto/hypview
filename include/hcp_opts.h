@@ -70,11 +70,12 @@ typedef struct {
 	int optind;
 	/* for ascii output only: */
 	gboolean bracket_links;
-	/* for html out only: */
+	/* for html output only: */
 	gboolean for_cgi;
 	gboolean hidemenu;
 	gboolean hideimages;
 	gboolean cgi_cached;
+	gboolean showstg;
 } hcp_opts;
 
 /*

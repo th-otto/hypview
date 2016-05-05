@@ -2836,6 +2836,17 @@ static void c_do_node(hcp_vars *vars, int argc, char **argv, gboolean is_popup)
 				}
 			}
 		}
+		
+		if (is_popup)
+		{
+			if (namecmp(nodename, hyp_default_main_node_name) == 0 ||
+				namecmp(nodename, hyp_default_index_node_name) == 0 ||
+				namecmp(nodename, hyp_default_help_node_name) == 0)
+			{
+				hcp_warning(vars, NULL, _("'%s' should not be a popup node"), nodename);
+			}
+		}
+		
 		node->is_popup = is_popup;
 		lab = vars->label_table[node->labindex];
 		lab->add_to_autoref = TRUE;
@@ -4310,13 +4321,8 @@ static hyp_pic_format get_image_type(hcp_vars *vars, int handle, FILELIST *f, PI
 	{
 		char *colors;
 		
-		if (pic->pi_planes <= 8)
-			colors = g_strdup_printf(_("%d colors"), 1 << pic->pi_planes);
-		else if (pic->pi_planes <= 16)
-			colors = g_strdup(_("hicolor"));
-		else
-			colors = g_strdup(_("truecolor"));
-		hcp_error(vars, &f->first_reference, _("%s: unsupported number of colors (%d planes, %s)"), f->name, pic->pi_planes, colors);
+		colors = pic_colornameformat(pic->pi_planes);
+		hcp_error(vars, &f->first_reference, _("%s: unsupported number of colors (%s)"), f->name, colors + 1);
 		g_free(colors);
 		return HYP_PIC_UNKNOWN;
 	}
@@ -5125,6 +5131,17 @@ static gboolean finish_pass1(hcp_vars *vars)
 		} else
 		{
 			hyp->help_page = node->node_index;
+		}
+	}
+	if (!hypnode_valid(hyp, hyp->main_page))
+	{
+		node = find_node(vars, hyp_default_main_node_name);
+		if (node == NULL)
+		{
+			hcp_warning(vars, NULL, _("There is no node with name '%s'"), hyp_default_main_node_name);
+		} else
+		{
+			hyp->main_page = node->node_index;
 		}
 	}
 	

@@ -79,7 +79,7 @@ document.getElementById('submiturl').style.visibility="visible";
 <br />
 <fieldset>
 Choose a .HYP file for upload <br />
-<input type="file" id="file" name="file" size="60" style="margin-top: 1ex;" />
+<input type="file" id="file" name="file" size="60" accept=".hyp,.HYP" style="margin-top: 1ex;" />
 <input id="submitfile" style="background-color: #cccccc; font-weight: bold;" type="button" value="View" onclick="submitFile();" /><br />
 </fieldset>
 <br />

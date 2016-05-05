@@ -31,6 +31,7 @@ const char _hyp_utf8_skip_data[256] = {
 };
 
 #ifndef HAVE_GLIB
+
 #include "gunichar.h"
 
 #define G_N_ELEMENTS(t)  (sizeof(t) / sizeof(t[0]))
@@ -609,6 +610,8 @@ static const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 
 #include "casefold.h"
 
+#ifndef HAVE_GLIB
+
 typedef enum
 {
 	LOCALE_NORMAL,
@@ -618,13 +621,8 @@ typedef enum
 
 static LocaleType get_locale_type(void)
 {
-#ifdef G_OS_WIN32
-	char *tem = g_win32_getlocale();
-	char locale[2];
-
-	locale[0] = tem[0];
-	locale[1] = tem[1];
-	g_free(tem);
+#if defined(G_OS_WIN32) || defined(G_OS_TOS)
+	const char *locale = "C";
 #else
 	const char *locale = setlocale(LC_CTYPE, NULL);
 
@@ -679,7 +677,7 @@ static gboolean has_more_above(const char *str)
 static int output_special_case(char *out_buffer, int offset, int type, int which)
 {
 	const char *p = special_case_table + offset;
-	int len;
+	size_t len;
 
 	if (type != G_UNICODE_TITLECASE_LETTER)
 		p = g_utf8_next_char(p);
@@ -691,7 +689,7 @@ static int output_special_case(char *out_buffer, int offset, int type, int which
 	if (out_buffer)
 		memcpy(out_buffer, p, len);
 
-	return len;
+	return (int)len;
 }
 
 static gsize real_tolower(const char *str, gssize max_len, char *out_buffer, LocaleType locale_type)
@@ -730,7 +728,7 @@ static gsize real_tolower(const char *str, gssize max_len, char *out_buffer, Loc
 			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0069);
 			len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0307);
 
-			switch (c)
+			switch ((unsigned int) c)
 			{
 			case 0x00cc:
 				len += hyp_unichar_to_utf8(out_buffer ? out_buffer + len : dummybuf, 0x0300);
@@ -771,9 +769,9 @@ static gsize real_tolower(const char *str, gssize max_len, char *out_buffer, Loc
 		{
 			val = ATTTABLE(c >> 8, c & 0xff);
 
-			if (val >= 0x1000000)
+			if (val >= 0x1000000UL)
 			{
-				len += output_special_case(out_buffer ? out_buffer + len : NULL, val - 0x1000000, t, 0);
+				len += output_special_case(out_buffer ? out_buffer + len : NULL, (int)(val - 0x1000000UL), t, 0);
 			} else
 			{
 				if (t == G_UNICODE_TITLECASE_LETTER)
@@ -830,6 +828,15 @@ char *hyp_utf8_strdown(const char *str, gssize len)
 
 	return result;
 }
+
+#else
+
+char *hyp_utf8_strdown(const char *str, gssize len)
+{
+	return g_utf8_strdown(str, len);
+}
+
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
