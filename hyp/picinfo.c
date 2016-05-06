@@ -102,7 +102,8 @@ static gboolean identify_file(const char *filename)
 	char *colors;
 	const char *compressed;
 	const char *unsupported;
-	char colordiff[40];
+	char *colordiff;
+	char *transparency;
 	
 	fp = fopen(filename, "rb");
 	if (fp == NULL)
@@ -133,83 +134,91 @@ static gboolean identify_file(const char *filename)
 	pic_init(&pic);
 	pic.pi_filesize = size;
 	pic_format = pic_type(&pic, buf, size);
-	g_free(buf);
-	buf = NULL;
 	colors = pic_colornameformat(pic.pi_planes);
 	compressed = pic.pi_compressed ? _(" (compressed)") : _(" (uncompressed)");
 	unsupported = pic.pi_unsupported ? _(" (unsupported)") : "";
-	colordiff[0] = '\0';
 	if (pic_format >= FT_PICTURE_FIRST && pic_format <= FT_PICTURE_LAST)
 	{
 		unsigned long stddiff = pic_pal_stddiff(&pic);
 		if (stddiff != 0)
-			sprintf(colordiff, _(" paldiff %lu"), stddiff);
+			colordiff = g_strdup_printf(_(" paldiff %lu"), stddiff);
+		else
+			colordiff = g_strdup("");;
+	} else
+	{
+		colordiff = g_strdup("");;
 	}
+	g_free(buf);
+	buf = NULL;
+	if (pic.pi_transparent >= 0)
+		transparency = g_strdup_printf(_(" transparent %d"), pic.pi_transparent);
+	else
+		transparency = g_strdup("");
 	
 	switch (pic_format)
 	{
 	case FT_DEGAS_LOW:
-		hyp_utf8_fprintf(stdout, "%s: Degas Low Resolution %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Degas Low Resolution %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_DEGAS_MED:
-		hyp_utf8_fprintf(stdout, "%s: Degas Medium Resolution %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Degas Medium Resolution %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_DEGAS_HIGH:
-		hyp_utf8_fprintf(stdout, "%s: Degas High Resolution %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Degas High Resolution %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_NEO:
-		hyp_utf8_fprintf(stdout, "%s: Neochrome %ux%u%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, unsupported, colordiff);
+		hyp_utf8_fprintf(stdout, "%s: Neochrome %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, unsupported, transparency, colordiff);
 		break;
 	case FT_IFF:
-		hyp_utf8_fprintf(stdout, "%s: IFF %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: IFF %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_COLSTAR:
-		hyp_utf8_fprintf(stdout, "%s: Colorstar %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Colorstar %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_IMG:
-		hyp_utf8_fprintf(stdout, "%s: GEM IMG %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: GEM IMG %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_STAD:
-		hyp_utf8_fprintf(stdout, "%s: Stad %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Stad %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_IMAGIC_LOW:
-		hyp_utf8_fprintf(stdout, "%s: Imagic Low Resolution %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Imagic Low Resolution %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_IMAGIC_MED:
-		hyp_utf8_fprintf(stdout, "%s: Imagic Medium Resolution %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Imagic Medium Resolution %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_IMAGIC_HIGH:
-		hyp_utf8_fprintf(stdout, "%s: Imagic High Resolution %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Imagic High Resolution %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_SCREEN:
-		hyp_utf8_fprintf(stdout, "%s: Atari Screen Dump %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Atari Screen Dump %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_ICO:
-		hyp_utf8_fprintf(stdout, "%s: Windows Icon %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Windows Icon %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_CALAMUS_PAGE:
-		hyp_utf8_fprintf(stdout, "%s: Calamus Print Page %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Calamus Print Page %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_BMP:
-		hyp_utf8_fprintf(stdout, "%s: Windows Bitmap %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Windows Bitmap %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_GIF:
-		hyp_utf8_fprintf(stdout, "%s: GIF %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: GIF %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_TIFF:
-		hyp_utf8_fprintf(stdout, "%s: TIFF %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: TIFF %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_TARGA:
-		hyp_utf8_fprintf(stdout, "%s: Targa %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Targa %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_PBM:
-		hyp_utf8_fprintf(stdout, "%s: Portable Bitmap %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Portable Bitmap %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_ICN:
-		hyp_utf8_fprintf(stdout, "%s: GEM Icon %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: GEM Icon %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 	case FT_PNG:
-		hyp_utf8_fprintf(stdout, "%s: Portable Network Graphic %ux%u%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, colordiff, unsupported);
+		hyp_utf8_fprintf(stdout, "%s: Portable Network Graphic %ux%u%s%s%s%s%s\n", filename, pic.pi_width, pic.pi_height, colors, compressed, transparency, colordiff, unsupported);
 		break;
 
 	case FT_EMPTY:
@@ -253,7 +262,6 @@ static gboolean identify_file(const char *filename)
 		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unknown picture format"));
 		break;
 	}
-	g_free(colors);
 	
 	if (show_palette && pic_format >= FT_PICTURE_FIRST && pic_format <= FT_PICTURE_LAST && pic.pi_planes <= 8)
 	{
@@ -265,6 +273,10 @@ static gboolean identify_file(const char *filename)
 			hyp_utf8_fprintf(stdout, "  %3d: #%02x%02x%02x\n", i, pic.pi_palette[i].r, pic.pi_palette[i].g, pic.pi_palette[i].b);
 		}
 	}
+	
+	g_free(colordiff);
+	g_free(colors);
+	g_free(transparency);
 	
 	goto done;
 

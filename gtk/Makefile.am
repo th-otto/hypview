@@ -72,7 +72,7 @@ hypview_SOURCES = \
 	hcp_opts.c \
 	$(empty)
 
-hypview_DEPENDENCIES = $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
+hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
 hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(INTLLIBS)
 hypview_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 if OS_WIN32

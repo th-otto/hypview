@@ -178,6 +178,7 @@ static gboolean conv_file(const char *filename)
 		goto error;
 	}
 
+	pic.pi_transparent = pic_find_transparent(&pic, dest);
 	if (!gif_fwrite(out, dest, &pic) ||
 		fflush(out) != 0 ||
 		ferror(out))

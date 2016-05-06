@@ -155,6 +155,7 @@ typedef struct {
 	gboolean pi_active;			/* TRUE if already in core */
 	gboolean pi_unsupported;	/* TRUE if valid, but unsupported format */
 	gboolean pi_topdown;		/* TRUE if first row of data is displayed at top */
+	int pi_transparent;			/* value of transparent pixel, -1 if none */
 #ifdef IN_ORCS
 	char pi_name[PATH_MAX+1];	/* path name */
 #else
@@ -287,6 +288,7 @@ long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const
 
 gboolean pic_type_gif(PICTURE *pic, const unsigned char *buf, long size);
 
+int pic_find_transparent(PICTURE *pic, const unsigned char *data);
 gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic);
 unsigned char *gif_pack(const unsigned char *src, PICTURE *pic);
 gboolean gif_unpack(unsigned char **dest, const unsigned char *src, PICTURE *pic);

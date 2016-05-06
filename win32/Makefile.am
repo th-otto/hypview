@@ -52,7 +52,7 @@ hypview_SOURCES = \
 	windebug.c windebug.h \
 	$(empty)
 
-hypview_DEPENDENCIES = resource.res $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)
+hypview_DEPENDENCIES = resource.res $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)
 hypview_LDADD = resource.res $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(INTLLIBS) -lshell32 -lgdi32 -lcomdlg32
 hypview_LDFLAGS = -mconsole
 

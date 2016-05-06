@@ -617,6 +617,7 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 		
 		g_free(buf);
 		buf = NULL;
+		pic.pi_transparent = pic_find_transparent(&pic, conv);
 		if (out)
 		{
 			buf = gif_pack(conv, &pic);

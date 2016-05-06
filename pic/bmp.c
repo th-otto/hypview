@@ -663,6 +663,8 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 				}
 				for (i = 0; i < 256; i++)
 					pic->pi_palette[i] = pal[i];
+				if (pic->pi_transparent >= 0)
+					pic->pi_transparent = bmp_coltab8[pic->pi_transparent];
 			}
 			break;
 		
@@ -735,6 +737,8 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 				{
 					pic->pi_palette[i] = pal[i];
 				}
+				if (pic->pi_transparent >= 0)
+					pic->pi_transparent = bmp_coltab4[pic->pi_transparent];
 			}
 			break;
 		

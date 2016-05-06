@@ -882,19 +882,19 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "  margin: 0;\n");
 	g_string_append(out, "  position: absolute;\n");
 	g_string_append(out, "  display: inline;\n");
-	g_string_append(out, "  z-index:1;\n");
+	g_string_append(out, "  z-index:-1;\n");
 	g_string_append(out, "}\n");
 
 	g_string_append(out, "/* style used for @image elements */\n");
 	g_string_append_printf(out, ".%s {\n", html_image_style);
 	g_string_append(out, "  margin: 0;\n");
-	g_string_append(out, "  z-index:1;\n");
+	g_string_append(out, "  z-index:-1;\n");
 	g_string_append(out, "}\n");
 
 	g_string_append(out, "/* style used for @limage elements */\n");
 	g_string_append_printf(out, ".%s {\n", html_limage_style);
 	g_string_append(out, "  margin: 0;\n");
-	g_string_append(out, "  z-index:1;\n");
+	g_string_append(out, "  z-index:-1;\n");
 	g_string_append(out, "}\n");
 
 	if (do_inline)
@@ -1591,7 +1591,7 @@ static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 	if (hyp != NULL && node == hyp->main_page && opts->output_charset == HYP_CHARSET_ATARI && opts->for_cgi)
 	{
 		hyp_utf8_sprintf_charset(out, opts->output_charset,
-			"\n\n<span class=\"%s\">%s%s</span>\n", _("warning: "), _("writing html output in atari encoding might not work with non-atari browsers"), html_error_note_style);
+			"\n\n<span class=\"%s\">%s%s</span>\n", html_error_note_style, _("warning: "), _("writing html output in atari encoding might not work with non-atari browsers"));
 	}
 	if (warn_gfx)
 	{

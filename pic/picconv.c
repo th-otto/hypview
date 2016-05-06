@@ -1539,6 +1539,7 @@ void pic_init(PICTURE *pic)
 	pic->pi_active = FALSE;
 	pic->pi_unsupported = FALSE;
 	pic->pi_topdown = TRUE;
+	pic->pi_transparent = -1;
 #ifdef IN_ORCS
 	pic->pi_name[0] = '\0';
 #else

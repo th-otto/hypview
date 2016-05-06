@@ -1033,7 +1033,7 @@ writeGifHeader(struct gif_dest *gif,
 	gif_putc(gif, 'I');
 	gif_putc(gif, 'F');
 	gif_putc(gif, '8');
-	if (transparent != -1 || comment)
+	if (transparent >= 0 || comment)
 		gif_putc(gif, '9');
 	else
 		gif_putc(gif, '7');
@@ -1085,8 +1085,11 @@ writeGifHeader(struct gif_dest *gif,
 	}
 
 	if (transparent >= 0)
+	{
+		transparent = gif->coltab[transparent] & ((1u << gif->pic->pi_planes) - 1);
 		write_transparent_color_index_extension(gif, transparent);
-
+	}
+	
 	if (comment)
 		write_comment_extension(gif, comment);
 }
@@ -1114,7 +1117,7 @@ static void writeImageHeader(struct gif_dest *gif,
 
 
 
-static gboolean GIFEncode(struct gif_dest *gif, int background, int transparent, const char *comment)
+static gboolean GIFEncode(struct gif_dest *gif, int background, const char *comment)
 {
 	unsigned int leftOffset = 0;
 	unsigned int topOffset = 0;
@@ -1126,7 +1129,7 @@ static gboolean GIFEncode(struct gif_dest *gif, int background, int transparent,
 	codeBuffer_init(gif, initCodeSize + 1);
 	byteBuffer_init(&gif->byteBuffer);
 
-	writeGifHeader(gif, background, bitsPerPixel, transparent, comment);
+	writeGifHeader(gif, background, bitsPerPixel, gif->pic->pi_transparent, comment);
 
 	/* Write an Image separator */
 	gif_putc(gif, ',');
@@ -1155,7 +1158,6 @@ static gboolean GIFEncode(struct gif_dest *gif, int background, int transparent,
 gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic)
 {
 	const char *comment = NULL;
-	int transparent = -1;
 	struct gif_dest *gif;
 	gboolean ret;
 	
@@ -1173,7 +1175,7 @@ gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic)
 	initPixelCursor(&gif->pixelCursor, pic->pi_width, pic->pi_height, FALSE);
 	
 	/* All set, let's do it. */
-	ret = GIFEncode(gif, 0, transparent, comment);
+	ret = GIFEncode(gif, 0, comment);
 	if (gif->alloc_error ||
 		(size_t)fwrite(gif->outbuf, 1, gif->outbuf_len, fp) != gif->outbuf_len ||
 		fflush(fp) != 0 ||
@@ -1191,7 +1193,6 @@ gboolean gif_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic)
 unsigned char *gif_pack(const unsigned char *src, PICTURE *pic)
 {
 	const char *comment = NULL;
-	int transparent = -1;
 	struct gif_dest *gif;
 	unsigned char *ret;
 	
@@ -1209,7 +1210,7 @@ unsigned char *gif_pack(const unsigned char *src, PICTURE *pic)
 	initPixelCursor(&gif->pixelCursor, pic->pi_width, pic->pi_height, FALSE);
 	
 	/* All set, let's do it. */
-	if (GIFEncode(gif, 0, transparent, comment) == FALSE ||
+	if (GIFEncode(gif, 0, comment) == FALSE ||
 		gif->alloc_error)
 	{
 		g_free(gif->outbuf);
@@ -1221,6 +1222,56 @@ unsigned char *gif_pack(const unsigned char *src, PICTURE *pic)
 	return ret;
 }
 
+
+int pic_find_transparent(PICTURE *pic, const unsigned char *data)
+{
+	int transparent = -1;
+	
+	if (pic->pi_planes == 1)
+	{
+		/*
+		 * for monochrome, use white as transparent
+		 */
+		if (pic->pi_palette[0].r == 0xff &&
+			pic->pi_palette[0].g == 0xff &&
+			pic->pi_palette[0].b == 0xff)
+			transparent = 0;
+		else if (pic->pi_palette[1].r == 0xff &&
+			pic->pi_palette[1].g == 0xff &&
+			pic->pi_palette[1].b == 0xff)
+			transparent = 1;
+	} else if (pic->pi_planes == 4 || pic->pi_planes == 8)
+	{
+		int color = 0;
+		
+		/*
+		 * for color, get the value of the top-left most pixel.
+		 * If that is black or white, use that, otherwise assume no transparency
+		 */
+		if (data[0] & 0x80) color |= 0x01;
+		if (data[2] & 0x80) color |= 0x02;
+		if (data[4] & 0x80) color |= 0x04;
+		if (data[6] & 0x80) color |= 0x08;
+		if (pic->pi_planes == 8)
+		{
+			if (data[8] & 0x80) color |= 0x10;
+			if (data[10] & 0x80) color |= 0x20;
+			if (data[12] & 0x80) color |= 0x40;
+			if (data[14] & 0x80) color |= 0x80;
+		}
+		if (pic->pi_palette[color].r == 0xff &&
+			pic->pi_palette[color].g == 0xff &&
+			pic->pi_palette[color].b == 0xff)
+			transparent = color;
+#if 0
+		else if (pic->pi_palette[color].r == 0x0 &&
+			pic->pi_palette[color].g == 0x0 &&
+			pic->pi_palette[color].b == 0x0)
+			transparent = color;
+#endif
+	}
+	return transparent;
+}
 
 /*********************************************************************************/
 /* GIF input                                                                     */
@@ -1487,7 +1538,9 @@ static void doGraphicControlExtension(struct gif_src *gif, struct gif89 *gif89P)
 		gif89P->inputFlag = (buf[0] >> 1) & 0x1;
 		gif89P->delayTime = LM_to_uint(buf[1], buf[2]);
 		if ((buf[0] & 0x1) != 0)
-			gif89P->transparent = buf[3];
+		{
+			gif89P->transparent = buf[3] & ((1u << gif->pic->pi_planes) - 1);
+		}
 		readThroughEod(gif);
 	}
 }
@@ -2073,7 +2126,7 @@ static void addPixelToRaster(struct gif_src *gif, unsigned int color, PALETTE cm
 #endif
 	
 	if (gif->alphabits)
-		gif->alphabits[gif->pnmBuffer.row][gif->pnmBuffer.col] = ((int)color == gif->transparent) ? 1 : 0;
+		gif->alphabits[gif->pnmBuffer.row][gif->pnmBuffer.col] = ((int)gif->coltab[color] == gif->transparent) ? 1 : 0;
 
 	++gif->pnmBuffer.col;
 	if (gif->pnmBuffer.col == gif->cols)
@@ -2278,7 +2331,7 @@ static gboolean readGifHeader(struct gif_src *gif)
    If we hit end of file before an EOD marker, we abort the program with
    an error message.
 -----------------------------------------------------------------------------*/
-static void readExtensions(struct gif_src *gif, struct gif89 *gif89P, int * eodP)
+static void readExtensions(struct gif_src *gif, struct gif89 *gif89P, int *eodP)
 {
 	int imageStart;
 	int eod;
@@ -2428,6 +2481,8 @@ static gboolean convertImage(struct gif_src *gif, int skipIt)
 			for (i = 0; i < 256; i++)
 				gif->pic->pi_palette[i] = pal[i];
 		}
+		if (gif->pic->pi_transparent >= 0 && gif->pic->pi_planes != 1)
+			gif->pic->pi_transparent = gif->coltab[gif->pic->pi_transparent] & ((1u << gif->pic->pi_planes) - 1);
 	}
 	return TRUE;
 }
@@ -2520,7 +2575,8 @@ gboolean gif_fread(_UBYTE **dest, FILE *fp, PICTURE *pic)
 		else
 			*dest = gif->pnmBuffer.pixels;
 	}
-	
+	if (retval)
+		pic->pi_transparent = gif->transparent;
 	g_free(gif);
 	return retval;
 }
@@ -2572,6 +2628,8 @@ gboolean gif_unpack(_UBYTE **dest, const _UBYTE *src, PICTURE *pic)
 		else
 			*dest = gif->pnmBuffer.pixels;
 	}
+	if (retval)
+		pic->pi_transparent = gif->transparent;
 	
 	g_free(gif);
 #if WRITE_OUTTXT
@@ -2616,6 +2674,14 @@ gboolean pic_type_gif(PICTURE *pic, const unsigned char *buf, _LONG size)
 			pic->pi_palette[i].b = *buf++;
 		}
 	}
+	if (buf[0] == 0x21 &&
+		buf[1] == 0xf9 &&
+		buf[2] >= 0x04 &&
+		buf[3] & 0x01)
+	{
+		pic->pi_transparent = buf[6] & ((1u << pic->pi_planes) - 1);
+	}
+	
 	/*
 	 * impossible to figure out wether it was really compressed
 	 * without decoding at least part of the image
