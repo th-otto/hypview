@@ -45,23 +45,6 @@ struct curl_parms {
 #include "outstg.h"
 #include "outhtml.h"
 
-/* ------------------------------------------------------------------------- */
-
-static const char *hcp_pic_format_to_mimetype(hyp_pic_format format)
-{
-	switch (format)
-	{
-		case HYP_PIC_ORIG: break;
-		case HYP_PIC_IFF: return "image/x-iff";
-		case HYP_PIC_ICN: return "image/x-icn";
-		case HYP_PIC_IMG: return "image/x-gem";
-		case HYP_PIC_BMP: return "image/bmp";
-		case HYP_PIC_GIF: return "image/gif";
-		case HYP_PIC_PNG: return "image/png";
-	}
-	return NULL;
-}
-
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/

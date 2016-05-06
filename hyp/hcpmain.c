@@ -103,6 +103,7 @@ static void print_usage(FILE *out)
 #include "outasc.h"
 #include "outstg.h"
 #include "outhtml.h"
+#include "outxml.h"
 #include "outdump.h"
 
 /*****************************************************************************/
@@ -689,7 +690,7 @@ int main(int argc, const char **argv)
 				{
 					const char *filename = argv[c++];
 					GString *out;
-					stg_nl = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					force_crlf = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? FALSE : TRUE;
 					out = g_string_new(NULL);
 					if (num_args > 1)
 					{
@@ -718,7 +719,7 @@ int main(int argc, const char **argv)
 				{
 					const char *filename = argv[c++];
 					GString *out;
-					stg_nl = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+					force_crlf = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? FALSE : TRUE;
 					out = g_string_new(NULL);
 					if (num_args > 1)
 					{
@@ -729,6 +730,35 @@ int main(int argc, const char **argv)
 					/* if ((opts->outfile == NULL || opts->outfile == stdout) && opts->output_filename == NULL)
 						opts->output_filename = replace_ext(filename, NULL, HYP_EXT_HTML); */
 					if (recompile(filename, opts, recompile_html, 0, NULL, HYP_EXT_HTML) == FALSE)
+					{
+						retval = EXIT_FAILURE;
+						break;
+					}
+					if (c < argc)
+					{
+						g_string_append(out, "\n\n");
+						write_strout(out, opts->outfile);
+						g_string_truncate(out, 0);
+					}
+					g_string_free(out, TRUE);
+				}
+			} else if (opts->recompile_format == HYP_FT_XML)
+			{
+				/* force utf-8 output for xml */
+				opts->output_charset = HYP_CHARSET_UTF8;
+				while (c < argc)
+				{
+					const char *filename = argv[c++];
+					GString *out;
+					force_crlf = (opts->output_filename == NULL || opts->output_charset != HYP_CHARSET_ATARI) ? FALSE : TRUE;
+					out = g_string_new(NULL);
+					if (num_args > 1)
+					{
+						hyp_utf8_sprintf_charset(out, opts->output_charset, _("<!-- File: %s -->\n"), filename);
+						write_strout(out, opts->outfile);
+						g_string_truncate(out, 0);
+					}
+					if (recompile(filename, opts, recompile_xml, 0, NULL, HYP_EXT_XML) == FALSE)
 					{
 						retval = EXIT_FAILURE;
 						break;

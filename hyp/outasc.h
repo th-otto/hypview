@@ -14,7 +14,7 @@ static char *ascii_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 /* ------------------------------------------------------------------------- */
 
-static void ascii_out_text(hcp_opts *opts, FILE *outfile, const char *text, unsigned char textattr)
+static void ascii_out_text(hcp_opts *opts, GString *out, const char *text, unsigned char textattr)
 {
 	const char *p = text;
 	int i;
@@ -25,35 +25,35 @@ static void ascii_out_text(hcp_opts *opts, FILE *outfile, const char *text, unsi
 	{
 		if (textattr & HYP_TXT_UNDERLINED)
 		{
-			fputc('_', outfile);
-			fputc('\b', outfile);
+			g_string_append_c(out, '_');
+			g_string_append_c(out, '\b');
 		}
 		p = hyp_utf8_conv_char(opts->output_charset, p, buf, &converror);
 		for (i = 0; buf[i] != 0; i++)
-			fputc(buf[i], outfile);
+			g_string_append_c(out, buf[i]);
 		if (textattr & HYP_TXT_BOLD)
 		{
-			fputc('\b', outfile);
+			g_string_append_c(out, '\b');
 			for (i = 0; buf[i] != 0; i++)
-				fputc(buf[i], outfile);
+				g_string_append_c(out, buf[i]);
 		}
 	}
 }
 
 /* ------------------------------------------------------------------------- */
 
-static void ascii_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, FILE *outfile, const unsigned char *str, size_t len, unsigned char textattr)
+static void ascii_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const unsigned char *str, size_t len, unsigned char textattr)
 {
 	char *text = hyp_conv_to_utf8(hyp->comp_charset, str, len);
-	ascii_out_text(opts, outfile, text, textattr);
+	ascii_out_text(opts, out, text, textattr);
 	g_free(text);
 }
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean ascii_out_attr(FILE *outfile, unsigned char oldattr, unsigned char newattr)
+static gboolean ascii_out_attr(GString *out, unsigned char oldattr, unsigned char newattr)
 {
-	UNUSED(outfile);
+	UNUSED(out);
 	if (oldattr != newattr)
 	{
 		return TRUE;
@@ -63,7 +63,7 @@ static gboolean ascii_out_attr(FILE *outfile, unsigned char oldattr, unsigned ch
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
+static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node)
 {
 	char *str;
 	gboolean at_bol;
@@ -74,24 +74,23 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 	gboolean manlike;
 	HYP_NODE *nodeptr;
 	char *title;
-	FILE *outfile = opts->outfile;
 	
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
-		ascii_out_str(hyp, opts, outfile, textstart, src - textstart, manlike ? textattr : 0); \
+		ascii_out_str(hyp, opts, out, textstart, src - textstart, manlike ? textattr : 0); \
 		at_bol = FALSE; \
 	}
 #define FLUSHLINE() \
 	if (!at_bol) \
 	{ \
-		fputs(stg_nl, outfile); \
+		g_string_append_c(out, '\n'); \
 		at_bol = TRUE; \
 	}
 #define FLUSHTREE() \
 	if (in_tree != -1) \
 	{ \
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s", stg_nl); \
+		g_string_append_c(out, '\n'); \
 		in_tree = -1; \
 		at_bol = TRUE; \
 	}
@@ -105,7 +104,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 		
 		manlike = FALSE;
 		linkattr = HYP_TXT_NORMAL;
-		if (rpl_fstat(fileno(outfile), &st) == 0)
+		if (rpl_fstat(fileno(opts->outfile), &st) == 0)
 		{
 			if (S_ISFIFO(st.st_mode) || S_ISCHR(st.st_mode))
 			{
@@ -117,7 +116,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 		title = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
 		if (title == NULL)
 			title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node]->name, STR0TERM);
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s%s", title, stg_nl);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s\n", title);
 		g_free(title);
 		
 		end = nodeptr->end;
@@ -153,9 +152,9 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 						str = hyp_invalid_page(dest_page);
 					}
 					if (empty(text) || strcmp(str, text) == 0)
-						hyp_utf8_fprintf_charset(outfile, opts->output_charset, "See also: %s%s", str, stg_nl);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, _("See also: %s\n"), str);
 					else
-						hyp_utf8_fprintf_charset(outfile, opts->output_charset, "See also: %s%s", text, stg_nl);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, _("See also: %s\n"), text);
 					g_free(str);
 					g_free(text);
 				}
@@ -186,7 +185,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 				{
 				case HYP_ESC_ESC:
 					FLUSHTREE();
-					fputc(0x1b, outfile);
+					g_string_append_c(out, 0x1b);
 					at_bol = FALSE;
 					src++;
 					break;
@@ -248,12 +247,12 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 						FLUSHTREE();
 						if (opts->bracket_links)
 						{
-							ascii_out_text(opts, outfile, "[", linkattr);
-							ascii_out_text(opts, outfile, str, linkattr);
-							ascii_out_text(opts, outfile, "]", linkattr);
+							ascii_out_text(opts, out, "[", linkattr);
+							ascii_out_text(opts, out, str, linkattr);
+							ascii_out_text(opts, out, "]", linkattr);
 						} else
 						{
-							ascii_out_text(opts, outfile, str, linkattr);
+							ascii_out_text(opts, out, str, linkattr);
 						}
 						g_free(dest);
 						g_free(str);
@@ -306,7 +305,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 					break;
 					
 				case HYP_ESC_CASE_TEXTATTR:
-					if (ascii_out_attr(outfile, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
+					if (ascii_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
 						at_bol = FALSE;
 					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 					src++;
@@ -322,7 +321,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 			{
 				FLUSHTREE();
 				DUMPTEXT();
-				fputs(stg_nl, outfile);
+				g_string_append_c(out, '\n');
 				at_bol = TRUE;
 				++lineno;
 				src++;
@@ -334,7 +333,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr nod
 			}
 		}
 		DUMPTEXT();
-		if (ascii_out_attr(outfile, textattr, 0))
+		if (ascii_out_attr(out, textattr, 0))
 			at_bol = FALSE;
 		FLUSHLINE();
 		FLUSHTREE();
@@ -361,12 +360,14 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 	gboolean ret;
 	int i;
 	gboolean found;
-	FILE *outfile = opts->outfile;
+	GString *out;
 	
-	stg_nl = outfile == stdout ? "\n" : "\015\012";
+	force_crlf = FALSE;
 	
 	ret = TRUE;
 		
+	out = g_string_new(NULL);
+
 	for (node = 0; node < hyp->num_index; node++)
 	{
 		entry = hyp->indextable[node];
@@ -416,8 +417,9 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 		{
 		case HYP_NODE_INTERNAL:
 		case HYP_NODE_POPUP:
-			ret &= ascii_out_node(hyp, opts, node);
-			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s%s%s", stg_nl, stg_nl, stg_nl);
+			ret &= ascii_out_node(hyp, opts, out, node);
+			if (node < hyp->last_text_page)
+				g_string_append(out, "\n\n\n");
 			break;
 		case HYP_NODE_IMAGE:
 		case HYP_NODE_EXTERNAL_REF:
@@ -430,6 +432,8 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 		default:
 			break;
 		}
+		write_strout(out, opts->outfile);
+		g_string_truncate(out, 0);
 	}
 	
 	for (i = 0; i < argc; i++)
@@ -440,6 +444,8 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 			ret = FALSE;
 		}
 	}
+	
+	g_string_free(out, TRUE);
 	
 	return ret;
 }

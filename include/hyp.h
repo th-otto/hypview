@@ -301,6 +301,7 @@ typedef struct
 #define HYP_EXT_TXT ".txt"
 #define HYP_EXT_GUIDE ".guide"
 #define HYP_EXT_HTML ".html"
+#define HYP_EXT_XML ".xml"
 
 /*
  * The values original ST-Guide uses,
@@ -558,7 +559,8 @@ typedef enum {
 	HYP_FT_STG,					/* ST-Guide source file */
 	HYP_FT_GUIDE,				/* AmigaGuide source file */
 	HYP_FT_IMAGE,				/* some image format */
-	HYP_FT_HTML					/* some HTML format */
+	HYP_FT_HTML,				/* some HTML format */
+	HYP_FT_XML					/* XML format */
 } hyp_filetype;
 
 

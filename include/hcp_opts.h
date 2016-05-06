@@ -102,6 +102,7 @@ gboolean hcp_opts_parse_string(hcp_opts *opts, const char *argstring, opts_origi
 hyp_pic_format hcp_pic_format_from_name(const char *name);
 const char *hcp_pic_format_to_name(hyp_pic_format format);
 void hcp_opts_copy(hcp_opts *opts, const hcp_opts *src);
+const char *hcp_pic_format_to_mimetype(hyp_pic_format format);
 
 char *hcp_get_option_string(hcp_opts *opts);
 

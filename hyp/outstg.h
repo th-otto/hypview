@@ -846,7 +846,7 @@ static gboolean recompile_stg(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 	UNUSED(argv);
 	
 	/* output_charset = HYP_CHARSET_ATARI; */
-	stg_nl = (opts->outfile == stdout || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+	force_crlf = (opts->outfile == stdout || opts->output_charset != HYP_CHARSET_ATARI) ? FALSE : TRUE;
 	
 	ret = TRUE;
 	

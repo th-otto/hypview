@@ -79,6 +79,7 @@ enum hcp_option {
 	OPT_OPTERROR = '?',
 	OPT_DUMP = 1024,
 	OPT_RECOMPILE_HTML,
+	OPT_RECOMPILE_XML,
 	OPT_PRINT_UNKNOWN,
 	OPT_CHARSET,
 	OPT_LONG_FILENAMES,
@@ -116,6 +117,7 @@ static struct option const long_options[] = {
 	{ "uses", required_argument, NULL, OPT_USES },
 	{ "view", no_argument, NULL, OPT_VIEW },
 	{ "html", no_argument, NULL, OPT_RECOMPILE_HTML },
+	{ "xml", no_argument, NULL, OPT_RECOMPILE_XML },
 	{ "wait", optional_argument, NULL, OPT_WAIT },
 	{ "title-in-index", no_argument, NULL, OPT_TITLE_IN_INDEX },
 	{ "no-title-in-index", no_argument, NULL, OPT_NO_TITLE_IN_INDEX },
@@ -334,6 +336,23 @@ const char *hcp_pic_format_to_name(hyp_pic_format format)
 }
 
 
+/* ------------------------------------------------------------------------- */
+
+const char *hcp_pic_format_to_mimetype(hyp_pic_format format)
+{
+	switch (format)
+	{
+		case HYP_PIC_ORIG: break;
+		case HYP_PIC_IFF: return "image/x-iff";
+		case HYP_PIC_ICN: return "image/x-icn";
+		case HYP_PIC_IMG: return "image/x-gem";
+		case HYP_PIC_BMP: return "image/bmp";
+		case HYP_PIC_GIF: return "image/gif";
+		case HYP_PIC_PNG: return "image/png";
+	}
+	return NULL;
+}
+
 gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin origin)
 {
 	struct _getopt_data *d;
@@ -541,6 +560,12 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				retval = not_here(origin, "--html");
 			else
 				opts->recompile_format = HYP_FT_HTML;
+			break;
+		case OPT_RECOMPILE_XML:
+			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
+				retval = not_here(origin, "--xml");
+			else
+				opts->recompile_format = HYP_FT_XML;
 			break;
 		case OPT_WAIT:
 			if (origin == OPTS_FROM_SOURCE)

@@ -1,4 +1,4 @@
-static const char *stg_nl;
+static gboolean force_crlf;
 static gboolean is_MASTER = TRUE;
 
 typedef gboolean (*recompile_func)(HYP_DOCUMENT *hyp, hcp_opts *opt, int argc, const char **argv);
@@ -189,6 +189,10 @@ static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pi
 	hyp_pic_format format;
 
 	format = opts->pic_format;
+#ifndef HAVE_PNG
+	if (default_format == HYP_PIC_PNG)
+		default_format = HYP_PIC_GIF;
+#endif
 	if (format == HYP_PIC_ORIG)
 	{
 		/*
@@ -197,7 +201,7 @@ static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pi
 		 */
 		format = (hyp_pic_format)entry->toc_index;
 	}
-	if (default_format != HYP_PIC_IMG && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
+	if (opts->recompile_format == HYP_FT_HTML && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
 	{
 		format = default_format;
 		hyp_utf8_fprintf(opts->errorfile, _("%sGEM images are not displayable in HTML, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format));
@@ -756,15 +760,19 @@ static void free_symtab(symtab_entry *sym)
 
 static void write_strout(GString *s, FILE *outfp)
 {
-	if (strcmp(stg_nl, "\n") != 0)
+	if (force_crlf)
 	{
 		const char *txt = s->str;
 		while (*txt)
 		{
 			if (*txt == '\n')
-				fputs(stg_nl, outfp);
-			else
+			{
+				fputc('\015', outfp);
+				fputc('\012', outfp);
+			}  else
+			{
 				fputc(*txt, outfp);
+			}
 			txt++;
 		}
 	} else

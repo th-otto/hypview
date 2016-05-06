@@ -45,7 +45,7 @@ void hyp_decode_gfx(HYP_DOCUMENT *hyp, const unsigned char *src, struct hyp_gfx 
 			{
 				g_free(pic);
 				if (errorfile)
-					hyp_utf8_fprintf(errorfile, ("failed to load image node %u\n"), node);
+					hyp_utf8_fprintf(errorfile, _("failed to load image node %u\n"), node);
 				break;
 			}
 			data_size = GetDataSize(hyp, node);

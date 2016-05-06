@@ -175,17 +175,6 @@ static void html_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @database \"%s\" -->\n", str);
 		g_free(str);
 	}
-	if (hyp->hostname != NULL)
-	{
-		HYP_HOSTNAME *h;
-		
-		for (h = hyp->hostname; h != NULL; h = h->next)
-		{
-			str = html_quote_name(h->name, FALSE);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @hostname \"%s\" -->\n", str);
-			g_free(str);
-		}
-	}
 	if (hypnode_valid(hyp, hyp->default_page))
 	{
 		str = html_quote_nodename(hyp, hyp->default_page);
@@ -229,6 +218,17 @@ static void html_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 	/* if (hyp->st_guide_flags != 0) */
 	{
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("<!-- ST-Guide flags: $%04x -->\n"), hyp->st_guide_flags);
+	}
+	if (hyp->hostname != NULL)
+	{
+		HYP_HOSTNAME *h;
+		
+		for (h = hyp->hostname; h != NULL; h = h->next)
+		{
+			str = html_quote_name(h->name, FALSE);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @hostname \"%s\" -->\n", str);
+			g_free(str);
+		}
 	}
 }
 
@@ -1920,12 +1920,10 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 								{
 									INDEX_ENTRY *entry = hyp->indextable[xref.dest_page];
 									len = entry->length - SIZEOF_INDEX_ENTRY;
-									textstart = entry->name;
 									xref.text = html_quote_nodename(hyp, xref.dest_page);
 									str_equal = entry->type == HYP_NODE_INTERNAL;
 								} else
 								{
-									textstart = (const unsigned char *)xref.text;
 									str_equal = FALSE;
 									xref.text = g_strdup(xref.destname);
 									len = strlen(xref.text);
@@ -1936,7 +1934,6 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 								
 								len = *src - HYP_STRLEN_OFFSET;
 								src++;
-								textstart = src;
 								buf = hyp_conv_to_utf8(hyp->comp_charset, src, len);
 								xref.text = html_quote_name(buf, FALSE);
 								g_free(buf);
@@ -2173,7 +2170,7 @@ static void create_patterns(void)
 
 static void html_init(hcp_opts *opts)
 {
-	stg_nl = (opts->outfile == stdout || opts->output_charset != HYP_CHARSET_ATARI) ? "\n" : "\015\012";
+	force_crlf = (opts->outfile == stdout || opts->output_charset != HYP_CHARSET_ATARI) ? FALSE : TRUE;
 	html_closer = html_doctype >= HTML_DOCTYPE_XSTRICT ? " />" : ">";
 	html_name_attr = html_doctype >= HTML_DOCTYPE_XSTRICT ? "id" : "name";
 }
