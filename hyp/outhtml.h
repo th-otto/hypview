@@ -102,19 +102,19 @@ static char *html_quote_name(const char *name, unsigned int flags)
 	if (name == NULL)
 		return NULL;
 	len = strlen(name);
-	str = ret = g_new(char, len * 7 + 1);
+	str = ret = g_new(char, len * 20 + 1);
 	if (str != NULL)
 	{
 		while (*name)
 		{
 			unsigned char c = *name++;
+#define STR(s) strcpy(str, s), str += sizeof(s) - 1
 			switch (c)
 			{
 			case '\\':
 				if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%2F");
-					str += 3;
+					STR("%2F");
 				} else if (flags & QUOTE_CONVSLASH)
 				{
 					*str++ = '/';
@@ -126,12 +126,10 @@ static char *html_quote_name(const char *name, unsigned int flags)
 			case ' ':
 				if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%20");
-					str += 3;
+					STR("%20");
 				} else if (flags & QUOTE_SPACE)
 				{
-					strcpy(str, "&nbsp;");
-					str += 6;
+					STR("&nbsp;");
 				} else
 				{
 					*str++ = ' ';
@@ -140,60 +138,49 @@ static char *html_quote_name(const char *name, unsigned int flags)
 			case '"':
 				if (flags & QUOTE_JS)
 				{
-					strcpy(str, "\\&quot;");
-					str += 7;
+					STR("\\&quot;");
 				} else if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%22");
-					str += 3;
+					STR("%22");
 				} else
 				{
-					strcpy(str, "&quot;");
-					str += 6;
+					STR("&quot;");
 				}
 				break;
 			case '&':
 				if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%26");
-					str += 3;
+					STR("%26");
 				} else
 				{
-					strcpy(str, "&amp;");
-					str += 5;
+					STR("&amp;");
 				}
 				break;
 			case '\'':
 				if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%27");
-					str += 3;
+					STR("%27");
 				} else
 				{
-					strcpy(str, "&apos;");
-					str += 6;
+					STR("&apos;");
 				}
 				break;
 			case '<':
 				if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%3C");
-					str += 3;
+					STR("%3C");
 				} else
 				{
-					strcpy(str, "&lt;");
-					str += 4;
+					STR("&lt;");
 				}
 				break;
 			case '>':
 				if (flags & QUOTE_URI)
 				{
-					strcpy(str, "%3E");
-					str += 3;
+					STR("%3E");
 				} else
 				{
-					strcpy(str, "&gt;");
-					str += 4;
+					STR("&gt;");
 				}
 				break;
 			case '-':
@@ -201,6 +188,285 @@ static char *html_quote_name(const char *name, unsigned int flags)
 			case '_':
 			case '~':
 				*str++ = c;
+				break;
+			case 0x01:
+				if (flags & QUOTE_URI)
+				{
+					STR("%01");
+				} else
+				{
+					STR("&soh;");
+				}
+				break;
+			case 0x02:
+				if (flags & QUOTE_URI)
+				{
+					STR("%02");
+				} else
+				{
+					STR("&stx;");
+				}
+				break;
+			case 0x03:
+				if (flags & QUOTE_URI)
+				{
+					STR("%03");
+				} else
+				{
+					STR("&etx;");
+				}
+				break;
+			case 0x04:
+				if (flags & QUOTE_URI)
+				{
+					STR("%04");
+				} else
+				{
+					STR("&eot;");
+				}
+				break;
+			case 0x05:
+				if (flags & QUOTE_URI)
+				{
+					STR("%05");
+				} else
+				{
+					STR("&enq;");
+				}
+				break;
+			case 0x06:
+				if (flags & QUOTE_URI)
+				{
+					STR("%06");
+				} else
+				{
+					STR("&ack;");
+				}
+				break;
+			case 0x07:
+				if (flags & QUOTE_URI)
+				{
+					STR("%07");
+				} else
+				{
+					STR("&bel;");
+				}
+				break;
+			case 0x08:
+				if (flags & QUOTE_URI)
+				{
+					STR("%08");
+				} else
+				{
+					STR("&bs;");
+				}
+				break;
+			case 0x09:
+				if (flags & QUOTE_URI)
+				{
+					STR("%09");
+				} else
+				{
+					STR("&ht;");
+				}
+				break;
+			case 0x0a:
+				if (flags & QUOTE_URI)
+				{
+					STR("%0A");
+				} else
+				{
+					STR("&lf;");
+				}
+				break;
+			case 0x0b:
+				if (flags & QUOTE_URI)
+				{
+					STR("%0B");
+				} else
+				{
+					STR("&vt;");
+				}
+				break;
+			case 0x0c:
+				if (flags & QUOTE_URI)
+				{
+					STR("%0C");
+				} else
+				{
+					STR("&ff;");
+				}
+				break;
+			case 0x0d:
+				if (flags & QUOTE_URI)
+				{
+					STR("%0D");
+				} else
+				{
+					STR("&cr;");
+				}
+				break;
+			case 0x0e:
+				if (flags & QUOTE_URI)
+				{
+					STR("%0E");
+				} else
+				{
+					STR("&so;");
+				}
+				break;
+			case 0x0f:
+				if (flags & QUOTE_URI)
+				{
+					STR("%0F");
+				} else
+				{
+					STR("&si;");
+				}
+				break;
+			case 0x10:
+				if (flags & QUOTE_URI)
+				{
+					STR("%10");
+				} else
+				{
+					STR("&dle;");
+				}
+				break;
+			case 0x11:
+				if (flags & QUOTE_URI)
+				{
+					STR("%11");
+				} else
+				{
+					STR("&dc1;");
+				}
+				break;
+			case 0x12:
+				if (flags & QUOTE_URI)
+				{
+					STR("%12");
+				} else
+				{
+					STR("&dc2;");
+				}
+				break;
+			case 0x13:
+				if (flags & QUOTE_URI)
+				{
+					STR("%13");
+				} else
+				{
+					STR("&dc3;");
+				}
+				break;
+			case 0x14:
+				if (flags & QUOTE_URI)
+				{
+					STR("%14");
+				} else
+				{
+					STR("&dc4;");
+				}
+				break;
+			case 0x15:
+				if (flags & QUOTE_URI)
+				{
+					STR("%15");
+				} else
+				{
+					STR("&nak;");
+				}
+				break;
+			case 0x16:
+				if (flags & QUOTE_URI)
+				{
+					STR("%16");
+				} else
+				{
+					STR("&syn;");
+				}
+				break;
+			case 0x17:
+				if (flags & QUOTE_URI)
+				{
+					STR("%17");
+				} else
+				{
+					STR("&etb;");
+				}
+				break;
+			case 0x18:
+				if (flags & QUOTE_URI)
+				{
+					STR("%18");
+				} else
+				{
+					STR("&can;");
+				}
+				break;
+			case 0x19:
+				if (flags & QUOTE_URI)
+				{
+					STR("%19");
+				} else
+				{
+					STR("&em;");
+				}
+				break;
+			case 0x1a:
+				if (flags & QUOTE_URI)
+				{
+					STR("%1A");
+				} else
+				{
+					STR("&sub;");
+				}
+				break;
+			case 0x1b:
+				if (flags & QUOTE_URI)
+				{
+					STR("%1B");
+				} else
+				{
+					STR("&esc;");
+				}
+				break;
+			case 0x1c:
+				if (flags & QUOTE_URI)
+				{
+					STR("%1C");
+				} else
+				{
+					STR("&fs;");
+				}
+				break;
+			case 0x1D:
+				if (flags & QUOTE_URI)
+				{
+					STR("%1D");
+				} else
+				{
+					STR("&gs;");
+				}
+				break;
+			case 0x1E:
+				if (flags & QUOTE_URI)
+				{
+					STR("%1E");
+				} else
+				{
+					STR("&rs;");
+				}
+				break;
+			case 0x1F:
+				if (flags & QUOTE_URI)
+				{
+					STR("%1F");
+				} else
+				{
+					STR("&us;");
+				}
 				break;
 			default:
 				if (c >= 0x80 && (flags & QUOTE_ALLOWUTF8))
@@ -220,6 +486,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 				}
 				break;
 			}
+#undef STR
 		}
 		*str++ = '\0';
 		ret = g_renew(char, ret, str - ret);
@@ -239,7 +506,7 @@ static char *html_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 	entry = hyp->indextable[node];
 	namelen = entry->length - SIZEOF_INDEX_ENTRY;
 	buf = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
-	p = html_quote_name(buf, entry->type == HYP_NODE_EXTERNAL_REF ? QUOTE_CONVSLASH : 0);
+	p = html_quote_name(buf, (entry->type == HYP_NODE_EXTERNAL_REF ? QUOTE_CONVSLASH : 0));
 	g_free(buf);
 	return p;
 }
@@ -1430,22 +1697,96 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 
 /* ------------------------------------------------------------------------- */
 
+static void html_out_entities(GString *out)
+{
+	g_string_append(out, " [\n");
+	g_string_append(out, "<!ENTITY uparrow \"&#8679;\">          <!-- 0x01 U+21E7 -->\n");
+	g_string_append(out, "<!ENTITY downarrow \"&#8681;\">        <!-- 0x02 U+21E9 -->\n");
+	g_string_append(out, "<!ENTITY rightarrow \"&#8680;\">       <!-- 0x03 U+21E8 -->\n");
+	g_string_append(out, "<!ENTITY leftarrow \"&#8678;\">        <!-- 0x04 U+21E6 -->\n");
+	g_string_append(out, "<!ENTITY ballotbox \"&#9744;\">        <!-- 0x05 U+2610 -->\n");
+	g_string_append(out, "<!ENTITY ballotboxcheck \"&#9745;\">   <!-- 0x06 U+2611 -->\n");
+	g_string_append(out, "<!ENTITY ballotboxx \"&#9746;\">       <!-- 0x07 U+2612 -->\n");
+	g_string_append(out, "<!ENTITY checkmark \"&#10003;\">       <!-- 0x08 U+2713 -->\n");
+	g_string_append(out, "<!ENTITY watch \"&#8986;\">            <!-- 0x09 U+231A -->\n");
+	g_string_append(out, "<!ENTITY bell \"&#9086;\">             <!-- 0x0a U+237E -->\n");
+	g_string_append(out, "<!ENTITY eightnote \"&#9834;\">        <!-- 0x0b U+266a -->\n");
+	g_string_append(out, "<!ENTITY mountain \"&#9968;\">         <!-- 0x0e U+26f0 -->\n");
+	g_string_append(out, "<!ENTITY umbrella \"&#9969;\">         <!-- 0x0f U+26f1 -->\n");
+	g_string_append(out, "<!ENTITY circledzero \"&#9450;\">      <!-- 0x10 U+24ea -->\n");
+	g_string_append(out, "<!ENTITY circledone \"&#9312;\">       <!-- 0x11 U+2460 -->\n");
+	g_string_append(out, "<!ENTITY circledtwo \"&#9313;\">       <!-- 0x12 U+2461 -->\n");
+	g_string_append(out, "<!ENTITY circledthree \"&#9314;\">     <!-- 0x13 U+2462 -->\n");
+	g_string_append(out, "<!ENTITY circledfour \"&#9315;\">      <!-- 0x14 U+2463 -->\n");
+	g_string_append(out, "<!ENTITY circledfive \"&#9316;\">      <!-- 0x15 U+2464 -->\n");
+	g_string_append(out, "<!ENTITY circledsix \"&#9317;\">       <!-- 0x16 U+2465 -->\n");
+	g_string_append(out, "<!ENTITY circledseven \"&#9318;\">     <!-- 0x17 U+2466 -->\n");
+	g_string_append(out, "<!ENTITY circledeight \"&#9319;\">     <!-- 0x18 U+2467 -->\n");
+	g_string_append(out, "<!ENTITY circlednine \"&#9320;\">      <!-- 0x19 U+2468 -->\n");
+	g_string_append(out, "<!ENTITY capitalschwa \"&#399;\">      <!-- 0x1a U+018f -->\n");
+	g_string_append(out, "<!ENTITY fountain \"&#9970;\">         <!-- 0x1c U+26f2 -->\n");
+	g_string_append(out, "<!ENTITY flaginhole \"&#9971;\">       <!-- 0x1d U+26f3 -->\n");
+	g_string_append(out, "<!ENTITY ferry \"&#9972;\">            <!-- 0x1e U+26f4 -->\n");
+	g_string_append(out, "<!ENTITY sailboat \"&#9973;\">         <!-- 0x1f U+26f5 -->\n");
+	g_string_append(out, "<!ENTITY increment \"&#8710;\">        <!-- 0x7f U+2206 -->\n");
+
+	g_string_append(out, "<!ENTITY nul \"&#9216;\">              <!-- 0x00 U+2400 -->\n");
+	g_string_append(out, "<!ENTITY soh \"&#9217;\">              <!-- 0x01 U+2401 -->\n");
+	g_string_append(out, "<!ENTITY stx \"&#9218;\">              <!-- 0x02 U+2402 -->\n");
+	g_string_append(out, "<!ENTITY etx \"&#9219;\">              <!-- 0x03 U+2403 -->\n");
+	g_string_append(out, "<!ENTITY eot \"&#9220;\">              <!-- 0x04 U+2404 -->\n");
+	g_string_append(out, "<!ENTITY enq \"&#9221;\">              <!-- 0x05 U+2405 -->\n");
+	g_string_append(out, "<!ENTITY ack \"&#9222;\">              <!-- 0x06 U+2406 -->\n");
+	g_string_append(out, "<!ENTITY bel \"&#9223;\">              <!-- 0x07 U+2407 -->\n");
+	g_string_append(out, "<!ENTITY bs  \"&#9224;\">              <!-- 0x08 U+2408 -->\n");
+	g_string_append(out, "<!ENTITY ht  \"&#9225;\">              <!-- 0x09 U+2409 -->\n");
+	g_string_append(out, "<!ENTITY lf  \"&#9226;\">              <!-- 0x0a U+240a -->\n");
+	g_string_append(out, "<!ENTITY vt  \"&#9227;\">              <!-- 0x0b U+240b -->\n");
+	g_string_append(out, "<!ENTITY ff  \"&#9228;\">              <!-- 0x0c U+240c -->\n");
+	g_string_append(out, "<!ENTITY cr  \"&#9229;\">              <!-- 0x0d U+240d -->\n");
+	g_string_append(out, "<!ENTITY so  \"&#9230;\">              <!-- 0x0e U+240e -->\n");
+	g_string_append(out, "<!ENTITY si  \"&#9231;\">              <!-- 0x0f U+240f -->\n");
+	g_string_append(out, "<!ENTITY dle \"&#9232;\">              <!-- 0x10 U+2410 -->\n");
+	g_string_append(out, "<!ENTITY dc1 \"&#9233;\">              <!-- 0x11 U+2411 -->\n");
+	g_string_append(out, "<!ENTITY dc2 \"&#9234;\">              <!-- 0x12 U+2412 -->\n");
+	g_string_append(out, "<!ENTITY dc3 \"&#9235;\">              <!-- 0x13 U+2413 -->\n");
+	g_string_append(out, "<!ENTITY dc4 \"&#9236;\">              <!-- 0x14 U+2414 -->\n");
+	g_string_append(out, "<!ENTITY nak \"&#9237;\">              <!-- 0x15 U+2415 -->\n");
+	g_string_append(out, "<!ENTITY syn \"&#9238;\">              <!-- 0x16 U+2416 -->\n");
+	g_string_append(out, "<!ENTITY etb \"&#9239;\">              <!-- 0x17 U+2417 -->\n");
+	g_string_append(out, "<!ENTITY can \"&#9240;\">              <!-- 0x18 U+2418 -->\n");
+	g_string_append(out, "<!ENTITY em  \"&#9241;\">              <!-- 0x19 U+2419 -->\n");
+	g_string_append(out, "<!ENTITY sub \"&#9242;\">              <!-- 0x1a U+241a -->\n");
+	g_string_append(out, "<!ENTITY esc \"&#9243;\">              <!-- 0x1b U+241b -->\n");
+	g_string_append(out, "<!ENTITY fs  \"&#9244;\">              <!-- 0x1c U+241c -->\n");
+	g_string_append(out, "<!ENTITY gs  \"&#9245;\">              <!-- 0x1d U+241d -->\n");
+	g_string_append(out, "<!ENTITY rs  \"&#9246;\">              <!-- 0x1e U+241e -->\n");
+	g_string_append(out, "<!ENTITY us  \"&#9247;\">              <!-- 0x1f U+241f -->\n");
+	g_string_append(out, "<!ENTITY del \"&#9249;\">              <!-- 0x7f U+2421 -->\n");
+
+	g_string_append(out, "<!ENTITY nbsp \"&#32;\">\n");
+	g_string_append(out, "]");
+}
+
+/* ------------------------------------------------------------------------- */
+
 static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, struct hyp_gfx *hyp_gfx, struct html_xref *xrefs, symtab_entry *syms, gboolean for_error)
 {
 	const char *charset = hyp_charset_name(opts->output_charset);
 	INDEX_ENTRY *entry = hyp ? hyp->indextable[node] : NULL;
 	char *str;
+	const char *html;
 	
 	switch (html_doctype)
 	{
 	case HTML_DOCTYPE_OLD:
-		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n");
-		g_string_append(out, "<html lang=\"en\">\n");
+		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\"");
+		html = " lang=\"en\"";
 		break;
 	case HTML_DOCTYPE_TRANS:
 		g_string_append(out, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
-		g_string_append(out, "        \"http://www.w3.org/TR/html4/loose.dtd\">\n");
-		g_string_append(out, "<html lang=\"en\">\n");
+		g_string_append(out, "        \"http://www.w3.org/TR/html4/loose.dtd\"");
+		html = " lang=\"en\"";
 		break;
 	
 	case HTML_DOCTYPE_XSTRICT:
@@ -1453,27 +1794,34 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		g_string_append(out, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", charset);
 #endif
 		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n");
-		g_string_append(out, "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n");
-		g_string_append(out, "<html xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"");
+		g_string_append(out, "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"");
 		if (hyp_gfx != NULL)
-			g_string_append(out, " xmlns:svg=\"http://www.w3.org/2000/svg\"");
-		g_string_append(out, ">\n");
+			html = " xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\"";
+		else
+			html = " xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"";
 		break;
 	case HTML_DOCTYPE_STRICT:
 	default:
 		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n");
-		g_string_append(out, "          \"http://www.w3.org/TR/html4/strict.dtd\">\n");
-		g_string_append(out, "<html lang=\"en\">\n");
+		g_string_append(out, "          \"http://www.w3.org/TR/html4/strict.dtd\"");
+		html = " lang=\"en\"";
 		break;
 	case HTML_DOCTYPE_HTML5:
-		g_string_append(out, "<!DOCTYPE html>\n");
-		g_string_append(out, "<html xml:lang=\"en\" lang=\"en\">\n");
+		g_string_append(out, "<!DOCTYPE html");
+		html = " xml:lang=\"en\" lang=\"en\"";
 		break;
 	case HTML_DOCTYPE_FRAME:
 	case HTML_DOCTYPE_XFRAME:
 		abort();
 		break;
 	}
+
+	html_out_entities(out);
+	g_string_append(out, ">\n");
+	g_string_append(out, "<html");
+	g_string_append(out, html);
+	g_string_append(out, ">\n");
+
 	g_string_append_printf(out, "<!-- This file was automatically generated by %s version %s -->\n", gl_program_name, gl_program_version);
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- %s -->\n", HYP_COPYRIGHT);
 	if (hyp != NULL && node == hyp->main_page)
@@ -1953,7 +2301,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					{
 					case HYP_ESC_ESC:
 						FLUSHTREE();
-						g_string_append(out, "&#x1b;");
+						g_string_append(out, "&esc;");
 						at_bol = FALSE;
 						src++;
 						break;

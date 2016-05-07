@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Authors: Thorsten Otto -->
+<!-- Version: 1.0 -->
+
+<!ENTITY % LanguageCode "NAME">
+
+<!ENTITY % NodeType "(internal | popup | external | rx | rxs | system | image | quit | close)">
+<!ENTITY % Number "CDATA">
+<!ENTITY % LinkType "(internal | popup | external | rx | rxs | system | image | quit | close)">
+<!ENTITY % Text "CDATA">
+<!ENTITY % xmlspace "(preserve | default)">
+<!ENTITY % translatable "(1 | 0)">
+
+<!ELEMENT hypfile (header, node+) >
+<!ATTLIST hypfile
+   name      %Text; #IMPLIED
+   generator %Text; #IMPLIED
+   version   %Text; #IMPLIED
+>
+
+<!ELEMENT header (param+ )>
+
+<!-- field that make up the header -->
+<!ELEMENT param EMPTY>
+<!ATTLIST param
+   name   %Text;   #REQUIRED
+   value  %Text;   #REQUIRED
+>
+
+<!ELEMENT node (_name|_title|xref|_text|link|newline|textattr|_index|_label|_alias|image|limage|line|box|rbox)+>
+<!ATTLIST node
+   index  %Number;     #REQUIRED
+   type   %NodeType;   #REQUIRED
+>
+
+<!ELEMENT _name (#PCDATA)>
+<!ATTLIST _name
+   xml:space %xmlspace; #IMPLIED
+   translatable %translatable; #IMPLIED
+>
+
+<!ELEMENT _title (#PCDATA)>
+<!ATTLIST _title
+   xml:space %xmlspace; #IMPLIED
+   translatable %translatable; #IMPLIED
+>
+<!ELEMENT _text (#PCDATA)>
+<!ATTLIST _text
+   xml:space %xmlspace; #IMPLIED
+   translatable %translatable; #IMPLIED
+>
+
+<!ELEMENT link (targetnode|_targetname|targetline|targetfile|_text|newwindow)+>
+<!ATTLIST link
+   type   %LinkType;   #REQUIRED
+>
+
+<!ELEMENT xref (targetnode|_targetname|targetline|targetfile|_text|newwindow)+>
+<!ATTLIST xref
+   type   %LinkType;   #REQUIRED
+>
+
+<!ELEMENT targetnode (#PCDATA)>
+
+<!ELEMENT targetline (#PCDATA)>
+
+<!ELEMENT newwindow (#PCDATA)>
+
+<!ELEMENT _targetname (#PCDATA)>
+<!ATTLIST _targetname
+   xml:space %xmlspace; #IMPLIED
+   translatable %translatable; #IMPLIED
+>
+
+<!ELEMENT targetfile (#PCDATA)>
+<!ATTLIST targetfile
+   xml:space %xmlspace; #IMPLIED
+   translatable %translatable; #IMPLIED
+>
+
+<!ELEMENT newline EMPTY>
+<!ELEMENT textattr (#PCDATA)>
+<!ELEMENT _index (#PCDATA)>
+<!ELEMENT _label (#PCDATA)>
+<!ELEMENT _alias (#PCDATA)>
+
+<!ELEMENT image (width|height|centered|xoffset|dithermask)+>
+<!ATTLIST image
+   name %Text; #IMPLIED
+   type %Text; #IMPLIED
+>
+
+<!ELEMENT limage (width|height|centered|xoffset|dithermask)+>
+<!ATTLIST limage
+   name %Text; #IMPLIED
+   type %Text; #IMPLIED
+>
+
+<!ELEMENT line (width|height|xoffset|begarrow|endarrow|style)+>
+<!ELEMENT box (width|height|xoffset|style)+>
+<!ELEMENT rbox (width|height|xoffset|style)+>
+
+<!ELEMENT width (#PCDATA)>
+<!ELEMENT height (#PCDATA)>
+<!ELEMENT centered (#PCDATA)>
+<!ELEMENT xoffset (#PCDATA)>
+<!ELEMENT dithermask (#PCDATA)>
+<!ELEMENT style (#PCDATA)>
+<!ELEMENT begarrow (#PCDATA)>
+<!ELEMENT endarrow (#PCDATA)>
