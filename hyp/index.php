@@ -176,6 +176,15 @@ echo "<li><a href=\"javascript: submitUrl('$hypdir/tosde.hyp');\">Die Anleitung 
 echo "<li><a href=\"javascript: submitUrl('$hypdir/tosen.hyp');\">The documentation for TOS (english)</a></li>\n";
 echo "</ul>\n";
 
+function js_escape($string)
+{
+	$string = str_replace('&', '&amp;', $string);
+	$string = str_replace('<', '&lt;', $string);
+	$string = str_replace('>', '&gt;', $string);
+	$string = str_replace('"', '\&quot;', $string);
+	return $string;
+}
+
 if ($dir = opendir($_SERVER['DOCUMENT_ROOT'] . $hypdir))
 {
 	echo "Local files:\n\n";
@@ -189,7 +198,7 @@ if ($dir = opendir($_SERVER['DOCUMENT_ROOT'] . $hypdir))
     }
     sort($files);
     foreach ($files as $entry) {
-    	echo "<li><a href=\"javascript: submitUrl('$hypdir/$entry');\">$entry</a></li>\n";
+    	echo '<li><a href="javascript: submitUrl(&quot;' . "$hypdir/" . js_escape($entry) . '&quot;);">' . htmlspecialchars($entry, ENT_QUOTES, 'UTF-8') . "</a></li>\n";
     }
  	closedir($dir);
 	echo "</ul>\n";

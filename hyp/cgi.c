@@ -436,9 +436,9 @@ int main(void)
 	g_freep(&opts->error_filename);
 	opts->errorfile = fopen("hypview.log", "a");
 	if (opts->errorfile == NULL)
-		opts->errorfile = stdout;
+		opts->errorfile = stderr;
 	else
-		dup2(2, fileno(opts->errorfile));
+		dup2(fileno(opts->errorfile), 2);
 	g_freep(&opts->output_filename);
 	opts->outfile = out;
 	opts->pic_format = HTML_DEFAULT_PIC_TYPE;
