@@ -1180,8 +1180,8 @@ sub keys_merge_translations
 
 sub desktop_merge_translations
 {
-	open INPUT, "<${FILE}" or die;
-	open OUTPUT, ">${OUTFILE}" or die;
+	open INPUT, "<${FILE}" or die "${FILE}: $!";;
+	open OUTPUT, ">${OUTFILE}" or die "${OUTFILE}: $!";
 	binmode (OUTPUT) if $^O eq 'MSWin32';
 
 	while (<INPUT>)

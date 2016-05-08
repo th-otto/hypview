@@ -30,7 +30,7 @@ EXTRA_DIST = gfx.s genmaptab.c
 
 noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpicon
 
-INCLUDES = -I$(hyp_srcdir)/include
+INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 

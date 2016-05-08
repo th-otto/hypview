@@ -93,9 +93,9 @@ GEN_PIXBUF_CSOURCE = gen-pixbuf-csource
 $(srcdir)/../icons/hypview.h: $(srcdir)/../icons/hypview.ico
 	$(AM_V_GEN)$(GEN_PIXBUF_CSOURCE) --raw --static --name=hypview_icon_data $< > $@.tmp && mv $@.tmp $@ || { $(RM) $@.tmp; false; }
 
-$(PO_DIR)/.intltool-merge-cache: hypview.desktop.in $(INTLTOOL_MERGE) $(POFILES)
+$(PO_DIR)/.intltool-merge-cache: $(srcdir)/hypview.desktop.in $(INTLTOOL_MERGE) $(POFILES)
 	$(AM_V_GEN)
-	$(AM_V_at)LC_ALL=C $(INTLTOOL_MERGE) -q -d -u -c $(PO_DIR)/.intltool-merge-cache $(PO_DIR) hypview.desktop.in hypview.desktop.$$$$ && $(RM) hypview.desktop.$$$$
+	$(AM_V_at)LC_ALL=C $(INTLTOOL_MERGE) -q -d -u -c $(PO_DIR)/.intltool-merge-cache $(PO_DIR) $(srcdir)/hypview.desktop.in hypview.desktop.$$$$ && $(RM) hypview.desktop.$$$$
 
 hypview.desktop: $(srcdir)/hypview.desktop.in $(INTLTOOL_MERGE) $(PO_DIR)/.intltool-merge-cache
 	$(AM_V_GEN)
