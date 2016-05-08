@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = subdir-objects -Wno-portability
 include ../Makefile.common
 
 noinst_LIBRARIES = libhyp.a libhypdoc.a
-bin_PROGRAMS = reflink refcheck hcp stool hypfind
+bin_PROGRAMS = reflink refcheck hcp stool hypfind hypinfo
 
 noinst_PROGRAMS = 
 noinst_SCRIPTS = 
@@ -18,7 +18,7 @@ SRVDIR = /srv/www/htdocs/hypview
 
 
 if OS_TOS
-bin_SCRIPTS = reflink.ttp refcheck.ttp hcp.ttp stool.tos hypfind.ttp
+bin_SCRIPTS = reflink.ttp refcheck.ttp hcp.ttp stool.tos hypfind.ttp hypinfo.ttp
 endif
 if !CROSS_COMPILING
 noinst_SCRIPTS += $(build_triplet)-hcp$(EXEEXT) \
@@ -33,6 +33,8 @@ noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpi
 INCLUDES = -I$(hyp_srcdir)/include
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
+
+LANGID_MODEL = $(srcdir)/ldpy.model
 
 libhyp_a_SOURCES = \
 	casefold.h \
@@ -167,6 +169,23 @@ hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA
 	   cp -a $@ "$(SRVDIR)/hypview.cgi"; \
 	fi
 	
+hypinfo_SOURCES = \
+	hypinfo.c \
+	hcp_opts.c \
+	liblangid.c liblangid.h \
+	sparseset.c sparseset.h \
+	model.c model.h \
+	$(UTIL_SRC)
+hypinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
+hypinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if WITH_GUI_GTK
+hypinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+endif
+hypinfo.ttp: hypinfo
+	$(LN_S) $?$(EXEEXT) $@
+
+
+
 reflink_SOURCES = \
 	reflink.c \
 	refcmds.c \
@@ -310,6 +329,16 @@ picinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
 dumpicon_SOURCES = \
 	dumpicon.c
+
+
+liblangid.o sparseset.o: liblangid.h model.h sparseset.h
+model.o: model.h
+
+model.h: $(LANGID_MODEL) $(srcdir)/ldpy2ldc.py
+	python $(srcdir)/ldpy2ldc.py --header $< -o $@
+
+EXTRA_DIST += ldpy2ldc.py $(LANGID_MODEL)
+
 
 CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)

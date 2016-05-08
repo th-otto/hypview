@@ -54,7 +54,7 @@ struct hypfind_opts {
 	BM_TABLE deltapat;
 };
 
-static gboolean is_MASTER;
+static gboolean is_MASTER = TRUE;
 
 static struct option const long_options[] = {
 	{ "compile", no_argument, NULL, 'c' },

@@ -429,6 +429,7 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 	g_free(hyp->subject);
 	g_free(hyp->help_name);
 	g_free(hyp->default_name);
+	g_free(hyp->language);
 
 	if (hyp->num_index > 0)
 	{

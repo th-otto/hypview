@@ -1,4 +1,6 @@
+#ifndef OUT_ASCII_ONLY
 static gboolean force_crlf;
+#endif
 static gboolean is_MASTER = TRUE;
 
 typedef gboolean (*recompile_func)(HYP_DOCUMENT *hyp, hcp_opts *opt, int argc, const char **argv);
@@ -33,7 +35,7 @@ static unsigned int const vdi_maptab16[16] = { 0, 15, 1, 2, 4, 6, 3, 5, 7,  8,  
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-#ifdef CMDLINE_VERSION
+#if defined(CMDLINE_VERSION) && !defined(OUT_ASCII_ONLY)
 static void oom(void)
 {
 	hyp_utf8_fprintf(stderr, "%s: %s\n", gl_program_name, strerror(ENOMEM));
@@ -44,6 +46,7 @@ static void oom(void)
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static gboolean check_long_filenames(const char *dir)
 {
 	long test1, test2;
@@ -105,9 +108,11 @@ static gboolean check_long_filenames(const char *dir)
 	
 	return FALSE;
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static char *format_dithermask(unsigned short dithermask)
 {
 	char *buf, *ret;
@@ -129,9 +134,11 @@ static char *format_dithermask(unsigned short dithermask)
 	*buf = '\0';
 	return ret;
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, const char *name_prefix)
 {
 	INDEX_ENTRY *entry;
@@ -181,9 +188,11 @@ static char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr nod
 	}
 	return g_strdup_printf("%s%05u%s", name_prefix, node, ext);
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pic_format default_format)
 {
 	hyp_pic_format format;
@@ -226,9 +235,11 @@ static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pi
 	
 	return format;
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static symtab_entry *sym_find(symtab_entry *sym, const char *search, hyp_reftype type)
 {
 	while (sym != NULL)
@@ -417,9 +428,11 @@ static gboolean sym_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 
 	return retval;
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic_format default_format, GString *out)
 {
 	unsigned char *data;
@@ -674,9 +687,11 @@ done:
 	
 	return retval;
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
 {
 	symtab_entry *syms = NULL;
@@ -741,9 +756,11 @@ static symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
 	}
 	return syms;
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static void free_symtab(symtab_entry *sym)
 {
 	symtab_entry *next;
@@ -760,9 +777,11 @@ static void free_symtab(symtab_entry *sym)
 		sym = next;
 	}
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static void write_strout(GString *s, FILE *outfp)
 {
 	if (force_crlf)
@@ -785,4 +804,4 @@ static void write_strout(GString *s, FILE *outfp)
 		fwrite(s->str, 1, s->len, outfp);
 	}
 }
-
+#endif

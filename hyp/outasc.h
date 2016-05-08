@@ -353,6 +353,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef OUT_ASCII_ONLY
 static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv)
 {
 	hyp_nodenr node;
@@ -449,3 +450,4 @@ static gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, con
 	
 	return ret;
 }
+#endif
