@@ -779,6 +779,47 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 
 /* ------------------------------------------------------------------------- */
 
+
+static gboolean xml_out_image(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node)
+{
+	GString *image;
+	Base64 *b;
+	hyp_pic_format format;
+	const char *formatname;
+	gboolean ret;
+	char *quoted;
+	char *fname;
+	
+	image = g_string_new(NULL);
+	ret = write_image(hyp, opts, node, XML_DEFAULT_PIC_TYPE, image);
+	if (ret)
+	{
+		b = Base64_New();
+		if (Base64_Encode(b, image->str, image->len))
+		{
+			format = format_from_pic(opts, hyp->indextable[node], XML_DEFAULT_PIC_TYPE);
+			fname = image_name(format, hyp, node, opts->image_name_prefix);
+			formatname = hcp_pic_format_to_mimetype(format);
+			quoted = xml_quote_name(fname, 0);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "  <node index=\"%u\" type=\"%s\">\n",
+				node,
+				"image");
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, quoted);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <data href=\"data:%s;base64,", formatname);
+			g_string_append_len(out, Base64_EncodedMessage(b), Base64_EncodedMessageSize(b));
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "\" />\n");
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "  </node>\n");
+			g_free(quoted);
+			g_free(fname);
+		}
+		Base64_Delete(b);
+	}
+	g_string_free(image, TRUE);
+	return ret;
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv)
 {
 	hyp_nodenr node;
@@ -787,6 +828,8 @@ static gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 	symtab_entry *syms = NULL;
 	GString *out;
 	char *str;
+	const char *nodetype;
+	char *nodename;
 	
 	UNUSED(argc);
 	UNUSED(argv);
@@ -833,6 +876,8 @@ static gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 	for (node = 0; node < hyp->num_index; node++)
 	{
 		entry = hyp->indextable[node];
+		nodetype = NULL;
+		nodename = NULL;
 		if (node == hyp->index_page)
 		{
 			/*
@@ -857,21 +902,47 @@ static gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const
 			break;
 		case HYP_NODE_IMAGE:
 			if (opts->read_images)
-			{
-			}
+				ret &= xml_out_image(hyp, opts, out, node);
 			break;
 		case HYP_NODE_EXTERNAL_REF:
+			nodetype = "external";
+			nodename = xml_quote_nodename(hyp, node, QUOTE_SPACE);
+			break;
 		case HYP_NODE_SYSTEM_ARGUMENT:
+			nodetype = "system";
+			nodename = xml_quote_nodename(hyp, node, QUOTE_SPACE);
+			break;
 		case HYP_NODE_REXX_SCRIPT:
+			nodetype = "rxs";
+			nodename = xml_quote_nodename(hyp, node, QUOTE_SPACE);
+			break;
 		case HYP_NODE_REXX_COMMAND:
+			nodetype = "rx";
+			nodename = xml_quote_nodename(hyp, node, QUOTE_SPACE);
+			break;
 		case HYP_NODE_QUIT:
+			nodetype = "quit";
+			nodename = xml_quote_nodename(hyp, node, QUOTE_SPACE);
+			break;
 		case HYP_NODE_CLOSE:
+			nodetype = "close";
+			nodename = xml_quote_nodename(hyp, node, QUOTE_SPACE);
+			break;
 		case HYP_NODE_EOF:
 			break;
 		default:
 			if (opts->print_unknown)
 				hyp_utf8_fprintf(opts->errorfile, _("unknown index entry type %u\n"), entry->type);
 			break;
+		}
+		if (nodetype && nodename)
+		{
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "  <node index=\"%u\" type=\"%s\">\n",
+				node,
+				nodetype);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, nodename);
+			g_free(nodename);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, "  </node>\n");
 		}
 		write_strout(out, opts->outfile);
 		g_string_truncate(out, 0);

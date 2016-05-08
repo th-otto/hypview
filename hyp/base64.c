@@ -284,7 +284,7 @@ _BOOL Base64_Encode(Base64 *b, const void *pBuffer, size_t nBufLen)
 				Raw.nSize = 3;
 				EncodeToBuffer(&Raw, b->m_pEBuffer + b->m_nEDataLen);
 				nIndex += 3;
-				b->m_nEDataLen	+= 4;
+				b->m_nEDataLen += 4;
 			}
 		
 			if (nBufLen > nIndex)

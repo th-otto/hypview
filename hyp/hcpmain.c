@@ -711,7 +711,7 @@ int main(int argc, const char **argv)
 					}
 					g_string_free(out, TRUE);
 				}
-			} else if (opts->recompile_format == HYP_FT_HTML)
+			} else if (opts->recompile_format == HYP_FT_HTML || opts->recompile_format == HYP_FT_HTML_XML)
 			{
 				if (opts->output_charset == HYP_CHARSET_NONE)
 					opts->output_charset = hyp_get_current_charset();

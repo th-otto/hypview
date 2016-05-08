@@ -121,6 +121,7 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 			retval = recompile(hyp, opts, recompile_stg);
 			break;
 		case HYP_FT_HTML:
+		case HYP_FT_HTML_XML:
 			retval = recompile(hyp, opts, recompile_html);
 			break;
 		default:

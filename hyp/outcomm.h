@@ -201,10 +201,15 @@ static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pi
 		 */
 		format = (hyp_pic_format)entry->toc_index;
 	}
-	if (opts->recompile_format == HYP_FT_HTML && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
+	if ((opts->recompile_format == HYP_FT_HTML || opts->recompile_format == HYP_FT_HTML_XML) && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
 	{
 		format = default_format;
 		hyp_utf8_fprintf(opts->errorfile, _("%sGEM images are not displayable in HTML, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format));
+	}
+	if (opts->recompile_format == HYP_FT_XML && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
+	{
+		format = default_format;
+		/* hyp_utf8_fprintf(opts->errorfile, _("%sGEM images are not displayable in XML, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format)); */
 	}
 #ifndef HAVE_PNG
 	if (format == HYP_PIC_PNG)

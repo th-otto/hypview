@@ -560,7 +560,8 @@ typedef enum {
 	HYP_FT_GUIDE,				/* AmigaGuide source file */
 	HYP_FT_IMAGE,				/* some image format */
 	HYP_FT_HTML,				/* some HTML format */
-	HYP_FT_XML					/* XML format */
+	HYP_FT_XML,					/* XML format */
+	HYP_FT_HTML_XML				/* application/xhtml+xml */
 } hyp_filetype;
 
 

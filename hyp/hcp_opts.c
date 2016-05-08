@@ -83,7 +83,9 @@ enum hcp_option {
 	OPT_PRINT_UNKNOWN,
 	OPT_CHARSET,
 	OPT_LONG_FILENAMES,
-	OPT_NO_LONG_FILENAMES
+	OPT_NO_LONG_FILENAMES,
+	OPT_HIDEMENU,
+	OPT_NO_HIDEMENU
 };
 
 static struct option const long_options[] = {
@@ -128,6 +130,8 @@ static struct option const long_options[] = {
 	{ "charset", required_argument, NULL, OPT_CHARSET },
 	{ "long-filenames", no_argument, NULL, OPT_LONG_FILENAMES },
 	{ "no-long-filenames", no_argument, NULL, OPT_NO_LONG_FILENAMES },
+	{ "hidemenu", no_argument, NULL, OPT_HIDEMENU },
+	{ "no-hidemenu", no_argument, NULL, OPT_NO_HIDEMENU },
 	
 	{ "help", no_argument, NULL, OPT_HELP },
 	{ "version", no_argument, NULL, OPT_VERSION },
@@ -530,9 +534,15 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			break;
 		case OPT_RECOMPILE:
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
+			{
 				retval = not_here(origin, "--recompile");
-			else
+			} else if (opts->recompile_format == HYP_FT_XML || opts->recompile_format == HYP_FT_HTML || opts->recompile_format == HYP_FT_HTML_XML)
+			{
+				opts->showstg = TRUE;
+			} else
+			{
 				opts->recompile_format = HYP_FT_STG;
+			}
 			break;
 		case OPT_SPLIT:
 			opts->split_lines = getopt_on_r(d) ? TRUE : FALSE;
@@ -557,15 +567,31 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			break;
 		case OPT_RECOMPILE_HTML:
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
+			{
 				retval = not_here(origin, "--html");
-			else
+			} else if (opts->recompile_format == HYP_FT_XML)
+			{
+				opts->recompile_format = HYP_FT_HTML_XML;
+			} else
+			{
+				if (opts->recompile_format == HYP_FT_STG)
+					opts->showstg = TRUE;
 				opts->recompile_format = HYP_FT_HTML;
+			}
 			break;
 		case OPT_RECOMPILE_XML:
 			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
+			{
 				retval = not_here(origin, "--xml");
-			else
+			} else if (opts->recompile_format == HYP_FT_HTML)
+			{
+				opts->recompile_format = HYP_FT_HTML_XML;
+			} else
+			{
+				if (opts->recompile_format == HYP_FT_STG)
+					opts->showstg = TRUE;
 				opts->recompile_format = HYP_FT_XML;
+			}
 			break;
 		case OPT_WAIT:
 			if (origin == OPTS_FROM_SOURCE)
@@ -652,6 +678,14 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 		
 		case OPT_NO_LONG_FILENAMES:
 			opts->long_filenames = FALSE;
+			break;
+		
+		case OPT_HIDEMENU:
+			opts->hidemenu = TRUE;
+			break;
+		
+		case OPT_NO_HIDEMENU:
+			opts->hidemenu = FALSE;
 			break;
 		
 		case OPT_OPTERROR:

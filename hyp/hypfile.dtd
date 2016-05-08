@@ -28,7 +28,7 @@
    value  %Text;   #REQUIRED
 >
 
-<!ELEMENT node (_name|_title|xref|_text|link|newline|textattr|_index|_label|_alias|image|limage|line|box|rbox)+>
+<!ELEMENT node (_name|_title|xref|_text|link|newline|textattr|_index|_label|_alias|image|limage|line|box|rbox|data)+>
 <!ATTLIST node
    index  %Number;     #REQUIRED
    type   %NodeType;   #REQUIRED
@@ -109,3 +109,9 @@
 <!ELEMENT style (#PCDATA)>
 <!ELEMENT begarrow (#PCDATA)>
 <!ELEMENT endarrow (#PCDATA)>
+
+<!-- for image nodes only -->
+<!ELEMENT data EMPTY>
+<!ATTLIST data
+   href %Text; #REQUIRED
+>

@@ -306,7 +306,7 @@ static gboolean uri_has_scheme(const char *uri)
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_response_header(FILE *out, HYP_CHARSET charset, unsigned long len, hyp_pic_format pic_format)
+static void html_out_response_header(FILE *out, HYP_CHARSET charset, unsigned long len, hyp_pic_format pic_format, gboolean xml)
 {
 	const char *mimetype;
 	
@@ -316,7 +316,7 @@ static void html_out_response_header(FILE *out, HYP_CHARSET charset, unsigned lo
 		fprintf(out, "Content-Type: %s\015\012", mimetype);
 	} else
 	{
-		fprintf(out, "Content-Type: text/html;charset=%s\015\012", hyp_charset_name(charset));
+		fprintf(out, "Content-Type: %s;charset=%s\015\012", xml ? "application/xhtml+xml" : "text/html", hyp_charset_name(charset));
 	}
 	fprintf(out, "Content-Length: %lu\015\012", len);
 	fprintf(out, "\015\012");
@@ -447,12 +447,15 @@ int main(void)
 	opts->hideimages = FALSE;
 	opts->cgi_cached = FALSE;
 	opts->showstg = FALSE;
+	opts->recompile_format = HYP_FT_HTML;
 	
 	html_init(opts);
 
 	body = g_string_new(NULL);
 	cgiInit(body);
-	
+	if (cgiAccept && strstr(cgiAccept, "application/xhtml+xml") != NULL)
+		opts->recompile_format = HYP_FT_HTML_XML;
+		
 	if (cgiScriptName)
 		cgi_scriptname = cgiScriptName;
 	
@@ -502,7 +505,7 @@ int main(void)
 		{
 			html_referer_url = filename;
 			filename = g_strconcat(cgiDocumentRoot, filename, NULL);
-		} else if (empty(filename) || (!opts->cgi_cached && g_ascii_strcasecmp(scheme, "file") == 0))
+		} else if (empty(hyp_basename(filename)) || (!opts->cgi_cached && g_ascii_strcasecmp(scheme, "file") == 0))
 		{
 			/*
 			 * disallow file URIs, they would resolve to local files on the WEB server
@@ -743,7 +746,7 @@ int main(void)
 		g_freep(&html_referer_url);
 	}
 	
-	html_out_response_header(out, opts->output_charset, body->len, pic_format);
+	html_out_response_header(out, opts->output_charset, body->len, pic_format, opts->recompile_format == HYP_FT_HTML_XML);
 	cgiExit();
 	write_strout(body, out);
 	g_string_free(body, TRUE);
