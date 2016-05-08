@@ -88,6 +88,7 @@ static int html_popup_id;
 #define QUOTE_URI        0x0004
 #define QUOTE_JS         0x0008
 #define QUOTE_ALLOWUTF8  0x0010
+#define QUOTE_LABEL      0x0020
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -105,6 +106,8 @@ static char *html_quote_name(const char *name, unsigned int flags)
 	str = ret = g_new(char, len * 20 + 1);
 	if (str != NULL)
 	{
+		if (*name != '\0' && (flags & QUOTE_LABEL) && *name != '_' && !g_ascii_isalpha(*name))
+			*str++ = '_';
 		while (*name)
 		{
 			unsigned char c = *name++;
@@ -820,7 +823,7 @@ static void html_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	{
 		if (sym->lineno == lineno)
 		{
-			char *str = html_quote_name(sym->name, 0);
+			char *str = html_quote_name(sym->name, QUOTE_LABEL);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- lineno %u --><a %s=\"%s\"></a>", sym->lineno, html_name_attr, str);
 			g_free(str);
 			sym->referenced = TRUE;
@@ -841,7 +844,7 @@ static void html_out_alias(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, cons
 	sym = sym_find(syms, nodename, REF_ALIASNAME);
 	while (sym)
 	{
-		char *str = html_quote_name(sym->name, 0);
+		char *str = html_quote_name(sym->name, QUOTE_LABEL);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a %s=\"%s\"></a>", html_name_attr, str);
 		g_free(str);
 		sym->referenced = TRUE;
@@ -1518,7 +1521,8 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		str = html_quote_name(html_referer_url, 0);
 		g_string_append_printf(out, "<input type=\"hidden\" name=\"url\" value=\"%s\"%s\n", str, html_closer);
 		g_free(str);
-		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" name=\"q\" size=\"10\" value=\"\" placeholder=\"Search\"%s\n", html_closer);
+		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" id=\"searchfield\" name=\"q\" size=\"10\" value=\"\"%s\n", html_closer);
+		g_string_append_printf(out, "<script type=\"text/javascript\">document.getElementById('searchfield').placeholder = '%s';</script>\n", _("Search"));
 		g_string_append(out, "</li>\n");
 	}
 	g_string_append(out, "</ul>\n");
@@ -1632,7 +1636,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			}
 			if (label)
 			{
-				char *quoted = html_quote_name(label, 0);
+				char *quoted = html_quote_name(label, QUOTE_LABEL);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s#%s\"%s>%s</a>", style, xref->destfilename, quoted, target, xref->text);
 				g_free(quoted);
 			} else if (xref->desttype == HYP_NODE_POPUP && *target == '\0')
@@ -2066,7 +2070,7 @@ static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 	 * in from the entity definitions if the file
 	 * was not loaded as xml
 	 */
-	g_string_append(out, "<script>\n");
+	g_string_append(out, "<script type=\"text/javascript\">\n");
 	g_string_append(out, "var a = document.body.firstChild;\n");
 	g_string_append(out, "if (a.nodeType == 3) document.body.removeChild(a);\n");
 	g_string_append(out, "</script>\n");
