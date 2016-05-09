@@ -763,6 +763,12 @@ static gboolean search_node(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, HYP_NO
 				src++;
 				break;
 			
+			case HYP_ESC_UNKNOWN_A4:
+				if (opts->print_unknown)
+					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+				src++;
+				break;
+			
 			default:
 				if (opts->print_unknown)
 					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);

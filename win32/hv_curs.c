@@ -174,6 +174,7 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 				textstart = src;
 				break;
 			
+			case HYP_ESC_UNKNOWN_A4:
 			default:
 				src = hyp_skip_esc(src - 1);
 				textstart = src;

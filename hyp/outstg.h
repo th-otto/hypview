@@ -754,6 +754,12 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 				src++;
 				break;
 			
+			case HYP_ESC_UNKNOWN_A4:
+				if (opts->print_unknown)
+					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+				src++;
+				break;
+
 			default:
 				if (opts->print_unknown)
 					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);

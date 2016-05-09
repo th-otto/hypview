@@ -117,6 +117,9 @@ const unsigned char *hyp_skip_esc(const unsigned char *pos)
 	case HYP_ESC_CASE_TEXTATTR:			/* @{UBISGO} attribute */
 		pos++;
 		break;
+	case HYP_ESC_UNKNOWN_A4:			/* ?? from hyp2gdos.hyp */
+		pos++;
+		break;
 	default:
 		HYP_DBG(("unknown Tag: %u", *pos));
 		break;

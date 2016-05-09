@@ -288,6 +288,7 @@ static gboolean sym_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 				case HYP_ESC_CASE_TEXTATTR:
 				case HYP_ESC_LINK:
 				case HYP_ESC_ALINK:
+				case HYP_ESC_UNKNOWN_A4:
 					src = hyp_skip_esc(src - 1);
 					break;
 				

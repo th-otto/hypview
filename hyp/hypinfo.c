@@ -156,7 +156,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 		{
 			out = g_string_new(NULL);
 			count = 0;
-			for (node = hyp->first_text_page; node < hyp->num_index && count < 3; node++)
+			for (node = hyp->first_text_page; node < hyp->num_index && count < 5; node++)
 			{
 				entry = hyp->indextable[node];
 				if (node == hyp->index_page)

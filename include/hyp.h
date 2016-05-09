@@ -245,6 +245,7 @@ typedef enum  {
 #define HYP_ESC_RBOX			0x35	/* rounded box */
 #define HYP_ESC_TEXTATTR_FIRST	0x64	/* text/font attribute */
 #define HYP_ESC_TEXTATTR_LAST	0xa3
+#define HYP_ESC_UNKNOWN_A4		0xa4	/* found in hyp2gdos.hyp */
 
 #define HYP_TXT_NORMAL       0x0000
 #define HYP_TXT_BOLD         0x0001
