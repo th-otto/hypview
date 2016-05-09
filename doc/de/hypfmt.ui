@@ -204,6 +204,9 @@ Geh”ren die Daten zu einer Textseite ((!link [@node] [Kommando @node]), (!link [
         !item [1] Byte L„nge (ber alles)
         !item [ ] Daten
         !end_xlist
+        Typ 47 wird benutzt um die Dithermaske fr Images zu speichern.
+        In diesem Fall geht dieses Kommando unmittelbar der entsprechenden
+        Sequenz fr das Bild voran.
         
     !item [d)] optional Fenstertitel ((!link [@node] [Kommando @node]), (!link [@title] [Kommando @title]))
         !begin_xlist [1] !compressed
@@ -244,7 +247,7 @@ Geh”ren die Daten zu einer Textseite ((!link [@node] [Kommando @node]), (!link [
                     @{... alink NODE}
             !item [39:] wie 38, aber mit Zeilennummer (!nl)
                     @{... alink NODE LINE}
-            !item [>= 100:] Vektor fr Textattribute:
+            !item [100-163:] Vektor fr Textattribute:
                 nach Abzug von 100 ergibt sich folgender
                 Bitvektor:
                 !begin_xlist [32:] !compressed
@@ -255,6 +258,9 @@ Geh”ren die Daten zu einer Textseite ((!link [@node] [Kommando @node]), (!link [
                 !item [16:] 'Outlined'
                 !item [32:] schattierte Schrift
                 !end_xlist
+            !item [164:] Unbekannt. Tritt nur in einer bekannten
+                Datei bisher auf und scheint keinen sichtbaren Effekt
+                zu haben.
             !end_xlist
             
             Bei Typ 37 und 39 folgen 2 Bytes Zeilennummer; damit keine

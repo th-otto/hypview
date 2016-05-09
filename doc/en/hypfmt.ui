@@ -192,7 +192,9 @@ If the  data belongs  to a  text page  ((!link [@node] [Command @node]), (!link 
         !item [1] byte Length (over all)
         !item [ ] Daten
         !end_xlist
-        
+        Type 47 is used to store the dithermask for images. In this case,
+        it immediately preceeds the corresponding image command.
+
     !item [d)] Optional window (!link [title] [Command @title]) ((!link [@node] [Command @node]), (!link [@title] [Command @title]))
         !begin_xlist [1] !compressed
         !item [1] byte I.D. (27, ESCAPE)
@@ -232,7 +234,7 @@ If the  data belongs  to a  text page  ((!link [@node] [Command @node]), (!link 
                     @{... alink NODE}
             !item [39:] as 38, but with line number (!nl)
                     @{... alink NODE LINE}
-            !item [>= 100:] Vector for text-attributes:
+            !item [100-163:] Vector for text-attributes:
                 After subtracting 100 the following bit-vector is 
                 the result:
                 !begin_xlist [32:] !compressed
@@ -243,6 +245,8 @@ If the  data belongs  to a  text page  ((!link [@node] [Command @node]), (!link 
                 !item [16:] 'Outlined' characters
                 !item [32:] Shadowed characters
                 !end_xlist
+            !item [164:] Unknown. Only appears in 1 hyp file so far,
+                and does not seem to have any visual effect
             !end_xlist
             
             With types 37 and 39 a  2 byte line number follows;  so
