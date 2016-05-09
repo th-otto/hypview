@@ -1536,7 +1536,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 
 static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, symtab_entry *syms, gboolean for_inline);
 
-static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct html_xref *xref, symtab_entry *syms, gboolean newwindow)
+static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct html_xref *xref, symtab_entry *syms, gboolean newwindow, unsigned char curtextattr)
 {
 	const char *target = newwindow ? " target=\"_new\"" : "";
 	char *quoted;
@@ -1646,6 +1646,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				
 				++html_popup_id;
 				id = g_strdup_printf("hypview_popup_%d", html_popup_id);
+				html_out_attr(out, curtextattr, 0);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\">", html_dropdown_style);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s id=\"%s_btn\" href=\"javascript:void(0);\" onclick=\"showPopup('%s')\">%s</a>", style, id, id, xref->text);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\" id=\"%s_content\">", html_dropdown_pnode_style, id);
@@ -1658,6 +1659,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				g_string_free(tmp, TRUE);
 				g_string_append(out, "</span></span>");
 				g_free(id);
+				html_out_attr(out, 0, curtextattr);
 			} else
 			{
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s\"%s>%s</a>", style, xref->destfilename, target, xref->text);
@@ -2025,7 +2027,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\" id=\"%s_content\">", html_dropdown_xrefs_style, html_hyp_xrefs_id);
 		for (xref = xrefs; xref != NULL; xref = xref->next)
 		{
-			html_generate_href(hyp, opts, out, xref, syms, FALSE);
+			html_generate_href(hyp, opts, out, xref, syms, FALSE, 0);
 			g_string_append(out, "\n");
 		}
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "</span></span>");
@@ -2407,7 +2409,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							FLUSHTREE();
 							UNUSED(str_equal);
 							
-							html_generate_href(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE);
+							html_generate_href(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, textattr);
 	
 							g_free(xref.destname);
 							g_free(xref.destfilename);
