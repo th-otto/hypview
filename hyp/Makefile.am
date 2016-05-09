@@ -181,6 +181,13 @@ hypinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 if WITH_GUI_GTK
 hypinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
+hypinfo$(EXEEXT): $(hypinfo_OBJECTS) $(hypinfo_DEPENDENCIES) $(EXTRA_hypinfo_DEPENDENCIES) 
+	@rm -f hypinfo$(EXEEXT)
+	$(AM_V_CCLD)$(hypinfo_LINK) $(hypinfo_OBJECTS) $(hypinfo_LDADD) $(LIBS); \
+	if test -d "$(SRVDIR)"; then \
+	   echo "installing $@ in $(SRVDIR)"; \
+	   cp -a $@ "$(SRVDIR)/hypinfo"; \
+	fi
 hypinfo.ttp: hypinfo
 	$(LN_S) $?$(EXEEXT) $@
 

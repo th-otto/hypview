@@ -195,9 +195,9 @@ HYP_OS hyp_os_from_name(const char *name)
 	if (g_ascii_strcasecmp(name, "NeXTStep") == 0)
 		return HYP_OS_UNIX;
 	if (g_ascii_strcasecmp(name, "OS/2") == 0)
-		return HYP_OS_UNIX;
+		return HYP_OS_UNIX; /* a lie */
 	if (g_ascii_strcasecmp(name, "DOS") == 0)
-		return HYP_OS_UNIX;
+		return HYP_OS_UNIX; /* another lie */
 	if (g_ascii_strcasecmp(name, "BeOS") == 0)
 		return HYP_OS_UNIX;
 	return HYP_OS_UNKNOWN;
@@ -223,6 +223,12 @@ hyp_filetype hyp_guess_filetype(const char *name)
 		return HYP_FT_GUIDE;
 	if (g_ascii_strcasecmp(p, ".gui") == 0)
 		return HYP_FT_GUIDE;
+	if (g_ascii_strcasecmp(p, HYP_EXT_HTML) == 0)
+		return HYP_FT_HTML;
+	if (g_ascii_strcasecmp(p, ".htm") == 0)
+		return HYP_FT_HTML;
+	if (g_ascii_strcasecmp(p, HYP_EXT_XML) == 0)
+		return HYP_FT_XML;
 	if (g_ascii_strcasecmp(p, ".h") == 0)
 		return HYP_FT_CHEADER;
 	if (g_ascii_strcasecmp(p, ".rsh") == 0)
@@ -238,6 +244,12 @@ hyp_filetype hyp_guess_filetype(const char *name)
 	if (g_ascii_strcasecmp(p, ".bmp") == 0)
 		return HYP_FT_IMAGE;
 	if (g_ascii_strcasecmp(p, ".gif") == 0)
+		return HYP_FT_IMAGE;
+	if (g_ascii_strcasecmp(p, ".png") == 0)
+		return HYP_FT_IMAGE;
+	if (g_ascii_strcasecmp(p, ".jpeg") == 0)
+		return HYP_FT_IMAGE;
+	if (g_ascii_strcasecmp(p, ".jpg") == 0)
 		return HYP_FT_IMAGE;
 	return HYP_FT_UNKNOWN;
 }
@@ -430,7 +442,8 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 	g_free(hyp->help_name);
 	g_free(hyp->default_name);
 	g_free(hyp->language);
-
+	g_free(hyp->hyptree_data);
+	
 	if (hyp->num_index > 0)
 	{
 		if (hyp->indextable != NULL)
@@ -779,7 +792,7 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 			break;
 		case HYP_EXTH_VERSION:						/* @$VER */
 			hyp->version = load_string(hyp->comp_charset, handle, len);
-			if (hyp->version && strlen(hyp->version) >= 6 && memcmp(hyp->version, "$VER: ", 6) == 0)
+			if (hyp->version && strlen(hyp->version) >= 6 && g_ascii_strncasecmp(hyp->version, "$VER: ", 6) == 0)
 			{
 				memmove(hyp->version, hyp->version + 6, strlen(hyp->version + 6) + 1);
 				if (strlen(hyp->version) == 0)
@@ -802,7 +815,15 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 			break;
 		case HYP_EXTH_TREEHEADER:					/* HypTree-Header */
 			/* FIXME: NYI: tree header */
-			lseek(handle, len, SEEK_CUR);
+			hyp->hyptree_len = len;
+			if (len != 0)
+			{
+				hyp->hyptree_data = g_new(unsigned char, hyp->hyptree_len);
+				if (hyp->hyptree_data != NULL)
+					read(handle, hyp->hyptree_data, len);
+				else
+					lseek(handle, len, SEEK_CUR);
+			}
 			break;
 		case HYP_EXTH_STGUIDE_FLAGS:				/* ST-Guide flags */
 			if (len != SIZEOF_SHORT)

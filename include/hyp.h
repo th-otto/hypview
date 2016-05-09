@@ -426,6 +426,8 @@ typedef struct
 	hyp_nodenr first_text_page; /* first node number with text */
 	hyp_nodenr last_text_page;  /* last node number with text */
 	int ref_count;				/* usage count */
+	unsigned short hyptree_len;
+	unsigned char *hyptree_data;
 	char *language; 			/* Description for hypertext language (@lang) */
 	gboolean language_guessed;	/* TRUE if language was guessed by liblangid */
 } HYP_DOCUMENT;
