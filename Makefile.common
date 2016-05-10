@@ -1,4 +1,4 @@
-include ../../../silent.am
+-include ../../../silent.am
 
 pkgdatadir = $(datadir)/hypview
 

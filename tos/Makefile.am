@@ -1,5 +1,7 @@
 include ../Makefile.common
 
+SUBDIRS = utils/call-acc
+
 if WITH_GUI_GEM
 bin_PROGRAMS = hypview
 endif

@@ -1,6 +1,9 @@
 call-acc.gtp
-.C[-Ic:\src\hypview\include\tos]
-.C[-Ic:\src\hypview\include]
+.C[-Ih:\src\udo\tools\hypview\include\tos]
+.C[-Ih:\src\udo\tools\hypview\include]
+.C[-Ih:\src\udo\tools\hypview\tos]
+.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
+.C[-Ic:\pc\include]
 .C[-P]
 =
 cstartv.o
@@ -8,11 +11,6 @@ cstartv.o
 
 call-acc.c
 
-..\..\..\hyp\hyp_glib.c
-..\..\dl_mem.c
-..\..\dl_help.c
-..\..\dl_apinf.c
-
 pcgemlib.lib
 pctoslib.lib
-PCSTDLIB.LIB
+pcstdlib.lib

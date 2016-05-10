@@ -10,6 +10,7 @@ char const gl_compile_date[12] = __DATE__;
 static gboolean bShowVersion;
 static gboolean bShowHelp;
 static const char *geom_arg;
+static gboolean bNewWindow;
 
 struct _viewer_colors viewer_colors;
 
@@ -101,11 +102,13 @@ static void ValidateColors(void)
 /******************************************************************************/
 
 enum {
-	OPT_GEOMETRY = 256
+	OPT_GEOMETRY = 256,
+	OPT_NEW_WINDOW
 };
 
 static struct option const long_options[] = {
 	{ "geometry", required_argument, NULL, OPT_GEOMETRY },
+	{ "new-window", no_argument, NULL, OPT_NEW_WINDOW },
 	{ "help", no_argument, NULL, 'h' },
 	{ "version", no_argument, NULL, 'V' },
 	
@@ -122,6 +125,7 @@ static gboolean NOINLINE ParseCommandLine(int *argc, const char ***pargv)
 	
 	bShowVersion = FALSE;
 	bShowHelp = FALSE;
+	bNewWindow = FALSE;
 	
 	getopt_init_r(gl_program_name, &d);
 	while ((c = getopt_long_only_r(*argc, argv, "hV?", long_options, NULL, d)) != EOF)
@@ -130,6 +134,9 @@ static gboolean NOINLINE ParseCommandLine(int *argc, const char ***pargv)
 		{
 		case OPT_GEOMETRY:
 			geom_arg = getopt_arg_r(d);
+			break;
+		case OPT_NEW_WINDOW:
+			bNewWindow = TRUE;
 			break;
 		case 'h':
 			bShowHelp = TRUE;
@@ -250,6 +257,7 @@ int main(int argc, const char **argv)
 	} else
 	{
 		WINDOW_DATA *win = NULL;
+		int new_window = TRUE;
 		
 		hv_init();
 		ValidateColors();
@@ -268,6 +276,9 @@ int main(int argc, const char **argv)
 			g_free(str);
 		}
 		
+		if (bNewWindow)
+			new_window = FORCE_NEW_WINDOW;
+		
 		if (argc <= 0)
 		{
 			/* default-hypertext specified? */
@@ -275,13 +286,13 @@ int main(int argc, const char **argv)
 				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
 			{
 				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
-				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, filename, NULL, 0, TRUE, new_window, FALSE);
 				g_free(filename);
 			} else if (gl_profile.viewer.startup == 2 &&
 				!empty(gl_profile.viewer.last_file))
 			{
 				char *filename = path_subst(gl_profile.viewer.last_file);
-				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, filename, NULL, 0, TRUE, new_window, FALSE);
 				g_free(filename);
 			}
 		} else
@@ -292,7 +303,10 @@ int main(int argc, const char **argv)
 			} else
 			{
 				/* ...load this file (incl. chapter) */
-				win = OpenFileInWindow(NULL, argv[0], (argc > 1 ? argv[1] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
+				if (argc > 1)
+					win = OpenFileInWindow(NULL, argv[0], argv[1], HYP_NOINDEX, TRUE, new_window, FALSE);
+				else
+					win = OpenFileInWindow(NULL, argv[0], NULL, 0, TRUE, new_window, FALSE);
 			}
 		}
 		if (win == NULL)

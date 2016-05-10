@@ -179,7 +179,7 @@ static void hypview_application_open(GApplication *application, GFile **files, g
 	for (i = 0; i < n_files; i++)
 	{
 		char *path = g_file_get_path(files[i]);
-		win = OpenFileInWindow(NULL, path, hyp_default_main_node_name, HYP_NOINDEX, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
+		win = OpenFileInWindow(NULL, path, NULL, 0, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
 		if (win != NULL)
 		{
 			hv_recent_add(win->data->path);
@@ -286,13 +286,13 @@ static gint hypview_command_line(GApplication *app, GApplicationCommandLine *com
 				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
 			{
 				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
-				win = OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, new_window, quiet);
+				win = OpenFileInWindow(win, filename, NULL, 0, TRUE, new_window, quiet);
 				g_free(filename);
 			} else if (gl_profile.viewer.startup == 2 &&
 				!empty(gl_profile.viewer.last_file))
 			{
 				char *filename = path_subst(gl_profile.viewer.last_file);
-				win = OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, new_window, quiet);
+				win = OpenFileInWindow(win, filename, NULL, 0, TRUE, new_window, quiet);
 				g_free(filename);
 			}
 		} else
@@ -305,7 +305,10 @@ static gint hypview_command_line(GApplication *app, GApplicationCommandLine *com
 			} else
 			{
 				/* ...load this file (incl. chapter) */
-				win = OpenFileInWindow(win, path, (argc >= 2 ? argv[1] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, new_window, quiet);
+				if (argc >= 2)
+					win = OpenFileInWindow(win, path, argv[1], HYP_NOINDEX, TRUE, new_window, quiet);
+				else
+					win = OpenFileInWindow(win, path, NULL, 0, TRUE, new_window, quiet);
 			}
 		}
 		

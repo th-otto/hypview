@@ -1,0 +1,27 @@
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@endif
+
+@subject None
+@default Default
+
+@options "-i"
+
+@pnode Popup-Node
+This is a popup
+@endnode
+
+@node Normal
+@{"Hello" link "Popup-Node"}
+@endnode
+
+@node Main "Title"
+This is the main node
+@endnode
+
+@node Default
+This is the default node
+@endnode
+

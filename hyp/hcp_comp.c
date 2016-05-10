@@ -2844,6 +2844,9 @@ static void c_do_node(hcp_vars *vars, int argc, char **argv, gboolean is_popup)
 				namecmp(nodename, hyp_default_help_node_name) == 0)
 			{
 				hcp_warning(vars, NULL, _("'%s' should not be a popup node"), nodename);
+			} else if (vars->p1_node_counter == 0)
+			{
+				hcp_warning(vars, NULL, _("First node should not be a popup node"));
 			}
 		}
 		

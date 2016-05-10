@@ -20,26 +20,25 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 	if (!empty(chapter))
 	{
 		node_num = HypFindNode(doc, chapter);
-	} else if (node_num == HYP_NOINDEX)
+	} else if (node_num == 0 || node_num == HYP_NOINDEX)
 	{
-		node_num = hyp->default_page;
+		if (node_num == HYP_NOINDEX)
+			node_num = hyp->default_page;
+		/*
+		 * no default page: use first text page
+		 */
+		if (node_num == 0 || node_num == HYP_NOINDEX)
+			node_num = hyp->first_text_page;
 		if (node_num == HYP_NOINDEX)
 		{
 			/*
-			 * no default page: use first text page
+			 * This could only happen if we loaded a non-empty file
+			 * without any text page.
+			 * The compiler should prevent that: any command that can
+			 * create an entry which is not a text node can only
+			 * appear inside a text node.
 			 */
-			node_num = hyp->first_text_page;
-			if (node_num == HYP_NOINDEX)
-			{
-				/*
-				 * This could only happen if we loaded a non-empty file
-				 * without any text page.
-				 * The compiler should prevent that: any command that can
-				 * create an entry which is not a text node can only
-				 * appear inside a text node.
-				 */
-				FileError(hyp_basename(doc->path), _("no start page found."));
-			}
+			FileError(hyp_basename(doc->path), _("no start page found."));
 		}
 	}
 	

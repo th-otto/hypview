@@ -191,7 +191,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 	if (choose_file(parent, &name, file_open, _("Open Hypertext..."), _(hypertext_file_filter)))
 	{
 		hv_recent_add(name);
-		win = OpenFileInWindow(win, name, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
+		win = OpenFileInWindow(win, name, NULL, 0, TRUE, FALSE, FALSE);
 	}
 	g_free(name);
 	return win;

@@ -365,7 +365,14 @@ void DoVA_START(_WORD msg[8])
 				}
 			}
 			if (empty(chapter))
+			{
 				chapter = NULL;
+				if (nodenr == HYP_NOINDEX)
+					nodenr = 0;
+			} else if (strcmp(chapter, hyp_default_main_node_name) == 0)
+			{
+				nodenr = 0;
+			}
 			if (!empty(filename))
 				win = OpenFileInWindow(win, filename, chapter, nodenr, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
 			g_strfreev(argv);

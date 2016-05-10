@@ -156,7 +156,7 @@ static _BOOL gs_open(_WORD argc, const char *const *argv, char **erg)
 		while (--argc)
 		{
 			const char *filename = *++argv;
-			OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FORCE_NEW_WINDOW, FALSE);
+			OpenFileInWindow(NULL, filename, NULL, 0, TRUE, FORCE_NEW_WINDOW, FALSE);
 		}
 	}
 	*erg = g_strdup("1");
@@ -319,13 +319,13 @@ int main(int argc, const char **argv)
 				(!empty(gl_profile.viewer.default_file) || !empty(gl_profile.viewer.catalog_file)))
 			{
 				char *filename = path_subst(empty(gl_profile.viewer.default_file) ? gl_profile.viewer.catalog_file : gl_profile.viewer.default_file);
-				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, filename, NULL, 0, TRUE, TRUE, FALSE);
 				g_free(filename);
 			} else if (gl_profile.viewer.startup == 2 &&
 				!empty(gl_profile.viewer.last_file))
 			{
 				char *filename = path_subst(gl_profile.viewer.last_file);
-				win = OpenFileInWindow(NULL, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, TRUE, FALSE);
+				win = OpenFileInWindow(NULL, filename, NULL, 0, TRUE, TRUE, FALSE);
 				g_free(filename);
 			}
 		}
@@ -337,7 +337,10 @@ int main(int argc, const char **argv)
 		} else
 		{
 			/* ...load this file (incl. chapter) */
-			win = OpenFileInWindow(NULL, argv[1], (argc > 2 ? argv[2] : hyp_default_main_node_name), HYP_NOINDEX, TRUE, TRUE, FALSE);
+			if (argc > 2)
+				win = OpenFileInWindow(NULL, argv[1], argv[2], HYP_NOINDEX, TRUE, TRUE, FALSE);
+			else
+				win = OpenFileInWindow(NULL, argv[1], NULL, 0, TRUE, TRUE, FALSE);
 		}
 	}
 	if (win == NULL && _app)

@@ -156,7 +156,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			hv_win_open(win);
 		} else if (find_default)
 		{
-			doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
+			found = doc->gotoNodeProc(win, NULL, HYP_NOINDEX);
 			if (chapter && strcmp(chapter, hyp_default_main_node_name) == 0)
 				found = TRUE;
 			ReInitWindow(win, FALSE);
