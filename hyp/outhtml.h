@@ -1058,6 +1058,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "/* style used to display links to popup nodes */\n");
 	g_string_append_printf(out, "a:link.%s, a:visited.%s {\n", html_popup_link_style, html_popup_link_style);
 	g_string_append_printf(out, "  color: %s;\n", gl_profile.colors.popup);
+	g_string_append(out, "  text-decoration: none;\n");
 	g_string_append(out, "}\n");
 	
 	g_string_append(out, "/* style used to display links to external pages */\n");
@@ -1649,7 +1650,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				html_out_attr(out, curtextattr, 0);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\">", html_dropdown_style);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s id=\"%s_btn\" href=\"javascript:void(0);\" onclick=\"showPopup('%s')\">%s</a>", style, id, id, xref->text);
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\" id=\"%s_content\">", html_dropdown_pnode_style, id);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\" style=\"position:fixed;\" id=\"%s_content\" onclick=\"hidePopup('%s');\">", html_dropdown_pnode_style, id, id);
 				
 				tmp = g_string_new(NULL);
 				if (html_out_node(hyp, opts, tmp, xref->dest_page, syms, TRUE))
@@ -1783,24 +1784,25 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	INDEX_ENTRY *entry = hyp ? hyp->indextable[node] : NULL;
 	char *str;
 	const char *html_extra;
+	const char *doctype;
 	
 	switch (html_doctype)
 	{
 	case HTML_DOCTYPE_OLD:
-		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\"");
+		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\"";
 		html_extra = " lang=\"en\"";
 		break;
 	case HTML_DOCTYPE_TRANS:
-		g_string_append(out, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
-		g_string_append(out, "        \"http://www.w3.org/TR/html4/loose.dtd\"");
+		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n"
+		          "        \"http://www.w3.org/TR/html4/loose.dtd\"";
 		html_extra = " lang=\"en\"";
 		break;
 	
 	case HTML_DOCTYPE_XSTRICT:
 		if (opts->recompile_format == HYP_FT_HTML_XML)
 			g_string_append_printf(out, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", charset);
-		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n");
-		g_string_append(out, "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"");
+		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n"
+		          "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"";
 		if (hyp_gfx != NULL)
 			html_extra = " xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\"";
 		else
@@ -1808,12 +1810,12 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		break;
 	case HTML_DOCTYPE_STRICT:
 	default:
-		g_string_append(out, "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n");
-		g_string_append(out, "          \"http://www.w3.org/TR/html4/strict.dtd\"");
+		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n"
+		          "          \"http://www.w3.org/TR/html4/strict.dtd\"";
 		html_extra = " lang=\"en\"";
 		break;
 	case HTML_DOCTYPE_HTML5:
-		g_string_append(out, "<!DOCTYPE html");
+		doctype = "<!DOCTYPE html";
 		html_extra = " xml:lang=\"en\" lang=\"en\"";
 		break;
 	case HTML_DOCTYPE_FRAME:
@@ -1822,8 +1824,12 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		break;
 	}
 
-	if (1) html_out_entities(out);
-	g_string_append(out, ">\n");
+	if (doctype)
+		g_string_append(out, doctype);
+	if (1)
+		html_out_entities(out);
+	if (doctype)
+		g_string_append(out, ">\n");
 	g_string_append(out, "<html");
 	g_string_append(out, html_extra);
 	g_string_append(out, ">\n");
@@ -1938,7 +1944,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	g_string_append(out, "</head>\n");
 	g_string_append(out, "<body>\n");
 	if (hyp)
-		g_string_append_printf(out, "<div style=\"width:%dex;\">\n", hyp->line_width);
+		g_string_append_printf(out, "<div style=\"width:%dex;position:absolute;left:%dpx;\">\n", hyp->line_width, gl_profile.viewer.text_xoffset);
 
 	if (for_error)
 	{
@@ -1954,11 +1960,11 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 			html_out_nav_toolbar(hyp, opts, out, node, xrefs);
 			g_string_append_printf(out, "<div class=\"%s\" style=\"position:absolute; top:32px;\">\n", html_node_style);
 		}
-		g_string_append(out, "<pre>\n");
+		g_string_append(out, "<pre style=\"margin-top:0;\">");
 	} else
 	{
 		g_string_append_printf(out, "<div class=\"%s\">\n", html_pnode_style);
-		g_string_append(out, "<pre>\n");
+		g_string_append(out, "<pre>");
 	}
 
 	if (hyp)
@@ -1998,14 +2004,14 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		                        fixnull(hyp->help_name),
 		                        fixnull(hyp->hcp_options),
 		                        hyp->line_width);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s", str);
 		g_free(str);
 		{
 			HYP_HOSTNAME *h;
 			for (h = hyp->hostname; h != NULL; h = h->next)
 			{
 				str = html_quote_name(h->name, 0);
-				hyp_utf8_sprintf_charset(out, opts->output_charset, _("@hostname   : %s\n"), str);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, _("\n@hostname   : %s"), str);
 				g_free(str);
 			}
 		}
@@ -2038,6 +2044,8 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean for_error, gboolean warn_gfx)
 {
+	INDEX_ENTRY *entry = hyp ? hyp->indextable[node] : NULL;
+
 	if (hyp != NULL && node == hyp->main_page && opts->output_charset == HYP_CHARSET_ATARI && opts->for_cgi)
 	{
 		hyp_utf8_sprintf_charset(out, opts->output_charset,
@@ -2065,8 +2073,10 @@ static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 	{
 		g_string_append(out, "</pre>\n");
 		g_string_append(out, "</div>\n");
-		g_string_append(out, "</div>\n");
+		if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
+			g_string_append(out, "</div>\n");
 	}
+#if 1
 	/*
 	 * hack to remove the "]>" at the start that slips
 	 * in from the entity definitions if the file
@@ -2076,6 +2086,7 @@ static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 	g_string_append(out, "var a = document.body.firstChild;\n");
 	g_string_append(out, "if (a.nodeType == 3) document.body.removeChild(a);\n");
 	g_string_append(out, "</script>\n");
+#endif
 	
 	g_string_append(out, "</body>\n");
 	g_string_append(out, "</html>\n");
