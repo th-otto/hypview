@@ -48,6 +48,7 @@ h:\src\udo\tools\hypview\hyp\rpl_stat.c
 h:\src\udo\tools\hypview\hyp\profile.c
 h:\src\udo\tools\hypview\hyp\hyp_cfg.c
 h:\src\udo\tools\hypview\hyp\hypgfx.c
+h:\src\udo\tools\hypview\hyp\base64.c
 
 h:\src\udo\tools\hypview\hyp\tos\cookie.c
 

@@ -4,7 +4,7 @@
 #include "hcp_opts.h"
 #include "picture.h"
 #include "hcp.h"
-#include "liblangid.h"
+#include "llangid.h"
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
@@ -95,7 +95,6 @@ static char *quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_filename, LanguageIdentifier *lid)
 {
-	gboolean retval;
 	HYP_DOCUMENT *hyp;
 	hyp_filetype type = HYP_FT_NONE;
 	int handle;
@@ -302,7 +301,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 	hyp_unref(hyp);
 	hyp_utf8_close(handle);
 	
-	return retval;
+	return TRUE;
 }
 
 /*****************************************************************************/
@@ -492,5 +491,6 @@ int main(int argc, const char **argv)
 	HypProfile_Delete();
 	x_free_resources();
 
+	(void) vdi_maptab16;
 	return retval;
 }

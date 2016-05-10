@@ -253,15 +253,13 @@ static void EncodeToBuffer(const TempBucket *Decode, unsigned char *pBuffer)
 	for (i = 0; i < 4; i++)
 		pBuffer[i] = Base64Digits[Data.nData[i]];
 
-	switch (Decode->nSize)
+	if (Decode->nSize == 1)
 	{
-	case 1:
 		pBuffer[2] = '=';
 		pBuffer[3] = '=';
-		break;
-	case 2:
+	} else if (Decode->nSize == 2)
+	{
 		pBuffer[3] = '=';
-		break;
 	}
 }
 

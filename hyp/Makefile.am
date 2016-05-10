@@ -172,8 +172,8 @@ hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA
 hypinfo_SOURCES = \
 	hypinfo.c \
 	hcp_opts.c \
-	liblangid.c liblangid.h \
-	sparseset.c sparseset.h \
+	llangid.c llangid.h \
+	sparse.c sparse.h \
 	model.c model.h \
 	$(UTIL_SRC)
 hypinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
