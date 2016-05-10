@@ -216,7 +216,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 	gboolean freename;
 	
 	/* try to find in node names first */
-	node_num = find_nr_by_title(hyp, chapter);
+	node_num = find_nr_by_title(hyp, chapter, FALSE);
 
 	if (!hypnode_valid(hyp, node_num))
 	{
@@ -241,7 +241,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 
 		if ((nodename = ref_findnode(hyp->ref, chapter, &line, TRUE, &freename)) != NULL)
 		{
-			node_num = find_nr_by_title(hyp, nodename);
+			node_num = find_nr_by_title(hyp, nodename, FALSE);
 			if (freename)
 				g_free(nodename);
 			doc->start_line = line;

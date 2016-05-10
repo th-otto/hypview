@@ -741,7 +741,7 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 			break;
 		case HYP_EXTH_DEFAULT:						/* @default */
 			hyp->default_name = load_string(hyp->comp_charset, handle, len);
-			hyp->default_page = find_nr_by_title(hyp, hyp->default_name);
+			hyp->default_page = find_nr_by_title(hyp, hyp->default_name, FALSE);
 			if (!hypnode_valid(hyp, hyp->default_page))
 			{
 				HYP_DBG(("default page %s not found", printnull(hyp->default_name)));
@@ -804,7 +804,7 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 			break;
 		case HYP_EXTH_HELP:							/* @help */
 			hyp->help_name = load_string(hyp->comp_charset, handle, len);
-			hyp->help_page = find_nr_by_title(hyp, hyp->help_name);
+			hyp->help_page = find_nr_by_title(hyp, hyp->help_name, FALSE);
 			if (!hypnode_valid(hyp, hyp->help_page))
 			{
 				HYP_DBG(("help page %s not found", printnull(hyp->help_name)));
@@ -884,7 +884,7 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 	 */
 	if (!hypnode_valid(hyp, hyp->help_page))
 	{
-		hyp->help_page = find_nr_by_title(hyp, hyp_default_help_node_name);
+		hyp->help_page = find_nr_by_title(hyp, hyp_default_help_node_name, FALSE);
 	}
 	
 	/*
@@ -893,7 +893,7 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 	 */
 	if (!hypnode_valid(hyp, hyp->index_page))
 	{
-		hyp->index_page = find_nr_by_title(hyp, hyp_default_index_node_name);
+		hyp->index_page = find_nr_by_title(hyp, hyp_default_index_node_name, TRUE);
 	}
 	
 	/*
@@ -902,7 +902,7 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 	 */
 	if (!hypnode_valid(hyp, hyp->main_page))
 	{
-		hyp->main_page = find_nr_by_title(hyp, hyp_default_main_node_name);
+		hyp->main_page = find_nr_by_title(hyp, hyp_default_main_node_name, FALSE);
 	}
 	
 	/* there is no standard name for a default page */

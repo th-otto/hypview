@@ -328,6 +328,8 @@ if ($dir = opendir($localdir))
 		if (!fnmatch("*.hyp", $entry)) continue;
 		/* skip subsidiary files from collections (e.g. folder.hyp) */
 		if (fnmatch("_*.hyp", $entry)) continue;
+		/* skip the output result from hypfind tool */
+		if (fnmatch("hypfind.hyp", $entry)) continue;
 
 		$hyp->files[$entry] = array();
 		$hyp->files[$entry]['name'] = $entry;

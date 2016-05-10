@@ -44,6 +44,9 @@ static void hypfind_page(WINDOW_DATA *win)
 	const char *name = gtk_entry_get_text(entry);
 	if (empty(name))
 		return;
+	/*
+	 * FIXME: ST-Guide search for all pages here where the string is part of the name
+	 */
 	OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, TRUE, FALSE, FALSE);
 }
 

@@ -23,10 +23,14 @@ char *pic_colornameformat(int planes)
 
 /*** ---------------------------------------------------------------------- ***/
 
-hyp_nodenr find_nr_by_title(HYP_DOCUMENT *hyp, const char *title)
+/*
+ * FIXME: this can actually give 2 results, e.g. "index" and "Index"
+ */
+hyp_nodenr find_nr_by_title(HYP_DOCUMENT *hyp, const char *title, gboolean last)
 {
 	hyp_nodenr i;
 	int res;
+	hyp_nodenr found = HYP_NOINDEX;
 	
 	for (i = 0; i < hyp->num_index; i++)
 	{
@@ -36,10 +40,14 @@ hyp_nodenr find_nr_by_title(HYP_DOCUMENT *hyp, const char *title)
 			res = g_utf8_strcasecmp(name, title);
 			g_free(name);
 			if (res == 0)
-				return i;
+			{
+				found = i;
+				if (!last)
+					break;
+			}
 		}
 	}
-	return HYP_NOINDEX;
+	return found;
 }
 
 /* ------------------------------------------------------------------------- */

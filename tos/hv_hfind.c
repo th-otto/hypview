@@ -139,6 +139,9 @@ static void hypfind_page(WINDOW_DATA *win, OBJECT *tree)
 {
 	DOCUMENT *doc = win->data;
 	char *name = hyp_conv_to_utf8(hyp_get_current_charset(), tree[HYPFIND_STRING].ob_spec.tedinfo->te_ptext, STR0TERM);
+	/*
+	 * FIXME: ST-Guide search for all pages here where the string is part of the name
+	 */
 	if (!empty(name))
 		OpenFileInWindow(win, doc->path, name, HYP_NOINDEX, FALSE, FALSE, FALSE);
 	g_free(name);
