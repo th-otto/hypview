@@ -179,7 +179,13 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 	   else => no Pfad, don't have chapter name either
 	 */
 	cptr = strchr(temp, ':');
-	if (cptr == NULL || cptr == &temp[1])
+	if (cptr != NULL && cptr == &temp[1])
+	{
+		cptr++;
+		if (G_IS_DIR_SEPARATOR(*cptr))
+			cptr++;
+		memmove(temp, cptr, strlen(cptr) + 1);
+	}
 	{
 		cptr = strslash(temp);
 		if (cptr)
