@@ -1,0 +1,189 @@
+## created by hcp Version 0.9.9
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@endif
+@database "1stConv Documentation"
+@options "+g -i -s +zz -t4"
+@author "Joe Connor/Peter West"
+@help "Help-page"
+@$VER: 1st_conv.hyp R4.0E (10/3/1995)
+@subject "Documentation/ST-Guide"
+@width 75
+@remark ST-Guide flags: $0000
+
+
+@node "Main" "1stConv: Conversion utility"
+
+@box 3 68 4 0
+
+            1stConv, 1stGuide to ST-Guide hypertext converter
+                          English release 4
+
+
+
+Contents:
+
+  General
+  1stConv calls
+  Operation
+  @{"Credits" LINK "st-guide.hyp/Credits"}
+
+@endnode
+
+
+@node "General"
+
+Using 1st_Conv it's easy to convert any 1st Guide (Shareware) format
+hypertext to ST-Guide format source code ready for compilation using
+@{"HCP" LINK "hcp.HYP/HCP"}.
+
+@endnode
+
+
+@node "1stConv calls"
+
+The calling syntax is as follows:
+
+    1stConv [@{"-f" LINK "Option -f"} @{"-a" LINK "Option -a"} @{"-q" LINK "Option -q"} @{"-NNN" LINK "Option -NNN"}] file
+
+The file <file> can be simply dragged onto the 1stConv icon (so long
+as you're using a desktop (like Gemini) which supports Drag&drop).
+
+Alternatively 1stConv can be installed as an application for files with
+the file extender HLP (take care other applications such as compiled
+PureC help files also use this extension).
+
+@endnode
+
+
+@node "Option -NNN" "-NNN"
+
+With this option one can pre-define roughly how many lines should be
+written per output file. If the predefined length is exceeded 1stConv
+produces further files that can be linked using '@{"@include" LINK "hcp.HYP/@include"}' to the
+main text.
+
+@endnode
+
+
+@node "Option -f"
+
+This option causes the converter to use the filename as the page name.
+In this case the concept (word or phrase) used for referencing is used
+for the page title and HCP will be configured to include the page
+titles instead of the names in the index page.
+
+@endnode
+
+
+@node "Option -q"
+
+This option supresses output apart from error messages.
+(i.e. 1stConv runs in 'quiet' mode.
+
+This option is particularly useful when 1stConv output is diverted to a
+file listing any syntax errors in the original hypertext.
+
+@endnode
+
+
+@node "Option -a"
+
+This option explicitly sets all cross references and sets the HCP
+switch to disable automatic cross referencing on compilation.
+
+@endnode
+
+
+@node "Operation"
+
+The converter creates at least one STG format output file from the
+input file.
+If the number of lines set using the option @{"-NNN" LINK "Option -NNN"} is exceeded
+further files <file1>, <file2> are created. All output files are
+created in the directory containing the input file.
+
+First of all 1stConv attempts open a .PRJ file. If successful, the
+contents of this file are copied to the output file which should
+contain the usual header details:
+
+@{"Commands" LINK "hcp.HYP/Commands"}
+@{"@database" LINK "hcp.HYP/@database"}
+@{"@author" LINK "hcp.HYP/@author"}
+@{"@$VER:" LINK "hcp.HYP/@$VER:"}
+@{"@subject" LINK "hcp.HYP/@subject"}
+
+@{"Study PRJ file now!" LINK "Example PRJ file"}
+
+This feature makes it easy for hypertext authors to maintain their
+hypertexts in 1stGuide and ST-Guide format. It's also of interest for
+anyone who 'only convert' when a 1stGuide text frequently appears in
+new versions, and needs to be converted regularly.
+
+Subsequently all ASCII files referenced from the main text <file> (and
+of course any referenced from them etc) will be concentrated
+into one file and supplied with the corresponding directives, so that
+the output-file created this way only has to be translated with @{"HCP" LINK "hcp.HYP/HCP"} to
+obtain an identical hypertext in ST-Guide format.
+
+References to files not found will be output in the form of a warning
+message, since this is due to errors in the text as a rule (1stGuide
+has no FileFinder so wouldn't find/display the files in question
+either).
+
+References to *.IMG images are converted to cross references to
+internal pages in which the illustration will then appear.
+
+Cross references to other non-ASCII files (images, RSC-files etc) will
+be converted to external references.
+
+@endnode
+
+
+@node "Example PRJ file"
+
+An example of a typical PRJ file follows. For our example we're going
+to convert the LaTeX Hypertext LATEX.HLP by Oliver Stenzel, available
+(in German) from various BBS/mailboxes:
+
+ @{"##" LINK "hcp.HYP/##"} Information about the contents of the  text.
+ @{"@database" LINK "hcp.HYP/@database"} "LaTeX Help"
+
+ @{"##" LINK "hcp.HYP/##"} Information about the type of hypertext
+ @{"@subject" LINK "hcp.HYP/@subject"} "TeX"
+
+ @{"##" LINK "hcp.HYP/##"} Information about the author of the hypertext
+ @{"@author" LINK "hcp.HYP/@author"} "Oliver Stenzel"
+
+ @{"##" LINK "hcp.HYP/##"} Information about the version of the hypertext
+ @{"@$VER:" LINK "hcp.HYP/@$VER:"} latex.hyp 1.01 (7/12/92)
+
+@endnode
+
+
+@node "Help-page"
+@next "Help-page"
+
+This text describes how to use 1stConv, a utility to convert 1stGuide
+format hypertexts into ST-Guide format source code.
+
+@{B}Contact addresses:@{b}
+  Holger Weets                          Joe Connor
+  Tangastrasse 45                       65 Mill Road
+  D-26121 Oldenburg                     Colchester, Essex
+  Germany                               CO4 5LJ
+                                        England
+@{B}Email:@{b}
+Holger Weets @@ OL (Mausnet)
+jconnor@@cix.compulink.co.uk
+
+Contributions: Landessparkasse zu Oldenburg
+               A/c.(Account No): 023-182 041
+               BLZ.(Sort code) : 280 501 00
+
+Or alternatively UK users can register locally, refer to the file
+SUPPORT.TXT in the distribution.
+
+@endnode

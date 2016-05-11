@@ -92,7 +92,7 @@ static void outputs(const char *line)
  */
 static void Ropen(const char *file)
 {
-	if ((inhandle = fopen(file, "r")) == NULL)	/* Open file */
+	if ((inhandle = fopen(file, "rb")) == NULL)	/* Open file */
 		error(_("can't open "), file);
 }
 
@@ -443,17 +443,18 @@ int main(int argc, const char **argv)
 	const char *p;
 	int val;
 
+	/* FIXME: compiler version is a lie */
 	Message("PC-Conv V(" __DATE__ "): PureC-Help --> ST-Guide sources\n"
 			"        Written by Holger Weets using SOZOBON-C V2.00x10\n", NULL);
 
 	if (argc < 2)
 	{
 	  error:
-		fputs("usage: PC-Conv [+-anmN] file1 [file2 ...]\n"
-			  "       a: explicit (-) or automatic (+) links\n"
-			  "       n: HELP_RC (-) or new HELPDISC (+) format\n"
-			  "       mN: max N lines per output file\n"
-			  "       <fileN> must be ASCII\n", stderr);
+		fputs(_("usage: PC-Conv [+-anmN] file1 [file2 ...]\n"
+			    "       a: explicit (-) or automatic (+) links\n"
+			    "       n: HELP_RC (-) or new HELPDISC (+) format\n"
+			    "       mN: max N lines per output file\n"
+			    "       <fileN> must be ASCII\n"), stderr);
 		exit(EXIT_FAILURE);
 	}
 

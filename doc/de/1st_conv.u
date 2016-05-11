@@ -1,0 +1,240 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+!use_auto_toptocs       [none]
+
+!raw [stg,amg] @help "Hilfsseite"
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Der Hypertext zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] 1stConv
+!docinfo [author] Thorsten Otto
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!ifdest [stg,amg]
+!begin_raw
+@subject "Dokumentation/ST-Guide"
+@options "+g +z"
+@extern HypView "hypview.hyp/Main"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+!end_raw
+!endif
+!docinfo [stgdatabase] 1stConv Dokumentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords pc_conv
+!html_keywords 1st_conv
+
+!tableofcontents !depth 2
+!toc_title Der Konverter 1stGuide --> ST-Guide
+!alias 1stConv
+
+!begin_node Allgemeines
+
+Bei diesem Programm handelt  es  sich  um  ein  kleines  Utility,
+welches Dateien vom 1stGuide-Format in das des ST-Guide umwandeln
+kann.
+
+Da der ST-Guide ganz neu ist, gibt es logischerweise  noch  nicht
+sehr viele Dateien in seinem  Format.  Den  1stGuide  (Shareware)
+gibt es bereits seit einiger Zeit  und  somit  haben  wohl  schon
+einige Autoren Texte/Anleitungen etc. in dem von diesem  Programm
+unterstÅtzten Format geschrieben. Genau diese kînnen jetzt  auto-
+matisch fÅr den ST-Guide  konvertiert  werden,  so  daû  sie  an-
+schlieûend nur noch mit dem HCP Åbersetzt werden mÅssen.
+
+!end_node
+
+!begin_node Aufruf des Konverters
+
+  1stConv [-f -a -q -NNN] datei
+
+Die Datei <datei> kann (sofern  ein  entsprechender  Desktop  zur
+VerfÅgung steht) einfach auf das 1stConv-Icon gezogen werden.
+
+!index HLP
+Alternativ kann der 1stConv als Anwendung fÅr *.HLP bein  Desktop
+angemeldet werden, falls sonst keine Dateien  mit  dieser  Endung
+existieren (compilierte  PureC-Hilfen  benutzen  ebenfalls  diese
+Endung).
+
+!begin_node Option -f
+!alias -f
+
+Diese Option bewirkt, daû der Konvertierer immer  den  Namen  der
+jeweiligen Datei als Seitennamen verwendet. In diesem  Fall  wird
+der zur Referenzierung verwendete Begriff  als  Titel  der  Seite
+verwendet und der hcp so konfiguriert, daû nicht  die  Namen  der
+Seiten, sondern deren Titel in die Indexseite aufgenommen werden.
+
+!end_node
+
+!begin_node Option -a
+!alias -a
+
+Diese Option bewirkt, daû der Konvertierer alle Verweise explizit
+setzt, sich also nicht auf die  automatische  Referenzierung  des
+Compilers verlÑût, sondern diese sogar abschaltet.
+
+!end_node
+
+!begin_node Option -q
+!alias -q
+
+Angabe dieser Option hat zur Folge, daû der  Konverter  nur  noch
+Fehlermeldungen  ausgibt,  sich  also  ansonsten  ruhig  verhÑlt.
+Diese Option wurde insbesondere fÅr solche  FÑlle  implementiert,
+in denen die Ausgabe  des  Konverters  in  eine  Datei  umgelenkt
+werden soll, um so eine  Liste  aller  syntaktischen  Fehler  des
+betreffenden Hypertextes zu erhalten.
+
+!end_node
+
+
+!begin_node Option -NNN
+!alias -NNN
+
+Durch diese Option kann vorgegeben werden, wieviele  Zeilen  etwa
+pro Ausgabedatei geschrieben werden sollen. Der Konverter erzeugt
+gegebenenfalls weitere Dateien, welche  per  '(!XLINK [@include] [hcp] [Kommando @include])'  in  den
+Haupttext eingebunden werden.
+
+
+!end_node
+
+!end_node
+
+!begin_node Arbeitsweise
+
+!index Ausgabe
+!index STG
+Der Konverter erzeugt aus der Eingabedatei  <datei>.*  mindestens
+eine Ausgabedatei Namens <datei>.STG, evtl.  werden  weitere  Dateien
+<datei>.1, <datei.2> etc erzeugt, falls die Option -NNN angegeben wurde und der Text lang genug ist.
+Alle Asgabedateien werden im gleichen Verzeichnis erzeugt, in  dem
+auch die Eingabedatei zu finden ist.
+
+!index PRJ
+ZunÑchst wird versucht, eine Datei Namens <datei>.PRJ zu  îffnen,
+im Erfolgsfall wird der Inhalt dieser Datei in  die  Ausgabedatei
+kopiert. In dieser Datei sollten die ST-Guide Åblichen  Kommandos
+(!XLINK [@database] [hcp] [Kommando @database]), (!XLINK [@author] [hcp] [Kommando @author]), (!XLINK [@$VER:] [hcp] [Kommando @$VER:]), (!XLINK [@subject] [hcp] [Kommando @subject]) etc. stehen.
+Ein Beispiel fÅr eine PRJ-Datei gibt es hier natÅrlich auch.
+
+Dieses Feature wurde speziell zu  dem  Zweck  implementiert,  daû
+Hypertext-Autoren auf einfache Art und Weise ihre Texte sowohl im
+1stGuide- als auch im ST-Guide Format warten  kînnen,  aber  auch
+fÅr "reine Konvertierer" ist  dieses  Feature  dann  interessant,
+wenn ein 1stGuide Text hÑufiger  in  neuen  Versionen  erscheint,
+also auch regelmÑûig konvertiert werden soll.
+
+Anschlieûend werden alle  vom  Haupttext  <datei>  referenzierten
+ASCII-Dateien (und natÅrlich auch die von  diesen  referenzierten
+usw.) zu einer Datei zusammengefaût und  mit  den  entsprechenden
+Direktiven versehen, so daû die so erzeugte Ausgabedatei nur noch
+vom HCP Åbersetzt werden muû, um einen identischen  Hypertext  im
+ST-Guide Format zu erhalten.
+
+Referenzen zu nicht gefundenen Dateien werden in Form einer  Warnung
+ausgegeben, da es sich hierbei i.d.R. um Fehler im Text handelt
+(der 1stGuide hat keinen FileFinder,  wÅrde  die  betreffenden
+Files also auch nicht finden/anzeigen).
+
+Referenzen zu IMG-Bildern werden zu Verweisen auf interne  Seiten
+konvertiert, in  denen  das  Bild  dann  erscheint.
+
+Verweise zu anderen nicht ASCII-Dateien (Bilder, RSC-Files  etc.)
+werden zu externen Referenzen umgewandelt.
+
+!end_node
+
+!begin_node Beispiel fÅr eine PRJ-Datei
+!alias PRJ
+!index PRJ
+
+Es folgt ein Beispiel fÅr eine PRJ-Datei. Konvertiert werden soll
+der LaTeX Hypertext LATEX.HLP von Oliver Stenzel,  erhÑltlich  in
+diversen Mailboxen.
+
+!index database
+~## Information Åber den Inhalt des Textes (!nl)
+~(!XLINK [@database] [hcp] [Kommando @database]) "LaTeX Hilfe"
+
+!index subject
+~## Information Åber die Art des Hypertextes (!nl)
+~(!XLINK [@subject] [hcp] [Kommando @subject]) "TeX"
+
+!index author
+~## Information Åber den Autor des Hypertextes (!nl)
+~(!XLINK [@author] [hcp] [Kommando @author]) "Oliver Stenzel"
+
+!index $VER
+~## Information Åber die Version des Hypertextes (!nl)
+~(!XLINK [@$VER:] [hcp] [Kommando @$VER:]) latex.hyp 1.01 (7/12/92)
+
+!end_node
+
+
+!include thanks.ui
+
+!begin_node* Hilfsseite
+!ignore_links
+
+Dieser Text beschreibt Funktion und Arbeitsweise  des  Hypertext-
+Konvertierers 1stConv.
+
+!index Adresse
+!begin_preformatted
+Kritik und Anregungen an
+            Holger Weets
+            Tangastr. 45
+            26121 Oldenburg
+
+Spenden:    Landessparkasse zu Oldenburg
+            Kto.: 023-182 041
+            BLZ.: 280 501 00
+!end_preformatted
+!end_node
+
+!end_document
