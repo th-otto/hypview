@@ -1,0 +1,32 @@
+!begin_node Unterschiede/InkompatibilitÑten/Bekannte Fehler
+
+Abgesehen von Features die (hoffentlich) verbessert wurden, gibt es auch ein paar
+Dinge wo sich HypView und/oder die Tools mîglicherweise leicht anders als die
+ursprÅnglichen Programme aus dem ST-Guide-Paket verhalten.
+
+!begin_blist [HypView]
+
+!item [HCP]
+!begin_itemize
+!item Die Auswertung der Kommandozeile wurde Åberarbeitet, um sie gewohnten Standards
+von anderen Unix-Tools anzupassen. D.h. daû Optionen die ein Argeument erwarten
+(wie z.B. "-oFILE" in der alten Version) auch mit Leerzeichen angegeben werden kînnen (z.B. "-o FILE").
+Die meisten Optionen gibt es nun auch in einer langen Form (z.B. --output FILE oder --outfile=FILE).
+
+!item Die Option -w wird als reserviert fÅr den Benutzer betrachtet, und wird im @options Kommando
+in Quell-Texten nicht akzeptiert.
+
+!end_itemize
+
+!item [STooL]
+Der Standard-Dateiname war in der alten Version unterschiedlich fÅr die englische ((!file [catalog.hyp]))
+und deutsche Version ((!file [katalog.hyp])). HypView benutzt nun standard-mÑssig (!file [catalog.hyp]).
+Konsequenterweise sucht (!STOOL) nach (!file [catalog.cfg]) und [catalog.txt] fÅr die Konfiguration.
+Das Format der Dateien selber hat sich nicht geÑndert.
+(!B)Achtung:(!b) FÅr das MausTausch-Frontend CAT existiert ein Tool mit dem Namen CATalog, dessen
+Hypertext (!file [CATalog.hyp]) heisst. Wer diesen Hypertext besitzt und ihn weiterhin benîtigt, sollte
+ihn umbenennen, um zu vermeiden daû er Åberschrieben wird.
+
+!end_blist
+
+!end_node

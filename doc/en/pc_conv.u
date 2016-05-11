@@ -1,0 +1,221 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+!use_auto_toptocs       [none]
+
+!raw [stg,amg] @help "Help"
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] The hypertext of
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] The Windows help of
+!else
+!ifdest [rtf]
+!docinfo [title] The book of
+!else
+!docinfo [title] The guide of
+!endif
+!endif
+!endif
+!docinfo [program] pc_conv
+!docinfo [author] Thorsten Otto
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!ifdest [stg,amg]
+!begin_raw
+@subject "Documentation/ST-Guide"
+@options "+g -i -s +z"
+@extern HypView "hypview.hyp/Main"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+!end_raw
+!endif
+!docinfo [stgdatabase] PC-Conv Documentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords pc_conv
+
+!tableofcontents !depth 2
+!toc_title PC-Conv: Conversion utility
+
+!begin_node General
+
+!begin_center
+        PC-Conv, PureC-Help (*.SCR) to ST-Guide hypertext converter (!nl)
+                            English release 4
+!end_center
+
+
+Since I personally have no access to PureC, it's possible(!) the
+conversion is incomplete, please let me know.
+
+The converter has been implemented from the information in the article
+   'Help-Screen Recompiler fÅr PureC' in
+    ST-Computer 4/1992, pages 106 et seq.
+!end_node
+
+!include legal.ui
+
+!begin_node Calling PC_Conv
+
+The converter is called with:
+
+  pc_conv [+-a +-n +-mN] file1 [file2 (...).]
+
+  The specified files must be present in ASCII format. For this one has
+  to run the appropriate additional (!link [programs] [Additional programs needed]).
+
+!begin_node Option a
+!alias +-a
+
+  The 'a' option controls the conversion process. The auto-referencer of
+  HCP is used as a default and cross-references are set implicitly
+  (i.e. their setting will be left to the compiler as long as this can
+  recognise the cross-reference). With '-a' the converter is directed to
+  change every cross-reference to a 'link' direction and to switch off
+  the auto-referencer. This achieves an identical appearance of the
+  translated texts.
+!end_node
+
+!begin_node Option n
+!alias +-n
+
+  With the 'n' option it's possible to distinguish between the 'old' (-n
+  or no specification) and 'new' (+n) format created by (!link [HELPDISC] [HELPDISC]).
+!end_node
+
+
+!begin_node Option m
+!alias +-mN
+
+  With the 'm' option one can specify roughly the maximum number of
+  output lines that are to be written per output file. If necessary the
+  converter generates several files that can be incorporated in the main
+  text via '@include'.
+!end_node
+
+
+!end_node
+
+
+!begin_node What does PC_Conv actually do?
+
+The following takes place during conversion:
+!begin_itemize !compressed
+!item (!B)'sensitive'(!b) and (!B)'capsensitive'(!b) are ignored because
+  ST-Guide uses a different strategy to distinguish between capitals
+  and lower case letters.
+!item (!B)'screen(...)'(!b) becomes '@node'
+  !begin_itemize !compressed
+  !item Screens without names are assigned the first supplementary name
+    as the actual name;
+    'screen(sensitive("Hallo"))' therefore becomes '@node "Hallo"'
+  !item Screens with several names become node/symbol sequences (!nl)
+    'screen("hallo", (!nl)
+     sensitive("Test"), (!nl)
+     capsensitive("Bla"))' (!nl)
+    becomes (!nl)
+        @node "Hallo" (!nl)
+        @symbol "Test" (!nl)
+        @symbol "Bla" (!nl)
+   !end_itemize
+!item (!B)'\end'(!b) becomes '@endnode'
+!item The screen 'INDEX' is completely ignored
+!item The screen 'COPYRIGHT' becomes '@node "Help"'
+!item A dummy-screen named 'Main' is added as the first page
+!item A possibly present screen named 'Main' becomes 'main 2'
+!item A possibly present screen named 'Help' becomes 'Help 2'
+
+!item Occurrences of (!B)'\#<Name>\#'(!b) become
+    '<Name>' or
+    '@{"<Name>" link <Name>}' (if Option 'a' is set)
+!item Occurrences of (!B)'\link("<Reference>")<Name>\#(!b) become
+    '@{"<Name>" link <Reference>}'
+  During this cross-references to '%%GLOBAL%%' or 'page-1' are noted
+  and if appropriate a dummy page is created at the end of the file.
+!end_itemize
+
+The converter is configured to suit the output of the two (!link [programs] [Additional programs needed])
+mentioned above. Home-made SCR-files may have to be adapted.
+!end_node
+
+
+!begin_node Additional programs needed
+
+PureC/PurePascal help-files are distributed in a binary format which
+PC-Conv cannot read. To be exact, there are even two different formats
+in which these files may be present, namely the 'old', original format
+and the recently introduced 'new' format.
+
+!label HELPDISC
+!label HELP_RC
+In order to transform these binary formats into ASCII files one needs
+the program HELPDISC (Help Discompiler) or the program HELP_RC (Help
+Recompiler); the first only masters the new format and is included in
+this package with the friendly approval of the author, and the second
+handles the old format.
+
+(!U)Note(!u):
+When using HELP_RC one should specify 's' (*.SCR) as the output type so
+that the converter can subsequently read this file!
+!end_node
+
+!include thanks.ui
+
+!begin_node* Help
+!ignore_links
+
+This text describes how to use PC-Conv, a utility to convert PureC Help
+texts into ST-Guide format.
+
+!index address
+(!B)Contact addresses:(!b)
+  Holger Weets                          Joe Connor
+  Tangastrasse 45                       65 Mill Road
+  D-26121 Oldenburg                     Colchester, Essex
+  Germany                               CO4 5LJ
+                                        England
+(!B)Email:(!b)
+Holger Weets @ OL (Mausnet)
+jconnor@cix.compulink.co.uk
+
+Contributions: Landessparkasse zu Oldenburg
+               A/c.(Account No): 023-182 041
+               BLZ.(Sort code) : 280 501 00
+
+Or alternatively UK users can register locally, refer to the file
+SUPPORT.TXT in the distribution.
+
+!end_node
+
+!end_document

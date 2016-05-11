@@ -1956,9 +1956,13 @@ not be lost if you want to (!link [print] [Extra -> Print page]) or copy a compl
 
 !end_node # How do I write a hypertext?
 
+!include thanks.ui
+
 !end_node
 
 !begin_appendix
+
+!include legal.ui
 
 !begin_node Software used
 !html_name software_hv

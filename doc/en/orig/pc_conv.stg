@@ -1,0 +1,166 @@
+## created by hcp Version 0.9.9
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@endif
+@database "PC-Conv Documentation"
+@options "+g -i -s +z"
+@author "H. Weets"
+@help "Help-page"
+@$VER: pc_conv.hyp R4.0E (10/3/1995)
+@subject "Documentation/ST-Guide"
+@width 75
+@remark ST-Guide flags: $0000
+
+
+@node "Main" "PC-Conv: Conversion utility"
+
+@box 3 68 4 0
+
+        PC-Conv, PureC-Help (*.SCR) to ST-Guide hypertext converter
+                            English release 4
+
+
+
+Contents:
+  General
+  @{"Legal" LINK "ST-Guide.HYP/Legal"}
+  Calling PC_Conv
+  What does PC_Conv actually do?
+  Additional programs needed
+  @{"Credits" LINK "st-guide.hyp/Credits"}
+@endnode
+
+
+@node "Option a"
+
+  The 'a' option controls the conversion process. The auto-referencer of
+  HCP is used as a default and cross-references are set implicitly
+  (i.e. their setting will be left to the compiler as long as this can
+  recognise the cross-reference). With '-a' the converter is directed to
+  change every cross-reference to a 'link' direction and to switch off
+  the auto-referencer. This achieves an identical appearance of the
+  translated texts.
+@endnode
+
+
+@node "Option n"
+
+  With the 'n' option it's possible to distinguish between the 'old' (-n
+  or no specification) and 'new' (+n) format created by @{"HELPDISC" LINK "Additional programs needed" "HELPDISC"}.
+@endnode
+
+
+@node "Option m"
+
+  With the 'm' option one can specify roughly the maximum number of
+  output lines that are to be written per output file. If necessary the
+  converter generates several files that can be incorporated in the main
+  text via '@@include'.
+@endnode
+
+
+@node "Calling PC_Conv"
+
+The converter is called with:
+
+  PC-Conv [@{"+-a" LINK "Option a"} @{"+-n" LINK "Option n"} @{"+-mN" LINK "Option m"}] file1 [file2 ....]
+
+  The specified files must be present in ASCII format. For this one has
+  to run the appropriate additional @{"programs" LINK "Additional programs needed"}.
+@endnode
+
+
+@node "What does PC_Conv actually do?"
+
+The following takes place during conversion:
+* @{B}'sensitive'@{b} and @{B}'capsensitive'@{b} are ignored because
+  ST-Guide uses a different strategy to distinguish between capitals
+  and lower case letters.
+* @{B}'screen(...)'@{b} becomes '@@node'
+  - Screens without names are assigned the first supplementary name
+    as the actual name
+    'screen(sensitive("Hallo"))' therefore becomes '@@node "Hallo"'
+  - Screens with several names become node/symbol sequences
+    'screen("hallo",
+     sensitive("Test"),
+     capsensitive("Bla"))'
+    becomes
+        @@node "Hallo"
+        @@symbol "Test"
+        @@symbol "Bla"
+* @{B}'\end'@{b} becomes '@@endnode'
+* The screen 'INDEX' is completely ignored
+* The screen 'COPYRIGHT' becomes '@@node "Help"'
+* A dummy-screen named 'Main' is added as the first page
+* A possibly present screen named 'Main' becomes 'main 2'
+* A possibly present screen named 'Help' becomes 'Help 2'
+
+* Occurrences of @{B}'\#<Name>\#'@{b} become
+    '<Name>' or
+    '@@{"<Name>" link <Name>}' (if Option 'a' is set)
+* Occurrences of @{B}'\link("<Reference>")<Name>\#@{b} become
+    '@@{"<Name>" link <Reference>}'
+  During this cross-references to '%%GLOBAL%%' or 'page-1' are noted
+  and if appropriate a dummy page is created at the end of the file.
+
+The converter is configured to suit the output of the two @{"programs" LINK "Additional programs needed"}
+mentioned above. Home-made SCR-files may have to be adapted.
+@endnode
+
+
+@node "General"
+
+Since I personally have no access to PureC, it's possible(!) the
+conversion is incomplete, please let me know.
+
+The converter has been implemented from the information in the article
+   'Help-Screen Recompiler fÅr PureC' in
+    ST-Computer 4/1992, pages 106 et seq.
+@endnode
+
+
+@node "Additional programs needed"
+
+PureC/PurePascal help-files are distributed in a binary format which
+PC-Conv cannot read. To be exact, there are even two different formats
+in which these files may be present, namely the 'old', original format
+and the recently introduced 'new' format.
+
+@symbol a "HELPDISC"
+In order to transform these binary formats into ASCII files one needs
+the program HELPDISC (Help Discompiler) or the program HELP_RC (Help
+Recompiler); the first only masters the new format and is included in
+this package with the friendly approval of the author, and the second
+handles the old format.
+
+@{U}Note@{u}:
+When using HELP_RC one should specify 's' (*.SCR) as the output type so
+that the converter can subsequently read this file!
+@endnode
+
+
+@node "Help-page" "Help"
+
+This text describes how to use PC-Conv, a utility to convert PureC Help
+texts into ST-Guide format.
+
+@{B}Contact addresses:@{b}
+  Holger Weets                          Joe Connor
+  Tangastrasse 45                       65 Mill Road
+  D-26121 Oldenburg                     Colchester, Essex
+  Germany                               CO4 5LJ
+                                        England
+@{B}Email:@{b}
+Holger Weets @@ OL (Mausnet)
+jconnor@@cix.compulink.co.uk
+
+Contributions: Landessparkasse zu Oldenburg
+               A/c.(Account No): 023-182 041
+               BLZ.(Sort code) : 280 501 00
+
+Or alternatively UK users can register locally, refer to the file
+SUPPORT.TXT in the distribution.
+
+@endnode

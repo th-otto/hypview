@@ -206,7 +206,7 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 		 */
 		if (strcmp(chapter, hyp_default_main_node_name) == 0)
 			chapter = NULL;
-		win = OpenFileInWindow(win, path, chapter, HYP_NOINDEX, TRUE, new_window ? FORCE_NEW_WINDOW : 0, FALSE);
+		win = OpenFileInWindow(win, path, chapter, 0, TRUE, new_window ? FORCE_NEW_WINDOW : 0, FALSE);
 	}
 	g_free(temp);
 }

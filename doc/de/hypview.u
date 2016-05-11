@@ -1901,9 +1901,13 @@ Seite drucken oder Kopieren wollen.
 
 !end_node
 
+!include thanks.ui
+
 !end_node # Zu guter letzt
 
 !begin_appendix
+
+!include legal.ui
 
 !begin_node Verwendete Software
 !html_name software_hv

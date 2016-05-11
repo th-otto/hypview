@@ -1,0 +1,218 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+!use_auto_toptocs       [none]
+
+!raw [stg,amg] @help "Hilfe"
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Der Hypertext zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] pc_conv
+!docinfo [author] Thorsten Otto
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!ifdest [stg,amg]
+!begin_raw
+@subject "Dokumentation/ST-Guide"
+@options "+g -i -s +z"
+@extern HypView "hypview.hyp/Main"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+!end_raw
+!endif
+!docinfo [stgdatabase] PC-Conv Dokumentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords pc_conv
+
+!tableofcontents !depth 2
+!toc_title Der Konverter PureC-Help Sources --> ST-Guide
+
+!begin_node Allgemeines
+
+Bei diesem Programm handelt  es  sich  um  ein  kleines  Utility,
+welches ASCII-Dateien im PureC-Help Format  (*.SCR)  in  das  des
+ST-Guide umwandeln kann.
+
+Da ich selbst keinen Zugriff auf  PureC  habe,  ist  die  Konver-
+tierung m”glicherweise lckenhaft, in diesem Fall  bitte  ich  um
+Nachricht.
+
+Der Konverter wurde nach den Angaben des Artikels
+    Help-Screen Recompiler fr PureC
+    ST-Computer 4/1992, Seite 106 ff.
+implementiert.
+!end_node
+
+!include legal.ui
+
+!begin_node Aufruf
+
+  pc_conv [+-a +-n +-mN] datei1 [datei2 ....]
+
+  Die angegebenen Dateien mssen dabei im ASCII-Format vorliegen,
+  hierzu sind die dafr geeigneten Zusatzprogramme zu starten.
+
+!begin_node Option a
+!alias +-a
+
+  Die 'a' Option steuert  die  Konvertierung.  Defaultm„ig  wird
+  der Autoreferenzer des HCP genutzt und  Verweise  implizit  ge-
+  setzt (d.h. das Setzen wird dem  Compiler  berlassen,  solange
+  dieser den Verweis auch erkennen kann).  Durch  '-a'  wird  der
+  Konverter angewiesen, jedem Verweis explizit in  eine  link-An-
+  weisung umzuwandeln und den Autoreferenzer abzuschalten.  Hier-
+  durch  wird  ein  vollkommen  identisches  Aussehen  der  ber-
+  setzten Texte erreicht.
+!end_node
+
+!begin_node Option n
+!alias +-n
+
+  Mit der 'n' Option kann zwischen dem vom HELP_RC  geschriebenen
+  'alten' Format (-n oder keine  Angabe)  und  dem  vom  (!link [HELPDISC] [HELPDISC])
+  erzeugten 'neuen' Format (+n) unterschieden werden.
+!end_node
+
+
+!begin_node Option m
+!alias +-mN
+
+  šber die 'm' Option  kann  angegeben  werden,  wieviele  Zeilen
+  maximal pro Ausgabedatei etwa geschrieben  werden  sollen.  Der
+  Konverter  erzeugt  gegebenenfalls  mehrere  Dateien,  die  per
+  '@include' vom Haupttext eingebunden werden
+!end_node
+
+
+!end_node
+
+
+!begin_node Was macht der da eigentlich?
+
+Folgendes passiert beim Umwandeln:
+!begin_xlist !compressed
+!item (!B)'sensitive'(!b) und (!B)'capsensitive'(!b) werden  ignoriert,  da  der  ST-
+  Guide eine andere Strategie zur Bercksichtigung von Gro-  und
+  Kleinschreibung verwendet.
+!item (!B)'screen(...)'(!b) wird zu '@node'
+  !begin_xlist !compressed
+  !item Screens  ohne  Namen  bekommen  den  ersten  Zusatznamen  als
+    eigentlichen Namen zugewiesen;
+    'screen(sensitive("Hallo"))' wird also zu '@node "Hallo"'
+  !item Screens mit mehreren Namen werden zu node/symbol Folgen (!nl)
+    'screen("hallo", (!nl)
+     sensitive("Test"), (!nl)
+     capsensitive("Bla"))' (!nl)
+    wird zu (!nl)
+        @node "Hallo" (!nl)
+        @symbol "Test" (!nl)
+        @symbol "Bla" (!nl)
+   !end_xlist
+!item (!B)'\end'(!b) wird zu '@endnode'
+!item der Screen 'INDEX' wird vollst„ndig ignoriert
+!item der Screen 'COPYRIGHT' wird zu '@node "Help"'
+!item ein Dummy-Screen Namens 'Main' wird als erste Seite hinzugefgt
+!item ein evtl. vorhandener Screen Namens 'Main' wird zu 'main 2'
+!item ein evtl. vorhandener Screen Namens 'Help' wird zu 'Help 2'
+
+!item Vorkommen von (!B)'\#<Name>\#'(!b) werden zu
+    '<Name>' oder zu
+    '@{"<Name>" link <Name>}' (falls 'a' Option gesetzt)
+!item Vorkommen von (!B)'\link("<Verweis>")<Name>\#(!b) werden zu
+    '@{"<Name>" link <Verweis>}'
+  Dabei werden Verweise auf '%%GLOBAL%%'  bzw.  'page-1'  bemerkt
+  und gegebenenfalls eine entsprechende Dummy-Seite am  Dateiende
+  erzeugt.
+!end_xlist
+
+Der Konverter ist auf die Ausgaben der beiden oben genannten Pro-
+gramme ausgelegt. Selbstgeschriebene SCR-Dateien mssen  gegeben-
+enfalls angepat werden.
+!end_node
+
+
+!begin_node Ben”tigte Zusatzprogramme
+!alias Zusatzprogramme
+
+PureC/PurePascal Hilfen liegen in einem Bin„ren  Format  vor,  in
+dem sie der PC-Conv nicht lesen kann. Genaugenommen gibt es sogar
+zwei verscheidene Formate, in denen diese Dateien vorliegen  k”n-
+nen, n„mlich das alte, ursprnglich  verwendete  Format  und  das
+erst krzlich eingefhrte neue Format.
+
+!label HELPDISC
+!label HELP_RC
+Um diese Bin„rformate in ASCII-Dateien umzuwandeln, wird das Pro-
+gramm HELPDISC (Help Discompiler) oder das Programm HELP_RC (Help
+Recompiler) ben”tigt, ersteres beherrscht nur das neue Format und
+liegt diesem Paktet mit freundlicher Genehmigung des  Autors  bei
+und zweiteres ist fr das alte Format zust„ndig.
+
+(!U)Hinweis(!u):
+Bei Verwendung des HELP_RC ist als Ausgabeart 's' (*.SCR) anzuge-
+ben, damit der Konverter die Datei anschlieend lesen kann!
+!end_node
+
+!include thanks.ui
+
+!begin_node* Hilfe
+!ignore_links
+
+Dieser Text beschreibt Funktionsweise und Anwendung des  PC-Conv.
+Dieses Programm wandelt PureC-Help Texte in das  ST-Guide  Format
+um.
+
+!index Adresse
+Kritik und Anregungen an (!nl)
+            Holger Weets (!nl)
+            Tangastr. 45 (!nl)
+            26121 Oldenburg
+
+Spenden:    Landessparkasse zu Oldenburg (!nl)
+            Kto.: 023-182 041 (!nl)
+            BLZ.: 280 501 00 (!nl)
+
+!end_node
+
+!end_document

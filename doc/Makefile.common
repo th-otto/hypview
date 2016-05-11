@@ -57,7 +57,9 @@ HYPVIEW_DOC=	$(srcdir)/header.ui \
 		$(srcdir)/stg_faq.u \
 		$(srcdir)/stool.u \
 		$(srcdir)/filetype.ui \
-		$(srcdir)/ref.ui
+		$(srcdir)/ref.ui \
+		$(srcdir)/pc_conv.u \
+		$(empty)
 
 OTHERS=		
 
@@ -129,7 +131,7 @@ HYPVIEW_DOC_DEP =	$(srcdir)/../macros.ui $(HYPVIEW_DOC) $(IMAGES) $(UDO_DEP)
 
 EXTRA_DIST = $(HYPVIEW_DOC) $(OTHERS) $(IMAGES)
 
-TOOL_DOCS = hypview hcp refcheck reflink stg_faq stool hypfind
+TOOL_DOCS = hypview hcp refcheck reflink stg_faq stool hypfind pc_conv
 
 ####################################################################
 

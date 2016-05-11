@@ -376,7 +376,7 @@ if ($dir = opendir($localdir))
 			echo "\n";
 		}
 		echo "</td>\n";
-		if (isset($languages[$entry['lang']]['flag']))
+		if (isset($entry['lang']) && isset($languages[$entry['lang']]['flag']))
 		{
 			echo "<td>\n";
 			echo '<img alt="" width="32" height="21" src="images/flags/' . $languages[$entry['lang']]['flag'] . '">' . "\n";

@@ -10,14 +10,18 @@ the ST-Guide package.
 !begin_itemize
 !item The command line parsing has been changed to be more consistent
 with other unix-like tools. As a consequence, for options that take an
-argument (e.g. old-style -oFILE) the argument has be separated by a
+argument (e.g. old-style -oFILE) the argument can also be separated by a
 space from the option (e.g. -o FILE). Most options also have a
 long form (e.g. --output FILE or --outfile=FILE).
 
-!item The -w option is considered an option to be reserved for the user,
+!item The -w option is considered to be reserved for the user,
 and will not be accepted in the @options string in source files.
 
 !end_itemize
+
+!item [STooL]
+The default catalog file name for the german version is now "catalog.hyp"
+(previously "katalog.hyp"). For more information, see the german version of this guide.
 
 !end_blist
 
