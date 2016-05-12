@@ -241,6 +241,9 @@ static gboolean identify_file(const char *filename)
 	case FT_LZH:
 	case FT_ZIP:
 	case FT_ARJ:
+	case FT_TAR:
+	case FT_GZ:
+	case FT_BZ2:
 	case FT_ARCHIVE_LAST:
 	case FT_DOC_FIRST:
 	case FT_ASCII:

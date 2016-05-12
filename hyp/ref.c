@@ -85,6 +85,10 @@ gboolean ref_list(REF_FILE *ref, FILE *outfile, gboolean all)
 				if (all)
 					hyp_utf8_fprintf(outfile, _(" Charset        %s\n"), hyp_charset_name(mod->charset));
 				break;
+			case REF_LANGUAGE:
+				if (all)
+					hyp_utf8_fprintf(outfile, _(" Language       %s\n"), mod->language);
+				break;
 			case REF_TITLE:
 				if (all)
 				{
@@ -261,6 +265,15 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 						hyp_utf8_fprintf(stderr, _("more than 1 database in REF module %s of %s\n"), printnull(module->filename), ref->filename);
 				}
 				module->module_database = pos;
+				break;
+			case REF_LANGUAGE:
+				if (module->language != NULL)
+				{
+					if (verbose)
+						hyp_utf8_fprintf(stderr, _("more than 1 language in REF module %s of %s\n"), printnull(module->filename), ref->filename);
+					g_free(module->language);
+				}
+				module->language = g_strdup((const char *)pos);
 				break;
 			case REF_OS:
 				/*
@@ -538,6 +551,7 @@ void ref_close(REF_FILE *ref)
 		next = module->next;
 		g_free(module->filename);
 		g_free(module->database);
+		g_free(module->language);
 		if (ref->is_converted && module->charset != HYP_CHARSET_UTF8)
 		{
 			long num;
@@ -554,6 +568,7 @@ void ref_close(REF_FILE *ref)
 					g_free(module->entries[num].name.utf8);
 					break;
 				case REF_DATABASE:
+				case REF_LANGUAGE:
 				case REF_OS:
 				case REF_CHARSET:
 				default:
@@ -594,6 +609,7 @@ void ref_conv_to_utf8(REF_FILE *ref)
 					module->entries[num].name.utf8 = hyp_conv_to_utf8(module->charset, module->entries[num].name.hyp, STR0TERM);
 					break;
 				case REF_DATABASE:
+				case REF_LANGUAGE:
 				case REF_OS:
 				case REF_CHARSET:
 				default:
@@ -680,6 +696,7 @@ char *ref_findnode(REF_FILE *ref, const char *search, hyp_lineno *line, gboolean
 				break;
 			case REF_FILENAME:
 			case REF_DATABASE:
+			case REF_LANGUAGE:
 			case REF_OS:
 			case REF_TITLE:
 			case REF_UNKNOWN:
@@ -727,6 +744,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, 
 		memset(&prototype, 0, sizeof(prototype));
 		prototype.path = mod->filename;
 		prototype.dbase_description = mod->database;
+		prototype.language = mod->language;
 		for (num = 0; num < mod->num_entries; num++)
 		{
 			const REF_ENTRY *entry = &mod->entries[num];
@@ -769,6 +787,7 @@ RESULT_ENTRY *ref_findall(REF_FILE *ref, const char *string, long *num_results, 
 				g_free(freeme);
 				break;
 			case REF_DATABASE:
+			case REF_LANGUAGE:
 			case REF_OS:
 			case REF_CHARSET:
 			case REF_TITLE:

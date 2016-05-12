@@ -142,7 +142,6 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 	long y;
 	HYP_NODE *node;
 	char *temp;
-	size_t len;
 	HYP_DOCUMENT *hyp;
 	const char *res;
 	
@@ -159,8 +158,6 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 	
 	UNUSED(wordonly); /* TODO */
 	
-	len = strlen(search);
-
 	y = line * win->y_raster;
 
 	if (doc->autolocator_dir > 0)

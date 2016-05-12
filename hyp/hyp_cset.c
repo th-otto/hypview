@@ -435,64 +435,6 @@ static const h_unichar_t *get_cset(HYP_CHARSET charset)
 
 /*** ---------------------------------------------------------------------- ***/
 
-#define hyp_put_unichar(p, wc) \
-	if (wc < 0x80) \
-	{ \
-		*p++ = wc; \
-	} else if (wc < 0x800) \
-	{ \
-		p[1] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[0] = wc | 0xc0; \
-		p += 2; \
-	} else if (wc < 0x10000UL) \
-	{ \
-		p[2] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[1] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[0] = wc | 0xe0; \
-		p += 3; \
-	} else if (wc < 0x200000UL) \
-	{ \
-		p[3] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[2] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[1] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[0] = wc | 0xf0; \
-		p += 4; \
-	} else if (wc < 0x4000000UL) \
-	{ \
-		p[4] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[3] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[2] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[1] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[0] = wc | 0xf8; \
-		p += 5; \
-	} else \
-	{ \
-		p[5] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[4] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[3] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[2] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[1] = (wc & 0x3f) | 0x80; \
-		wc >>= 6; \
-		p[0] = wc | 0xfc; \
-		p += 6; \
-	}
-
-/*** ---------------------------------------------------------------------- ***/
-
 char *hyp_conv_to_utf8(HYP_CHARSET charset, const void *src, size_t len)
 {
 	char *dst;
@@ -1734,32 +1676,6 @@ size_t hyp_unichar_to_utf8(char *buf, h_unichar_t wc)
 	hyp_put_unichar(p, wc);
 	*p = '\0';
 	return p - buf;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-char *hyp_wchar_to_utf8(const wchar_t *str, size_t wlen)
-{
-	size_t len;
-	char *dst, *p;
-	h_unichar_t wc;
-	
-	if (str == NULL)
-		return NULL;
-	if (wlen == STR0TERM)
-		wlen = wcslen(str);
-	len = wlen * HYP_UTF8_CHARMAX + 1;
-	dst = p = g_new(char, len);
-	if (G_UNLIKELY(dst == NULL))
-		return NULL;
-	while (wlen)
-	{
-		wc = *str++;
-		hyp_put_unichar(p, wc);
-		wlen--;
-	}
-	*p++ = '\0';
-	return g_renew(char, dst, p - dst);
 }
 
 /******************************************************************************/

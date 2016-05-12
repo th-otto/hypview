@@ -1,6 +1,7 @@
 stool.tos
 .C[-Ih:\src\udo\tools\hypview\include\tos]
 .C[-Ih:\src\udo\tools\hypview\include]
+.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
 .C[-Ic:\pc\include]
 .C[-P]
 
@@ -51,6 +52,7 @@ h:\src\udo\tools\hypview\tos\nf_shutd.c
 h:\src\udo\tools\hypview\tos\nf_stder.c
 h:\src\udo\tools\hypview\tos\nf_vers.c
 
+h:\src\udo\tools\hypview\hyp\tos\hypmain.c
 h:\src\udo\tools\hypview\tos\dirent.c
 h:\src\udo\tools\hypview\hyp\tos\malloc.c
 

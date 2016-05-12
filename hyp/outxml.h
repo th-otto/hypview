@@ -51,6 +51,12 @@ static void xml_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"os\" value=\"%s\" />\n", hyp_osname(hyp->comp_os));
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"charset\" value=\"%s\" />\n", hyp_charset_name(hyp->comp_charset));
 	
+	if (hyp->language != NULL)
+	{
+		str = xml_quote_name(hyp->language, 0);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"language\" value=\"%s\" />\n", str);
+		g_free(str);
+	}
 	if (hyp->database != NULL)
 	{
 		str = xml_quote_name(hyp->database, 0);

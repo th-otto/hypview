@@ -75,6 +75,7 @@ struct _cfg {
 	char *filename;
 	gboolean available;
 	char *database;
+	char *language;
 	char *author;
 	char *subject;
 	char *nodename;
@@ -94,6 +95,7 @@ static int hyp_count;
 static HYP_CHARSET output_charset;
 static HYP_CHARSET input_charset;
 
+#include "../pic/piccolor.c"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -659,6 +661,7 @@ static gboolean maybe_load_hypfile(const char *filename, void *data)
 		hyp_utf8_fprintf(stdout, "%s\n", l->filename);
 #endif
 		l->database = g_strdup(hyp->database);
+		l->language = g_strdup(hyp->language);
 		l->author = g_strdup(hyp->author);
 		l->subject = g_strdup(hyp->subject);
 		fix_subject(&l->subject);
@@ -1032,6 +1035,7 @@ static void free_cfg(CFG *l)
 {
 	g_free(l->filename);
 	g_free(l->database);
+	g_free(l->language);
 	g_free(l->author);
 	g_free(l->version);
 	g_free(l->subject);
@@ -1786,6 +1790,7 @@ creating this catalog text are shown ticked."));
 		}
 		
 		hyp_utf8_fprintf_charset(outfile, output_charset, "@inputenc %s\n", hyp_charset_name(output_charset));
+		hyp_utf8_fprintf_charset(outfile, output_charset, "@lang any\n");
 
 		str = stg_quote_name(strings[STR_DATABASE].val);
 		hyp_utf8_fprintf_charset(outfile, output_charset, "@database \"%s\"\n", str);

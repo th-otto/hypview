@@ -350,7 +350,7 @@ static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char
 	iconw = iconh = iconsize = 0;
 	while ((tok = gettok(pic, inbuf, buf)) != T_EOF && tok != T_LBRACKET)
 	{
-		switch (tok)
+		switch ((int)tok)
 		{
 		case T_CPP:
 			if (gettok(pic, inbuf, buf) != T_ID || strcmp((char *) buf, "define") != 0)

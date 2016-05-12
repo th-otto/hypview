@@ -214,7 +214,8 @@ typedef enum  {
 	HYP_EXTH_STGUIDE_FLAGS = 10,
 	HYP_EXTH_WIDTH = 11,
 	/* new definitions: */
-	HYP_EXTH_CHARSET = 30
+	HYP_EXTH_CHARSET = 30,
+	HYP_EXTH_LANGUAGE = 31
 } hyp_ext_header;
 
 
@@ -339,7 +340,8 @@ typedef enum
 	REF_OS = 5,
 	REF_TITLE = 6,        /* undocumented; only found in finder.ref */
 	REF_UNKNOWN = 8,      /* undocumented; only found in finder.ref */
-	REF_CHARSET = 30
+	REF_CHARSET = 30,
+	REF_LANGUAGE = 31
 } hyp_reftype;
 
 typedef struct {
@@ -361,6 +363,7 @@ struct _ref_module {
 	char *filename;	/* as entered in REF file, not the filename we load from; in utf8 encoding */
 	const unsigned char *module_database;	/* as entered in REF file, in HYP encoding */
 	char *database;	/* as entered in REF file, in utf8 encoding */
+	char *language;	/* as entered in REF file, must be ascii */
 	HYP_OS os;
 	HYP_CHARSET charset;
 	gboolean had_filename;			/* TRUE if module had a FILENAME entry */
@@ -874,6 +877,7 @@ typedef struct _result_entry_
 
 	const char *path;
 	const char *dbase_description;
+	const char *language;
 	char *node_name;
 	hyp_lineno lineno;
 	char *label_name;
@@ -905,6 +909,62 @@ void ref_conv_to_utf8(REF_FILE *ref);
  */
 typedef uint32_t h_unichar_t;
 #define HYP_UTF8_CHARMAX 6
+
+#define hyp_put_unichar(p, wc) \
+	if (wc < 0x80) \
+	{ \
+		*p++ = wc; \
+	} else if (wc < 0x800) \
+	{ \
+		p[1] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[0] = wc | 0xc0; \
+		p += 2; \
+	} else if (wc < 0x10000UL) \
+	{ \
+		p[2] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[1] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[0] = wc | 0xe0; \
+		p += 3; \
+	} else if (wc < 0x200000UL) \
+	{ \
+		p[3] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[2] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[1] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[0] = wc | 0xf0; \
+		p += 4; \
+	} else if (wc < 0x4000000UL) \
+	{ \
+		p[4] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[3] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[2] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[1] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[0] = wc | 0xf8; \
+		p += 5; \
+	} else \
+	{ \
+		p[5] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[4] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[3] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[2] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[1] = (wc & 0x3f) | 0x80; \
+		wc >>= 6; \
+		p[0] = wc | 0xfc; \
+		p += 6; \
+	}
 
 const char *hyp_charset_name(HYP_CHARSET charset);
 HYP_CHARSET hyp_charset_from_name(const char *name);

@@ -68,6 +68,8 @@ static struct option const long_options[] = {
 	{ NULL, no_argument, NULL, 0 }
 };
 
+#include "../pic/piccolor.c"
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
@@ -1158,6 +1160,7 @@ int main(int argc, const char **argv)
 			hyp_utf8_fprintf(opts->outfile, "@os %s\n", hyp_osname(hyp_get_current_os()));
 			hyp_utf8_fprintf(opts->outfile, "@charset %s\n", hyp_charset_name(hyp_get_current_charset()));
 			hyp_utf8_fprintf(opts->outfile, "@inputenc %s\n", hyp_charset_name(opts->output_charset));
+			hyp_utf8_fprintf(opts->outfile, "@lang any\n");
 			hyp_utf8_fprintf(opts->outfile, "@endif\n");
 			
 			str = stg_quote_name(gl_profile.hypfind.database, STR0TERM);

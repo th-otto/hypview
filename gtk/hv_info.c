@@ -78,14 +78,17 @@ void DocumentInfos(WINDOW_DATA *win)
 		HYP_HOSTNAME *h;
 		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 
-		str = g_strdup_printf(_("Topic   : %s\n"
-		                        "Author  : %s\n"
-		                        "Version : %s\n"
-		                        "Subject : %s"),
+		str = g_strdup_printf(_("Topic    : %s\n"
+		                        "Author   : %s\n"
+		                        "Version  : %s\n"
+		                        "Subject  : %s\n"
+		                        "Language : %s%s\n"),
 		                        fixnull(hyp->database),
 		                        fixnull(hyp->author),
 		                        fixnull(hyp->version),
-		                        fixnull(hyp->subject));
+		                        fixnull(hyp->subject),
+		                        fixnull(hyp->language),
+		                        hyp->language_guessed ? _(" (guessed)") : "");
 		label = gtk_label_new(str);
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);

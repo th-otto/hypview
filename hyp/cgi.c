@@ -382,6 +382,7 @@ static int mycurl_trace(CURL *handle, curl_infotype type, char *data, size_t siz
 	case CURLINFO_SSL_DATA_IN:
 		hyp_utf8_fprintf(parms->opts->errorfile, "<= Recv SSL data %ld\n", (long)size);
 		break;
+	case CURLINFO_END:
 	default:
 		break;
  	}

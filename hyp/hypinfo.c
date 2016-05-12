@@ -13,6 +13,8 @@
 char const gl_program_name[] = "hypinfo";
 char const gl_program_version[] = HYP_VERSION;
 
+static gboolean language_only;
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
@@ -138,9 +140,6 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 	
 	prefix = print_filename ? g_strdup_printf("%s: ", hyp->file) : g_strdup("");
 	
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@os: %s\n", prefix, hyp_osname(hyp->comp_os));
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@charset: %s\n", prefix, hyp_charset_name(hyp->comp_charset));
-
 	if (hyp->language == NULL && lid != NULL)
 	{
 		double prob;
@@ -155,7 +154,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 		{
 			out = g_string_new(NULL);
 			count = 0;
-			for (node = hyp->first_text_page; node < hyp->num_index && count < 5; node++)
+			for (node = hyp->first_text_page; node < hyp->num_index && count < 10; node++)
 			{
 				entry = hyp->indextable[node];
 				if (node == hyp->index_page)
@@ -186,116 +185,125 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 		}
 		hyp->language = g_strdup(lang);
 	}
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@lang: %s\n", prefix, hyp->language ? hyp->language : "unknown");
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:lang_guessed: %d\n", prefix, hyp->language_guessed);
+	if (language_only)
+	{
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s: %s%s\n", prefix, hyp->language ? hyp->language : "unknown", hyp->language_guessed ? _(" (guessed)") : "");
+	} else
+	{
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@os: %s\n", prefix, hyp_osname(hyp->comp_os));
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@charset: %s\n", prefix, hyp_charset_name(hyp->comp_charset));
 	
-	if (hyp->database != NULL)
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@database: %s\n", prefix, hyp->database);
-	}
-
-	if (hypnode_valid(hyp, hyp->default_page))
-	{
-		str = quote_nodename(hyp, hyp->default_page);
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@default: %s\n", prefix, str);
-		g_free(str);
-	}
-
-	if (hyp->hcp_options != NULL)
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@options: %s\n", prefix, hyp->hcp_options);
-	}
-	if (hyp->author != NULL)
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@author: %s\n", prefix, hyp->author);
-	}
-	if (hypnode_valid(hyp, hyp->help_page))
-	{
-		str = quote_nodename(hyp, hyp->help_page);
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@help: %s\n", prefix, str);
-		g_free(str);
-	}
-	if (hyp->version != NULL)
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@version: %s\n", prefix, hyp->version);
-	}
-	if (hyp->subject != NULL)
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@subject: %s\n", prefix, hyp->subject);
-	}
-	/* if (hyp->line_width != HYP_STGUIDE_DEFAULT_LINEWIDTH) */
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@width: %d\n", prefix, hyp->line_width);
-	}
-	/* if (hyp->st_guide_flags != 0) */
-	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@flags: 0x%04x\n", prefix, hyp->st_guide_flags);
-	}
-	
-	if (hyp->hostname != NULL)
-	{
-		HYP_HOSTNAME *h;
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@lang: %s\n", prefix, hyp->language ? hyp->language : "unknown");
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:lang_guessed: %d\n", prefix, hyp->language_guessed);
 		
-		for (h = hyp->hostname; h != NULL; h = h->next)
+		if (hyp->database != NULL)
 		{
-			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@hostname: %s\n", prefix, h->name);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@database: %s\n", prefix, hyp->database);
 		}
-	}
-
-	newer = hyp->comp_vers > HCP_COMPILER_VERSION ? g_strdup_printf(" (> %u)", HCP_COMPILER_VERSION) : g_strdup("");
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:hcpversion: %u%s\n", prefix, hyp->comp_vers, newer);
-	g_free(newer);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:hyptree: %u\n", prefix, hyp->hyptree_len);
 	
-	num_nodes = num_pnodes = num_images = num_external = num_other = num_eof = num_unknown = 0;
-	for (node = hyp->first_text_page; node < hyp->num_index; node++)
-	{
-		entry = hyp->indextable[node];
-		switch ((hyp_indextype) entry->type)
+		if (hypnode_valid(hyp, hyp->default_page))
 		{
-		case HYP_NODE_INTERNAL:
-			num_nodes++;
-			break;
-		case HYP_NODE_POPUP:
-			num_pnodes++;
-			break;
-		case HYP_NODE_IMAGE:
-			num_images++;
-			break;
-		case HYP_NODE_EXTERNAL_REF:
-			num_external++;
-			break;
-		case HYP_NODE_SYSTEM_ARGUMENT:
-		case HYP_NODE_REXX_SCRIPT:
-		case HYP_NODE_REXX_COMMAND:
-		case HYP_NODE_QUIT:
-		case HYP_NODE_CLOSE:
-			num_other++;
-			break;
-		case HYP_NODE_EOF:
-			if ((node + 1u) != hyp->num_index)
-				hyp_utf8_fprintf(opts->errorfile, _("%s: EOF entry at %u\n"), hyp->file, node);
-			else
-				hyp_utf8_fprintf(opts->outfile, "%s:eof: %u\n", prefix, node);
-			num_eof++;
-			break;
-		default:
-			hyp_utf8_fprintf(opts->errorfile, _("%s: unknown index entry type %u\n"), hyp->file, entry->type);
-			num_unknown++;
-			break;
+			str = quote_nodename(hyp, hyp->default_page);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@default: %s\n", prefix, str);
+			g_free(str);
 		}
-	}
-
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:indexsize: %lu\n", prefix, hyp->itable_size);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:totalnodes: %u\n", prefix, hyp->num_index);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:nodes: %u\n", prefix, num_nodes);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:pnodes: %u\n", prefix, num_pnodes);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:images: %u\n", prefix, num_images);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:external: %u\n", prefix, num_external);
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:other: %u\n", prefix, num_other);
-	if (num_unknown != 0)
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:unknown: %u\n", prefix, num_unknown);
+	
+		if (hyp->hcp_options != NULL)
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@options: %s\n", prefix, hyp->hcp_options);
+		}
+		if (hyp->author != NULL)
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@author: %s\n", prefix, hyp->author);
+		}
+		if (hypnode_valid(hyp, hyp->help_page))
+		{
+			str = quote_nodename(hyp, hyp->help_page);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@help: %s\n", prefix, str);
+			g_free(str);
+		}
+		if (hyp->version != NULL)
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@version: %s\n", prefix, hyp->version);
+		}
+		if (hyp->subject != NULL)
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@subject: %s\n", prefix, hyp->subject);
+		}
+		/* if (hyp->line_width != HYP_STGUIDE_DEFAULT_LINEWIDTH) */
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@width: %d\n", prefix, hyp->line_width);
+		}
+		/* if (hyp->st_guide_flags != 0) */
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@flags: 0x%04x\n", prefix, hyp->st_guide_flags);
+		}
 		
+		if (hyp->hostname != NULL)
+		{
+			HYP_HOSTNAME *h;
+			
+			for (h = hyp->hostname; h != NULL; h = h->next)
+			{
+				hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s@hostname: %s\n", prefix, h->name);
+			}
+		}
+	
+		newer = hyp->comp_vers > HCP_COMPILER_VERSION ? g_strdup_printf(" (> %u)", HCP_COMPILER_VERSION) : g_strdup("");
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:hcpversion: %u%s\n", prefix, hyp->comp_vers, newer);
+		g_free(newer);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:hyptree: %u\n", prefix, hyp->hyptree_len);
+		
+		num_nodes = num_pnodes = num_images = num_external = num_other = num_eof = num_unknown = 0;
+		for (node = hyp->first_text_page; node < hyp->num_index; node++)
+		{
+			entry = hyp->indextable[node];
+			switch ((hyp_indextype) entry->type)
+			{
+			case HYP_NODE_INTERNAL:
+				num_nodes++;
+				break;
+			case HYP_NODE_POPUP:
+				num_pnodes++;
+				break;
+			case HYP_NODE_IMAGE:
+				num_images++;
+				break;
+			case HYP_NODE_EXTERNAL_REF:
+				num_external++;
+				break;
+			case HYP_NODE_SYSTEM_ARGUMENT:
+			case HYP_NODE_REXX_SCRIPT:
+			case HYP_NODE_REXX_COMMAND:
+			case HYP_NODE_QUIT:
+			case HYP_NODE_CLOSE:
+				num_other++;
+				break;
+			case HYP_NODE_EOF:
+				if ((node + 1u) != hyp->num_index)
+					hyp_utf8_fprintf(opts->errorfile, _("%s: EOF entry at %u\n"), hyp->file, node);
+				else
+					hyp_utf8_fprintf(opts->outfile, "%s:eof: %u\n", prefix, node);
+				num_eof++;
+				break;
+			default:
+				hyp_utf8_fprintf(opts->errorfile, _("%s: unknown index entry type %u\n"), hyp->file, entry->type);
+				num_unknown++;
+				break;
+			}
+		}
+	
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:indexsize: %lu\n", prefix, hyp->itable_size);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:totalnodes: %u\n", prefix, hyp->num_index);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:nodes: %u\n", prefix, num_nodes);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:pnodes: %u\n", prefix, num_pnodes);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:images: %u\n", prefix, num_images);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:external: %u\n", prefix, num_external);
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:other: %u\n", prefix, num_other);
+		if (num_unknown != 0)
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, "%s:unknown: %u\n", prefix, num_unknown);
+	}
+			
 	g_free(prefix);
 	
 	hyp_unref(hyp);
@@ -318,12 +326,14 @@ enum hypinfo_option {
 	OPT_OPTERROR = '?',
 
 	OPT_CHARSET = 1024,
+	OPT_LANGUAGE
 };
 
 static struct option const long_options[] = {
 	{ "wait", optional_argument, NULL, OPT_WAIT },
 	{ "quiet", no_argument, NULL, OPT_QUIET },
 	{ "charset", required_argument, NULL, OPT_CHARSET },
+	{ "language", no_argument, NULL, OPT_LANGUAGE },
 
 	{ "help", no_argument, NULL, OPT_HELP },
 	{ "version", no_argument, NULL, OPT_VERSION },
@@ -376,6 +386,10 @@ static gboolean opts_parse(hcp_opts *opts, int argc, const char **argv)
 			}
 			break;
 
+		case OPT_LANGUAGE:
+			language_only = TRUE;
+			break;
+		
 		case OPT_HELP:
 			opts->do_help = TRUE;
 			break;

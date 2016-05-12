@@ -1174,27 +1174,3 @@ gboolean g_is_number(const char *val, gboolean is_unsigned)
 		return FALSE;
 	return TRUE;
 }
-
-/*** ---------------------------------------------------------------------- ***/
-
-#if defined(_WIN32) && !GLIB_CHECK_VERSION(2, 40, 0) && !defined(CC_FOR_BUILD)
-#include <shellapi.h>
-
-char **g_win32_get_command_line(void)
-{
-	char **result;
-	LPWSTR *args;
-	int i, n;
-
-	args = CommandLineToArgvW(GetCommandLineW(), &n);
-
-	result = g_new(char *, n + 1);
-	for (i = 0; i < n; i++)
-		result[i] = hyp_wchar_to_utf8(args[i], STR0TERM);
-	result[i] = NULL;
-
-	LocalFree(args);
-	return result;
-}
-#endif
-

@@ -293,17 +293,3 @@ gboolean hyp_prep_graphics(HYP_DOCUMENT *hyp, HYP_NODE *node)
 	
 	return retval;
 }
-
-/* ------------------------------------------------------------------------- */
-
-void hyp_free_graphics(HYP_NODE *node)
-{
-	struct hyp_gfx *gfx, *next;
-	
-	for (gfx = node->gfx; gfx != NULL; gfx = next)
-	{
-		next = gfx->next;
-		g_free(gfx);
-	}
-	node->gfx = NULL;
-}

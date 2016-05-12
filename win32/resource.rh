@@ -133,6 +133,8 @@
 #define IDC_INFO_MORE                        516
 #define IDC_INFO_LESS                        517
 #define IDC_INFO_SUBJECT                     518
+#define IDC_INFO_LANGUAGE                    519
+#define IDC_INFO_LANGUAGE_GUESSED            521
 
 #define IDC_SR_FSTL_UP                       600
 #define IDC_SR_FSTL_BACK                     601

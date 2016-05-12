@@ -105,6 +105,20 @@ HYP_NODE *hyp_node_alloc(long size)
 
 /* ------------------------------------------------------------------------- */
 
+void hyp_free_graphics(HYP_NODE *node)
+{
+	struct hyp_gfx *gfx, *next;
+	
+	for (gfx = node->gfx; gfx != NULL; gfx = next)
+	{
+		next = gfx->next;
+		g_free(gfx);
+	}
+	node->gfx = NULL;
+}
+
+/* ------------------------------------------------------------------------- */
+
 void hyp_node_free(HYP_NODE *node)
 {
 	if (node != NULL)
@@ -871,6 +885,10 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 				if (cset != HYP_CHARSET_NONE)
 					hyp->comp_charset = cset;
 			}
+			break;
+		case HYP_EXTH_LANGUAGE:						/* @lang */
+			hyp->language = load_string(hyp->comp_charset, handle, len);
+			hyp->language_guessed = empty(hyp->language);
 			break;
 		default:
 			HYP_DBG(("skipping unknown entry type %u len %u", type, len));

@@ -75,6 +75,7 @@ static const gchar org_gtk_hypview_xml[] =
     "<property name='Path' type='s' access='read'/>"
     "<property name='Title' type='s' access='read'/>"
     "<property name='Topic' type='s' access='read'/>"
+    "<property name='Language' type='s' access='read'/>"
     "<property name='Author' type='s' access='read'/>"
     "<property name='Version' type='s' access='read'/>"
     "<property name='Subject' type='s' access='read'/>"
@@ -329,6 +330,8 @@ static GVariant *g_application_impl_get_property(
 		
 		if (strcmp(property_name, "Topic") == 0)
 			return g_variant_new_string(fixnull(hyp->database));
+		if (strcmp(property_name, "Language") == 0)
+			return g_variant_new_string(fixnull(hyp->language));
 		if (strcmp(property_name, "Author") == 0)
 			return g_variant_new_string(fixnull(hyp->author));
 		if (strcmp(property_name, "Version") == 0)

@@ -22,11 +22,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	
 	_crtinit();
 	argv = g_win32_get_command_line();
-	argc = g_strv_length(argv);
+	for (argc = 0; argv[argc] != NULL; argc++)
+		;
 #undef main
 #define main utf8_main
 	ret = utf8_main(argc, (const char **)(const void **)argv);
-	g_strfreev(argv);
+	for (argc = 0; argv[argc] != NULL; argc++)
+		g_free(argv[argc]);
+	g_free(argv);
 	_crtexit();
 #undef _crtinit
 #undef _crtexit

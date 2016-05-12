@@ -2,6 +2,7 @@ picinfo.ttp
 .C[-Ih:\src\udo\tools\hypview\include\tos]
 .C[-Ih:\src\udo\tools\hypview\pic]
 .C[-Ih:\src\udo\tools\hypview\include]
+.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
 .C[-Ic:\pc\include]
 .C[-P]
 
@@ -38,12 +39,16 @@ h:\src\udo\tools\hypview\pic\picconv.c
 h:\src\udo\tools\hypview\pic\stad.c
 h:\src\udo\tools\hypview\pic\icn.c
 h:\src\udo\tools\hypview\pic\png.c
+h:\src\udo\tools\hypview\pic\pictools.c
+h:\src\udo\tools\hypview\pic\piccolor.c
 
 h:\src\udo\tools\hypview\hyp\utl_ngui.c
 h:\src\udo\tools\hypview\hyp\utl_err.c
 h:\src\udo\tools\hypview\hyp\xgetopt.c
 h:\src\udo\tools\hypview\hyp\str2imax.c
 
+h:\src\udo\tools\hypview\hyp\tos\hypmain.c
+h:\src\udo\tools\hypview\hyp\tos\malloc.c
 
 pcgemlib.lib
 pctoslib.lib

@@ -30,6 +30,8 @@ static INT_PTR CALLBACK info_dialog(HWND hwnd, UINT message, WPARAM wParam, LPAR
 				HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 				
 				DlgSetText(hwnd, IDC_INFO_DATABASE, fixnull(hyp->database));
+				DlgSetText(hwnd, IDC_INFO_LANGUAGE, fixnull(hyp->language));
+				DlgSetText(hwnd, IDC_INFO_LANGUAGE_GUESSED, hyp->language_guessed ? _(" (guessed)") : "");
 				DlgSetText(hwnd, IDC_INFO_AUTHOR, fixnull(hyp->author));
 				DlgSetText(hwnd, IDC_INFO_VERSION, fixnull(hyp->version));
 				DlgSetText(hwnd, IDC_INFO_SUBJECT, fixnull(hyp->subject));

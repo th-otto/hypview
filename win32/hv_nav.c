@@ -270,6 +270,13 @@ void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 		StartRemarker(win, remarker_top, FALSE);
 		ToolbarUpdate(win, FALSE);
 		break;
+	case TO_HISTORY:
+	case TO_BOOKMARKS:
+	case TO_REFERENCES:
+	case TO_INFO:
+	case TO_LOAD:
+	case TO_SAVE:
+	case TO_MAX:
 	default:
 		new_node = HYP_NOINDEX;
 		break;

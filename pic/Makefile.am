@@ -18,4 +18,5 @@ libpic_a_SOURCES = \
 	stad.c \
 	icn.c \
 	png.c \
-	pictools.c
+	pictools.c \
+	piccolor.c

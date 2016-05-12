@@ -74,6 +74,10 @@ static void stg_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "@os %s\n", hyp_osname(hyp->comp_os));
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "@charset %s\n", hyp_charset_name(hyp->comp_charset));
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "@inputenc %s\n", hyp_charset_name(opts->output_charset));
+	if (hyp->language != NULL)
+	{
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "@lang \"%s\"\n", hyp->language);
+	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "@endif\n");
 	
 	if (hyp->database != NULL)

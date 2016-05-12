@@ -146,6 +146,49 @@ BEGIN
 	CONTROL "&OK", IDOK, "BUTTON", BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_GROUP | WS_TABSTOP, 58,160,50,14
 END
 
+
+IDD_FILEINFO DIALOG PRELOAD DISCARDABLE 0, 0, 208, 210
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_3DLOOK
+CAPTION N_("Datei Info")
+FONT 8, "MS Sans Serif"
+BEGIN
+        LTEXT           N_("Datei :"), IDC_STATIC, 5,5,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_FILE, 45,5,160,8, SS_NOPREFIX
+        LTEXT           N_("Thema :"), IDC_STATIC, 5,15,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_DATABASE, 45,15,160,8, SS_NOPREFIX
+        LTEXT           N_("Author :"), IDC_STATIC, 5,25,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_AUTHOR, 45,25,160,8, SS_NOPREFIX
+        LTEXT           N_("Version :"), IDC_STATIC, 5,35,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_VERSION, 45,35,160,8, SS_NOPREFIX
+        LTEXT           N_("Subjekt :"), IDC_STATIC, 5,45,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_SUBJECT, 45,45,160,8, SS_NOPREFIX
+        LTEXT           N_("Sprache :"), IDC_STATIC, 5,55,40,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_LANGUAGE, 45,55,120,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_LANGUAGE_GUESSED, 165,55,40,8, SS_NOPREFIX
+	GROUPBOX	N_("Details"), IDC_INFO_MORE_BOX, 5,70,198,110
+        LTEXT           N_("Indexanzahl :"), IDC_STATIC, 15,80,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_NODES, 65,80,130,8, SS_NOPREFIX
+        LTEXT           N_("Indexlänge :"), IDC_STATIC, 15,90,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_INDEXSIZE, 65,90,130,8, SS_NOPREFIX
+        LTEXT           N_("HCP-Version :"), IDC_STATIC, 15,100,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_HCPVERSION, 65,100,130,8, SS_NOPREFIX
+        LTEXT           N_("Compiled on :"), IDC_STATIC, 15,110,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_OS, 65,110,130,8, SS_NOPREFIX
+        LTEXT           "@charset :", IDC_STATIC, 15,120,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_CHARSET, 65,120,130,8, SS_NOPREFIX
+        LTEXT           "@default :", IDC_STATIC, 15,130,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_DEFAULT, 65,130,130,8, SS_NOPREFIX
+        LTEXT           "@help :", IDC_STATIC, 15,140,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_HELP, 65,140,130,8, SS_NOPREFIX
+        LTEXT           "@options :", IDC_STATIC, 15,150,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_OPTIONS, 65,150,130,8, SS_NOPREFIX
+        LTEXT           "@width :", IDC_STATIC, 15,160,50,8, SS_NOPREFIX
+        LTEXT           "", IDC_INFO_WIDTH, 65,160,130,8, SS_NOPREFIX
+        PUSHBUTTON      N_("&Help"), IDHELP, 20,190,50,14, WS_GROUP
+        DEFPUSHBUTTON   N_("&OK"), IDOK, 140,190,50,14, WS_GROUP
+END
+
+
 IDD_SEARCHBOX DIALOG PRELOAD DISCARDABLE 0, 0, 208, 20
 STYLE WS_CHILD | DS_3DLOOK
 FONT 8, "MS Sans Serif"

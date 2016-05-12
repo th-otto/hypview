@@ -579,7 +579,6 @@ int g_ascii_strcasecmp(const char *s1, const char *s2)
 /*** ---------------------------------------------------------------------- ***/
 
 #ifndef HAVE_GLIB
-#ifdef ENABLE_NLS
 #ifndef g_strdup
 char *g_strdup(const char *str)
 {
@@ -593,7 +592,19 @@ char *g_strdup(const char *str)
 	return strcpy(dst, str);
 }
 #endif
-#endif
+
+char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t len, gboolean *converror)
+{
+	UNUSED(from);
+	UNUSED(to);
+	UNUSED(converror);
+	if (len != STR0TERM)
+		return NULL;
+	return g_strdup((const char *)src);
+}
+
 #endif
 
 #include "../../hyp/hyp_intl.c"
+#include "../../hyp/win32/hypmain.c"
+#include "../../hyp/tos/hypmain.c"

@@ -309,6 +309,10 @@ static void dump_globals(HYP_DOCUMENT *hyp, FILE *outfile)
 {
 	hyp_utf8_fprintf(outfile, _("OS: %s\n"), hyp_osname(hyp->comp_os));
 	hyp_utf8_fprintf(outfile, _("Charset: %s\n"), hyp_charset_name(hyp->comp_charset));
+	if (hyp->language != NULL)
+	{
+		hyp_utf8_fprintf(outfile, _("Language: %s\n"), hyp->language);
+	}
 	if (hyp->database != NULL)
 	{
 		hyp_utf8_fprintf(outfile, _("Database: %s\n"), hyp->database);

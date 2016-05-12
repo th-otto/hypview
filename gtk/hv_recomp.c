@@ -9,6 +9,7 @@
 #include "../hyp/outasc.h"
 #include "../hyp/outstg.h"
 #include "../hyp/outhtml.h"
+#include "../hyp/outxml.h"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -118,12 +119,25 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 			retval = recompile(hyp, opts, recompile_ascii);
 			break;
 		case HYP_FT_STG:
+		case HYP_FT_GUIDE:
 			retval = recompile(hyp, opts, recompile_stg);
 			break;
 		case HYP_FT_HTML:
 		case HYP_FT_HTML_XML:
 			retval = recompile(hyp, opts, recompile_html);
 			break;
+		case HYP_FT_XML:
+			retval = recompile(hyp, opts, recompile_xml);
+			break;
+		case HYP_FT_NONE:
+		case HYP_FT_UNKNOWN:
+		case HYP_FT_LOADERROR:
+		case HYP_FT_CHEADER:
+		case HYP_FT_BINARY:
+		case HYP_FT_HYP:
+		case HYP_FT_REF:
+		case HYP_FT_RSC:
+		case HYP_FT_IMAGE:
 		default:
 			retval = FALSE;
 			break;

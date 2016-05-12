@@ -86,6 +86,7 @@
 !raw [stg] @os atari
 !raw [stg] @charset atarist
 !raw [stg] @inputenc atarist
+!raw [stg] @lang en
 !raw [stg] @endif
 
 # ----------------------------------------------------------------

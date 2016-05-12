@@ -261,7 +261,7 @@ generate_potfiles_in:
 	 file=$(srcdir)/POTFILES.in ;			\
 	 ( cd $(srcdir)/..;			\
 	   echo "# Auto-generated: `LANG=C date`" ;	\
-	   ( grep -l '_("' gtk/*.[ch] tools/*/*.[ch] hyp/*.[ch] tos/*.[ch] win32/*.[ch] ;	\
+	   ( grep -l '_("' gtk/*.[ch] tools/*/*.[ch] hyp/*.[ch] tos/*.[ch] win32/*.[ch] pic/*.[ch] ;	\
 	     ls gtk/*.desktop.in		\
 	     ) | sort	\
 	  ) > $$tmp &&				\

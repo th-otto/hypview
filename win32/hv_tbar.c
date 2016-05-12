@@ -343,6 +343,7 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button)
 	case TO_REMARKER:
 		BlockOperation(win, CO_REMARKER);
 		break;
+	case TO_MAX:
 	default:
 		break;
 	}

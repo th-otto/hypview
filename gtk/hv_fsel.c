@@ -234,15 +234,28 @@ char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 	switch (type)
 	{
 	case HYP_FT_ASCII:
+	case HYP_FT_CHEADER:
 		defext = HYP_EXT_TXT;
 		filter = _(text_file_filter);
 		title = _("Save ASCII text as");
 		break;
 	case HYP_FT_STG:
+	case HYP_FT_GUIDE:
 		defext = HYP_EXT_STG;
 		filter = _(stg_file_filter);
 		title = _("Recompile to");
 		break;
+	case HYP_FT_NONE:
+	case HYP_FT_UNKNOWN:
+	case HYP_FT_LOADERROR:
+	case HYP_FT_BINARY:
+	case HYP_FT_HYP:
+	case HYP_FT_REF:
+	case HYP_FT_RSC:
+	case HYP_FT_IMAGE:
+	case HYP_FT_HTML:
+	case HYP_FT_XML:
+	case HYP_FT_HTML_XML:
 	default:
 		unreachable();
 		return NULL;
