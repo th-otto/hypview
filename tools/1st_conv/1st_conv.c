@@ -84,7 +84,10 @@ static void error(const char *s1, const char *s2)
 static void Wopen(const char *outfile)
 {
 	if ((outhandle = fopen(outfile, "w")) == NULL)
-		error(_("can't open "), outfile);
+	{
+		fprintf(stderr, _("can't open %s"), outfile);
+		error("", NULL);
+	}
 	outptr = outbuf;
 	Lineno = 0;
 }
@@ -241,7 +244,10 @@ static int Ropen(void)
 		strcpy(inpath, mainpath);
 
 	if ((inhandle = fopen(p->file, "rb")) == NULL)	/* Open file */
-		error(_("can't open "), p->file);
+	{
+		fprintf(stderr, _("can't open %s"), p->file);
+		error("", NULL);
+	}		
 
 	CurrFile = p->file;
 	if (quiet == 0)
@@ -806,7 +812,6 @@ int main(int argc, const char **argv)
 {
 	char outfile[128];
 	const char *p;
-	int save;
 
 	maxlines = 0;
 
@@ -820,7 +825,7 @@ int main(int argc, const char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	save = 0;
+	use_filenames = 0;
 	do
 	{
 		++argv;
@@ -830,13 +835,17 @@ int main(int argc, const char **argv)
 			p = *argv + 1;
 			if (*p == 'f')
 			{
-				save = 1;
+				use_filenames = 1;
 			} else if (*p == 'q')
+			{
 				++quiet;
-			else if (*p == 'a')
+			} else if (*p == 'a')
+			{
 				++NoAuto;
-			else
+			} else
+			{
 				maxlines = atoi(p);
+			}
 		} else
 		{
 			if (quiet == 0)
@@ -851,7 +860,6 @@ int main(int argc, const char **argv)
 			 */
 			strcpy(outfile, *argv);
 			AddFile(hyp_basename(outfile), "Main");	/* Enter file-name only */
-			use_filenames = save;
 			strcpy(mainpath, outfile);		/* Save path */
 			p = hyp_basename(mainpath);
 			mainpath[p - mainpath] = '\0';

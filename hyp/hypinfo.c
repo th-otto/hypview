@@ -276,7 +276,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 			if ((node + 1u) != hyp->num_index)
 				hyp_utf8_fprintf(opts->errorfile, _("%s: EOF entry at %u\n"), hyp->file, node);
 			else
-				hyp_utf8_fprintf(opts->outfile, _("%s:eof: %u\n"), prefix, node);
+				hyp_utf8_fprintf(opts->outfile, "%s:eof: %u\n", prefix, node);
 			num_eof++;
 			break;
 		default:

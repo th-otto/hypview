@@ -151,6 +151,10 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					{
 						str = hyp_invalid_page(dest_page);
 					}
+					/*
+					 * FIXME: localisation of the text should be done according to language
+					 * of hypertext file, not depend on the current locale
+					 */
 					if (empty(text) || strcmp(str, text) == 0)
 						hyp_utf8_sprintf_charset(out, opts->output_charset, _("See also: %s\n"), str);
 					else

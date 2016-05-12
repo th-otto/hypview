@@ -92,8 +92,11 @@ static void outputs(const char *line)
  */
 static void Ropen(const char *file)
 {
-	if ((inhandle = fopen(file, "rb")) == NULL)	/* Open file */
-		error(_("can't open "), file);
+	if ((inhandle = fopen(file, "rb")) == NULL)
+	{
+		fprintf(stderr, _("can't open %s"), file);
+		error("", NULL);
+	}
 }
 
 
@@ -105,14 +108,11 @@ static void outheader(void)
 	if (NewFormat)
 		outputs("n");					/* "PageN" not in Index */
 	outputs("\n\n");
-	outputs("@node Main\n"
-			" This text has been converted automatically into the\n"
-			" ST-Guide format. This page should actually contain\n" " an Index... \n" "@endnode\n");
-#if 0
-	outputs("@node Main\n"
-			" Dieser Text wurde automatisch in das ST-Guide Format\n"
-			" konvertiert. Auf dieser Seite sollte eigentlich ein\n" " Inhaltsverzeichnis stehen...\n" "@endnode\n");
-#endif
+	outputs("@node Main\n");
+	outputs(_(" This text has been converted automatically into the\n"
+			  " ST-Guide format. This page should actually contain\n"
+			  " an Index... \n"));
+	outputs("@endnode\n");
 
 	inlen = -1;
 	inptr = inbuf;						/* Initialise read pointer */
@@ -450,7 +450,7 @@ int main(int argc, const char **argv)
 	if (argc < 2)
 	{
 	  error:
-		fputs(_("usage: PC-Conv [+-anmN] file1 [file2 ...]\n"
+		fputs(_("usage: pc_conv [+-anmN] file1 [file2 ...]\n"
 			    "       a: explicit (-) or automatic (+) links\n"
 			    "       n: HELP_RC (-) or new HELPDISC (+) format\n"
 			    "       mN: max N lines per output file\n"
@@ -532,16 +532,10 @@ int main(int argc, const char **argv)
 				fprintf(stderr, _("external references: %d\n"), HasExternals);
 				outputs("@node \"");
 				outputs(ExtPage);
-				outputs("\"\n"
-				        " Reference to external file.\n"
-				        " Please complete by hand.\n"
-				        "@endnode\n\n");
-#if 0
-				outputs("\"\n"
-				        " Referenz zu externer Datei.\n"
-				        " Bitte von Hand vervollst„ndigen.\n"
-				        "@endnode\n\n");
-#endif
+				outputs("\"\n");
+				outputs(_(" Reference to external file.\n"
+				          " Please complete by hand.\n"));
+				outputs("@endnode\n\n");
 			}
 			total += Line;
 			fprintf(stderr, _("total lines        : %d\n"), total);

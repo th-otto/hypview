@@ -201,7 +201,7 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 
 	if (handle < 0)
 	{
-		html_out_header(NULL, opts, out, _("404 not found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+		html_out_header(NULL, opts, out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
 		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
 		return FALSE;

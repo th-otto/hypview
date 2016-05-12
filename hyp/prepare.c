@@ -65,7 +65,7 @@ gboolean hyp_pic_get_header(HYP_IMAGE *image, const unsigned char *hyp_pic_raw, 
 				/* FIXME: won't see any message in the GUI */
 				hyp_utf8_fprintf(errorfile, _("wrong image size for node %u: %lu, should be %lu%s\n"),
 					image->number, image->data_size, image_size,
-					image_size > image->data_size ? _("( corrupted)") : "");
+					image_size > image->data_size ? _(" (corrupted)") : "");
 				image->warned = TRUE;
 			}
 			if (image_size > image->data_size)
