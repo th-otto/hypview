@@ -610,7 +610,7 @@ static const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 
 #include "casefold.h"
 
-#ifndef HAVE_GLIB
+#if !defined(HAVE_GLIB)
 
 typedef enum
 {
@@ -898,7 +898,7 @@ char *hyp_utf8_casefold(const char *str, size_t len)
 
 /*** ---------------------------------------------------------------------- ***/
 
-int g_utf8_strcasecmp(const char *s1, const char *s2)
+int hyp_utf8_strcasecmp(const char *s1, const char *s2)
 {
 	h_unichar_t c1, c2;
 	
@@ -917,7 +917,7 @@ int g_utf8_strcasecmp(const char *s1, const char *s2)
 
 /*** ---------------------------------------------------------------------- ***/
 
-int g_utf8_strncasecmp(const char *s1, const char *s2, size_t n)
+int hyp_utf8_strncasecmp(const char *s1, const char *s2, size_t n)
 {
 	h_unichar_t c1, c2;
 	const char *end = s2 + n;
@@ -949,12 +949,12 @@ int hyp_name_cmp(HYP_CHARSET charset, const unsigned char *str1, const unsigned 
 	
 	if (charset == HYP_CHARSET_UTF8)
 	{
-		res = g_utf8_strcasecmp((const char *) str1, (const char *) str2);
+		res = hyp_utf8_strcasecmp((const char *) str1, (const char *) str2);
 	} else if (get_cset(charset) != NULL)
 	{
 		s1 = hyp_conv_to_utf8(charset, str1, STR0TERM);
 		s2 = hyp_conv_to_utf8(charset, str2, STR0TERM);
-		res = g_utf8_strcasecmp(s1, s2);
+		res = hyp_utf8_strcasecmp(s1, s2);
 		g_free(s2);
 		g_free(s1);
 	} else
@@ -1170,7 +1170,7 @@ gboolean g_unichar_islower(h_unichar_t c)
 
 /* ------------------------------------------------------------------------- */
 
-const char *g_utf8_strcasestr(const char *searchee, const char *lookfor)
+const char *hyp_utf8_strcasestr(const char *searchee, const char *lookfor)
 {
 	h_unichar_t ch1, ch2;
 	

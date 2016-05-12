@@ -8,7 +8,7 @@
 /*
  * define __TOS__ if using any compiler for AtariST
  */
-#if (defined(atarist) || defined(__atarist)) && !defined(__TOS__)
+#if (defined(atarist) || defined(__atarist) || defined(ATARI_ST)) && !defined(__TOS__)
 #  define __TOS__
 #endif
 #if defined(__TOS__) && !defined(WITH_GUI_GEM)

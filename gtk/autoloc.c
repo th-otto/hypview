@@ -57,7 +57,7 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 	{
 		while ((temp = HypGetTextLine(win, node, line)) != NULL)
 		{
-			res = casesensitive ? strstr(temp, search) : g_utf8_strcasestr(temp, search);
+			res = casesensitive ? strstr(temp, search) : hyp_utf8_strcasestr(temp, search);
 			if (res != NULL)
 			{
 				g_free(temp);
@@ -73,7 +73,7 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
-				res = casesensitive ? strstr(temp, search) : g_utf8_strcasestr(temp, search);
+				res = casesensitive ? strstr(temp, search) : hyp_utf8_strcasestr(temp, search);
 				if (res != NULL)
 				{
 					g_free(temp);

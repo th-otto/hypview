@@ -27,10 +27,10 @@ am__v_MAN_1    = @echo formatting
 AM_V_MAN       = $(am__v_MAN_@AM_V@)
 am__v_MAN_     = $(am__v_MAN_@AM_DEFAULT_V@)
 
-AM_V_at        = $(am__v_at_@AM_V@)
-am__v_at_0     = @
-am__v_at_1     =
-am__v_at_      = $(am__v_at_@AM_DEFAULT_V@)
+#AM_V_at        = $(am__v_at_@AM_V@)
+#am__v_at_0     = @
+#am__v_at_1     =
+#am__v_at_      = $(am__v_at_@AM_DEFAULT_V@)
 
 am__v_RC_0     = @$(ECHO_E) "  $(am__v_color_rc)RC$(am__v_color_off)      " $@;
 am__v_RC_1     = 

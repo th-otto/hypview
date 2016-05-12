@@ -63,7 +63,7 @@ char *hyp_compiler_version(void)
 #elif defined(__PUREC__)
 	return g_strdup_printf("Pure-C version %d.%02x (%s)", __PUREC__ >> 8, __PUREC__ & 0xff, bitvers);
 #elif defined(SOZOBON)
-	return g_strdup_printf("Sozobon version %s (%s)", stringify(SOZOBON), bitvers);
+	return g_strdup_printf("SOZOBON-C V2.00x10 (%s)", bitvers);
 #else
 	return g_strdup_printf("Unknown Compiler (%s)", bitvers);
 #endif

@@ -183,7 +183,7 @@ gboolean ref_del_entries(const char *refname, int argc, const char **argv, FILE 
 			{
 				name1 = ref_hyp_basename(mod1->filename ? mod1->filename : ref->filename);
 				name2 = ref_hyp_basename(argv[i]);
-				found = g_utf8_strcasecmp(name1, name2) == 0;
+				found = hyp_utf8_strcasecmp(name1, name2) == 0;
 				g_free(name1);
 				g_free(name2);
 				if (found)
@@ -300,7 +300,7 @@ gboolean ref_extract_entries(const char *refname, int argc, const char **argv, F
 			{
 				name1 = ref_hyp_basename(mod1->filename ? mod1->filename : ref->filename);
 				name2 = ref_hyp_basename(argv[i]);
-				found = g_utf8_strcasecmp(name1, name2) == 0;
+				found = hyp_utf8_strcasecmp(name1, name2) == 0;
 				g_free(name1);
 				g_free(name2);
 				if (found)
@@ -499,7 +499,7 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 		{
 			name1 = ref_hyp_basename(mod1->filename ? mod1->filename : ref->filename);
 			name2 = ref_hyp_basename(mod2->filename ? mod2->filename : mod->filename);
-			found = g_utf8_strcasecmp(name1, name2) == 0;
+			found = hyp_utf8_strcasecmp(name1, name2) == 0;
 			g_free(name1);
 			g_free(name2);
 			if (found)

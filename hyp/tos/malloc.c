@@ -10,7 +10,7 @@
 
 #include "hypdefs.h"
 
-#if defined(__TOS__) || defined(__atarist__) /* rest of file */
+#if defined(__TOS__) /* rest of file */
 
 #include <stddef.h>	/* for size_t */
 #include <sys/types.h>

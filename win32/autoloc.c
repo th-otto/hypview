@@ -139,13 +139,12 @@ char *HypGetTextLine(WINDOW_DATA *win, HYP_NODE *node, long line)
 long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean casesensitive, gboolean wordonly)
 {
 	DOCUMENT *doc = win->data;
-	const char *src;
 	long y;
 	HYP_NODE *node;
 	char *temp;
 	size_t len;
 	HYP_DOCUMENT *hyp;
-	int ret;
+	const char *res;
 	
 	hyp = (HYP_DOCUMENT *) doc->data;
 	if (hyp == NULL)
@@ -171,16 +170,11 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
-				src = temp;
-				while (*src)
+				res = casesensitive ? strstr(temp, search) : hyp_utf8_strcasestr(temp, search);
+				if (res != NULL)
 				{
-					ret = casesensitive ? strncmp(src, search, len) : g_utf8_strncasecmp(src, search, len);
-					if (ret == 0)
-					{
-						g_free(temp);
-						return line;
-					}
-					src++;
+					g_free(temp);
+					return line;
 				}
 				g_free(temp);
 			}
@@ -194,16 +188,11 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 			temp = HypGetTextLine(win, node, line);
 			if (temp != NULL)
 			{
-				src = temp;
-				while (*src)
+				res = casesensitive ? strstr(temp, search) : hyp_utf8_strcasestr(temp, search);
+				if (res != NULL)
 				{
-					ret = casesensitive ? strncmp(src, search, len) : g_utf8_strncasecmp(src, search, len);
-					if (ret == 0)
-					{
-						g_free(temp);
-						return line;
-					}
-					src++;
+					g_free(temp);
+					return line;
 				}
 				g_free(temp);
 			}

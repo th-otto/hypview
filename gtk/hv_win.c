@@ -2342,6 +2342,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
  	if (!popup)
  	{
 		win->action_group = gtk_action_group_new("AppWindowActions");
+		gtk_action_group_set_translation_domain(win->action_group, GETTEXT_PACKAGE);
 		gtk_action_group_add_actions(win->action_group, action_entries, G_N_ELEMENTS(action_entries), win);
 		gtk_action_group_add_toggle_actions(win->action_group, toggle_action_entries, G_N_ELEMENTS(toggle_action_entries), win);
 		

@@ -393,7 +393,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			if (p != NULL)
 				*p = '\0';
 			name2 = ref_hyp_basename(module->filename);
-			module->mod_name_matches = g_utf8_strcasecmp(name1, name2) == 0;
+			module->mod_name_matches = hyp_utf8_strcasecmp(name1, name2) == 0;
 			g_free(name2);
 			g_free(name1);
 		} else

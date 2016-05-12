@@ -393,7 +393,7 @@ static FILELIST *file_listadd(hcp_vars *vars, const char *name, hyp_filetype *ty
 		name += 2;
 	
 	for (f = vars->filelist; f != NULL; f = f->next)
-		if (g_utf8_strcasecmp(f->name, name) == 0)
+		if (hyp_utf8_strcasecmp(f->name, name) == 0)
 		{
 			*type = f->type;
 			return f;
@@ -5676,7 +5676,7 @@ static int comp_lab(const void *_l1, const void *_l2)
 	const LABEL *l1 = *((const LABEL *const *)_l1);
 	const LABEL *l2 = *((const LABEL *const *)_l2);
 	/* FIXME: this should actually be something like strcoll() */
-	return g_utf8_strcasecmp(l1->name, l2->name);
+	return hyp_utf8_strcasecmp(l1->name, l2->name);
 }
 
 
@@ -7773,7 +7773,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 		{
 			oom(vars);
 			retval = FALSE;
-		} else if (g_utf8_strcasecmp(filename, output_filename) == 0)
+		} else if (hyp_utf8_strcasecmp(filename, output_filename) == 0)
 		{
 			hcp_error(vars, NULL, _("would overwrite input file"));
 			retval = FALSE;

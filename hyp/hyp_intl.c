@@ -97,7 +97,6 @@ char *g_get_package_bindir(void)
 		if ((p = strrchr(retval, '\\')) != NULL)
 		{
 			*p = '\0';
-			retval = g_renew(char, retval, strlen(retval) + 1);
 		} else
 		{
 			g_free(retval);
@@ -165,10 +164,10 @@ char *g_get_package_installation_directory(void)
 	p = strrchr(retval, '\\');
 #endif
 
-	if (p && (strcasecmp(p + 1, "bin") == 0 ||
-        strcasecmp(p + 1, "bin64") == 0 ||
-        strcasecmp(p + 1, "lib64") == 0 ||
-	    strcasecmp(p + 1, "lib") == 0))
+	if (p && (g_ascii_strcasecmp(p + 1, "bin") == 0 ||
+        g_ascii_strcasecmp(p + 1, "bin64") == 0 ||
+        g_ascii_strcasecmp(p + 1, "lib64") == 0 ||
+	    g_ascii_strcasecmp(p + 1, "lib") == 0))
 	    *p = '\0';
 
 	return retval;
@@ -182,16 +181,24 @@ const char *xs_get_locale_dir(void)
 	if (localedir == NULL)
 	{
 		char *root, *temp;
+		const char *env;
 		
-		root = g_get_package_installation_directory();
-		temp = g_new(char, strlen(root) + sizeof("/share/locale"));
+		env = getenv("LOCALEDIR");
+		if (env)
+		{
+			temp = g_strdup(env);
+		} else
+		{
+			root = g_get_package_installation_directory();
+			temp = g_new(char, strlen(root) + sizeof("/share/locale"));
 #if G_DIR_SEPARATOR == '/'
-		strcat(strcpy(temp, root), "/share/locale");
+			strcat(strcpy(temp, root), "/share/locale");
 #else
-		strcat(strcpy(temp, root), "\\share\\locale");
+			strcat(strcpy(temp, root), "\\share\\locale");
 #endif
-		g_free(root);
-
+			g_free(root);
+		}
+		
 #if defined(__WIN32__)
 		/* localedir is passed to bindtextdomain() which isn't
 		 * UTF-8-aware.

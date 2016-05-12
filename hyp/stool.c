@@ -286,7 +286,7 @@ static void read_catalogtxt(FILE *fp)
 			
 			for (l = cfg_list; l != NULL; l = l->next)
 			{
-				if (l->filename && g_utf8_strcasecmp(line + 1, hyp_basename(l->filename)) == 0)
+				if (l->filename && hyp_utf8_strcasecmp(line + 1, hyp_basename(l->filename)) == 0)
 					break;
 			}
 			if (l == NULL && (!do_exonly || hyp_guess_filetype(line + 1) != HYP_FT_HYP))
@@ -582,7 +582,7 @@ static void read_config(FILE *fp)
 			{
 				for (l = cfg_list; l != NULL; l = l->next)
 				{
-					if (l->filename && g_utf8_strcasecmp(line + 1, hyp_basename(l->filename)) == 0)
+					if (l->filename && hyp_utf8_strcasecmp(line + 1, hyp_basename(l->filename)) == 0)
 					{
 						g_free(l->subject);
 						l->subject = g_strdup(subject);
@@ -621,19 +621,19 @@ static gboolean maybe_load_hypfile(const char *filename, void *data)
 		hyp_filetype err = HYP_FT_NONE;
 		
 		/* to not try to load "all.hyp" here */
-		if (g_utf8_strcasecmp(base, "all.hyp") == 0)
+		if (g_ascii_strcasecmp(base, "all.hyp") == 0)
 			return TRUE;
 		
 		/* do not try to load the old catalog here */
-		if (g_utf8_strcasecmp(base, "catalog.hyp") == 0)
+		if (g_ascii_strcasecmp(base, "catalog.hyp") == 0)
 			return TRUE;
-		if (g_utf8_strcasecmp(base, "katalog.hyp") == 0)
+		if (g_ascii_strcasecmp(base, "katalog.hyp") == 0)
 			return TRUE;
-		if (g_utf8_strcasecmp(base, hyp_basename(catalog_file)) == 0)
+		if (hyp_utf8_strcasecmp(base, hyp_basename(catalog_file)) == 0)
 			return TRUE;
 		
 		/* ignore the output file of HypFind */
-		if (g_utf8_strcasecmp(base, HYP_FILENAME_HYPFIND) == 0)
+		if (g_ascii_strcasecmp(base, HYP_FILENAME_HYPFIND) == 0)
 			return TRUE;
 		
 		++hyp_count;
@@ -715,7 +715,7 @@ static int cmp_basename(const void *_l1, const void *_l2)
 	const CFG *l2 = *(const CFG *const *)_l2;
 	char *n1 = ref_hyp_basename(l1->filename);
 	char *n2 = ref_hyp_basename(l2->filename);
-	int res = g_utf8_strcasecmp(n1, n2);
+	int res = hyp_utf8_strcasecmp(n1, n2);
 	g_free(n1);
 	g_free(n2);
 	return res;

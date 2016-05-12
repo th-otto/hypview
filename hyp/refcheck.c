@@ -167,7 +167,7 @@ static gboolean maybe_load_hyp_or_ref(const char *filename, void *data)
 	if (hyp_guess_filetype(base) == HYP_FT_HYP)
 	{
 		/* do not try to load "all.ref" here if there happens to be a "all.hyp" */
-		if (g_utf8_strcasecmp(base, "all.hyp") == 0)
+		if (g_ascii_strcasecmp(base, "all.hyp") == 0)
 			return TRUE;
 		
 		++args->hyp_count;
@@ -335,7 +335,7 @@ static gboolean check_entries(const char *refname, const struct refcheck_opts *o
 				{
 					char *name1 = ref_hyp_basename(mod1->filename);
 					char *name2 = ref_hyp_basename(mod2->filename);
-					found = g_utf8_strcasecmp(name1, name2) == 0;
+					found = hyp_utf8_strcasecmp(name1, name2) == 0;
 					g_free(name1);
 					g_free(name2);
 					if (found)
@@ -348,7 +348,7 @@ static gboolean check_entries(const char *refname, const struct refcheck_opts *o
 			{
 				char *name1 = ref_hyp_basename(mod1->filename);
 				char *name2 = ref_hyp_basename(l->filename);
-				found = g_utf8_strcasecmp(name1, name2) == 0;
+				found = hyp_utf8_strcasecmp(name1, name2) == 0;
 				g_free(name1);
 				g_free(name2);
 				if (found)
@@ -379,7 +379,7 @@ static gboolean check_entries(const char *refname, const struct refcheck_opts *o
 				{
 					char *name1 = ref_hyp_basename(mod1->filename);
 					char *name2 = ref_hyp_basename(mod2->filename);
-					found = g_utf8_strcasecmp(name1, name2) == 0;
+					found = hyp_utf8_strcasecmp(name1, name2) == 0;
 					g_free(name1);
 					g_free(name2);
 					if (found)

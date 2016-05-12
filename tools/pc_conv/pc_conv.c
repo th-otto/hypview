@@ -550,6 +550,34 @@ int main(int argc, const char **argv)
 	return EXIT_SUCCESS;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+#define ISSPACE(c)              ((c) == ' ' || (c) == '\f' || (c) == '\n' || \
+                                 (c) == '\r' || (c) == '\t' || (c) == '\v')
+#define ISUPPER(c)              ((c) >= 'A' && (c) <= 'Z')
+#define ISLOWER(c)              ((c) >= 'a' && (c) <= 'z')
+#define ISALPHA(c)              (ISUPPER (c) || ISLOWER (c))
+#define TOUPPER(c)              (ISLOWER (c) ? (c) - 'a' + 'A' : (c))
+#define TOLOWER(c)              (ISUPPER (c) ? (c) - 'A' + 'a' : (c))
+
+int g_ascii_strcasecmp(const char *s1, const char *s2)
+{
+	int c1, c2;
+
+	while (*s1 && *s2)
+    {
+		c1 = (int)(unsigned char) TOLOWER (*s1);
+		c2 = (int)(unsigned char) TOLOWER (*s2);
+		if (c1 != c2)
+			return c1 - c2;
+		s1++; s2++;
+	}
+
+	return (((int)(unsigned char) *s1) - ((int)(unsigned char) *s2));
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 #ifndef HAVE_GLIB
 #ifdef ENABLE_NLS
 #ifndef g_strdup

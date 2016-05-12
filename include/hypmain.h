@@ -36,7 +36,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 }
 #endif
 
-#if defined(__TOS__) || defined(__atarist__)
+#if defined(__TOS__)
 #undef _argc
 #undef __argc
 #undef _argv

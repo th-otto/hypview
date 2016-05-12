@@ -174,7 +174,7 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 				src = temp;
 				while (*src)
 				{
-					ret = casesensitive ? strncmp(src, search, len) : g_utf8_strncasecmp(src, search, len);
+					ret = casesensitive ? strncmp(src, search, len) : hyp_utf8_strncasecmp(src, search, len);
 					if (ret == 0)
 					{
 						g_free(temp);
@@ -197,7 +197,7 @@ long HypAutolocator(WINDOW_DATA *win, long line, const char *search, gboolean ca
 				src = temp;
 				while (*src)
 				{
-					ret = casesensitive ? strncmp(src, search, len) : g_utf8_strncasecmp(src, search, len);
+					ret = casesensitive ? strncmp(src, search, len) : hyp_utf8_strncasecmp(src, search, len);
 					if (ret == 0)
 					{
 						g_free(temp);

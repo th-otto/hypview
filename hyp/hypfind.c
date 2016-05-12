@@ -442,7 +442,7 @@ static gboolean bm_strcaseeq(BM_TABLE *tbl, const unsigned char *text)
 	{
 		ch1 = g_unichar_tolower(hyp_utf8_get_char(textptr));
 		if (G_UNLIKELY(ch1 >= 0x10000UL))
-			return g_utf8_strncasecmp((const char *)text, tbl->pattern, tbl->patlen) == 0;
+			return hyp_utf8_strncasecmp((const char *)text, tbl->pattern, tbl->patlen) == 0;
 		ch2 = g_unichar_tolower(hyp_utf8_get_char(strptr));
 		if (ch1 != ch2)
 			return FALSE;
@@ -547,7 +547,7 @@ static const char *bm_casescanner(BM_TABLE *tbl, const char *buf, size_t len)
 		do
 		{
 			if (G_UNLIKELY(tbl->slowcase))
-				return g_utf8_strcasestr(buf, tbl->pattern);
+				return hyp_utf8_strcasestr(buf, tbl->pattern);
 			
 			/* Save the current position in case we match
 			 * the search string at this point.
@@ -599,7 +599,7 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 		if (opts->casesensitive)
 			match = bm_scanner(&opts->deltapat, scan, scanlen);
 		else if (G_UNLIKELY(opts->deltapat.slowcase))
-			match = g_utf8_strcasestr(scan, opts->pattern);
+			match = hyp_utf8_strcasestr(scan, opts->pattern);
 		else
 			match = bm_casescanner(&opts->deltapat, scan, scanlen);
 		if (match == NULL)
