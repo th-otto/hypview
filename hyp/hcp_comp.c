@@ -2190,8 +2190,20 @@ static int addtext(hcp_vars *vars, const char *text, size_t len, size_t maxlen)
 	{
 		text = hyp_utf8_conv_char(vars->hyp->comp_charset, text, buf, &vars->global_converror);
 		p = buf;
-		while (*p)
-			addbyte(vars, *p++);
+		/*
+		 * this can still happen if we translate some utf sequence to ESC
+		 */
+		if (*p == HYP_ESC && p[1] == '\0')
+		{
+			addbyte(vars, HYP_ESC);
+			addbyte(vars, HYP_ESC_ESC);
+		} else
+		{	
+			while (*p)
+			{
+				addbyte(vars, *p++);
+			}
+		}
 	}
 	return (int) i;
 }
