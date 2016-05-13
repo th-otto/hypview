@@ -998,6 +998,7 @@ h_unichar_t g_unichar_tolower(h_unichar_t ch);
 h_unichar_t g_unichar_toupper(h_unichar_t ch);
 
 h_unichar_t hyp_utf8_get_char(const char *);
+const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch);
 int hyp_utf8_strcasecmp(const char *s1, const char *s2);
 int hyp_utf8_strncasecmp(const char *s1, const char *s2, size_t n);
 const char *hyp_utf8_strcasestr(const char *searchee, const char *lookfor);

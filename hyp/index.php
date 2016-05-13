@@ -458,6 +458,15 @@ A file with several fill patterns
 </td>
 </tr>
 
+<tr>
+<td>
+<li><a href="javascript: submitUrl(hyptestdir + &quot;chartab.hyp&quot;);">chartab.hyp</a></li>
+</td>
+<td>
+Atari character code table
+</td>
+</tr>
+
 </table>
 </ul>
 

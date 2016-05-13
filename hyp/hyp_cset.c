@@ -487,7 +487,7 @@ char *hyp_conv_to_utf8(HYP_CHARSET charset, const void *src, size_t len)
      ((Char) < 0xFDD0UL || (Char) > 0xFDEFUL) &&  \
      ((Char) & 0xFFFEUL) != 0xFFFEUL)
 
-static const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
+const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 {
 	const char *last;
 

@@ -1,0 +1,586 @@
+## created by hcp Version 0.9.9
+@if VERSION >= 6
+@os Atari
+@charset atarist
+@inputenc atarist
+@endif
+@database "The ATARI Compendium"
+@options "+g -i -s +y -z"
+@author "Scott Sanders / JAY Software"
+@subject "Documentation"
+@width 100
+@remark ST-Guide flags: $0000
+
+
+@node Main "ASCII Character Table With Code Numbers"
+@line 1 75 0 0 1
+@box 1 4 3 8
+@box 72 4 3 8
+
+                @{B}ASCII Character Table With Code Numbers@{b}
+
+@line 1 75 0 0 1
+
+@line  7 0 250 0 1
+@line 15 0 250 0 1
+@line 24 0 250 0 1
+@line 33 0 250 0 1
+@line 46 0 250 0 1
+@line 54 0 250 0 1
+
+  @{B}Chr   Dec      Hex      Oct        Bin      Unicode  UTF-8@{b}
+
+@line 3 83 0 0 1
+
+          0     0x00     0000     %00000000   0x0000   0x00             NULL
+         1     0x01     0001     %00000001   0x0001   0x01             START OF HEADING
+         2     0x02     0002     %00000010   0x0002   0x02             START OF TEXT
+         3     0x03     0003     %00000011   0x0003   0x03             END OF TEXT
+         4     0x04     0004     %00000100   0x0004   0x04             END OF TRANSMISSION
+         5     0x05     0005     %00000101   0x0005   0x05             ENQUIRY
+         6     0x06     0006     %00000110   0x0006   0x06             ACKNOWLEDGE
+         7     0x07     0007     %00000111   0x0007   0x07             BELL
+         8     0x08     0010     %00001000   0x0008   0x08             BACKSPACE
+@if VERSION >= 6
+@inputenc utf8
+   ‚åö      9     0x09     0011     %00001001   0x0009   0x09             HORIZONTAL TABULATION
+   ‚ç∫     10     0x0A     0012     %00001010   0x000A   0x0A             LINE FEED
+@inputenc atari
+@else
+          9     0x09     0011     %00001001   0x0009   0x09             HORIZONTAL TABULATION
+         10     0x0A     0012     %00001010   0x000A   0x0A             LINE FEED
+@endif
+        11     0x0B     0013     %00001011   0x000B   0x0B             VERTICAL TABULATION
+        12     0x0C     0014     %00001100   0x000C   0x0C             FORM FEED
+@if VERSION >= 6
+@inputenc utf8
+   ‚êç     13     0x0D     0015     %00001101   0x000D   0x0D             CARRIAGE RETURN
+@inputenc atari
+@else
+         13     0x0D     0015     %00001101   0x000D   0x0D             CARRIAGE RETURN
+@endif
+        14     0x0E     0016     %00001110   0x000E   0x0E             SHIFT OUT
+        15     0x0F     0017     %00001111   0x000F   0x0F             SHIFT IN
+        16     0x10     0020     %00010000   0x0010   0x10             DATA LINK ESCAPE
+        17     0x11     0021     %00010001   0x0011   0x11             DEVICE CONTROL ONE
+        18     0x12     0022     %00010010   0x0012   0x12             DEVICE CONTROL TWO
+        19     0x13     0023     %00010011   0x0013   0x13             DEVICE CONTROL THREE
+        20     0x14     0024     %00010100   0x0014   0x14             DEVICE CONTROL FOUR
+        21     0x15     0025     %00010101   0x0015   0x15             NEGATIVE ACKNOWLEDGE
+        22     0x16     0026     %00010110   0x0016   0x16             SYNCHRONOUS IDLE
+        23     0x17     0027     %00010111   0x0017   0x17             END OF TRANSMISSION BLOCK
+        24     0x18     0030     %00011000   0x0018   0x18             CANCEL
+        25     0x19     0031     %00011001   0x0019   0x19             END OF MEDIUM
+        26     0x1A     0032     %00011010   0x001A   0x1A             SUBSTITUTE
+        27     0x1B     0033     %00011011   0x001B   0x1B             ESCAPE
+        28     0x1C     0034     %00011100   0x001C   0x1C             FILE SEPARATOR
+        29     0x1D     0035     %00011101   0x001D   0x1D             GROUP SEPARATOR
+        30     0x1E     0036     %00011110   0x001E   0x1E             RECORD SEPARATOR
+        31     0x1F     0037     %00011111   0x001F   0x1F             UNIT SEPARATOR
+         32     0x20     0040     %00100000   0x0020   0x20             SPACE
+   !     33     0x21     0041     %00100001   0x0021   0x21             EXCLAMATION MARK
+   "     34     0x22     0042     %00100010   0x0022   0x22             QUOTATION MARK
+   #     35     0x23     0043     %00100011   0x0023   0x23             NUMBER SIGN
+   $     36     0x24     0044     %00100100   0x0024   0x24             DOLLAR SIGN
+   %     37     0x25     0045     %00100101   0x0025   0x25             PERCENT SIGN
+   &     38     0x26     0046     %00100110   0x0026   0x26             AMPERSAND
+   '     39     0x27     0047     %00100111   0x0027   0x27             APOSTROPHE
+   (     40     0x28     0050     %00101000   0x0028   0x28             LEFT PARENTHESIS
+   )     41     0x29     0051     %00101001   0x0029   0x29             RIGHT PARENTHESIS
+   *     42     0x2A     0052     %00101010   0x002a   0x2a             ASTERISK
+   +     43     0x2B     0053     %00101011   0x002b   0x2b             PLUS SIGN
+   ,     44     0x2C     0054     %00101100   0x002c   0x2c             COMMA
+   -     45     0x2D     0055     %00101101   0x002d   0x2d             HYPHEN-MINUS
+   .     46     0x2E     0056     %00101110   0x002e   0x2e             FULL STOP
+   /     47     0x2F     0057     %00101111   0x002f   0x2f             SOLIDUS
+   0     48     0x30     0060     %00110000   0x0030   0x30             DIGIT ZERO
+   1     49     0x31     0061     %00110001   0x0031   0x31             DIGIT ONE
+   2     50     0x32     0062     %00110010   0x0032   0x32             DIGIT TWO
+   3     51     0x33     0063     %00110011   0x0033   0x33             DIGIT THREE
+   4     52     0x34     0064     %00110100   0x0034   0x34             DIGIT FOUR
+   5     53     0x35     0065     %00110101   0x0035   0x35             DIGIT FIVE
+   6     54     0x36     0066     %00110110   0x0036   0x36             DIGIT SIX
+   7     55     0x37     0067     %00110111   0x0037   0x37             DIGIT SEVEN
+   8     56     0x38     0070     %00111000   0x0038   0x38             DIGIT EIGHT
+   9     57     0x39     0071     %00111001   0x0039   0x39             DIGIT NINE
+   :     58     0x3A     0072     %00111010   0x003a   0x3a             COLON
+   ;     59     0x3B     0073     %00111011   0x003b   0x3b             SEMICOLON
+   <     60     0x3C     0074     %00111100   0x003c   0x3c             LESS-THAN SIGN
+   =     61     0x3D     0075     %00111101   0x003d   0x3d             EQUALS SIGN
+   >     62     0x3E     0076     %00111110   0x003e   0x3e             GREATER-THAN SIGN
+   ?     63     0x3F     0077     %00111111   0x003f   0x3f             QUESTION MARK
+   @@     64     0x40     0100     %01000000   0x0040   0x40             COMMERCIAL AT
+   A     65     0x41     0101     %01000001   0x0041   0x41             LATIN CAPITAL LETTER A
+   B     66     0x42     0102     %01000010   0x0042   0x42             LATIN CAPITAL LETTER B
+   C     67     0x43     0103     %01000011   0x0043   0x43             LATIN CAPITAL LETTER C
+   D     68     0x44     0104     %01000100   0x0044   0x44             LATIN CAPITAL LETTER D
+   E     69     0x45     0105     %01000101   0x0045   0x45             LATIN CAPITAL LETTER E
+   F     70     0x46     0106     %01000110   0x0046   0x46             LATIN CAPITAL LETTER F
+   G     71     0x47     0107     %01000111   0x0047   0x47             LATIN CAPITAL LETTER G
+   H     72     0x48     0110     %01001000   0x0048   0x48             LATIN CAPITAL LETTER H
+   I     73     0x49     0111     %01001001   0x0049   0x49             LATIN CAPITAL LETTER I
+   J     74     0x4A     0112     %01001010   0x004a   0x4a             LATIN CAPITAL LETTER J
+   K     75     0x4B     0113     %01001011   0x004b   0x4b             LATIN CAPITAL LETTER K
+   L     76     0x4C     0114     %01001100   0x004c   0x4c             LATIN CAPITAL LETTER L
+   M     77     0x4D     0115     %01001101   0x004d   0x4d             LATIN CAPITAL LETTER M
+   N     78     0x4E     0116     %01001110   0x004e   0x4e             LATIN CAPITAL LETTER N
+   O     79     0x4F     0117     %01001111   0x004f   0x4f             LATIN CAPITAL LETTER O
+   P     80     0x50     0120     %01010000   0x0050   0x50             LATIN CAPITAL LETTER P
+   Q     81     0x51     0121     %01010001   0x0051   0x51             LATIN CAPITAL LETTER Q
+   R     82     0x52     0122     %01010010   0x0052   0x52             LATIN CAPITAL LETTER R
+   S     83     0x53     0123     %01010011   0x0053   0x53             LATIN CAPITAL LETTER S
+   T     84     0x54     0124     %01010100   0x0054   0x54             LATIN CAPITAL LETTER T
+   U     85     0x55     0125     %01010101   0x0055   0x55             LATIN CAPITAL LETTER U
+   V     86     0x56     0126     %01010110   0x0056   0x56             LATIN CAPITAL LETTER V
+   W     87     0x57     0127     %01010111   0x0057   0x57             LATIN CAPITAL LETTER W
+   X     88     0x58     0130     %01011000   0x0058   0x58             LATIN CAPITAL LETTER X
+   Y     89     0x59     0131     %01011001   0x0059   0x59             LATIN CAPITAL LETTER Y
+   Z     90     0x5A     0132     %01011010   0x005a   0x5a             LATIN CAPITAL LETTER Z
+   [     91     0x5B     0133     %01011011   0x005b   0x5b             LEFT SQUARE BRACKET
+   \     92     0x5C     0134     %01011100   0x005c   0x5c             REVERSE SOLIDUS
+   ]     93     0x5D     0135     %01011101   0x005d   0x5d             RIGHT SQUARE BRACKET
+   ^     94     0x5E     0136     %01011110   0x005e   0x5e             CIRCUMFLEX ACCENT
+   _     95     0x5F     0137     %01011111   0x005f   0x5f             LOW LINE
+   `     96     0x60     0140     %01100000   0x0060   0x60             GRAVE ACCENT
+   a     97     0x61     0141     %01100001   0x0061   0x61             LATIN SMALL LETTER A
+   b     98     0x62     0142     %01100010   0x0062   0x62             LATIN SMALL LETTER B
+   c     99     0x63     0143     %01100011   0x0063   0x63             LATIN SMALL LETTER C
+   d    100     0x64     0144     %01100100   0x0064   0x64             LATIN SMALL LETTER D
+   e    101     0x65     0145     %01100101   0x0065   0x65             LATIN SMALL LETTER E
+   f    102     0x66     0146     %01100110   0x0066   0x66             LATIN SMALL LETTER F
+   g    103     0x67     0147     %01100111   0x0067   0x67             LATIN SMALL LETTER G
+   h    104     0x68     0150     %01101000   0x0068   0x68             LATIN SMALL LETTER H
+   i    105     0x69     0151     %01101001   0x0069   0x69             LATIN SMALL LETTER I
+   j    106     0x6A     0152     %01101010   0x006a   0x6a             LATIN SMALL LETTER J
+   k    107     0x6B     0153     %01101011   0x006b   0x6b             LATIN SMALL LETTER K
+   l    108     0x6C     0154     %01101100   0x006c   0x6c             LATIN SMALL LETTER L
+   m    109     0x6D     0155     %01101101   0x006d   0x6d             LATIN SMALL LETTER M
+   n    110     0x6E     0156     %01101110   0x006e   0x6e             LATIN SMALL LETTER N
+   o    111     0x6F     0157     %01101111   0x006f   0x6f             LATIN SMALL LETTER O
+   p    112     0x70     0160     %01110000   0x0070   0x70             LATIN SMALL LETTER P
+   q    113     0x71     0161     %01110001   0x0071   0x71             LATIN SMALL LETTER Q
+   r    114     0x72     0162     %01110010   0x0072   0x72             LATIN SMALL LETTER R
+   s    115     0x73     0163     %01110011   0x0073   0x73             LATIN SMALL LETTER S
+   t    116     0x74     0164     %01110100   0x0074   0x74             LATIN SMALL LETTER T
+   u    117     0x75     0165     %01110101   0x0075   0x75             LATIN SMALL LETTER U
+   v    118     0x76     0166     %01110110   0x0076   0x76             LATIN SMALL LETTER V
+   w    119     0x77     0167     %01110111   0x0077   0x77             LATIN SMALL LETTER W
+   x    120     0x78     0170     %01111000   0x0078   0x78             LATIN SMALL LETTER X
+   y    121     0x79     0171     %01111001   0x0079   0x79             LATIN SMALL LETTER Y
+   z    122     0x7A     0172     %01111010   0x007a   0x7a             LATIN SMALL LETTER Z
+   {    123     0x7B     0173     %01111011   0x007b   0x7b             LEFT CURLY BRACKET
+   |    124     0x7C     0174     %01111100   0x007c   0x7c             VERTICAL LINE
+   }    125     0x7D     0175     %01111101   0x007d   0x7d             RIGHT CURLY BRACKET
+   ~    126     0x7E     0176     %01111110   0x007e   0x7e             TILDE
+       127     0x7F     0177     %01111111   0x007F   0x7F             DELETE
+   Ä    128     0x80     0200     %10000000   0x00c7   0xc3 0x87        LATIN CAPITAL LETTER C WITH CEDILLA
+   Å    129     0x81     0201     %10000001   0x00fc   0xc3 0xbc        LATIN SMALL LETTER U WITH DIAERESIS
+   Ç    130     0x82     0202     %10000010   0x00e9   0xc3 0xa9        LATIN SMALL LETTER E WITH ACUTE
+   É    131     0x83     0203     %10000011   0x00e2   0xc3 0xa2        LATIN SMALL LETTER A WITH CIRCUMFLEX
+   Ñ    132     0x84     0204     %10000100   0x00e4   0xc3 0xa4        LATIN SMALL LETTER A WITH DIAERESIS
+   Ö    133     0x85     0205     %10000101   0x00e0   0xc3 0xa0        LATIN SMALL LETTER A WITH GRAVE
+   Ü    134     0x86     0206     %10000110   0x00e5   0xc3 0xa5        LATIN SMALL LETTER A WITH RING ABOVE
+   á    135     0x87     0207     %10000111   0x00e7   0xc3 0xa7        LATIN SMALL LETTER C WITH CEDILLA
+   à    136     0x88     0210     %10001000   0x00ea   0xc3 0xaa        LATIN SMALL LETTER E WITH CIRCUMFLEX
+   â    137     0x89     0211     %10001001   0x00eb   0xc3 0xab        LATIN SMALL LETTER E WITH DIAERESIS
+   ä    138     0x8A     0212     %10001010   0x00e8   0xc3 0xa8        LATIN SMALL LETTER E WITH GRAVE
+   ã    139     0x8B     0213     %10001011   0x00ef   0xc3 0xaf        LATIN SMALL LETTER I WITH DIAERESIS
+   å    140     0x8C     0214     %10001100   0x00ee   0xc3 0xae        LATIN SMALL LETTER I WITH CIRCUMFLEX
+   ç    141     0x8D     0215     %10001101   0x00ec   0xc3 0xac        LATIN SMALL LETTER I WITH GRAVE
+   é    142     0x8E     0216     %10001110   0x00c4   0xc3 0x84        LATIN CAPITAL LETTER A WITH DIAERESIS
+   è    143     0x8F     0217     %10001111   0x00c5   0xc3 0x85        LATIN CAPITAL LETTER A WITH RING ABOVE
+   ê    144     0x90     0220     %10010000   0x00c9   0xc3 0x89        LATIN CAPITAL LETTER E WITH ACUTE
+   ë    145     0x91     0221     %10010001   0x00e6   0xc3 0xa6        LATIN SMALL LETTER AE
+   í    146     0x92     0222     %10010010   0x00c6   0xc3 0x86        LATIN CAPITAL LETTER AE
+   ì    147     0x93     0223     %10010011   0x00f4   0xc3 0xb4        LATIN SMALL LETTER O WITH CIRCUMFLEX
+   î    148     0x94     0224     %10010100   0x00f6   0xc3 0xb6        LATIN SMALL LETTER O WITH DIAERESIS
+   ï    149     0x95     0225     %10010101   0x00f2   0xc3 0xb2        LATIN SMALL LETTER O WITH GRAVE
+   ñ    150     0x96     0226     %10010110   0x00fb   0xc3 0xbb        LATIN SMALL LETTER U WITH CIRCUMFLEX
+   ó    151     0x97     0227     %10010111   0x00f9   0xc3 0xb9        LATIN SMALL LETTER U WITH GRAVE
+   ò    152     0x98     0230     %10011000   0x00ff   0xc3 0xbf        LATIN SMALL LETTER Y WITH DIAERESIS
+   ô    153     0x99     0231     %10011001   0x00d6   0xc3 0x96        LATIN CAPITAL LETTER O WITH DIAERESIS
+   ö    154     0x9A     0232     %10011010   0x00dc   0xc3 0x9c        LATIN CAPITAL LETTER U WITH DIAERESIS
+   õ    155     0x9B     0233     %10011011   0x00a2   0xc2 0xa2        CENT SIGN
+   ú    156     0x9C     0234     %10011100   0x00a3   0xc2 0xa3        POUND SIGN
+   ù    157     0x9D     0235     %10011101   0x00a5   0xc2 0xa5        YEN SIGN
+   û    158     0x9E     0236     %10011110   0x00df   0xc3 0x9f        LATIN SMALL LETTER SHARP S
+   ü    159     0x9F     0237     %10011111   0x0192   0xc6 0x92        LATIN SMALL LETTER F WITH HOOK
+   †    160     0xA0     0240     %10100000   0x00e1   0xc3 0xa1        LATIN SMALL LETTER A WITH ACUTE
+   °    161     0xA1     0241     %10100001   0x00ed   0xc3 0xad        LATIN SMALL LETTER I WITH ACUTE
+   ¢    162     0xA2     0242     %10100010   0x00f3   0xc3 0xb3        LATIN SMALL LETTER O WITH ACUTE
+   £    163     0xA3     0243     %10100011   0x00fa   0xc3 0xba        LATIN SMALL LETTER U WITH ACUTE
+   §    164     0xA4     0244     %10100100   0x00f1   0xc3 0xb1        LATIN SMALL LETTER N WITH TILDE
+   •    165     0xA5     0245     %10100101   0x00d1   0xc3 0x91        LATIN CAPITAL LETTER N WITH TILDE
+   ¶    166     0xA6     0246     %10100110   0x00aa   0xc2 0xaa        FEMININE ORDINAL INDICATOR
+   ß    167     0xA7     0247     %10100111   0x00ba   0xc2 0xba        MASCULINE ORDINAL INDICATOR
+   ®    168     0xA8     0250     %10101000   0x00bf   0xc2 0xbf        INVERTED QUESTION MARK
+   ©    169     0xA9     0251     %10101001   0x2310   0xe2 0x8c 0x90   REVERSED NOT SIGN
+   ™    170     0xAA     0252     %10101010   0x00ac   0xc2 0xac        NOT SIGN
+   ´    171     0xAB     0253     %10101011   0x00bd   0xc2 0xbd        VULGAR FRACTION ONE HALF
+   ¨    172     0xAC     0254     %10101100   0x00bc   0xc2 0xbc        VULGAR FRACTION ONE QUARTER
+   ≠    173     0xAD     0255     %10101101   0x00a1   0xc2 0xa1        INVERTED EXCLAMATION MARK
+   Æ    174     0xAE     0256     %10101110   0x00ab   0xc2 0xab        LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+   Ø    175     0xAF     0257     %10101111   0x00bb   0xc2 0xbb        RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+   ∞    176     0xB0     0260     %10110000   0x00e3   0xc3 0xa3        LATIN SMALL LETTER A WITH TILDE
+   ±    177     0xB1     0261     %10110001   0x00f5   0xc3 0xb5        LATIN SMALL LETTER O WITH TILDE
+   ≤    178     0xB2     0262     %10110010   0x00d8   0xc3 0x98        LATIN CAPITAL LETTER O WITH STROKE
+   ≥    179     0xB3     0263     %10110011   0x00f8   0xc3 0xb8        LATIN SMALL LETTER O WITH STROKE
+   ¥    180     0xB4     0264     %10110100   0x0153   0xc5 0x93        LATIN SMALL LIGATURE OE
+   µ    181     0xB5     0265     %10110101   0x0152   0xc5 0x92        LATIN CAPITAL LIGATURE OE
+   ∂    182     0xB6     0266     %10110110   0x00c0   0xc3 0x80        LATIN CAPITAL LETTER A WITH GRAVE
+   ∑    183     0xB7     0267     %10110111   0x00c3   0xc3 0x83        LATIN CAPITAL LETTER A WITH TILDE
+   ∏    184     0xB8     0270     %10111000   0x00d5   0xc3 0x95        LATIN CAPITAL LETTER O WITH TILDE
+   π    185     0xB9     0271     %10111001   0x00a8   0xc2 0xa8        DIAERESIS
+   ∫    186     0xBA     0272     %10111010   0x00b4   0xc2 0xb4        ACUTE ACCENT
+   ª    187     0xBB     0273     %10111011   0x2020   0xe2 0x80 0xa0   DAGGER
+   º    188     0xBC     0274     %10111100   0x00b6   0xc2 0xb6        PILCROW SIGN
+   Ω    189     0xBD     0275     %10111101   0x00a9   0xc2 0xa9        COPYRIGHT SIGN
+   æ    190     0xBE     0276     %10111110   0x00ae   0xc2 0xae        REGISTERED SIGN
+   ø    191     0xBF     0277     %10111111   0x2122   0xe2 0x84 0xa2   TRADE MARK SIGN
+   ¿    192     0xC0     0300     %11000000   0x0133   0xc4 0xb3        LATIN SMALL LIGATURE IJ
+   ¡    193     0xC1     0301     %11000001   0x0132   0xc4 0xb2        LATIN CAPITAL LIGATURE IJ
+   ¬    194     0xC2     0302     %11000010   0x05d0   0xd7 0x90        HEBREW LETTER ALEF
+   √    195     0xC3     0303     %11000011   0x05d1   0xd7 0x91        HEBREW LETTER BET
+   ƒ    196     0xC4     0304     %11000100   0x05d2   0xd7 0x92        HEBREW LETTER GIMEL
+   ≈    197     0xC5     0305     %11000101   0x05d3   0xd7 0x93        HEBREW LETTER DALET
+   ∆    198     0xC6     0306     %11000110   0x05d4   0xd7 0x94        HEBREW LETTER HE
+   «    199     0xC7     0307     %11000111   0x05d5   0xd7 0x95        HEBREW LETTER VAV
+   »    200     0xC8     0310     %11001000   0x05d6   0xd7 0x96        HEBREW LETTER ZAYIN
+   …    201     0xC9     0311     %11001001   0x05d7   0xd7 0x97        HEBREW LETTER HET
+        202     0xCA     0312     %11001010   0x05d8   0xd7 0x98        HEBREW LETTER TET
+   À    203     0xCB     0313     %11001011   0x05d9   0xd7 0x99        HEBREW LETTER YOD
+   Ã    204     0xCC     0314     %11001100   0x05db   0xd7 0x9b        HEBREW LETTER KAF
+   Õ    205     0xCD     0315     %11001101   0x05dc   0xd7 0x9c        HEBREW LETTER LAMED
+   Œ    206     0xCE     0316     %11001110   0x05de   0xd7 0x9e        HEBREW LETTER MEM
+   œ    207     0xCF     0317     %11001111   0x05e0   0xd7 0xa0        HEBREW LETTER NUN
+   –    208     0xD0     0320     %11010000   0x05e1   0xd7 0xa1        HEBREW LETTER SAMEKH
+   —    209     0xD1     0321     %11010001   0x05e2   0xd7 0xa2        HEBREW LETTER AYIN
+   “    210     0xD2     0322     %11010010   0x05e4   0xd7 0xa4        HEBREW LETTER PE
+   ”    211     0xD3     0323     %11010011   0x05e6   0xd7 0xa6        HEBREW LETTER TSADI
+   ‘    212     0xD4     0324     %11010100   0x05e7   0xd7 0xa7        HEBREW LETTER QOF
+   ’    213     0xD5     0325     %11010101   0x05e8   0xd7 0xa8        HEBREW LETTER RESH
+   ÷    214     0xD6     0326     %11010110   0x05e9   0xd7 0xa9        HEBREW LETTER SHIN
+   ◊    215     0xD7     0327     %11010111   0x05ea   0xd7 0xaa        HEBREW LETTER TAV
+   ÿ    216     0xD8     0330     %11011000   0x05df   0xd7 0x9f        HEBREW LETTER FINAL NUN
+   Ÿ    217     0xD9     0331     %11011001   0x05da   0xd7 0x9a        HEBREW LETTER FINAL KAF
+   ⁄    218     0xDA     0332     %11011010   0x05dd   0xd7 0x9d        HEBREW LETTER FINAL MEM
+   €    219     0xDB     0333     %11011011   0x05e3   0xd7 0xa3        HEBREW LETTER FINAL PE
+   ‹    220     0xDC     0334     %11011100   0x05e5   0xd7 0xa5        HEBREW LETTER FINAL TSADI
+   ›    221     0xDD     0335     %11011101   0x00a7   0xc2 0xa7        SECTION SIGN
+   ﬁ    222     0xDE     0336     %11011110   0x2227   0xe2 0x88 0xa7   LOGICAL AND
+   ﬂ    223     0xDF     0337     %11011111   0x221e   0xe2 0x88 0x9e   INFINITY
+   ‡    224     0xE0     0340     %11100000   0x03b1   0xce 0xb1        GREEK SMALL LETTER ALPHA
+   ·    225     0xE1     0341     %11100001   0x03b2   0xce 0xb2        GREEK SMALL LETTER BETA
+   ‚    226     0xE2     0342     %11100010   0x0393   0xce 0x93        GREEK CAPITAL LETTER GAMMA
+   „    227     0xE3     0343     %11100011   0x03c0   0xcf 0x80        GREEK SMALL LETTER PI
+   ‰    228     0xE4     0344     %11100100   0x03a3   0xce 0xa3        GREEK CAPITAL LETTER SIGMA
+   Â    229     0xE5     0345     %11100101   0x03c3   0xcf 0x83        GREEK SMALL LETTER SIGMA
+   Ê    230     0xE6     0346     %11100110   0x00b5   0xc2 0xb5        MICRO SIGN
+   Á    231     0xE7     0347     %11100111   0x03c4   0xcf 0x84        GREEK SMALL LETTER TAU
+   Ë    232     0xE8     0350     %11101000   0x03a6   0xce 0xa6        GREEK CAPITAL LETTER PHI
+   È    233     0xE9     0351     %11101001   0x0398   0xce 0x98        GREEK CAPITAL LETTER THETA
+   Í    234     0xEA     0352     %11101010   0x03a9   0xce 0xa9        GREEK CAPITAL LETTER OMEGA
+   Î    235     0xEB     0353     %11101011   0x03b4   0xce 0xb4        GREEK SMALL LETTER DELTA
+   Ï    236     0xEC     0354     %11101100   0x222e   0xe2 0x88 0xae   CONTOUR INTEGRAL
+   Ì    237     0xED     0355     %11101101   0x03c6   0xcf 0x86        GREEK SMALL LETTER PHI
+   Ó    238     0xEE     0356     %11101110   0x2208   0xe2 0x88 0x88   ELEMENT OF
+   Ô    239     0xEF     0357     %11101111   0x2229   0xe2 0x88 0xa9   INTERSECTION
+       240     0xF0     0360     %11110000   0x2261   0xe2 0x89 0xa1   IDENTICAL TO
+   Ò    241     0xF1     0361     %11110001   0x00b1   0xc2 0xb1        PLUS-MINUS SIGN
+   Ú    242     0xF2     0362     %11110010   0x2265   0xe2 0x89 0xa5   GREATER-THAN OR EQUAL TO
+   Û    243     0xF3     0363     %11110011   0x2264   0xe2 0x89 0xa4   LESS-THAN OR EQUAL TO
+   Ù    244     0xF4     0364     %11110100   0x2320   0xe2 0x8c 0xa0   TOP HALF INTEGRAL
+   ı    245     0xF5     0365     %11110101   0x2321   0xe2 0x8c 0xa1   BOTTOM HALF INTEGRAL
+@line  7 0 10 0 1
+@line 15 0 10 0 1
+@line 24 0 10 0 1
+@line 33 0 10 0 1
+@line 46 0 10 0 1
+@line 54 0 10 0 1
+   ˆ    246     0xF6     0366     %11110110   0x00f7   0xc3 0xb7        DIVISION SIGN
+   ˜    247     0xF7     0367     %11110111   0x2248   0xe2 0x89 0x88   ALMOST EQUAL TO
+   ¯    248     0xF8     0370     %11111000   0x00b0   0xc2 0xb0        DEGREE SIGN
+   ˘    249     0xF9     0371     %11111001   0x2219   0xe2 0x88 0x99   BULLET OPERATOR
+   ˙    250     0xFA     0372     %11111010   0x00b7   0xc2 0xb7        MIDDLE DOT
+   ˚    251     0xFB     0373     %11111011   0x221a   0xe2 0x88 0x9a   SQUARE ROOT
+   ¸    252     0xFC     0374     %11111100   0x207f   0xe2 0x81 0xbf   SUPERSCRIPT LATIN SMALL LETTER N
+   ˝    253     0xFD     0375     %11111101   0x00b2   0xc2 0xb2        SUPERSCRIPT TWO
+   ˛    254     0xFE     0376     %11111110   0x00b3   0xc2 0xb3        SUPERSCRIPT THREE
+   ˇ    255     0xFF     0377     %11111111   0x00af   0xc2 0xaf        MACRON
+
+
+
+@endnode
+
+
+@node "ASCII 2"
+
+@line 22 0 250 0 1
+@line 30 0 250 0 1
+@line 39 0 250 0 1
+@line 48 0 250 0 1
+
+                 @{B}Chr   Dec      Hex      Oct        Bin@{b}
+
+@line 18 42 0 0 1
+
+                         0     0x00     0000     %00000000
+                        1     0x01     0001     %00000001
+                        2     0x02     0002     %00000010
+                        3     0x03     0003     %00000011
+                        4     0x04     0004     %00000100
+                        5     0x05     0005     %00000101
+                        6     0x06     0006     %00000110
+                        7     0x07     0007     %00000111
+                        8     0x08     0010     %00001000
+                         9     0x09     0011     %00001001
+                        10     0x0A     0012     %00001010
+                       11     0x0B     0013     %00001011
+                       12     0x0C     0014     %00001100
+                        13     0x0D     0015     %00001101
+                       14     0x0E     0016     %00001110
+                       15     0x0F     0017     %00001111
+                       16     0x10     0020     %00010000
+                       17     0x11     0021     %00010001
+                       18     0x12     0022     %00010010
+                       19     0x13     0023     %00010011
+                       20     0x14     0024     %00010100
+                       21     0x15     0025     %00010101
+                       22     0x16     0026     %00010110
+                       23     0x17     0027     %00010111
+                       24     0x18     0030     %00011000
+                       25     0x19     0031     %00011001
+                       26     0x1A     0032     %00011010
+                       27     0x1B     0033     %00011011
+                       28     0x1C     0034     %00011100
+                       29     0x1D     0035     %00011101
+                       30     0x1E     0036     %00011110
+                       31     0x1F     0037     %00011111
+                        32     0x20     0040     %00100000
+                  !     33     0x21     0041     %00100001
+                  "     34     0x22     0042     %00100010
+                  #     35     0x23     0043     %00100011
+                  $     36     0x24     0044     %00100100
+                  %     37     0x25     0045     %00100101
+                  &     38     0x26     0046     %00100110
+                  '     39     0x27     0047     %00100111
+                  (     40     0x28     0050     %00101000
+                  )     41     0x29     0051     %00101001
+                  *     42     0x2A     0052     %00101010
+                  +     43     0x2B     0053     %00101011
+                  ,     44     0x2C     0054     %00101100
+                  -     45     0x2D     0055     %00101101
+                  .     46     0x2E     0056     %00101110
+                  /     47     0x2F     0057     %00101111
+                  0     48     0x30     0060     %00110000
+                  1     49     0x31     0061     %00110001
+                  2     50     0x32     0062     %00110010
+                  3     51     0x33     0063     %00110011
+                  4     52     0x34     0064     %00110100
+                  5     53     0x35     0065     %00110101
+                  6     54     0x36     0066     %00110110
+                  7     55     0x37     0067     %00110111
+                  8     56     0x38     0070     %00111000
+                  9     57     0x39     0071     %00111001
+                  :     58     0x3A     0072     %00111010
+                  ;     59     0x3B     0073     %00111011
+                  <     60     0x3C     0074     %00111100
+                  =     61     0x3D     0075     %00111101
+                  >     62     0x3E     0076     %00111110
+                  ?     63     0x3F     0077     %00111111
+                  @@     64     0x40     0100     %01000000
+                  A     65     0x41     0101     %01000001
+                  B     66     0x42     0102     %01000010
+                  C     67     0x43     0103     %01000011
+                  D     68     0x44     0104     %01000100
+                  E     69     0x45     0105     %01000101
+                  F     70     0x46     0106     %01000110
+                  G     71     0x47     0107     %01000111
+                  H     72     0x48     0110     %01001000
+                  I     73     0x49     0111     %01001001
+                  J     74     0x4A     0112     %01001010
+                  K     75     0x4B     0113     %01001011
+                  L     76     0x4C     0114     %01001100
+                  M     77     0x4D     0115     %01001101
+                  N     78     0x4E     0116     %01001110
+                  O     79     0x4F     0117     %01001111
+                  P     80     0x50     0120     %01010000
+                  Q     81     0x51     0121     %01010001
+                  R     82     0x52     0122     %01010010
+                  S     83     0x53     0123     %01010011
+                  T     84     0x54     0124     %01010100
+                  U     85     0x55     0125     %01010101
+                  V     86     0x56     0126     %01010110
+                  W     87     0x57     0127     %01010111
+                  X     88     0x58     0130     %01011000
+                  Y     89     0x59     0131     %01011001
+                  Z     90     0x5A     0132     %01011010
+                  [     91     0x5B     0133     %01011011
+                  \     92     0x5C     0134     %01011100
+                  ]     93     0x5D     0135     %01011101
+                  ^     94     0x5E     0136     %01011110
+                  _     95     0x5F     0137     %01011111
+                  `     96     0x60     0140     %01100000
+                  a     97     0x61     0141     %01100001
+                  b     98     0x62     0142     %01100010
+                  c     99     0x63     0143     %01100011
+                  d    100     0x64     0144     %01100100
+                  e    101     0x65     0145     %01100101
+                  f    102     0x66     0146     %01100110
+                  g    103     0x67     0147     %01100111
+                  h    104     0x68     0150     %01101000
+                  i    105     0x69     0151     %01101001
+                  j    106     0x6A     0152     %01101010
+                  k    107     0x6B     0153     %01101011
+                  l    108     0x6C     0154     %01101100
+                  m    109     0x6D     0155     %01101101
+                  n    110     0x6E     0156     %01101110
+                  o    111     0x6F     0157     %01101111
+                  p    112     0x70     0160     %01110000
+                  q    113     0x71     0161     %01110001
+                  r    114     0x72     0162     %01110010
+                  s    115     0x73     0163     %01110011
+                  t    116     0x74     0164     %01110100
+                  u    117     0x75     0165     %01110101
+                  v    118     0x76     0166     %01110110
+                  w    119     0x77     0167     %01110111
+                  x    120     0x78     0170     %01111000
+                  y    121     0x79     0171     %01111001
+                  z    122     0x7A     0172     %01111010
+                  {    123     0x7B     0173     %01111011
+                  |    124     0x7C     0174     %01111100
+                  }    125     0x7D     0175     %01111101
+                  ~    126     0x7E     0176     %01111110
+                      127     0x7F     0177     %01111111
+                  Ä    128     0x80     0200     %10000000
+                  Å    129     0x81     0201     %10000001
+                  Ç    130     0x82     0202     %10000010
+                  É    131     0x83     0203     %10000011
+                  Ñ    132     0x84     0204     %10000100
+                  Ö    133     0x85     0205     %10000101
+                  Ü    134     0x86     0206     %10000110
+                  á    135     0x87     0207     %10000111
+                  à    136     0x88     0210     %10001000
+                  â    137     0x89     0211     %10001001
+                  ä    138     0x8A     0212     %10001010
+                  ã    139     0x8B     0213     %10001011
+                  å    140     0x8C     0214     %10001100
+                  ç    141     0x8D     0215     %10001101
+                  é    142     0x8E     0216     %10001110
+                  è    143     0x8F     0217     %10001111
+                  ê    144     0x90     0220     %10010000
+                  ë    145     0x91     0221     %10010001
+                  í    146     0x92     0222     %10010010
+                  ì    147     0x93     0223     %10010011
+                  î    148     0x94     0224     %10010100
+                  ï    149     0x95     0225     %10010101
+                  ñ    150     0x96     0226     %10010110
+                  ó    151     0x97     0227     %10010111
+                  ò    152     0x98     0230     %10011000
+                  ô    153     0x99     0231     %10011001
+                  ö    154     0x9A     0232     %10011010
+                  õ    155     0x9B     0233     %10011011
+                  ú    156     0x9C     0234     %10011100
+                  ù    157     0x9D     0235     %10011101
+                  û    158     0x9E     0236     %10011110
+                  ü    159     0x9F     0237     %10011111
+                  †    160     0xA0     0240     %10100000
+                  °    161     0xA1     0241     %10100001
+                  ¢    162     0xA2     0242     %10100010
+                  £    163     0xA3     0243     %10100011
+                  §    164     0xA4     0244     %10100100
+                  •    165     0xA5     0245     %10100101
+                  ¶    166     0xA6     0246     %10100110
+                  ß    167     0xA7     0247     %10100111
+                  ®    168     0xA8     0250     %10101000
+                  ©    169     0xA9     0251     %10101001
+                  ™    170     0xAA     0252     %10101010
+                  ´    171     0xAB     0253     %10101011
+                  ¨    172     0xAC     0254     %10101100
+                  ≠    173     0xAD     0255     %10101101
+                  Æ    174     0xAE     0256     %10101110
+                  Ø    175     0xAF     0257     %10101111
+                  ∞    176     0xB0     0260     %10110000
+                  ±    177     0xB1     0261     %10110001
+                  ≤    178     0xB2     0262     %10110010
+                  ≥    179     0xB3     0263     %10110011
+                  ¥    180     0xB4     0264     %10110100
+                  µ    181     0xB5     0265     %10110101
+                  ∂    182     0xB6     0266     %10110110
+                  ∑    183     0xB7     0267     %10110111
+                  ∏    184     0xB8     0270     %10111000
+                  π    185     0xB9     0271     %10111001
+                  ∫    186     0xBA     0272     %10111010
+                  ª    187     0xBB     0273     %10111011
+                  º    188     0xBC     0274     %10111100
+                  Ω    189     0xBD     0275     %10111101
+                  æ    190     0xBE     0276     %10111110
+                  ø    191     0xBF     0277     %10111111
+                  ¿    192     0xC0     0300     %11000000
+                  ¡    193     0xC1     0301     %11000001
+                  ¬    194     0xC2     0302     %11000010
+                  √    195     0xC3     0303     %11000011
+                  ƒ    196     0xC4     0304     %11000100
+                  ≈    197     0xC5     0305     %11000101
+                  ∆    198     0xC6     0306     %11000110
+                  «    199     0xC7     0307     %11000111
+                  »    200     0xC8     0310     %11001000
+                  …    201     0xC9     0311     %11001001
+                       202     0xCA     0312     %11001010
+                  À    203     0xCB     0313     %11001011
+                  Ã    204     0xCC     0314     %11001100
+                  Õ    205     0xCD     0315     %11001101
+                  Œ    206     0xCE     0316     %11001110
+                  œ    207     0xCF     0317     %11001111
+                  –    208     0xD0     0320     %11010000
+                  —    209     0xD1     0321     %11010001
+                  “    210     0xD2     0322     %11010010
+                  ”    211     0xD3     0323     %11010011
+                  ‘    212     0xD4     0324     %11010100
+                  ’    213     0xD5     0325     %11010101
+                  ÷    214     0xD6     0326     %11010110
+                  ◊    215     0xD7     0327     %11010111
+                  ÿ    216     0xD8     0330     %11011000
+                  Ÿ    217     0xD9     0331     %11011001
+                  ⁄    218     0xDA     0332     %11011010
+                  €    219     0xDB     0333     %11011011
+                  ‹    220     0xDC     0334     %11011100
+                  ›    221     0xDD     0335     %11011101
+                  ﬁ    222     0xDE     0336     %11011110
+                  ﬂ    223     0xDF     0337     %11011111
+                  ‡    224     0xE0     0340     %11100000
+                  ·    225     0xE1     0341     %11100001
+                  ‚    226     0xE2     0342     %11100010
+                  „    227     0xE3     0343     %11100011
+                  ‰    228     0xE4     0344     %11100100
+                  Â    229     0xE5     0345     %11100101
+                  Ê    230     0xE6     0346     %11100110
+                  Á    231     0xE7     0347     %11100111
+                  Ë    232     0xE8     0350     %11101000
+                  È    233     0xE9     0351     %11101001
+                  Í    234     0xEA     0352     %11101010
+                  Î    235     0xEB     0353     %11101011
+                  Ï    236     0xEC     0354     %11101100
+                  Ì    237     0xED     0355     %11101101
+                  Ó    238     0xEE     0356     %11101110
+                  Ô    239     0xEF     0357     %11101111
+                      240     0xF0     0360     %11110000
+                  Ò    241     0xF1     0361     %11110001
+                  Ú    242     0xF2     0362     %11110010
+                  Û    243     0xF3     0363     %11110011
+                  Ù    244     0xF4     0364     %11110100
+                  ı    245     0xF5     0365     %11110101
+                  ˆ    246     0xF6     0366     %11110110
+                  ˜    247     0xF7     0367     %11110111
+                  ¯    248     0xF8     0370     %11111000
+                  ˘    249     0xF9     0371     %11111001
+                  ˙    250     0xFA     0372     %11111010
+                  ˚    251     0xFB     0373     %11111011
+                  ¸    252     0xFC     0374     %11111100
+                  ˝    253     0xFD     0375     %11111101
+                  ˛    254     0xFE     0376     %11111110
+                  ˇ    255     0xFF     0377     %11111111
+
+
+
+@endnode

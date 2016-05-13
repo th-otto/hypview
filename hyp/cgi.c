@@ -130,42 +130,42 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 		break;
 	case HYP_NODE_EXTERNAL_REF:
 		html_out_header(NULL, opts, out, "@{ link }", node, NULL, NULL, syms, FALSE);
-		destname = html_quote_nodename(hyp, node);
+		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ link \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
 		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, syms, FALSE);
-		destname = html_quote_nodename(hyp, node);
+		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ system \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_REXX_SCRIPT:
 		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, syms, FALSE);
-		destname = html_quote_nodename(hyp, node);
+		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rxs \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_REXX_COMMAND:
 		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, syms, FALSE);
-		destname = html_quote_nodename(hyp, node);
+		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rx \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_QUIT:
 		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, syms, FALSE);
-		destname = html_quote_nodename(hyp, node);
+		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ quit \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
 		break;
 	case HYP_NODE_CLOSE:
 		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, syms, FALSE);
-		destname = html_quote_nodename(hyp, node);
+		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ close \"%s\"}\n", destname);
 		g_free(destname);
 		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);

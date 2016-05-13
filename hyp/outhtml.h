@@ -89,6 +89,8 @@ static int html_popup_id;
 #define QUOTE_JS         0x0008
 #define QUOTE_ALLOWUTF8  0x0010
 #define QUOTE_LABEL      0x0020
+#define QUOTE_UNICODE    0x0040
+#define QUOTE_NOLTR      0x0080
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -133,6 +135,9 @@ static char *html_quote_name(const char *name, unsigned int flags)
 				} else if (flags & QUOTE_SPACE)
 				{
 					STR("&nbsp;");
+				} else if (flags & QUOTE_LABEL)
+				{
+					*str++ = '_';
 				} else
 				{
 					*str++ = ' ';
@@ -483,6 +488,18 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					*str++ = '%';
 					*str++ = hex[c >> 4];
 					*str++ = hex[c & 0x0f];
+				} else if (c >= 0x80 && (flags & QUOTE_UNICODE))
+				{
+					h_unichar_t wc;
+					--name;
+					name = hyp_utf8_getchar(name, &wc);
+					/*
+					 * neccessary for hebrew characters to prevent switching to rtl
+					 */
+					if (wc >= 0x590 && wc <= 0x5ff && !(flags & QUOTE_NOLTR))
+						str += sprintf(str, "<span dir=\"ltr\">&#x%lx;</span>", (unsigned long) wc);
+					else
+						str += sprintf(str, "&#x%lx;", (unsigned long) wc);
 				} else
 				{
 					*str++ = c;
@@ -499,7 +516,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 
 /* ------------------------------------------------------------------------- */
 
-static char *html_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
+static char *html_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node, unsigned int flags)
 {
 	INDEX_ENTRY *entry;
 	size_t namelen;
@@ -509,7 +526,7 @@ static char *html_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 	entry = hyp->indextable[node];
 	namelen = entry->length - SIZEOF_INDEX_ENTRY;
 	buf = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
-	p = html_quote_name(buf, (entry->type == HYP_NODE_EXTERNAL_REF ? QUOTE_CONVSLASH : 0));
+	p = html_quote_name(buf, (entry->type == HYP_NODE_EXTERNAL_REF ? QUOTE_CONVSLASH : 0) | flags);
 	g_free(buf);
 	return p;
 }
@@ -531,43 +548,43 @@ static void html_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 	}
 	if (hyp->database != NULL)
 	{
-		str = html_quote_name(hyp->database, 0);
+		str = html_quote_name(hyp->database, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @database \"%s\" -->\n", str);
 		g_free(str);
 	}
 	if (hypnode_valid(hyp, hyp->default_page))
 	{
-		str = html_quote_nodename(hyp, hyp->default_page);
+		str = html_quote_nodename(hyp, hyp->default_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @default \"%s\" -->\n", str);
 		g_free(str);
 	}
 	if (hyp->hcp_options != NULL)
 	{
-		str = html_quote_name(hyp->hcp_options, 0);
+		str = html_quote_name(hyp->hcp_options, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @options \"%s\" -->\n", str);
 		g_free(str);
 	}
 	if (hyp->author != NULL)
 	{
-		str = html_quote_name(hyp->author, 0);
+		str = html_quote_name(hyp->author, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @author \"%s\" -->\n", str);
 		g_free(str);
 	}
 	if (hypnode_valid(hyp, hyp->help_page))
 	{
-		str = html_quote_nodename(hyp, hyp->help_page);
+		str = html_quote_nodename(hyp, hyp->help_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @help \"%s\" -->\n", str);
 		g_free(str);
 	}
 	if (hyp->version != NULL)
 	{
-		str = html_quote_name(hyp->version, 0);
+		str = html_quote_name(hyp->version, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @$VER: %s -->\n", str);
 		g_free(str);
 	}
 	if (hyp->subject != NULL)
 	{
-		str = html_quote_name(hyp->subject, 0);
+		str = html_quote_name(hyp->subject, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @subject \"%s\" -->\n", str);
 		g_free(str);
 	}
@@ -585,7 +602,7 @@ static void html_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 		
 		for (h = hyp->hostname; h != NULL; h = h->next)
 		{
-			str = html_quote_name(h->name, 0);
+			str = html_quote_name(h->name, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- @hostname \"%s\" -->\n", str);
 			g_free(str);
 		}
@@ -600,7 +617,7 @@ static void html_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const 
 	gboolean converror = FALSE;
 	
 	dst = hyp_conv_charset(hyp->comp_charset, opts->output_charset, str, len, &converror);
-	p = html_quote_name(dst, 0);
+	p = html_quote_name(dst, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 	g_string_append(out, p);
 	g_free(p);
 	g_free(dst);
@@ -659,12 +676,12 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 			{
 				fname = hyp_invalid_page(gfx->extern_node_index);
 				origfname = fname;
-				alt = html_quote_name(fname, 0);
+				alt = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 			} else if (hyp->indextable[gfx->extern_node_index]->type != HYP_NODE_IMAGE)
 			{
 				fname = g_strdup_printf(_("<non-image node #%u>"), gfx->extern_node_index);
 				origfname = fname;
-				alt = html_quote_name(fname, 0);
+				alt = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 			} else if (opts->for_cgi)
 			{
 				if (opts->read_images)
@@ -677,17 +694,17 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 				} else
 				{
 					fname = g_strdup("");
-					alt = html_quote_name(fname, 0);
+					alt = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 				}
 				origfname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
 			} else
 			{
 				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
 				origfname = fname;
-				alt = html_quote_name(fname, 0);
+				alt = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 			}
-			quoted = html_quote_name(fname, 0);
-			origquoted = html_quote_name(origfname, 0);
+			quoted = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+			origquoted = html_quote_name(origfname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- %s \"%s\" %d%s%s -->",
 				gfx->islimage ? "@limage" : "@image",
 				origfname,
@@ -787,8 +804,8 @@ static void html_out_stg_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, st
 		else
 			fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
 	}
-	quoted = html_quote_name(fname, 0);
-	origquoted = html_quote_name(origfname, 0);
+	quoted = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+	origquoted = html_quote_name(origfname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 	hyp_utf8_sprintf_charset(out, opts->output_charset, "%s \"<a href=\"%s\">%s</a>\" %d",
 		gfx->islimage ? "@limage" : "@image",
 		quoted,
@@ -829,7 +846,7 @@ static void html_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	{
 		if (sym->lineno == lineno)
 		{
-			char *str = html_quote_name(sym->name, QUOTE_LABEL);
+			char *str = html_quote_name(sym->name, QUOTE_LABEL | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 			hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- lineno %u --><a %s=\"%s\"></a>", sym->lineno, html_name_attr, str);
 			g_free(str);
 			sym->referenced = TRUE;
@@ -850,7 +867,7 @@ static void html_out_alias(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, cons
 	sym = sym_find(syms, nodename, REF_ALIASNAME);
 	while (sym)
 	{
-		char *str = html_quote_name(sym->name, QUOTE_LABEL);
+		char *str = html_quote_name(sym->name, QUOTE_LABEL | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a %s=\"%s\"></a>", html_name_attr, str);
 		g_free(str);
 		sym->referenced = TRUE;
@@ -983,7 +1000,7 @@ static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_noden
 			g_free(params);
 		} else
 		{
-			p = html_quote_name(filename, entry->type == HYP_NODE_EXTERNAL_REF ? QUOTE_CONVSLASH : 0);
+			p = html_quote_name(filename, (entry->type == HYP_NODE_EXTERNAL_REF ? QUOTE_CONVSLASH : 0) | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 		}
 		g_free(filename);
 		filename = p;
@@ -1371,7 +1388,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		node != entry->previous)
 	{
 		str = html_filename_for_node(hyp, opts, entry->previous, TRUE);
-		title = html_quote_nodename(hyp, entry->previous);
+		title = html_quote_nodename(hyp, entry->previous, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		disabled = "";
 	} else
 	{
@@ -1393,7 +1410,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		node != entry->toc_index)
 	{
 		str = html_filename_for_node(hyp, opts, entry->toc_index, TRUE);
-		title = html_quote_nodename(hyp, entry->toc_index);
+		title = html_quote_nodename(hyp, entry->toc_index, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		disabled = "";
 	} else
 	{
@@ -1415,7 +1432,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		node != entry->next)
 	{
 		str = html_filename_for_node(hyp, opts, entry->next, TRUE);
-		title = html_quote_nodename(hyp, entry->next);
+		title = html_quote_nodename(hyp, entry->next, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		disabled = "";
 	} else
 	{
@@ -1437,7 +1454,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		node != hyp->index_page)
 	{
 		str = html_filename_for_node(hyp, opts, hyp->index_page, TRUE);
-		title = html_quote_nodename(hyp, hyp->index_page);
+		title = html_quote_nodename(hyp, hyp->index_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		disabled = "";
 	} else
 	{
@@ -1480,7 +1497,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		node != hyp->help_page)
 	{
 		str = html_filename_for_node(hyp, opts, hyp->help_page, TRUE);
-		title = html_quote_nodename(hyp, hyp->help_page);
+		title = html_quote_nodename(hyp, hyp->help_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		disabled = "";
 	} else
 	{
@@ -1525,7 +1542,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		xpos += button_w;
 	
 		g_string_append_printf(out, "<li style=\"position:absolute;left:%dpx;\">\n", xpos);
-		str = html_quote_name(html_referer_url, 0);
+		str = html_quote_name(html_referer_url, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		g_string_append_printf(out, "<input type=\"hidden\" name=\"url\" value=\"%s\"%s\n", str, html_closer);
 		g_free(str);
 		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" id=\"searchfield\" name=\"q\" size=\"10\" value=\"\"%s\n", html_closer);
@@ -1551,7 +1568,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 	switch (xref->desttype)
 	{
 	case HYP_NODE_EOF:
-		quoted = html_quote_name(xref->destname, 0);
+		quoted = html_quote_name(xref->destname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"%s\">%s</a>", html_error_link_style, xref->destfilename, quoted);
 		g_free(quoted);
 		break;
@@ -1576,7 +1593,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			is_xref = ft != HYP_FT_NONE;
 			if (ft == HYP_FT_RSC)
 			{
-				quoted = html_quote_name(xref->destname, QUOTE_CONVSLASH|QUOTE_SPACE);
+				quoted = html_quote_name(xref->destname, QUOTE_CONVSLASH | QUOTE_SPACE | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s&file=%s&tree=%u\">%s></a>", style, html_view_rsc_href, quoted, xref->line, xref->text);
 				g_free(quoted);
 			} else if (ft == HYP_FT_HYP)
@@ -1594,7 +1611,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					char *params = html_cgi_params(opts);
 					
 					ref = g_strconcat(dir, *dir ? "/" : "", base, NULL);
-					quoted = html_quote_name(ref, QUOTE_CONVSLASH | QUOTE_URI);
+					quoted = html_quote_name(ref, QUOTE_CONVSLASH | QUOTE_URI | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
 					hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s?url=%s%s\">%s</a>", style, cgi_scriptname, quoted, params, xref->text);
 					g_free(quoted);
 					g_free(ref);
@@ -1604,7 +1621,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				{
 					char *htmlbase = replace_ext(base, HYP_EXT_HYP, "");
 					html_convert_filename(htmlbase);
-					quoted = html_quote_name(htmlbase, QUOTE_CONVSLASH);
+					quoted = html_quote_name(htmlbase, QUOTE_CONVSLASH | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 					hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"../%s/%s.html\">%s</a>", style, quoted, quoted, xref->text);
 					g_free(quoted);
 					g_free(htmlbase);
@@ -1643,7 +1660,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			}
 			if (label)
 			{
-				char *quoted = html_quote_name(label, QUOTE_LABEL);
+				char *quoted = html_quote_name(label, QUOTE_LABEL | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s#%s\"%s>%s</a>", style, xref->destfilename, quoted, target, xref->text);
 				g_free(quoted);
 			} else if (xref->desttype == HYP_NODE_POPUP && *target == '\0')
@@ -1692,7 +1709,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 		break;
 	case HYP_NODE_IMAGE:
 		/* that would be an inline image; currently not supported by compiler */
-		quoted = html_quote_name(xref->destname, 0);
+		quoted = html_quote_name(xref->destname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"%s\">%s</a>", html_image_link_style, quoted, xref->text);
 		g_free(quoted);
 		break;
@@ -1847,7 +1864,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 	if (doctype)
 		g_string_append(out, doctype);
-	if (1)
+	if (0)
 		html_out_entities(out);
 	if (doctype)
 		g_string_append(out, ">\n");
@@ -1872,13 +1889,13 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	g_string_append_printf(out, "<meta name=\"GENERATOR\" content=\"%s %s\"%s\n", gl_program_name, gl_program_version, html_closer);
 	if (hyp && hyp->author != NULL)
 	{
-		char *str = html_quote_name(hyp->author, 0);
+		char *str = html_quote_name(hyp->author, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<meta name=\"author\" content=\"%s\"%s\n", str, html_closer);
 		g_free(str);
 	}
 	if (hyp && hyp->database != NULL)
 	{
-		char *str = html_quote_name(hyp->database, 0);
+		char *str = html_quote_name(hyp->database, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<meta name=\"description\" content=\"%s\"%s\n", str, html_closer);
 		g_free(str);
 	}
@@ -1998,16 +2015,16 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 		 */
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\">", html_dropdown_style);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\" id=\"%s_content\">", html_dropdown_info_style, html_hyp_info_id);
-		str = html_quote_name(hyp->database, 0);
+		str = html_quote_name(hyp->database, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("Topic       : %s\n"), fixnull(str));
 		g_free(str);
-		str = html_quote_name(hyp->author, 0);
+		str = html_quote_name(hyp->author, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("Author      : %s\n"), fixnull(str));
 		g_free(str);
-		str = html_quote_name(hyp->version, 0);
+		str = html_quote_name(hyp->version, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("Version     : %s\n"), fixnull(str));
 		g_free(str);
-		str = html_quote_name(hyp->subject, 0);
+		str = html_quote_name(hyp->subject, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, _("Subject     : %s\n"), fixnull(str));
 		g_free(str);
 		str = g_strdup_printf(_("Nodes       : %u\n"
@@ -2036,7 +2053,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 			HYP_HOSTNAME *h;
 			for (h = hyp->hostname; h != NULL; h = h->next)
 			{
-				str = html_quote_name(h->name, 0);
+				str = html_quote_name(h->name, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, _("\n@hostname   : %s"), str);
 				g_free(str);
 			}
@@ -2102,7 +2119,7 @@ static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
 			g_string_append(out, "</div>\n");
 	}
-#if 1
+#if 0
 	/*
 	 * hack to remove the "]>" at the start that slips
 	 * in from the entity definitions if the file
@@ -2198,11 +2215,11 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		if (nodeptr->window_title)
 		{
 			char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
-			title = html_quote_name(buf, 0);
+			title = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 			g_free(buf);
 		} else
 		{
-			title = html_quote_nodename(hyp, node);
+			title = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		}
 
 		/*
@@ -2260,7 +2277,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					dest_page = DEC_255(&src[3]);
 					buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
 					buf = chomp(buf);
-					text = html_quote_name(buf, 0);
+					text = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 					g_free(buf);
 					if (hypnode_valid(hyp, dest_page))
 					{
@@ -2305,7 +2322,35 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 			}
 			src = hyp_skip_esc(src);
 		}
-
+		
+		/*
+		 * join vertical lines,
+		 * otherwise we get small gaps.
+		 * downcase: this will print wrong commands when embedding the stg source in html
+		 */
+		{
+			struct hyp_gfx *gfx1, *gfx2;
+			
+			for (gfx1 = hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
+			{
+				if (gfx1->type == HYP_ESC_LINE && gfx1->width == 0 && gfx1->begend == 0)
+				{
+					for (gfx2 = gfx1->next; gfx2 != NULL; gfx2 = gfx2->next)
+					{
+						if (gfx2->type == HYP_ESC_LINE && gfx2->width == 0 && gfx2->begend == 0 &&
+							gfx1->x_offset == gfx2->x_offset &&
+							gfx1->style == gfx2->style &&
+							(gfx1->y_offset + gfx1->height) == gfx2->y_offset)
+						{
+							gfx1->height += gfx2->height;
+							gfx2->type = 0;
+							gfx2->used = TRUE;
+						}
+					}
+				}
+			}
+		}
+		
 		if (!for_inline)
 			html_out_header(hyp, opts, out, title, node, hyp_gfx, xrefs, syms, FALSE);
 
@@ -2355,7 +2400,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					{
 					case HYP_ESC_ESC:
 						FLUSHTREE();
-						g_string_append(out, "&#9243;");
+						g_string_append(out, "&#x241b;");
 						at_bol = FALSE;
 						src++;
 						break;
@@ -2416,7 +2461,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 								{
 									INDEX_ENTRY *entry = hyp->indextable[xref.dest_page];
 									len = entry->length - SIZEOF_INDEX_ENTRY;
-									xref.text = html_quote_nodename(hyp, xref.dest_page);
+									xref.text = html_quote_nodename(hyp, xref.dest_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 									str_equal = entry->type == HYP_NODE_INTERNAL;
 								} else
 								{
@@ -2431,7 +2476,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 								len = *src - HYP_STRLEN_OFFSET;
 								src++;
 								buf = hyp_conv_to_utf8(hyp->comp_charset, src, len);
-								xref.text = html_quote_name(buf, 0);
+								xref.text = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 								g_free(buf);
 								src += len;
 								if (hypnode_valid(hyp, xref.dest_page))
@@ -2477,7 +2522,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							dest_page = DEC_255(&src[7]);
 							if (hypnode_valid(hyp, dest_page))
 							{
-								str = html_quote_nodename(hyp, dest_page);
+								str = html_quote_nodename(hyp, dest_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 							} else
 							{
 								str = hyp_invalid_page(dest_page);
@@ -2515,8 +2560,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 						break;
 						
 					case HYP_ESC_CASE_TEXTATTR:
-						if (html_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
-							at_bol = FALSE;
+						html_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST);
 						textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 						src++;
 						break;
