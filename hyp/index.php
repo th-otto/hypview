@@ -415,10 +415,19 @@ A file without any nodes (something that the compiler refuses to create)
 
 <tr>
 <td>
+<li><a href="javascript: submitUrl(hyptestdir + &quot;image.hyp&quot;);">image.hyp</a></li>
+</td>
+<td>
+A file with some @images
+</td>
+</tr>
+
+<tr>
+<td>
 <li><a href="javascript: submitUrl(hyptestdir + &quot;limage.hyp&quot;);">limage.hyp</a></li>
 </td>
 <td>
-A file with some images
+A file with some @limages
 </td>
 </tr>
 

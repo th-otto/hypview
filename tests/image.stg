@@ -10,9 +10,31 @@
 
 @node "Main"
 center
-@limage "rtr_logo.img" 0
+@image "rtr_logo.img" 0
+
+
+
+
+
+
+
+
+
+
+
 left, at offset 10
-@limage "rtr_logo.img" 11
+@image "rtr_logo.img" 11
+
+
+
+
+
+
+
+
+
+
+
 right
-@limage "rtr_logo.img" 49
+@image "rtr_logo.img" 49
 @endnode

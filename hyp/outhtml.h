@@ -670,6 +670,8 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 			char *dithermask;
 			char *origfname;
 			char *origquoted;
+			int x;
+			const char *align;
 			
 			dithermask = format_dithermask(gfx->dithermask);
 			if (!hypnode_valid(hyp, gfx->extern_node_index))
@@ -710,11 +712,28 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 				origfname,
 				gfx->x_offset,
 				*dithermask ? " %" : "", dithermask);
+			if (gfx->x_offset == 0)
+			{
+				x = (hyp->line_width - gfx->pixwidth / HYP_PIC_FONTW) / 2;
+				if (x < 0)
+					x = 0;
+				align = " align=\"center\"";
+			} else
+			{
+				x = gfx->x_offset - 1;
+				align = "";
+				if ((x + (gfx->pixwidth / HYP_PIC_FONTW)) == hyp->line_width)
+					align = " align=\"right\"";
+			}
+			
 			if (gfx->islimage)
 			{
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" align=\"center\" style=\"width:%dex;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\"%s style=\"%swidth:%dch; left:%dch\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>\n",
 					html_limage_style,
+					align,
+					*align ? "" : "position:relative; ",
 					hyp->line_width,
+					x,
 					quoted,
 					alt,
 					gfx->pixwidth,
@@ -724,7 +743,7 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 			{
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<div class=\"%s\" style=\"position:absolute; left:%dch;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>",
 					html_image_style,
-					gfx->x_offset > 0 ? gfx->x_offset - 1 : 0,
+					x,
 					quoted,
 					alt,
 					gfx->pixwidth,
@@ -1273,6 +1292,8 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "/* style used for @limage elements */\n");
 	g_string_append_printf(out, ".%s {\n", html_limage_style);
 	g_string_append(out, "  margin: 0;\n");
+	g_string_append(out, "  border: 0;\n");
+	g_string_append(out, "  padding: 0;\n");
 	g_string_append(out, "  z-index:-1;\n");
 	g_string_append(out, "}\n");
 
