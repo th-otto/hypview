@@ -361,7 +361,13 @@ void on_recent_selected(WINDOW_DATA *win, int sel)
 		{
 			const char *path = (const char *)l->data;
 			hv_recent_add(path); /* move it to top of list */
-			OpenFileInWindow(win, path, NULL, HYP_NOINDEX, TRUE, FALSE, FALSE);
+			if (OpenFileInWindow(win, path, NULL, 0, TRUE, FALSE, FALSE) == NULL)
+			{
+				ASSERT(recent_list);
+				g_free(recent_list->data);
+				recent_list = g_slist_delete_link(recent_list, recent_list);
+				RecentUpdate(win);
+			}
 			return;
 		}
 		sel--;

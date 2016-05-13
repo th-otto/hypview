@@ -160,7 +160,10 @@ void MarkerUpdate(WINDOW_DATA *win)
 		if (strncmp(name, "bookmark-", 9) == 0)
 		{
 			if (i < MAX_MARKEN)
+			{
 				gtk_menu_item_set_label(item, marken[i].node_name);
+				gtk_menu_item_set_use_underline(item, FALSE);
+			}
 			i++;
 		}
 	}

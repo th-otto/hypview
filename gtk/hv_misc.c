@@ -144,6 +144,7 @@ void RecentUpdate(WINDOW_DATA *win)
 			{
 				const char *path = (const char *)l->data;
 				gtk_menu_item_set_label(item, hyp_basename(path));
+				gtk_menu_item_set_use_underline(item, FALSE);
 				gtk_widget_set_tooltip_text(GTK_WIDGET(item), path);
 				gtk_widget_show(GTK_WIDGET(item));
 				l = l->next;
@@ -175,7 +176,13 @@ void on_recent_selected(GtkAction *action, WINDOW_DATA *win)
 		{
 			const char *path = (const char *)l->data;
 			hv_recent_add(path); /* move it to top of list */
-			OpenFileInWindow(win, path, NULL, HYP_NOINDEX, TRUE, FALSE, FALSE);
+			if (OpenFileInWindow(win, path, NULL, 0, TRUE, FALSE, FALSE) == NULL)
+			{
+				ASSERT(recent_list);
+				g_free(recent_list->data);
+				recent_list = g_slist_delete_link(recent_list, recent_list);
+				RecentUpdate(win);
+			}
 			return;
 		}
 		sel--;
