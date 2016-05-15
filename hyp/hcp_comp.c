@@ -7121,7 +7121,12 @@ static gboolean pass(hcp_vars *vars, const char *filename)
 				vars->p2_real_external_node_counter++;
 			}
 			ASSERT(vars->p1_external_node_counter == vars->p2_external_node_counter);
-			ASSERT(vars->hyp->num_index == vars->p2_real_external_node_counter);
+			/*
+			 * that assertion is no longer true:
+			 * p2_real_external_node_counter goes over all external entries,
+			 * but unreferenced extern entries are not written to the index table
+			 */
+			/* ASSERT(vars->hyp->num_index == vars->p2_real_external_node_counter); */
 		}
 		flush_status_output(vars);
 	}
