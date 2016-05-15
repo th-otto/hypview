@@ -341,6 +341,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		return FALSE;
 		
 	case WIND_CLOSE:
+		if (win->whandle > 0)
 		{
 			GRECT gr;
 			wind_get_grect(win->whandle, WF_CURRXYWH, &gr);
@@ -349,8 +350,8 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			gl_profile.viewer.win_w = gr.g_w;
 			gl_profile.viewer.win_h = gr.g_h;
 			HypProfile_SetChanged();
+			SendAV_ACCWINDCLOSED(win->whandle);
 		}
-		SendAV_ACCWINDCLOSED(win->whandle);
 		/*
 		 * save the path of the last window closed,
 		 * so it can be reopenend again on receive of AC_OPEN.
