@@ -519,6 +519,7 @@ HYP_DOCUMENT *hyp_new(void)
 	/* default-values for information later read from exteneded headers */
 	hyp->comp_os = hyp_get_current_os();
 	hyp->comp_charset = hyp_default_charset(hyp->comp_os);
+	/* hyp->comp_vers = HCP_COMPILER_VERSION; */
 	hyp->st_guide_flags = 0;
 	hyp->line_width = HYP_STGUIDE_DEFAULT_LINEWIDTH;
 	
@@ -828,16 +829,31 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 			hyp->subject = load_string(hyp->comp_charset, handle, len);
 			break;
 		case HYP_EXTH_TREEHEADER:					/* HypTree-Header */
-			/* FIXME: NYI: tree header */
-			hyp->hyptree_len = len;
 			if (len != 0)
 			{
-				hyp->hyptree_data = g_new(unsigned char, hyp->hyptree_len);
-				if (hyp->hyptree_data != NULL)
-					read(handle, hyp->hyptree_data, len);
-				else
+				if (len < SIZEOF_LONG)
+				{
+					HYP_DBG(("ignoring truncated hyptree of length %u", len));
 					lseek(handle, len, SEEK_CUR);
+					len = 0;
+				} else
+				{
+					hyp->hyptree_data = g_new(unsigned char, len);
+					if (hyp->hyptree_data != NULL)
+					{
+						hyp->hyptree_len = read(handle, hyp->hyptree_data, len);
+						if (hyp->hyptree_len != len)
+						{
+							HYP_DBG(("short read: %u", hyp->hyptree_len));
+							len = hyp->hyptree_len;
+						}
+					} else
+					{
+						lseek(handle, len, SEEK_CUR);
+					}
+				}
 			}
+			hyp->hyptree_len = len;
 			break;
 		case HYP_EXTH_STGUIDE_FLAGS:				/* ST-Guide flags */
 			if (len != SIZEOF_SHORT)

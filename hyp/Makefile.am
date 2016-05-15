@@ -59,6 +59,7 @@ libhyp_a_SOURCES = \
 	prepare.c \
 	ref.c \
 	hyp_save.c \
+	hyp_tree.c \
 	tool.c \
 	hyp_file.c \
 	hyp_err.c \

@@ -1,4 +1,4 @@
-c:\usr\bin\hcp.ttp
+c:\usr\bin\hypinfo.ttp
 .C[-Ih:\src\udo\tools\hypview\include\tos]
 .C[-Ih:\src\udo\tools\hypview\pic]
 .C[-Ih:\src\udo\tools\hypview\include]
@@ -18,9 +18,9 @@ cstartv.o
 
 h:\src\udo\tools\hypview\hyp\hypinfo.c
 h:\src\udo\tools\hypview\hyp\hcp_opts.c
-h:\src\udo\tools\hypview\hyp\llangid.c
-h:\src\udo\tools\hypview\hyp\sparse.c
-h:\src\udo\tools\hypview\hyp\model.c
+;h:\src\udo\tools\hypview\hyp\llangid.c
+;h:\src\udo\tools\hypview\hyp\sparse.c
+;h:\src\udo\tools\hypview\hyp\model.c
 
 h:\src\udo\tools\hypview\hyp\hyp.c
 h:\src\udo\tools\hypview\hyp\ref.c
@@ -53,6 +53,7 @@ h:\src\udo\tools\hypview\hyp\utl_err.c
 h:\src\udo\tools\hypview\hyp\xgetopt.c
 h:\src\udo\tools\hypview\hyp\str2imax.c
 
+h:\src\udo\tools\hypview\hyp\tos\hypmain.c
 h:\src\udo\tools\hypview\hyp\tos\mkdir.c
 h:\src\udo\tools\hypview\hyp\tos\malloc.c
 

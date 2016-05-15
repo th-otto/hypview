@@ -721,6 +721,10 @@ static void warn_duplicate_arg(hcp_vars *vars, const char *what)
 
 /* ------------------------------------------------------------------------- */
 
+/*
+ * for strings that are still in utf-8 in memory,
+ * but are written in target encoding to file
+ */
 static size_t target_strlen(hcp_vars *vars, const char *name)
 {
 	return vars->hyp->comp_charset == HYP_CHARSET_UTF8 ? strlen(name) : g_utf8_str_len(name, STR0TERM);
@@ -5137,6 +5141,53 @@ static gboolean build_index_table(hcp_vars *vars)
 	
 /* ------------------------------------------------------------------------- */
 
+static gboolean hcp_tree_alloc(hcp_vars *vars)
+{
+	hyp_nodenr node;
+	size_t bitlen;
+	long titlelen = 0;
+	NODEITEM *nodeptr;
+	HYP_DOCUMENT *hyp = vars->hyp;
+	
+	if (hyp->hyptree_data != NULL)
+	{
+		HYP_DBG(("hyptree already allocated"));
+		return FALSE;
+	}
+	hyp->first_text_page = hyp_first_text_page(hyp);
+	hyp->last_text_page = hyp_last_text_page(hyp);
+	bitlen = SIZEOF_LONG + (((hyp->last_text_page + 16u) >> 4) << 1);
+
+	hyp->hyptree_data = g_new0(unsigned char, bitlen);
+	if (hyp->hyptree_data == NULL)
+	{
+		oom(vars);
+		return FALSE;
+	}
+	hyp->hyptree_len = bitlen;
+	
+	for (node = 0; node < vars->p1_node_counter; node++)
+	{
+		nodeptr = vars->node_table[node];
+		if (nodeptr->window_title)
+		{
+			titlelen += target_strlen(vars, nodeptr->window_title) + 1;
+			hyp_tree_setbit(hyp, node);
+		}
+	}
+	long_to_chars(titlelen, hyp->hyptree_data);
+	
+	/*
+	 * do not write the bit table when there are no titlss
+	 */
+	if (titlelen == 0)
+		hyp->hyptree_len = SIZEOF_LONG;
+	
+	return TRUE;
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean finish_pass1(hcp_vars *vars)
 {
 	NODEITEM *node, *link;
@@ -5578,6 +5629,9 @@ static gboolean finish_pass1(hcp_vars *vars)
 	 */
 	if (build_index_table(vars) == FALSE)
 		return FALSE;
+	if (!(vars->hyp->st_guide_flags & STG_ENCRYPTED))
+		if (hcp_tree_alloc(vars) == FALSE)
+			return FALSE;
 	
 	/*
 	 * init counters for pass2
@@ -7297,7 +7351,9 @@ static gboolean write_header(hcp_vars *vars)
 		return FALSE;
 	if (write_ext_header_string(vars, hyp, outfile, HYP_EXTH_SUBJECT, hyp->subject) == FALSE)
 		return FALSE;
-	/* FIXME: NYI: hyptree header */
+	if (hyp->hyptree_len != 0)
+		if (write_ext_header(outfile, HYP_EXTH_TREEHEADER, hyp->hyptree_len, hyp->hyptree_data) == FALSE)
+			return FALSE;
 	/*
 	 * see hyp_load() for comments about why next two fields are
 	 * written in little endian order.
@@ -7645,7 +7701,7 @@ static gboolean write_references(hcp_vars *vars)
 				write_str(vars, REF_NODENAME, lab->name, HYP_NOINDEX, reffile);
 				++num_entries;
 				++vars->stats.refs_generated;
-				if (vars->node_table[lab->node_index]->window_title)
+				if (!(vars->hyp->st_guide_flags & STG_ENCRYPTED) && vars->node_table[lab->node_index]->window_title)
 				{
 					write_str(vars, REF_TITLE, vars->node_table[lab->node_index]->window_title, HYP_NOINDEX, reffile);
 					++num_entries;

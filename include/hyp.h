@@ -430,7 +430,7 @@ typedef struct
 	hyp_nodenr first_text_page; /* first node number with text */
 	hyp_nodenr last_text_page;  /* last node number with text */
 	int ref_count;				/* usage count */
-	unsigned short hyptree_len;
+	hyp_nodenr hyptree_len;
 	unsigned char *hyptree_data;
 	char *language; 			/* Description for hypertext language (@lang) */
 	gboolean language_guessed;	/* TRUE if language was guessed by liblangid */
@@ -1009,6 +1009,13 @@ const char *hyp_utf8_strcasestr(const char *searchee, const char *lookfor);
  */
 short HypCountExtRefs(HYP_NODE *entry);
 
+
+/*
+ * hyp_tree.c
+ */
+gboolean hyp_tree_isset(HYP_DOCUMENT *hyp, hyp_nodenr node);
+void hyp_tree_setbit(HYP_DOCUMENT *hyp, hyp_nodenr node);
+gboolean hyp_tree_alloc(HYP_DOCUMENT *hyp);
 
 
 /*

@@ -43,6 +43,7 @@ h:\src\udo\tools\hypview\hyp\hyp_bin.c
 h:\src\udo\tools\hypview\hyp\hyp_err.c
 h:\src\udo\tools\hypview\hyp\hyp_glib.c
 h:\src\udo\tools\hypview\hyp\hyp_cset.c
+h:\src\udo\tools\hypview\hyp\hyp_tree.c
 h:\src\udo\tools\hypview\hyp\utl_dbg.c
 h:\src\udo\tools\hypview\hyp\rpl_stat.c
 h:\src\udo\tools\hypview\hyp\profile.c
