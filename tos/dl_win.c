@@ -522,8 +522,10 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 			win->proc(win, WIND_TBUPDATE, &toolbar);
 
 			/* click i toolbar? */
-			if ((event->mx >= toolbar.g_x) && (event->my >= toolbar.g_y) &&
-				(event->mx < toolbar.g_x + toolbar.g_w) && (event->my < toolbar.g_y + toolbar.g_h))
+			if (event->mx >= toolbar.g_x &&
+				event->my >= toolbar.g_y &&
+				event->mx < toolbar.g_x + toolbar.g_w &&
+				event->my < toolbar.g_y + toolbar.g_h)
 			{
 				_WORD num;
 
@@ -534,7 +536,7 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 				 * check for legal (>=0), selectable, and active object
 				 * with exit or touchexit flag
 				 */
-				if ((num >= 0) && (win->toolbar[num].ob_flags & OF_SELECTABLE) &&
+				if (num >= 0 && (win->toolbar[num].ob_flags & OF_SELECTABLE) &&
 					/* not done here because of disabled TO_REMARKER
 					!(win->toolbar[num].ob_state & OS_DISABLED) && */
 					(win->toolbar[num].ob_flags & (OF_EXIT | OF_TOUCHEXIT)))
@@ -691,7 +693,7 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 					WindowCalcScroll(win);
 					rel_x = ((win->docsize.w - win->docsize.x) - (win->scroll.g_w - DL_WIN_XADD(win)) / win->x_raster);
 					rel_y = ((win->docsize.h - win->docsize.y) - (win->scroll.g_h - DL_WIN_YADD(win)) / win->y_raster);
-					if ((rel_x < 0) || (rel_y < 0))
+					if (rel_x < 0 || rel_y < 0)
 					{
 						rel_x = min(rel_x, 0);
 						rel_y = min(rel_y, 0);
@@ -1035,7 +1037,7 @@ WINDOW_DATA *find_openwindow_by_whandle(short handle)
 
 	while (win)
 	{
-		if ((win->type == WIN_WINDOW) && (win->whandle == handle) && (win->status & WIS_OPEN))
+		if (win->type == WIN_WINDOW && win->whandle == handle && (win->status & WIS_OPEN))
 			return win;
 		win = win->next;
 	}
@@ -1048,7 +1050,7 @@ WINDOW_DATA *find_window_by_whandle(short handle)
 
 	while (win)
 	{
-		if ((win->type == WIN_WINDOW) && (win->whandle == handle))
+		if (win->type == WIN_WINDOW && win->whandle == handle)
 			return win;
 		win = win->next;
 	}
@@ -1061,7 +1063,7 @@ WINDOW_DATA *find_window_by_proc(HNDL_WIN proc)
 
 	while (win)
 	{
-		if ((win->type == WIN_WINDOW) && win->owner == gl_apid && (win->proc == proc))
+		if (win->type == WIN_WINDOW && win->owner == gl_apid && win->proc == proc)
 			return win;
 		win = win->next;
 	}
@@ -1074,7 +1076,7 @@ WINDOW_DATA *find_window_by_data(void *data)
 
 	while (win)
 	{
-		if ((win->type == WIN_WINDOW) && (win->data == data))
+		if (win->type == WIN_WINDOW && win->data == data)
 			return win;
 		win = win->next;
 	}
