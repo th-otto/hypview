@@ -129,7 +129,6 @@ HYP_NODE *hyp_loadtext(HYP_DOCUMENT *hyp, hyp_nodenr node_num)
 	
 			if (ret == FALSE)
 			{
-				HYP_DBG(("ERROR: while preparing page for display!"));
 				hyp_node_free(node);
 				node = NULL;
 			}
@@ -158,7 +157,10 @@ gboolean GetEntryBytes(HYP_DOCUMENT *hyp, hyp_nodenr num, const unsigned char *s
 		unsigned long data_size = GetCompressedSize(hyp, num);
 
 		if (!lh5_decode(dst, bytes, src, data_size))
+		{
+			HYP_DBG(("ERROR: while decoding node!"));
 			return FALSE;
+		}
 	} else
 	{
 		memcpy(dst, src, bytes);

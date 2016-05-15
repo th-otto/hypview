@@ -77,7 +77,7 @@ static unsigned short getbits(lh5_decoder *lh5, short n)
 
 /* ------------------------------------------------------------------------- */
 
-static void make_table(lh5_decoder *lh5, short nchar, unsigned char bitlen[], short tablebits, unsigned short table[])
+static gboolean make_table(lh5_decoder *lh5, short nchar, unsigned char bitlen[], short tablebits, unsigned short table[])
 {
 	unsigned short count[17], weight[17], start[18], *p;
 	unsigned short i, k, len, ch, jutbits, avail, nextcode, mask;
@@ -90,10 +90,12 @@ static void make_table(lh5_decoder *lh5, short nchar, unsigned char bitlen[], sh
 	start[1] = 0;
 	for (i = 1; i <= 16; i++)
 		start[i + 1] = start[i] + (count[i] << (16 - i));
-#if 0
+	
 	if (start[17] != (unsigned short) (1U << 16))
-		error("Bad table");
-#endif
+	{
+		/* error("Bad table"); */
+		return FALSE;
+	}
 
 	jutbits = 16 - tablebits;
 	for (i = 1; i <= tablebits; i++)
@@ -149,11 +151,12 @@ static void make_table(lh5_decoder *lh5, short nchar, unsigned char bitlen[], sh
 		}
 		start[len] = nextcode;
 	}
+	return TRUE;
 }
 
 /* ------------------------------------------------------------------------- */
 
-static void read_pt_len(lh5_decoder *lh5, short nn, short nbit, short i_special)
+static gboolean read_pt_len(lh5_decoder *lh5, short nn, short nbit, short i_special)
 {
 	short i, c, n;
 	unsigned short mask;
@@ -192,13 +195,15 @@ static void read_pt_len(lh5_decoder *lh5, short nn, short nbit, short i_special)
 		}
 		while (i < nn)
 			lh5->pt_len[i++] = 0;
-		make_table(lh5, nn, lh5->pt_len, 8, lh5->pt_table);
+		if (make_table(lh5, nn, lh5->pt_len, 8, lh5->pt_table) == FALSE)
+			return FALSE;
 	}
+	return TRUE;
 }
 
 /* ------------------------------------------------------------------------- */
 
-static void read_c_len(lh5_decoder *lh5)
+static gboolean read_c_len(lh5_decoder *lh5)
 {
 	short i, c, n;
 	unsigned short mask;
@@ -247,8 +252,10 @@ static void read_c_len(lh5_decoder *lh5)
 		}
 		while (i < NC)
 			lh5->c_len[i++] = 0;
-		make_table(lh5, NC, lh5->c_len, 12, lh5->c_table);
+		if (make_table(lh5, NC, lh5->c_len, 12, lh5->c_table) == FALSE)
+			return FALSE;
 	}
+	return TRUE;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -260,9 +267,12 @@ static unsigned short decode_c(lh5_decoder *lh5)
 	if (lh5->blocksize == 0)
 	{
 		lh5->blocksize = getbits(lh5, 16);
-		read_pt_len(lh5, NT, TBIT, 3);
-		read_c_len(lh5);
-		read_pt_len(lh5, NP, PBIT, -1);
+		if (read_pt_len(lh5, NT, TBIT, 3) == FALSE)
+			return NC; /* error */
+		if (read_c_len(lh5) == FALSE)
+			return NC;
+		if (read_pt_len(lh5, NP, PBIT, -1) == FALSE)
+			return NC; /* error */
 	}
 	lh5->blocksize--;
 	j = lh5->c_table[lh5->bitbuf >> (BITBUFSIZ - 12)];
@@ -334,7 +344,7 @@ static void decode_start(lh5_decoder *lh5)
    is smaller.
    Call decode_start() once for each new file
    before calling this function. */
-static void decode5(lh5_decoder *lh5, unsigned int count)
+static gboolean decode5(lh5_decoder *lh5, unsigned int count)
 {
 	unsigned short c;
 	unsigned int r;
@@ -345,17 +355,20 @@ static void decode5(lh5_decoder *lh5, unsigned int count)
 		lh5->buffer[r] = lh5->buffer[lh5->dec_i];
 		lh5->dec_i = (lh5->dec_i + 1) & (DICSIZ - 1);
 		if (++r == count)
-			return;
+			return TRUE;
 	}
 	for (;;)
 	{
 		c = decode_c(lh5);
 
-		if (c <= UCHAR_MAX)
+		if (c >= NC)
+		{
+			return FALSE;
+		} else if (c <= UCHAR_MAX)
 		{
 			lh5->buffer[r] = c;
 			if (++r == count)
-				return;
+				return TRUE;
 		} else
 		{
 			lh5->dec_j = c - (UCHAR_MAX + 1 - THRESHOLD);
@@ -365,7 +378,7 @@ static void decode5(lh5_decoder *lh5, unsigned int count)
 				lh5->buffer[r] = lh5->buffer[lh5->dec_i];
 				lh5->dec_i = (lh5->dec_i + 1) & (DICSIZ - 1);
 				if (++r == count)
-					return;
+					return TRUE;
 			}
 		}
 	}
@@ -392,7 +405,16 @@ gboolean lh5_decode(unsigned char *unpackedMem, unsigned long unpackedLen, const
 	while (lh5->unpackedLen != 0)
 	{
 		n = (unsigned int) ((lh5->unpackedLen > DICSIZ) ? DICSIZ : lh5->unpackedLen);
-		decode5(lh5, n);
+		if (decode5(lh5, n) == FALSE)
+		{
+			g_free(lh5);
+#ifdef EILSEQ
+			errno = EILSEQ;
+#else
+			errno = ERANGE;
+#endif
+			return FALSE;
+		}
 		crc = lh5_update_crc(lh5->buffer, n, crc);
 		lh5->unpackedLen -= n;
 		memcpy(lh5->unpackedMem, lh5->buffer, n);
