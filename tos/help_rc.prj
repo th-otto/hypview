@@ -1,6 +1,7 @@
 help_rc.ttp
 .C[-Ih:\src\udo\tools\hypview\include\tos]
 .C[-Ih:\src\udo\tools\hypview\include]
+.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
 .C[-Ic:\pc\include]
 .C[-P]
 
@@ -14,7 +15,7 @@ help_rc.ttp
 =
 cstartv.o
 
-h:\src\udo\tools\hypview\tools\help_rc.c
+h:\src\udo\tools\hypview\tools\help_rc\help_rc.c
 h:\src\udo\tools\hypview\hyp\tos\malloc.c
 
 pcgemlib.lib

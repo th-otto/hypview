@@ -185,45 +185,8 @@ char form_feed[80];
 unsigned char *curr_coded_text;
 unsigned char must_read = TRUE;					/* For get_nibble    */
 
-/*-----------------------------------------------------------*/
-/*-------------- Prototypes ---------------------------------*/
-/*-----------------------------------------------------------*/
-void strfill(char *s, char c, int cnt);
-void trans_bstr(char *s, unsigned char *bstr);
-void read_info(void);
-unsigned char get_nibble(void);
-unsigned char get_byte(void);
-long decode(int index, char *txtbuf);
-void wr_header(void);
-char *get_keyword(SRCHKEY_ENTRY *keytable, int i);
-int read_header(void);
-int read_screen_table(void);
-int read_string_table(void);
-int read_Index(void);
-int read_Link(void);
-int is_helpfile(void);
-int get_name(char *pos, char *name);
-_UWORD screen_index(_UWORD scr_code);
-int is_dir_screen(long offset);
-int rd_sidx_names(SUB_IDX_ENTRY subidx_code);
-void ins_name(NAME_ENTRY **namelist, int *name_cnt, char *sname, _UWORD code, unsigned char attr, _UWORD lnk_idx);
-int find_name(NAME_ENTRY *namelist, char *sname, NAME_ENTRY **pelem);
-void corr_attrs(NAME_ENTRY *namelist);
-void setup_namearr(NAME_ENTRY *namelist);
-void order_nametable(NAME_ENTRY *namelist);
-int write_names(NAME_ENTRY *namelist);
-void wr_nametable(void);
-void wr_linktable(void);
-void transform(char *source, long length, char *d);
-int decompile(void);
-int make_txtfile(void);
-void init_rc(void);
-void get_options(void);
-void wr_options(void);
-void open_log(void);
-
 /*--------- Some general routines --------------*/
-void strfill(char *s, char c, int cnt)
+static void strfill(char *s, char c, int cnt)
 {
 	while (cnt-- > 0)
 		*s++ = c;
@@ -295,7 +258,7 @@ static void wr_msg(const char *s, unsigned char device)
 }
 
 
-void trans_bstr(char *s, unsigned char * bstr)
+static void trans_bstr(char *s, unsigned char * bstr)
 {
 	static const char *numbers = "0123456789ABCDEF";
 
@@ -311,7 +274,7 @@ void trans_bstr(char *s, unsigned char * bstr)
 }
 
 
-void init_rc(void)
+static void init_rc(void)
 {
 	char *p;
 
@@ -319,17 +282,17 @@ void init_rc(void)
 	screen_cnt = 0;
 	warnings = 0;
 	errors = 0;
-	p = strchr(filename, '.');
+	strcpy(hlpname, filename);
+	p = strrchr(filename, '.');
 	if (p)
 		*p = EOS;						/* Delete extensions */
-	sprintf(hlpname, "%s.HLP", filename);
-	sprintf(logname, "%s.LOG", filename);
-	sprintf(txtname, "%s.TXT", filename);
-	sprintf(scrname, "%s.SCR", filename);
+	sprintf(logname, "%s.log", filename);
+	sprintf(txtname, "%s.txt", filename);
+	sprintf(scrname, "%s.scr", filename);
 }
 
 
-void get_options(void)
+static void get_options(void)
 {
 	char *s;
 
@@ -382,7 +345,7 @@ void get_options(void)
 /*    hex numbers, separated by commas. It finishes at    */
 /*    the end of the line.                                */
 /*--------------------------------------------------------*/
-void read_info(void)
+static void read_info(void)
 {
 	FILE *info_file;
 	int cnt = 0;
@@ -439,7 +402,56 @@ void read_info(void)
 
 
 
-void wr_nametable(void)
+/*----------------------------------------------*/
+/*  screen_index:                               */
+/*----------------------------------------------*/
+/*  Calculates from a reference code the index  */
+/*  to the screen-table.                        */
+/*----------------------------------------------*/
+static _UWORD screen_index(_UWORD scr_code)
+{
+	_UWORD index;
+
+	if ((scr_code & 0x0004) > 0x0004)
+	{
+		sprintf(msg, ill_code_msg, scr_code);
+		wr_msg(msg, TO_ALL);
+		wr_msg(abort_msg, TO_ALL);
+		errors++;
+		exit(1);
+	}
+	index = (((scr_code & 0x7FF8) >> 1) - 4) >> 2;
+	return (index);
+}
+
+
+static int write_names(NAME_ENTRY * namelist)
+{
+	static const char *const attr_str[ATTR_CNT] = { "SCREEN_NAME ",
+		"CAPSENSITIVE",
+		" SENSITIVE  ",
+		"   LINK     ",
+	};
+	int i = 0;
+
+	fprintf(logfile, "Name\t\t\t\tAttribute    Code     ScreenOffset\n");
+
+	while (namelist != NULL)
+	{
+		fprintf(logfile, "<%-32.32s> %s 0x%X", namelist->name, attr_str[namelist->name_attr], namelist->scr_code);
+		if (namelist->name_attr == LINK)
+			fprintf(logfile, from_msg, namelist->link_index);
+		else
+			fprintf(logfile, " = 0x%X", screen_index(namelist->scr_code));
+		fprintf(logfile, "\n");
+		namelist = namelist->next;
+		i++;
+	}
+	return (i);
+}
+
+
+static void wr_nametable(void)
 {
 	char bar[81];
 
@@ -451,7 +463,7 @@ void wr_nametable(void)
 }
 
 
-void wr_linktable(void)
+static void wr_linktable(void)
 {
 	char bar[81];
 
@@ -463,14 +475,14 @@ void wr_linktable(void)
 }
 
 
-void wr_options(void)
+static void wr_options(void)
 {
 	sprintf(msg, option_msg, options);
 	wr_msg(msg, TO_ALL);
 }
 
 
-void open_log(void)
+static void open_log(void)
 {
 	if (!logfile)
 	{
@@ -496,10 +508,9 @@ void open_log(void)
 /*  Reads the next half-byte from the input.    */
 /*  'curr_coded_text' points to the next byte.  */
 /*----------------------------------------------*/
-unsigned char get_nibble(void)
+static unsigned char get_nibble(void)
 {
 	static unsigned char byte_read;
-
 	unsigned char nibble;
 
 	if (must_read)
@@ -522,7 +533,7 @@ unsigned char get_nibble(void)
 /*  Reads the next two nibbles from the input   */
 /*  and returns them as a byte.                 */
 /*----------------------------------------------*/
-unsigned char get_byte(void)
+static unsigned char get_byte(void)
 {
 	unsigned char byte;
 
@@ -533,7 +544,7 @@ unsigned char get_byte(void)
 }
 
 
-void wr_header(void)
+static void wr_header(void)
 {
 	char char_string[50];
 
@@ -591,13 +602,24 @@ static int read_key_table(SRCHKEY_ENTRY ** ptable, int which)
 /*---------------------------------------------*/
 static int read_coded(int index, unsigned char *coded_text)
 {
-	long code_length,
-	 bytes_read;
+	long code_length, bytes_read;
 
 	code_length = screen_table[index + 1] - screen_table[index];
 	fseek(hlpfile, screen_table[index], SEEK_SET);
 	bytes_read = fread(coded_text, 1, code_length, hlpfile);
 	return (bytes_read == code_length);
+}
+
+
+/*----------------------------------------------*/
+/*  get_keyword:                                */
+/*----------------------------------------------*/
+/*  Gets the 'i'th keyword from the search-word */
+/*  table. ('i' starts from 0)                  */
+/*----------------------------------------------*/
+static char *get_keyword(SRCHKEY_ENTRY *keytable, int i)
+{
+	return ((char *) (&keytable[i]) + keytable[i].pos);
 }
 
 
@@ -632,15 +654,25 @@ static void wr_keytables(void)
 }
 
 
-/*----------------------------------------------*/
-/*  get_keyword:                                */
-/*----------------------------------------------*/
-/*  Gets the 'i'th keyword from the search-word */
-/*  table. ('i' starts from 0)                  */
-/*----------------------------------------------*/
-char *get_keyword(SRCHKEY_ENTRY *keytable, int i)
+/*-----------------------------------------------*/
+/*  find_name:                                   */
+/*-----------------------------------------------*/
+/*  Searches in the name-list 'namelist' for the */
+/*  name 'sname' and if successfull returns a    */
+/*  pointer '*pelem' to the found entry.         */
+/*-----------------------------------------------*/
+static int find_name(NAME_ENTRY * namelist, char *sname, NAME_ENTRY ** pelem)
 {
-	return ((char *) (&keytable[i]) + keytable[i].pos);
+	unsigned char found = FALSE;
+
+	while ((namelist != NULL) && !found)
+	{
+		found = strcmp(namelist->name, sname) == 0;
+		*pelem = namelist;
+		namelist = namelist->next;
+	}
+
+	return (found);
 }
 
 
@@ -652,7 +684,7 @@ char *get_keyword(SRCHKEY_ENTRY *keytable, int i)
 /*  corresponds to its affiliation to the       */
 /*  search-word tables is set.                  */
 /*----------------------------------------------*/
-void corr_attrs(NAME_ENTRY *namelist)
+static void corr_attrs(NAME_ENTRY *namelist)
 {
 	int i;
 	char *search_name;
@@ -685,7 +717,7 @@ void corr_attrs(NAME_ENTRY *namelist)
 /*  large storage area.                             */
 /*  The return is the length of the decoded screen. */
 /*--------------------------------------------------*/
-long decode(int index, char *plain_text)
+static long decode(int index, char *plain_text)
 {
 	static unsigned char first_call = TRUE;
 	static unsigned char *code_buffer = NULL;
@@ -750,29 +782,6 @@ long decode(int index, char *plain_text)
 
 
 /*----------------------------------------------*/
-/*  screen_index:                               */
-/*----------------------------------------------*/
-/*  Calculates from a reference code the index  */
-/*  to the screen-table.                        */
-/*----------------------------------------------*/
-_UWORD screen_index(_UWORD scr_code)
-{
-	_UWORD index;
-
-	if ((scr_code & 0x0004) > 0x0004)
-	{
-		sprintf(msg, ill_code_msg, scr_code);
-		wr_msg(msg, TO_ALL);
-		wr_msg(abort_msg, TO_ALL);
-		errors++;
-		exit(1);
-	}
-	index = (((scr_code & 0x7FF8) >> 1) - 4) >> 2;
-	return (index);
-}
-
-
-/*----------------------------------------------*/
 /*  get_name:                                   */
 /*----------------------------------------------*/
 /*  Returns in 'name' the string starting from  */
@@ -780,7 +789,7 @@ _UWORD screen_index(_UWORD scr_code)
 /*  In addition the total length of the string  */
 /*  is returned.                                */
 /*----------------------------------------------*/
-int get_name(char *pos, char *name)
+static int get_name(char *pos, char *name)
 {
 	char *s;
 
@@ -789,28 +798,6 @@ int get_name(char *pos, char *name)
 		*s++ = *pos++;
 	*s = '\0';
 	return ((int) (s - name + 1));
-}
-
-
-/*-----------------------------------------------*/
-/*  find_name:                                   */
-/*-----------------------------------------------*/
-/*  Searches in the name-list 'namelist' for the */
-/*  name 'sname' and if successfull returns a    */
-/*  pointer '*pelem' to the found entry.         */
-/*-----------------------------------------------*/
-int find_name(NAME_ENTRY * namelist, char *sname, NAME_ENTRY ** pelem)
-{
-	unsigned char found = FALSE;
-
-	while ((namelist != NULL) && !found)
-	{
-		found = strcmp(namelist->name, sname) == 0;
-		*pelem = namelist;
-		namelist = namelist->next;
-	}
-
-	return (found);
 }
 
 
@@ -831,32 +818,6 @@ static int find_code(_UWORD search_code, NAME_ENTRY ** pelem)
 			return (TRUE);
 		}
 	return (FALSE);
-}
-
-
-int write_names(NAME_ENTRY * namelist)
-{
-	static const char *const attr_str[ATTR_CNT] = { "SCREEN_NAME ",
-		"CAPSENSITIVE",
-		" SENSITIVE  ",
-		"   LINK     ",
-	};
-	int i = 0;
-
-	fprintf(logfile, "Name\t\t\t\tAttribute    Code     ScreenOffset\n");
-
-	while (namelist != NULL)
-	{
-		fprintf(logfile, "<%-32.32s> %s 0x%X", namelist->name, attr_str[namelist->name_attr], namelist->scr_code);
-		if (namelist->name_attr == LINK)
-			fprintf(logfile, from_msg, namelist->link_index);
-		else
-			fprintf(logfile, " = 0x%X", screen_index(namelist->scr_code));
-		fprintf(logfile, "\n");
-		namelist = namelist->next;
-		i++;
-	}
-	return (i);
 }
 
 
@@ -884,7 +845,7 @@ char *g_strdup(const char *str)
 /*  '*namelist'. During this the number of       */
 /*  insertions will be counted in '*name_cnt'.   */
 /*-----------------------------------------------*/
-void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, unsigned char attr, _UWORD lnk_idx)
+static void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, unsigned char attr, _UWORD lnk_idx)
 {
 	NAME_ENTRY *newentry;
 
@@ -938,7 +899,7 @@ static int attr_cmp(const void *e1, const void *e2)
 /*  Creates a dynamic array and saves the  */
 /*  names-list to it.                      */
 /*-----------------------------------------*/
-void setup_namearr(NAME_ENTRY * namelist)
+static void setup_namearr(NAME_ENTRY * namelist)
 {
 	int arr_idx;
 
@@ -965,17 +926,12 @@ void setup_namearr(NAME_ENTRY * namelist)
 /*-------------------------------------------------*/
 /*  Transforms the source so that it can be output */
 /*-------------------------------------------------*/
-void transform(char *source, long length, char *d)
+static void transform(char *source, long length, char *d)
 {
-	char *s,
-	*limit;
-
+	char *s, *limit;
 	NAME_ENTRY *elem;
-
 	char name[80];
-
 	_UWORD code;
-
 	unsigned char global = FALSE;				/* Global reference */
 
 	s = source;
@@ -1052,7 +1008,7 @@ void transform(char *source, long length, char *d)
 /*----------------------------------------------*/
 /*  Re-creates a readable text from a HLP-file. */
 /*----------------------------------------------*/
-int decompile(void)
+static int decompile(void)
 {
 	int i = 0;
 	_UWORD last_code;
@@ -1080,7 +1036,7 @@ int decompile(void)
 		return (FALSE);
 	}
 
-  /*----- Sort by attributes -----*/
+	/*----- Sort by attributes -----*/
 	setup_namearr(namelist);
 	qsort(name_array, name_cnt, sizeof(NAME_ENTRY *), attr_cmp);
 
@@ -1139,6 +1095,23 @@ int decompile(void)
 
 
 /*----------------------------------------------*/
+/*  is_dir_screen:                              */
+/*----------------------------------------------*/
+/* Determines whether the offset belongs to a   */
+/* screen.                                      */
+/*----------------------------------------------*/
+static int is_dir_screen(long offset)
+{
+	int i;
+
+	for (i = 0; i < INDEX_CNT; i++)
+		if (screen_table[screen_index(subidx_scrs[i])] == offset)
+			return (TRUE);
+	return (FALSE);
+}
+
+
+/*----------------------------------------------*/
 /*  make_txtfile:                               */
 /*----------------------------------------------*/
 /*  Lists all screens in order.                 */
@@ -1147,14 +1120,10 @@ int decompile(void)
 /*  'form_feed' determines how screens are to   */
 /*  be separated.                               */
 /*----------------------------------------------*/
-int make_txtfile(void)
+static int make_txtfile(void)
 {
 	int index;
-
-	char *textbuffer,
-	*tp,
-	*limit;
-
+	char *textbuffer, *tp, *limit;
 	long size;
 
 	wr_msg(maketxt_msg, TO_SCREEN);
@@ -1224,20 +1193,14 @@ int make_txtfile(void)
 /* that they are all screen-names will be         */
 /* corrected later.                               */
 /*------------------------------------------------*/
-int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
+static int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
 {
 	static char *plain_text = NULL;
-
 	long size;
-
 	char *pos;
-
 	_UWORD scr_index;					/* Index in screen-table */
-
 	_UWORD screen_code;					/* that belongs to the name */
-
 	char screen_name[80];
-
 	static unsigned char first_call = TRUE;
 
 	if (first_call)
@@ -1274,23 +1237,6 @@ int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
 
 
 /*----------------------------------------------*/
-/*  is_dir_screen:                              */
-/*----------------------------------------------*/
-/* Determines whether the offset belongs to a   */
-/* screen.                                      */
-/*----------------------------------------------*/
-int is_dir_screen(long offset)
-{
-	int i;
-
-	for (i = 0; i < INDEX_CNT; i++)
-		if (screen_table[screen_index(subidx_scrs[i])] == offset)
-			return (TRUE);
-	return (FALSE);
-}
-
-
-/*----------------------------------------------*/
 /*  read_Link:                                  */
 /*----------------------------------------------*/
 /* Searches all screens except the Copyright-,  */
@@ -1304,24 +1250,16 @@ int is_dir_screen(long offset)
 /* in the search-word tables. The reference     */
 /* will be included in the link-list.           */
 /*----------------------------------------------*/
-int read_Link(void)
+static int read_Link(void)
 {
 	int i;
-
 	long size;
-
 	char *pos;
-
 	char name[80];
-
 	_UWORD to_code;
-
 	NAME_ENTRY *elem;
-
 	static char *plain_text = NULL;
-
 	static unsigned char first_call = TRUE;
-
 	char *limit;
 
 	wr_msg(link_msg, TO_SCREEN);
@@ -1361,9 +1299,9 @@ int read_Link(void)
 				} /* if ESC_CHR */
 				else
 					pos++;
-			}							/* while */
-		}								/* if */
-	}									/* for */
+			}
+		}
+	}
 	return (TRUE);
 }
 
@@ -1377,23 +1315,15 @@ int read_Link(void)
 /* Following this all names present on the Sub- */
 /* index screens will be read in.               */
 /*----------------------------------------------*/
-int read_Index(void)
+static int read_Index(void)
 {
-
 	char *plain_idx_text;				/* Decoded Index */
-
 	long size;							/* Its length */
-
 	char *limit;
-
 	int sub_idx = 0;					/* Entry being worked on */
-
 	int i;
-
 	char *pos;
-
 	char dummy[80];
-
 	_UWORD screen_code;
 
 	wr_msg(rd_idx_msg, TO_SCREEN);
@@ -1441,7 +1371,7 @@ int read_Index(void)
 /*----------------------------------------------*/
 /* Are we dealing with an HC2.0 file?           */
 /*----------------------------------------------*/
-int is_helpfile(void)
+static int is_helpfile(void)
 {
 	char buffer[4];
 
@@ -1457,7 +1387,7 @@ int is_helpfile(void)
 /*  Reads the description block from the    */
 /*  help-file.                              */
 /*------------------------------------------*/
-int read_header(void)
+static int read_header(void)
 {
 	fseek(hlpfile, 0x58L, SEEK_SET);
 	return (fread(&hlphdr, 1, sizeof(HLPHDR), hlpfile) == HEADER_SIZE);
@@ -1470,7 +1400,7 @@ int read_header(void)
 /* Reads the table with the screen offsets   */
 /* from the help-file.                       */
 /*-------------------------------------------*/
-int read_screen_table(void)
+static int read_screen_table(void)
 {
 	long bytes_read;
 	int i;
@@ -1507,7 +1437,7 @@ int read_screen_table(void)
 /*---------------------------------------------*/
 /*  Reads in the table with the code-strings.  */
 /*---------------------------------------------*/
-int read_string_table(void)
+static int read_string_table(void)
 {
 	long bytes_read;
 
@@ -1552,7 +1482,7 @@ int main(int argc, char *argv[])
 	hlpfile = fopen(hlpname, "rb");
 	if (!hlpfile)
 	{
-		printf(hlp_nf_msg, hlpname);
+		fprintf(stderr, hlp_nf_msg, hlpname);
 		errors++;
 		goto end;
 	}
@@ -1635,7 +1565,8 @@ int main(int argc, char *argv[])
 
 	sprintf(msg, final_msg, errors, warnings, glbref_cnt);
 	wr_msg(msg, TO_ALL);
-	fclose(hlpfile);
+	if (hlpfile)
+		fclose(hlpfile);
 	if (log_flag)
 		fclose(logfile);
 	puts(ready_msg);
