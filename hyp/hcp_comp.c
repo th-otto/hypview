@@ -4069,6 +4069,8 @@ static void c_do_box(hcp_vars *vars, int argc, char **argv, short type)
 		}
 		if (argc > 5)
 			warn_extra_args(vars);
+		if (vars->in_node == 2 && vars->opts->warn_compat)
+			hcp_warning(vars, NULL, _("ST-Guide is not able to display graphics in popup nodes"));
 		
 		memset(&adm, 0, sizeof(adm));
 		adm.type = type;
@@ -4170,6 +4172,8 @@ static void c_line(hcp_vars *vars, int argc, char **argv)
 		}
 		if (argc > 6)
 			warn_extra_args(vars);
+		if (vars->in_node == 2 && vars->opts->warn_compat)
+			hcp_warning(vars, NULL, _("ST-Guide is not able to display graphics in popup nodes"));
 		
 		memset(&adm, 0, sizeof(adm));
 		adm.type = HYP_ESC_LINE;
@@ -4415,7 +4419,8 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 		}
 		if (argc > 4)
 			warn_extra_args(vars);
-		
+		if (vars->in_node == 2 && vars->opts->warn_compat)
+			hcp_warning(vars, NULL, _("ST-Guide is not able to display graphics in popup nodes"));
 		filename = argv[1];
 		if (empty(filename))
 		{
@@ -4963,11 +4968,11 @@ static struct hcp_command const hcp_commands[] = {
 	{ "symbol",       CMD_IN_NODE,                   c_symbol,     c_do_nothing },
 	{ "indexoff",     0,                             c_indexoff,   c_indexoff },
 	{ "indexon",      0,                             c_indexon,    c_indexon },
-	{ "box",          CMD_IN_NODE|CMD_NOT_PNODE,     c_box,        c_box },
-	{ "rbox",         CMD_IN_NODE|CMD_NOT_PNODE,     c_rbox,       c_rbox },
-	{ "image",        CMD_IN_NODE|CMD_NOT_PNODE,     c_image,      c_image },
-	{ "limage",       CMD_IN_NODE|CMD_NOT_PNODE,     c_limage,     c_limage },
-	{ "line",         CMD_IN_NODE|CMD_NOT_PNODE,     c_line,       c_line },
+	{ "box",          CMD_IN_NODE /* |CMD_NOT_PNODE */,     c_box,        c_box },
+	{ "rbox",         CMD_IN_NODE /* |CMD_NOT_PNODE */,     c_rbox,       c_rbox },
+	{ "image",        CMD_IN_NODE /* |CMD_NOT_PNODE */,     c_image,      c_image },
+	{ "limage",       CMD_IN_NODE /* |CMD_NOT_PNODE */,     c_limage,     c_limage },
+	{ "line",         CMD_IN_NODE /* |CMD_NOT_PNODE */,     c_line,       c_line },
 	{ "remark",       0,                             c_do_nothing, c_do_nothing },
 	{ "rem",          0,                             c_do_nothing, c_do_nothing },
 	{ "include",      0,                             c_include,    c_include },
