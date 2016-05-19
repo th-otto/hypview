@@ -58,35 +58,37 @@
 #define HEADER_SIZE  0x30  /* Length of header    */
 
 typedef struct {
-  long scr_tab_size; /* Length of screen table    */
-  long str_offset;   /* String-table start        */
-  long str_size;              /* Length in bytes  */
+  int32_t scr_tab_size; /* Length of screen table    */
+  int32_t str_offset;   /* String-table start        */
+  int32_t str_size;              /* Length in bytes  */
   unsigned char char_table[12];  /* Most common character */
-  long caps_offset;    /* Start capsens-Table     */
-  long caps_size;             /* Length in Bytes  */
-  long caps_cnt;           /* No. of search-words */
-  long sens_offset;    /* Start sensitive-Tab.    */
-  long sens_size;             /* Length in bytes  */
-  long sens_cnt;           /* No. of search-words */
+  int32_t caps_offset;    /* Start capsens-Table     */
+  int32_t caps_size;             /* Length in Bytes  */
+  int32_t caps_cnt;           /* No. of search-words */
+  int32_t sens_offset;    /* Start sensitive-Tab.    */
+  int32_t sens_size;             /* Length in bytes  */
+  int32_t sens_cnt;           /* No. of search-words */
 } HLPHDR;
 
 
 /*--------- Description of an Index entry --------*/
-typedef _UWORD SUB_IDX_ENTRY;
+typedef uint16_t SUB_IDX_ENTRY;
 
 /*----------- Description of a name --------------*/
 typedef struct name_entry {
-  _UWORD scr_code;       /* Index-Code ScreenTab   */
+  uint16_t scr_code;       /* Index-Code ScreenTab   */
+  uint16_t link_index;   	/* link-Index ScreenTab   */
+  unsigned int name_idx;
   unsigned char name_attr;      /* Attribute of the name  */
-  char  *name;           /* The name itself        */
-  _UWORD link_index;     /* link-Index ScreenTab   */
-  struct name_entry *next;        /* Follower     */
+  char  *name;         		/* The name itself        */
+  struct name_entry *next;  /* Follower     */
 } NAME_ENTRY;
 
 /*--------- Structure of the Keyword-Tables ---------*/
 typedef struct {
-  _ULONG pos;  /* Word-start for current position+pos */
-  _UWORD code;       /* Word has this coding          */
+  uint32_t pos;  /* Word-start for current position+pos */
+  uint16_t code;       /* Word has this coding          */
 } SRCHKEY_ENTRY;
- 
+#define SIZEOF_SRCHKEY_ENTRY 6
+
 /*------------------ End of HELP_RC.H ---------------*/

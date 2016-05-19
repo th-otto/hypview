@@ -22,65 +22,64 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdint.h>
 
 #include "help_rc.h"
 #undef fclose
 
 /*-------- VARIABLES: ---------------------------*/
 /*-------- For management of name-tables --------*/
-NAME_ENTRY *namelist = NULL;			/* Names found      */
-int name_cnt = 0;						/* Number of names  */
-NAME_ENTRY **name_array;				/* As table         */
-NAME_ENTRY *link_list = NULL;			/* Link names found */
-int link_cnt = 0;						/* Number of them   */
+static NAME_ENTRY *namelist = NULL;			/* Names found      */
+static int name_cnt = 0;					/* Number of names  */
+static NAME_ENTRY **name_array;				/* As table         */
+static NAME_ENTRY *link_list = NULL;		/* Link names found */
+static int link_cnt = 0;					/* Number of them   */
 
 /*--------- For managing the subindexes ---------*/
-SUB_IDX_ENTRY subidx_scrs[INDEX_CNT];
+static SUB_IDX_ENTRY subidx_scrs[INDEX_CNT];
 
 /*--------- The search-word tables --------------*/
-SRCHKEY_ENTRY *key_table = NULL;
-SRCHKEY_ENTRY *c_key_table = NULL;
+static SRCHKEY_ENTRY *key_table = NULL;
+static SRCHKEY_ENTRY *c_key_table = NULL;
 
 /*---------- The screen-table -------------------*/
-long *screen_table;						/* File-offsets of screens  */
-int screen_cnt = 0;						/* Number of screens        */
-unsigned char *screen_done;				/* 'Done' marking           */
+static int32_t *screen_table;			/* File-offsets of screens  */
+static int screen_cnt = 0;				/* Number of screens        */
+static unsigned char *screen_done;		/* 'Done' marking           */
 
 /*---------- The string-table -------------------*/
 unsigned char *string_tab;				/* Coded strings     */
 
 /*---------- File-streams -----------------------*/
-FILE *hlpfile = NULL;					/* Input help-file     */
-FILE *txtfile = NULL;					/* Text output-file    */
-FILE *scrfile = NULL;					/* Screen output-file  */
-FILE *logfile = NULL;					/* Log-file            */
+static FILE *hlpfile = NULL;			/* Input help-file     */
+static FILE *txtfile = NULL;			/* Text output-file    */
+static FILE *scrfile = NULL;			/* Screen output-file  */
+static FILE *logfile = NULL;			/* Log-file            */
 
-char filename[80];
-char hlpname[80];						/* Name of help-file      */
-char txtname[80];						/* Name of text-file      */
-char scrname[80];						/* Name of screen-file    */
-char logname[80];						/* Name of log-file       */
+static char filename[80];
+static char hlpname[80];				/* Name of help-file      */
+static char txtname[80];				/* Name of text-file      */
+static char scrname[80];				/* Name of screen-file    */
+static char logname[80];				/* Name of log-file       */
 
-char *options;							/* Passed options       */
-HLPHDR hlphdr;							/* Header of help-file   */
+static char *options;					/* Passed options       */
+static HLPHDR hlphdr;					/* Header of help-file   */
 
-int glbref_cnt;							/* Number of external references */
-int warnings;							/* Number of warnings issued     */
-int errors;								/* Number of errors              */
+static int glbref_cnt;					/* Number of external references */
+static int warnings;					/* Number of warnings issued     */
+static int errors;						/* Number of errors              */
 
 /*------------- Some flags for control ----------*/
-unsigned char log_flag = FALSE;
-unsigned char txt_flag = FALSE;
-unsigned char scr_flag = FALSE;
+static unsigned char log_flag = FALSE;
+static unsigned char txt_flag = FALSE;
+static unsigned char scr_flag = FALSE;
 
-char msg[512];							/* Buffer for messages   */
-char bold_on[80];
-char bold_off[80];
-char form_feed[80];
+static char bold_on[80];
+static char bold_off[80];
+static char form_feed[80];
 
 /*-------------- Some messages ------------------*/
 #if !defined(ENABLE_NLS) && defined(NLS_LANG_GERMAN) && NLS_LANG_GERMAN
-#define no_ram_msg      "\n*** Nicht genÅgend Speicherplatz"
 #define ill_opt_msg     "\nIllegales Optionszeichen '%c'!\n"
 #define log_opn_err     "\n\n*** Kann Logdatei %s nicht îffnen! ***\n"
 #define hlp_nf_msg      "\n\n*** Help-Datei %s nicht gefunden! ***\n"
@@ -130,7 +129,6 @@ char form_feed[80];
 #define from_msg        " von 0x%X"
 #define ready_msg       "\nFertig."
 #else
-#define no_ram_msg      _("\n*** Insufficient memory")
 #define ill_opt_msg     _("\nIllegal option character '%c'!\n")
 #define log_opn_err     _("\n\n*** Cannot open log-file %s! ***\n")
 #define hlp_nf_msg      _("\n\n*** Help-file %s not found! ***\n")
@@ -167,23 +165,45 @@ char form_feed[80];
 #define hlp_rc2         _("\n                        =============================\n")
 #define hlp_rc3         _("\n                                (c) Volker Reichel\n\n")
 #define option_msg      _("Options: %s\n\n")
-#define start_string_msg _("\tStart string-table\t: %ld (0x%lx)\n")
-#define length_msg      _("\tLength\t\t\t\t\t: %ld (0x%lx)\n")
-#define most_msg        _("\tThe most frequent characters\t: %s\n")
-#define start_sens_msg  _("\tStart sensitive table\t: %ld (0x%lx)\n")
-#define sens_words_msg  _("\tNumber of sensitive words\t: %ld (0x%lx)\n")
-#define start_cap_msg   _("\tStart capsens. table\t: %ld (0x%lx)\n")
-#define cap_words_msg   _("\tNumber of capsens words\t: %ld (0x%lx)\n")
-#define keytable_msg    _("        Position   Code  Search-word\n")
-#define capstab_msg     _("\n\n%s\n\t\tCapsensitive table\n%s\n")
-#define senstab_msg     _("\n\n%s\n\t\tSensitive table\n%s\n")
+#define start_string_msg _("    Start string-table           : %ld (0x%lx)\n")
+#define length_msg      _("    Length                       : %ld (0x%lx)\n")
+#define most_msg        _("    The most frequent characters : %s\n")
+#define start_sens_msg  _("    Start sensitive table        : %ld (0x%lx)\n")
+#define sens_words_msg  _("    Number of sensitive words    : %ld (0x%lx)\n")
+#define start_cap_msg   _("    Start capsens. table         : %ld (0x%lx)\n")
+#define cap_words_msg   _("    Number of capsens words      : %ld (0x%lx)\n")
+#define keytable_msg    _("        Position     Code  Search-word\n")
+#define capstab_msg     _("\n\n%s\n        Capsensitive table\n%s\n")
+#define senstab_msg     _("\n\n%s\n        Sensitive table\n%s\n")
 #define from_msg        _(" from 0x%X")
 #define ready_msg       _("\nFinished!")
 #endif
 
 /*----- 'get_nibble()' gets its data from here ------*/
-unsigned char *curr_coded_text;
-unsigned char must_read = TRUE;					/* For get_nibble    */
+static unsigned char *code_buffer = NULL;
+static char *plain_text;
+static unsigned char *curr_coded_text;
+static unsigned char must_read = TRUE;					/* For get_nibble    */
+static unsigned char byte_read;
+
+
+#if !defined(__TOS__) && !defined(__atarist__)
+# define MUST_SWAP 1
+#endif
+
+
+static int read_int_16(const unsigned char *src)
+{
+	return (src[0] << 8) | src[1];
+}
+
+static int32_t read_int_32(const unsigned char *src)
+{
+	return ((uint32_t)src[0] << 24) |
+	       ((uint32_t)src[1] << 16) |
+	       ((uint32_t)src[2] <<  8) |
+	       ((uint32_t)src[3]      );
+}
 
 /*--------- Some general routines --------------*/
 static void strfill(char *s, char c, int cnt)
@@ -203,7 +223,7 @@ static int strin(char c, const char *m)
 {
 	while (*m && *m != c)
 		m++;
-	return (*m && *m == c);
+	return *m && *m == c;
 }
 
 /*----------------------------------------------------*/
@@ -243,33 +263,49 @@ static int strint(const char *s, const char **lp)
 			break;
 		s++;
 	}
-	return (value);
+	return value;
 }
 
 
-static void wr_msg(const char *s, unsigned char device)
+__attribute__((format(printf, 2, 3)))
+static void wr_msg(unsigned char device, const char *s, ...)
 {
+	va_list args;
+	
 	if (device & TO_SCREEN)
 	{
-		printf("%s", s);
+		va_start(args, s);
+		vprintf(s, args);
+		va_end(args);
 	}
 	if (log_flag && (device & TO_LOG))
-		fprintf(logfile, "%s", s);
+	{
+		va_start(args, s);
+		vfprintf(logfile, s, args);
+		va_end(args);
+	}
 }
 
 
-static void trans_bstr(char *s, unsigned char * bstr)
+static void trans_bstr(char *s, const unsigned char *bstr, int len)
 {
 	static const char *numbers = "0123456789ABCDEF";
-
-	while (*bstr)
+	int i;
+	
+	i = 0;
+	while (i < len && *bstr)
+	{
 		if ((*bstr < 0x20) || (*bstr > 0x7F))
 		{
 			*s++ = '\\';
 			*s++ = numbers[*bstr >> 4];
 			*s++ = numbers[*bstr++ & 0x0F];
 		} else
+		{
 			*s++ = (char) *bstr++;
+		}
+		i++;
+	}
 	*s = EOS;
 }
 
@@ -318,8 +354,7 @@ static void get_options(void)
 		case '\t':
 			break;
 		default:
-			sprintf(msg, ill_opt_msg, *(s - 1));
-			wr_msg(msg, TO_ALL);
+			wr_msg(TO_ALL, ill_opt_msg, *(s - 1));
 			break;
 		}
 	}
@@ -393,10 +428,10 @@ static void read_info(void)
 					*s++ = strint(sp, &lp);
 					sp = lp;
 				}
-			}							/* while */
+			}
 			*s = '\0';
-		}								/* if */
-	}									/* while */
+		}
+	}
 	fclose(info_file);
 }
 
@@ -408,37 +443,37 @@ static void read_info(void)
 /*  Calculates from a reference code the index  */
 /*  to the screen-table.                        */
 /*----------------------------------------------*/
-static _UWORD screen_index(_UWORD scr_code)
+static uint16_t screen_index(uint16_t scr_code)
 {
-	_UWORD index;
+	uint16_t index;
 
 	if ((scr_code & 0x0004) > 0x0004)
 	{
-		sprintf(msg, ill_code_msg, scr_code);
-		wr_msg(msg, TO_ALL);
-		wr_msg(abort_msg, TO_ALL);
+		wr_msg(TO_ALL, ill_code_msg, scr_code);
+		wr_msg(TO_ALL, abort_msg);
 		errors++;
 		exit(1);
 	}
 	index = (((scr_code & 0x7FF8) >> 1) - 4) >> 2;
-	return (index);
+	return index;
 }
 
 
-static int write_names(NAME_ENTRY * namelist)
+static int write_names(NAME_ENTRY *namelist)
 {
-	static const char *const attr_str[ATTR_CNT] = { "SCREEN_NAME ",
+	static const char *const attr_str[ATTR_CNT] = {
+		"SCREEN_NAME ",
 		"CAPSENSITIVE",
 		" SENSITIVE  ",
 		"   LINK     ",
 	};
 	int i = 0;
 
-	fprintf(logfile, "Name\t\t\t\tAttribute    Code     ScreenOffset\n");
+	fprintf(logfile, _("Name                               Attribute    Code     ScreenOffset\n"));
 
 	while (namelist != NULL)
 	{
-		fprintf(logfile, "<%-32.32s> %s 0x%X", namelist->name, attr_str[namelist->name_attr], namelist->scr_code);
+		fprintf(logfile, "<%-32.32s> %s 0x%04X", namelist->name, attr_str[namelist->name_attr], namelist->scr_code);
 		if (namelist->name_attr == LINK)
 			fprintf(logfile, from_msg, namelist->link_index);
 		else
@@ -447,7 +482,7 @@ static int write_names(NAME_ENTRY * namelist)
 		namelist = namelist->next;
 		i++;
 	}
-	return (i);
+	return i;
 }
 
 
@@ -455,7 +490,7 @@ static void wr_nametable(void)
 {
 	char bar[81];
 
-	wr_msg(wr_nt_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, wr_nt_msg);
 	strfill(bar, '=', 80);
 	fprintf(logfile, nt_head_msg, bar, bar);
 	write_names(namelist);
@@ -467,7 +502,7 @@ static void wr_linktable(void)
 {
 	char bar[81];
 
-	wr_msg(wr_lk_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, wr_lk_msg);
 	strfill(bar, '=', 80);
 	fprintf(logfile, lk_head_msg, bar, bar);
 	write_names(link_list);
@@ -477,8 +512,7 @@ static void wr_linktable(void)
 
 static void wr_options(void)
 {
-	sprintf(msg, option_msg, options);
-	wr_msg(msg, TO_ALL);
+	wr_msg(TO_ALL, option_msg, options);
 }
 
 
@@ -498,7 +532,7 @@ static void open_log(void)
 			setvbuf(logfile, NULL, _IOFBF, 32 * 1024L);
 			fprintf(logfile, "%s%s%s%s", hlp_rc1, __DATE__, hlp_rc2, hlp_rc3);
 		}
-	}									/* Logfile nicht geîffnet */
+	}
 }
 
 
@@ -510,7 +544,6 @@ static void open_log(void)
 /*----------------------------------------------*/
 static unsigned char get_nibble(void)
 {
-	static unsigned char byte_read;
 	unsigned char nibble;
 
 	if (must_read)
@@ -523,7 +556,7 @@ static unsigned char get_nibble(void)
 		nibble = byte_read & 0x0F;
 		must_read = TRUE;
 	}
-	return (nibble);
+	return nibble;
 }
 
 
@@ -540,58 +573,61 @@ static unsigned char get_byte(void)
 	byte = get_nibble();
 	byte <<= 4;
 	byte += get_nibble();
-	return (byte);
+	return byte;
 }
 
 
 static void wr_header(void)
 {
-	char char_string[50];
+	char char_string[12 * 3 + 1];
 
-	trans_bstr(char_string, (unsigned char *) hlphdr.char_table);
+	trans_bstr(char_string, hlphdr.char_table, 12);
 	fprintf(logfile, _("\nHeader of Helpfile %s\n\n"), hlpname);
-	fprintf(logfile, _("\tScreens\t\t\t\t\t: %4ld\n"), hlphdr.scr_tab_size >> 2);
-	fprintf(logfile, start_string_msg, hlphdr.str_offset, hlphdr.str_offset);
-	fprintf(logfile, length_msg, hlphdr.str_size, hlphdr.str_size);
+	fprintf(logfile, _("    Screens                      : %4ld\n"), (long)hlphdr.scr_tab_size >> 2);
+	fprintf(logfile, start_string_msg, (long)hlphdr.str_offset, (long)hlphdr.str_offset);
+	fprintf(logfile, length_msg, (long)hlphdr.str_size, (long)hlphdr.str_size);
 	fprintf(logfile, most_msg, char_string);
-	fprintf(logfile, start_sens_msg, hlphdr.sens_offset, hlphdr.sens_offset);
-	fprintf(logfile, length_msg, hlphdr.sens_size, hlphdr.sens_size);
-	fprintf(logfile, sens_words_msg, hlphdr.sens_cnt, hlphdr.sens_cnt);
-	fprintf(logfile, start_cap_msg, hlphdr.caps_offset, hlphdr.caps_offset);
-	fprintf(logfile, length_msg, hlphdr.caps_size, hlphdr.caps_size);
-	fprintf(logfile, cap_words_msg, hlphdr.caps_cnt, hlphdr.caps_cnt);
+	fprintf(logfile, start_sens_msg, (long)hlphdr.sens_offset, (long)hlphdr.sens_offset);
+	fprintf(logfile, length_msg, (long)hlphdr.sens_size, (long)hlphdr.sens_size);
+	fprintf(logfile, sens_words_msg, (long)hlphdr.sens_cnt, (long)hlphdr.sens_cnt);
+	fprintf(logfile, start_cap_msg, (long)hlphdr.caps_offset, (long)hlphdr.caps_offset);
+	fprintf(logfile, length_msg, (long)hlphdr.caps_size, (long)hlphdr.caps_size);
+	fprintf(logfile, cap_words_msg, (long)hlphdr.caps_cnt, (long)hlphdr.caps_cnt);
 }
 
 
-static int read_key_table(SRCHKEY_ENTRY ** ptable, int which)
+static int read_key_table(SRCHKEY_ENTRY **ptable, int which)
 {
-	long offset;
-	long size;
-
-	*ptable = NULL;
+	int32_t offset;
+	int32_t size;
+	SRCHKEY_ENTRY *table;
+	
+	table = NULL;
 	if (which == SENS_TABLE)
 	{
 		offset = hlphdr.sens_offset;
 		size = hlphdr.sens_size;
-		wr_msg(rd_sens_msg, TO_SCREEN);
+		wr_msg(TO_SCREEN, rd_sens_msg);
 	} else if (which == CAP_TABLE)
 	{
 		offset = hlphdr.caps_offset;
 		size = hlphdr.caps_size;
-		wr_msg(rd_caps_msg, TO_SCREEN);
+		wr_msg(TO_SCREEN, rd_caps_msg);
 	} else
 	{
 		abort();
 	}
 
+	fseek(hlpfile, offset, SEEK_SET);
 	if (size != 0)
 	{
-		fseek(hlpfile, offset, SEEK_SET);
-		*ptable = (SRCHKEY_ENTRY *) g_malloc(size);
-		if (*ptable != NULL)
-			fread(*ptable, 1, size, hlpfile);
+		table = (SRCHKEY_ENTRY *)g_malloc(size);
+		if (table != NULL)
+			if ((int32_t)fread(table, 1, size, hlpfile) != size)
+				return FALSE;
 	}
-	return (*ptable != NULL);
+	*ptable = table;
+	return table != NULL;
 }
 
 
@@ -602,12 +638,12 @@ static int read_key_table(SRCHKEY_ENTRY ** ptable, int which)
 /*---------------------------------------------*/
 static int read_coded(int index, unsigned char *coded_text)
 {
-	long code_length, bytes_read;
+	int32_t code_length, bytes_read;
 
 	code_length = screen_table[index + 1] - screen_table[index];
 	fseek(hlpfile, screen_table[index], SEEK_SET);
 	bytes_read = fread(coded_text, 1, code_length, hlpfile);
-	return (bytes_read == code_length);
+	return bytes_read == code_length;
 }
 
 
@@ -619,7 +655,8 @@ static int read_coded(int index, unsigned char *coded_text)
 /*----------------------------------------------*/
 static char *get_keyword(SRCHKEY_ENTRY *keytable, int i)
 {
-	return ((char *) (&keytable[i]) + keytable[i].pos);
+	unsigned char *p = (unsigned char *)keytable + i * SIZEOF_SRCHKEY_ENTRY;
+	return (char *) (p + read_int_32(p));
 }
 
 
@@ -629,7 +666,10 @@ static void wr_keytable(SRCHKEY_ENTRY *table, int cnt)
 
 	fprintf(logfile, keytable_msg);
 	for (i = 0; i < cnt; i++)
-		fprintf(logfile, "           0x%08lx   %04x  \"%s\"\n", table[i].pos, table[i].code, get_keyword(table, i));
+	{
+		unsigned char *p = (unsigned char *)table + i * SIZEOF_SRCHKEY_ENTRY;
+		fprintf(logfile, "        0x%08lx   %04x  \"%s\"\n", (unsigned long)read_int_32(p), read_int_16(p + 4), get_keyword(table, i));
+	}
 }
 
 
@@ -661,7 +701,7 @@ static void wr_keytables(void)
 /*  name 'sname' and if successfull returns a    */
 /*  pointer '*pelem' to the found entry.         */
 /*-----------------------------------------------*/
-static int find_name(NAME_ENTRY * namelist, char *sname, NAME_ENTRY ** pelem)
+static int find_name(NAME_ENTRY *namelist, char *sname, NAME_ENTRY **pelem)
 {
 	unsigned char found = FALSE;
 
@@ -672,7 +712,7 @@ static int find_name(NAME_ENTRY * namelist, char *sname, NAME_ENTRY ** pelem)
 		namelist = namelist->next;
 	}
 
-	return (found);
+	return found;
 }
 
 
@@ -690,8 +730,8 @@ static void corr_attrs(NAME_ENTRY *namelist)
 	char *search_name;
 	NAME_ENTRY *elem;
 
-	wr_msg(set_attr_msg, TO_SCREEN);
-  /*----- First the sensitive names ------*/
+	wr_msg(TO_SCREEN, set_attr_msg);
+	/*----- First the sensitive names ------*/
 	for (i = 0; i < hlphdr.sens_cnt; i++)
 	{
 		search_name = get_keyword(key_table, i);
@@ -699,7 +739,7 @@ static void corr_attrs(NAME_ENTRY *namelist)
 			elem->name_attr = SENSITIVE;
 	}
 
-  /*----- Now for the capsensitive names */
+	/*----- Now for the capsensitive names */
 	for (i = 0; i < hlphdr.caps_cnt; i++)
 	{
 		search_name = get_keyword(c_key_table, i);
@@ -717,26 +757,18 @@ static void corr_attrs(NAME_ENTRY *namelist)
 /*  large storage area.                             */
 /*  The return is the length of the decoded screen. */
 /*--------------------------------------------------*/
-static long decode(int index, char *plain_text)
+static int32_t decode(int index, char *plain_text)
 {
-	static unsigned char first_call = TRUE;
-	static unsigned char *code_buffer = NULL;
 	unsigned char nibble;
-	_UWORD idx;
-	_UWORD str_len;
-	_ULONG offset;
+	uint16_t idx;
+	uint16_t str_len;
+	uint32_t offset;
 	char *p;
-	long size = 0L;
-
-	if (first_call)
-	{
-		code_buffer = g_new(unsigned char, MAXCODEDSIZE);
-		first_call = FALSE;
-	}
+	int32_t size = 0;
 
 	/*------------- Read the screen -------*/
 	if (!read_coded(index, code_buffer))
-		return (0L);
+		return 0;
 
 	curr_coded_text = code_buffer;
 	must_read = TRUE;					/* No byte read yet */
@@ -762,8 +794,8 @@ static long decode(int index, char *plain_text)
 		{
 			idx = get_byte() << 4;
 			idx += get_nibble();
-			str_len = (_UWORD) (((long *) string_tab)[idx + 1] - ((long *) string_tab)[idx]);
-			offset = ((long *) string_tab)[idx];
+			offset = read_int_32(string_tab + (idx << 2));
+			str_len = (uint16_t) (read_int_32(string_tab + ((idx + 1u) << 2)) - offset);
 			p = (char *) string_tab + offset;
 			size += str_len;
 			while (str_len-- > 0)
@@ -777,7 +809,7 @@ static long decode(int index, char *plain_text)
 			break;
 		}
 	}
-	return (size);
+	return size;
 }
 
 
@@ -797,7 +829,7 @@ static int get_name(char *pos, char *name)
 	while (*pos != ESC_CHR)
 		*s++ = *pos++;
 	*s = '\0';
-	return ((int) (s - name + 1));
+	return (int) (s - name + 1);
 }
 
 
@@ -807,17 +839,16 @@ static int get_name(char *pos, char *name)
 /*  Searches in the name-table for the cross-   */
 /*  reference 'code' code.                      */
 /*----------------------------------------------*/
-static int find_code(_UWORD search_code, NAME_ENTRY ** pelem)
+static int find_code(uint16_t search_code)
 {
 	int i;
 
 	for (i = 0; i < name_cnt; i++)
 		if (name_array[i]->scr_code == search_code)
 		{
-			*pelem = name_array[i];
-			return (TRUE);
+			return i;
 		}
-	return (FALSE);
+	return -1;
 }
 
 
@@ -845,16 +876,15 @@ char *g_strdup(const char *str)
 /*  '*namelist'. During this the number of       */
 /*  insertions will be counted in '*name_cnt'.   */
 /*-----------------------------------------------*/
-static void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD code, unsigned char attr, _UWORD lnk_idx)
+static void ins_name(NAME_ENTRY **namelist, int *name_cnt, char *sname, uint16_t code, unsigned char attr, uint16_t lnk_idx)
 {
 	NAME_ENTRY *newentry;
 
 	newentry = g_new(NAME_ENTRY, 1);
 	if (!newentry)
 	{
-		sprintf(msg, "%s\n", no_ram_msg);
-		wr_msg(msg, TO_ALL);
-		wr_msg(abort_msg, TO_ALL);
+		wr_msg(TO_ALL, "%s\n", strerror(errno));
+		wr_msg(TO_ALL, abort_msg);
 		errors++;
 		exit(1);
 	}
@@ -863,8 +893,10 @@ static void ins_name(NAME_ENTRY ** namelist, int *name_cnt, char *sname, _UWORD 
 	newentry->name_attr = attr;
 	newentry->scr_code = code;
 	newentry->name = g_strdup(sname);
+	newentry->link_index = 0;
 	if (attr == LINK)
 		newentry->link_index = lnk_idx;
+	newentry->name_idx = *name_cnt;
 	*namelist = newentry;
 	(*name_cnt)++;
 }
@@ -880,8 +912,8 @@ static int attr_cmp(const void *e1, const void *e2)
 {
 	const NAME_ENTRY *elem1 = *(const NAME_ENTRY *const *) e1;
 	const NAME_ENTRY *elem2 = *(const NAME_ENTRY *const *) e2;
-	_ULONG val1, val2;
-	_UWORD idx1, idx2;
+	uint32_t val1, val2;
+	uint16_t idx1, idx2;
 
 	idx1 = screen_index(elem1->scr_code);
 	idx2 = screen_index(elem2->scr_code);
@@ -889,7 +921,14 @@ static int attr_cmp(const void *e1, const void *e2)
 	val1 = (idx1 << 4) + elem1->name_attr;
 	val2 = (idx2 << 4) + elem2->name_attr;
 
-	return ((val1 < val2) ? -1 : (val1 > val2) ? 1 : 0);
+	if (val1 < val2)
+		return -1;
+	if (val1 > val2)
+		return 1;
+	/*
+	 * this will keep the order of screen names that refer to the same page
+	 */
+	return elem1->name_idx < elem2->name_idx ? -1 : 1;
 }
 
 
@@ -899,15 +938,14 @@ static int attr_cmp(const void *e1, const void *e2)
 /*  Creates a dynamic array and saves the  */
 /*  names-list to it.                      */
 /*-----------------------------------------*/
-static void setup_namearr(NAME_ENTRY * namelist)
+static void setup_namearr(NAME_ENTRY *namelist)
 {
 	int arr_idx;
 
 	name_array = g_new(NAME_ENTRY *, name_cnt);
 	if (!name_array)
 	{
-		sprintf(msg, "\n%s\n", no_ram_msg);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, "\n%s\n", strerror(errno));
 		errors++;
 		exit(1);
 	}
@@ -926,14 +964,16 @@ static void setup_namearr(NAME_ENTRY * namelist)
 /*-------------------------------------------------*/
 /*  Transforms the source so that it can be output */
 /*-------------------------------------------------*/
-static void transform(char *source, long length, char *d)
+static void transform(char *source, int32_t length, char *d)
 {
 	char *s, *limit;
 	NAME_ENTRY *elem;
 	char name[80];
-	_UWORD code;
-	unsigned char global = FALSE;				/* Global reference */
-
+	uint16_t code;
+	int global = FALSE;				/* Global reference */
+	int found;
+	int same_name;
+	
 	s = source;
 	limit = source + length;
 	while (s < limit)
@@ -946,16 +986,28 @@ static void transform(char *source, long length, char *d)
 			s += get_name(s, name);
 			if (code == 0xFFFF)
 			{
-				sprintf(msg, glb_ref_msg, name);
-				wr_msg(msg, TO_ALL);
+				wr_msg(TO_ALL, glb_ref_msg, name);
 				warnings++;
 				glbref_cnt++;
 				global = TRUE;
 			}
-			if (find_name(link_list, name, &elem) || global)
+			found = find_code(code);
+			if (found >= 0)
 			{
-				if (!global)
-					find_code(elem->scr_code, &elem);
+				elem = name_array[found];
+				same_name = FALSE;
+				while (!same_name && found < name_cnt && name_array[found]->scr_code == code)
+				{
+					same_name = strcmp(name, name_array[found]->name) == 0;
+					found++;
+				}
+			} else
+			{
+				same_name = TRUE;
+				elem = NULL;
+			}
+			if (!same_name || global)
+			{
 				strcpy(d, "\\link(\"");
 				d += 7;
 				if (global)
@@ -1011,29 +1063,27 @@ static void transform(char *source, long length, char *d)
 static int decompile(void)
 {
 	int i = 0;
-	_UWORD last_code;
+	uint16_t last_code;
 	unsigned char new_screen = TRUE;
 	char *result;
 	char *textbuffer;
-	long textlength;
+	int32_t textlength;
 
-	wr_msg(decomp_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, decomp_msg);
 	result = g_new(char, TXTBUFSIZE);
 	if (!result)
 	{
-		sprintf(msg, "%s", no_ram_msg);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, "%s", strerror(errno));
 		errors++;
-		return (FALSE);
+		return FALSE;
 	}
 
 	textbuffer = g_new(char, MAXCODEDSIZE);
 	if (!textbuffer)
 	{
-		sprintf(msg, "%s", no_ram_msg);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, "%s", strerror(errno));
 		errors++;
-		return (FALSE);
+		return FALSE;
 	}
 
 	/*----- Sort by attributes -----*/
@@ -1043,10 +1093,9 @@ static int decompile(void)
 	scrfile = fopen(scrname, "w");
 	if (!scrfile)
 	{
-		sprintf(msg, file_creat_err, scrname);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, file_creat_err, scrname);
 		errors++;
-		return (FALSE);
+		return FALSE;
 	}
 
 	setvbuf(scrfile, NULL, _IOFBF, 32 * 1024L);
@@ -1087,10 +1136,14 @@ static int decompile(void)
 		if (i < name_cnt)
 			last_code = name_array[i]->scr_code;
 		new_screen = TRUE;
-	}									/* while */
+	}
 	fprintf(scrfile, "\n");
 	fclose(scrfile);
-	return (TRUE);
+	
+	g_free(textbuffer);
+	g_free(result);
+	
+	return TRUE;
 }
 
 
@@ -1100,14 +1153,14 @@ static int decompile(void)
 /* Determines whether the offset belongs to a   */
 /* screen.                                      */
 /*----------------------------------------------*/
-static int is_dir_screen(long offset)
+static int is_dir_screen(int32_t offset)
 {
 	int i;
 
 	for (i = 0; i < INDEX_CNT; i++)
 		if (screen_table[screen_index(subidx_scrs[i])] == offset)
-			return (TRUE);
-	return (FALSE);
+			return TRUE;
+	return FALSE;
 }
 
 
@@ -1124,16 +1177,15 @@ static int make_txtfile(void)
 {
 	int index;
 	char *textbuffer, *tp, *limit;
-	long size;
+	int32_t size;
 
-	wr_msg(maketxt_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, maketxt_msg);
 	txtfile = fopen(txtname, "w");
 	if (!txtfile)
 	{
-		sprintf(msg, file_creat_err, txtname);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, file_creat_err, txtname);
 		errors++;
-		return (FALSE);
+		return FALSE;
 	}
 
 	setvbuf(txtfile, NULL, _IOFBF, 32 * 1024L);
@@ -1141,9 +1193,9 @@ static int make_txtfile(void)
 	textbuffer = g_new(char, TXTBUFSIZE);
 	if (!textbuffer)
 	{
-		wr_msg(no_ram_msg, TO_ALL);
+		wr_msg(TO_ALL, "%s", strerror(errno));
 		errors++;
-		return (FALSE);
+		return FALSE;
 	}
 
 	for (index = 0; index < screen_cnt; index++)
@@ -1181,7 +1233,7 @@ static int make_txtfile(void)
 	g_free(textbuffer);
 	fclose(txtfile);
 
-	return (TRUE);
+	return TRUE;
 }
 
 
@@ -1195,21 +1247,11 @@ static int make_txtfile(void)
 /*------------------------------------------------*/
 static int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
 {
-	static char *plain_text = NULL;
-	long size;
+	int32_t size;
 	char *pos;
-	_UWORD scr_index;					/* Index in screen-table */
-	_UWORD screen_code;					/* that belongs to the name */
+	uint16_t scr_index;					/* Index in screen-table */
+	uint16_t screen_code;					/* that belongs to the name */
 	char screen_name[80];
-	static unsigned char first_call = TRUE;
-
-	if (first_call)
-	{
-		plain_text = g_new(char, MAXCODEDSIZE);
-		first_call = FALSE;
-	}
-	if (!plain_text)
-		return (FALSE);
 
 	scr_index = screen_index(subidx_code);
 	if (!screen_done[scr_index])
@@ -1228,11 +1270,13 @@ static int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
 				pos += get_name(pos, screen_name);
 				ins_name(&namelist, &name_cnt, screen_name, screen_code, SCR_NAME, 0);
 			} else
+			{
 				pos++;
-		}								/* while */
+			}
+		}
 		screen_done[scr_index] = TRUE;
-	}									/* if */
-	return (TRUE);
+	}
+	return TRUE;
 }
 
 
@@ -1253,35 +1297,25 @@ static int rd_sidx_names(SUB_IDX_ENTRY subidx_code)
 static int read_Link(void)
 {
 	int i;
-	long size;
+	int32_t size;
 	char *pos;
 	char name[80];
-	_UWORD to_code;
+	uint16_t to_code;
 	NAME_ENTRY *elem;
-	static char *plain_text = NULL;
-	static unsigned char first_call = TRUE;
 	char *limit;
 
-	wr_msg(link_msg, TO_SCREEN);
-	if (first_call)
-	{
-		plain_text = g_new(char, TXTBUFSIZE);
-		first_call = FALSE;
-	}
+	wr_msg(TO_SCREEN, link_msg);
 
-	if (!plain_text)
-		return (FALSE);
-
-  /*--- Screen 0 Copyright screen 1 Index -----*/
+	/*--- Screen 0 Copyright screen 1 Index -----*/
 	for (i = 2; i < (hlphdr.scr_tab_size >> 2) - 1; i++)
 	{
-	/*------ Is it a directory screen?---*/
+		/*------ Is it a directory screen?---*/
 		if (!is_dir_screen(screen_table[i]))
 		{
-	  /*------ Fetch page and decode it ---*/
+			/*------ Fetch page and decode it ---*/
 			size = decode(i, plain_text);
-	  /*----- Work through every name -----*/
-	  /*----- entry of a screen -----------*/
+			/*----- Work through every name -----*/
+			/*----- entry of a screen -----------*/
 			pos = plain_text;
 			limit = plain_text + size;
 			while (pos < limit)
@@ -1296,13 +1330,14 @@ static int read_Link(void)
 					{
 						ins_name(&link_list, &link_cnt, name, to_code, LINK, i);
 					}
-				} /* if ESC_CHR */
-				else
+				} else
+				{
 					pos++;
+				}
 			}
 		}
 	}
-	return (TRUE);
+	return TRUE;
 }
 
 
@@ -1318,18 +1353,18 @@ static int read_Link(void)
 static int read_Index(void)
 {
 	char *plain_idx_text;				/* Decoded Index */
-	long size;							/* Its length */
+	int32_t size;						/* Its length */
 	char *limit;
 	int sub_idx = 0;					/* Entry being worked on */
 	int i;
 	char *pos;
 	char dummy[80];
-	_UWORD screen_code;
+	uint16_t screen_code;
 
-	wr_msg(rd_idx_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, rd_idx_msg);
 	plain_idx_text = g_new(char, 0x1000L);
 	if (!plain_idx_text)
-		return (FALSE);
+		return FALSE;
 
 	screen_done[INDEX_SCR] = TRUE;
 	size = decode(INDEX_SCR, plain_idx_text);
@@ -1346,7 +1381,7 @@ static int read_Index(void)
 			screen_code += *(unsigned char *) pos++;
 			if (sub_idx >= INDEX_CNT)
 			{
-				wr_msg(idx_warn_msg, TO_ALL);
+				wr_msg(TO_ALL, idx_warn_msg);
 				warnings++;
 			} else
 				subidx_scrs[sub_idx] = screen_code;
@@ -1359,10 +1394,10 @@ static int read_Index(void)
 	/* Now work through every Sub-index */
 	for (i = 0; i < INDEX_CNT; i++)
 		if (!rd_sidx_names(subidx_scrs[i]))
-			return (FALSE);
+			return FALSE;
 
 	g_free(plain_idx_text);
-	return (TRUE);
+	return TRUE;
 }
 
 
@@ -1377,7 +1412,7 @@ static int is_helpfile(void)
 
 	fseek(hlpfile, 0x54L, SEEK_SET);
 	fread(buffer, 1, 4L, hlpfile);
-	return (!strncmp(buffer, HC_VERS, strlen(HC_VERS)));
+	return strncmp(buffer, HC_VERS, strlen(HC_VERS)) == 0;
 }
 
 
@@ -1389,8 +1424,21 @@ static int is_helpfile(void)
 /*------------------------------------------*/
 static int read_header(void)
 {
+	unsigned char hlphdr_raw[HEADER_SIZE];
 	fseek(hlpfile, 0x58L, SEEK_SET);
-	return (fread(&hlphdr, 1, sizeof(HLPHDR), hlpfile) == HEADER_SIZE);
+	if (fread(hlphdr_raw, 1, HEADER_SIZE, hlpfile) != HEADER_SIZE)
+		return FALSE;
+	hlphdr.scr_tab_size = read_int_32(hlphdr_raw + 0);
+	hlphdr.str_offset = read_int_32(hlphdr_raw + 4);
+	hlphdr.str_size = read_int_32(hlphdr_raw + 8);
+	memcpy(hlphdr.char_table, hlphdr_raw + 12, 12);
+	hlphdr.caps_offset = read_int_32(hlphdr_raw + 24);
+	hlphdr.caps_size = read_int_32(hlphdr_raw + 28);
+	hlphdr.caps_cnt = read_int_32(hlphdr_raw + 32);
+	hlphdr.sens_offset = read_int_32(hlphdr_raw + 36);
+	hlphdr.sens_size = read_int_32(hlphdr_raw + 40);
+	hlphdr.sens_cnt = read_int_32(hlphdr_raw + 44);
+	return TRUE;
 }
 
 
@@ -1402,25 +1450,24 @@ static int read_header(void)
 /*-------------------------------------------*/
 static int read_screen_table(void)
 {
-	long bytes_read;
+	int32_t bytes_read;
 	int i;
 
-	wr_msg(rd_scr_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, rd_scr_msg);
 	fseek(hlpfile, 0x88L, SEEK_SET);
-	screen_table = (long *) g_malloc(hlphdr.scr_tab_size);
+	screen_cnt = (int) hlphdr.scr_tab_size >> 2;
+	screen_table = g_new(int32_t, screen_cnt);
 	if (!screen_table)
 	{
-		sprintf(msg, "%s", no_ram_msg);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, "%s", strerror(errno));
+		return FALSE;
 	}
-	screen_cnt = (int) hlphdr.scr_tab_size >> 2;
 	screen_done = g_new(unsigned char, screen_cnt);
 	if (!screen_done)
 	{
-		sprintf(msg, "\n%s\n", no_ram_msg);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, "\n%s\n", strerror(errno));
+		return FALSE;
 	}
-
 
 	for (i = 0; i < screen_cnt; i++)
 	{
@@ -1428,7 +1475,16 @@ static int read_screen_table(void)
 	}
 
 	bytes_read = fread(screen_table, 1, hlphdr.scr_tab_size, hlpfile);
-	return ((bytes_read == hlphdr.scr_tab_size) && screen_table && screen_done);
+#ifdef MUST_SWAP
+	{
+		unsigned char *p = (unsigned char *)screen_table;
+		for (i = 0; i < screen_cnt; i++)
+		{
+			screen_table[i] = read_int_32(p + i * 4);
+		}
+	}
+#endif
+	return bytes_read == hlphdr.scr_tab_size;
 }
 
 
@@ -1439,18 +1495,18 @@ static int read_screen_table(void)
 /*---------------------------------------------*/
 static int read_string_table(void)
 {
-	long bytes_read;
+	int32_t bytes_read;
 
-	wr_msg(rd_str_msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, rd_str_msg);
 	string_tab = g_new(unsigned char, hlphdr.str_size);
 	if (!string_tab)
 	{
-		sprintf(msg, "%s", no_ram_msg);
-		wr_msg(msg, TO_ALL);
+		wr_msg(TO_ALL, "%s", strerror(errno));
+		return FALSE;
 	}
 	fseek(hlpfile, hlphdr.str_offset, SEEK_SET);
 	bytes_read = fread(string_tab, 1, hlphdr.str_size, hlpfile);
-	return ((bytes_read == hlphdr.str_size) && string_tab);
+	return bytes_read == hlphdr.str_size;
 }
 
 
@@ -1504,6 +1560,14 @@ int main(int argc, char *argv[])
 	if (log_flag)
 		wr_header();
 
+	code_buffer = g_new0(unsigned char, MAXCODEDSIZE);
+	plain_text = g_new(char, TXTBUFSIZE);
+	if (code_buffer == NULL || plain_text == NULL)
+	{
+		errors++;
+		goto end;
+	}
+
 	read_key_table(&key_table, SENS_TABLE);
 	read_key_table(&c_key_table, CAP_TABLE);
 	if (log_flag)
@@ -1511,23 +1575,22 @@ int main(int argc, char *argv[])
 
 	if (!read_screen_table())
 	{
-		wr_msg(rd_scr_err, TO_ALL);
+		wr_msg(TO_ALL, rd_scr_err);
 		errors++;
 		goto end;
 	}
-	sprintf(msg, scr_cnt_msg, screen_cnt);
-	wr_msg(msg, TO_SCREEN);
+	wr_msg(TO_SCREEN, scr_cnt_msg, screen_cnt);
 
 	if (!read_string_table())
 	{
-		wr_msg(rd_str_err, TO_ALL);
+		wr_msg(TO_ALL, rd_str_err);
 		errors++;
 		goto end;
 	}
 
 	if (!read_Index())
 	{
-		wr_msg(rd_idx_err, TO_ALL);
+		wr_msg(TO_ALL, rd_idx_err);
 		errors++;
 		goto end;
 	}
@@ -1544,18 +1607,17 @@ int main(int argc, char *argv[])
 	{
 		if (!decompile())
 		{
-			wr_msg(decomp_err, TO_ALL);
+			wr_msg(TO_ALL, decomp_err);
 			errors++;
 			goto end;
-		}								/* if */
+		}
 	}
-	/* if */
+	
 	if (txt_flag)
 	{
 		if (!make_txtfile())
 		{
-			sprintf(msg, file_creat_err, txtname);
-			wr_msg(msg, TO_ALL);
+			wr_msg(TO_ALL, file_creat_err, txtname);
 			errors++;
 			goto end;
 		}
@@ -1563,12 +1625,37 @@ int main(int argc, char *argv[])
 
   end:
 
-	sprintf(msg, final_msg, errors, warnings, glbref_cnt);
-	wr_msg(msg, TO_ALL);
+	wr_msg(TO_ALL, final_msg, errors, warnings, glbref_cnt);
 	if (hlpfile)
 		fclose(hlpfile);
 	if (log_flag)
 		fclose(logfile);
+	
+	g_free(screen_table);
+	g_free(screen_done);
+	g_free(code_buffer);
+	g_free(plain_text);
+	g_free(name_array);
+	g_free(key_table);
+	g_free(c_key_table);
+	g_free(string_tab);
+	
+	{
+		NAME_ENTRY *ent, *next;
+		for (ent = namelist; ent != NULL; ent = next)
+		{
+			next = ent->next;
+			g_free(ent->name);
+			g_free(ent);
+		}
+		for (ent = link_list; ent != NULL; ent = next)
+		{
+			next = ent->next;
+			g_free(ent->name);
+			g_free(ent);
+		}
+	}
+	
 	puts(ready_msg);
 	return errors == 0 ? 0 : 1;
 }
