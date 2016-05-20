@@ -5468,9 +5468,14 @@ static gboolean finish_pass1(hcp_vars *vars)
 						break;
 				if (j < i)
 				{
-					entry->extern_nodeindex = j;
 					if (vars->extern_table[j]->xlink_target == HYP_NOINDEX)
+					{
 						vars->extern_table[j]->xlink_target = vars->p2_real_external_node_counter;
+						vars->p2_real_external_node_counter++;
+					} else
+					{
+						entry->extern_nodeindex = j;
+					}
 					entry->xlink_target = vars->extern_table[j]->xlink_target;
 				} else
 				{
