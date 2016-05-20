@@ -5089,11 +5089,14 @@ static gboolean build_index_table(hcp_vars *vars)
 				continue;
 			break;
 		case HYP_NODE_IMAGE:
+			break;
 		case HYP_NODE_SYSTEM_ARGUMENT:
 		case HYP_NODE_REXX_SCRIPT:
 		case HYP_NODE_REXX_COMMAND:
 		case HYP_NODE_QUIT:
 		case HYP_NODE_CLOSE:
+			if (entry->extern_nodeindex != HYP_NOINDEX)
+				continue;
 			break;
 		case HYP_NODE_EOF:
 			break;
@@ -5524,7 +5527,14 @@ static gboolean finish_pass1(hcp_vars *vars)
 								break;
 						if (j < i)
 						{
-							entry->extern_nodeindex = j;
+							if (vars->extern_table[j]->xlink_target == HYP_NOINDEX)
+							{
+								vars->extern_table[j]->xlink_target = vars->p2_real_external_node_counter;
+								vars->p2_real_external_node_counter++;
+							} else
+							{
+								entry->extern_nodeindex = j;
+							}
 							entry->xlink_target = vars->extern_table[j]->xlink_target;
 							x->target = j;
 						} else
@@ -6248,8 +6258,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		{
 			if (entry->extern_nodeindex == HYP_NOINDEX)
 				vars->p2_real_external_node_counter++;
-			else
-				target = entry->xlink_target;
+			target = entry->xlink_target;
 		} else if (entry->type == HYP_NODE_XLINK_RSC)
 		{
 			/* unresolved link; write text only */
@@ -6295,8 +6304,7 @@ static int c_inline_system(hcp_vars *vars, int argc, char **argv)
 		vars->p2_external_node_counter++;
 		if (entry->extern_nodeindex == HYP_NOINDEX)
 			vars->p2_real_external_node_counter++;
-		else
-			target = entry->xlink_target;
+		target = entry->xlink_target;
 	}
 	return addlink(vars, HYP_ESC_LINK, argv[0], entry ? entry->name : NULL, target, 0);
 }
@@ -6334,8 +6342,7 @@ static int c_inline_quit(hcp_vars *vars, int argc, char **argv)
 		vars->p2_external_node_counter++;
 		if (entry->extern_nodeindex == HYP_NOINDEX)
 			vars->p2_real_external_node_counter++;
-		else
-			target = entry->xlink_target;
+		target = entry->xlink_target;
 	}
 	return addlink(vars, HYP_ESC_LINK, argv[0], entry ? entry->name : NULL, target, 0);
 }
@@ -6373,8 +6380,7 @@ static int c_inline_close(hcp_vars *vars, int argc, char **argv)
 		vars->p2_external_node_counter++;
 		if (entry->extern_nodeindex == HYP_NOINDEX)
 			vars->p2_real_external_node_counter++;
-		else
-			target = entry->xlink_target;
+		target = entry->xlink_target;
 	}
 	return addlink(vars, HYP_ESC_LINK, argv[0], entry ? entry->name : NULL, target, 0);
 }
@@ -6415,8 +6421,7 @@ static int c_inline_rexx(hcp_vars *vars, int argc, char **argv, gboolean script)
 		vars->p2_external_node_counter++;
 		if (entry->extern_nodeindex == HYP_NOINDEX)
 			vars->p2_real_external_node_counter++;
-		else
-			target = entry->xlink_target;
+		target = entry->xlink_target;
 	}
 	return addlink(vars, HYP_ESC_LINK, argv[0], entry ? entry->name : NULL, target, 0);
 }
