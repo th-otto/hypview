@@ -2332,7 +2332,7 @@ static gboolean load_uses_from_ref(hcp_vars *vars, REF_FILE *ref)
 	
 	for (mod = ref->modules; mod != NULL; mod = mod->next)
 	{
-		filename = g_strdup(hyp_basename(mod->filename));
+		filename = hyp_utf8_strdown(hyp_basename(mod->filename), STR0TERM);
 		if (G_UNLIKELY(filename == NULL))
 			return FALSE;
 		for (num = 0; num < mod->num_entries; num++)
@@ -2409,7 +2409,7 @@ static gboolean load_uses_from_hyp(hcp_vars *vars, HYP_DOCUMENT *hyp)
 	LABEL *lab;
 	INDEX_ENTRY *entry;
 	
-	filename = g_strdup(hyp_basename(hyp->file));
+	filename = hyp_utf8_strdown(hyp_basename(hyp->file), STR0TERM);
 	if (G_UNLIKELY(filename == NULL))
 		return FALSE;
 	for (num = 0; num < hyp->num_index; num++)
@@ -6168,6 +6168,8 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		{
 			char c = *p;
 			*p = '\0';
+			if (is_allupper(dest))
+				hcp_warning(vars, NULL, _("use lowercase filenames for external references"));
 			if (hyp_guess_filetype(dest) == HYP_FT_RSC)
 			{
 				entry->type = HYP_NODE_XLINK_RSC;
