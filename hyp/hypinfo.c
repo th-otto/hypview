@@ -182,6 +182,9 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 				lang = langid_identify(lid, out->str, out->len, &prob);
 				g_string_free(out, TRUE);
 				hyp->language_guessed = TRUE;
+			} else
+			{
+				lang = NULL;
 			}
 #else
 			UNUSED(lid);

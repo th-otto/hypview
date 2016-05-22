@@ -517,6 +517,41 @@ GSList *g_slist_append(GSList *list, gpointer data)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static inline GSList *_g_slist_remove_link(GSList *list, GSList *link)
+{
+	GSList *tmp;
+	GSList *prev;
+
+	prev = NULL;
+	tmp = list;
+
+	while (tmp)
+	{
+		if (tmp == link)
+		{
+			if (prev)
+				prev->next = tmp->next;
+			if (list == tmp)
+				list = list->next;
+
+			tmp->next = NULL;
+			break;
+		}
+
+		prev = tmp;
+		tmp = tmp->next;
+	}
+
+	return list;
+}
+
+GSList *g_slist_remove_link(GSList *list, GSList *link_)
+{
+	return _g_slist_remove_link(list, link_);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void g_slist_free_full(GSList *list, void (*freefunc)(void *))
 {
 	GSList *l, *next;
@@ -526,7 +561,7 @@ void g_slist_free_full(GSList *list, void (*freefunc)(void *))
 		next = l->next;
 		if (freefunc)
  			freefunc(l->data);
-		g_free(l);
+		g_slist_free_1(l);
 	}
 }
 
@@ -535,6 +570,16 @@ void g_slist_free_full(GSList *list, void (*freefunc)(void *))
 void g_slist_free(GSList *list)
 {
 	g_slist_free_full(list, 0);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+GSList *g_slist_delete_link(GSList *list, GSList *link_)
+{
+	list = _g_slist_remove_link(list, link_);
+	g_slist_free_1(link_);
+
+	return list;
 }
 
 /*** ---------------------------------------------------------------------- ***/

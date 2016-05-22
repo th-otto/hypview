@@ -163,6 +163,8 @@ GSList *g_slist_append(GSList *list, gpointer data);
 #define g_slist_free_1(l) g_free(l)
 void g_slist_free_full(GSList *list, void (*freefunc)(void *));
 void g_slist_free(GSList *list);
+GSList *g_slist_delete_link(GSList *list, GSList *link_);
+GSList *g_slist_remove_link(GSList *list, GSList *link_);
 
 int g_ascii_xdigit_value(char c);
 

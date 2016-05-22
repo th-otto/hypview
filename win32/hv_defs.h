@@ -405,8 +405,6 @@ void RecentInit(void);
 void RecentExit(void);
 void RecentSaveToDisk(void);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
-void g_slist_free_full(GSList *list, void (*freefunc)(void *));
-void g_slist_free(GSList *list);
 void DlgSetText(HWND hwnd, int id, const char *str);
 char *DlgGetText(HWND hwnd, int id);
 void DlgSetTextW(HWND hwnd, int id, const wchar_t *wstr);
