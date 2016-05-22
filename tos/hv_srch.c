@@ -265,7 +265,7 @@ static void print_results(RESULT_ENTRY *ptr)
 	{
 		HYP_DBG(("Path=%s", printnull(ptr->path)));
 		HYP_DBG(("Node:%s", printnull(ptr->node_name)));
-		HYP_DBG(("Label:%d", ptr->is_label));
+		HYP_DBG(("Label:%s", printnull(ptr->label_name)));
 		HYP_DBG(("Line:%d", ptr->lineno));
 		HYP_DBG(("Descr:%s", printnull(ptr->dbase_description)));
 		ptr = (RESULT_ENTRY *)ptr->item.next;

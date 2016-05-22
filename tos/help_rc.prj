@@ -1,4 +1,4 @@
-help_rc.ttp
+c:\usr\bin\help_rc.ttp
 .C[-Ih:\src\udo\tools\hypview\include\tos]
 .C[-Ih:\src\udo\tools\hypview\include]
 .C[-Ih:\src\udo\src] ; FIXME: for windows_.h
