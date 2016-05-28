@@ -19,10 +19,12 @@ char const gl_program_version[] = HYP_VERSION;
 static gboolean do_help = FALSE;
 static gboolean do_version = FALSE;
 static gboolean show_palette = FALSE;
+static gboolean print_histogram = FALSE;
 
 
 static struct option const long_options[] = {
 	{ "palette", no_argument, NULL, 'p' },
+	{ "histogram", no_argument, NULL, 'H' },
 	
 	{ "help", no_argument, NULL, 'h' },
 	{ "version", no_argument, NULL, 'V' },
@@ -83,8 +85,141 @@ static void print_usage(FILE *out)
 	hyp_utf8_fprintf(out, _("usage: %s [-options] file1 [file2 ...]\n"), gl_program_name);
 	hyp_utf8_fprintf(out, _("options:\n"));
 	hyp_utf8_fprintf(out, _("  -p, --palette                 print palette values\n"));
+	hyp_utf8_fprintf(out, _("  -H, --histogram               print a histogram\n"));
 	hyp_utf8_fprintf(out, _("  -h, --help                    print help and exit\n"));
 	hyp_utf8_fprintf(out, _("  -V, --version                 print version and exit\n"));
+}
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
+
+struct hist {
+	unsigned long count;
+	unsigned char pixel;
+};
+
+static int cmp_hist(const void *_p1, const void *_p2)
+{
+	const struct hist *p1 = (const struct hist *)_p1;
+	const struct hist *p2 = (const struct hist *)_p2;
+	
+	if (p1->count > p2->count)
+		return -1;
+	if (p1->count < p2->count)
+		return 1;
+	return 0;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean histogram(PICTURE *pic, const char *filename)
+{
+	struct hist histo[256];
+	unsigned char *dest = NULL;
+	gboolean retval = TRUE;
+	unsigned long rowsize;
+	int x, y;
+	int planes;
+	int i, colors;
+	long count;
+	const char *transparency;
+	
+	if (pic->pi_unsupported)
+	{
+		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unsupported picture format"));
+		goto error;
+	}
+	
+	dest = g_new(unsigned char, pic->pi_picsize);
+	if (dest == NULL)
+	{
+		oom();
+		goto error;
+	}
+	
+	switch (pic->pi_type)
+	{
+	case FT_BMP:
+		if (bmp_unpack(dest, pic->pi_buf + pic->pi_dataoffset, pic) == FALSE)
+		{
+			hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
+			goto error;
+		}
+		break;
+
+	case FT_GIF:
+		if (gif_unpack(&dest, pic->pi_buf, pic) == FALSE)
+		{
+			hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
+			goto error;
+		}
+		break;
+		
+	case FT_IMG:
+		if (img_unpack_safe(dest, pic->pi_buf + pic->pi_dataoffset, pic) == FALSE)
+		{
+			hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
+			goto error;
+		}
+		break;
+	
+	default:
+		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unimplemented picture format"));
+		break;
+	}
+	
+	memset(histo, 0, sizeof(histo));
+	for (i = 0; i < 256; i++)
+		histo[i].pixel = i;
+
+	rowsize = pic_rowsize(pic, pic->pi_planes);
+	for (y = 0; y < pic->pi_height; y++)
+	{
+		const unsigned char *src = dest + y * rowsize;
+		
+		for (x = 0; x < pic->pi_width; x++)
+		{
+			const unsigned char *p = src + (x >> 3);
+			unsigned char mask = 0x80 >> (x & 0x07);
+			unsigned char colmask = 0x01;
+			unsigned char pixel = 0;
+			for (planes = 0; planes < pic->pi_planes; planes++)
+			{
+				if (*p & mask)
+					pixel |= colmask;
+				colmask <<= 1;
+				p += 2;
+			}
+			histo[pixel].count++;
+		}
+	}
+	qsort(histo, 256, sizeof(histo[0]), cmp_hist);
+	colors = 1 << pic->pi_planes;
+	transparency = pic->pi_transparent >= 0 ? "+1" : "";
+	for (i = 0; i < colors; i++)
+	{
+		unsigned char pixel = histo[i].pixel;
+		if (histo[i].count != 0)
+		{
+			hyp_utf8_fprintf(stdout, "  %3d: #%02x%02x%02x: %lu\n", pixel, pic->pi_palette[pixel].r, pic->pi_palette[pixel].g, pic->pi_palette[pixel].b, histo[i].count);
+			count++;
+			if (pixel == pic->pi_transparent)
+				transparency = "";
+		}
+	}
+	printf(_("%ld%s colors used\n"), count, transparency);
+	fflush(stdout);
+	
+	goto done;
+
+error:
+	fflush(stdout);
+	fflush(stderr);
+	retval = FALSE;
+done:
+	g_free(dest);
+	return retval;
 }
 
 /*****************************************************************************/
@@ -132,6 +267,7 @@ static gboolean identify_file(const char *filename)
 		goto error;
 	}
 	pic_init(&pic);
+	pic.pi_buf = buf;
 	pic.pi_filesize = size;
 	pic_format = pic_type(&pic, buf, size);
 	colors = pic_colornameformat(pic.pi_planes);
@@ -148,8 +284,6 @@ static gboolean identify_file(const char *filename)
 	{
 		colordiff = g_strdup("");;
 	}
-	g_free(buf);
-	buf = NULL;
 	if (pic.pi_transparent >= 0)
 		transparency = g_strdup_printf(_(" transparent %d"), pic.pi_transparent);
 	else
@@ -271,9 +405,22 @@ static gboolean identify_file(const char *filename)
 		_WORD ncolors = 1 << pic.pi_planes;
 		_WORD i;
 		
+		fflush(stdout);
 		for (i = 0; i < ncolors; i++)
 		{
 			hyp_utf8_fprintf(stdout, "  %3d: #%02x%02x%02x\n", i, pic.pi_palette[i].r, pic.pi_palette[i].g, pic.pi_palette[i].b);
+		}
+	}
+	
+	if (print_histogram && pic_format >= FT_PICTURE_FIRST && pic_format <= FT_PICTURE_LAST)
+	{
+		fflush(stdout);
+		if (pic.pi_planes > 8)
+		{
+			hyp_utf8_fprintf(stderr, _("%s: histogram for %s NYI\n"), filename, colors);
+		} else
+		{
+			histogram(&pic, filename);
 		}
 	}
 	
@@ -284,6 +431,8 @@ static gboolean identify_file(const char *filename)
 	goto done;
 
 error:
+	fflush(stdout);
+	fflush(stderr);
 	retval = FALSE;
 done:
 	g_free(buf);
@@ -306,12 +455,16 @@ int main(int argc, const char **argv)
 	struct _getopt_data *d;
 	
 	getopt_init_r(gl_program_name, &d);
-	while ((c = getopt_long_only_r(argc, argv, "phV?", long_options, NULL, d)) != EOF)
+	while ((c = getopt_long_only_r(argc, argv, "pHhV?", long_options, NULL, d)) != EOF)
 	{
 		switch (c)
 		{
 		case 'p':
 			show_palette = TRUE;
+			break;
+		
+		case 'H':
+			print_histogram = TRUE;
 			break;
 		
 		case 'h':

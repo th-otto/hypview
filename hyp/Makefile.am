@@ -334,6 +334,9 @@ picinfo_SOURCES = \
 
 picinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 picinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if WITH_GUI_GTK
+picinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
+endif
 
 
 dumpicon_SOURCES = \
