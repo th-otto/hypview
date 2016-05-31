@@ -15,6 +15,6 @@
 #define S_COPYRIGHT_SIGN "\xC2\xA9"
 
 #define HYP_COPYRIGHT "Copyright " S_COPYRIGHT_SIGN " 1991-" HYP_RELEASE_YEAR " by Thorsten Otto"
-#define HYP_URL       "http://tho-otto.de/"
+#define HYP_URL       "http://www.tho-otto.de/"
 #undef PACKAGE_URL
 #define PACKAGE_URL HYP_URL
