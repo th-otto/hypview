@@ -381,7 +381,6 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 		{ 0, 0, 0, 0, 0, 0, 0, 0 }
 	};
 		
-	win->last.g_x = win->last.g_y = win->last.g_w = win->last.g_h = 0;
 	win->title = NULL;
 	win->object_path = NULL;
 	win->x_raster = font_cw;

@@ -68,7 +68,6 @@ typedef struct _GtkHypviewWindowClass GtkHypviewWindowClass;
 struct _window_data_
 {
 	GtkWindow gtk_window;
-	GRECT last;
 	char *title;						/* Window title, in utf8 encoding */
 	int x_raster;
 	int y_raster;
