@@ -414,8 +414,9 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 		info = g_dbus_node_info_new_for_xml(org_gtk_hypview_xml, &error);
 		if (G_UNLIKELY(info == NULL))
 		{
-			g_printerr("%s", error->message);
-			g_error_free(error);
+			if (error)
+				g_printerr("%s", error->message);
+			g_clear_error(&error);
 		} else
 		{
 			org_gtk_hypview = g_dbus_node_info_lookup_interface(info, "org.gtk.hypviewwindow");
@@ -433,8 +434,9 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 		win->object_id = g_dbus_connection_register_object(session_bus, win->object_path, org_gtk_hypview, &vtable, win, NULL, &error);
 		if (G_UNLIKELY(win->object_id == 0))
 		{
-			g_printerr("%s", error->message);
-			g_error_free(error);
+			if (error)
+				g_printerr("%s", error->message);
+			g_clear_error(&error);
 		}
 	}
 }
@@ -2361,8 +2363,9 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		
 		if (!gtk_ui_manager_add_ui_from_string(ui_manager, ui_info, -1, &error))
 		{
-			g_message("building menus failed: %s", error->message);
-			g_error_free(error);
+			if (error)
+				g_message("building menus failed: %s", error->message);
+			g_clear_error(&error);
 		}
 	
 		menubar = gtk_ui_manager_get_widget(ui_manager, "/MenuBar");

@@ -603,8 +603,9 @@ int main(int argc, char **argv)
 
 		if (!g_application_register(app, NULL, &error))
 		{
-			g_printerr("%s\n", error->message);
-			g_error_free(error);
+			if (error)
+				g_printerr("%s\n", error->message);
+			g_clear_error(&error);
 			return EXIT_FAILURE;
 		}
 	}
@@ -626,8 +627,9 @@ int main(int argc, char **argv)
 		info = g_dbus_node_info_new_for_xml(org_gtk_hypview_xml, &error);
 		if (G_UNLIKELY(info == NULL))
 		{
-			g_printerr("%s", error->message);
-			g_error_free(error);
+			if (error)
+				g_printerr("%s", error->message);
+			g_clear_error(&error);
 		} else
 		{
 			org_gtk_hypview = g_dbus_node_info_lookup_interface(info, "org.gtk.hypview");
