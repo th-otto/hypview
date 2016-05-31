@@ -166,9 +166,17 @@ static void gtk_hypview_window_finalize(GObject *object)
 		{
 			HypviewApplication *app = g_application_get_default();
 			GDBusConnection *session_bus = g_application_get_dbus_connection(app);
+			gboolean last;
 			if (win->object_id)
 				g_dbus_connection_unregister_object(session_bus, win->object_id);
+			/*
+			 * there should be a better way to detect last reference,
+			 * but GDBusInterfaceInfo is not derived from GObject :-(
+			 */
+			last = org_gtk_hypview->ref_count == 1;
 			g_dbus_interface_info_unref(org_gtk_hypview);
+			if (last)
+				org_gtk_hypview = NULL;
 		}
 		g_freep(&win->object_path);
 		G_OBJECT_CLASS(gtk_hypview_window_parent_class)->finalize(object);
