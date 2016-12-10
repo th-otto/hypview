@@ -169,7 +169,7 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 	/*
 	   No colon in name? => relative path
 	   colon as 2nd char => absolute path
-	   else => no Pfad, don't have chapter name either
+	   else => no path, don't have chapter name either
 	 */
 	cptr = strchr(temp, ':');
 	if (cptr != NULL && cptr == &temp[1])
@@ -201,7 +201,14 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window)
 				ReInitWindow(win, FALSE);
 		} else
 		{
-			win = search_allref(win, chapter, FALSE);
+			/*
+			 * older compiler versions apparently accepted links to external HYP files
+			 * without a /nodename, handle this too
+			 */
+			if (hyp_guess_filetype(path) == HYP_FT_HYP)
+				win = OpenFileInWindow(win, path, NULL, 0, TRUE, new_window ? FORCE_NEW_WINDOW : 0, FALSE);
+			else
+				win = search_allref(win, chapter, FALSE);
 		}
 	} else
 	{

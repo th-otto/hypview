@@ -6261,6 +6261,12 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 			if (entry->extern_nodeindex == HYP_NOINDEX)
 				vars->p2_real_external_node_counter++;
 			target = entry->xlink_target;
+			/*
+			 * older compiler versions apparently accepted links to external HYP files
+			 * without a /nodename, warn about this
+			 */
+			if (hyp_guess_filetype(dest) == HYP_FT_HYP && strslash(dest) == NULL)
+				hcp_warning(vars, NULL, _("missing /nodename for external reference"));
 		} else if (entry->type == HYP_NODE_XLINK_RSC)
 		{
 			/* unresolved link; write text only */
