@@ -122,7 +122,7 @@ static gboolean histogram(PICTURE *pic, const char *filename)
 	int x, y;
 	int planes;
 	int i, colors;
-	long count;
+	long count = 0;
 	const char *transparency;
 	
 	if (pic->pi_unsupported)

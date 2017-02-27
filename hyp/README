@@ -1,0 +1,87 @@
+HCP-compiler for Atari/Linux/Win32
+==================================
+
+This is a beta-version of a HCP (hypertext) compiler modelled after
+the famous tool for Atari. As such, it should understand all of the
+originally supported commands (documentation to follow, please refer
+to the ST-Guide documentation). It is able to create binary files
+that can be displayed by either HypView or the original St-Guide tool
+(if you take care for character set conversions; see below). It is
+also able to create the corresponding *.ref files (for faster lookup
+of cross-references) and to update an all.ref (cross-references for
+all known hypertext files).
+
+To better support the new operating systems, the compiler understands
+a few new commands:
+
+- @charset <charset>
+  Defines the characterset the resulting output file is written in.
+  The default depends on the OS (atarist for Atari, CP1252 on Windows,
+  UTF-8 otherwise). This command (if present) must appear in the preamble,
+  and can only be specified once.
+
+- @inputenc <charset>
+  Defines the encoding of the input file. The defaults are the same as for
+  @charset. This command can appear everywhere, and can be changed at any
+  time. It should be specified before any non-Ascii characters are used, though.
+  You may get warnings if a character can't be converted to the output
+  character set.
+
+- @os <name>
+  Defines the OS the hypertext was generated on. Hypertext file created by
+  ST-Guide already contain an (informational) field for this. This command
+  can be used to override the default.
+
+- @lang <name>
+  Defines the (main) context language of the document. It is currently used
+  only for informational purposes. <name> should be an abbreviation as defined
+  by RFC 639-1 ("en", "de", "en_US" etc.)
+
+There are a few pitfalls when you want to create hypertext files that can
+be displayed by ST-Guide:
+
+- When using an output characterset other than atarist, a compiler version of 6
+  will be written to the header, indicating that this is a newer format. ST-Guide
+  will still be able to display such files, but will complain about the newer
+  version, and of course might not display non-Ascii characters correctly.
+
+- At least the original hcp seems to have an internal limit on the number of
+  nodes that can be compiled (~3400). Using more than this limit will just crash
+  it. Of course that limit is quite high, but is already exceeded when you
+  try to compile a tos.hyp which includes the complete cookie list (that's
+  why it is currently reduced there when doing ST-guide output). The viewer
+  does not seem to have such a limit, or it might be just higher. This new
+  hcp version does not have such a limit (except for those imposed by the
+  file format).
+
+Therefore, to produce files that can be displayed by older viewers, you
+should insert those commands in the preamble:
+
+@if VERSION >= 6
+@os atari
+@charset atarist
+@inputenc atarist
+@lang en
+@endif
+
+The @if VERSION ensures that the input file is still compilable by the original
+hcp version (VERSION here refers to the output file version format; St-Guide uses
+5 at most).
+
+If you are using UDO to create the input files, you can achieve that by putting
+this commands in the preamble:
+
+!raw [stg] @if VERSION >= 6
+!raw [stg] @os atari
+!raw [stg] @charset atarist
+!raw [stg] @inputenc atarist
+!raw [stg] @lang en
+!raw [stg] @endif
+
+Note that @inputenc in this case must match the output character set of UDO. Since
+UDO (in its current version) always assumes that *.stg-files must be written in
+Atari encoding, there is not much choice about it.
+
+
+
+Thorsten Otto
