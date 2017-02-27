@@ -663,6 +663,7 @@ int main(void)
 		char *filename;
 		int len;
 		
+		g_string_truncate(body, 0);
 		filename = cgiFormFileName("file", &len);
 		if (filename == NULL || len == 0)
 		{
@@ -747,6 +748,17 @@ int main(void)
 		g_freep(&html_referer_url);
 	}
 	
+#if 0
+	{
+		FILE *tmp = fopen("test.out", "wb");
+		if (tmp)
+		{
+			html_out_response_header(tmp, opts->output_charset, body->len, pic_format, opts->recompile_format == HYP_FT_HTML_XML);
+			write_strout(body, tmp);
+			fclose(tmp);
+		}
+	}
+#endif
 	html_out_response_header(out, opts->output_charset, body->len, pic_format, opts->recompile_format == HYP_FT_HTML_XML);
 	cgiExit();
 	write_strout(body, out);
