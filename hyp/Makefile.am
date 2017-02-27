@@ -17,9 +17,6 @@ endif
 SRVDIR = /srv/www/htdocs/hypview
 
 
-if OS_TOS
-bin_SCRIPTS = reflink.ttp refcheck.ttp hcp.ttp stool.tos hypfind.ttp hypinfo.ttp
-endif
 if !CROSS_COMPILING
 noinst_SCRIPTS += $(build_triplet)-hcp$(EXEEXT) \
 		  $(build_triplet)-hypfind$(EXEEXT) \
@@ -165,11 +162,13 @@ hypview_cgi_LDFLAGS += -Wl,-rpath,$(GTK_LIBDIR)
 endif
 hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA_hypview_cgi_DEPENDENCIES) 
 	@rm -f hypview.cgi$(EXEEXT)
-	$(AM_V_CCLD)$(hypview_cgi_LINK) $(hypview_cgi_OBJECTS) $(hypview_cgi_LDADD) $(LIBS); \
-	if test -d "$(SRVDIR)"; then \
+	$(AM_V_CCLD)$(hypview_cgi_LINK) $(hypview_cgi_OBJECTS) $(hypview_cgi_LDADD) $(LIBS)
+if !CROSS_COMPILING
+	$(AM_V_at)if test -d "$(SRVDIR)"; then \
 	   echo "installing $@ in $(SRVDIR)"; \
 	   cp -a $@ "$(SRVDIR)/hypview.cgi"; \
 	fi
+endif
 	
 hypinfo_SOURCES = \
 	hypinfo.c \
@@ -185,11 +184,13 @@ hypinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
 hypinfo$(EXEEXT): $(hypinfo_OBJECTS) $(hypinfo_DEPENDENCIES) $(EXTRA_hypinfo_DEPENDENCIES) 
 	@rm -f hypinfo$(EXEEXT)
-	$(AM_V_CCLD)$(hypinfo_LINK) $(hypinfo_OBJECTS) $(hypinfo_LDADD) $(LIBS); \
-	if test -d "$(SRVDIR)"; then \
+	$(AM_V_CCLD)$(hypinfo_LINK) $(hypinfo_OBJECTS) $(hypinfo_LDADD) $(LIBS)
+if !CROSS_COMPILING
+	$(AM_V_at)if test -d "$(SRVDIR)"; then \
 	   echo "installing $@ in $(SRVDIR)"; \
 	   cp -a $@ "$(SRVDIR)/hypinfo"; \
 	fi
+endif
 hypinfo.ttp: hypinfo
 	$(LN_S) $?$(EXEEXT) $@
 
@@ -351,6 +352,16 @@ model.h: $(LANGID_MODEL) $(srcdir)/ldpy2ldc.py
 
 EXTRA_DIST += ldpy2ldc.py $(LANGID_MODEL)
 
+if OS_TOS
+install-exec-hook:
+	cd $(DESTDIR)$(bindir) && \
+	mv reflink reflink.ttp && \
+	mv refcheck refcheck.ttp && \
+	mv hcp hcp.ttp && \
+	mv stool stool.tos && \
+	mv hypfind hypfind.ttp && \
+	mv hypinfo hypinfo.ttp
+endif
 
 CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)
