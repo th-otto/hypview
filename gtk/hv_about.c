@@ -22,7 +22,7 @@ void About(GtkWidget *parent)
 	char *compiler_version = hyp_compiler_version();
 	char *url = g_strdup_printf(_("%s is Open Source (see <a href=\"%s\">%s</a> for further information).\n"), gl_program_name, HYP_URL, HYP_URL);
 	const char *homepage = "http://www.tho-otto.de/";
-	const char *email = "halgara@yahoo.de";
+	const char *email = "admin@tho-otto.de";
 	
 	dialog = gtk_dialog_new();
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("about-dialog"));
