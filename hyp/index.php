@@ -318,76 +318,85 @@ class hyp {
 }
 
 $localdir = $_SERVER['DOCUMENT_ROOT'] . $hypdir;
-if ($dir = opendir($localdir))
+
+$cachefile = $localdir . '/hypinfo.cache';
+$filelist = file_get_contents($cachefile);
+if ($filelist === false)
 {
-	echo "Local files:\n\n";
-	$hyp = new hyp(array());
-	while (false !== ($entry = readdir($dir))) {
-		if ($entry == ".") continue;
-		if ($entry == "..") continue;
-		if (!fnmatch("*.hyp", $entry)) continue;
-		/* skip subsidiary files from collections (e.g. folder.hyp) */
-		if (fnmatch("_*.hyp", $entry)) continue;
-		/* skip the output result from hypfind tool */
-		if (fnmatch("hypfind.hyp", $entry)) continue;
-
-		$hyp->files[$entry] = array();
-		$hyp->files[$entry]['name'] = $entry;
-		$info = popen('./hypinfo ' . escapeshellarg($localdir . '/' . $entry), "r");
-		if (is_resource($info))
-		{
-			while (($line = fgets($info)) !== false)
+	$filelist = '';
+	if ($dir = opendir($localdir))
+	{
+		$filelist .= "Local files:\n\n";
+		$hyp = new hyp(array());
+		while (false !== ($entry = readdir($dir))) {
+			if ($entry == ".") continue;
+			if ($entry == "..") continue;
+			if (!fnmatch("*.hyp", $entry)) continue;
+			/* skip subsidiary files from collections (e.g. folder.hyp) */
+			if (fnmatch("_*.hyp", $entry)) continue;
+			/* skip the output result from hypfind tool */
+			if (fnmatch("hypfind.hyp", $entry)) continue;
+	
+			$hyp->files[$entry] = array();
+			$hyp->files[$entry]['name'] = $entry;
+			$info = popen('./hypinfo ' . escapeshellarg($localdir . '/' . $entry), "r");
+			if (is_resource($info))
 			{
-				$line = rtrim($line, "\x0D\x0A");
-				if (preg_match('/^@([a-z]+): (.*)/', $line, $matches))
-					$hyp->files[$entry][$matches[1]] = $matches[2];
-				if (preg_match('/^:([a-z]+): (.*)/', $line, $matches))
-					$hyp->files[$entry][$matches[1]] = $matches[2];
+				while (($line = fgets($info)) !== false)
+				{
+					$line = rtrim($line, "\x0D\x0A");
+					if (preg_match('/^@([a-z]+): (.*)/', $line, $matches))
+						$hyp->files[$entry][$matches[1]] = $matches[2];
+					if (preg_match('/^:([a-z]+): (.*)/', $line, $matches))
+						$hyp->files[$entry][$matches[1]] = $matches[2];
+				}
+				pclose($info);
 			}
-			pclose($info);
-		}
-    }
-
-    uksort($hyp->files, array($hyp, 'cmp_name'));
-	echo "<ul>\n";
-	echo "<table>\n";
-    foreach ($hyp->files as $name => $entry) {
-		echo "<tr>\n";
-		echo "<td>\n";
-    	echo '<li><a href="javascript: submitUrl(&quot;' . "$hypdir/" . js_escape($name) . '&quot;);">' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "</a></li>\n";
-		echo "</td>\n";
-		echo "<td width=\"300\">\n";
-		if (isset($entry['database']))
-			echo htmlspecialchars($entry['database']);
-		else if (isset($entry['subject']))
-			echo htmlspecialchars($entry['subject']);
-		echo "</td>\n";
-		echo "<td>\n";
-		echo htmlspecialchars(isset($entry['version']) ? $entry['version'] : '');
-		echo "</td>\n";
-		echo "<td>\n";
-		if (isset($entry['lang']))
-		{
-			// if ($entry['lang'] == 'de') $entry['lang'] = 'nb';
-			if (isset($languages[$entry['lang']]['name']))
-				echo htmlspecialchars($languages[$entry['lang']]['name']);
-			else
-				echo htmlspecialchars($entry['lang']);
-			echo "\n";
-		}
-		echo "</td>\n";
-		if (isset($entry['lang']) && isset($languages[$entry['lang']]['flag']))
-		{
-			echo "<td>\n";
-			echo '<img alt="" width="32" height="21" src="images/flags/' . $languages[$entry['lang']]['flag'] . '">' . "\n";
-			echo "</td>\n";
-		}
-		echo "</tr>\n";
-    }
- 	closedir($dir);
-	echo "</table>\n";
-	echo "</ul>\n";
+	    }
+	
+	    uksort($hyp->files, array($hyp, 'cmp_name'));
+		$filelist .= "<ul>\n";
+		$filelist .= "<table>\n";
+	    foreach ($hyp->files as $name => $entry) {
+			$filelist .= "<tr>\n";
+			$filelist .= "<td>\n";
+	    	$filelist .= '<li><a href="javascript: submitUrl(&quot;' . "$hypdir/" . js_escape($name) . '&quot;);">' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "</a></li>\n";
+			$filelist .= "</td>\n";
+			$filelist .= "<td width=\"300\">\n";
+			if (isset($entry['database']))
+				$filelist .= htmlspecialchars($entry['database']);
+			else if (isset($entry['subject']))
+				$filelist .= htmlspecialchars($entry['subject']);
+			$filelist .= "</td>\n";
+			$filelist .= "<td>\n";
+			$filelist .= htmlspecialchars(isset($entry['version']) ? $entry['version'] : '');
+			$filelist .= "</td>\n";
+			$filelist .= "<td>\n";
+			if (isset($entry['lang']))
+			{
+				// if ($entry['lang'] == 'de') $entry['lang'] = 'nb';
+				if (isset($languages[$entry['lang']]['name']))
+					$filelist .= htmlspecialchars($languages[$entry['lang']]['name']);
+				else
+					$filelist .= htmlspecialchars($entry['lang']);
+				$filelist .= "\n";
+			}
+			$filelist .= "</td>\n";
+			if (isset($entry['lang']) && isset($languages[$entry['lang']]['flag']))
+			{
+				$filelist .= "<td>\n";
+				$filelist .= '<img alt="" width="32" height="21" src="images/flags/' . $languages[$entry['lang']]['flag'] . '">' . "\n";
+				$filelist .= "</td>\n";
+			}
+			$filelist .= "</tr>\n";
+	    }
+	 	closedir($dir);
+		$filelist .= "</table>\n";
+		$filelist .= "</ul>\n";
+	}
+	file_put_contents($cachefile, $filelist);
 }
+echo $filelist;
 ?>
 
 Some files i used for testing:
