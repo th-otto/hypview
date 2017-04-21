@@ -318,7 +318,7 @@ static struct {
    { "iso_8859-14",         HYP_CHARSET_CELTIC   },
    { "latin8",              HYP_CHARSET_CELTIC   },
    { "l8",                  HYP_CHARSET_CELTIC   },
-   { "csisolatin8",         HYP_CHARSET_BALTIC   },
+   { "csisolatin8",         HYP_CHARSET_CELTIC   },
    { "iso-celtic",          HYP_CHARSET_CELTIC   },
    { "celtic",              HYP_CHARSET_CELTIC   },
    

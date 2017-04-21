@@ -451,19 +451,19 @@ static void decomposeValue(char *value, char *mvalue, int mvalueSpace, const cha
 	if (*value == '\"')
 	{
 		value++;
-		while ((*value) && (*value != '\"'))
+		while (*value && *value != '\"')
 		{
 			APPEND(mvalue, *value);
 			value++;
 		}
-		while ((*value) && (*value != ';'))
+		while (*value && *value != ';')
 		{
 			value++;
 		}
 	} else
 	{
 		/* Unquoted mvalue */
-		while ((*value) && (*value != ';'))
+		while (*value && *value != ';')
 		{
 			APPEND(mvalue, *value);
 			value++;
@@ -487,7 +487,7 @@ static void decomposeValue(char *value, char *mvalue, int mvalueSpace, const cha
 		}
 		/* Now read the parameter name */
 		argNameLen = 0;
-		while ((*value) && (isalnum(*value)))
+		while (*value && g_ascii_isalnum(*value))
 		{
 			APPEND(argName, *value);
 			value++;
@@ -496,7 +496,7 @@ static void decomposeValue(char *value, char *mvalue, int mvalueSpace, const cha
 		{
 			argName[argNameLen] = '\0';
 		}
-		while ((*value) && g_ascii_isspace(*value))
+		while (*value && g_ascii_isspace(*value))
 		{
 			value++;
 		}
@@ -506,7 +506,7 @@ static void decomposeValue(char *value, char *mvalue, int mvalueSpace, const cha
 			return;
 		}
 		value++;
-		while ((*value) && g_ascii_isspace(*value))
+		while (*value && g_ascii_isspace(*value))
 		{
 			value++;
 		}
@@ -526,7 +526,7 @@ static void decomposeValue(char *value, char *mvalue, int mvalueSpace, const cha
 		if (*value == '\"')
 		{
 			value++;
-			while ((*value) && (*value != '\"'))
+			while (*value && *value != '\"')
 			{
 				if (argValue)
 				{
@@ -534,14 +534,14 @@ static void decomposeValue(char *value, char *mvalue, int mvalueSpace, const cha
 				}
 				value++;
 			}
-			while ((*value) && (*value != ';'))
+			while (*value && *value != ';')
 			{
 				value++;
 			}
 		} else
 		{
 			/* Unquoted value */
-			while ((*value) && (*value != ';'))
+			while (*value && *value != ';')
 			{
 				if (argNames[argNum])
 				{
@@ -639,7 +639,7 @@ static cgiParseResultType afterNextBoundary(mpStreamPtr mpp, char **outP, int *b
 		result = cgiParseIO;
 		goto error;
 	}
-	if ((d[0] == '\r') && (d[1] == '\n'))
+	if (d[0] == '\r' && d[1] == '\n')
 	{
 		/* OK, EOL */
 	} else if (d[0] == '-')

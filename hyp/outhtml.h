@@ -1885,10 +1885,7 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 
 	if (doctype)
 		g_string_append(out, doctype);
-#if 0
 	html_out_entities(out);
-#endif
-	(void) html_out_entities(out);
 	if (doctype)
 		g_string_append(out, ">\n");
 	g_string_append(out, "<html");

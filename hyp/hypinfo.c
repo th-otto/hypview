@@ -86,6 +86,15 @@ static void print_usage(FILE *out)
 	print_version(out);
 	hyp_utf8_fprintf(out, "\n");
 	hyp_utf8_fprintf(out, _("usage: %s [-options] file1 [file2 ...]\n"), gl_program_name);
+	hyp_utf8_fprintf(out, _("options:\n"));
+	hyp_utf8_fprintf(out, _("  -w, --wait        wait for keypress\n"));
+	hyp_utf8_fprintf(out, _("  -q, --quiet       be quiet\n"));
+	hyp_utf8_fprintf(out, _("  -v, --verbose     be verbose\n"));
+	hyp_utf8_fprintf(out, _("  --charset <set>   specify output character set\n"));
+	hyp_utf8_fprintf(out, _("  --language        only output language of file\n"));
+	hyp_utf8_fprintf(out, _("  -p, --preserve    preserve timestamps\n"));
+	hyp_utf8_fprintf(out, _("  --fix-tree        fix @tree header field\n"));
+	hyp_utf8_fprintf(out, _("  --fix-lang <lang> fix @language header field\n"));
 }
 
 /*****************************************************************************/
