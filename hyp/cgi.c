@@ -191,7 +191,6 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 {
 	gboolean retval;
 	HYP_DOCUMENT *hyp;
-	char *dir;
 	hyp_filetype type = HYP_FT_NONE;
 	int handle;
 	hcp_opts hyp_opts;
@@ -250,17 +249,10 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	}
 	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
 		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
-	dir = NULL;
-	if (empty(dir))
-	{
-		g_free(dir);
-		dir = g_strdup(".");
-	}
 	opts->long_filenames = TRUE;
 	(void) check_long_filenames;
 	(void) recompile_html;
 	(void) recompile_stg;
-	opts->output_dir = dir;
 	if (opts->long_filenames)
 	{
 		g_free(opts->image_name_prefix);
@@ -280,7 +272,6 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	hcp_opts_free(&hyp_opts);
 	hyp_unref(hyp);
 	hyp_utf8_close(handle);
-	g_freep(&opts->output_dir);
 	
 	return retval;
 }
@@ -335,11 +326,6 @@ static size_t mycurl_write_callback(char *ptr, size_t size, size_t nmemb, void *
 	if (parms->fp == NULL)
 	{
 		parms->fp = hyp_utf8_fopen(parms->filename, "wb");
-		if (parms->fp == NULL && errno == ENOENT)
-		{
-			mkdir(parms->cachedir, 0750);
-			parms->fp = hyp_utf8_fopen(parms->filename, "wb");
-		}
 		if (parms->fp == NULL)
 			hyp_utf8_fprintf(parms->opts->errorfile, "%s: %s\n", parms->filename, hyp_utf8_strerror(errno));
 	}
@@ -387,6 +373,119 @@ static int mycurl_trace(CURL *handle, curl_infotype type, char *data, size_t siz
 		break;
  	}
 	return 0;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static const char *currdate(void)
+{
+	struct tm *tm;
+	static char buf[40];
+	time_t t;
+	t = time(NULL);
+	tm = localtime(&t);
+	strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", tm);
+	return buf;
+}
+	
+/* ------------------------------------------------------------------------- */
+
+static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char *filename)
+{
+	char *local_filename;
+	struct curl_parms parms;
+	struct stat st;
+	long unmet;
+	long respcode;
+	CURLcode curlcode;
+	double size;
+	char err[CURL_ERROR_SIZE];
+	char *content_type;
+
+	curl_easy_setopt(curl, CURLOPT_URL, filename);
+	curl_easy_setopt(curl, CURLOPT_REFERER, filename);
+	local_filename = g_build_filename(parms.cachedir, hyp_basename(filename), NULL);
+	parms.filename = local_filename;
+	parms.fp = NULL;
+	parms.opts = opts;
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, mycurl_write_callback);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &parms);
+	curl_easy_setopt(curl, CURLOPT_STDERR, opts->errorfile);
+	curl_easy_setopt(curl, CURLOPT_PROTOCOLS, ALLOWED_PROTOS);
+	curl_easy_setopt(curl, CURLOPT_ENCODING, "");
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, (long)1);
+	curl_easy_setopt(curl, CURLOPT_FILETIME, (long)1);
+	curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, mycurl_trace);
+	curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &parms);
+	*err = 0;
+	curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, err);
+	
+	/* set this to 1 to activate debug code above */
+	curl_easy_setopt(curl, CURLOPT_VERBOSE, (long)0);
+
+	if (hyp_utf8_stat(local_filename, &st) == 0)
+	{
+		curlcode = curl_easy_setopt(curl, CURLOPT_TIMECONDITION, (long)CURL_TIMECOND_IFMODSINCE);
+		curlcode = curl_easy_setopt(curl, CURLOPT_TIMEVALUE, (long)st.st_mtime);
+	}
+	
+	/*
+	 * TODO: reject attempts to connect to local addresses
+	 */
+	curlcode = curl_easy_perform(curl);
+	
+	respcode = 0;
+	unmet = -1;
+	size = 0;
+	content_type = NULL;
+	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &respcode);
+	curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
+	curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &size);
+	curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &content_type);
+	hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, url=%s, curl=%d, resp=%ld, size=%ld\n", currdate(), fixnull(cgiRemoteHost), filename, curlcode, respcode, (long)size);
+	
+	if (parms.fp)
+	{
+		hyp_utf8_fclose(parms.fp);
+		parms.fp = NULL;
+	}
+	
+	if (curlcode != CURLE_OK)
+	{
+		html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+		g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
+		html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+		unlink(local_filename);
+		g_free(local_filename);
+		local_filename = NULL;
+	} else if ((respcode != 200 && respcode != 304) ||
+		(respcode == 200 && (content_type == NULL || strcmp(content_type, "text/plain") != 0)))
+	{
+		/* most likely the downloaded data will contain the error page */
+		parms.fp = hyp_utf8_fopen(local_filename, "rb");
+		if (parms.fp != NULL)
+		{
+			size_t nread;
+			
+			while ((nread = fread(err, 1, sizeof(err), parms.fp)) > 0)
+				g_string_append_len(body, err, nread);
+			hyp_utf8_fclose(parms.fp);
+		}
+		unlink(local_filename);
+		g_free(local_filename);
+		local_filename = NULL;
+	} else
+	{
+		long ft = -1;
+		if (curl_easy_getinfo(curl, CURLINFO_FILETIME, &ft) == CURLE_OK && ft != -1)
+		{
+			struct utimbuf ut;
+			ut.actime = ut.modtime = ft;
+			utime(local_filename, &ut);
+		}
+	}
+	
+	return local_filename;
 }
 
 /*****************************************************************************/
@@ -450,10 +549,25 @@ int main(void)
 	opts->showstg = FALSE;
 	opts->recompile_format = HYP_FT_HTML;
 	
-	html_init(opts);
-
 	body = g_string_new(NULL);
 	cgiInit(body);
+
+	{
+		char *dir = hyp_path_get_dirname(cgiScriptFilename);
+		char *cache_dir = g_build_filename(dir, cgi_cachedir, NULL);
+		opts->output_dir = g_build_filename(cache_dir, cgiRemoteAddr, NULL);
+
+		if (mkdir(cache_dir, 0750) < 0 && errno != EEXIST)
+			fprintf(opts->errorfile, "%s: %s\n", cache_dir, strerror(errno));
+		if (mkdir(opts->output_dir, 0750) < 0 && errno != EEXIST)
+			fprintf(opts->errorfile, "%s: %s\n", opts->output_dir, strerror(errno));
+
+		g_free(cache_dir);
+		g_free(dir);
+	}
+	
+	html_init(opts);
+
 	if (cgiAccept && strstr(cgiAccept, "application/xhtml+xml") != NULL)
 		opts->recompile_format = HYP_FT_HTML_XML;
 		
@@ -534,115 +648,21 @@ int main(void)
 				retval = EXIT_FAILURE;
 			} else
 			{
-				char *dir;
 				char *local_filename;
-				struct curl_parms parms;
-				struct stat st;
-				long unmet;
-				long respcode;
-				CURLcode curlcode;
-				double size;
-				char err[CURL_ERROR_SIZE];
-				char *content_type;
 				
-				dir = hyp_path_get_dirname(cgiScriptFilename);
-				parms.cachedir = g_build_filename(dir, cgi_cachedir, NULL);
-				g_free(dir);
 				if (opts->cgi_cached)
 				{
 					html_referer_url = g_strdup(hyp_basename(filename));
-					local_filename = g_build_filename(parms.cachedir, html_referer_url, NULL);
+					local_filename = g_build_filename(opts->output_dir, html_referer_url, NULL);
 					g_free(filename);
 					filename = local_filename;
 				} else
 				{
 					html_referer_url = g_strdup(filename);
-					curl_easy_setopt(curl, CURLOPT_URL, filename);
-					curl_easy_setopt(curl, CURLOPT_REFERER, filename);
-					local_filename = g_build_filename(parms.cachedir, hyp_basename(filename), NULL);
-					parms.filename = local_filename;
-					parms.fp = NULL;
-					parms.opts = opts;
-					curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, mycurl_write_callback);
-					curl_easy_setopt(curl, CURLOPT_WRITEDATA, &parms);
-					curl_easy_setopt(curl, CURLOPT_STDERR, opts->errorfile);
-					curl_easy_setopt(curl, CURLOPT_PROTOCOLS, ALLOWED_PROTOS);
-					curl_easy_setopt(curl, CURLOPT_ENCODING, "");
-					curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, (long)1);
-					curl_easy_setopt(curl, CURLOPT_FILETIME, (long)1);
-					curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, mycurl_trace);
-					curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &parms);
-					*err = 0;
-					curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, err);
-					
-					/* set this to 1 to activate debug code above */
-					curl_easy_setopt(curl, CURLOPT_VERBOSE, (long)0);
-	
-					if (hyp_utf8_stat(local_filename, &st) == 0)
-					{
-						curlcode = curl_easy_setopt(curl, CURLOPT_TIMECONDITION, (long)CURL_TIMECOND_IFMODSINCE);
-						curlcode = curl_easy_setopt(curl, CURLOPT_TIMEVALUE, (long)st.st_mtime);
-					}
-					
-					/*
-					 * TODO: reject attempts to connect to local addresses
-					 */
-					curlcode = curl_easy_perform(curl);
-					
-					respcode = 0;
-					unmet = -1;
-					size = 0;
-					content_type = NULL;
-					curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &respcode);
-					curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
-					curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &size);
-					curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &content_type);
-					hyp_utf8_fprintf(opts->errorfile, "GET from %s, url=%s, curl=%d, resp=%ld, size=%ld\n", fixnull(cgiRemoteHost), filename, curlcode, respcode, (long)size);
-					
-					if (parms.fp)
-					{
-						hyp_utf8_fclose(parms.fp);
-						parms.fp = NULL;
-					}
-					
-					if (curlcode != CURLE_OK)
-					{
-						html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-						g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
-						html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
-						unlink(local_filename);
-						g_free(local_filename);
-						local_filename = NULL;
-					} else if ((respcode != 200 && respcode != 304) ||
-						(respcode == 200 && (content_type == NULL || strcmp(content_type, "text/plain") != 0)))
-					{
-						/* most likely the downloaded data will contain the error page */
-						parms.fp = hyp_utf8_fopen(local_filename, "rb");
-						if (parms.fp != NULL)
-						{
-							size_t nread;
-							
-							while ((nread = fread(err, 1, sizeof(err), parms.fp)) > 0)
-								g_string_append_len(body, err, nread);
-							hyp_utf8_fclose(parms.fp);
-						}
-						unlink(local_filename);
-						g_free(local_filename);
-						local_filename = NULL;
-					} else
-					{
-						long ft = -1;
-						if (curl_easy_getinfo(curl, CURLINFO_FILETIME, &ft) == CURLE_OK && ft != -1)
-						{
-							struct utimbuf ut;
-							ut.actime = ut.modtime = ft;
-							utime(local_filename, &ut);
-						}
-					}
+					local_filename = curl_download(curl, opts, body, filename);
 					g_free(filename);
 					filename = local_filename;
 				}
-				g_free(parms.cachedir);
 			}
 		}
 		if (filename && retval == EXIT_SUCCESS)
@@ -679,8 +699,6 @@ int main(void)
 			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
 		} else
 		{
-			char *dir = hyp_path_get_dirname(cgiScriptFilename);
-			char *cachedir = g_build_filename(dir, cgi_cachedir, NULL);
 			FILE *fp;
 			char *local_filename;
 			const char *data;
@@ -692,7 +710,7 @@ int main(void)
 				{
 				int fd;
 				filename = g_strdup("tmpfile.XXXXXX.hyp");
-				local_filename = g_build_filename(cachedir, hyp_basename(filename), NULL);
+				local_filename = g_build_filename(opts->output_dir, hyp_basename(filename), NULL);
 				fd = mkstemps(local_filename, 4);
 				if (fd > 0)
 					close(fd);
@@ -701,34 +719,32 @@ int main(void)
 				{
 				int fd;
 				filename = g_strdup("tmpfile.hyp.XXXXXX");
-				local_filename = g_build_filename(cachedir, hyp_basename(filename), NULL);
+				local_filename = g_build_filename(opts->output_dir, hyp_basename(filename), NULL);
 				fd = mkstemp(local_filename);
 				if (fd > 0)
 					close(fd);
 				}
 #else
 				filename = g_strdup("tmpfile.hyp.XXXXXX");
-				local_filename = g_build_filename(cachedir, hyp_basename(filename), NULL);
+				local_filename = g_build_filename(opts->output_dir, hyp_basename(filename), NULL);
 				mktemp(local_filename);
 #endif
 			} else
 			{
-				local_filename = g_build_filename(cachedir, hyp_basename(filename), NULL);
+				local_filename = g_build_filename(opts->output_dir, hyp_basename(filename), NULL);
 			}
-			g_free(dir);
 
-			hyp_utf8_fprintf(opts->errorfile, "POST from %s, file=%s, size=%d\n", fixnull(cgiRemoteHost), hyp_basename(filename), len);
+			hyp_utf8_fprintf(opts->errorfile, "%s: POST from %s, file=%s, size=%d\n", currdate(), fixnull(cgiRemoteHost), hyp_basename(filename), len);
 
 			fp = hyp_utf8_fopen(local_filename, "wb");
-			if (fp == NULL && errno == ENOENT)
-			{
-				mkdir(cachedir, 0750);
-				fp = hyp_utf8_fopen(local_filename, "wb");
-			}
-
 			if (fp == NULL)
 			{
-				hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", local_filename, hyp_utf8_strerror(errno));
+				const char *err = hyp_utf8_strerror(errno);
+				hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", local_filename, err);
+				html_out_header(NULL, opts, body, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+				g_string_append_printf(body, "%s: %s\n", hyp_basename(filename), err);
+				html_out_trailer(NULL, opts, body, -1, TRUE, FALSE);
+				retval = EXIT_FAILURE;
 			} else
 			{
 				data = cgiFormFileData("file", &len);
@@ -741,7 +757,6 @@ int main(void)
 					retval = EXIT_FAILURE;
 				}
 			}
-			g_free(cachedir);
 			g_free(local_filename);
 		}
 		g_free(filename);
