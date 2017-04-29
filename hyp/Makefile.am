@@ -361,7 +361,39 @@ install-exec-hook:
 	mv stool stool.tos && \
 	mv hypfind hypfind.ttp && \
 	mv hypinfo hypinfo.ttp
+EXTTTP = .ttp
+EXTTOS = .tos
 endif
 
 CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)
+
+HYP_VERSION = 0.9.9
+DISTDIR = hcp-$(HYP_VERSION)
+
+bindist:
+	-rm -rf $(DISTDIR)
+	-mkdir $(DISTDIR)
+	-mkdir $(DISTDIR)/bin
+	-mkdir $(DISTDIR)/defaults
+	cp -a README $(DISTDIR)
+	cp -a reflink$(EXEEXT)$(EXTTTP) hypfind$(EXEEXT)$(EXTTTP) hypinfo$(EXEEXT)$(EXTTTP) refcheck$(EXEEXT)$(EXTTTP) stool$(EXEEXT)$(EXTTOS) hcp$(EXEEXT)$(EXTTTP) $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/*
+	cp -a $(srcdir)/../defaults/{ST-GUIDE.INF,catalog.cfg,katalog.cfg,catalog.txt,katalog.txt,hypview.ini} $(DISTDIR)/defaults
+if OS_WIN32
+if WITH_GUI_WIN32
+	cp -a ../win32/hypview$(EXEEXT) $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
+endif
+	zip -r hcp-$(HYP_VERSION)-`if test "$(host_triplet)" = x86_64-w64-mingw32; then echo win64; else echo win32; fi`.zip $(DISTDIR)
+endif
+if OS_TOS
+	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
+endif
+if OS_UNIX
+if WITH_GUI_GTK
+	cp -a ../gtk/hypview$(EXEEXT) $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
+endif
+	tar cvfj hcp-$(HYP_VERSION)-linux.tar.bz2 $(DISTDIR)
+endif
