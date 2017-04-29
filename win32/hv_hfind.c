@@ -69,9 +69,9 @@ static void CALLBACK check_hypfind(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwtim
 	{
 		DWORD exitCode;
 		
-		if (GetExitCodeProcess((HANDLE)HypfindID, &exitCode) && exitCode != STILL_ACTIVE)
+		if (GetExitCodeProcess((HANDLE)(DWORD_PTR)HypfindID, &exitCode) && exitCode != STILL_ACTIVE)
 		{
-			CloseHandle((HANDLE)HypfindID);
+			CloseHandle((HANDLE)(DWORD_PTR)HypfindID);
 			HypfindID = -1;
 			if (exitCode == 0)
 			{

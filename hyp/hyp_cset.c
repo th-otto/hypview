@@ -1709,7 +1709,7 @@ int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format,
 		DWORD written;
 		HANDLE cons;
 		
-		cons = (HANDLE)(DWORD)_get_osfhandle(fileno(fp));
+		cons = (HANDLE)(DWORD_PTR)_get_osfhandle(fileno(fp));
 		res = GetConsoleMode(cons, &mode);
 		if (res)
 		{

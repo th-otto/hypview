@@ -19,9 +19,9 @@ static void CALLBACK check_remarker(HWND hwnd, UINT msg, UINT_PTR id, DWORD dwti
 	{
 		DWORD ret;
 		
-		if (GetExitCodeProcess((HANDLE)remarker_pid, &ret) && ret != STILL_ACTIVE)
+		if (GetExitCodeProcess((HANDLE)(DWORD_PTR)remarker_pid, &ret) && ret != STILL_ACTIVE)
 		{
-			CloseHandle((HANDLE)remarker_pid);
+			CloseHandle((HANDLE)(DWORD_PTR)remarker_pid);
 			remarker_pid = -1;
 		}
 	}

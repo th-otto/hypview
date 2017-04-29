@@ -259,7 +259,7 @@ $languages = array(
 	'sk' => array('name' => 'Slovak', 'flag' => 'sk.gif'),
 	'sl' => array('name' => 'Slovenian', 'flag' => 'sl.gif'),
 	'sq' => array('name' => 'Albanian', 'flag' => 'al.gif'),
-	'sr' => array('name' => 'Serbian', 'flag' => 'sr.gif'),
+	'sr' => array('name' => 'Serbian', 'flag' => 'rs.gif'),
 	'sv' => array('name' => 'Swedish', 'flag' => 'se.gif'),
 	'sw' => array('name' => 'Swahili', 'flag' => 'ke.gif'),
 	'ta' => array('name' => 'Tamil', 'flag' => 'ta-lk.png'),
@@ -487,6 +487,13 @@ Atari character code table
 
 </table>
 </ul>
+
+<hr />
+<div style="text-align:center">
+<p style="font-size: 60%">Images of flags are from
+<a href="http://flagspot.net/flags/"><img src="images/fotwlink.gif" width="45" height="30" style="border:0" alt="FOTW"> Flags Of The World</a>
+</p>
+</div>
 
 </div>
 

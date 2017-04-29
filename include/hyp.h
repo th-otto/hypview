@@ -1029,6 +1029,7 @@ gboolean hyp_tree_alloc(HYP_DOCUMENT *hyp);
 char *win32_errstring(DWORD err);
 int win32_to_errno(DWORD oserrno);
 DWORD win32_from_errno(int err_no);
+#include <direct.h>
 #define mkdir(s, m) _mkdir(s)
 #endif
 

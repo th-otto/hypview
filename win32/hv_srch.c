@@ -83,12 +83,12 @@ static INT_PTR CALLBACK searchresult_dialog(HWND hwnd, UINT message, WPARAM wPar
 			col.cx = 30 * 8;
 			col.pszText = hyp_utf8_to_wchar(_("Name"), STR0TERM, NULL);
 			col.iSubItem = 0;
-			ListView_InsertColumnW(lv, 0, &col);
+			(void) ListView_InsertColumnW(lv, 0, &col);
 			g_free(col.pszText);
 			col.pszText = hyp_utf8_to_wchar(_("Description"), STR0TERM, NULL);
 			col.iSubItem = 1;
 			col.cx = 255 * 8;
-			ListView_InsertColumnW(lv, 1, &col);
+			(void) ListView_InsertColumnW(lv, 1, &col);
 			g_free(col.pszText);
 			
 			for (ptr = args->result_list, idx = 0; ptr; ptr = (RESULT_ENTRY *)ptr->item.next, idx++)
