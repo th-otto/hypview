@@ -22,7 +22,6 @@ struct curl_parms {
 	const char *filename;
 	FILE *fp;
 	hcp_opts *opts;
-	char *cachedir;
 };
 
 #define ALLOWED_PROTOS ( \
@@ -404,7 +403,7 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 
 	curl_easy_setopt(curl, CURLOPT_URL, filename);
 	curl_easy_setopt(curl, CURLOPT_REFERER, filename);
-	local_filename = g_build_filename(parms.cachedir, hyp_basename(filename), NULL);
+	local_filename = g_build_filename(opts->output_dir, hyp_basename(filename), NULL);
 	parms.filename = local_filename;
 	parms.fp = NULL;
 	parms.opts = opts;
@@ -442,7 +441,7 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 	curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
 	curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &size);
 	curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &content_type);
-	hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, url=%s, curl=%d, resp=%ld, size=%ld\n", currdate(), fixnull(cgiRemoteHost), filename, curlcode, respcode, (long)size);
+	hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, url=%s, curl=%d, resp=%ld, size=%ld, content=%s\n", currdate(), fixnull(cgiRemoteHost), filename, curlcode, respcode, (long)size, printnull(content_type));
 	
 	if (parms.fp)
 	{
@@ -459,7 +458,7 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 		g_free(local_filename);
 		local_filename = NULL;
 	} else if ((respcode != 200 && respcode != 304) ||
-		(respcode == 200 && (content_type == NULL || strcmp(content_type, "text/plain") != 0)))
+		(respcode == 200 && (content_type == NULL || strcmp(content_type, "text/plain") == 0)))
 	{
 		/* most likely the downloaded data will contain the error page */
 		parms.fp = hyp_utf8_fopen(local_filename, "rb");
@@ -561,7 +560,7 @@ int main(void)
 			fprintf(opts->errorfile, "%s: %s\n", cache_dir, strerror(errno));
 		if (mkdir(opts->output_dir, 0750) < 0 && errno != EEXIST)
 			fprintf(opts->errorfile, "%s: %s\n", opts->output_dir, strerror(errno));
-
+		
 		g_free(cache_dir);
 		g_free(dir);
 	}
@@ -662,6 +661,8 @@ int main(void)
 					local_filename = curl_download(curl, opts, body, filename);
 					g_free(filename);
 					filename = local_filename;
+					if (filename)
+						opts->cgi_cached = TRUE;
 				}
 			}
 		}
