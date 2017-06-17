@@ -1411,7 +1411,7 @@ cgiFormResultType cgiCookieString(const char *name, char *value, int space)
 		   Tomadakis. */
 		while (*p == *n)
 		{
-			if ((p == '\0') && (n == '\0'))
+			if (*p == '\0' && *n == '\0')
 			{
 				/* Malformed cookie header from client */
 				return cgiFormNotFound;

@@ -31,21 +31,9 @@
 # using AM_GLIB_GNU_GETTEXT
 AC_PREREQ(2.53)
 
-dnl
-dnl We go to great lengths to make sure that aclocal won't 
-dnl try to pull in the installed version of these macros
-dnl when running aclocal in the glib directory.
-dnl
-m4_copy([AC_DEFUN],[glib_DEFUN])
-m4_copy([AC_REQUIRE],[glib_REQUIRE])
-dnl
-dnl At the end, if we're not within glib, we'll define the public
-dnl definitions in terms of our private definitions.
-dnl
-
 # GLIB_LC_MESSAGES
 #--------------------
-glib_DEFUN([GLIB_LC_MESSAGES],
+AC_DEFUN([GLIB_LC_MESSAGES],
   [AC_CHECK_HEADERS([locale.h])
     if test $ac_cv_header_locale_h = yes; then
     AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
@@ -61,7 +49,7 @@ glib_DEFUN([GLIB_LC_MESSAGES],
 #----------------------------
 dnl GLIB_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
 dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
-glib_DEFUN([GLIB_PATH_PROG_WITH_TEST],
+AC_DEFUN([GLIB_PATH_PROG_WITH_TEST],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
 AC_MSG_CHECKING([for $ac_word])
@@ -99,7 +87,7 @@ AC_SUBST($1)dnl
 
 # GLIB_WITH_NLS
 #-----------------
-glib_DEFUN([GLIB_WITH_NLS],
+AC_DEFUN([GLIB_WITH_NLS],
   [ 
   AC_MSG_CHECKING([whether NLS is requested])
   dnl Default is enabled NLS
@@ -322,7 +310,7 @@ msgstr ""
 # on various variables needed by the Makefile.in.in installed by 
 # glib-gettextize.
 dnl
-glib_DEFUN([GLIB_GNU_GETTEXT],
+AC_DEFUN([GLIB_GNU_GETTEXT],
   [AC_REQUIRE([AC_PROG_CC])dnl
    
    GLIB_LC_MESSAGES
@@ -398,8 +386,8 @@ glib_DEFUN([GLIB_GNU_GETTEXT],
 # -------------------------------
 # Define VARIABLE to the location where catalog files will
 # be installed by po/Makefile.
-glib_DEFUN([GLIB_DEFINE_LOCALEDIR],
-[glib_REQUIRE([GLIB_GNU_GETTEXT])dnl
+AC_DEFUN([GLIB_DEFINE_LOCALEDIR],
+[AC_REQUIRE([GLIB_GNU_GETTEXT])dnl
 glib_save_prefix="$prefix"
 glib_save_exec_prefix="$exec_prefix"
 glib_save_datarootdir="$datarootdir"
