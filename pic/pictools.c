@@ -172,16 +172,16 @@ static double delta_e_cie2000(const color_Lab *color1, const color_Lab *color2)
 	double delta_E;
 
 	avg_Lp = (L1 + L2) / 2.0;
-	C1 = sqrt(pow(a1, 2) + pow(b1, 2));
-	C2 = sqrt(pow(a2, 2) + pow(b2, 2));
+	C1 = sqrt(a1 * a1 + b1 * b1);
+	C2 = sqrt(a2 * a2 + b2 * b2);
 	avg_C1_C2 = (C1 + C2) / 2.0;
 
 	G = 0.5 * (1 - sqrt(pow(avg_C1_C2, 7.0) / (pow(avg_C1_C2, 7.0) + pow(25.0, 7.0))));
 
 	a1p = (1.0 + G) * a1;
 	a2p = (1.0 + G) * a2;
-	C1p = sqrt(pow(a1p, 2) + pow(b1, 2));
-	C2p = sqrt(pow(a2p, 2) + pow(b2, 2));
+	C1p = sqrt(a1p * a1p + b1 * b1);
+	C2p = sqrt(a2p * a2p + b2 * b2);
 	avg_C1p_C2p = (C1p + C2p) / 2.0;
 
 	h1p = degrees(atan2(b1, a1p));

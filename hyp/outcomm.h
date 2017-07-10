@@ -628,7 +628,7 @@ static gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, 
 		break;
 
 	case HYP_PIC_ICN:
-		if (icn_fwrite(fp, buf + SIZEOF_HYP_PICTURE, &pic) == FALSE)
+		if (icn_fwrite(fp, buf + SIZEOF_HYP_PICTURE, &pic, FALSE) == FALSE)
 		{
 			FileErrorErrno(pic.pi_name);
 			goto error;

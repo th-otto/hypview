@@ -803,6 +803,57 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
+gboolean bmp_unpack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic)
+{
+	short i, k, l;
+	unsigned long bmp_bytes;
+	unsigned long dst_rowsize;
+
+	bmp_bytes = bmp_rowsize(pic, 1);
+	dst_rowsize = pic_rowsize(pic, 1);
+	if (!pic->pi_topdown)
+		dest += dst_rowsize * pic->pi_height;
+	src += bmp_rowsize(pic, pic->pi_planes) * pic->pi_height;
+	
+	k = (short)((pic->pi_width + 7) >> 3);
+#if 0
+	if ((pic->pi_palette[1].r == 0 &&
+		 pic->pi_palette[1].g == 0 &&
+		 pic->pi_palette[1].b == 0))
+	{
+		for (i = pic->pi_height; --i >= 0; )
+		{
+			if (!pic->pi_topdown)
+				dest -= dst_rowsize;
+			for (l = 0; l < k; l++)
+				dest[l] = src[l];
+			for (; l < (short)dst_rowsize; l++)
+				dest[l] = 0;
+			src += bmp_bytes;
+			if (pic->pi_topdown)
+				dest += dst_rowsize;
+		}
+	} else
+#endif
+	{
+		for (i = pic->pi_height; --i >= 0; )
+		{
+			if (!pic->pi_topdown)
+				dest -= dst_rowsize;
+			for (l = 0; l < k; l++)
+				dest[l] = ~src[l];
+			for (; l < (short)dst_rowsize; l++)
+				dest[l] = 0xff;
+			src += bmp_bytes;
+			if (pic->pi_topdown)
+				dest += dst_rowsize;
+		}
+	}
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab)
 {
 	short i, j, k;

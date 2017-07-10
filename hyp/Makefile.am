@@ -25,11 +25,11 @@ endif
 
 EXTRA_DIST = gfx.s genmaptab.c
 
-noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico dumpicon
+noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico ico2icn dumpicon
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 
 LANGID_MODEL = $(srcdir)/ldpy.model
 
@@ -80,7 +80,7 @@ libhyp_a_SOURCES += tos/mkdir.c
 libhyp_a_SOURCES += tos/spawn.c
 libhyp_a_SOURCES += tos/malloc.c
 libhyp_a_SOURCES += tos/hypmain.c
-INCLUDES +=  -I$(hyp_srcdir)/include/tos
+AM_CPPFLAGS +=  -I$(hyp_srcdir)/include/tos
 endif
 
 if OS_UNIX
@@ -125,7 +125,7 @@ hcp_SOURCES += hcp_rc.rc
 hcp_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
 hcp_LDADD += hcp_rc.res
 hcp_rc.res: $(srcdir)/hcp_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 if WITH_GUI_GTK
 hcp_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
@@ -284,7 +284,6 @@ $(build_triplet)-hypfind$(EXEEXT): hypfind$(EXEEXT)
 img2bmp_SOURCES = \
 	img2bmp.c \
 	$(UTIL_SRC)
-
 img2bmp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 img2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
@@ -292,7 +291,6 @@ img2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 bmp2img_SOURCES = \
 	bmp2img.c \
 	$(UTIL_SRC)
-
 bmp2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 bmp2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
@@ -300,7 +298,6 @@ bmp2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 bmp2gif_SOURCES = \
 	bmp2gif.c \
 	$(UTIL_SRC)
-
 bmp2gif_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 bmp2gif_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
@@ -308,7 +305,6 @@ bmp2gif_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 gif2bmp_SOURCES = \
 	gif2bmp.c \
 	$(UTIL_SRC)
-
 gif2bmp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 gif2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
@@ -316,7 +312,6 @@ gif2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 icn2img_SOURCES = \
 	icn2img.c \
 	$(UTIL_SRC)
-
 icn2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 icn2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 
@@ -324,9 +319,15 @@ icn2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 icn2ico_SOURCES = \
 	icn2ico.c \
 	$(UTIL_SRC)
-
 icn2ico_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 icn2ico_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+
+ico2icn_SOURCES = \
+	ico2icn.c \
+	$(UTIL_SRC)
+ico2icn_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
+ico2icn_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+
 
 
 picinfo_SOURCES = \

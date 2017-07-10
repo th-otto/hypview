@@ -189,7 +189,7 @@ long img_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 gboolean pic_type_icn(PICTURE *pic, const unsigned char *buf, long size);
 
 gboolean icn_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean mask);
-gboolean icn_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic);
+gboolean icn_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic, gboolean mask);
 
 /*** STAD ----------------------------------------------------------------- ***/
 
@@ -279,6 +279,7 @@ long bmp_header(unsigned char **buf, PICTURE *pic, const unsigned char *maptab);
 long bmp_rowsize(PICTURE *pic, _WORD planes);
 
 gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
+gboolean bmp_unpack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
 long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
 long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic);

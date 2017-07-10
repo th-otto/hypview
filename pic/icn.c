@@ -517,7 +517,7 @@ static gboolean icn_data_write(FILE *fp, const unsigned char *data, _LONG width,
 }
 
 
-gboolean icn_fwrite(FILE *fp, const _UBYTE *src, PICTURE *pic)
+gboolean icn_fwrite(FILE *fp, const _UBYTE *src, PICTURE *pic, gboolean mask)
 {
 	_LONG iconsize;
 	_WORD offset;
@@ -530,6 +530,8 @@ gboolean icn_fwrite(FILE *fp, const _UBYTE *src, PICTURE *pic)
 	fprintf(fp, "#define ICON_H 0x%04x\n", pic->pi_height);
 	width = toword(pic->pi_width);
 	iconsize = width * pic->pi_height;
+	if (mask)
+		maskp = src + iconsize * 2;
 	fprintf(fp, "#define ICONSIZE 0x%04lx\n", iconsize);
 	if (pic->pi_planes == 1)
 	{
