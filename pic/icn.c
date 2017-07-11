@@ -277,9 +277,8 @@ again:;
 
 /* ------------------------------------------------------------------------- */
 
-static TOKEN icn_data_read(PICTURE *pic, const unsigned char *inbuf, unsigned char *data, long width, long height, _WORD planes, TOKEN tok)
+static TOKEN icn_data_read(PICTURE *pic, const unsigned char *inbuf, unsigned char *data, long width, long height, _WORD planes, TOKEN tok, unsigned char *buf)
 {
-	unsigned char buf[C_VALLEN + 1];
 	long offset;
 	long h;
 	
@@ -308,9 +307,8 @@ static TOKEN icn_data_read(PICTURE *pic, const unsigned char *inbuf, unsigned ch
 }
 
 
-static TOKEN icn_data_skip(PICTURE *pic, const unsigned char *inbuf, long width, long height, _WORD planes, TOKEN tok)
+static TOKEN icn_data_skip(PICTURE *pic, const unsigned char *inbuf, long width, long height, _WORD planes, TOKEN tok, unsigned char *buf)
 {
-	unsigned char buf[C_VALLEN + 1];
 	long offset;
 	long h;
 	
@@ -427,15 +425,15 @@ static gboolean icn_scan(PICTURE *pic, const unsigned char *inbuf, unsigned char
 		return FALSE;
 	tok = T_EOF;
 	if (datap != NULL)
-		tok = icn_data_read(pic, inbuf, datap, iconw, iconh, (_WORD) planes, tok);
+		tok = icn_data_read(pic, inbuf, datap, iconw, iconh, (_WORD) planes, tok, buf);
 	else
-		tok = icn_data_skip(pic, inbuf, iconw, iconh, (_WORD) planes, tok);
+		tok = icn_data_skip(pic, inbuf, iconw, iconh, (_WORD) planes, tok, buf);
 	if (has_mask)
 	{
 		if (maskp != NULL)
-			tok = icn_data_read(pic, inbuf, maskp, iconw, iconh, 1, tok);
+			tok = icn_data_read(pic, inbuf, maskp, iconw, iconh, 1, tok, buf);
 		else
-			tok = icn_data_skip(pic, inbuf, iconw, iconh, 1, tok);
+			tok = icn_data_skip(pic, inbuf, iconw, iconh, 1, tok, buf);
 	} else
 	{
 		if (maskp != NULL)
