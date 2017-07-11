@@ -808,11 +808,13 @@ gboolean bmp_unpack_mask(unsigned char *dest, const unsigned char *src, PICTURE 
 	short i, k, l;
 	unsigned long bmp_bytes;
 	unsigned long dst_rowsize;
-
+	unsigned long planesize;
+	
 	bmp_bytes = bmp_rowsize(pic, 1);
 	dst_rowsize = pic_rowsize(pic, 1);
+	planesize = dst_rowsize * pic->pi_height;
 	if (!pic->pi_topdown)
-		dest += dst_rowsize * pic->pi_height;
+		dest += planesize;
 	src += bmp_rowsize(pic, pic->pi_planes) * pic->pi_height;
 	
 	k = (short)((pic->pi_width + 7) >> 3);
@@ -844,6 +846,8 @@ gboolean bmp_unpack_mask(unsigned char *dest, const unsigned char *src, PICTURE 
 				dest[l] = ~src[l];
 			for (; l < (short)dst_rowsize; l++)
 				dest[l] = 0xff;
+			for (l = 0; l < k; l++)
+				dest[l - planesize] &= dest[l];
 			src += bmp_bytes;
 			if (pic->pi_topdown)
 				dest += dst_rowsize;
