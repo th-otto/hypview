@@ -141,7 +141,7 @@ static gboolean histogram(PICTURE *pic, const char *filename)
 	switch (pic->pi_type)
 	{
 	case FT_BMP:
-		if (bmp_unpack(dest, pic->pi_buf + pic->pi_dataoffset, pic) == FALSE)
+		if (bmp_unpack(dest, pic->pi_buf + pic->pi_dataoffset, pic, FALSE) == FALSE)
 		{
 			hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
 			goto error;

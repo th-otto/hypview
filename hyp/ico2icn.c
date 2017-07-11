@@ -118,7 +118,7 @@ static gboolean conv_file(const char *filename)
 		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unknown picture format"));
 		goto error;
 	}
-	if (pic.pi_unsupported || pic.pi_planes != 1)
+	if (pic.pi_unsupported)
 	{
 		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unsupported picture format"));
 		goto error;
@@ -132,12 +132,11 @@ static gboolean conv_file(const char *filename)
 		oom();
 		goto error;
 	}
-	if (ico_unpack(dest, buf + pic.pi_dataoffset, &pic) == FALSE)
+	if (ico_unpack(dest, buf + pic.pi_dataoffset, &pic, TRUE) == FALSE)
 	{
 		hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
 		goto error;
 	}
-	bmp_unpack_mask(dest + pic.pi_picsize, buf + pic.pi_dataoffset, &pic);
 	
 	g_free(buf);
 	buf = NULL;

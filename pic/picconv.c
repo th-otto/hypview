@@ -1159,7 +1159,7 @@ void pic_calcsize(PICTURE *pic)
 	_LONG bytes = pic_rowsize(pic, pic->pi_planes);
 	
 	pic->pi_bytes = tobyte(pic->pi_width);
-	pic->pi_picsize = bytes * (_LONG)pic->pi_height;
+	pic->pi_picsize = bytes * pic->pi_height;
 	
 	pic->pi_fdb.fd_nplanes = pic->pi_planes;
 	pic->pi_fdb.fd_w = pic->pi_width;

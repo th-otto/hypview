@@ -248,9 +248,9 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean ico_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic)
+gboolean ico_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic, gboolean with_mask)
 {
-	return bmp_unpack(dest, src, pic);
+	return bmp_unpack(dest, src, pic, with_mask);
 }
 
 /*** ---------------------------------------------------------------------- ***/

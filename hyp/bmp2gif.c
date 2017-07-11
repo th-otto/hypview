@@ -134,14 +134,14 @@ static gboolean conv_file(const char *filename)
 		hyp_utf8_fprintf(stderr, "%s: %s\n", filename, _("unsupported picture format"));
 		goto error;
 	}
-	
+
 	dest = g_new(unsigned char, pic.pi_picsize);
 	if (dest == NULL)
 	{
 		oom();
 		goto error;
 	}
-	if (bmp_unpack(dest, buf + pic.pi_dataoffset, &pic) == FALSE)
+	if (bmp_unpack(dest, buf + pic.pi_dataoffset, &pic, FALSE) == FALSE)
 	{
 		hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
 		goto error;

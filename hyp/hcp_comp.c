@@ -7499,7 +7499,7 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILELIST *f)
 			format = HYP_PIC_UNKNOWN;
 		break;
 	case HYP_PIC_BMP:
-		if (bmp_unpack(planebuf, buf + pic.pi_dataoffset, &pic) == FALSE)
+		if (bmp_unpack(planebuf, buf + pic.pi_dataoffset, &pic, FALSE) == FALSE)
 			format = HYP_PIC_UNKNOWN;
 		break;
 	case HYP_PIC_GIF:

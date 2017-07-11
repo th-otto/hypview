@@ -132,7 +132,7 @@ static gboolean conv_file(const char *filename)
 		oom();
 		goto error;
 	}
-	if (bmp_unpack(dest, buf + pic.pi_dataoffset, &pic) == FALSE)
+	if (bmp_unpack(dest, buf + pic.pi_dataoffset, &pic, FALSE) == FALSE)
 	{
 		hyp_utf8_fprintf(stderr, _("%s: failed to decode\n"), filename);
 		goto error;
