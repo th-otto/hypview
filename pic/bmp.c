@@ -517,6 +517,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 	unsigned long dst_rowsize;
 	const unsigned char *maskp;
 	unsigned long mask_bytes;
+	unsigned char bg;
 	
 	memset(dest, 0, pic->pi_picsize);
 	bmp_bytes = bmp_rowsize(pic, pic->pi_planes);
@@ -631,7 +632,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 						if (with_mask)
 						{
 							int x = pic->pi_width - k + j;
-							if (!(maskp[x >> 3] & (0x80 >> (x & 7))))
+							if ((maskp[x >> 3] & (0x80 >> (x & 7))))
 								color = pic->pi_transparent >= 0 ? pic->pi_transparent : 0;
 						}
 						if (color & 0x01) gp[0] |= mask;
@@ -651,7 +652,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 							if (with_mask)
 							{
 								int x = pic->pi_width - k + j;
-								if (!(maskp[x >> 3] & (0x80 >> (x & 7))))
+								if ((maskp[x >> 3] & (0x80 >> (x & 7))))
 									color = pic->pi_transparent >= 0 ? pic->pi_transparent : 0;
 							}
 							if (color & 0x01) gp[1] |= mask;
@@ -689,6 +690,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 		case 4:
 			if (pic->pi_transparent >= 0)
 				pic->pi_transparent = bmp_coltab4[pic->pi_transparent];
+			bg = pic->pi_transparent > 0 ? pic->pi_transparent : 15;
 			for (i = pic->pi_height; --i >= 0; )
 			{
 				rp = src;
@@ -702,12 +704,14 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 					for (j = 0, mask = 0x80; j < 4 && j < lim; j++, mask >>= 2)
 					{
 						color = bmp_coltab4[(rp[j] >> 4) & 0x0f];
+#if 1
 						if (with_mask)
 						{
-							int x = pic->pi_width - k + j;
-							if (!(maskp[x >> 3] & (0x80 >> (x & 7))))
-								color = pic->pi_transparent >= 0 ? pic->pi_transparent : 0;
+							int x = pic->pi_width - k + j * 2;
+							if ((maskp[x >> 3] & (0x80 >> (x & 7))))
+								color = bg;
 						}
+#endif
 						if (color & 0x01) gp[0] |= mask;
 						if (color & 0x02) gp[2] |= mask;
 						if (color & 0x04) gp[4] |= mask;
@@ -718,12 +722,14 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 						for (mask = 0x80; j < 8 && j < lim; j++, mask >>= 2)
 						{
 							color = bmp_coltab4[(rp[j] >> 4) & 0x0f];
+#if 1
 							if (with_mask)
 							{
-								int x = pic->pi_width - k + j;
-								if (!(maskp[x >> 3] & (0x80 >> (x & 7))))
-									color = pic->pi_transparent >= 0 ? pic->pi_transparent : 0;
+								int x = pic->pi_width - k + j * 2;
+								if ((maskp[x >> 3] & (0x80 >> (x & 7))))
+									color = bg;
 							}
+#endif
 							if (color & 0x01) gp[1] |= mask;
 							if (color & 0x02) gp[3] |= mask;
 							if (color & 0x04) gp[5] |= mask;
@@ -734,12 +740,14 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 					for (j = 0, mask = 0x40; j < 4 && j < lim; j++, mask >>= 2)
 					{
 						color = bmp_coltab4[rp[j] & 0x0f];
+#if 1
 						if (with_mask)
 						{
-							int x = pic->pi_width - k + j;
-							if (!(maskp[x >> 3] & (0x80 >> (x & 7))))
-								color = pic->pi_transparent >= 0 ? pic->pi_transparent : 0;
+							int x = pic->pi_width - k + j * 2 + 1;
+							if ((maskp[x >> 3] & (0x80 >> (x & 7))))
+								color = bg;
 						}
+#endif
 						if (color & 0x01) gp[0] |= mask;
 						if (color & 0x02) gp[2] |= mask;
 						if (color & 0x04) gp[4] |= mask;
@@ -750,12 +758,14 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 						for (mask = 0x40; j < 8 && j < lim; j++, mask >>= 2)
 						{
 							color = bmp_coltab4[rp[j] & 0x0f];
+#if 1
 							if (with_mask)
 							{
-								int x = pic->pi_width - k + j;
-								if (!(maskp[x >> 3] & (0x80 >> (x & 7))))
-									color = pic->pi_transparent >= 0 ? pic->pi_transparent : 0;
+								int x = pic->pi_width - k + j * 2 + 1;
+								if ((maskp[x >> 3] & (0x80 >> (x & 7))))
+									color = bg;
 							}
+#endif
 							if (color & 0x01) gp[1] |= mask;
 							if (color & 0x02) gp[3] |= mask;
 							if (color & 0x04) gp[5] |= mask;
@@ -783,6 +793,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 					pic->pi_palette[i] = pal[i];
 				}
 			}
+			(void) bg;
 			break;
 		
 		case 1:
@@ -854,22 +865,24 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 	
 	if (with_mask && !(pic->pi_compressed && pic->pi_planes == 4))
 	{
+		unsigned long mask_rowsize = pic_rowsize(pic, 1);
+		
 		if (!pic->pi_topdown)
-			dest += 2 * pic->pi_picsize;
+			dest += pic->pi_picsize + mask_rowsize * pic->pi_height;
 		maskp = src;
 
 		k = (short)((pic->pi_width + 7) >> 3);
 		for (i = pic->pi_height; --i >= 0; )
 		{
 			if (!pic->pi_topdown)
-				dest -= dst_rowsize;
+				dest -= mask_rowsize;
 			for (l = 0; l < k; l++)
 				dest[l] = ~src[l];
-			for (; l < (short)dst_rowsize; l++)
+			for (; l < (short)mask_rowsize; l++)
 				dest[l] = 0xff;
-			src += bmp_bytes;
+			src += mask_bytes;
 			if (pic->pi_topdown)
-				dest += dst_rowsize;
+				dest += mask_rowsize;
 		}
 	}
 	

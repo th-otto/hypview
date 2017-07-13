@@ -65,6 +65,8 @@ typedef struct {
 #define get_byte() \
 	*buf++
 
+#define BMP_PNG_MAGIC 0x474e5089UL
+
 /*** ---------------------------------------------------------------------- ***/
 
 gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
@@ -84,14 +86,14 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 	magic = get_word();
 	type = get_word();
 	count = get_word();
-	if (magic != 0 || (type != 1 && type != 2) || count <= 0 || count >= 16)
+	if (magic != 0 || (type != 1 && type != 2) || count <= 0 || count >= 32)
 		return FALSE;
 	width = get_byte();
 	height = get_byte();
 	colors = get_byte();
 	if (colors == 0)
 		colors = 256;
-	buf += 5; /* skip stuff2 */
+	buf += 5; /* skip filler, planes & bitcount */
 	dsize = get_long();
 	(void) dsize;
 	hsize = get_long();
@@ -117,6 +119,12 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 		return FALSE;
 	}
 	bmphsize = get_long();
+	if (bmphsize == BMP_PNG_MAGIC)
+	{
+		pic->pi_type = FT_ICO;
+		pic->pi_unsupported = TRUE;
+		return TRUE;
+	}
 	if (size <= bmphsize)
 	{
 		return FALSE;
