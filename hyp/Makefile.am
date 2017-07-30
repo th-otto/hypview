@@ -369,7 +369,7 @@ endif
 CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)
 
-HYP_VERSION = 0.9.9
+HYP_VERSION = 1.0.0
 DISTDIR = hcp-$(HYP_VERSION)
 
 bindist:
@@ -378,7 +378,7 @@ bindist:
 	-mkdir $(DISTDIR)/bin
 	-mkdir $(DISTDIR)/defaults
 	cp -a README $(DISTDIR)
-	cp -a reflink$(EXEEXT)$(EXTTTP) hypfind$(EXEEXT)$(EXTTTP) hypinfo$(EXEEXT)$(EXTTTP) refcheck$(EXEEXT)$(EXTTTP) stool$(EXEEXT)$(EXTTOS) hcp$(EXEEXT)$(EXTTTP) $(DISTDIR)/bin
+	cp -a reflink$(EXEEXT) hypfind$(EXEEXT) hypinfo$(EXEEXT) refcheck$(EXEEXT) stool$(EXEEXT) hcp$(EXEEXT) $(DISTDIR)/bin
 	$(STRIP) $(DISTDIR)/bin/*
 	cp -a $(srcdir)/../defaults/{ST-GUIDE.INF,catalog.cfg,katalog.cfg,catalog.txt,katalog.txt,hypview.ini} $(DISTDIR)/defaults
 if OS_WIN32
@@ -389,6 +389,7 @@ endif
 	zip -r hcp-$(HYP_VERSION)-`if test "$(host_triplet)" = x86_64-w64-mingw32; then echo win64; else echo win32; fi`.zip $(DISTDIR)
 endif
 if OS_TOS
+	$(MAKE) DESTDIR=$(DISTDIR) bindir=/bin install-exec-hook
 	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
 endif
 if OS_UNIX
