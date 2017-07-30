@@ -16,7 +16,7 @@ CFLAGS = -O2 -g -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wmissing-decl
 CPPFLAGS = $(CPPFLAGS_FOR_BUILD) -DCATOBJEXT=\"$(CATOBJEXT)\"
 LDFLAGS = $(LDFLAGS_FOR_BUILD)
 
-INCLUDES = -I$(top_srcdir)/rcintl -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/rcintl -I$(top_srcdir)/include
 
 noinst_PROGRAMS = po2rc molist polinguas
 

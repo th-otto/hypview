@@ -8,7 +8,7 @@ EXEEXT = .gtp
 
 LIBGEM = -lgem
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos -I$(srcdir)/../..
+AM_CPPFLAGS = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos -I$(srcdir)/../..
 
 call_acc_SOURCES = \
 	call-acc.c

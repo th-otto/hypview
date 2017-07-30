@@ -1,7 +1,5 @@
 include ../silent.am
 
-INCLUDES = 
-
 if OS_WIN32
 noinst_LIBRARIES = librcintl.a
 endif

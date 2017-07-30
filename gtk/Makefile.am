@@ -10,12 +10,12 @@ noinst_SCRIPTS = $(build_triplet)-hypview$(EXEEXT)
 endif
 endif
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
-
 AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
+
 applicationdir = $(datadir)/applications
 
 application_DATA = hypview.desktop

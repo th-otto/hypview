@@ -9,7 +9,7 @@ EXEEXT = .app
 
 LIBGEM = -lgem
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos
+AM_CPPFLAGS = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos
 
 hypview_SOURCES = \
 	hypview.c hypview.h hypview.rsh \

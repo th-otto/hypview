@@ -1,9 +1,9 @@
 include ../../../../silent.am
 include ../../Makefile.common
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 AM_CPPFLAGS = $(GLIB_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 
 bin_PROGRAMS = 1st_conv
 

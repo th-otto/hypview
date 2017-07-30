@@ -6,10 +6,10 @@ if WITH_GUI_WIN32
 bin_PROGRAMS = hypview
 endif
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
-
 AM_CPPFLAGS =	-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
+
 	
 hypview_SOURCES = \
 	hv_main.c \
@@ -93,7 +93,7 @@ resource_icons = \
 	$(empty)
 	
 resource.res: $(resource_files) $(resource_icons) $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
 
 EXTRA_DIST = $(resource_files)
 

@@ -2,9 +2,9 @@ include ../Makefile.common
 
 noinst_LIBRARIES = libpic.a
 
-INCLUDES = -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 AM_CPPFLAGS = $(GLIB_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/src
 
 libpic_a_SOURCES = \
 	bmp.c \

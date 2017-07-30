@@ -207,7 +207,7 @@ reflink_SOURCES += reflink_rc.rc
 reflink_DEPENDENCIES += reflink_rc.res $(LIBRCINTL_DEP)
 reflink_LDADD += reflink_rc.res
 reflink_rc.res: $(srcdir)/reflink_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 
 reflink.ttp: reflink
@@ -226,7 +226,7 @@ refcheck_SOURCES += refcheck.rc
 refcheck_DEPENDENCIES += refcheck_rc.res $(LIBRCINTL_DEP)
 refcheck_LDADD += refcheck_rc.res
 refcheck_rc.res: $(srcdir)/refcheck_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 
 refcheck.ttp: refcheck
@@ -244,7 +244,7 @@ stool_SOURCES += stool.rc
 stool_DEPENDENCIES += stool_rc.res $(LIBRCINTL_DEP)
 stool_LDADD += stool_rc.res
 stool_rc.res: $(srcdir)/stool_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 if WITH_GUI_GTK
 stool_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
@@ -268,7 +268,7 @@ hypfind_SOURCES += hypfind.rc
 hypfind_DEPENDENCIES += hypfind_rc.res $(LIBRCINTL_DEP)
 hypfind_LDADD += hypfind_rc.res
 hypfind_rc.res: $(srcdir)/hypfind_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(INCLUDES) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 if WITH_GUI_GTK
 hypfind_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
