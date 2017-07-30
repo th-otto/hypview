@@ -1585,6 +1585,7 @@ typedef BOOL (CALLBACK *LOCALE_ENUMPROCEX)(LPWSTR lpLocaleString, DWORD dwFlags,
 
 WINBASEAPI BOOL WINAPI EnumSystemLocalesEx(LOCALE_ENUMPROCEX, DWORD, LPARAM lParam, LPVOID lpReserved);
 WINBASEAPI LCID WINAPI LocaleNameToLCID(LPCWSTR lpName, DWORD dwFlags);
+typedef LCID (WINAPI *LPLOCALENAMETOLCID)(LPCWSTR lpName, DWORD dwFlags);
 #endif
 
 typedef BOOL (WINAPI *LPENUMSYSTEMLOCALESEX)(LOCALE_ENUMPROCEX, DWORD, LPARAM lParam, LPVOID lpReserved);
@@ -1597,6 +1598,8 @@ static struct locale_search {
 	unsigned int langid;
 } static_lsearch;
 
+static LPENUMSYSTEMLOCALESEX pEnumSystemLocalesEx;
+static LPLOCALENAMETOLCID pLocaleNameToLCID;
 
 static BOOL enum_lang(unsigned int langid, struct locale_search *psearch)
 {
@@ -1623,7 +1626,7 @@ static BOOL CALLBACK enum_languagesex(LPWSTR cp, DWORD flags, LPARAM lParam)
 	struct locale_search *psearch = (struct locale_search *)lParam;
 	(void) flags;
 	
-	return enum_lang(LANGIDFROMLCID(LocaleNameToLCID(cp, 0)), psearch);
+	return enum_lang(LANGIDFROMLCID(pLocaleNameToLCID(cp, 0)), psearch);
 }
 
 static BOOL CALLBACK enum_languages(LPSTR cp)
@@ -1638,10 +1641,10 @@ char *gl_locale_name_posify(const char *locale)
 	char *dot, *underscore;
 	struct locale_search search;
 	struct locale_search *psearch = &search;
-	LPENUMSYSTEMLOCALESEX pEnumSystemLocalesEx;
 	static char retbuf[64];
 	static char lastsearched[64];
 	static char lastfound[64];
+	static HINSTANCE kernel32;
 	const char *retval;
 	
 	if (locale == NULL)
@@ -1675,8 +1678,14 @@ char *gl_locale_name_posify(const char *locale)
 			}
 			psearch->langid = 0;
 			
-			pEnumSystemLocalesEx = EnumSystemLocalesEx;
-			if (pEnumSystemLocalesEx)
+			if (kernel32 == 0)
+			{
+				kernel32 = GetModuleHandle("kernel32");
+				pEnumSystemLocalesEx = (LPENUMSYSTEMLOCALESEX)GetProcAddress(kernel32, "EnumSystemLocalesEx");
+				pLocaleNameToLCID = (LPLOCALENAMETOLCID)GetProcAddress(kernel32, "LocaleNameToLCID");
+			}
+			
+			if (pEnumSystemLocalesEx && pLocaleNameToLCID)
 			{
 				pEnumSystemLocalesEx(enum_languagesex, LOCALE_ALL, (LPARAM)psearch, NULL);
 			} else
