@@ -14,7 +14,7 @@ AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
-AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/src -I$(top_srcdir)/rcintl
 
 applicationdir = $(datadir)/applications
 
