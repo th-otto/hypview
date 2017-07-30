@@ -10,9 +10,12 @@
 #include <limits.h>
 /* avoid warnings from G_TYPE_* macros */
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wstrict-prototypes"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <gtk/gtk.h>
 #include <glib/gstdio.h>
 #pragma GCC diagnostic warning "-Wcast-qual"
+#pragma GCC diagnostic warning "-Wstrict-prototypes"
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
