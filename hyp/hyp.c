@@ -272,7 +272,7 @@ hyp_filetype hyp_guess_filetype(const char *name)
 
 HYP_OS hyp_get_current_os(void)
 {
-#if defined(__TOS__)
+#if defined(__TOS__) || defined(__atarist__)
 	return HYP_OS_ATARI;
 #elif defined(__AMIGA__)
 	return HYP_OS_AMIGA;

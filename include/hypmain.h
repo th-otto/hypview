@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 }
 #endif
 
-#if defined(__TOS__)
+#if defined(__TOS__) || defined(__atarist__)
 #undef _argc
 #undef __argc
 #undef _argv
@@ -94,7 +94,7 @@ int main(int argc, const char **argv)
 	
 	_crtinit();
 
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 	_argv0 = argv[0];
 	g_tos_get_bindir = g_ttp_get_bindir;
 #endif

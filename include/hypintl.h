@@ -1,7 +1,7 @@
 #ifndef __HYP_INTL_H__
 #define __HYP_INTL_H__
 
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 #undef ENABLE_NLS
 #endif
 
@@ -115,7 +115,7 @@ void xs_locale_exit(void);
 char *g_get_package_installation_directory(void);
 char *g_get_package_bindir(void);
 
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 extern const char *_argv0;
 extern char *(*g_tos_get_bindir)(void);
 extern char *g_ttp_get_bindir(void);

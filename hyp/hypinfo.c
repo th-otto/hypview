@@ -947,6 +947,17 @@ int main(int argc, const char **argv)
 		if (retval == EXIT_SUCCESS && num_args <= 0)
 		{
 			hcp_usage_error(_("no files specified"));
+#if defined(__TOS__) || defined(__atarist__)
+				if (empty(argv[0]))
+				{
+					if (opts->wait_key == 0)
+						opts->wait_key = 1;
+				} else
+				{
+					if (opts->wait_key == 1)
+						opts->wait_key = 0;
+				}
+#endif
 			retval = EXIT_FAILURE;
 		}
 		
@@ -990,7 +1001,7 @@ int main(int argc, const char **argv)
 		(wait_key == 1 && retval != EXIT_SUCCESS))
 	{
 		fflush(stderr);
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 		hyp_utf8_printf(_("<press any key>"));
 		fflush(stdout);
 		Cnecin();

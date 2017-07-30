@@ -437,7 +437,7 @@ gboolean ref_add_entries(const char *refname, const char *modname, gboolean dele
 	lckname = g_build_filename(dir, "hypview.lck", NULL);
 	while ((lck_handle = hyp_utf8_open(lckname, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, HYP_DEFAULT_FILEMODE)) < 0 && errno == EEXIST)
 	{
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 		sleep(100);
 #else
 		usleep(100000);

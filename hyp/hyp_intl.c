@@ -3,7 +3,7 @@
 #include "hypdebug.h"
 
 
-#if defined (__TOS__)
+#if defined (__TOS__) || defined(__atarist__)
 char *(*g_tos_get_bindir)(void);
 #endif
 
@@ -89,7 +89,7 @@ char *g_get_package_bindir(void)
 	WideCharToMultiByte(CP_UTF8, 0, wc_fn, -1, retval, len, NULL, NULL);
 	if ((p = strrchr(retval, '\\')) != NULL)
 		*p = '\0';
-#elif defined (__TOS__)
+#elif defined (__TOS__) || defined(__atarist__)
 	ASSERT(g_tos_get_bindir != 0);
 	retval = (*g_tos_get_bindir)();
 	if (retval != NULL)

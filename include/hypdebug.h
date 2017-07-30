@@ -15,7 +15,7 @@ int __my_assert(const char *expr, const char *file, int line);
 
 void hyp_debug(const char *str, ...) __attribute__((format(printf, 1, 2)));
 
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 #include <mint/arch/nf_ops.h>
 #else
 #define nf_debugprintf(fmt, ...) (-1)

@@ -34,7 +34,7 @@ void x_free_resources(void);
 char *get_special_folder(int csidl);
 #endif
 
-#if defined(__WIN32__) || defined(__TOS__)
+#if defined(__WIN32__) || defined(__TOS__) || defined(__atarist__)
 #define filename_cmp strcasecmp
 #define filename_ncmp strncasecmp
 #else

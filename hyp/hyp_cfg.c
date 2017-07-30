@@ -68,7 +68,7 @@ static char *get_profile_dir(const char *basename)
 
 static char *get_profile_name(void)
 {
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 	static gboolean cfg_in_home = TRUE;
 	char *filename;
 	const char *basename = RESOURCES_GLOBAL_FILENAME;

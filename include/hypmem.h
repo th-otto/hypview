@@ -50,7 +50,7 @@ void *dbg_realloc(void *p, size_t s, const char *file, long line);
 #ifndef G_PLATFORM_WIN32
 #define G_PLATFORM_WIN32 1
 #endif
-#elif defined(__TOS__)
+#elif defined(__TOS__) || defined(__atarist__)
 #define G_OS_TOS 1
 #else
 #ifndef G_OS_UNIX
@@ -234,7 +234,7 @@ int g_ascii_strncasecmp(const char *s1, const char *s2, size_t n);
 
 #define G_IS_DIR_SEPARATOR(c) ((c) == '/' || (c) == '\\')
 
-#if defined(__TOS__) || defined(__WIN32__)
+#if defined(__TOS__) || defined(__atarist__) || defined(__WIN32__)
 #  define G_DOSTYLE_PATHNAMES 1
 #endif
 

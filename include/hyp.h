@@ -857,7 +857,7 @@ unsigned short lh5_update_crc(const unsigned char *p, unsigned long n, unsigned 
 /*
  * ref.c
  */
-#ifndef __TOS__
+#if !defined(__TOS__) && !defined(__atarist__)
 typedef struct _lbox_item LBOX_ITEM;
 
 struct _lbox_item {
@@ -1056,7 +1056,7 @@ gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, voi
 #define P_OVERLAY	2
 #endif
 int hyp_utf8_spawnvp(int mode, int argc, const char *const argv[]);
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 char *make_argv(char cmd[128], const char *const argv[]);
 #endif
 

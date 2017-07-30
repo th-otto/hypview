@@ -159,7 +159,7 @@ short ddstry(short handle, unsigned long format, char *name, long size)
 /*-----------------------------------------------------------------------------------------*/
 void ddclose(short handle, void *oldpipesig)
 {
-	Psignal(SIGPIPE, oldpipesig);		/* wieder alten Dispatcher eintragen */
+	(void)Psignal(SIGPIPE, oldpipesig);		/* wieder alten Dispatcher eintragen */
 	Fclose(handle);						/* Pipe schliessen */
 }
 

@@ -115,7 +115,7 @@ static void pop_d0(void) 0x201f;
 /* addq.l #4,sp */
 static long addq4_sp(void) 0x588F;
 
-static long _nf_detect(void)
+static long _CDECL _nf_detect(void)
 {
 	push_a0(NF_ID_VERSION);
 	moveq_0_d0();			/* assume no NatFeats available */

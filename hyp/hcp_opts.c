@@ -156,7 +156,7 @@ void hcp_opts_init(hcp_opts *opts)
 	opts->do_help = FALSE;
 	opts->do_version = FALSE;
 	opts->verbose = DEFAULT_VERBOSITY;
-#ifdef __TOS__
+#if defined(__TOS__) || defined(__atarist__)
 	opts->wait_key = 1;
 #else
 	opts->wait_key = 0;

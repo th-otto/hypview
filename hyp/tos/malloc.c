@@ -10,7 +10,7 @@
 
 #include "hypdefs.h"
 
-#if defined(__TOS__) /* rest of file */
+#if defined(__TOS__) || defined(__atarist__) /* rest of file */
 
 #include <stddef.h>	/* for size_t */
 #include <sys/types.h>
@@ -33,7 +33,7 @@
 static BASEPAGE *volatile *tospd;
 int acc_memsave;
 
-static long get_toshdr(void)
+static long _CDECL get_toshdr(void)
 {
 	OSHEADER *hdr = *((OSHEADER **)0x4f2l);
 

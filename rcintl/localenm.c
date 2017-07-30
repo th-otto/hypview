@@ -1359,7 +1359,7 @@ const char *gl_locale_name_environ(int category, const char *categoryname)
 }
 
 
-#if defined(__MINT__) || defined(__TOS__)
+#if defined(__MINT__) || defined(__TOS__) || defined(__atarist__)
 #include <mint/cookie.h>
 #include <mint/mintbind.h>
 #include <mint/sysvars.h>
@@ -1402,7 +1402,7 @@ const char *gl_locale_name_default(void)
          "C.UTF-8" locale, which operates in the same way as the "C" locale.
   */
 
-#if defined(__MINT__) || defined(__TOS__)
+#if defined(__MINT__) || defined(__TOS__) || defined(__atarist__)
 	
 	{
 		long val = 0;

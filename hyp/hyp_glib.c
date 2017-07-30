@@ -108,7 +108,7 @@ char *g_strconcat(const char *first, ...)
 #ifndef CC_FOR_BUILD
 char *g_get_current_dir(void)
 {
-#if defined(__TOS__)
+#if defined(__TOS__) || defined(__atarist__)
 	char cwd[PATH_MAX];
 	
 	cwd[0] = '\0';
