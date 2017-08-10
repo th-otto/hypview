@@ -563,7 +563,7 @@ typedef enum
 
 static LocaleType get_locale_type(void)
 {
-#if defined(G_OS_WIN32) || defined(G_OS_TOS)
+#if defined(G_OS_WIN32) || defined(G_OS_TOS) || defined(__OS2__)
 	const char *locale = "C";
 #else
 	const char *locale = setlocale(LC_CTYPE, NULL);

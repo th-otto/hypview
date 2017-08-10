@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = subdir-objects
+
 include ../Makefile.common
 
 SUBDIRS = utils/call-acc
