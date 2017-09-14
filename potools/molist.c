@@ -29,7 +29,6 @@
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 /* The separator between msgctxt and msgid in a .mo file. */
 #ifndef GETTEXT_CONTEXT_GLUE

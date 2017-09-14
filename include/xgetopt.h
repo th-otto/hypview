@@ -18,6 +18,9 @@
 
 #ifndef _XGETOPT_H
 #define _XGETOPT_H 1
+#define _GETOPT_H 1
+#define _GETOPT_CORE_H 1
+#define _GETOPT_EXT_H 1
 
 /* Standalone applications should #define __GETOPT_PREFIX to an
    identifier that prefixes the external functions and variables
