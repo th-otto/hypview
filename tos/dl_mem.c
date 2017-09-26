@@ -20,43 +20,43 @@
 static unsigned short Mxmask(void)
 {
 	static unsigned short mxmask = 1;
-    void *svStack;         /* Supervisor-Stack */
-    int32_t sRAM, sRAMg;   /* ST-RAM */
-    int32_t aRAM, aRAMg;   /* Alternate RAM */
+	void *svStack;		   /* Supervisor-Stack */
+	int32_t sRAM, sRAMg;   /* ST-RAM */
+	int32_t aRAM, aRAMg;   /* Alternate RAM */
 
 	if (mxmask != 1)
 		return mxmask;
 	
 	/*
 	// Sample table of possible values:
-	//           | newfashion  | oldfashion
+	//			 | newfashion  | oldfashion
 	// sRAM aRAM | sRAMg aRAMg | sRAMg aRAMg
-	//   1    0  |   1     0   |   1     1
-	//   0    2  |   0     2   |   2     2
-	//   1    2  |   1     2   |   3     3
+	//	 1	  0  |	 1	   0   |   1	 1
+	//	 0	  2  |	 0	   2   |   2	 2
+	//	 1	  2  |	 1	   2   |   3	 3
 	*/
 
-    svStack = (void *) Super( 0);  /* Disallow task-switching */
+	svStack = (void *) Super( 0);  /* Disallow task-switching */
 
-    sRAM  = (int32_t) Mxalloc( -1, MX_STRAM);
-    sRAMg = (int32_t) Mxalloc( -1, MX_READABLE | MX_STRAM);
-    aRAM  = (int32_t) Mxalloc( -1, MX_TTRAM);
-    aRAMg = (int32_t) Mxalloc( -1, MX_READABLE | MX_TTRAM);
+	sRAM  = (int32_t) Mxalloc( -1, MX_STRAM);
+	sRAMg = (int32_t) Mxalloc( -1, MX_READABLE | MX_STRAM);
+	aRAM  = (int32_t) Mxalloc( -1, MX_TTRAM);
+	aRAMg = (int32_t) Mxalloc( -1, MX_READABLE | MX_TTRAM);
 
-    Super( svStack);  /* Permit task-switching */
+	Super( svStack);  /* Permit task-switching */
 
-    if (sRAM == -32)
-        mxmask = 0x0000;  /* Mxalloc is not implemented */
+	if (sRAM == -32)
+		mxmask = 0x0000;  /* Mxalloc is not implemented */
 
-    else if ( ((sRAM + aRAM) == sRAMg) && ((sRAM + aRAM) == aRAMg) )
-        mxmask = 0x0003;  /* oldfashion Mxalloc() */
+	else if ( ((sRAM + aRAM) == sRAMg) && ((sRAM + aRAM) == aRAMg) )
+		mxmask = 0x0003;  /* oldfashion Mxalloc() */
 
-    else
-        mxmask = 0xFFFF;
+	else
+		mxmask = 0xFFFF;
 
 	return mxmask;
 	
-} /* Mxmask */
+}
 
 /*** ---------------------------------------------------------------------- ***/
 

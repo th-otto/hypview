@@ -25,6 +25,7 @@
 #include <mint/sysvars.h>
 #include <mint/ssystem.h>
 
+#define libc_strongcall(name) (name)
 
 #define MINFREE      (8L * 1024L)            /* free at least this much mem on top */
 #define MINKEEP (64L * 1024L)                /* keep at least this much mem on stack */
@@ -210,9 +211,10 @@ struct mem_chunk
 };
 
 #define MALLOC_ALIGNMENT 4
+#define ALLOC_EXTRA ((sizeof(struct mem_chunk) + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1))
+#define SBRK_EXTRA ((sizeof(struct mem_chunk) + sizeof(size_t) + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1))
 #define SBRK_SIZE(ch) (*(size_t *)((char *)(ch) + sizeof(*(ch))))
 #define SIZEOF_MEM_CONTROL ((sizeof(struct mem_chunk) + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1))
-#define SBRK_EXTRA ((sizeof(struct mem_chunk) + sizeof(size_t) + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1))
 
 #if DEBUG_ALLOC
 #define EXTRA_MEM (SIZEOF_MEM_CONTROL + sizeof(unsigned char) * MEM_MAGIC_SIZE)
@@ -366,7 +368,7 @@ void *malloc(size_t n)
 {
 	struct mem_chunk *head, *q, *p, *s;
 	size_t sz;
-	
+
 	/* add a mem_chunk to required size and round up */
 	n = ((EXTRA_MEM + n + MALLOC_ALIGNMENT - 1) & ~(MALLOC_ALIGNMENT - 1));
 
@@ -397,7 +399,7 @@ void *malloc(size_t n)
 			sz = (sz + page_size - 1) & -page_size;
 		}
 
-		q = (struct mem_chunk * ) sbrk(sz);
+		q = (struct mem_chunk *) sbrk(sz);
 		if (q == (void *)-1) /* can't alloc any more? */
 			return NULL;
 
@@ -464,7 +466,7 @@ void *malloc(size_t n)
 #endif
 
 	/* hand back ptr to after chunk desc */
-	s = (struct mem_chunk * )(((char *) q) + SIZEOF_MEM_CONTROL);
+	s = (struct mem_chunk *)(((char *) q) + SIZEOF_MEM_CONTROL);
 
 #if DEBUG_ALLOC >= 5
 	memset(s, MEM_MAGIC_NEW_ALLOCATED, n - EXTRA_MEM);
@@ -523,7 +525,7 @@ void free(void *param)
 		return;
 
 	/* move back to uncover the mem_chunk */
-	r = (struct mem_chunk * )(((char *) r) - SIZEOF_MEM_CONTROL);
+	r = (struct mem_chunk *)(((char *) r) - SIZEOF_MEM_CONTROL);
 
 	if (r->valid != VAL_ALLOC)
 	{
@@ -639,7 +641,7 @@ void *realloc(void *r, size_t n)
 #if DEBUG_ALLOC >= 2
 		return dbg_malloc(n, file, line);
 #else
-		return malloc(n);
+		return libc_strongcall(malloc)(n);
 #endif
 
 	if (n == 0)
@@ -647,12 +649,12 @@ void *realloc(void *r, size_t n)
 #if DEBUG_ALLOC >= 2
 		dbg_free(r, file, line);
 #else
-		free(r);
+		libc_strongcall(free)(r);
 #endif
 		return NULL;
 	}
 
-	p = (struct mem_chunk * )(((char *) r) - SIZEOF_MEM_CONTROL);
+	p = (struct mem_chunk *)(((char *) r) - SIZEOF_MEM_CONTROL);
 
 	if (p->valid != VAL_ALLOC)
 	{
@@ -711,7 +713,7 @@ void *realloc(void *r, size_t n)
 #if DEBUG_ALLOC >= 2
 		newr = dbg_malloc(n, file, line);
 #else
-		newr = malloc(n);
+		newr = libc_strongcall(malloc)(n);
 #endif
 		if (newr)
 		{
@@ -719,7 +721,7 @@ void *realloc(void *r, size_t n)
 #if DEBUG_ALLOC >= 2
 		    dbg_free(r, file, line);
 #else
-		    free(r);
+		    libc_strongcall(free)(r);
 #endif
 			r = newr;
 		}
@@ -740,7 +742,7 @@ void *realloc(void *r, size_t n)
 		}
 
 		/* merge after if possible */
-		s = (struct mem_chunk * )(((char *) p) + p->size);
+		s = (struct mem_chunk *)(((char *) p) + p->size);
 		if (s == next && (p->size + next->size) >= sz && next->valid == VAL_FREE)
 		{
 			struct mem_chunk *prev;
@@ -761,7 +763,7 @@ void *realloc(void *r, size_t n)
 #if DEBUG_ALLOC >= 2
 			newr = dbg_malloc(n, file, line);
 #else
-			newr = malloc(n);
+			newr = libc_strongcall(malloc)(n);
 #endif
 			if (newr)
 			{
@@ -769,7 +771,7 @@ void *realloc(void *r, size_t n)
 #if DEBUG_ALLOC >= 2
 			    dbg_free(r, file, line);
 #else
-			    free(r);
+			    libc_strongcall(free)(r);
 #endif
 			}
 			r = newr;

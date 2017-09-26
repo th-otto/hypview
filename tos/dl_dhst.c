@@ -44,6 +44,7 @@ void DhstAddFile(const char *path)
 		_WORD msg[8];
 		void *ret;
 		DHSTINFO *info;
+		DHSTINFO **pinfo;
 		char *p;
 		
 		g_free_shared(dhst_info);
@@ -74,7 +75,8 @@ void DhstAddFile(const char *path)
 		msg[0] = DHST_ADD;
 		msg[1] = gl_apid;
 		msg[2] = 0;
-		*(DHSTINFO **) (&msg[3]) = info;
+		pinfo = (DHSTINFO **)&msg[3];
+		*pinfo = info;
 		msg[5] = 0;
 		msg[6] = 0;
 		msg[7] = 0;

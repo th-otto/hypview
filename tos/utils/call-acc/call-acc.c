@@ -158,6 +158,7 @@ int main(int argc, const char **argv)
 	_WORD d;
 	int open_windows;
 	_WORD events;
+	char **pcmd;
 	
 	ret = 0;
 	
@@ -217,7 +218,8 @@ int main(int argc, const char **argv)
 	msg[0] = VA_START;
 	msg[1] = gl_apid;
 	msg[2] = 0;
-	*((char **) &msg[3]) = cmd;
+	pcmd = (char **) &msg[3];
+	*pcmd = cmd;
 	msg[5] = 0;
 	msg[6] = 0;
 	msg[7] = 0;
@@ -243,7 +245,8 @@ int main(int argc, const char **argv)
 		}
 		if (event & MU_MESAG)
 		{
-			if (buf[0] == AV_STARTED && (*((char **) &buf[3])) == cmd)
+			pcmd = (char **) &buf[3];
+			if (buf[0] == AV_STARTED && *pcmd == cmd)
 			{
 				g_free_shared(cmd);
 				cmd = NULL;
@@ -279,7 +282,8 @@ int main(int argc, const char **argv)
 				 * initialise
 				 */
 				cmd = (char *)Malloc(128);
-				p = *(char **) &buf[5];
+				pcmd = (char **) &buf[5];
+				p = *pcmd;
 				if (p)
 				{
 					strncpy(cmd + 1, p, 126);
@@ -294,7 +298,8 @@ int main(int argc, const char **argv)
 				 * we're dealing with a TOS 
 				 * or GEM Application...
 				 */
-				shel_write(SHW_EXEC, 1, 1, *(char **) &buf[3], cmd);
+				pcmd = (char **) &buf[3];
+				shel_write(SHW_EXEC, 1, 1, *pcmd, cmd);
 				open_windows = 0;
 			}
 		}

@@ -490,6 +490,8 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 				break;
 			case WM_TOPPED:
 				wind_set_top(event->msg[3]);
+				event->mwhich &= ~MU_MESAG;
+				break;
 			default:
 				event->mwhich &= ~MU_MESAG;
 				break;
@@ -625,6 +627,7 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 
 					while (ret != 0 && box.g_w && box.g_h)
 					{
+						GRECT *prect = (GRECT *) &event->msg[4];
 #if USE_TOOLBAR
 						GRECT temp_tbar;
 
@@ -642,10 +645,10 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 								box.g_h -= temp_tbar.g_h;
 							}
 						}
-						if (rc_intersect((GRECT *) & event->msg[4], &temp_tbar))
+						if (rc_intersect(prect, &temp_tbar))
 							objc_draw_grect(win->toolbar, 0, MAX_DEPTH, &temp_tbar);
 #endif
-						if (rc_intersect((GRECT *) & event->msg[4], &box))
+						if (rc_intersect(prect, &box))
 							win->proc(win, WIND_REDRAW, (void *) &box);
 						ret = wind_get_grect(event->msg[3], WF_NEXTXYWH, &box);
 					}

@@ -638,11 +638,13 @@ void gemscript_exit(void)
 void gemscript_start(GS_TARGET apid)
 {
 	_WORD message[8];
+	GS_INFO **pinfo;
 	
 	message[0] = GS_REQUEST;
 	message[1] = gl_apid;
 	message[2] = 0;
-	*((GS_INFO **)&message[3]) = my_info;
+	pinfo = (GS_INFO **)&message[3];
+	*pinfo = my_info;
 	message[5] = 0;
 	message[6] = 0;
 	message[7] = 0x4f52; /* 'OR' */

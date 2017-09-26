@@ -120,7 +120,8 @@ void DoUserEvents(EVNT *event)
 
 		case AC_HELP:
 			{
-				char *data = *(char **) &event->msg[3];
+				char **pdata = (char **) &event->msg[3];
+				char *data = *pdata;
 	
 				if (data != NULL)
 				{

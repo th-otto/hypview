@@ -728,7 +728,7 @@ static void corr_attrs(NAME_ENTRY *namelist)
 {
 	int i;
 	char *search_name;
-	NAME_ENTRY *elem;
+	NAME_ENTRY *elem = NULL;
 
 	wr_msg(TO_SCREEN, set_attr_msg);
 	/*----- First the sensitive names ------*/

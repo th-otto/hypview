@@ -301,7 +301,9 @@ const char *DCIGETTEXT(const char *domainname, const char *msgid1, const char *m
 
 		/* If the current locale value is C (or POSIX) we don't load a
 		   domain.  Return the MSGID.  */
-		if (strcmp(single_locale, "C") == 0 || strcmp(single_locale, "POSIX") == 0)
+		if (strcmp(single_locale, "C") == 0 ||
+			strcmp(single_locale, "C.UTF-8") == 0 ||
+			strcmp(single_locale, "POSIX") == 0)
 			break;
 
 		/* Find structure describing the message catalog matching the
