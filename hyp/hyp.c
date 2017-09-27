@@ -54,6 +54,8 @@ char *hyp_compiler_version(void)
 #  endif
 #elif defined(__INTEL_COMPILER)
 	return g_strdup_printf("ICC version %d.%d.%d (%s)", __INTEL_COMPILER / 100, (__INTEL_COMPILER / 10) %10), __INTEL_COMPILER % 10, bitvers);
+#elif defined(__clang_version__)
+	return g_strdup_printf("clang version %s (%s)", __clang_version__, bitvers);
 #elif defined(__clang__)
 	return g_strdup_printf("clang version %s.%s.%s (%s)", stringify(__clang_major__), stringify(__clang_minor__), stringify(__clang_patchlevel__), bitvers);
 #elif defined(__GNUC__)
@@ -67,8 +69,10 @@ char *hyp_compiler_version(void)
 #else
 	return g_strdup_printf("Unknown Compiler (%s)", bitvers);
 #endif
-#undef bitvers
 
+#undef bitvers
+#undef stringify1
+#undef stringify
 }
 
 /*** ---------------------------------------------------------------------- ***/
