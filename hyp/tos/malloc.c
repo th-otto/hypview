@@ -489,6 +489,10 @@ void *malloc(size_t n)
 }
 
 
+#ifdef __GNUC__
+#pragma GCC optimize("-O1")
+#endif
+
 #if DEBUG_ALLOC >= 2
 void *dbg_calloc(size_t nitems, size_t size, const char *file, long line)
 #else
@@ -509,6 +513,10 @@ void *calloc(size_t nitems, size_t size)
 #endif
 	return ptr;
 }
+
+#ifdef __GNUC__
+#pragma GCC optimize("-O2")
+#endif
 
 
 #if DEBUG_ALLOC >= 1
