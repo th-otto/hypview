@@ -7,6 +7,7 @@
 #pragma GCC diagnostic ignored "-Wcast-qual"
 #pragma GCC diagnostic ignored "-Wstrict-prototypes"
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wc++-compat"
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib/gstdio.h>
@@ -16,6 +17,7 @@
 #include "gtk_comp.h"
 #pragma GCC diagnostic warning "-Wcast-qual"
 #pragma GCC diagnostic warning "-Wstrict-prototypes"
+#pragma GCC diagnostic warning "-Wc++-compat"
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
