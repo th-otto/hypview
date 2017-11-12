@@ -1906,8 +1906,24 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 			while (*p != '"' && *p != '\0')
 			{
 				if (*p == '\\' && p[1] != '\0')
+				{
+					p += 2;
+				} else if (p[0] == '@' && p[1] == ':' && p[2] == '"')
+				{
+					/*
+					 * variable reference inside a quoted string...
+					 */
+					p += 3;
+					while (*p != '"' && *p != '\0')
+					{
+						p++;
+					}
+					if (*p != '\0')
+						p++;
+				} else
+				{
 					p++;
-				p++;
+				}
 			}
 			if (*p == '\0')
 			{
@@ -1953,8 +1969,24 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 			while (*p != '"' && *p != '\0')
 			{
 				if (*p == '\\' && p[1] != '\0')
+				{
+					p += 2;
+				} else if (p[0] == '@' && p[1] == ':' && p[2] == '"')
+				{
+					/*
+					 * variable reference inside a quoted string...
+					 */
+					p += 3;
+					while (*p != '"' && *p != '\0')
+					{
+						p++;
+					}
+					if (*p != '\0')
+						p++;
+				} else
+				{
 					p++;
-				p++;
+				}
 			}
 			(*pargv)[i] = s = g_new(char, p - start + 1);
 			if (G_UNLIKELY(s == NULL))
@@ -1977,7 +2009,43 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 					default:
 						*s++ = '\\';
 						break;
+					/*
+					 * do not advance source, or try to interpret next char for anything else;
+					 * most likely this is a pathname with single backslashes only
+					 */
 					}
+				} else if (p[0] == '@' && p[1] == ':' && p[2] == '"')
+				{
+					/*
+					 * variable reference inside a quoted string...
+					 */
+					const char *startdef;
+					HCP_DEFINE *d;
+					char *name;
+					char *startval;
+					
+					p += 3;
+					startdef = p;
+					startval = s;
+					while (*p != '"' && *p != '\0')
+					{
+						*s++ = *p++;
+					}
+					name = strndup(startdef, p - startdef);
+					if (*p != '\0')
+						p++;
+					d = find_hcp_define(vars, name);
+					if (d == NULL)
+					{
+						hcp_error(vars, NULL, _("undefined variable %s"), name);
+					} else
+					{
+						char *arg = (*pargv)[i];
+						*s = '\0';
+						s = replace_define(vars, d, startval, s, &arg);
+						(*pargv)[i] = arg;
+					}
+					g_free(name);
 				} else
 				{
 					*s++ = *p++;
@@ -2019,14 +2087,19 @@ static char *parse_1arg(hcp_vars *vars, const char *line, char eos, char **pend)
 	p = line;
 	while (g_ascii_isspace(*p))
 		p++;
+	start = p;
 	if (*p == '"')
 	{
 		p++;
 		while (*p != '"' && *p != '\0')
 		{
 			if (*p == '\\' && p[1] != '\0')
+			{
+				p += 2;
+			} else
+			{
 				p++;
-			p++;
+			}
 		}
 		if (*p == '\0')
 		{
@@ -2047,20 +2120,12 @@ static char *parse_1arg(hcp_vars *vars, const char *line, char eos, char **pend)
 		return NULL;
 	}
 
-	p = line;
-	while (g_ascii_isspace(*p))
-		p++;
+	p = start;
 	if (*p == '"')
 	{
 		p++;
 		start = p;
-		while (*p != '"' && *p != '\0')
-		{
-			if (*p == '\\' && p[1] != '\0')
-				p++;
-			p++;
-		}
-		res = s = g_new(char, p - start + 1);
+		res = s = g_new(char, *pend - start + 1);
 		if (s == NULL)
 		{
 			oom(vars);
@@ -2081,6 +2146,10 @@ static char *parse_1arg(hcp_vars *vars, const char *line, char eos, char **pend)
 				default:
 					*s++ = '\\';
 					break;
+				/*
+				 * do not advance source, or try to interpret next char for anything else;
+				 * most likely this is a pathname with single backslashes only
+				 */
 				}
 			} else
 			{
@@ -2090,7 +2159,6 @@ static char *parse_1arg(hcp_vars *vars, const char *line, char eos, char **pend)
 		*s = '\0';
 	} else
 	{
-		start = p;
 		while (*p != '\0' && *p != eos && !g_ascii_isspace(*p))
 			p++;
 		res = g_strndup(start, p - start);
