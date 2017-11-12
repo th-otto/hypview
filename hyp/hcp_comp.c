@@ -7120,10 +7120,10 @@ static gboolean pass(hcp_vars *vars, const char *filename)
 	}
 	
 	retval = TRUE;
-	check_endnode(vars, FALSE);
 	ASSERT(vars->include_stack != NULL);
 	if (vars->include_stack->next == NULL)
 	{
+		check_endnode(vars, FALSE);
 		/*
 		 * finish pass 1/2 here instead of in main function,
 		 * so we still have an input location for error messages
