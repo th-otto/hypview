@@ -195,6 +195,9 @@ typedef struct _hcp_vars {
 	/* TRUE if some characters could not be converted */
 	gboolean global_converror;
 
+	/* number of invalid utf-8 sequences found in input */
+	long utf8_errors;
+
 	/* current active text attributes */
 	unsigned char textattr;
 
@@ -930,7 +933,23 @@ static char *readline(hcp_vars *vars, FILE *fp)
 		}
 	}
 	vars->linebuf[sl] = '\0';
-	return hyp_conv_to_utf8(vars->input_charset, vars->linebuf, STR0TERM);
+	if (vars->input_charset == HYP_CHARSET_UTF8 && vars->hcp_pass == 1)
+	{
+		if (!g_utf8_validate(vars->linebuf, sl, NULL))
+		{
+			++vars->utf8_errors;
+			/*
+			 * do only warn a few times; if we are reading a text
+			 * in atari or latin-1 encoding, we most likely get lots
+			 * of such errors
+			 */
+			if (vars->utf8_errors <= 10)
+			{
+				hcp_warning(vars, NULL, _("invalid UTF-8 sequence; did you forget to specify the input encoding?"));
+			}
+		}
+	}
+	return hyp_conv_to_utf8(vars->input_charset, vars->linebuf, sl);
 }
 
 /*****************************************************************************/
