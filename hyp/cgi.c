@@ -449,7 +449,7 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 		parms.fp = NULL;
 	}
 	
-	if (curlcode != CURLE_OK)
+	if (curlcode != CURLE_OK || stat(local_filename, &st) != 0)
 	{
 		html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 		g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
@@ -458,7 +458,7 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 		g_free(local_filename);
 		local_filename = NULL;
 	} else if ((respcode != 200 && respcode != 304) ||
-		(respcode == 200 && (content_type == NULL || strcmp(content_type, "text/plain") == 0)))
+		(respcode == 200 && content_type != NULL && strcmp(content_type, "text/plain") == 0))
 	{
 		/* most likely the downloaded data will contain the error page */
 		parms.fp = hyp_utf8_fopen(local_filename, "rb");

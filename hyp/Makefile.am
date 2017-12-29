@@ -166,7 +166,7 @@ hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA
 if !CROSS_COMPILING
 	$(AM_V_at)if test -d "$(SRVDIR)"; then \
 	   echo "installing $@ in $(SRVDIR)"; \
-	   cp -a $@ "$(SRVDIR)/hypview.cgi"; \
+	   cp $@ "$(SRVDIR)/hypview.cgi"; \
 	fi
 endif
 	
@@ -188,7 +188,7 @@ hypinfo$(EXEEXT): $(hypinfo_OBJECTS) $(hypinfo_DEPENDENCIES) $(EXTRA_hypinfo_DEP
 if !CROSS_COMPILING
 	$(AM_V_at)if test -d "$(SRVDIR)"; then \
 	   echo "installing $@ in $(SRVDIR)"; \
-	   cp -a $@ "$(SRVDIR)/hypinfo"; \
+	   cp $@ "$(SRVDIR)/hypinfo"; \
 	fi
 endif
 hypinfo.ttp: hypinfo
