@@ -1,7 +1,7 @@
 gif2bmp.ttp
-.C[-Ic:\src\hypview\include\tos]
-.C[-Ic:\src\hypview\pic]
-.C[-Ic:\src\hypview\include]
+.C[-I..\include\tos]
+.C[-I..\pic]
+.C[-I..\include]
 .C[-Ic:\pc\include]
 .C[-P]
 
@@ -15,34 +15,34 @@ gif2bmp.ttp
 =
 cstartv.o
 
-c:\src\hypview\hyp\gif2bmp.c
+..\hyp\gif2bmp.c
 
-c:\src\hypview\hyp\hyp.c
-c:\src\hypview\hyp\hyp_intl.c
-c:\src\hypview\hyp\hyp_file.c
-c:\src\hypview\hyp\hyp_glib.c
-c:\src\hypview\hyp\hyp_cset.c
-c:\src\hypview\hyp\utl_dbg.c
-c:\src\hypview\hyp\rpl_stat.c
-c:\src\hypview\hyp\profile.c
-c:\src\hypview\hyp\hyp_cfg.c
+..\hyp\hyp.c
+..\hyp\hyp_intl.c
+..\hyp\hyp_file.c
+..\hyp\hyp_glib.c
+..\hyp\hyp_cset.c
+..\hyp\utl_dbg.c
+..\hyp\rpl_stat.c
+..\hyp\profile.c
+..\hyp\hyp_cfg.c
 
-c:\src\hypview\pic\bmp.c
-c:\src\hypview\pic\degas.c
-c:\src\hypview\pic\gif.c
-c:\src\hypview\pic\ico.c
-c:\src\hypview\pic\iff.c
-c:\src\hypview\pic\imagic.c
-c:\src\hypview\pic\img.c
-c:\src\hypview\pic\picconv.c
-c:\src\hypview\pic\stad.c
-c:\src\hypview\pic\icn.c
-c:\src\hypview\pic\png.c
+..\pic\bmp.c
+..\pic\degas.c
+..\pic\gif.c
+..\pic\ico.c
+..\pic\iff.c
+..\pic\imagic.c
+..\pic\img.c
+..\pic\picconv.c
+..\pic\stad.c
+..\pic\icn.c
+..\pic\png.c
 
-c:\src\hypview\hyp\utl_ngui.c
-c:\src\hypview\hyp\utl_err.c
-c:\src\hypview\hyp\xgetopt.c
-c:\src\hypview\hyp\str2imax.c
+..\hyp\utl_ngui.c
+..\hyp\utl_err.c
+..\hyp\xgetopt.c
+..\hyp\str2imax.c
 
 
 pcgemlib.lib

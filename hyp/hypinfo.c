@@ -753,11 +753,13 @@ static gboolean hypfix(const char *filename, hcp_opts *opts)
 	}
 	if (preserve)
 	{
+#ifndef _PUREC_SOURCE
 		struct utimbuf m;
 		m.actime = st.st_atime;
 		m.modtime = st.st_mtime;
 		if (utime(filename, &m) < 0)
 			hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", filename, hyp_utf8_strerror(errno));
+#endif
 	}
 		
 	g_free(tmpoutname);
