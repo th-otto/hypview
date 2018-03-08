@@ -2050,7 +2050,7 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 					{
 						*s++ = *p++;
 					}
-					name = strndup(startdef, p - startdef);
+					name = g_strndup(startdef, p - startdef);
 					if (*p != '\0')
 						p++;
 					d = find_hcp_define(vars, name);
@@ -2144,7 +2144,7 @@ static char *parse_1arg(hcp_vars *vars, const char *line, char eos, char **pend)
 	{
 		p++;
 		start = p;
-		res = s = g_new(char, *pend - start + 1);
+		res = s = g_new(char, (const char *)*pend - start + 1);
 		if (s == NULL)
 		{
 			oom(vars);

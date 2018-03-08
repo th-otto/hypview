@@ -18,6 +18,7 @@
 
 #ifndef _XGETOPT_H
 #define _XGETOPT_H 1
+#undef _GETOPT_H
 #define _GETOPT_H 1
 #define _GETOPT_CORE_H 1
 #define _GETOPT_EXT_H 1

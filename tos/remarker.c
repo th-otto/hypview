@@ -127,7 +127,7 @@ void singletos_fail_loop(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static long getBootDrive(void)
+static long _CDECL getBootDrive(void)
 {
 	char bootDrive = *((char *) 0x447) + 'A';
 
