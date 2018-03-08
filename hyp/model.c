@@ -1,1 +1,1 @@
-#include "../../langid/model.c"
+#include "langid/model.c"

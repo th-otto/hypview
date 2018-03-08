@@ -6,9 +6,11 @@ HCP=		$(build_triplet)-hcp
 UDO_DEP=
 HCP_DEP=
 else
-UDO=		$(top_builddir)/src/udo
-HCP=		$(top_builddir)/tools/hypview/hyp/hcp
-UDO_DEP=	$(UDO)$(EXEEXT)
+#UDO=		$(top_builddir)/src/udo
+#UDO_DEP=	$(UDO)$(EXEEXT)
+UDO=		udo
+UDO_DEP=	
+HCP=		$(top_builddir)/hyp/hcp
 HCP_DEP=	$(HCP)$(EXEEXT)
 endif
 MKDIRHIER=	mkdir -p
@@ -263,7 +265,6 @@ html: .stamp.html
 		$(CP) $(srcdir)/../hypview.css $(HTML_DIR); \
 		$(CP) $(srcdir)/images/*.gif $(HTML_DIR); \
 		$(CP) $(srcdir)/images/favicon.ico $(HTML_DIR); \
-		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(HTML_DIR)"; \
 		for i in $(TOOL_DOCS); do \
 			$(UDO) --html --force-short --check --tree --save-upr -o "$(HTML_DIR)$$i.html" $(srcdir)/$$i.u || exit 1; \
 		done; \
@@ -425,8 +426,6 @@ htmlhelp: .stamp.htmlhelp
 		echo "generating HtmlHelp documentation"; \
 		$(CP) $(srcdir)/images/*.gif "$(HTMLHELP_DIR)"; \
 		$(CP) $(srcdir)/images/favicon.ico $(HTMLHELP_DIR); \
-		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}.gif "$(HTMLHELP_DIR)"; \
-		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(HTMLHELP_DIR)"; \
 		for i in $(TOOL_DOCS); do \
 			$(UDO) --htmlhelp --check --force-short -o "$(HTMLHELP_DIR)$$i.html" -l $(srcdir)/$$i.u || exit 1; \
 		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.chm; \
@@ -548,7 +547,6 @@ hah applehelp: .stamp.applehelp
 		( cd $(APPLEHELP_DIR) && $(RM) `ls .`) ; \
 		$(CP) $(srcdir)/../hypview.css $(APPLEHELP_DIR); \
 		$(CP) $(srcdir)/images/*.gif $(APPLEHELP_DIR); \
-		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(APPLEHELP_DIR)"; \
 		$(UDO) --hah --force-short --check --tree --save-upr -o $(APPLEHELP_DIR)index.html $(srcdir)/hypview.u || exit 1; \
 		: $(RM) $(APPLEHELP_DIR)*.u?h
 		$(AM_V_at)touch $@

@@ -968,6 +968,7 @@ AC_CONFIG_COMMANDS([pofiles],[
 AC_OUTPUT([
 	Makefile
 	rcintl/Makefile
+	potools/Makefile
 	pic/Makefile
 	icons/Makefile
 	hyp/Makefile

@@ -1,4 +1,4 @@
-include ../../../../../silent.am
+include ../../../silent.am
 include ../../../Makefile.common
 
 if WITH_GUI_GEM

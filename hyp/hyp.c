@@ -276,15 +276,15 @@ hyp_filetype hyp_guess_filetype(const char *name)
 
 HYP_OS hyp_get_current_os(void)
 {
-#if defined(__TOS__) || defined(__atarist__)
+#if defined(__TOS__) || defined(__atarist__) || defined(__MINT__)
 	return HYP_OS_ATARI;
-#elif defined(__AMIGA__)
+#elif defined(__AMIGA__) || defined(__amiga__)
 	return HYP_OS_AMIGA;
-#elif defined(__MACOS__)
+#elif defined(__APPLE__) || defined(__MACH__)
 	return HYP_OS_MAC;
 #elif defined(__WIN32__)
 	return HYP_OS_WIN32;
-#elif defined(__unix__) || defined(__unix) || defined(unix)
+#elif defined(__unix__) || defined(__unix) || defined(unix) || defined(__hpux__) || defined(__irix__)
 	return HYP_OS_UNIX;
 #else
 	return HYP_OS_UNKNOWN;

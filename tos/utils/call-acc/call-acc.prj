@@ -1,8 +1,7 @@
 call-acc.gtp
-.C[-Ih:\src\udo\tools\hypview\include\tos]
-.C[-Ih:\src\udo\tools\hypview\include]
-.C[-Ih:\src\udo\tools\hypview\tos]
-.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
+.C[-Ic:\src\hypview\include\tos]
+.C[-Ic:\src\hypview\include]
+.C[-Ic:\src\hypview\tos]
 .C[-Ic:\pc\include]
 .C[-P]
 =

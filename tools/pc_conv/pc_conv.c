@@ -605,6 +605,6 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 
 #endif
 
-#include "../../hyp/hyp_intl.c"
-#include "../../hyp/win32/hypmain.c"
-#include "../../hyp/tos/hypmain.c"
+#include "hyp/hyp_intl.c"
+#include "hyp/win32/hypmain.c"
+#include "hyp/tos/hypmain.c"

@@ -31,10 +31,6 @@
  */
 #include "windows_.h"
 
-#if defined(__MACOSX__) && !defined(__MACOS__)
-#  define __MACOS__
-#endif
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

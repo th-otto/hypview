@@ -1,7 +1,6 @@
 refcheck.ttp
-.C[-Ih:\src\udo\tools\hypview\include\tos]
-.C[-Ih:\src\udo\tools\hypview\include]
-.C[-Ih:\src\udo\src] ; FIXME: for windows_.h
+.C[-Ic:\src\hypview\include\tos]
+.C[-Ic:\src\hypview\include]
 .C[-Ic:\pc\include]
 .C[-P]
 
@@ -15,39 +14,39 @@ refcheck.ttp
 =
 cstartv.o
 
-h:\src\udo\tools\hypview\hyp\refcheck.c
-h:\src\udo\tools\hypview\hyp\refcmds.c
+c:\src\hypview\hyp\refcheck.c
+c:\src\hypview\hyp\refcmds.c
 
-h:\src\udo\tools\hypview\hyp\hyp.c
-h:\src\udo\tools\hypview\hyp\ref.c
-h:\src\udo\tools\hypview\hyp\hyp_load.c
-h:\src\udo\tools\hypview\hyp\lh5d.c
-h:\src\udo\tools\hypview\hyp\prepare.c
-;h:\src\udo\tools\hypview\hyp\gfx.s
-h:\src\udo\tools\hypview\hyp\cache.c
-h:\src\udo\tools\hypview\hyp\hyp_save.c
-h:\src\udo\tools\hypview\hyp\tool.c
-h:\src\udo\tools\hypview\hyp\tos\cookie.c
-h:\src\udo\tools\hypview\hyp\ext_refs.c
-h:\src\udo\tools\hypview\hyp\hyp_intl.c
-h:\src\udo\tools\hypview\hyp\hyp_file.c
-h:\src\udo\tools\hypview\hyp\hyp_err.c
-h:\src\udo\tools\hypview\hyp\hyp_glib.c
-h:\src\udo\tools\hypview\hyp\hyp_cset.c
-h:\src\udo\tools\hypview\hyp\utl_dbg.c
-h:\src\udo\tools\hypview\hyp\rpl_stat.c
-h:\src\udo\tools\hypview\hyp\profile.c
-h:\src\udo\tools\hypview\hyp\hyp_cfg.c
+c:\src\hypview\hyp\hyp.c
+c:\src\hypview\hyp\ref.c
+c:\src\hypview\hyp\hyp_load.c
+c:\src\hypview\hyp\lh5d.c
+c:\src\hypview\hyp\prepare.c
+;c:\src\hypview\hyp\gfx.s
+c:\src\hypview\hyp\cache.c
+c:\src\hypview\hyp\hyp_save.c
+c:\src\hypview\hyp\tool.c
+c:\src\hypview\hyp\tos\cookie.c
+c:\src\hypview\hyp\ext_refs.c
+c:\src\hypview\hyp\hyp_intl.c
+c:\src\hypview\hyp\hyp_file.c
+c:\src\hypview\hyp\hyp_err.c
+c:\src\hypview\hyp\hyp_glib.c
+c:\src\hypview\hyp\hyp_cset.c
+c:\src\hypview\hyp\utl_dbg.c
+c:\src\hypview\hyp\rpl_stat.c
+c:\src\hypview\hyp\profile.c
+c:\src\hypview\hyp\hyp_cfg.c
 
-h:\src\udo\tools\hypview\hyp\utl_ngui.c
-h:\src\udo\tools\hypview\hyp\utl_err.c
-h:\src\udo\tools\hypview\hyp\xgetopt.c
-h:\src\udo\tools\hypview\hyp\str2imax.c
+c:\src\hypview\hyp\utl_ngui.c
+c:\src\hypview\hyp\utl_err.c
+c:\src\hypview\hyp\xgetopt.c
+c:\src\hypview\hyp\str2imax.c
 
-h:\src\udo\tools\hypview\hyp\tos\hypmain.c
-h:\src\udo\tools\hypview\tos\dirent.c
-h:\src\udo\tools\hypview\hyp\tos\mkdir.c
-h:\src\udo\tools\hypview\hyp\tos\malloc.c
+c:\src\hypview\hyp\tos\hypmain.c
+c:\src\hypview\tos\dirent.c
+c:\src\hypview\hyp\tos\mkdir.c
+c:\src\hypview\hyp\tos\malloc.c
 
 pctoslib.lib
 pcstdlib.lib

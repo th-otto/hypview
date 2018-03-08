@@ -4,11 +4,12 @@
 #include <aes.h>
 #include <vdi.h>
 #include <tos.h>
-#include "tos/scancode.h"
 #include <wdlgevnt.h>
 #include <wdlglbox.h>
 #include <wdlgwdlg.h>
 #include <wdlgfslx.h>
+
+#include "tos/scancode.h"
 
 #ifdef __PUREC__
 #define inline

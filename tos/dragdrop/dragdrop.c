@@ -25,14 +25,27 @@
 #include <signal.h>
 #include "tos/dragdrop.h"
 
+/*
+ * we use Psignal() directly, not signal(),
+ * so make sure we get the correct definitions for MiNT,
+ * regardless of the library in use
+ */
+#ifndef __mint_sighandler_t_defined
+#define __mint_sighandler_t_defined 1
+#ifdef __NO_CDECL
+typedef void *__mint_sighandler_t;
+#else
+typedef void _CDECL (*__mint_sighandler_t) (long signum);
+#endif
+#endif
 #undef SIGPIPE
 #define SIGPIPE 13
 #undef SIG_DFL
 #undef SIG_IGN
 #undef SIG_ERR
-#define       SIG_DFL	((__sighandler_t) 0L)
-#define       SIG_IGN	((__sighandler_t) 1L)
-#define       SIG_ERR	((__sighandler_t)-1L)
+#define       SIG_DFL	((__mint_sighandler_t) 0L)
+#define       SIG_IGN	((__mint_sighandler_t) 1L)
+#define       SIG_ERR	((__mint_sighandler_t)-1L)
 
 /*-----------------------------------------------------------------------------------------*/
 /* Drag & Drop - Pipe ffnen (fuer den Sender)											   */
@@ -102,7 +115,7 @@ ddcreate(short app_id, short rcvr_id, short window, short mx, short my, short kb
 			{
 				if (Fread(handle, DD_EXTSIZE, format) == DD_EXTSIZE)	/* unterstuetzte Formate lesen */
 				{
-					*oldpipesig = (void *) Psignal(SIGPIPE, (void *) SIG_IGN);	/* Dispatcher ausklinken */
+					*oldpipesig = (void *) Psignal(SIGPIPE, SIG_IGN);	/* Dispatcher ausklinken */
 					return handle;
 				}
 			}
@@ -159,7 +172,7 @@ short ddstry(short handle, unsigned long format, char *name, long size)
 /*-----------------------------------------------------------------------------------------*/
 void ddclose(short handle, void *oldpipesig)
 {
-	(void)Psignal(SIGPIPE, oldpipesig);		/* wieder alten Dispatcher eintragen */
+	(void)Psignal(SIGPIPE, (__mint_sighandler_t)oldpipesig);		/* wieder alten Dispatcher eintragen */
 	Fclose(handle);						/* Pipe schliessen */
 }
 
@@ -181,7 +194,7 @@ short ddopen(char *pipe, unsigned long format[8], void **oldpipesig)
 
 	reply = DD_OK;						/* Programm unterstuetzt Drag & Drop */
 
-	*oldpipesig = (void *) Psignal(SIGPIPE, (void *) SIG_IGN);	/* Signal ignorieren */
+	*oldpipesig = (void *) Psignal(SIGPIPE, SIG_IGN);	/* Signal ignorieren */
 
 	if (Fwrite(handle, 1, &reply) == 1)
 	{

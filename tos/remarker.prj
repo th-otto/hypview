@@ -1,6 +1,6 @@
-c:\hyp\hcp\remarker.prg
-.C[-Ih:\src\udo\tools\hypview\include\tos]
-.C[-Ih:\src\udo\tools\hypview\include]
+remarker.prg
+.C[-Ic:\src\hypview\include\tos]
+.C[-Ic:\src\hypview\include]
 .C[-Ic:\pc\include]
 .C[-P]
 .C[-K] ; default char unsigned, but FIXME
@@ -27,23 +27,23 @@ c:\hyp\hcp\remarker.prg
 cstartv.o
 ;lib\gemstart.o
 
-h:\src\udo\tools\hypview\tos\remarker.c
+c:\src\hypview\tos\remarker.c
 
-h:\src\udo\tools\hypview\tos\dl_avcmd.c
-h:\src\udo\tools\hypview\tos\dl_mem.c
-h:\src\udo\tools\hypview\tos\dl_msgs.c
-h:\src\udo\tools\hypview\hyp\hyp_glib.c
+c:\src\hypview\tos\dl_avcmd.c
+c:\src\hypview\tos\dl_mem.c
+c:\src\hypview\tos\dl_msgs.c
+c:\src\hypview\hyp\hyp_glib.c
 
-h:\src\udo\tools\hypview\hyp\tos\cookie.c
+c:\src\hypview\hyp\tos\cookie.c
 
-h:\src\udo\tools\hypview\tos\nf_debug.c
-h:\src\udo\tools\hypview\tos\nf_name.c
-h:\src\udo\tools\hypview\tos\nf_ops.c
-h:\src\udo\tools\hypview\tos\nf_shutd.c
-h:\src\udo\tools\hypview\tos\nf_stder.c
-h:\src\udo\tools\hypview\tos\nf_vers.c
+c:\src\hypview\tos\nf_debug.c
+c:\src\hypview\tos\nf_name.c
+c:\src\hypview\tos\nf_ops.c
+c:\src\hypview\tos\nf_shutd.c
+c:\src\hypview\tos\nf_stder.c
+c:\src\hypview\tos\nf_vers.c
 
-h:\src\udo\tools\hypview\hyp\tos\malloc.c
+c:\src\hypview\hyp\tos\malloc.c
 
 pcgemlib.lib
 pctoslib.lib

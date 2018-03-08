@@ -29,7 +29,7 @@ noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico ico2i
 
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
-AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/src
+AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)
 
 LANGID_MODEL = $(srcdir)/ldpy.model
 

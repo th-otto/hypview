@@ -1,9 +1,9 @@
--include ../../../silent.am
+-include ../silent.am
 
 pkgdatadir = $(datadir)/hypview
 
-hyp_srcdir = $(top_srcdir)/tools/hypview
-hyp_builddir = $(top_builddir)/tools/hypview
+hyp_srcdir = $(top_srcdir)
+hyp_builddir = $(top_builddir)
 
 #WINDRES = windres
 WINDRES = orc --compiler none

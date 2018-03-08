@@ -1,6 +1,0 @@
-libdgdp.lib 
-.C[-Ic:\src\hypview\include]
-.L[-J]
-=
-
-dragdrop.c

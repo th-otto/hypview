@@ -59,6 +59,7 @@ hypview_SOURCES = \
 	dl_ledit.c \
 	dl_mem.c \
 	dl_menu.c \
+	dl_msgs.c \
 	dl_popup.c \
 	dl_routs.c \
 	dl_tools.c \
