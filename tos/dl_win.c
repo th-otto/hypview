@@ -547,7 +547,7 @@ void WindowEvents(WINDOW_DATA *win, EVNT *event)
 						((win->toolbar[num].ob_flags & OF_EXIT) && graf_watchbox(win->toolbar, num, OS_SELECTED, 0)))
 					{
 						if (win->proc(win, WIND_TBCLICK, &num))
-							evnt_timer_gemlib(10);
+							evnt_timer(10);
 					}
 				}
 			} else

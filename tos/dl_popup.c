@@ -630,7 +630,7 @@ _WORD popup_select(OBJECT *tree, _WORD mx, _WORD my)
 		bmask = event.mbutton;
 	}
 	do {
-		event.mwhich = evnt_multi_gemlib(MU_KEYBD|MU_BUTTON|MU_M1, mask, bmask, 0,
+		event.mwhich = evnt_multi(MU_KEYBD|MU_BUTTON|MU_M1, mask, bmask, 0,
 			in_rect, event.mx, event.my, 1, 1,
 			0, 0, 0, 0, 0,
 			event.msg, 0,

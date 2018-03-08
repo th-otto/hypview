@@ -217,7 +217,7 @@ static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 	{
 		/* short visual feedback */
 		graf_mouse(BUSY_BEE, NULL);
-		evnt_timer_gemlib(10);
+		evnt_timer(10);
 		graf_mouse(ARROW, NULL);
 	}
 }

@@ -229,7 +229,7 @@ void DocumentInfos(WINDOW_DATA *win)
 				if (obj == INFO_LESS || obj == INFO_MORE)
 				{
 					toggle_morebox(tree, INFO_MORE_BOX);
-					evnt_timer_gemlib(0);
+					evnt_timer(0);
 				}
 			}
 		} while (obj > 0 && obj != PROG_HELP && obj != PROG_OK);

@@ -272,7 +272,7 @@ void DoEvent(void)
 	EVNT event;
 
 	memset(&event, 0, sizeof(event));
-	event.mwhich = evnt_multi_gemlib(EVENTS, MBCLICKS, MBMASK, MBSTATE, MBLOCK1, MBLOCK2, event.msg, WAIT,
+	event.mwhich = evnt_multi(EVENTS, MBCLICKS, MBMASK, MBSTATE, MBLOCK1, MBLOCK2, event.msg, WAIT,
 		&event.mx, &event.my, &event.mbutton, &event.kstate, &event.key, &event.mclicks);
 	DoEventDispatch(&event);
 	if (doneFlag)

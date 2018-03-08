@@ -357,7 +357,7 @@ _WORD appl_locate(const char *pathlist, const char *arg, _BOOL startit)
 				if (__magix)
 				{
 					id = shel_xwrite(SHW_EXEC, 1, SHW_PARALLEL, path, cmdline);
-					evnt_timer_gemlib(500);
+					evnt_timer(500);
 				} else
 				{
 					id = shel_xwrite(SHW_EXEC, 1, 1, path, cmdline);

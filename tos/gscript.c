@@ -786,7 +786,7 @@ static _BOOL Protokoll_Waitfor(_WORD msg, _WORD timeout, EVNT *event)
 	for (;;)
 	{
 		memset(event, 0, sizeof(*event));
-		event->mwhich = evnt_multi_gemlib(MU_MESAG|MU_TIMER,
+		event->mwhich = evnt_multi(MU_MESAG|MU_TIMER,
 			0, 0, 0,
 			0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0,

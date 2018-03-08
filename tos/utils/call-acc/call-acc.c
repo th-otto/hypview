@@ -236,7 +236,7 @@ int main(int argc, const char **argv)
 	events = MU_TIMER | MU_MESAG;
 	for (;;)
 	{
-		event = evnt_multi_gemlib(events,
+		event = evnt_multi(events,
 						   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, buf, 2000, &d, &d, &d, &d, &d, &d);
 		if (event & MU_TIMER)
 		{

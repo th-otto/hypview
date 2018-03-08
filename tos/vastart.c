@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 			_WORD dummy;
 			_WORD events;
 			
-			events = evnt_multi_gemlib(MU_MESAG | MU_TIMER,
+			events = evnt_multi(MU_MESAG | MU_TIMER,
 				0, 0, 0,
 				0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0,
