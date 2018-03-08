@@ -1,0 +1,239 @@
+/*
+ * HypView - (c) 2001 - 2006 Philipp Donze
+ *               2006 -      Philipp Donze & Odd Skancke
+ *
+ * A replacement hypertext viewer
+ *
+ * This file is part of HypView.
+ *
+ * HypView is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HypView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HypView; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#include "hv_defs.h"
+#include "hypdebug.h"
+#include "hypview.h"
+
+
+#define AUTOLOC_SIZE		26
+
+/*	Initialisiert und aktiviert den Autolocator
+	Rueckgabewert ist die Position des naechsten Zeichens.
+*/
+static char *AutolocatorInit(DOCUMENT * doc)
+{
+	char *ptr;
+
+	/*  Noch kein Speicher fuer Autolocator alloziert?  */
+	if (doc->autolocator == NULL)
+	{
+		ptr = g_new(char, AUTOLOC_SIZE);
+		if (ptr == NULL)
+		{
+			form_alert(1, rs_string(DI_MEMORY_ERROR));
+			return NULL;
+		}
+		doc->autolocator = ptr;
+		ptr[AUTOLOC_SIZE - 1] = 0;
+		*ptr = 0;
+	} else
+	{
+		/*  Zum Stringende...   */
+		ptr = doc->autolocator;
+		while (*ptr)
+			ptr++;
+	}
+
+	/*  Search-Box noch nicht aktiviert?    */
+	if (!doc->buttons.searchbox)
+		doc->buttons.searchbox = TRUE;
+
+	return ptr;
+}
+
+
+static void autolocator_redraw(WINDOW_DATA *win, _WORD obj, GRECT *tbar)
+{
+	GRECT r;
+	_WORD ret;
+	
+	wind_update(BEG_UPDATE);
+	ret = wind_get_grect(win->whandle, WF_FIRSTXYWH, &r);
+	while (ret != 0 && r.g_w > 0 && r.g_h > 0)
+	{
+		if (rc_intersect(tbar, &r))
+			objc_draw_grect(win->toolbar, obj, MAX_DEPTH, &r);
+		ret = wind_get_grect(win->whandle, WF_NEXTXYWH, &r);
+	}
+	wind_update(END_UPDATE);
+}
+
+
+/*	Aktualisiert den Autolocator und startet evtl. eine Suche	*/
+static void AutolocatorUpdate(DOCUMENT *doc, long start_line)
+{
+	WINDOW_DATA *win = doc->window;
+	GRECT tbar;
+
+	long line = start_line;
+
+	if (!doc->buttons.searchbox)
+		return;
+
+	/*  Toolbar mit neuem Text zeichnen */
+	wind_get_grect(win->whandle, WF_WORKXYWH, &tbar);
+	tbar.g_h = win->y_offset;
+
+	win->toolbar[TO_STRNOTFOUND].ob_flags |= OF_HIDETREE;
+
+	if (tbar.g_w > 472)					/* Box vergroessern damit kein haesslicher Streifen bleibt */
+		win->toolbar[TO_SEARCHBOX].ob_width = tbar.g_w;
+	else
+		win->toolbar[TO_SEARCHBOX].ob_width = 472;	/* Standardwert aus Resource setzen */
+
+	autolocator_redraw(win, TO_BACKGRND, &tbar);
+
+	/*  Wenn der Auto-Locator nicht leer ist... */
+	if (*doc->autolocator)
+	{
+		graf_mouse(BUSY_BEE, NULL);
+		line = doc->autolocProc(doc, start_line);
+		graf_mouse(ARROW, NULL);
+	}
+
+	if (line >= 0)
+	{
+		if (line != win->docsize.y)
+		{
+			win->docsize.y = line;
+			SendRedraw(win);
+			SetWindowSlider(win);
+		}
+	} else
+	{
+		win->toolbar[TO_STRNOTFOUND].ob_flags &= ~OF_HIDETREE;
+		Cconout(7);
+		autolocator_redraw(win, TO_SEARCHBOX, &tbar);
+	}
+}
+
+/*	Fuegt dem Autolocator ein neues Zeichen ein und aktiviert die Suche */
+short AutolocatorKey(DOCUMENT *doc, short kbstate, short ascii)
+{
+	WINDOW_DATA *win = doc->window;
+	char *ptr;
+	long line = win->docsize.y;
+
+	if (!ascii)
+		return FALSE;
+
+	ptr = AutolocatorInit(doc);
+	doc->autolocator_dir = 1;
+
+	if (ascii == 8)						/* Backspace */
+	{
+		if (ptr > doc->autolocator)
+			ptr--;
+		*ptr = 0;
+	} else if (ascii == 13)				/* Return */
+	{
+		if (kbstate & KbSHIFT)
+		{
+			doc->autolocator_dir = 0;
+			line--;
+		} else
+			line++;
+	} else if (ascii == 27)				/* Escape */
+	{
+		if (ptr > doc->autolocator)
+		{
+			ptr = doc->autolocator;
+			*ptr = 0;
+		} else
+		{
+			RemoveSearchBox(doc);
+		}
+	} else if (ascii == ' ')
+	{
+		/*  Leerzeichen am Anfang werden ignoriert  */
+		if (ptr != doc->autolocator)
+			*ptr++ = ' ';
+
+		*ptr = 0;
+	} else if (ascii > ' ')
+	{
+		if (ptr - doc->autolocator < AUTOLOC_SIZE)
+		{
+			*ptr++ = ascii;
+			*ptr = 0;
+		} else
+		{
+			--ptr;
+			*ptr = ascii;
+		}
+	}
+
+	ToolbarUpdate(doc, FALSE);
+	AutolocatorUpdate(doc, line);
+
+	return TRUE;
+}
+
+
+/* Fuegt den Inhalt des Clipboards im Autolocator ein. */
+void AutoLocatorPaste(DOCUMENT *doc)
+{
+	WINDOW_DATA *win = doc->window;
+	int ret;
+	char *scrap_file;
+
+	if ((scrap_file = GetScrapPath(FALSE)) == NULL)
+	{
+		HYP_DBG(("No clipboard defined"));
+		return;
+	}
+
+	ret = open(scrap_file, O_RDONLY | O_BINARY);
+	g_free(scrap_file);
+	if (ret >= 0)
+	{
+		ssize_t error;
+		char c, *ptr;
+
+		ptr = AutolocatorInit(doc);
+
+		error = read(ret, &c, 1);
+		while (error == 1)
+		{
+			if (c == ' ')
+			{
+				/*  Leerzeichen am Anfang werden ignoriert  */
+				if (ptr != doc->autolocator)
+					*ptr++ = c;
+				*ptr = 0;
+			} else if (c > ' ')
+			{
+				if ((ptr - doc->autolocator) >= (AUTOLOC_SIZE - 1))
+					break;
+				*ptr++ = c;
+				*ptr = 0;
+			}
+			error = read(ret, &c, 1);
+		}
+		close(ret);
+
+		ToolbarUpdate(doc, FALSE);
+		AutolocatorUpdate(doc, win->docsize.y);
+	}
+}

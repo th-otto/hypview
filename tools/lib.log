@@ -1,0 +1,2573 @@
+
+			HELPFILE DECOMPILER  Ver. 1.0	Nov  7 2013
+			=============================
+
+				(c) Volker Reichel
+
+Options: slt
+
+
+Header of Helpfile lib.HLP
+
+	Screens					:  903
+	Start string-table	: 3748 (0xea4)
+	Length					: 42780 (0xa71c)
+	The most frequent characters	:  enitrsadoul
+	Start sensitive table	: 62692 (0xf4e4)
+	Length					: 30 (0x1e)
+	Number of sensitive words	: 2 (0x2)
+	Start capsens. table	: 46528 (0xb5c0)
+	Length					: 16164 (0x3f24)
+	Number of capsens words	: 1082 (0x43a)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Capsensitive table
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+	Position   Code  Search-word
+	   0x0000195c   84e2  "AC_CLOSE"
+	   0x0000195f   84e2  "AC_OPEN"
+	   0x00001961   812a  "BASPAG"
+	   0x00001962   8172  "BCONMAP"
+	   0x00001964   854a  "BEG_MCTRL"
+	   0x00001968   854a  "BEG_UPDATE"
+	   0x0000196d   81e2  "BGI"
+	   0x0000196b   84a2  "BGIOBJ"
+	   0x0000196c   802a  "BITBLK"
+	   0x0000196d   8132  "BPB"
+	   0x0000196b   9712  "BPS1"
+	   0x0000196a   9712  "BPS16"
+	   0x0000196a   9712  "BPS2"
+	   0x00001969   9712  "BPS4"
+	   0x00001968   9712  "BPS8"
+	   0x00001967   943a  "Bconin"
+	   0x00001968   9862  "Bconmap"
+	   0x0000196a   9442  "Bconout"
+	   0x0000196c   944a  "Bconstat"
+	   0x0000196f   9452  "Bcostat"
+	   0x00001971   949a  "Bell"
+	   0x00001970   97c2  "Bioskeys"
+	   0x00001973   9592  "Blink_off"
+	   0x00001977   958a  "Blink_on"
+	   0x0000197a   97ca  "Blitmode"
+	   0x0000197d   94fa  "CLEAR_DOWN"
+	   0x00001982   9512  "CLEAR_EOL"
+	   0x00001986   94f2  "CLEAR_HOME"
+	   0x0000198b   950a  "CLEAR_LINE"
+	   0x00001990   951a  "CLEAR_SOL"
+	   0x00001994   9502  "CLEAR_UP"
+	   0x00001997   80da  "CLK_TCK"
+	   0x00001999   9712  "COL40"
+	   0x00001999   9712  "COL80"
+	   0x00001999   8142  "COMMAND"
+	   0x0000199b   94d2  "CUR_DOWN"
+	   0x0000199e   94ea  "CUR_HOME"
+	   0x000019a1   94e2  "CUR_LEFT"
+	   0x000019a4   9572  "CUR_OFF"
+	   0x000019a6   956a  "CUR_ON"
+	   0x000019a7   94da  "CUR_RIGHT"
+	   0x000019ab   94c2  "CUR_UP"
+	   0x000019ac   99b2  "Cauxin"
+	   0x000019ad   99ba  "Cauxis"
+	   0x000019ae   99c2  "Cauxos"
+	   0x000019af   99ca  "Cauxout"
+	   0x000019b1   99d2  "Cconin"
+	   0x000019b2   99da  "Cconis"
+	   0x000019b3   99ea  "Cconos"
+	   0x000019b4   99e2  "Cconout"
+	   0x000019b6   99f2  "Cconrs"
+	   0x000019b7   99fa  "Cconws"
+	   0x000019b8   94fa  "Clear_down"
+	   0x000019bd   9512  "Clear_eol"
+	   0x000019c1   94f2  "Clear_home"
+	   0x000019c6   950a  "Clear_line"
+	   0x000019cb   951a  "Clear_sol"
+	   0x000019cf   9502  "Clear_up"
+	   0x000019d2   9a02  "Cnecin"
+	   0x000019d3   9a0a  "Cprnos"
+	   0x000019d4   9a12  "Cprnout"
+	   0x000019d6   9a1a  "Crawcin"
+	   0x000019d8   9a22  "Crawio"
+	   0x000019d9   94d2  "Cur_down"
+	   0x000019dc   94ea  "Cur_home"
+	   0x000019df   94e2  "Cur_left"
+	   0x000019e2   9572  "Cur_off"
+	   0x000019e4   956a  "Cur_on"
+	   0x000019e5   94da  "Cur_right"
+	   0x000019e9   94c2  "Cur_up"
+	   0x000019ea   97d2  "Cursconf"
+	   0x000019ed   952a  "DEL_LINE"
+	   0x000019f0   8112  "DISKINFO"
+	   0x000019f3   97ea  "DMAread"
+	   0x000019f5   97f2  "DMAwrite"
+	   0x000019f8   813a  "DOSTIME"
+	   0x000019fa   9632  "DSPBLOCK"
+	   0x000019fd   810a  "DTA"
+	   0x000019fb   9a2a  "Dcreate"
+	   0x000019fd   9a32  "Ddelete"
+	   0x000019ff   952a  "Del_line"
+	   0x00001a02   9a3a  "Dfree"
+	   0x00001a02   9a42  "Dgetdrv"
+	   0x00001a04   9a4a  "Dgetpath"
+	   0x00001a07   97da  "Dosound"
+	   0x00001a09   945a  "Drvmap"
+	   0x00001a0a   9a52  "Dsetdrv"
+	   0x00001a0c   9a5a  "Dsetpath"
+	   0x00001a0f   9682  "Dsp_Available"
+	   0x00001a17   962a  "Dsp_BlkBytes"
+	   0x00001a1e   9612  "Dsp_BlkHandShake"
+	   0x00001a29   961a  "Dsp_BlkUnpacked"
+	   0x00001a33   9622  "Dsp_BlkWords"
+	   0x00001a3a   960a  "Dsp_DoBlock"
+	   0x00001a40   96a2  "Dsp_ExecBoot"
+	   0x00001a47   969a  "Dsp_ExecProg"
+	   0x00001a4e   96ca  "Dsp_FlushSubroutines"
+	   0x00001a5d   96c2  "Dsp_GetProgAbility"
+	   0x00001a6a   966a  "Dsp_GetWordSize"
+	   0x00001a74   970a  "Dsp_HStat"
+	   0x00001a78   96ea  "Dsp_Hf0"
+	   0x00001a7a   96f2  "Dsp_Hf1"
+	   0x00001a7c   96fa  "Dsp_Hf2"
+	   0x00001a7e   9702  "Dsp_Hf3"
+	   0x00001a80   9652  "Dsp_IOStream"
+	   0x00001a87   9642  "Dsp_InStream"
+	   0x00001a8e   96da  "Dsp_InqSubrAbility"
+	   0x00001a9b   9692  "Dsp_LoadProg"
+	   0x00001aa2   96d2  "Dsp_LoadSubroutine"
+	   0x00001aaf   9672  "Dsp_Lock"
+	   0x00001ab2   96aa  "Dsp_LodToBinary"
+	   0x00001abc   963a  "Dsp_MultBlocks"
+	   0x00001ac5   964a  "Dsp_OutStream"
+	   0x00001acd   9662  "Dsp_RemoveInterrupts"
+	   0x00001adc   96ba  "Dsp_RequestUniqueAbility"
+	   0x00001aef   968a  "Dsp_Reserve"
+	   0x00001af5   96e2  "Dsp_RunSubroutine"
+	   0x00001b01   965a  "Dsp_SetVectors"
+	   0x00001b0a   96b2  "Dsp_TriggerHC"
+	   0x00001b12   967a  "Dsp_Unlock"
+	   0x00001b17   854a  "END_MCTRL"
+	   0x00001b1b   854a  "END_UPDATE"
+	   0x00001b20   9942  "EgetPalette"
+	   0x00001b26   9922  "EgetShift"
+	   0x00001b2a   992a  "EsetBank"
+	   0x00001b2d   9932  "EsetColor"
+	   0x00001b31   994a  "EsetGray"
+	   0x00001b34   993a  "EsetPalette"
+	   0x00001b3a   991a  "EsetShift"
+	   0x00001b3e   9952  "EsetSmear"
+	   0x00001b42   9712  "FALC_VGA"
+	   0x00001b45   819a  "FILE"
+	   0x00001b44   820a  "Farbmanipulation und Farb-Paletten"
+	   0x00001b61   9a62  "Fattrib"
+	   0x00001b63   9a6a  "Fclose"
+	   0x00001b64   9a72  "Fcreate"
+	   0x00001b66   9a7a  "Fdatime"
+	   0x00001b68   9a82  "Fdelete"
+	   0x00001b6a   9a8a  "Fdup"
+	   0x00001b69   8212  "Fehlerbehandlung"
+	   0x00001b74   9a92  "Fforce"
+	   0x00001b75   9a9a  "Fgetdta"
+	   0x00001b77   9b0a  "Flock"
+	   0x00001b77   97e2  "Flopfmt"
+	   0x00001b79   9802  "Floprate"
+	   0x00001b7c   97fa  "Floprd"
+	   0x00001b7d   980a  "Flopver"
+	   0x00001b7f   9812  "Flopwr"
+	   0x00001b80   9aa2  "Fopen"
+	   0x00001b80   9aaa  "Fread"
+	   0x00001b80   9ab2  "Frename"
+	   0x00001b82   9aba  "Fseek"
+	   0x00001b82   9ac2  "Fsetdta"
+	   0x00001b84   9aca  "Fsfirst"
+	   0x00001b86   9ad2  "Fsnext"
+	   0x00001b87   9ada  "Fwrite"
+	   0x00001b88   805a  "GEMPARBLK"
+	   0x00001b8c   9542  "GOTO_POS"
+	   0x00001b8f   8072  "GRECT"
+	   0x00001b8f   95a2  "Get_blink"
+	   0x00001b93   9462  "Getbpb"
+	   0x00001b94   946a  "Getmpb"
+	   0x00001b95   981a  "Getrez"
+	   0x00001b96   9822  "Gettime"
+	   0x00001b98   982a  "Giaccess"
+	   0x00001b9b   9542  "Goto_pos"
+	   0x00001b9e   8032  "ICONBLK"
+	   0x00001ba0   954a  "INK"
+	   0x00001b9e   9522  "INS_LINE"
+	   0x00001ba1   811a  "IOREC"
+	   0x00001ba1   9832  "Ikbdws"
+	   0x00001ba2   983a  "Initmouse"
+	   0x00001ba6   954a  "Ink"
+	   0x00001ba4   9522  "Ins_line"
+	   0x00001ba7   9842  "Iorec"
+	   0x00001ba7   984a  "Jdisint"
+	   0x00001ba9   9852  "Jenabint"
+	   0x00001bac   8122  "KBDVBASE"
+	   0x00001baf   8152  "KEYTAB"
+	   0x00001bb0   985a  "Kbdvbase"
+	   0x00001bb3   986a  "Kbrate"
+	   0x00001bb4   9472  "Kbshift"
+	   0x00001bb6   9872  "Keytbl"
+	   0x00001bb7   81ea  "Kontrolle"
+	   0x00001bbb   8102  "LINE"
+	   0x00001bba   953a  "LOAD_POS"
+	   0x00001bbd   81b2  "Libraries"
+	   0x00001bc1   94b2  "Line_feed"
+	   0x00001bc5   953a  "Load_pos"
+	   0x00001bc8   987a  "Logbase"
+	   0x00001bca   816a  "MAPTAB"
+	   0x00001bcb   815a  "MD"
+	   0x00001bc8   8052  "MFDB"
+	   0x00001bc7   804a  "MFORM"
+	   0x00001bc7   84e2  "MN_SELECTED"
+	   0x00001bcd   8062  "MOBLK"
+	   0x00001bcd   814a  "MOUSE"
+	   0x00001bcd   8162  "MPB"
+	   0x00001bcb   9af2  "Maddalt"
+	   0x00001bcd   9ae2  "Malloc"
+	   0x00001bce   947a  "Mediach"
+	   0x00001bd0   9882  "Mfpint"
+	   0x00001bd1   9afa  "Mfree"
+	   0x00001bd1   988a  "Midiws"
+	   0x00001bd2   9b02  "Mshrink"
+	   0x00001bd4   9aea  "Mxalloc"
+	   0x00001bd6   94ba  "NEXT_LINE"
+	   0x00001bda   9712  "NUMCOLS"
+	   0x00001bdc   94ba  "Next_line"
+	   0x00001be0   801a  "OBJECT"
+	   0x00001be1   8082  "OBSPEC"
+	   0x00001be2   806a  "ORECT"
+	   0x00001be2   9712  "OVERSCAN"
+	   0x00001be5   9892  "Offgibit"
+	   0x00001be8   989a  "Ongibit"
+	   0x00001bea   9712  "PAL"
+	   0x00001be8   9552  "PAPER"
+	   0x00001be8   8042  "PARMBLK"
+	   0x00001bea   8182  "PBDEF"
+	   0x00001bea   9552  "Paper"
+	   0x00001bea   9b12  "Pexec"
+	   0x00001bea   98a2  "Physbase"
+	   0x00001bed   98aa  "Protobt"
+	   0x00001bef   98b2  "Prtblk"
+	   0x00001bf0   9b1a  "Pterm"
+	   0x00001bf0   9b22  "Pterm0"
+	   0x00001bf1   9b2a  "Ptermres"
+	   0x00001bf4   98ba  "Puntaes"
+	   0x00001bf6   9562  "REV_OFF"
+	   0x00001bf8   955a  "REV_ON"
+	   0x00001bf9   808a  "RSHDR"
+	   0x00001bf9   98c2  "Random"
+	   0x00001bfa   94aa  "Return"
+	   0x00001bfb   9562  "Rev_off"
+	   0x00001bfd   955a  "Rev_on"
+	   0x00001bfe   98ca  "Rsconf"
+	   0x00001bff   9482  "Rwabs"
+	   0x00001bff   9532  "SAVE_POS"
+	   0x00001c02   94ca  "SCROLL_UP"
+	   0x00001c06   8192  "SIG_DFL"
+	   0x00001c08   8192  "SIG_ERR"
+	   0x00001c0a   8192  "SIG_IGN"
+	   0x00001c0c   8192  "SIG_SYS"
+	   0x00001c0e   9712  "STMODES"
+	   0x00001c10   817a  "SYSHDR"
+	   0x00001c11   9532  "Save_pos"
+	   0x00001c14   98d2  "Scrdmp"
+	   0x00001c15   94ca  "Scroll_up"
+	   0x00001c19   959a  "Set_blink"
+	   0x00001c1d   98da  "Setcolor"
+	   0x00001c20   948a  "Setexc"
+	   0x00001c21   98e2  "Setpalette"
+	   0x00001c26   98ea  "Setprt"
+	   0x00001c27   98f2  "Setscreen"
+	   0x00001c2b   98fa  "Settime"
+	   0x00001c2d   9902  "Ssbrk"
+	   0x00001c2d   9b32  "Super"
+	   0x00001c2d   990a  "Supexec"
+	   0x00001c2f   9b3a  "Sversion"
+	   0x00001c32   8022  "TEDINFO"
+	   0x00001c34   9712  "TV"
+	   0x00001c31   94a2  "Tab"
+	   0x00001c2f   9b42  "Tgetdate"
+	   0x00001c32   9b52  "Tgettime"
+	   0x00001c35   9492  "Tickcal"
+	   0x00001c37   9b4a  "Tsetdate"
+	   0x00001c3a   9b5a  "Tsettime"
+	   0x00001c3d   803a  "USERBLK"
+	   0x00001c3f   9712  "VERTFLAG"
+	   0x00001c42   973a  "VgetRGB"
+	   0x00001c44   9732  "VgetSize"
+	   0x00001c47   974a  "VsetMask"
+	   0x00001c4a   9742  "VsetRGB"
+	   0x00001c4c   972a  "VsetSync"
+	   0x00001c4f   971a  "Vsetmode"
+	   0x00001c52   9912  "Vsync"
+	   0x00001c52   84e2  "WA_DNLINE"
+	   0x00001c56   84e2  "WA_DNPAGE"
+	   0x00001c5a   84e2  "WA_LFLINE"
+	   0x00001c5e   84e2  "WA_LFPAGE"
+	   0x00001c62   84e2  "WA_RTLINE"
+	   0x00001c66   84e2  "WA_RTPAGE"
+	   0x00001c6a   84e2  "WA_UPLINE"
+	   0x00001c6e   84e2  "WA_UPPAGE"
+	   0x00001c72   8552  "WC_BORDER"
+	   0x00001c76   8552  "WC_WORK"
+	   0x00001c78   84e2  "WM_ARROWED"
+	   0x00001c7d   84e2  "WM_CLOSED"
+	   0x00001c81   84e2  "WM_FULLED"
+	   0x00001c85   84e2  "WM_HSLID"
+	   0x00001c88   84e2  "WM_MOVED"
+	   0x00001c8b   84e2  "WM_NEWTOP"
+	   0x00001c8f   84e2  "WM_REDRAW"
+	   0x00001c93   84e2  "WM_SIZED"
+	   0x00001c96   84e2  "WM_TOPPED"
+	   0x00001c9a   84e2  "WM_VSLID"
+	   0x00001c9d   9582  "WRAP_OFF"
+	   0x00001ca0   957a  "WRAP_ON"
+	   0x00001ca2   9582  "Wrap_off"
+	   0x00001ca5   957a  "Wrap_on"
+	   0x00001ca7   995a  "Xbtimer"
+	   0x00001ca9   81f2  "Zeichnen und FlÑchenfÅllung"
+	   0x00001cbf   81fa  "Zugriffe auf Bs u. Zf"
+	   0x00001ccf   812a  "_BasPag"
+	   0x00001cd1   805a  "_GemParBlk"
+	   0x00001cd6   81da  "_PgmSize"
+	   0x00001cd9   9402  "__NFPUIN__"
+	   0x00001cde   81d2  "_app"
+	   0x00001cdd   8e2a  "_exit"
+	   0x00001cdd   8352  "_graphfreemem"
+	   0x00001ce5   835a  "_graphgetmem"
+	   0x00001cec   8d22  "abort"
+	   0x00001cec   8d2a  "abs"
+	   0x00001cea   8d32  "acos"
+	   0x00001ce9   8de2  "acosh"
+	   0x00001ce9   8102  "actuallen"
+	   0x00001ced   805a  "addrin"
+	   0x00001cee   805a  "addrout"
+	   0x00001cf0   86ea  "appl_exit"
+	   0x00001cf4   86d2  "appl_find"
+	   0x00001cf8   86ca  "appl_init"
+	   0x00001cfc   86da  "appl_read"
+	   0x00001d00   86f2  "appl_tplay"
+	   0x00001d05   86fa  "appl_trecord"
+	   0x00001d0c   86e2  "appl_write"
+	   0x00001d11   821a  "arc"
+	   0x00001d0f   80c2  "arg1"
+	   0x00001d0e   80c2  "arg2"
+	   0x00001d0d   8d3a  "asctime"
+	   0x00001d0f   8d42  "asin"
+	   0x00001d0e   922a  "asinh"
+	   0x00001d0e   8d4a  "assert"
+	   0x00001d0f   8d52  "atan"
+	   0x00001d0e   8d5a  "atan2"
+	   0x00001d0e   934a  "atanh"
+	   0x00001d0e   8d62  "atexit"
+	   0x00001d0f   8d6a  "atof"
+	   0x00001d0e   8d82  "atoi"
+	   0x00001d0d   8d8a  "atol"
+	   0x00001d0c   8112  "b_clsiz"
+	   0x00001d0e   8112  "b_free"
+	   0x00001d0f   8112  "b_secsiz"
+	   0x00001d12   8112  "b_total"
+	   0x00001d14   8222  "bar"
+	   0x00001d12   822a  "bar3d"
+	   0x00001d12   816a  "bconin"
+	   0x00001d13   816a  "bconout"
+	   0x00001d15   816a  "bconstat"
+	   0x00001d18   816a  "bcostat"
+	   0x00001d1a   8132  "bflags"
+	   0x00001d1b   807a  "bfobspec"
+	   0x00001d1e   802a  "bi_color"
+	   0x00001d21   802a  "bi_hl"
+	   0x00001d21   802a  "bi_pdata"
+	   0x00001d24   802a  "bi_wb"
+	   0x00001d24   802a  "bi_x"
+	   0x00001d23   802a  "bi_y"
+	   0x00001d22   9432  "bios"
+	   0x00001d21   8082  "bitblk"
+	   0x00001d22   8d92  "bsearch"
+	   0x00001d24   8102  "buffer"
+	   0x00001d25   9792  "buffoper"
+	   0x00001d28   97ba  "buffptr"
+	   0x00001d2a   814a  "buttons"
+	   0x00001d2c   8d9a  "calloc"
+	   0x00001d2d   8da2  "ceil"
+	   0x00001d2c   807a  "character"
+	   0x00001d30   8daa  "chdir"
+	   0x00001d30   8232  "circle"
+	   0x00001d31   823a  "cleardevice"
+	   0x00001d37   8dba  "clearerr"
+	   0x00001d3a   8242  "clearviewport"
+	   0x00001d42   8dc2  "clock"
+	   0x00001d42   80d2  "clock_t"
+	   0x00001d44   8dca  "close"
+	   0x00001d44   824a  "closegraph"
+	   0x00001d49   8132  "clsiz"
+	   0x00001d49   8132  "clsizb"
+	   0x00001d4a   8142  "command_tail"
+	   0x00001d51   805a  "contrl"
+	   0x00001d52   8db2  "coreleft"
+	   0x00001d55   8dd2  "cos"
+	   0x00001d53   8dda  "cosh"
+	   0x00001d52   8dea  "creat"
+	   0x00001d52   8df2  "ctime"
+	   0x00001d52   810a  "d_attrib"
+	   0x00001d55   810a  "d_date"
+	   0x00001d56   810a  "d_fname"
+	   0x00001d58   810a  "d_length"
+	   0x00001d5b   810a  "d_time"
+	   0x00001d5c   809a  "da_day"
+	   0x00001d5d   809a  "da_mon"
+	   0x00001d5e   809a  "da_year"
+	   0x00001d60   809a  "date"
+	   0x00001d5f   8132  "datrec"
+	   0x00001d60   8ee2  "delay"
+	   0x00001d60   8252  "detectgraph"
+	   0x00001d66   97aa  "devconnect"
+	   0x00001d6b   80aa  "df_avail"
+	   0x00001d6e   80aa  "df_bsec"
+	   0x00001d70   80aa  "df_sclus"
+	   0x00001d73   80aa  "df_total"
+	   0x00001d76   80aa  "dfree"
+	   0x00001d76   8dfa  "difftime"
+	   0x00001d79   8e02  "div"
+	   0x00001d77   80fa  "div_t"
+	   0x00001d77   825a  "drawpoly"
+	   0x00001d7a   979a  "dsptristate"
+	   0x00001d80   935a  "dxcnv"
+	   0x00001d80   8e0a  "ecvt"
+	   0x00001d7f   8262  "ellipse"
+	   0x00001d81   93fa  "errno"
+	   0x00001d81   84e2  "ev_mgpbuff"
+	   0x00001d86   84ca  "evnt_button"
+	   0x00001d8c   84d2  "evnt_dclick"
+	   0x00001d92   84c2  "evnt_keybd"
+	   0x00001d97   84da  "evnt_mesag"
+	   0x00001d9c   84ea  "evnt_mouse"
+	   0x00001da1   84f2  "evnt_multi"
+	   0x00001da6   84fa  "evnt_timer"
+	   0x00001dab   80c2  "exception"
+	   0x00001daf   8e22  "exec"
+	   0x00001dae   8e2a  "exit"
+	   0x00001dad   8e32  "exp"
+	   0x00001dab   8e3a  "fabs"
+	   0x00001daa   8132  "fatrec"
+	   0x00001dab   8e42  "fclose"
+	   0x00001dac   8e12  "fcvt"
+	   0x00001dab   8e4a  "feof"
+	   0x00001daa   8e52  "ferror"
+	   0x00001dab   8092  "ff_attrib"
+	   0x00001daf   8092  "ff_fdate"
+	   0x00001db2   8092  "ff_fsize"
+	   0x00001db5   8092  "ff_ftime"
+	   0x00001db8   8092  "ff_name"
+	   0x00001dba   8092  "ffblk"
+	   0x00001dba   8e5a  "fflush"
+	   0x00001dbb   8e62  "fgetc"
+	   0x00001dbb   8e6a  "fgetpos"
+	   0x00001dbd   8e72  "fgets"
+	   0x00001dbd   8e82  "filelength"
+	   0x00001dc2   8e7a  "fileno"
+	   0x00001dc3   826a  "fillellipse"
+	   0x00001dc9   807a  "fillpattern"
+	   0x00001dcf   8272  "fillpoly"
+	   0x00001dd2   8e8a  "findfirst"
+	   0x00001dd6   8e92  "findnext"
+	   0x00001dd9   827a  "floodfill"
+	   0x00001ddd   8eea  "floor"
+	   0x00001ddd   8ef2  "fmod"
+	   0x00001ddc   8efa  "fopen"
+	   0x00001ddc   8602  "form_alert"
+	   0x00001de1   862a  "form_button"
+	   0x00001de7   861a  "form_center"
+	   0x00001ded   860a  "form_dial"
+	   0x00001df1   85fa  "form_do"
+	   0x00001df3   8612  "form_error"
+	   0x00001df8   8622  "form_keybd"
+	   0x00001dfd   80e2  "fpos_t"
+	   0x00001dfe   8f12  "fprintf"
+	   0x00001e00   9362  "fpumode"
+	   0x00001e02   8f1a  "fputc"
+	   0x00001e02   8f22  "fputs"
+	   0x00001e02   807a  "framecol"
+	   0x00001e05   807a  "framesize"
+	   0x00001e09   8f2a  "fread"
+	   0x00001e09   8f32  "free"
+	   0x00001e08   8082  "free_string"
+	   0x00001e0e   8f3a  "freopen"
+	   0x00001e10   8f42  "frexp"
+	   0x00001e10   8f4a  "fscanf"
+	   0x00001e11   8f5a  "fseek"
+	   0x00001e11   8762  "fsel_exinput"
+	   0x00001e18   875a  "fsel_input"
+	   0x00001e1d   8f62  "fsetpos"
+	   0x00001e1f   8132  "fsiz"
+	   0x00001e1e   81aa  "fsm_component_t"
+	   0x00001e28   81aa  "fsm_data_fpoint_t"
+	   0x00001e34   81aa  "fsm_fpoint_t"
+	   0x00001e3b   81aa  "fsm_int"
+	   0x00001e3d   8ea2  "fstat"
+	   0x00001e3d   80b2  "ft_day"
+	   0x00001e3e   80b2  "ft_hour"
+	   0x00001e40   80b2  "ft_min"
+	   0x00001e41   80b2  "ft_month"
+	   0x00001e44   80b2  "ft_tsec"
+	   0x00001e46   80b2  "ft_year"
+	   0x00001e48   8f6a  "ftell"
+	   0x00001e48   80b2  "ftime"
+	   0x00001e48   8fb2  "ftimtotm"
+	   0x00001e4b   8d72  "ftoa"
+	   0x00001e4a   8f72  "fwrite"
+	   0x00001e4b   8072  "g_h"
+	   0x00001e49   8072  "g_w"
+	   0x00001e47   8072  "g_x"
+	   0x00001e45   8072  "g_y"
+	   0x00001e43   8e1a  "gcvt"
+	   0x00001e42   99aa  "gemdos"
+	   0x00001e43   8282  "getarccoords"
+	   0x00001e4a   828a  "getaspectratio"
+	   0x00001e53   8292  "getbkcolor"
+	   0x00001e58   8f7a  "getc"
+	   0x00001e57   8f82  "getch"
+	   0x00001e57   8f8a  "getchar"
+	   0x00001e59   8f92  "getche"
+	   0x00001e5a   829a  "getcolor"
+	   0x00001e5d   8eaa  "getcurdir"
+	   0x00001e61   8eb2  "getcwd"
+	   0x00001e62   8f9a  "getdate"
+	   0x00001e64   82a2  "getdefaultpalette"
+	   0x00001e70   8ec2  "getdfree"
+	   0x00001e73   8eba  "getdisk"
+	   0x00001e75   82aa  "getdrivername"
+	   0x00001e7d   8fa2  "getenv"
+	   0x00001e7e   82b2  "getfillpattern"
+	   0x00001e87   82ba  "getfillsettings"
+	   0x00001e91   8faa  "getftime"
+	   0x00001e94   82c2  "getgraphmode"
+	   0x00001e9b   82ca  "getimage"
+	   0x00001e9e   82d2  "getlinesettings"
+	   0x00001ea8   82da  "getmaxcolor"
+	   0x00001eae   82e2  "getmaxmode"
+	   0x00001eb3   82ea  "getmaxx"
+	   0x00001eb5   82f2  "getmaxy"
+	   0x00001eb7   82fa  "getmodename"
+	   0x00001ebd   8302  "getmoderange"
+	   0x00001ec4   830a  "getpalette"
+	   0x00001ec9   8312  "getpalettesize"
+	   0x00001ed2   831a  "getpixel"
+	   0x00001ed5   8fba  "gets"
+	   0x00001ed4   8322  "gettextsettings"
+	   0x00001ede   8fc2  "gettime"
+	   0x00001ee0   832a  "getviewsettings"
+	   0x00001eea   8332  "getx"
+	   0x00001ee9   833a  "gety"
+	   0x00001ee8   805a  "global"
+	   0x00001ee9   8fd2  "gmtime"
+	   0x00001eea   97a2  "gpio"
+	   0x00001ee9   867a  "graf_dragbox"
+	   0x00001ef0   868a  "graf_growbox"
+	   0x00001ef7   86aa  "graf_handle"
+	   0x00001efd   8682  "graf_mbox"
+	   0x00001f01   86ba  "graf_mkstate"
+	   0x00001f08   86b2  "graf_mouse"
+	   0x00001f0d   8682  "graf_movebox"
+	   0x00001f14   8672  "graf_rubberbox"
+	   0x00001f1d   8672  "graf_rubbox"
+	   0x00001f23   8692  "graf_shrinkbox"
+	   0x00001f2c   86a2  "graf_slidebox"
+	   0x00001f34   869a  "graf_watchbox"
+	   0x00001f3c   8202  "grafische Textausgabe"
+	   0x00001f4c   8342  "graphdefaults"
+	   0x00001f54   834a  "grapherrormsg"
+	   0x00001f5c   8362  "graphresult"
+	   0x00001f62   8782  "handle"
+	   0x00001f63   8032  "ib_char"
+	   0x00001f65   8032  "ib_hicon"
+	   0x00001f68   8032  "ib_htext"
+	   0x00001f6b   8032  "ib_pdata"
+	   0x00001f6e   8032  "ib_pmask"
+	   0x00001f71   8032  "ib_ptext"
+	   0x00001f74   8032  "ib_wicon"
+	   0x00001f77   8032  "ib_wtext"
+	   0x00001f7a   8032  "ib_xchar"
+	   0x00001f7d   8032  "ib_xicon"
+	   0x00001f80   8032  "ib_xtext"
+	   0x00001f83   8032  "ib_ychar"
+	   0x00001f86   8032  "ib_yicon"
+	   0x00001f89   8032  "ib_ytext"
+	   0x00001f8c   811a  "ibuf"
+	   0x00001f8b   811a  "ibufhd"
+	   0x00001f8c   811a  "ibufhi"
+	   0x00001f8d   811a  "ibuflow"
+	   0x00001f8f   811a  "ibufsiz"
+	   0x00001f91   811a  "ibuftl"
+	   0x00001f92   8082  "iconblk"
+	   0x00001f94   836a  "imagesize"
+	   0x00001f98   8082  "index"
+	   0x00001f98   8082  "indirect"
+	   0x00001f9b   8372  "initgraph"
+	   0x00001f9f   837a  "installuserdriver"
+	   0x00001fab   8382  "installuserfont"
+	   0x00001fb5   807a  "interiorcol"
+	   0x00001fbb   805a  "intin"
+	   0x00001fbb   805a  "intout"
+	   0x00001fbc   816a  "iorec"
+	   0x00001fbc   8fe2  "isalnum"
+	   0x00001fbe   8fda  "isalpha"
+	   0x00001fc0   8fea  "isascii"
+	   0x00001fc2   8fca  "isatty"
+	   0x00001fc3   8ff2  "iscntrl"
+	   0x00001fc5   8ffa  "isdigit"
+	   0x00001fc7   9002  "isgraph"
+	   0x00001fc9   900a  "islower"
+	   0x00001fcb   9012  "isodigit"
+	   0x00001fce   901a  "isprint"
+	   0x00001fd0   9022  "ispunct"
+	   0x00001fd2   902a  "isspace"
+	   0x00001fd4   9032  "isupper"
+	   0x00001fd6   903a  "isxdigit"
+	   0x00001fd9   9042  "itoa"
+	   0x00001fd8   8122  "kb_clockvec"
+	   0x00001fde   8122  "kb_joyvec"
+	   0x00001fe2   8122  "kb_kbdsys"
+	   0x00001fe6   8122  "kb_midisys"
+	   0x00001feb   8122  "kb_midivec"
+	   0x00001ff0   8122  "kb_mousevec"
+	   0x00001ff6   8122  "kb_statvec"
+	   0x00001ffb   8122  "kb_vkbderr"
+	   0x00002000   8122  "kb_vmiderr"
+	   0x00002005   904a  "kbhit"
+	   0x00002005   9052  "labs"
+	   0x00002004   905a  "ldexp"
+	   0x00002004   9062  "ldiv"
+	   0x00002003   81a2  "ldiv_t"
+	   0x00002004   8142  "length"
+	   0x00002005   838a  "line"
+	   0x00002004   838a  "line (BGI)"
+	   0x00002009   8392  "linerel"
+	   0x0000200b   839a  "lineto"
+	   0x0000200c   906a  "localtime"
+	   0x00002010   9752  "locksnd"
+	   0x00002012   9072  "log"
+	   0x00002010   907a  "log10"
+	   0x00002010   9082  "longjmp"
+	   0x00002012   908a  "lseek"
+	   0x00002012   9092  "ltoa"
+	   0x00002011   909a  "malloc"
+	   0x00002012   8172  "maptab"
+	   0x00002013   8172  "maptabsize"
+	   0x00002018   8102  "maxlen"
+	   0x00002019   90b2  "memchr"
+	   0x0000201a   90ba  "memcmp"
+	   0x0000201b   90d2  "memcpy"
+	   0x0000201c   90c2  "memmove"
+	   0x0000201e   90ca  "memset"
+	   0x0000201f   863a  "menu_bar"
+	   0x00002022   864a  "menu_icheck"
+	   0x00002028   8652  "menu_ienable"
+	   0x0000202f   865a  "menu_register"
+	   0x00002037   8662  "menu_text"
+	   0x0000203b   8642  "menu_tnormal"
+	   0x00002042   804a  "mf_bg"
+	   0x00002042   804a  "mf_data"
+	   0x00002044   804a  "mf_fg"
+	   0x00002044   804a  "mf_mask"
+	   0x00002046   804a  "mf_nplanes"
+	   0x0000204b   804a  "mf_xhot"
+	   0x0000204d   804a  "mf_yhot"
+	   0x0000204f   90da  "mktime"
+	   0x00002050   90e2  "modf"
+	   0x0000204f   9722  "mon_type"
+	   0x00002052   83a2  "moverel"
+	   0x00002054   83aa  "moveto"
+	   0x00002055   80c2  "name"
+	   0x00002054   8132  "numcl"
+	   0x00002054   801a  "ob_flags"
+	   0x00002057   801a  "ob_head"
+	   0x00002059   801a  "ob_height"
+	   0x0000205d   801a  "ob_next"
+	   0x0000205f   801a  "ob_spec"
+	   0x00002061   801a  "ob_state"
+	   0x00002064   801a  "ob_tail"
+	   0x00002066   801a  "ob_type"
+	   0x00002068   801a  "ob_width"
+	   0x0000206b   801a  "ob_x"
+	   0x0000206a   801a  "ob_y"
+	   0x00002069   8562  "objc_add"
+	   0x0000206c   859a  "objc_change"
+	   0x00002072   856a  "objc_delete"
+	   0x00002078   8572  "objc_draw"
+	   0x0000207c   8592  "objc_edit"
+	   0x00002080   857a  "objc_find"
+	   0x00002084   8582  "objc_offset"
+	   0x0000208a   858a  "objc_order"
+	   0x0000208f   8082  "obspec"
+	   0x00002090   90aa  "offsetof"
+	   0x00002093   90ea  "open"
+	   0x00002092   83b2  "outtext"
+	   0x00002094   83ba  "outtextxy"
+	   0x00002098   812a  "p_bbase"
+	   0x0000209a   812a  "p_blen"
+	   0x0000209b   812a  "p_cmdlin"
+	   0x0000209e   812a  "p_curdrv"
+	   0x000020a1   812a  "p_dbase"
+	   0x000020a3   812a  "p_dlen"
+	   0x000020a4   812a  "p_dta"
+	   0x000020a4   812a  "p_env"
+	   0x000020a4   812a  "p_hitpa"
+	   0x000020a6   812a  "p_lowtpa"
+	   0x000020a9   812a  "p_parent"
+	   0x000020ac   812a  "p_resrvd0"
+	   0x000020b0   812a  "p_stdfh"
+	   0x000020b2   812a  "p_tbase"
+	   0x000020b4   812a  "p_tlen"
+	   0x000020b5   8042  "pb_currstate"
+	   0x000020bc   8042  "pb_h"
+	   0x000020bb   8042  "pb_hc"
+	   0x000020bb   8042  "pb_obj"
+	   0x000020bc   8042  "pb_parm"
+	   0x000020be   8042  "pb_prevstate"
+	   0x000020c5   8042  "pb_tree"
+	   0x000020c7   8042  "pb_w"
+	   0x000020c6   8042  "pb_wc"
+	   0x000020c6   8042  "pb_x"
+	   0x000020c5   8042  "pb_xc"
+	   0x000020c5   8042  "pb_y"
+	   0x000020c4   8042  "pb_yc"
+	   0x000020c4   90f2  "perror"
+	   0x000020c5   83c2  "pieslice"
+	   0x000020c8   90fa  "pow"
+	   0x000020c6   9102  "pow10"
+	   0x000020c6   910a  "printf"
+	   0x000020c7   80ea  "ptrdiff_t"
+	   0x000020cb   805a  "ptsin"
+	   0x000020cb   805a  "ptsout"
+	   0x000020cc   9142  "putc"
+	   0x000020cb   914a  "putch"
+	   0x000020cb   9152  "putchar"
+	   0x000020cd   83ca  "putimage"
+	   0x000020d0   83d2  "putpixel"
+	   0x000020d3   915a  "puts"
+	   0x000020d2   878a  "pxyarray"
+	   0x000020d5   9162  "qsort"
+	   0x000020d5   80fa  "quot"
+	   0x000020d4   8ed2  "raise"
+	   0x000020d4   916a  "rand"
+	   0x000020d3   941a  "random"
+	   0x000020d4   8132  "rdlen"
+	   0x000020d4   9172  "read"
+	   0x000020d3   917a  "realloc"
+	   0x000020d5   8132  "recsiz"
+	   0x000020d6   83da  "rectangle"
+	   0x000020da   83e2  "registerbgidriver"
+	   0x000020e6   83ea  "registerbgifont"
+	   0x000020f0   80fa  "rem"
+	   0x000020ee   9182  "remove"
+	   0x000020ef   918a  "rename"
+	   0x000020f0   83f2  "restorecrtmode"
+	   0x000020f9   80c2  "retval"
+	   0x000020fa   9192  "rewind"
+	   0x000020fb   940a  "round"
+	   0x000020fb   816a  "rsconf"
+	   0x000020fc   85d2  "rsrc_free"
+	   0x00002100   85da  "rsrc_gaddr"
+	   0x00002105   85ca  "rsrc_load"
+	   0x00002109   85ea  "rsrc_obfix"
+	   0x0000210e   85e2  "rsrc_saddr"
+	   0x00002113   919a  "scanf"
+	   0x00002113   942a  "screen"
+	   0x00002114   870a  "scrp_read"
+	   0x00002118   8712  "scrp_write"
+	   0x0000211d   83fa  "sector"
+	   0x0000211e   8402  "setactivepage"
+	   0x00002126   840a  "setallpalette"
+	   0x0000212e   8412  "setaspectratio"
+	   0x00002137   841a  "setbkcolor"
+	   0x0000213c   91da  "setbuf"
+	   0x0000213d   976a  "setbuffer"
+	   0x00002141   8422  "setcolor"
+	   0x00002144   91e2  "setdate"
+	   0x00002146   91ea  "setdisk"
+	   0x00002148   842a  "setfillpattern"
+	   0x00002151   8432  "setfillstyle"
+	   0x00002158   91f2  "setftime"
+	   0x0000215b   843a  "setgraphbufsize"
+	   0x00002165   8442  "setgraphmode"
+	   0x0000216c   978a  "setinterrupt"
+	   0x00002173   91fa  "setjmp"
+	   0x00002174   844a  "setlinestyle"
+	   0x0000217b   90a2  "setmatherr"
+	   0x00002180   9772  "setmode"
+	   0x00002182   9782  "setmontracks"
+	   0x00002189   8452  "setpalette"
+	   0x0000218e   845a  "setrgbpalette"
+	   0x00002196   8462  "settextjustify"
+	   0x0000219f   846a  "settextstyle"
+	   0x000021a6   9202  "settime"
+	   0x000021a8   977a  "settracks"
+	   0x000021ac   8472  "setusercharsize"
+	   0x000021b6   920a  "setvbuf"
+	   0x000021b8   847a  "setviewport"
+	   0x000021be   8482  "setvisualpage"
+	   0x000021c6   848a  "setwritemode"
+	   0x000021cd   873a  "shel_envrn"
+	   0x000021d2   8732  "shel_find"
+	   0x000021d6   874a  "shel_get"
+	   0x000021d9   8742  "shel_put"
+	   0x000021dc   8722  "shel_read"
+	   0x000021e0   872a  "shel_write"
+	   0x000021e5   8192  "sigfunc_t"
+	   0x000021e9   8eca  "signal"
+	   0x000021ea   9212  "sin"
+	   0x000021e8   921a  "sincos"
+	   0x000021e9   9222  "sinh"
+	   0x000021e8   80ca  "size_t"
+	   0x000021e9   8eda  "sleep"
+	   0x000021e9   97b2  "sndstatus"
+	   0x000021ed   9762  "soundcmd"
+	   0x000021f0   9232  "sprintf"
+	   0x000021f2   923a  "sqrt"
+	   0x000021f1   9242  "srand"
+	   0x000021f1   924a  "sscanf"
+	   0x000021f2   80ba  "st_atime"
+	   0x000021f5   80ba  "st_ctime"
+	   0x000021f8   80ba  "st_dev"
+	   0x000021f9   80ba  "st_gid"
+	   0x000021fa   80ba  "st_ino"
+	   0x000021fb   80ba  "st_mode"
+	   0x000021fd   80ba  "st_mtime"
+	   0x00002200   80ba  "st_nlink"
+	   0x00002203   80ba  "st_rdev"
+	   0x00002205   80ba  "st_size"
+	   0x00002207   80ba  "st_uid"
+	   0x00002208   8e9a  "stat"
+	   0x00002207   80ba  "stat, struct stat"
+	   0x00002213   9262  "strcat"
+	   0x00002214   9272  "strchr"
+	   0x00002215   928a  "strcmp"
+	   0x00002216   929a  "strcmpi"
+	   0x00002218   92aa  "strcpy"
+	   0x00002219   92da  "strcspn"
+	   0x0000221b   92e2  "strdup"
+	   0x0000221c   925a  "strerror"
+	   0x0000221f   932a  "strftime"
+	   0x00002222   929a  "stricmp"
+	   0x00002224   92ba  "strlen"
+	   0x00002225   92ca  "strlwr"
+	   0x00002226   926a  "strncat"
+	   0x00002228   9292  "strncmp"
+	   0x0000222a   92a2  "strncmpi"
+	   0x0000222d   92b2  "strncpy"
+	   0x0000222f   92a2  "strnicmp"
+	   0x00002232   92f2  "strnset"
+	   0x00002234   92fa  "strpbrk"
+	   0x00002236   9282  "strrchr"
+	   0x00002238   927a  "strrev"
+	   0x00002239   92ea  "strset"
+	   0x0000223a   9302  "strspn"
+	   0x0000223b   92c2  "strstr"
+	   0x0000223c   9312  "strtod"
+	   0x0000223d   930a  "strtok"
+	   0x0000223e   931a  "strtol"
+	   0x0000223f   9322  "strtoul"
+	   0x00002241   92d2  "strupr"
+	   0x00002242   9332  "system"
+	   0x00002243   933a  "tan"
+	   0x00002241   9342  "tanh"
+	   0x00002240   8022  "te_color"
+	   0x00002243   8022  "te_font"
+	   0x00002245   8022  "te_junk1"
+	   0x00002248   8022  "te_junk2"
+	   0x0000224b   8022  "te_just"
+	   0x0000224d   8022  "te_ptext"
+	   0x00002250   8022  "te_ptmplt"
+	   0x00002254   8022  "te_pvalid"
+	   0x00002258   8022  "te_thickness"
+	   0x0000225f   8022  "te_tmplen"
+	   0x00002263   8022  "te_txtlen"
+	   0x00002267   8082  "tedinfo"
+	   0x00002269   807a  "textcol"
+	   0x0000226b   8492  "textheight"
+	   0x00002270   807a  "textmode"
+	   0x00002273   849a  "textwidth"
+	   0x00002277   80a2  "ti_hour"
+	   0x00002279   80a2  "ti_hund"
+	   0x0000227b   80a2  "ti_min"
+	   0x0000227c   80a2  "ti_sec"
+	   0x0000227d   936a  "time"
+	   0x0000227c   80f2  "time_t"
+	   0x0000227d   818a  "tm"
+	   0x0000227a   818a  "tm_hour"
+	   0x0000227c   818a  "tm_isdst"
+	   0x0000227f   818a  "tm_mday"
+	   0x00002281   818a  "tm_min"
+	   0x00002282   818a  "tm_mon"
+	   0x00002283   818a  "tm_sec"
+	   0x00002284   818a  "tm_wday"
+	   0x00002286   818a  "tm_yday"
+	   0x00002288   818a  "tm_year"
+	   0x0000228a   937a  "tmpfile"
+	   0x0000228c   9372  "tmpnam"
+	   0x0000228d   9382  "toascii"
+	   0x0000228f   938a  "tolower"
+	   0x00002291   814a  "topmode"
+	   0x00002293   9392  "toupper"
+	   0x00002295   9412  "trunc"
+	   0x00002295   80c2  "type"
+	   0x00002294   803a  "ub_code"
+	   0x00002296   803a  "ub_parm"
+	   0x00002298   93a2  "ultoa"
+	   0x00002298   939a  "ungetc"
+	   0x00002299   93aa  "unlink"
+	   0x0000229a   975a  "unlocksnd"
+	   0x0000229e   8082  "userblk"
+	   0x000022a0   89ea  "v_alpha_text"
+	   0x000022a7   885a  "v_arc"
+	   0x000022a7   8852  "v_bar"
+	   0x000022a7   8c92  "v_bez"
+	   0x000022a7   8c9a  "v_bez_fill"
+	   0x000022ac   8c82  "v_bez_off"
+	   0x000022b0   8c7a  "v_bez_on"
+	   0x000022b3   8ca2  "v_bez_qual"
+	   0x000022b8   8b32  "v_bit_image"
+	   0x000022be   883a  "v_cellarray"
+	   0x000022c4   886a  "v_circle"
+	   0x000022c7   8b2a  "v_clear_disp_list"
+	   0x000022d3   87ea  "v_clrwk"
+	   0x000022d5   87e2  "v_clsvwk"
+	   0x000022d8   87d2  "v_clswk"
+	   0x000022da   8842  "v_contourfill"
+	   0x000022e2   8ad2  "v_curaddress"
+	   0x000022e9   8aa2  "v_curdown"
+	   0x000022ed   8aba  "v_curhome"
+	   0x000022f1   8ab2  "v_curleft"
+	   0x000022f5   8aaa  "v_curright"
+	   0x000022fa   8ada  "v_curtext"
+	   0x000022fe   8a9a  "v_curup"
+	   0x00002300   8b0a  "v_dspcur"
+	   0x00002303   8aca  "v_eeol"
+	   0x00002304   8ac2  "v_eeos"
+	   0x00002305   887a  "v_ellarc"
+	   0x00002308   8872  "v_ellipse"
+	   0x0000230c   8882  "v_ellpie"
+	   0x0000230f   8a92  "v_enter_cur"
+	   0x00002315   8bc2  "v_escape2000"
+	   0x0000231c   8a8a  "v_exit_cur"
+	   0x00002321   8832  "v_fillarea"
+	   0x00002326   8c22  "v_flushcache"
+	   0x0000232d   8baa  "v_fontinit"
+	   0x00002332   8b1a  "v_form_adv"
+	   0x00002337   882a  "v_ftext"
+	   0x00002339   896a  "v_get_pixel"
+	   0x0000233f   8c62  "v_getoutline"
+	   0x00002346   8822  "v_gtext"
+	   0x00002348   8b02  "v_hardcopy"
+	   0x0000234d   89d2  "v_hide_c"
+	   0x00002350   889a  "v_justified"
+	   0x00002356   8c5a  "v_killoutline"
+	   0x0000235e   8c3a  "v_loadcache"
+	   0x00002364   8b7a  "v_meta_extents"
+	   0x0000236d   8ba2  "v_offset"
+	   0x00002370   87da  "v_opnvwk"
+	   0x00002373   87ca  "v_opnwk"
+	   0x00002375   8b22  "v_output_window"
+	   0x0000237f   8862  "v_pieslice"
+	   0x00002384   8812  "v_pline"
+	   0x00002386   881a  "v_pmarker"
+	   0x0000238a   888a  "v_rbox"
+	   0x0000238b   8892  "v_rfbox"
+	   0x0000238d   8b12  "v_rmcur"
+	   0x0000238f   8aea  "v_rvoff"
+	   0x00002391   8ae2  "v_rvon"
+	   0x00002392   8c42  "v_savecache"
+	   0x00002398   8c8a  "v_set_app_buff"
+	   0x000023a1   89ca  "v_show_c"
+	   0x000023a4   8bfa  "v_sound"
+	   0x000023a6   87f2  "v_updwk"
+	   0x000023a8   8b82  "v_write_meta"
+	   0x000023af   93ba  "va_..."
+	   0x000023b0   93c2  "va_arg"
+	   0x000023b1   93ca  "va_end"
+	   0x000023b2   93b2  "va_list"
+	   0x000023b4   93d2  "va_start"
+	   0x000023b7   89f2  "vex_butv"
+	   0x000023ba   8a02  "vex_curv"
+	   0x000023bd   89fa  "vex_motv"
+	   0x000023c0   89c2  "vex_timv"
+	   0x000023c3   93da  "vfprintf"
+	   0x000023c6   8f52  "vfscanf"
+	   0x000023c8   8b8a  "vm_coords"
+	   0x000023cc   8b92  "vm_filename"
+	   0x000023d2   8b9a  "vm_pagesize"
+	   0x000023d8   93e2  "vprintf"
+	   0x000023da   8a6a  "vq_cellarray"
+	   0x000023e1   8a82  "vq_chcells"
+	   0x000023e6   8a22  "vq_color"
+	   0x000023e9   8af2  "vq_curaddress"
+	   0x000023f1   8a12  "vq_extnd"
+	   0x000023f4   8bb2  "vq_gdos"
+	   0x000023f6   8a0a  "vq_key_s"
+	   0x000023f9   89da  "vq_mouse"
+	   0x000023fc   89e2  "vq_scan"
+	   0x000023fe   8afa  "vq_tabstatus"
+	   0x00002405   8be2  "vq_tdimensions"
+	   0x0000240e   8bba  "vq_vgdos"
+	   0x00002411   8a3a  "vqf_attributes"
+	   0x0000241a   8a72  "vqin_mode"
+	   0x0000241e   8a2a  "vql_attributes"
+	   0x00002427   8a32  "vqm_attributes"
+	   0x00002430   8b72  "vqp_error"
+	   0x00002434   8b42  "vqp_films"
+	   0x00002438   8b4a  "vqp_state"
+	   0x0000243c   8c0a  "vqt_advance"
+	   0x00002442   8a42  "vqt_attributes"
+	   0x0000244b   8c2a  "vqt_cachesize"
+	   0x00002453   8c1a  "vqt_devinfo"
+	   0x00002459   8a4a  "vqt_extent"
+	   0x0000245e   8a52  "vqt_f_extent"
+	   0x00002465   8a7a  "vqt_fontinfo"
+	   0x0000246c   8c32  "vqt_get_tables"
+	   0x00002475   8a62  "vqt_name"
+	   0x00002478   8a5a  "vqt_width"
+	   0x0000247c   884a  "vr_recfl"
+	   0x0000247f   8962  "vr_trnfm"
+	   0x00002482   8952  "vro_cpyfm"
+	   0x00002486   899a  "vrq_choice"
+	   0x0000248b   897a  "vrq_locator"
+	   0x00002491   89aa  "vrq_string"
+	   0x00002496   898a  "vrq_valuator"
+	   0x0000249d   895a  "vrt_cpyfm"
+	   0x000024a1   880a  "vs_clip"
+	   0x000024a3   88aa  "vs_color"
+	   0x000024a6   8ad2  "vs_curaddress"
+	   0x000024ae   8c02  "vs_mute"
+	   0x000024b0   8b3a  "vs_palette"
+	   0x000024b5   8b62  "vsc_expose"
+	   0x000024ba   89ba  "vsc_form"
+	   0x000024bd   91a2  "vscanf"
+	   0x000024be   893a  "vsf_color"
+	   0x000024c2   892a  "vsf_interior"
+	   0x000024c9   8942  "vsf_perimeter"
+	   0x000024d1   8932  "vsf_style"
+	   0x000024d5   894a  "vsf_udpat"
+	   0x000024d9   8972  "vsin_mode"
+	   0x000024dd   88ca  "vsl_color"
+	   0x000024e1   88d2  "vsl_ends"
+	   0x000024e4   88b2  "vsl_type"
+	   0x000024e7   88ba  "vsl_udsty"
+	   0x000024eb   88c2  "vsl_width"
+	   0x000024ef   89a2  "vsm_choice"
+	   0x000024f4   88ea  "vsm_color"
+	   0x000024f8   88e2  "vsm_height"
+	   0x000024fd   8982  "vsm_locator"
+	   0x00002503   89b2  "vsm_string"
+	   0x00002508   88da  "vsm_type"
+	   0x0000250b   8992  "vsm_valuator"
+	   0x00002512   8bf2  "vsp_film"
+	   0x00002515   8b6a  "vsp_message"
+	   0x0000251b   8b5a  "vsp_save"
+	   0x0000251e   8b52  "vsp_state"
+	   0x00002522   93ea  "vsprintf"
+	   0x00002525   9252  "vsscanf"
+	   0x00002527   8922  "vst_alignment"
+	   0x0000252f   8c12  "vst_arbpt"
+	   0x00002533   8912  "vst_color"
+	   0x00002537   891a  "vst_effects"
+	   0x0000253d   8c72  "vst_error"
+	   0x00002541   890a  "vst_font"
+	   0x00002544   88f2  "vst_height"
+	   0x00002549   87fa  "vst_load_fonts"
+	   0x00002552   88fa  "vst_point"
+	   0x00002556   8902  "vst_rotation"
+	   0x0000255d   8c6a  "vst_scratch"
+	   0x00002563   8c4a  "vst_setsize"
+	   0x00002569   8c52  "vst_skew"
+	   0x0000256c   8802  "vst_unload_fonts"
+	   0x00002577   88a2  "vswr_mode"
+	   0x0000257b   8bea  "vt_alignment"
+	   0x00002582   8bd2  "vt_axis"
+	   0x00002584   8bda  "vt_origin"
+	   0x00002588   8bca  "vt_resolution"
+	   0x00002590   8552  "wind_calc"
+	   0x00002594   8522  "wind_close"
+	   0x00002599   850a  "wind_create"
+	   0x0000259f   852a  "wind_delete"
+	   0x000025a5   8542  "wind_find"
+	   0x000025a9   8532  "wind_get"
+	   0x000025ac   851a  "wind_new"
+	   0x000025af   8512  "wind_open"
+	   0x000025b3   853a  "wind_set"
+	   0x000025b6   854a  "wind_update"
+	   0x000025bc   8a1a  "work_out"
+	   0x000025bf   93f2  "write"
+	   0x000025bf   814a  "x_max"
+	   0x000025bf   814a  "x_scale"
+	   0x000025c1   814a  "x_start"
+	   0x000025c3   95f2  "xbios"
+	   0x000025c3   9352  "xdcnv"
+	   0x000025c3   814a  "y_max"
+	   0x000025c3   814a  "y_scale"
+	   0x000025c5   814a  "y_start"
+
+
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+		Sensitive table
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+	Position   Code  Search-word
+	   0x0000000c   81ca  "PCSTART"
+	   0x0000000e   81ca  "PCXSTART"
+
+
+================================================================================
+			Name-table
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<_graphgetmem                    > CAPSENSITIVE 0x835A = 0x6A
+<[h|l|L] (scanf)                 > SCREEN_NAME  0x91C2 = 0x237
+<_graphfreemem                   > CAPSENSITIVE 0x8352 = 0x69
+<[h|l|L] (printf)                > SCREEN_NAME  0x913A = 0x226
+<_exit                           > CAPSENSITIVE 0x8E2A = 0x1C4
+<[Suchzeichen]                   > SCREEN_NAME  0x91D2 = 0x239
+<_app                            > CAPSENSITIVE 0x81D2 = 0x39
+<[Flags]                         > SCREEN_NAME  0x911A = 0x222
+<__NFPUIN__                      > CAPSENSITIVE 0x9402 = 0x27F
+<[Breite] (scanf)                > SCREEN_NAME  0x91BA = 0x236
+<_PgmSize                        > CAPSENSITIVE 0x81DA = 0x3A
+<[Breite] (printf)               > SCREEN_NAME  0x9122 = 0x223
+<_GemParBlk                      > CAPSENSITIVE 0x805A = 0xA
+<[.PrÑzision]                    > SCREEN_NAME  0x912A = 0x224
+<_BasPag                         > CAPSENSITIVE 0x812A = 0x24
+<[*]                             > SCREEN_NAME  0x91B2 = 0x235
+<Zeichnen und FlÑchenfÅllung     > CAPSENSITIVE 0x81F2 = 0x3D
+<Zwischenspeicher                > SCREEN_NAME  0x8702 = 0xDF
+<Zeichenweise Ein-/Ausgabe       > SCREEN_NAME  0x996A = 0x32C
+<Zugriffe auf Bs u. Zf           > CAPSENSITIVE 0x81FA = 0x3E
+<Zeichen-Klassifizierungs-Rout   > SCREEN_NAME  0x8CEA = 0x19C
+<y_scale                         > CAPSENSITIVE 0x814A = 0x28
+<y_start                         > CAPSENSITIVE 0x814A = 0x28
+<y_max                           > CAPSENSITIVE 0x814A = 0x28
+<x_start                         > CAPSENSITIVE 0x814A = 0x28
+<xdcnv                           > CAPSENSITIVE 0x9352 = 0x269
+<x_scale                         > CAPSENSITIVE 0x814A = 0x28
+<Xbtimer                         > CAPSENSITIVE 0x995A = 0x32A
+<x_max                           > CAPSENSITIVE 0x814A = 0x28
+<xbios                           > CAPSENSITIVE 0x95F2 = 0x2BD
+<XBIOS                           > SCREEN_NAME  0x95AA = 0x2B4
+<write                           > CAPSENSITIVE 0x93F2 = 0x27D
+<WM_SIZED                        > CAPSENSITIVE 0x84E2 = 0x9B
+<Wrap_on                         > CAPSENSITIVE 0x957A = 0x2AE
+<WM_REDRAW                       > CAPSENSITIVE 0x84E2 = 0x9B
+<Wrap_off                        > CAPSENSITIVE 0x9582 = 0x2AF
+<WM_NEWTOP                       > CAPSENSITIVE 0x84E2 = 0x9B
+<work_out                        > CAPSENSITIVE 0x8A1A = 0x142
+<WM_MOVED                        > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_update                     > CAPSENSITIVE 0x854A = 0xA8
+<WM_HSLID                        > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_set                        > CAPSENSITIVE 0x853A = 0xA6
+<WM_FULLED                       > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_open                       > CAPSENSITIVE 0x8512 = 0xA1
+<WM_CLOSED                       > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_new                        > CAPSENSITIVE 0x851A = 0xA2
+<WM_ARROWED                      > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_get                        > CAPSENSITIVE 0x8532 = 0xA5
+<WC_WORK                         > CAPSENSITIVE 0x8552 = 0xA9
+<wind_find                       > CAPSENSITIVE 0x8542 = 0xA7
+<WC_BORDER                       > CAPSENSITIVE 0x8552 = 0xA9
+<wind_delete                     > CAPSENSITIVE 0x852A = 0xA4
+<WA_UPPAGE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_create                     > CAPSENSITIVE 0x850A = 0xA0
+<WA_UPLINE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_close                      > CAPSENSITIVE 0x8522 = 0xA3
+<WA_RTPAGE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<wind_calc                       > CAPSENSITIVE 0x8552 = 0xA9
+<WA_RTLINE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<WRAP_ON                         > CAPSENSITIVE 0x957A = 0x2AE
+<WA_LFPAGE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<WRAP_OFF                        > CAPSENSITIVE 0x9582 = 0x2AF
+<WA_LFLINE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<WM_VSLID                        > CAPSENSITIVE 0x84E2 = 0x9B
+<WA_DNPAGE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<WM_TOPPED                       > CAPSENSITIVE 0x84E2 = 0x9B
+<WA_DNLINE                       > CAPSENSITIVE 0x84E2 = 0x9B
+<vq_curaddress                   > CAPSENSITIVE 0x8AF2 = 0x15D
+<vt_resolution                   > CAPSENSITIVE 0x8BCA = 0x178
+<vq_color                        > CAPSENSITIVE 0x8A22 = 0x143
+<vt_origin                       > CAPSENSITIVE 0x8BDA = 0x17A
+<vq_chcells                      > CAPSENSITIVE 0x8A82 = 0x14F
+<vt_axis                         > CAPSENSITIVE 0x8BD2 = 0x179
+<vq_cellarray                    > CAPSENSITIVE 0x8A6A = 0x14C
+<vt_alignment                    > CAPSENSITIVE 0x8BEA = 0x17C
+<vprintf                         > CAPSENSITIVE 0x93E2 = 0x27B
+<Vsync                           > CAPSENSITIVE 0x9912 = 0x321
+<vm_pagesize                     > CAPSENSITIVE 0x8B9A = 0x172
+<vswr_mode                       > CAPSENSITIVE 0x88A2 = 0x113
+<vm_filename                     > CAPSENSITIVE 0x8B92 = 0x171
+<vst_unload_fonts                > CAPSENSITIVE 0x8802 = 0xFF
+<vm_coords                       > CAPSENSITIVE 0x8B8A = 0x170
+<vst_skew                        > CAPSENSITIVE 0x8C52 = 0x189
+<VgetSize                        > CAPSENSITIVE 0x9732 = 0x2E5
+<vst_setsize                     > CAPSENSITIVE 0x8C4A = 0x188
+<VgetRGB                         > CAPSENSITIVE 0x973A = 0x2E6
+<vst_scratch                     > CAPSENSITIVE 0x8C6A = 0x18C
+<vfscanf                         > CAPSENSITIVE 0x8F52 = 0x1E9
+<vst_rotation                    > CAPSENSITIVE 0x8902 = 0x11F
+<vfprintf                        > CAPSENSITIVE 0x93DA = 0x27A
+<vst_point                       > CAPSENSITIVE 0x88FA = 0x11E
+<vex_timv                        > CAPSENSITIVE 0x89C2 = 0x137
+<vst_load_fonts                  > CAPSENSITIVE 0x87FA = 0xFE
+<vex_motv                        > CAPSENSITIVE 0x89FA = 0x13E
+<vst_height                      > CAPSENSITIVE 0x88F2 = 0x11D
+<vex_curv                        > CAPSENSITIVE 0x8A02 = 0x13F
+<vst_font                        > CAPSENSITIVE 0x890A = 0x120
+<vex_butv                        > CAPSENSITIVE 0x89F2 = 0x13D
+<vst_error                       > CAPSENSITIVE 0x8C72 = 0x18D
+<Verzeichnisfunktionen           > SCREEN_NAME  0x998A = 0x330
+<vst_effects                     > CAPSENSITIVE 0x891A = 0x122
+<Verschiedene Routinen           > SCREEN_NAME  0x8D12 = 0x1A1
+<vst_color                       > CAPSENSITIVE 0x8912 = 0x121
+<va_start                        > CAPSENSITIVE 0x93D2 = 0x279
+<vst_arbpt                       > CAPSENSITIVE 0x8C12 = 0x181
+<va_list                         > CAPSENSITIVE 0x93B2 = 0x275
+<vst_alignment                   > CAPSENSITIVE 0x8922 = 0x123
+<va_end                          > CAPSENSITIVE 0x93CA = 0x278
+<vsscanf                         > CAPSENSITIVE 0x9252 = 0x249
+<va_arg                          > CAPSENSITIVE 0x93C2 = 0x277
+<vsprintf                        > CAPSENSITIVE 0x93EA = 0x27C
+<va_...                          > CAPSENSITIVE 0x93BA = 0x276
+<vsp_state                       > CAPSENSITIVE 0x8B52 = 0x169
+<v_write_meta                    > CAPSENSITIVE 0x8B82 = 0x16F
+<vsp_save                        > CAPSENSITIVE 0x8B5A = 0x16A
+<v_updwk                         > CAPSENSITIVE 0x87F2 = 0xFD
+<vsp_message                     > CAPSENSITIVE 0x8B6A = 0x16C
+<v_sound                         > CAPSENSITIVE 0x8BFA = 0x17E
+<vsp_film                        > CAPSENSITIVE 0x8BF2 = 0x17D
+<v_show_c                        > CAPSENSITIVE 0x89CA = 0x138
+<vsm_valuator                    > CAPSENSITIVE 0x8992 = 0x131
+<v_set_app_buff                  > CAPSENSITIVE 0x8C8A = 0x190
+<vsm_type                        > CAPSENSITIVE 0x88DA = 0x11A
+<v_savecache                     > CAPSENSITIVE 0x8C42 = 0x187
+<vsm_string                      > CAPSENSITIVE 0x89B2 = 0x135
+<v_rvon                          > CAPSENSITIVE 0x8AE2 = 0x15B
+<vsm_locator                     > CAPSENSITIVE 0x8982 = 0x12F
+<v_rvoff                         > CAPSENSITIVE 0x8AEA = 0x15C
+<vsm_height                      > CAPSENSITIVE 0x88E2 = 0x11B
+<v_rmcur                         > CAPSENSITIVE 0x8B12 = 0x161
+<vsm_color                       > CAPSENSITIVE 0x88EA = 0x11C
+<v_rfbox                         > CAPSENSITIVE 0x8892 = 0x111
+<vsm_choice                      > CAPSENSITIVE 0x89A2 = 0x133
+<v_rbox                          > CAPSENSITIVE 0x888A = 0x110
+<vsl_width                       > CAPSENSITIVE 0x88C2 = 0x117
+<v_pmarker                       > CAPSENSITIVE 0x881A = 0x102
+<vsl_udsty                       > CAPSENSITIVE 0x88BA = 0x116
+<v_pline                         > CAPSENSITIVE 0x8812 = 0x101
+<vsl_type                        > CAPSENSITIVE 0x88B2 = 0x115
+<v_pieslice                      > CAPSENSITIVE 0x8862 = 0x10B
+<vsl_ends                        > CAPSENSITIVE 0x88D2 = 0x119
+<v_output_window                 > CAPSENSITIVE 0x8B22 = 0x163
+<vsl_color                       > CAPSENSITIVE 0x88CA = 0x118
+<v_opnwk                         > CAPSENSITIVE 0x87CA = 0xF8
+<vsin_mode                       > CAPSENSITIVE 0x8972 = 0x12D
+<v_opnvwk                        > CAPSENSITIVE 0x87DA = 0xFA
+<vsf_udpat                       > CAPSENSITIVE 0x894A = 0x128
+<v_offset                        > CAPSENSITIVE 0x8BA2 = 0x173
+<vsf_style                       > CAPSENSITIVE 0x8932 = 0x125
+<v_meta_extents                  > CAPSENSITIVE 0x8B7A = 0x16E
+<vsf_perimeter                   > CAPSENSITIVE 0x8942 = 0x127
+<v_loadcache                     > CAPSENSITIVE 0x8C3A = 0x186
+<vsf_interior                    > CAPSENSITIVE 0x892A = 0x124
+<v_killoutline                   > CAPSENSITIVE 0x8C5A = 0x18A
+<vsf_color                       > CAPSENSITIVE 0x893A = 0x126
+<v_justified                     > CAPSENSITIVE 0x889A = 0x112
+<Vsetmode                        > CAPSENSITIVE 0x971A = 0x2E2
+<v_hide_c                        > CAPSENSITIVE 0x89D2 = 0x139
+<VsetSync                        > CAPSENSITIVE 0x972A = 0x2E4
+<v_hardcopy                      > CAPSENSITIVE 0x8B02 = 0x15F
+<VsetRGB                         > CAPSENSITIVE 0x9742 = 0x2E7
+<v_gtext                         > CAPSENSITIVE 0x8822 = 0x103
+<VsetMask                        > CAPSENSITIVE 0x974A = 0x2E8
+<v_getoutline                    > CAPSENSITIVE 0x8C62 = 0x18B
+<vscanf                          > CAPSENSITIVE 0x91A2 = 0x233
+<v_get_pixel                     > CAPSENSITIVE 0x896A = 0x12C
+<vsc_form                        > CAPSENSITIVE 0x89BA = 0x136
+<v_ftext                         > CAPSENSITIVE 0x882A = 0x104
+<vsc_expose                      > CAPSENSITIVE 0x8B62 = 0x16B
+<v_form_adv                      > CAPSENSITIVE 0x8B1A = 0x162
+<vs_palette                      > CAPSENSITIVE 0x8B3A = 0x166
+<v_fontinit                      > CAPSENSITIVE 0x8BAA = 0x174
+<vs_mute                         > CAPSENSITIVE 0x8C02 = 0x17F
+<v_flushcache                    > CAPSENSITIVE 0x8C22 = 0x183
+<vs_curaddress                   > CAPSENSITIVE 0x8AD2 = 0x159
+<v_fillarea                      > CAPSENSITIVE 0x8832 = 0x105
+<vs_color                        > CAPSENSITIVE 0x88AA = 0x114
+<v_exit_cur                      > CAPSENSITIVE 0x8A8A = 0x150
+<vs_clip                         > CAPSENSITIVE 0x880A = 0x100
+<v_escape2000                    > CAPSENSITIVE 0x8BC2 = 0x177
+<vrt_cpyfm                       > CAPSENSITIVE 0x895A = 0x12A
+<v_enter_cur                     > CAPSENSITIVE 0x8A92 = 0x151
+<vrq_valuator                    > CAPSENSITIVE 0x898A = 0x130
+<v_ellpie                        > CAPSENSITIVE 0x8882 = 0x10F
+<vrq_string                      > CAPSENSITIVE 0x89AA = 0x134
+<v_ellipse                       > CAPSENSITIVE 0x8872 = 0x10D
+<vrq_locator                     > CAPSENSITIVE 0x897A = 0x12E
+<v_ellarc                        > CAPSENSITIVE 0x887A = 0x10E
+<vrq_choice                      > CAPSENSITIVE 0x899A = 0x132
+<v_eeos                          > CAPSENSITIVE 0x8AC2 = 0x157
+<vro_cpyfm                       > CAPSENSITIVE 0x8952 = 0x129
+<v_eeol                          > CAPSENSITIVE 0x8ACA = 0x158
+<vr_trnfm                        > CAPSENSITIVE 0x8962 = 0x12B
+<v_dspcur                        > CAPSENSITIVE 0x8B0A = 0x160
+<vr_recfl                        > CAPSENSITIVE 0x884A = 0x108
+<v_curup                         > CAPSENSITIVE 0x8A9A = 0x152
+<vqt_width                       > CAPSENSITIVE 0x8A5A = 0x14A
+<v_curtext                       > CAPSENSITIVE 0x8ADA = 0x15A
+<vqt_name                        > CAPSENSITIVE 0x8A62 = 0x14B
+<v_curright                      > CAPSENSITIVE 0x8AAA = 0x154
+<vqt_get_tables                  > CAPSENSITIVE 0x8C32 = 0x185
+<v_curleft                       > CAPSENSITIVE 0x8AB2 = 0x155
+<vqt_fontinfo                    > CAPSENSITIVE 0x8A7A = 0x14E
+<v_curhome                       > CAPSENSITIVE 0x8ABA = 0x156
+<vqt_f_extent                    > CAPSENSITIVE 0x8A52 = 0x149
+<v_curdown                       > CAPSENSITIVE 0x8AA2 = 0x153
+<vqt_extent                      > CAPSENSITIVE 0x8A4A = 0x148
+<v_curaddress                    > CAPSENSITIVE 0x8AD2 = 0x159
+<vqt_devinfo                     > CAPSENSITIVE 0x8C1A = 0x182
+<v_contourfill                   > CAPSENSITIVE 0x8842 = 0x107
+<vqt_cachesize                   > CAPSENSITIVE 0x8C2A = 0x184
+<v_clswk                         > CAPSENSITIVE 0x87D2 = 0xF9
+<vqt_attributes                  > CAPSENSITIVE 0x8A42 = 0x147
+<v_clsvwk                        > CAPSENSITIVE 0x87E2 = 0xFB
+<vqt_advance                     > CAPSENSITIVE 0x8C0A = 0x180
+<v_clrwk                         > CAPSENSITIVE 0x87EA = 0xFC
+<vqp_state                       > CAPSENSITIVE 0x8B4A = 0x168
+<v_clear_disp_list               > CAPSENSITIVE 0x8B2A = 0x164
+<vqp_films                       > CAPSENSITIVE 0x8B42 = 0x167
+<v_circle                        > CAPSENSITIVE 0x886A = 0x10C
+<vqp_error                       > CAPSENSITIVE 0x8B72 = 0x16D
+<v_cellarray                     > CAPSENSITIVE 0x883A = 0x106
+<vqm_attributes                  > CAPSENSITIVE 0x8A32 = 0x145
+<v_bit_image                     > CAPSENSITIVE 0x8B32 = 0x165
+<vql_attributes                  > CAPSENSITIVE 0x8A2A = 0x144
+<v_bez_qual                      > CAPSENSITIVE 0x8CA2 = 0x193
+<vqin_mode                       > CAPSENSITIVE 0x8A72 = 0x14D
+<v_bez_on                        > CAPSENSITIVE 0x8C7A = 0x18E
+<vqf_attributes                  > CAPSENSITIVE 0x8A3A = 0x146
+<v_bez_off                       > CAPSENSITIVE 0x8C82 = 0x18F
+<vq_vgdos                        > CAPSENSITIVE 0x8BBA = 0x176
+<v_bez_fill                      > CAPSENSITIVE 0x8C9A = 0x192
+<vq_tdimensions                  > CAPSENSITIVE 0x8BE2 = 0x17B
+<v_bez                           > CAPSENSITIVE 0x8C92 = 0x191
+<vq_tabstatus                    > CAPSENSITIVE 0x8AFA = 0x15E
+<v_bar                           > CAPSENSITIVE 0x8852 = 0x109
+<vq_scan                         > CAPSENSITIVE 0x89E2 = 0x13B
+<v_arc                           > CAPSENSITIVE 0x885A = 0x10A
+<vq_mouse                        > CAPSENSITIVE 0x89DA = 0x13A
+<v_alpha_text                    > CAPSENSITIVE 0x89EA = 0x13C
+<vq_key_s                        > CAPSENSITIVE 0x8A0A = 0x140
+<VT-52-Terminal                  > SCREEN_NAME  0x942A = 0x284
+<vq_gdos                         > CAPSENSITIVE 0x8BB2 = 0x175
+<VERTFLAG                        > CAPSENSITIVE 0x9712 = 0x2E1
+<vq_extnd                        > CAPSENSITIVE 0x8A12 = 0x141
+<VDI                             > SCREEN_NAME  0x876A = 0xEC
+<Umwandlungsroutinen             > SCREEN_NAME  0x8CF2 = 0x19D
+<userblk                         > CAPSENSITIVE 0x8082 = 0xF
+<ultoa                           > CAPSENSITIVE 0x93A2 = 0x273
+<unlocksnd                       > CAPSENSITIVE 0x975A = 0x2EA
+<ub_parm                         > CAPSENSITIVE 0x803A = 0x6
+<unlink                          > CAPSENSITIVE 0x93AA = 0x274
+<ub_code                         > CAPSENSITIVE 0x803A = 0x6
+<ungetc                          > CAPSENSITIVE 0x939A = 0x272
+<USERBLK                         > CAPSENSITIVE 0x803A = 0x6
+<ti_min                          > CAPSENSITIVE 0x80A2 = 0x13
+<type                            > CAPSENSITIVE 0x80C2 = 0x17
+<ti_hund                         > CAPSENSITIVE 0x80A2 = 0x13
+<Typ (scanf)                     > SCREEN_NAME  0x91CA = 0x238
+<ti_hour                         > CAPSENSITIVE 0x80A2 = 0x13
+<Typ (printf)                    > SCREEN_NAME  0x9132 = 0x225
+<Tgettime                        > CAPSENSITIVE 0x9B52 = 0x369
+<Tsettime                        > CAPSENSITIVE 0x9B5A = 0x36A
+<Tgetdate                        > CAPSENSITIVE 0x9B42 = 0x367
+<Tsetdate                        > CAPSENSITIVE 0x9B4A = 0x368
+<textwidth                       > CAPSENSITIVE 0x849A = 0x92
+<trunc                           > CAPSENSITIVE 0x9412 = 0x281
+<Textmodus                       > SCREEN_NAME  0x8F0A = 0x1E0
+<toupper                         > CAPSENSITIVE 0x9392 = 0x271
+<textmode                        > CAPSENSITIVE 0x807A = 0xE
+<topmode                         > CAPSENSITIVE 0x814A = 0x28
+<textheight                      > CAPSENSITIVE 0x8492 = 0x91
+<tolower                         > CAPSENSITIVE 0x938A = 0x270
+<textcol                         > CAPSENSITIVE 0x807A = 0xE
+<toascii                         > CAPSENSITIVE 0x9382 = 0x26F
+<Textattribute                   > SCREEN_NAME  0x891A = 0x122
+<tmpnam                          > CAPSENSITIVE 0x9372 = 0x26D
+<tedinfo                         > CAPSENSITIVE 0x8082 = 0xF
+<tmpfile                         > CAPSENSITIVE 0x937A = 0x26E
+<te_txtlen                       > CAPSENSITIVE 0x8022 = 0x3
+<tm_year                         > CAPSENSITIVE 0x818A = 0x30
+<te_tmplen                       > CAPSENSITIVE 0x8022 = 0x3
+<tm_yday                         > CAPSENSITIVE 0x818A = 0x30
+<te_thickness                    > CAPSENSITIVE 0x8022 = 0x3
+<tm_wday                         > CAPSENSITIVE 0x818A = 0x30
+<te_pvalid                       > CAPSENSITIVE 0x8022 = 0x3
+<tm_sec                          > CAPSENSITIVE 0x818A = 0x30
+<te_ptmplt                       > CAPSENSITIVE 0x8022 = 0x3
+<tm_mon                          > CAPSENSITIVE 0x818A = 0x30
+<te_ptext                        > CAPSENSITIVE 0x8022 = 0x3
+<tm_min                          > CAPSENSITIVE 0x818A = 0x30
+<te_just                         > CAPSENSITIVE 0x8022 = 0x3
+<tm_mday                         > CAPSENSITIVE 0x818A = 0x30
+<te_junk2                        > CAPSENSITIVE 0x8022 = 0x3
+<tm_isdst                        > CAPSENSITIVE 0x818A = 0x30
+<te_junk1                        > CAPSENSITIVE 0x8022 = 0x3
+<tm_hour                         > CAPSENSITIVE 0x818A = 0x30
+<te_font                         > CAPSENSITIVE 0x8022 = 0x3
+<tm                              > CAPSENSITIVE 0x818A = 0x30
+<te_color                        > CAPSENSITIVE 0x8022 = 0x3
+<time_t                          > CAPSENSITIVE 0x80F2 = 0x1D
+<Tastaturfunktionen              > SCREEN_NAME  0x95B2 = 0x2B5
+<time, struct time               > SCREEN_NAME  0x80A2 = 0x13
+<tanh                            > CAPSENSITIVE 0x9342 = 0x267
+<time (DOSTIME)                  > SCREEN_NAME  0x813A = 0x26
+<tan                             > CAPSENSITIVE 0x933A = 0x266
+<time                            > CAPSENSITIVE 0x936A = 0x26C
+<Tab                             > CAPSENSITIVE 0x94A2 = 0x293
+<Tickcal                         > CAPSENSITIVE 0x9492 = 0x291
+<TV                              > CAPSENSITIVE 0x9712 = 0x2E1
+<ti_sec                          > CAPSENSITIVE 0x80A2 = 0x13
+<TEDINFO                         > CAPSENSITIVE 0x8022 = 0x3
+<sincos                          > CAPSENSITIVE 0x921A = 0x242
+<Systemfunktionen                > SCREEN_NAME  0x99A2 = 0x333
+<sin                             > CAPSENSITIVE 0x9212 = 0x241
+<system                          > CAPSENSITIVE 0x9332 = 0x265
+<signal                          > CAPSENSITIVE 0x8ECA = 0x1D8
+<Sversion                        > CAPSENSITIVE 0x9B3A = 0x366
+<sigfunc_t                       > CAPSENSITIVE 0x8192 = 0x31
+<Supexec                         > CAPSENSITIVE 0x990A = 0x320
+<Shell                           > SCREEN_NAME  0x871A = 0xE2
+<Super                           > CAPSENSITIVE 0x9B32 = 0x365
+<shel_write                      > CAPSENSITIVE 0x872A = 0xE4
+<strupr                          > CAPSENSITIVE 0x92D2 = 0x259
+<shel_read                       > CAPSENSITIVE 0x8722 = 0xE3
+<strtoul                         > CAPSENSITIVE 0x9322 = 0x263
+<shel_put                        > CAPSENSITIVE 0x8742 = 0xE7
+<strtol                          > CAPSENSITIVE 0x931A = 0x262
+<shel_get                        > CAPSENSITIVE 0x874A = 0xE8
+<strtok                          > CAPSENSITIVE 0x930A = 0x260
+<shel_find                       > CAPSENSITIVE 0x8732 = 0xE5
+<strtod                          > CAPSENSITIVE 0x9312 = 0x261
+<shel_envrn                      > CAPSENSITIVE 0x873A = 0xE6
+<strstr                          > CAPSENSITIVE 0x92C2 = 0x257
+<setwritemode                    > CAPSENSITIVE 0x848A = 0x90
+<strspn                          > CAPSENSITIVE 0x9302 = 0x25F
+<setvisualpage                   > CAPSENSITIVE 0x8482 = 0x8F
+<strset                          > CAPSENSITIVE 0x92EA = 0x25C
+<setviewport                     > CAPSENSITIVE 0x847A = 0x8E
+<strrev                          > CAPSENSITIVE 0x927A = 0x24E
+<setvbuf                         > CAPSENSITIVE 0x920A = 0x240
+<strrchr                         > CAPSENSITIVE 0x9282 = 0x24F
+<setusercharsize                 > CAPSENSITIVE 0x8472 = 0x8D
+<strpbrk                         > CAPSENSITIVE 0x92FA = 0x25E
+<settracks                       > CAPSENSITIVE 0x977A = 0x2EE
+<strnset                         > CAPSENSITIVE 0x92F2 = 0x25D
+<Settime                         > CAPSENSITIVE 0x98FA = 0x31E
+<strnicmp                        > CAPSENSITIVE 0x92A2 = 0x253
+<settime                         > CAPSENSITIVE 0x9202 = 0x23F
+<strncpy                         > CAPSENSITIVE 0x92B2 = 0x255
+<settextstyle                    > CAPSENSITIVE 0x846A = 0x8C
+<strncmpi                        > CAPSENSITIVE 0x92A2 = 0x253
+<settextjustify                  > CAPSENSITIVE 0x8462 = 0x8B
+<strncmp                         > CAPSENSITIVE 0x9292 = 0x251
+<Setscreen                       > CAPSENSITIVE 0x98F2 = 0x31D
+<strncat                         > CAPSENSITIVE 0x926A = 0x24C
+<setrgbpalette                   > CAPSENSITIVE 0x845A = 0x8A
+<strlwr                          > CAPSENSITIVE 0x92CA = 0x258
+<Setprt                          > CAPSENSITIVE 0x98EA = 0x31C
+<strlen                          > CAPSENSITIVE 0x92BA = 0x256
+<Setpalette                      > CAPSENSITIVE 0x98E2 = 0x31B
+<String- und Speichermanipulat   > SCREEN_NAME  0x8D1A = 0x1A2
+<setpalette                      > CAPSENSITIVE 0x8452 = 0x89
+<String                          > SCREEN_NAME  0x8D7A = 0x1AE
+<setmontracks                    > CAPSENSITIVE 0x9782 = 0x2EF
+<stricmp                         > CAPSENSITIVE 0x929A = 0x252
+<setmode                         > CAPSENSITIVE 0x9772 = 0x2ED
+<strftime                        > CAPSENSITIVE 0x932A = 0x264
+<setmatherr                      > CAPSENSITIVE 0x90A2 = 0x213
+<strerror                        > CAPSENSITIVE 0x925A = 0x24A
+<setlinestyle                    > CAPSENSITIVE 0x844A = 0x88
+<strdup                          > CAPSENSITIVE 0x92E2 = 0x25B
+<setjmp                          > CAPSENSITIVE 0x91FA = 0x23E
+<strcspn                         > CAPSENSITIVE 0x92DA = 0x25A
+<setinterrupt                    > CAPSENSITIVE 0x978A = 0x2F0
+<strcpy                          > CAPSENSITIVE 0x92AA = 0x254
+<setgraphmode                    > CAPSENSITIVE 0x8442 = 0x87
+<strcmpi                         > CAPSENSITIVE 0x929A = 0x252
+<setgraphbufsize                 > CAPSENSITIVE 0x843A = 0x86
+<strcmp                          > CAPSENSITIVE 0x928A = 0x250
+<setftime                        > CAPSENSITIVE 0x91F2 = 0x23D
+<strchr                          > CAPSENSITIVE 0x9272 = 0x24D
+<setfillstyle                    > CAPSENSITIVE 0x8432 = 0x85
+<strcat                          > CAPSENSITIVE 0x9262 = 0x24B
+<setfillpattern                  > CAPSENSITIVE 0x842A = 0x84
+<stat, struct stat               > CAPSENSITIVE 0x80BA = 0x16
+<Setexc                          > CAPSENSITIVE 0x948A = 0x290
+<stat                            > CAPSENSITIVE 0x8E9A = 0x1D2
+<setdisk                         > CAPSENSITIVE 0x91EA = 0x23C
+<Startup                         > SCREEN_NAME  0x81CA = 0x38
+<setdate                         > CAPSENSITIVE 0x91E2 = 0x23B
+<Standard-Funktionen             > SCREEN_NAME  0x8CBA = 0x196
+<Setcolor                        > CAPSENSITIVE 0x98DA = 0x31A
+<st_uid                          > CAPSENSITIVE 0x80BA = 0x16
+<setcolor                        > CAPSENSITIVE 0x8422 = 0x83
+<st_size                         > CAPSENSITIVE 0x80BA = 0x16
+<setbuffer                       > CAPSENSITIVE 0x976A = 0x2EC
+<st_rdev                         > CAPSENSITIVE 0x80BA = 0x16
+<setbuf                          > CAPSENSITIVE 0x91DA = 0x23A
+<st_nlink                        > CAPSENSITIVE 0x80BA = 0x16
+<setbkcolor                      > CAPSENSITIVE 0x841A = 0x82
+<st_mtime                        > CAPSENSITIVE 0x80BA = 0x16
+<setaspectratio                  > CAPSENSITIVE 0x8412 = 0x81
+<st_mode                         > CAPSENSITIVE 0x80BA = 0x16
+<setallpalette                   > CAPSENSITIVE 0x840A = 0x80
+<st_ino                          > CAPSENSITIVE 0x80BA = 0x16
+<setactivepage                   > CAPSENSITIVE 0x8402 = 0x7F
+<st_gid                          > CAPSENSITIVE 0x80BA = 0x16
+<Set_blink                       > CAPSENSITIVE 0x959A = 0x2B2
+<st_dev                          > CAPSENSITIVE 0x80BA = 0x16
+<sector                          > CAPSENSITIVE 0x83FA = 0x7E
+<st_ctime                        > CAPSENSITIVE 0x80BA = 0x16
+<scrp_write                      > CAPSENSITIVE 0x8712 = 0xE1
+<st_atime                        > CAPSENSITIVE 0x80BA = 0x16
+<scrp_read                       > CAPSENSITIVE 0x870A = 0xE0
+<sscanf                          > CAPSENSITIVE 0x924A = 0x248
+<Scroll_up                       > CAPSENSITIVE 0x94CA = 0x298
+<Ssbrk                           > CAPSENSITIVE 0x9902 = 0x31F
+<screen                          > CAPSENSITIVE 0x942A = 0x284
+<srand                           > CAPSENSITIVE 0x9242 = 0x247
+<Scrdmp                          > CAPSENSITIVE 0x98D2 = 0x319
+<sqrt                            > CAPSENSITIVE 0x923A = 0x246
+<Schnittstellenprogrammierung    > SCREEN_NAME  0x95E2 = 0x2BB
+<SprÅnge                         > SCREEN_NAME  0x8D0A = 0x1A0
+<scanf                           > CAPSENSITIVE 0x919A = 0x232
+<sprintf                         > CAPSENSITIVE 0x9232 = 0x245
+<Save_pos                        > CAPSENSITIVE 0x9532 = 0x2A5
+<Spezialbefehle                  > SCREEN_NAME  0x95EA = 0x2BC
+<SYSHDR                          > CAPSENSITIVE 0x817A = 0x2E
+<Speicherbereichsverwaltung      > SCREEN_NAME  0x9992 = 0x331
+<STMODES                         > CAPSENSITIVE 0x9712 = 0x2E1
+<Soundroutinen                   > SCREEN_NAME  0x95FA = 0x2BE
+<SIG_SYS                         > CAPSENSITIVE 0x8192 = 0x31
+<soundcmd                        > CAPSENSITIVE 0x9762 = 0x2EB
+<SIG_IGN                         > CAPSENSITIVE 0x8192 = 0x31
+<sndstatus                       > CAPSENSITIVE 0x97B2 = 0x2F5
+<SIG_ERR                         > CAPSENSITIVE 0x8192 = 0x31
+<sleep                           > CAPSENSITIVE 0x8EDA = 0x1DA
+<SIG_DFL                         > CAPSENSITIVE 0x8192 = 0x31
+<size_t                          > CAPSENSITIVE 0x80CA = 0x18
+<SCROLL_UP                       > CAPSENSITIVE 0x94CA = 0x298
+<sinh                            > CAPSENSITIVE 0x9222 = 0x243
+<SAVE_POS                        > CAPSENSITIVE 0x9532 = 0x2A5
+<Rwabs                           > CAPSENSITIVE 0x9482 = 0x28F
+<remove                          > CAPSENSITIVE 0x9182 = 0x22F
+<rsrc_saddr                      > CAPSENSITIVE 0x85E2 = 0xBB
+<rem                             > CAPSENSITIVE 0x80FA = 0x1E
+<rsrc_obfix                      > CAPSENSITIVE 0x85EA = 0xBC
+<registerbgifont                 > CAPSENSITIVE 0x83EA = 0x7C
+<rsrc_load                       > CAPSENSITIVE 0x85CA = 0xB8
+<registerbgidriver               > CAPSENSITIVE 0x83E2 = 0x7B
+<rsrc_gaddr                      > CAPSENSITIVE 0x85DA = 0xBA
+<rectangle                       > CAPSENSITIVE 0x83DA = 0x7A
+<rsrc_free                       > CAPSENSITIVE 0x85D2 = 0xB9
+<recsiz                          > CAPSENSITIVE 0x8132 = 0x25
+<Rsconf                          > CAPSENSITIVE 0x98CA = 0x318
+<realloc                         > CAPSENSITIVE 0x917A = 0x22E
+<rsconf                          > CAPSENSITIVE 0x816A = 0x2C
+<read                            > CAPSENSITIVE 0x9172 = 0x22D
+<round                           > CAPSENSITIVE 0x940A = 0x280
+<rdlen                           > CAPSENSITIVE 0x8132 = 0x25
+<rewind                          > CAPSENSITIVE 0x9192 = 0x231
+<Rasterfunktionen                > SCREEN_NAME  0x87AA = 0xF4
+<Rev_on                          > CAPSENSITIVE 0x955A = 0x2AA
+<Random                          > CAPSENSITIVE 0x98C2 = 0x317
+<Rev_off                         > CAPSENSITIVE 0x9562 = 0x2AB
+<random                          > CAPSENSITIVE 0x941A = 0x282
+<retval                          > CAPSENSITIVE 0x80C2 = 0x17
+<rand                            > CAPSENSITIVE 0x916A = 0x22C
+<Return                          > CAPSENSITIVE 0x94AA = 0x294
+<raise                           > CAPSENSITIVE 0x8ED2 = 0x1D9
+<restorecrtmode                  > CAPSENSITIVE 0x83F2 = 0x7D
+<RSHDR                           > CAPSENSITIVE 0x808A = 0x10
+<Resource                        > SCREEN_NAME  0x85C2 = 0xB7
+<REV_ON                          > CAPSENSITIVE 0x955A = 0x2AA
+<rename                          > CAPSENSITIVE 0x918A = 0x230
+<REV_OFF                         > CAPSENSITIVE 0x9562 = 0x2AB
+<quot                            > CAPSENSITIVE 0x80FA = 0x1E
+<qsort                           > CAPSENSITIVE 0x9162 = 0x22B
+<pxyarray                        > CAPSENSITIVE 0x878A = 0xF0
+<pb_w                            > CAPSENSITIVE 0x8042 = 0x7
+<puts                            > CAPSENSITIVE 0x915A = 0x22A
+<pb_tree                         > CAPSENSITIVE 0x8042 = 0x7
+<putpixel                        > CAPSENSITIVE 0x83D2 = 0x79
+<pb_prevstate                    > CAPSENSITIVE 0x8042 = 0x7
+<putimage                        > CAPSENSITIVE 0x83CA = 0x78
+<pb_parm                         > CAPSENSITIVE 0x8042 = 0x7
+<putchar                         > CAPSENSITIVE 0x9152 = 0x229
+<pb_obj                          > CAPSENSITIVE 0x8042 = 0x7
+<putch                           > CAPSENSITIVE 0x914A = 0x228
+<pb_hc                           > CAPSENSITIVE 0x8042 = 0x7
+<putc                            > CAPSENSITIVE 0x9142 = 0x227
+<pb_h                            > CAPSENSITIVE 0x8042 = 0x7
+<Pure-C-Spezialfunktionen        > SCREEN_NAME  0x8CB2 = 0x195
+<pb_currstate                    > CAPSENSITIVE 0x8042 = 0x7
+<Puntaes                         > CAPSENSITIVE 0x98BA = 0x316
+<Paper                           > CAPSENSITIVE 0x9552 = 0x2A9
+<ptsout                          > CAPSENSITIVE 0x805A = 0xA
+<p_tlen                          > CAPSENSITIVE 0x812A = 0x24
+<ptsin                           > CAPSENSITIVE 0x805A = 0xA
+<p_tbase                         > CAPSENSITIVE 0x812A = 0x24
+<ptrdiff_t                       > CAPSENSITIVE 0x80EA = 0x1C
+<p_stdfh                         > CAPSENSITIVE 0x812A = 0x24
+<Ptermres                        > CAPSENSITIVE 0x9B2A = 0x364
+<p_resrvd0                       > CAPSENSITIVE 0x812A = 0x24
+<Pterm0                          > CAPSENSITIVE 0x9B22 = 0x363
+<p_parent                        > CAPSENSITIVE 0x812A = 0x24
+<Pterm                           > CAPSENSITIVE 0x9B1A = 0x362
+<p_lowtpa                        > CAPSENSITIVE 0x812A = 0x24
+<Prtblk                          > CAPSENSITIVE 0x98B2 = 0x315
+<p_hitpa                         > CAPSENSITIVE 0x812A = 0x24
+<Prozess-Routinen                > SCREEN_NAME  0x8D02 = 0x19F
+<p_env                           > CAPSENSITIVE 0x812A = 0x24
+<Protobt                         > CAPSENSITIVE 0x98AA = 0x314
+<p_dta                           > CAPSENSITIVE 0x812A = 0x24
+<ProgrammausfÅhrung              > SCREEN_NAME  0x9972 = 0x32D
+<p_dlen                          > CAPSENSITIVE 0x812A = 0x24
+<printf                          > CAPSENSITIVE 0x910A = 0x220
+<p_dbase                         > CAPSENSITIVE 0x812A = 0x24
+<pow10                           > CAPSENSITIVE 0x9102 = 0x21F
+<p_curdrv                        > CAPSENSITIVE 0x812A = 0x24
+<pow                             > CAPSENSITIVE 0x90FA = 0x21E
+<p_cmdlin                        > CAPSENSITIVE 0x812A = 0x24
+<pieslice                        > CAPSENSITIVE 0x83C2 = 0x77
+<p_blen                          > CAPSENSITIVE 0x812A = 0x24
+<Physbase                        > CAPSENSITIVE 0x98A2 = 0x313
+<p_bbase                         > CAPSENSITIVE 0x812A = 0x24
+<Pexec                           > CAPSENSITIVE 0x9B12 = 0x361
+<PCXSTART                        >  SENSITIVE   0x81CA = 0x38
+<perror                          > CAPSENSITIVE 0x90F2 = 0x21D
+<PCSTART                         >  SENSITIVE   0x81CA = 0x38
+<pb_yc                           > CAPSENSITIVE 0x8042 = 0x7
+<PC881LIB.LIB                    > SCREEN_NAME  0x81BA = 0x36
+<pb_y                            > CAPSENSITIVE 0x8042 = 0x7
+<PBDEF                           > CAPSENSITIVE 0x8182 = 0x2F
+<pb_xc                           > CAPSENSITIVE 0x8042 = 0x7
+<PARMBLK                         > CAPSENSITIVE 0x8042 = 0x7
+<pb_x                            > CAPSENSITIVE 0x8042 = 0x7
+<PAPER                           > CAPSENSITIVE 0x9552 = 0x2A9
+<pb_wc                           > CAPSENSITIVE 0x8042 = 0x7
+<PAL                             > CAPSENSITIVE 0x9712 = 0x2E1
+<objc_delete                     > CAPSENSITIVE 0x856A = 0xAC
+<outtextxy                       > CAPSENSITIVE 0x83BA = 0x76
+<objc_change                     > CAPSENSITIVE 0x859A = 0xB2
+<outtext                         > CAPSENSITIVE 0x83B2 = 0x75
+<objc_add                        > CAPSENSITIVE 0x8562 = 0xAB
+<open                            > CAPSENSITIVE 0x90EA = 0x21C
+<ob_y                            > CAPSENSITIVE 0x801A = 0x2
+<Ongibit                         > CAPSENSITIVE 0x989A = 0x312
+<ob_x                            > CAPSENSITIVE 0x801A = 0x2
+<offsetof                        > CAPSENSITIVE 0x90AA = 0x214
+<ob_width                        > CAPSENSITIVE 0x801A = 0x2
+<Offgibit                        > CAPSENSITIVE 0x9892 = 0x311
+<ob_type                         > CAPSENSITIVE 0x801A = 0x2
+<obspec                          > CAPSENSITIVE 0x8082 = 0xF
+<ob_tail                         > CAPSENSITIVE 0x801A = 0x2
+<Objektstatus                    > SCREEN_NAME  0x85B2 = 0xB5
+<ob_state                        > CAPSENSITIVE 0x801A = 0x2
+<Objektflags                     > SCREEN_NAME  0x85BA = 0xB6
+<ob_spec                         > CAPSENSITIVE 0x801A = 0x2
+<Objekte                         > SCREEN_NAME  0x855A = 0xAA
+<ob_next                         > CAPSENSITIVE 0x801A = 0x2
+<Objektbaum                      > SCREEN_NAME  0x85A2 = 0xB3
+<ob_height                       > CAPSENSITIVE 0x801A = 0x2
+<Objektart                       > SCREEN_NAME  0x85AA = 0xB4
+<ob_head                         > CAPSENSITIVE 0x801A = 0x2
+<objc_order                      > CAPSENSITIVE 0x858A = 0xB0
+<ob_flags                        > CAPSENSITIVE 0x801A = 0x2
+<objc_offset                     > CAPSENSITIVE 0x8582 = 0xAF
+<OVERSCAN                        > CAPSENSITIVE 0x9712 = 0x2E1
+<objc_find                       > CAPSENSITIVE 0x857A = 0xAE
+<ORECT                           > CAPSENSITIVE 0x806A = 0xC
+<objc_edit                       > CAPSENSITIVE 0x8592 = 0xB1
+<OBSPEC                          > CAPSENSITIVE 0x8082 = 0xF
+<objc_draw                       > CAPSENSITIVE 0x8572 = 0xAD
+<OBJECT                          > CAPSENSITIVE 0x801A = 0x2
+<numcl                           > CAPSENSITIVE 0x8132 = 0x25
+<name                            > CAPSENSITIVE 0x80C2 = 0x17
+<Next_line                       > CAPSENSITIVE 0x94BA = 0x296
+<NUMCOLS                         > CAPSENSITIVE 0x9712 = 0x2E1
+<Netzwerkfunktionen              > SCREEN_NAME  0x9982 = 0x32F
+<NEXT_LINE                       > CAPSENSITIVE 0x94BA = 0x296
+<menu_icheck                     > CAPSENSITIVE 0x864A = 0xC8
+<Mxalloc                         > CAPSENSITIVE 0x9AEA = 0x35C
+<menu_bar                        > CAPSENSITIVE 0x863A = 0xC6
+<Mshrink                         > CAPSENSITIVE 0x9B02 = 0x35F
+<memset                          > CAPSENSITIVE 0x90CA = 0x218
+<moveto                          > CAPSENSITIVE 0x83AA = 0x74
+<memmove                         > CAPSENSITIVE 0x90C2 = 0x217
+<moverel                         > CAPSENSITIVE 0x83A2 = 0x73
+<memcpy                          > CAPSENSITIVE 0x90D2 = 0x219
+<mon_type                        > CAPSENSITIVE 0x9722 = 0x2E3
+<memcmp                          > CAPSENSITIVE 0x90BA = 0x216
+<modf                            > CAPSENSITIVE 0x90E2 = 0x21B
+<memchr                          > CAPSENSITIVE 0x90B2 = 0x215
+<mode                            > SCREEN_NAME  0x8F02 = 0x1DF
+<Mediach                         > CAPSENSITIVE 0x947A = 0x28E
+<mktime                          > CAPSENSITIVE 0x90DA = 0x21A
+<maxlen                          > CAPSENSITIVE 0x8102 = 0x1F
+<Midiws                          > CAPSENSITIVE 0x988A = 0x310
+<Mathematische Routinen          > SCREEN_NAME  0x8CFA = 0x19E
+<Mfree                           > CAPSENSITIVE 0x9AFA = 0x35E
+<maptabsize                      > CAPSENSITIVE 0x8172 = 0x2D
+<Mfpint                          > CAPSENSITIVE 0x9882 = 0x30F
+<maptab                          > CAPSENSITIVE 0x8172 = 0x2D
+<mf_yhot                         > CAPSENSITIVE 0x804A = 0x8
+<Manipulationsflags              > SCREEN_NAME  0x85BA = 0xB6
+<mf_xhot                         > CAPSENSITIVE 0x804A = 0x8
+<Malloc                          > CAPSENSITIVE 0x9AE2 = 0x35B
+<mf_nplanes                      > CAPSENSITIVE 0x804A = 0x8
+<malloc                          > CAPSENSITIVE 0x909A = 0x212
+<mf_mask                         > CAPSENSITIVE 0x804A = 0x8
+<Maddalt                         > CAPSENSITIVE 0x9AF2 = 0x35D
+<mf_fg                           > CAPSENSITIVE 0x804A = 0x8
+<MPB                             > CAPSENSITIVE 0x8162 = 0x2B
+<mf_data                         > CAPSENSITIVE 0x804A = 0x8
+<MOUSE                           > CAPSENSITIVE 0x814A = 0x28
+<mf_bg                           > CAPSENSITIVE 0x804A = 0x8
+<MOBLK                           > CAPSENSITIVE 0x8062 = 0xB
+<MenÅs                           > SCREEN_NAME  0x8632 = 0xC5
+<MN_SELECTED                     > CAPSENSITIVE 0x84E2 = 0x9B
+<menu_tnormal                    > CAPSENSITIVE 0x8642 = 0xC7
+<MFORM                           > CAPSENSITIVE 0x804A = 0x8
+<menu_text                       > CAPSENSITIVE 0x8662 = 0xCB
+<MFDB                            > CAPSENSITIVE 0x8052 = 0x9
+<menu_register                   > CAPSENSITIVE 0x865A = 0xCA
+<MD                              > CAPSENSITIVE 0x815A = 0x2A
+<menu_ienable                    > CAPSENSITIVE 0x8652 = 0xC9
+<MAPTAB                          > CAPSENSITIVE 0x816A = 0x2C
+<Line_feed                       > CAPSENSITIVE 0x94B2 = 0x295
+<ltoa                            > CAPSENSITIVE 0x9092 = 0x211
+<line (BGI)                      > CAPSENSITIVE 0x838A = 0x70
+<lseek                           > CAPSENSITIVE 0x908A = 0x210
+<line                            > CAPSENSITIVE 0x838A = 0x70
+<longjmp                         > CAPSENSITIVE 0x9082 = 0x20F
+<Libraries                       > CAPSENSITIVE 0x81B2 = 0x35
+<Logbase                         > CAPSENSITIVE 0x987A = 0x30E
+<length                          > CAPSENSITIVE 0x8142 = 0x27
+<log10                           > CAPSENSITIVE 0x907A = 0x20E
+<ldiv_t                          > CAPSENSITIVE 0x81A2 = 0x33
+<log                             > CAPSENSITIVE 0x9072 = 0x20D
+<ldiv                            > CAPSENSITIVE 0x9062 = 0x20B
+<locksnd                         > CAPSENSITIVE 0x9752 = 0x2E9
+<ldexp                           > CAPSENSITIVE 0x905A = 0x20A
+<localtime                       > CAPSENSITIVE 0x906A = 0x20C
+<Laufwerksfunktionen             > SCREEN_NAME  0x95CA = 0x2B8
+<Load_pos                        > CAPSENSITIVE 0x953A = 0x2A6
+<labs                            > CAPSENSITIVE 0x9052 = 0x209
+<lineto                          > CAPSENSITIVE 0x839A = 0x72
+<LOAD_POS                        > CAPSENSITIVE 0x953A = 0x2A6
+<linerel                         > CAPSENSITIVE 0x8392 = 0x71
+<LINE                            > CAPSENSITIVE 0x8102 = 0x1F
+<Kontrollfunktionen              > SCREEN_NAME  0x8792 = 0xF1
+<kb_statvec                      > CAPSENSITIVE 0x8122 = 0x23
+<Kontrolle                       > CAPSENSITIVE 0x81EA = 0x3C
+<kb_mousevec                     > CAPSENSITIVE 0x8122 = 0x23
+<Keytbl                          > CAPSENSITIVE 0x9872 = 0x30D
+<kb_midivec                      > CAPSENSITIVE 0x8122 = 0x23
+<Kbshift                         > CAPSENSITIVE 0x9472 = 0x28D
+<kb_midisys                      > CAPSENSITIVE 0x8122 = 0x23
+<Kbrate                          > CAPSENSITIVE 0x986A = 0x30C
+<kb_kbdsys                       > CAPSENSITIVE 0x8122 = 0x23
+<kbhit                           > CAPSENSITIVE 0x904A = 0x208
+<kb_joyvec                       > CAPSENSITIVE 0x8122 = 0x23
+<Kbdvbase                        > CAPSENSITIVE 0x985A = 0x30A
+<kb_clockvec                     > CAPSENSITIVE 0x8122 = 0x23
+<kb_vmiderr                      > CAPSENSITIVE 0x8122 = 0x23
+<KEYTAB                          > CAPSENSITIVE 0x8152 = 0x29
+<kb_vkbderr                      > CAPSENSITIVE 0x8122 = 0x23
+<KBDVBASE                        > CAPSENSITIVE 0x8122 = 0x23
+<Jenabint                        > CAPSENSITIVE 0x9852 = 0x309
+<Jdisint                         > CAPSENSITIVE 0x984A = 0x308
+<itoa                            > CAPSENSITIVE 0x9042 = 0x207
+<Index                           > SCREEN_NAME  0x8012 = 0x1
+<isxdigit                        > CAPSENSITIVE 0x903A = 0x206
+<imagesize                       > CAPSENSITIVE 0x836A = 0x6C
+<isupper                         > CAPSENSITIVE 0x9032 = 0x205
+<Ikbdws                          > CAPSENSITIVE 0x9832 = 0x305
+<isspace                         > CAPSENSITIVE 0x902A = 0x204
+<iconblk                         > CAPSENSITIVE 0x8082 = 0xF
+<ispunct                         > CAPSENSITIVE 0x9022 = 0x203
+<ibuftl                          > CAPSENSITIVE 0x811A = 0x22
+<isprint                         > CAPSENSITIVE 0x901A = 0x202
+<ibufsiz                         > CAPSENSITIVE 0x811A = 0x22
+<isodigit                        > CAPSENSITIVE 0x9012 = 0x201
+<ibuflow                         > CAPSENSITIVE 0x811A = 0x22
+<islower                         > CAPSENSITIVE 0x900A = 0x200
+<ibufhi                          > CAPSENSITIVE 0x811A = 0x22
+<isgraph                         > CAPSENSITIVE 0x9002 = 0x1FF
+<ibufhd                          > CAPSENSITIVE 0x811A = 0x22
+<isdigit                         > CAPSENSITIVE 0x8FFA = 0x1FE
+<ibuf                            > CAPSENSITIVE 0x811A = 0x22
+<iscntrl                         > CAPSENSITIVE 0x8FF2 = 0x1FD
+<ib_ytext                        > CAPSENSITIVE 0x8032 = 0x5
+<isatty                          > CAPSENSITIVE 0x8FCA = 0x1F8
+<ib_yicon                        > CAPSENSITIVE 0x8032 = 0x5
+<isascii                         > CAPSENSITIVE 0x8FEA = 0x1FC
+<ib_ychar                        > CAPSENSITIVE 0x8032 = 0x5
+<isalpha                         > CAPSENSITIVE 0x8FDA = 0x1FA
+<ib_xtext                        > CAPSENSITIVE 0x8032 = 0x5
+<isalnum                         > CAPSENSITIVE 0x8FE2 = 0x1FB
+<ib_xicon                        > CAPSENSITIVE 0x8032 = 0x5
+<Iorec                           > CAPSENSITIVE 0x9842 = 0x307
+<ib_xchar                        > CAPSENSITIVE 0x8032 = 0x5
+<iorec                           > CAPSENSITIVE 0x816A = 0x2C
+<ib_wtext                        > CAPSENSITIVE 0x8032 = 0x5
+<intout                          > CAPSENSITIVE 0x805A = 0xA
+<ib_wicon                        > CAPSENSITIVE 0x8032 = 0x5
+<intin                           > CAPSENSITIVE 0x805A = 0xA
+<ib_ptext                        > CAPSENSITIVE 0x8032 = 0x5
+<Interruptfunktionen             > SCREEN_NAME  0x95DA = 0x2BA
+<ib_pmask                        > CAPSENSITIVE 0x8032 = 0x5
+<interiorcol                     > CAPSENSITIVE 0x807A = 0xE
+<ib_pdata                        > CAPSENSITIVE 0x8032 = 0x5
+<installuserfont                 > CAPSENSITIVE 0x8382 = 0x6F
+<ib_htext                        > CAPSENSITIVE 0x8032 = 0x5
+<installuserdriver               > CAPSENSITIVE 0x837A = 0x6E
+<ib_hicon                        > CAPSENSITIVE 0x8032 = 0x5
+<Ins_line                        > CAPSENSITIVE 0x9522 = 0x2A3
+<ib_char                         > CAPSENSITIVE 0x8032 = 0x5
+<Ink                             > CAPSENSITIVE 0x954A = 0x2A8
+<IOREC                           > CAPSENSITIVE 0x811A = 0x22
+<Initmouse                       > CAPSENSITIVE 0x983A = 0x306
+<INS_LINE                        > CAPSENSITIVE 0x9522 = 0x2A3
+<initgraph                       > CAPSENSITIVE 0x8372 = 0x6D
+<INK                             > CAPSENSITIVE 0x954A = 0x2A8
+<indirect                        > CAPSENSITIVE 0x8082 = 0xF
+<ICONBLK                         > CAPSENSITIVE 0x8032 = 0x5
+<index                           > CAPSENSITIVE 0x8082 = 0xF
+<I/O-Routinen                    > SCREEN_NAME  0x8CDA = 0x19A
+<handle                          > CAPSENSITIVE 0x8782 = 0xEF
+<getmaxx                         > CAPSENSITIVE 0x82EA = 0x5C
+<graphresult                     > CAPSENSITIVE 0x8362 = 0x6B
+<getmaxmode                      > CAPSENSITIVE 0x82E2 = 0x5B
+<grapherrormsg                   > CAPSENSITIVE 0x834A = 0x68
+<getmaxcolor                     > CAPSENSITIVE 0x82DA = 0x5A
+<graphdefaults                   > CAPSENSITIVE 0x8342 = 0x67
+<getlinesettings                 > CAPSENSITIVE 0x82D2 = 0x59
+<grafische Textausgabe           > CAPSENSITIVE 0x8202 = 0x3F
+<getimage                        > CAPSENSITIVE 0x82CA = 0x58
+<Grafikfunktionen                > SCREEN_NAME  0x866A = 0xCC
+<getgraphmode                    > CAPSENSITIVE 0x82C2 = 0x57
+<graf_watchbox                   > CAPSENSITIVE 0x869A = 0xD2
+<getftime                        > CAPSENSITIVE 0x8FAA = 0x1F4
+<graf_slidebox                   > CAPSENSITIVE 0x86A2 = 0xD3
+<getfillsettings                 > CAPSENSITIVE 0x82BA = 0x56
+<graf_shrinkbox                  > CAPSENSITIVE 0x8692 = 0xD1
+<getfillpattern                  > CAPSENSITIVE 0x82B2 = 0x55
+<graf_rubbox                     > CAPSENSITIVE 0x8672 = 0xCD
+<getenv                          > CAPSENSITIVE 0x8FA2 = 0x1F3
+<graf_rubberbox                  > CAPSENSITIVE 0x8672 = 0xCD
+<getdrivername                   > CAPSENSITIVE 0x82AA = 0x54
+<graf_movebox                    > CAPSENSITIVE 0x8682 = 0xCF
+<getdisk                         > CAPSENSITIVE 0x8EBA = 0x1D6
+<graf_mouse                      > CAPSENSITIVE 0x86B2 = 0xD5
+<getdfree                        > CAPSENSITIVE 0x8EC2 = 0x1D7
+<graf_mkstate                    > CAPSENSITIVE 0x86BA = 0xD6
+<getdefaultpalette               > CAPSENSITIVE 0x82A2 = 0x53
+<graf_mbox                       > CAPSENSITIVE 0x8682 = 0xCF
+<getdate                         > CAPSENSITIVE 0x8F9A = 0x1F2
+<graf_handle                     > CAPSENSITIVE 0x86AA = 0xD4
+<getcwd                          > CAPSENSITIVE 0x8EB2 = 0x1D5
+<graf_growbox                    > CAPSENSITIVE 0x868A = 0xD0
+<getcurdir                       > CAPSENSITIVE 0x8EAA = 0x1D4
+<graf_dragbox                    > CAPSENSITIVE 0x867A = 0xCE
+<getcolor                        > CAPSENSITIVE 0x829A = 0x52
+<gpio                            > CAPSENSITIVE 0x97A2 = 0x2F3
+<getche                          > CAPSENSITIVE 0x8F92 = 0x1F1
+<Goto_pos                        > CAPSENSITIVE 0x9542 = 0x2A7
+<getchar                         > CAPSENSITIVE 0x8F8A = 0x1F0
+<gmtime                          > CAPSENSITIVE 0x8FD2 = 0x1F9
+<getch                           > CAPSENSITIVE 0x8F82 = 0x1EF
+<global                          > CAPSENSITIVE 0x805A = 0xA
+<getc                            > CAPSENSITIVE 0x8F7A = 0x1EE
+<Gleitkomma-Befehle              > SCREEN_NAME  0x8CAA = 0x194
+<Getbpb                          > CAPSENSITIVE 0x9462 = 0x28B
+<Giaccess                        > CAPSENSITIVE 0x982A = 0x304
+<getbkcolor                      > CAPSENSITIVE 0x8292 = 0x51
+<gety                            > CAPSENSITIVE 0x833A = 0x66
+<getaspectratio                  > CAPSENSITIVE 0x828A = 0x50
+<getx                            > CAPSENSITIVE 0x8332 = 0x65
+<getarccoords                    > CAPSENSITIVE 0x8282 = 0x4F
+<getviewsettings                 > CAPSENSITIVE 0x832A = 0x64
+<Get_blink                       > CAPSENSITIVE 0x95A2 = 0x2B3
+<Gettime                         > CAPSENSITIVE 0x9822 = 0x303
+<gemdos                          > CAPSENSITIVE 0x99AA = 0x334
+<gettime                         > CAPSENSITIVE 0x8FC2 = 0x1F7
+<gcvt                            > CAPSENSITIVE 0x8E1A = 0x1C2
+<gettextsettings                 > CAPSENSITIVE 0x8322 = 0x63
+<g_y                             > CAPSENSITIVE 0x8072 = 0xD
+<gets                            > CAPSENSITIVE 0x8FBA = 0x1F6
+<g_x                             > CAPSENSITIVE 0x8072 = 0xD
+<Getrez                          > CAPSENSITIVE 0x981A = 0x302
+<g_w                             > CAPSENSITIVE 0x8072 = 0xD
+<getpixel                        > CAPSENSITIVE 0x831A = 0x62
+<g_h                             > CAPSENSITIVE 0x8072 = 0xD
+<getpalettesize                  > CAPSENSITIVE 0x8312 = 0x61
+<GRECT                           > CAPSENSITIVE 0x8072 = 0xD
+<getpalette                      > CAPSENSITIVE 0x830A = 0x60
+<GOTO_POS                        > CAPSENSITIVE 0x9542 = 0x2A7
+<Getmpb                          > CAPSENSITIVE 0x946A = 0x28C
+<GEMPARBLK                       > CAPSENSITIVE 0x805A = 0xA
+<getmoderange                    > CAPSENSITIVE 0x8302 = 0x5F
+<GEMDOS                          > SCREEN_NAME  0x9962 = 0x32B
+<getmodename                     > CAPSENSITIVE 0x82FA = 0x5E
+<GEM                             > SCREEN_NAME  0x84AA = 0x94
+<getmaxy                         > CAPSENSITIVE 0x82F2 = 0x5D
+<GDOS                            > SCREEN_NAME  0x8772 = 0xED
+<form_button                     > CAPSENSITIVE 0x862A = 0xC4
+<Fwrite                          > CAPSENSITIVE 0x9ADA = 0x35A
+<form_alert                      > CAPSENSITIVE 0x8602 = 0xBF
+<fwrite                          > CAPSENSITIVE 0x8F72 = 0x1ED
+<Fopen                           > CAPSENSITIVE 0x9AA2 = 0x353
+<ftoa                            > CAPSENSITIVE 0x8D72 = 0x1AD
+<fopen                           > CAPSENSITIVE 0x8EFA = 0x1DE
+<ftimtotm                        > CAPSENSITIVE 0x8FB2 = 0x1F5
+<fmod                            > CAPSENSITIVE 0x8EF2 = 0x1DD
+<ftime                           > CAPSENSITIVE 0x80B2 = 0x15
+<Flopwr                          > CAPSENSITIVE 0x9812 = 0x301
+<ftell                           > CAPSENSITIVE 0x8F6A = 0x1EC
+<Flopver                         > CAPSENSITIVE 0x980A = 0x300
+<ft_year                         > CAPSENSITIVE 0x80B2 = 0x15
+<Floprd                          > CAPSENSITIVE 0x97FA = 0x2FE
+<ft_tsec                         > CAPSENSITIVE 0x80B2 = 0x15
+<Floprate                        > CAPSENSITIVE 0x9802 = 0x2FF
+<ft_month                        > CAPSENSITIVE 0x80B2 = 0x15
+<Flopfmt                         > CAPSENSITIVE 0x97E2 = 0x2FB
+<ft_min                          > CAPSENSITIVE 0x80B2 = 0x15
+<floor                           > CAPSENSITIVE 0x8EEA = 0x1DC
+<ft_hour                         > CAPSENSITIVE 0x80B2 = 0x15
+<floodfill                       > CAPSENSITIVE 0x827A = 0x4E
+<ft_day                          > CAPSENSITIVE 0x80B2 = 0x15
+<Flock                           > CAPSENSITIVE 0x9B0A = 0x360
+<fstat                           > CAPSENSITIVE 0x8EA2 = 0x1D3
+<findnext                        > CAPSENSITIVE 0x8E92 = 0x1D1
+<Fsnext                          > CAPSENSITIVE 0x9AD2 = 0x359
+<findfirst                       > CAPSENSITIVE 0x8E8A = 0x1D0
+<fsm_int                         > CAPSENSITIVE 0x81AA = 0x34
+<fillpoly                        > CAPSENSITIVE 0x8272 = 0x4D
+<fsm_fpoint_t                    > CAPSENSITIVE 0x81AA = 0x34
+<fillpattern                     > CAPSENSITIVE 0x807A = 0xE
+<fsm_data_fpoint_t               > CAPSENSITIVE 0x81AA = 0x34
+<fillellipse                     > CAPSENSITIVE 0x826A = 0x4C
+<fsm_component_t                 > CAPSENSITIVE 0x81AA = 0x34
+<fileno                          > CAPSENSITIVE 0x8E7A = 0x1CE
+<fsiz                            > CAPSENSITIVE 0x8132 = 0x25
+<filelength                      > CAPSENSITIVE 0x8E82 = 0x1CF
+<Fsfirst                         > CAPSENSITIVE 0x9ACA = 0x358
+<fgets                           > CAPSENSITIVE 0x8E72 = 0x1CD
+<fsetpos                         > CAPSENSITIVE 0x8F62 = 0x1EB
+<fgetpos                         > CAPSENSITIVE 0x8E6A = 0x1CC
+<Fsetdta                         > CAPSENSITIVE 0x9AC2 = 0x357
+<Fgetdta                         > CAPSENSITIVE 0x9A9A = 0x352
+<fsel_input                      > CAPSENSITIVE 0x875A = 0xEA
+<fgetc                           > CAPSENSITIVE 0x8E62 = 0x1CB
+<fsel_exinput                    > CAPSENSITIVE 0x8762 = 0xEB
+<Fforce                          > CAPSENSITIVE 0x9A92 = 0x351
+<Fseek                           > CAPSENSITIVE 0x9ABA = 0x356
+<fflush                          > CAPSENSITIVE 0x8E5A = 0x1CA
+<fseek                           > CAPSENSITIVE 0x8F5A = 0x1EA
+<ffblk                           > CAPSENSITIVE 0x8092 = 0x11
+<fscanf                          > CAPSENSITIVE 0x8F4A = 0x1E8
+<ff_name                         > CAPSENSITIVE 0x8092 = 0x11
+<frexp                           > CAPSENSITIVE 0x8F42 = 0x1E7
+<ff_ftime                        > CAPSENSITIVE 0x8092 = 0x11
+<freopen                         > CAPSENSITIVE 0x8F3A = 0x1E6
+<ff_fsize                        > CAPSENSITIVE 0x8092 = 0x11
+<Frename                         > CAPSENSITIVE 0x9AB2 = 0x355
+<ff_fdate                        > CAPSENSITIVE 0x8092 = 0x11
+<free_string                     > CAPSENSITIVE 0x8082 = 0xF
+<ff_attrib                       > CAPSENSITIVE 0x8092 = 0x11
+<free                            > CAPSENSITIVE 0x8F32 = 0x1E5
+<ferror                          > CAPSENSITIVE 0x8E52 = 0x1C9
+<Fread                           > CAPSENSITIVE 0x9AAA = 0x354
+<feof                            > CAPSENSITIVE 0x8E4A = 0x1C8
+<fread                           > CAPSENSITIVE 0x8F2A = 0x1E4
+<Fenster                         > SCREEN_NAME  0x8502 = 0x9F
+<framesize                       > CAPSENSITIVE 0x807A = 0xE
+<Fehlerbehandlung                > CAPSENSITIVE 0x8212 = 0x41
+<framecol                        > CAPSENSITIVE 0x807A = 0xE
+<Fdup                            > CAPSENSITIVE 0x9A8A = 0x350
+<fputs                           > CAPSENSITIVE 0x8F22 = 0x1E3
+<Fdelete                         > CAPSENSITIVE 0x9A82 = 0x34F
+<fputc                           > CAPSENSITIVE 0x8F1A = 0x1E2
+<Fdatime                         > CAPSENSITIVE 0x9A7A = 0x34E
+<fpumode                         > CAPSENSITIVE 0x9362 = 0x26B
+<fcvt                            > CAPSENSITIVE 0x8E12 = 0x1C1
+<fprintf                         > CAPSENSITIVE 0x8F12 = 0x1E1
+<Fcreate                         > CAPSENSITIVE 0x9A72 = 0x34D
+<fpos_t                          > CAPSENSITIVE 0x80E2 = 0x1B
+<Fclose                          > CAPSENSITIVE 0x9A6A = 0x34C
+<Formulare                       > SCREEN_NAME  0x85F2 = 0xBD
+<fclose                          > CAPSENSITIVE 0x8E42 = 0x1C7
+<Format-String (scanf)           > SCREEN_NAME  0x91AA = 0x234
+<Fattrib                         > CAPSENSITIVE 0x9A62 = 0x34B
+<Format-String (printf)          > SCREEN_NAME  0x9112 = 0x221
+<fatrec                          > CAPSENSITIVE 0x8132 = 0x25
+<Format                          > SCREEN_NAME  0x9132 = 0x225
+<Farbmanipulation und Farb-Pal   > SCREEN_NAME  0x820A = 0x40
+<form_keybd                      > CAPSENSITIVE 0x8622 = 0xC3
+<fabs                            > CAPSENSITIVE 0x8E3A = 0x1C6
+<form_error                      > CAPSENSITIVE 0x8612 = 0xC1
+<FSMGDOS                         > SCREEN_NAME  0x877A = 0xEE
+<form_do                         > CAPSENSITIVE 0x85FA = 0xBE
+<FSM                             > SCREEN_NAME  0x877A = 0xEE
+<form_dial                       > CAPSENSITIVE 0x860A = 0xC0
+<FILE                            > CAPSENSITIVE 0x819A = 0x32
+<form_center                     > CAPSENSITIVE 0x861A = 0xC2
+<FALC_VGA                        > CAPSENSITIVE 0x9712 = 0x2E1
+<exp                             > CAPSENSITIVE 0x8E32 = 0x1C5
+<EsetPalette                     > CAPSENSITIVE 0x993A = 0x326
+<exit                            > CAPSENSITIVE 0x8E2A = 0x1C4
+<EsetGray                        > CAPSENSITIVE 0x994A = 0x328
+<exec                            > CAPSENSITIVE 0x8E22 = 0x1C3
+<EsetColor                       > CAPSENSITIVE 0x9932 = 0x325
+<exception                       > CAPSENSITIVE 0x80C2 = 0x17
+<EsetBank                        > CAPSENSITIVE 0x992A = 0x324
+<evnt_timer                      > CAPSENSITIVE 0x84FA = 0x9E
+<Escapefunktionen                > SCREEN_NAME  0x87C2 = 0xF7
+<evnt_multi                      > CAPSENSITIVE 0x84F2 = 0x9D
+<errno                           > CAPSENSITIVE 0x93FA = 0x27E
+<evnt_mouse                      > CAPSENSITIVE 0x84EA = 0x9C
+<Ereignisverwaltung              > SCREEN_NAME  0x84BA = 0x96
+<evnt_mesag                      > CAPSENSITIVE 0x84DA = 0x9A
+<ellipse                         > CAPSENSITIVE 0x8262 = 0x4B
+<evnt_keybd                      > CAPSENSITIVE 0x84C2 = 0x97
+<Eingabefunktionen               > SCREEN_NAME  0x87B2 = 0xF5
+<evnt_dclick                     > CAPSENSITIVE 0x84D2 = 0x99
+<EgetShift                       > CAPSENSITIVE 0x9922 = 0x323
+<evnt_button                     > CAPSENSITIVE 0x84CA = 0x98
+<EgetPalette                     > CAPSENSITIVE 0x9942 = 0x327
+<ev_mgpbuff                      > CAPSENSITIVE 0x84E2 = 0x9B
+<ecvt                            > CAPSENSITIVE 0x8E0A = 0x1C0
+<EsetSmear                       > CAPSENSITIVE 0x9952 = 0x329
+<END_UPDATE                      > CAPSENSITIVE 0x854A = 0xA8
+<EsetShift                       > CAPSENSITIVE 0x991A = 0x322
+<END_MCTRL                       > CAPSENSITIVE 0x854A = 0xA8
+<div_t                           > CAPSENSITIVE 0x80FA = 0x1E
+<Dynamische Verwaltung des Spe   > SCREEN_NAME  0x8CD2 = 0x199
+<div                             > CAPSENSITIVE 0x8E02 = 0x1BF
+<dxcnv                           > CAPSENSITIVE 0x935A = 0x26A
+<Directory-Routinen              > SCREEN_NAME  0x8CCA = 0x198
+<dsptristate                     > CAPSENSITIVE 0x979A = 0x2F2
+<difftime                        > CAPSENSITIVE 0x8DFA = 0x1BE
+<Dsp_Unlock                      > CAPSENSITIVE 0x967A = 0x2CE
+<Dgetpath                        > CAPSENSITIVE 0x9A4A = 0x348
+<Dsp_TriggerHC                   > CAPSENSITIVE 0x96B2 = 0x2D5
+<Dgetdrv                         > CAPSENSITIVE 0x9A42 = 0x347
+<Dsp_SetVectors                  > CAPSENSITIVE 0x965A = 0x2CA
+<Dfree                           > CAPSENSITIVE 0x9A3A = 0x346
+<Dsp_RunSubroutine               > CAPSENSITIVE 0x96E2 = 0x2DB
+<dfree                           > CAPSENSITIVE 0x80AA = 0x14
+<Dsp_Reserve                     > CAPSENSITIVE 0x968A = 0x2D0
+<df_total                        > CAPSENSITIVE 0x80AA = 0x14
+<Dsp_RequestUniqueAbility        > CAPSENSITIVE 0x96BA = 0x2D6
+<df_sclus                        > CAPSENSITIVE 0x80AA = 0x14
+<Dsp_RemoveInterrupts            > CAPSENSITIVE 0x9662 = 0x2CB
+<df_bsec                         > CAPSENSITIVE 0x80AA = 0x14
+<Dsp_OutStream                   > CAPSENSITIVE 0x964A = 0x2C8
+<df_avail                        > CAPSENSITIVE 0x80AA = 0x14
+<Dsp_MultBlocks                  > CAPSENSITIVE 0x963A = 0x2C6
+<devconnect                      > CAPSENSITIVE 0x97AA = 0x2F4
+<Dsp_LodToBinary                 > CAPSENSITIVE 0x96AA = 0x2D4
+<detectgraph                     > CAPSENSITIVE 0x8252 = 0x49
+<Dsp_Lock                        > CAPSENSITIVE 0x9672 = 0x2CD
+<delay                           > CAPSENSITIVE 0x8EE2 = 0x1DB
+<Dsp_LoadSubroutine              > CAPSENSITIVE 0x96D2 = 0x2D9
+<Del_line                        > CAPSENSITIVE 0x952A = 0x2A4
+<Dsp_LoadProg                    > CAPSENSITIVE 0x9692 = 0x2D1
+<Ddelete                         > CAPSENSITIVE 0x9A32 = 0x345
+<Dsp_InqSubrAbility              > CAPSENSITIVE 0x96DA = 0x2DA
+<Dcreate                         > CAPSENSITIVE 0x9A2A = 0x344
+<Dsp_InStream                    > CAPSENSITIVE 0x9642 = 0x2C7
+<Datum, Uhrzeit und Zeitgeber    > SCREEN_NAME  0x95D2 = 0x2B9
+<Dsp_IOStream                    > CAPSENSITIVE 0x9652 = 0x2C9
+<Datum und Uhrzeit (GEMDOS)      > SCREEN_NAME  0x999A = 0x332
+<Dsp_Hf3                         > CAPSENSITIVE 0x9702 = 0x2DF
+<Datum und Uhrzeit               > SCREEN_NAME  0x8CC2 = 0x197
+<Dsp_Hf2                         > CAPSENSITIVE 0x96FA = 0x2DE
+<datrec                          > CAPSENSITIVE 0x8132 = 0x25
+<Dsp_Hf1                         > CAPSENSITIVE 0x96F2 = 0x2DD
+<Dateifunktionen                 > SCREEN_NAME  0x997A = 0x32E
+<Dsp_Hf0                         > CAPSENSITIVE 0x96EA = 0x2DC
+<Dateiauswahl                    > SCREEN_NAME  0x8752 = 0xE9
+<Dsp_HStat                       > CAPSENSITIVE 0x970A = 0x2E0
+<date (DOSTIME)                  > SCREEN_NAME  0x813A = 0x26
+<Dsp_GetWordSize                 > CAPSENSITIVE 0x966A = 0x2CC
+<date                            > CAPSENSITIVE 0x809A = 0x12
+<Dsp_GetProgAbility              > CAPSENSITIVE 0x96C2 = 0x2D7
+<da_year                         > CAPSENSITIVE 0x809A = 0x12
+<Dsp_FlushSubroutines            > CAPSENSITIVE 0x96CA = 0x2D8
+<da_mon                          > CAPSENSITIVE 0x809A = 0x12
+<Dsp_ExecProg                    > CAPSENSITIVE 0x969A = 0x2D2
+<da_day                          > CAPSENSITIVE 0x809A = 0x12
+<Dsp_ExecBoot                    > CAPSENSITIVE 0x96A2 = 0x2D3
+<d_time                          > CAPSENSITIVE 0x810A = 0x20
+<Dsp_DoBlock                     > CAPSENSITIVE 0x960A = 0x2C0
+<d_length                        > CAPSENSITIVE 0x810A = 0x20
+<Dsp_BlkWords                    > CAPSENSITIVE 0x9622 = 0x2C3
+<d_fname                         > CAPSENSITIVE 0x810A = 0x20
+<Dsp_BlkUnpacked                 > CAPSENSITIVE 0x961A = 0x2C2
+<d_date                          > CAPSENSITIVE 0x810A = 0x20
+<Dsp_BlkHandShake                > CAPSENSITIVE 0x9612 = 0x2C1
+<d_attrib                        > CAPSENSITIVE 0x810A = 0x20
+<Dsp_BlkBytes                    > CAPSENSITIVE 0x962A = 0x2C4
+<DTA                             > CAPSENSITIVE 0x810A = 0x20
+<Dsp_Available                   > CAPSENSITIVE 0x9682 = 0x2CF
+<DSPBLOCK                        > CAPSENSITIVE 0x9632 = 0x2C5
+<Dsetpath                        > CAPSENSITIVE 0x9A5A = 0x34A
+<DSP-Programmierung              > SCREEN_NAME  0x9602 = 0x2BF
+<Dsetdrv                         > CAPSENSITIVE 0x9A52 = 0x349
+<DOSTIME                         > CAPSENSITIVE 0x813A = 0x26
+<Drvmap                          > CAPSENSITIVE 0x945A = 0x28A
+<DMAwrite                        > CAPSENSITIVE 0x97F2 = 0x2FD
+<Druckerfunktionen               > SCREEN_NAME  0x95C2 = 0x2B7
+<DMAread                         > CAPSENSITIVE 0x97EA = 0x2FC
+<drawpoly                        > CAPSENSITIVE 0x825A = 0x4A
+<DISKINFO                        > CAPSENSITIVE 0x8112 = 0x21
+<Dosound                         > CAPSENSITIVE 0x97DA = 0x2FA
+<DEL_LINE                        > CAPSENSITIVE 0x952A = 0x2A4
+<Clear_home                      > CAPSENSITIVE 0x94F2 = 0x29D
+<Cursconf                        > CAPSENSITIVE 0x97D2 = 0x2F9
+<Clear_eol                       > CAPSENSITIVE 0x9512 = 0x2A1
+<Cur_up                          > CAPSENSITIVE 0x94C2 = 0x297
+<Clear_down                      > CAPSENSITIVE 0x94FA = 0x29E
+<Cur_right                       > CAPSENSITIVE 0x94DA = 0x29A
+<circle                          > CAPSENSITIVE 0x8232 = 0x45
+<Cur_on                          > CAPSENSITIVE 0x956A = 0x2AC
+<chdir                           > CAPSENSITIVE 0x8DAA = 0x1B4
+<Cur_off                         > CAPSENSITIVE 0x9572 = 0x2AD
+<character                       > CAPSENSITIVE 0x807A = 0xE
+<Cur_left                        > CAPSENSITIVE 0x94E2 = 0x29B
+<ceil                            > CAPSENSITIVE 0x8DA2 = 0x1B3
+<Cur_home                        > CAPSENSITIVE 0x94EA = 0x29C
+<Cconws                          > CAPSENSITIVE 0x99FA = 0x33E
+<Cur_down                        > CAPSENSITIVE 0x94D2 = 0x299
+<Cconrs                          > CAPSENSITIVE 0x99F2 = 0x33D
+<ctime                           > CAPSENSITIVE 0x8DF2 = 0x1BD
+<Cconout                         > CAPSENSITIVE 0x99E2 = 0x33B
+<creat                           > CAPSENSITIVE 0x8DEA = 0x1BC
+<Cconos                          > CAPSENSITIVE 0x99EA = 0x33C
+<Crawio                          > CAPSENSITIVE 0x9A22 = 0x343
+<Cconis                          > CAPSENSITIVE 0x99DA = 0x33A
+<Crawcin                         > CAPSENSITIVE 0x9A1A = 0x342
+<Cconin                          > CAPSENSITIVE 0x99D2 = 0x339
+<Cprnout                         > CAPSENSITIVE 0x9A12 = 0x341
+<Cauxout                         > CAPSENSITIVE 0x99CA = 0x338
+<Cprnos                          > CAPSENSITIVE 0x9A0A = 0x340
+<Cauxos                          > CAPSENSITIVE 0x99C2 = 0x337
+<cosh                            > CAPSENSITIVE 0x8DDA = 0x1BA
+<Cauxis                          > CAPSENSITIVE 0x99BA = 0x336
+<cos                             > CAPSENSITIVE 0x8DD2 = 0x1B9
+<Cauxin                          > CAPSENSITIVE 0x99B2 = 0x335
+<coreleft                        > CAPSENSITIVE 0x8DB2 = 0x1B5
+<calloc                          > CAPSENSITIVE 0x8D9A = 0x1B2
+<Copyright                       > SCREEN_NAME  0x800A = 0x0
+<CUR_UP                          > CAPSENSITIVE 0x94C2 = 0x297
+<contrl                          > CAPSENSITIVE 0x805A = 0xA
+<CUR_RIGHT                       > CAPSENSITIVE 0x94DA = 0x29A
+<command_tail                    > CAPSENSITIVE 0x8142 = 0x27
+<CUR_ON                          > CAPSENSITIVE 0x956A = 0x2AC
+<Cnecin                          > CAPSENSITIVE 0x9A02 = 0x33F
+<CUR_OFF                         > CAPSENSITIVE 0x9572 = 0x2AD
+<clsizb                          > CAPSENSITIVE 0x8132 = 0x25
+<CUR_LEFT                        > CAPSENSITIVE 0x94E2 = 0x29B
+<clsiz                           > CAPSENSITIVE 0x8132 = 0x25
+<CUR_HOME                        > CAPSENSITIVE 0x94EA = 0x29C
+<closegraph                      > CAPSENSITIVE 0x824A = 0x48
+<CUR_DOWN                        > CAPSENSITIVE 0x94D2 = 0x299
+<close                           > CAPSENSITIVE 0x8DCA = 0x1B8
+<COMMAND                         > CAPSENSITIVE 0x8142 = 0x27
+<clock_t                         > CAPSENSITIVE 0x80D2 = 0x19
+<COL80                           > CAPSENSITIVE 0x9712 = 0x2E1
+<clock                           > CAPSENSITIVE 0x8DC2 = 0x1B7
+<COL40                           > CAPSENSITIVE 0x9712 = 0x2E1
+<Clipboardfunktionen             > SCREEN_NAME  0x8702 = 0xDF
+<CLK_TCK                         > CAPSENSITIVE 0x80DA = 0x1A
+<clearviewport                   > CAPSENSITIVE 0x8242 = 0x47
+<CLEAR_UP                        > CAPSENSITIVE 0x9502 = 0x29F
+<clearerr                        > CAPSENSITIVE 0x8DBA = 0x1B6
+<CLEAR_SOL                       > CAPSENSITIVE 0x951A = 0x2A2
+<cleardevice                     > CAPSENSITIVE 0x823A = 0x46
+<CLEAR_LINE                      > CAPSENSITIVE 0x950A = 0x2A0
+<Clear_up                        > CAPSENSITIVE 0x9502 = 0x29F
+<CLEAR_HOME                      > CAPSENSITIVE 0x94F2 = 0x29D
+<Clear_sol                       > CAPSENSITIVE 0x951A = 0x2A2
+<CLEAR_EOL                       > CAPSENSITIVE 0x9512 = 0x2A1
+<Clear_line                      > CAPSENSITIVE 0x950A = 0x2A0
+<CLEAR_DOWN                      > CAPSENSITIVE 0x94FA = 0x29E
+<Bconstat                        > CAPSENSITIVE 0x944A = 0x288
+<buttons                         > CAPSENSITIVE 0x814A = 0x28
+<bconstat                        > CAPSENSITIVE 0x816A = 0x2C
+<buffptr                         > CAPSENSITIVE 0x97BA = 0x2F6
+<Bconout                         > CAPSENSITIVE 0x9442 = 0x287
+<buffoper                        > CAPSENSITIVE 0x9792 = 0x2F1
+<bconout                         > CAPSENSITIVE 0x816A = 0x2C
+<buffer                          > CAPSENSITIVE 0x8102 = 0x1F
+<Bconmap                         > CAPSENSITIVE 0x9862 = 0x30B
+<bsearch                         > CAPSENSITIVE 0x8D92 = 0x1B1
+<Bconin                          > CAPSENSITIVE 0x943A = 0x286
+<Blitmode                        > CAPSENSITIVE 0x97CA = 0x2F8
+<bconin                          > CAPSENSITIVE 0x816A = 0x2C
+<Blink_on                        > CAPSENSITIVE 0x958A = 0x2B0
+<bar3d                           > CAPSENSITIVE 0x822A = 0x44
+<Blink_off                       > CAPSENSITIVE 0x9592 = 0x2B1
+<bar                             > CAPSENSITIVE 0x8222 = 0x43
+<bitblk                          > CAPSENSITIVE 0x8082 = 0xF
+<b_total                         > CAPSENSITIVE 0x8112 = 0x21
+<Bioskeys                        > CAPSENSITIVE 0x97C2 = 0x2F7
+<b_secsiz                        > CAPSENSITIVE 0x8112 = 0x21
+<bios                            > CAPSENSITIVE 0x9432 = 0x285
+<b_free                          > CAPSENSITIVE 0x8112 = 0x21
+<BinÑrmodus                      > SCREEN_NAME  0x8F0A = 0x1E0
+<b_clsiz                         > CAPSENSITIVE 0x8112 = 0x21
+<Bildschirmfunktionen            > SCREEN_NAME  0x95BA = 0x2B6
+<BPS8                            > CAPSENSITIVE 0x9712 = 0x2E1
+<bi_y                            > CAPSENSITIVE 0x802A = 0x4
+<BPS4                            > CAPSENSITIVE 0x9712 = 0x2E1
+<bi_x                            > CAPSENSITIVE 0x802A = 0x4
+<BPS2                            > CAPSENSITIVE 0x9712 = 0x2E1
+<bi_wb                           > CAPSENSITIVE 0x802A = 0x4
+<BPS16                           > CAPSENSITIVE 0x9712 = 0x2E1
+<bi_pdata                        > CAPSENSITIVE 0x802A = 0x4
+<BPS1                            > CAPSENSITIVE 0x9712 = 0x2E1
+<bi_hl                           > CAPSENSITIVE 0x802A = 0x4
+<BPB                             > CAPSENSITIVE 0x8132 = 0x25
+<bi_color                        > CAPSENSITIVE 0x802A = 0x4
+<BITBLK                          > CAPSENSITIVE 0x802A = 0x4
+<bfobspec                        > CAPSENSITIVE 0x807A = 0xE
+<BIOS                            > SCREEN_NAME  0x9422 = 0x283
+<bflags                          > CAPSENSITIVE 0x8132 = 0x25
+<BGIOBJ                          > CAPSENSITIVE 0x84A2 = 0x93
+<Betriebssystem                  > SCREEN_NAME  0x81C2 = 0x37
+<BGI                             > CAPSENSITIVE 0x81E2 = 0x3B
+<Bell                            > CAPSENSITIVE 0x949A = 0x292
+<BEG_UPDATE                      > CAPSENSITIVE 0x854A = 0xA8
+<Behandlung variabler Argument   > SCREEN_NAME  0x8CE2 = 0x19B
+<BEG_MCTRL                       > CAPSENSITIVE 0x854A = 0xA8
+<Bcostat                         > CAPSENSITIVE 0x9452 = 0x289
+<BCONMAP                         > CAPSENSITIVE 0x8172 = 0x2D
+<bcostat                         > CAPSENSITIVE 0x816A = 0x2C
+<BASPAG                          > CAPSENSITIVE 0x812A = 0x24
+<Applikation                     > SCREEN_NAME  0x86C2 = 0xD7
+<Auskunftsfunktionen             > SCREEN_NAME  0x87BA = 0xF6
+<appl_write                      > CAPSENSITIVE 0x86E2 = 0xDB
+<Ausgabefunktionen               > SCREEN_NAME  0x879A = 0xF2
+<appl_trecord                    > CAPSENSITIVE 0x86FA = 0xDE
+<Attributfunktionen              > SCREEN_NAME  0x87A2 = 0xF3
+<appl_tplay                      > CAPSENSITIVE 0x86F2 = 0xDD
+<atol                            > CAPSENSITIVE 0x8D8A = 0x1B0
+<appl_read                       > CAPSENSITIVE 0x86DA = 0xDA
+<atoi                            > CAPSENSITIVE 0x8D82 = 0x1AF
+<appl_init                       > CAPSENSITIVE 0x86CA = 0xD8
+<atof                            > CAPSENSITIVE 0x8D6A = 0x1AC
+<appl_find                       > CAPSENSITIVE 0x86D2 = 0xD9
+<atexit                          > CAPSENSITIVE 0x8D62 = 0x1AB
+<appl_exit                       > CAPSENSITIVE 0x86EA = 0xDC
+<atanh                           > CAPSENSITIVE 0x934A = 0x268
+<addrout                         > CAPSENSITIVE 0x805A = 0xA
+<atan2                           > CAPSENSITIVE 0x8D5A = 0x1AA
+<addrin                          > CAPSENSITIVE 0x805A = 0xA
+<atan                            > CAPSENSITIVE 0x8D52 = 0x1A9
+<actuallen                       > CAPSENSITIVE 0x8102 = 0x1F
+<assert                          > CAPSENSITIVE 0x8D4A = 0x1A8
+<acosh                           > CAPSENSITIVE 0x8DE2 = 0x1BB
+<asinh                           > CAPSENSITIVE 0x922A = 0x244
+<acos                            > CAPSENSITIVE 0x8D32 = 0x1A5
+<asin                            > CAPSENSITIVE 0x8D42 = 0x1A7
+<abs                             > CAPSENSITIVE 0x8D2A = 0x1A4
+<asctime                         > CAPSENSITIVE 0x8D3A = 0x1A6
+<abort                           > CAPSENSITIVE 0x8D22 = 0x1A3
+<arg2                            > CAPSENSITIVE 0x80C2 = 0x17
+<AES                             > SCREEN_NAME  0x84B2 = 0x95
+<arg1                            > CAPSENSITIVE 0x80C2 = 0x17
+<AC_OPEN                         > CAPSENSITIVE 0x84E2 = 0x9B
+<arc                             > CAPSENSITIVE 0x821A = 0x42
+<AC_CLOSE                        > CAPSENSITIVE 0x84E2 = 0x9B
+
+1177 names found.
+
+================================================================================
+			Link-table
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<XBios                           >    LINK      0x95AA from 0x2FC
+<STE-KompatibilitÑtsmodus        >    LINK      0x9762 from 0x2F4
+<einfacheren Kodierung           >    LINK      0x9712 from 0x2E2
+<Konstanten-Makros               >    LINK      0xFFFF from 0x296
+<#include                        >    LINK      0xFFFF from 0x284
+<Bios                            >    LINK      0x9422 from 0x284
+<Gemdos                          >    LINK      0x9962 from 0x284
+<flognp1                         >    LINK      0xFFFF from 0x27F
+<fetoxm1                         >    LINK      0xFFFF from 0x27F
+<fsglmul                         >    LINK      0xFFFF from 0x27F
+<fsgldiv                         >    LINK      0xFFFF from 0x27F
+<frem                            >    LINK      0xFFFF from 0x27F
+<fintrz                          >    LINK      0xFFFF from 0x27F
+<fint                            >    LINK      0xFFFF from 0x27F
+<fgetman                         >    LINK      0xFFFF from 0x27F
+<fgetexp                         >    LINK      0xFFFF from 0x27F
+<struct time                     >    LINK      0x80A2 from 0x26C
+<Flieûkommaformat                >    LINK      0xFFFF from 0x269
+<short                           >    LINK      0xFFFF from 0x237
+<Format-string                   >    LINK      0x91AA from 0x236
+<Typ                             >    LINK      0x9132 from 0x221
+<[h|l|L]                         >    LINK      0x913A from 0x221
+<[Breite]                        >    LINK      0x9122 from 0x221
+<sizeof                          >    LINK      0xFFFF from 0x1ED
+<Escapesequenzen                 >    LINK      0xFFFF from 0x1E2
+<Format-String                   >    LINK      0x9112 from 0x1E1
+<Standardbehandlung              >    LINK      0x8ECA from 0x1D9
+<struct dfree                    >    LINK      0x80AA from 0x1D7
+<struct stat                     >    LINK      0x80BA from 0x1D2
+<printf-E-Format                 >    LINK      0x9112 from 0x1C2
+<NULL                            >    LINK      0xFFFF from 0x1B1
+<PrÑprozessor                    >    LINK      0xFFFF from 0x1A8
+<#undef                          >    LINK      0xFFFF from 0x1A4
+<Funktionen-Makros               >    LINK      0xFFFF from 0x1A4
+<int                             >    LINK      0xFFFF from 0x1A4
+<unsigned                        >    LINK      0xFFFF from 0x1A2
+<long                            >    LINK      0xFFFF from 0x1A2
+<double                          >    LINK      0xFFFF from 0x1A2
+<String- und Speichermanipulation>    LINK      0x8D1A from 0x196
+<Zeichen-Klassifizierungs-Routine>    LINK      0x8CEA from 0x196
+<Behandlung variabler Argumente  >    LINK      0x8CE2 from 0x196
+<Dynamische Verwaltung des Speich>    LINK      0x8CD2 from 0x196
+<Projektdatei                    >    LINK      0xFFFF from 0x194
+<FSM-Font                        >    LINK      0x877A from 0x14B
+<Prototypen                      >    LINK      0xFFFF from 0x95
+<Betriebssystemumgebung          >    LINK      0x81C2 from 0x94
+<Zugriffe auf den Bildschirmspeic>    LINK      0x81FA from 0x46
+<Farbmanipulation und Farb-Palett>    LINK      0x820A from 0x3B
+<Zugriffe auf den Bildspeicher un>    LINK      0x81FA from 0x3B
+<main                            >    LINK      0xFFFF from 0x38
+<argc                            >    LINK      0xFFFF from 0x38
+<argv                            >    LINK      0xFFFF from 0x38
+<envp                            >    LINK      0xFFFF from 0x38
+<Compileroptionen                >    LINK      0xFFFF from 0x36
+<ParameterÅbergabe               >    LINK      0xFFFF from 0x35
+<#define                         >    LINK      0xFFFF from 0x1A
+<Dateiattributen                 >    LINK      0x8E8A from 0x16
+<union                           >    LINK      0xFFFF from 0xF
+<cdecl                           >    LINK      0xFFFF from 0x6
+
+59 link cross-references found.
+	*** WARNING: Global cross-reference <cdecl>
+	*** WARNING: Global cross-reference <union>
+	*** WARNING: Global cross-reference <#define>
+	*** WARNING: Global cross-reference <ParameterÅbergabe>
+	*** WARNING: Global cross-reference <Compileroptionen>
+	*** WARNING: Global cross-reference <envp>
+	*** WARNING: Global cross-reference <argv>
+	*** WARNING: Global cross-reference <argc>
+	*** WARNING: Global cross-reference <main>
+	*** WARNING: Global cross-reference <Prototypen>
+	*** WARNING: Global cross-reference <Projektdatei>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <unsigned>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <#undef>
+	*** WARNING: Global cross-reference <PrÑprozessor>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <sizeof>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <short>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <short>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <int>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <long>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <double>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <Flieûkommaformat>
+	*** WARNING: Global cross-reference <Flieûkommaformat>
+	*** WARNING: Global cross-reference <Flieûkommaformat>
+	*** WARNING: Global cross-reference <Flieûkommaformat>
+	*** WARNING: Global cross-reference <Flieûkommaformat>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <NULL>
+	*** WARNING: Global cross-reference <Compileroptionen>
+	*** WARNING: Global cross-reference <fgetexp>
+	*** WARNING: Global cross-reference <fgetman>
+	*** WARNING: Global cross-reference <fint>
+	*** WARNING: Global cross-reference <fintrz>
+	*** WARNING: Global cross-reference <frem>
+	*** WARNING: Global cross-reference <fsgldiv>
+	*** WARNING: Global cross-reference <fsglmul>
+	*** WARNING: Global cross-reference <fetoxm1>
+	*** WARNING: Global cross-reference <flognp1>
+	*** WARNING: Global cross-reference <#include>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+	*** WARNING: Global cross-reference <Funktionen-Makros>
+	*** WARNING: Global cross-reference <Konstanten-Makros>
+	*** WARNING: Global cross-reference <Escapesequenzen>
+
+0 Errors. 203 Warnings. 203 Cross-references to other HELP-files.

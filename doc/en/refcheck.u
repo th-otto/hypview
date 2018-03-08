@@ -1,0 +1,210 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] The hypertext of
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] The Windows help of
+!else
+!ifdest [rtf]
+!docinfo [title] The book of
+!else
+!docinfo [title] The guide of
+!endif
+!endif
+!endif
+!docinfo [program] (!REFCHECK)
+!docinfo [author] Thorsten Otto
+
+!macro PROGRAM (!REFCHECK)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!ifdest [stg,amg]
+!begin_raw
+@subject "Documentation/ST-Guide"
+@options "+z -t4 +i"
+@extern HypView "hypview.hyp/Main"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+!end_raw
+!endif
+!docinfo [stgdatabase] REFCHECK Documentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!tableofcontents !depth 1
+!toc_title REFCHECK Documentation
+
+!raw [stg] @xref "HypView.hyp/Main" "HypView Documentation"
+!raw [stg] @xref "hyp.hyp/Main" "HCP Documentation"
+!raw [stg] @xref "stool.hyp/Main" "STool Documentation"
+
+!begin_node General
+!html_name refcheck_general
+
+The program REFCHECK is used to manage the REF files generated
+by (!HCP).
+
+!subtoc [all] !depth 1
+
+!begin_node CHECK-Mode (lowercase options)
+!html_name refcheck_check
+!end_node
+
+!begin_node LINK-Mode (uppercase options)
+!html_name refcheck_link
+!end_node
+
+!end_node # General
+
+!begin_node Calling RefCheck
+!html_name refcheck_usage
+
+!begin_node Global Option -[hH] (hold)
+!html_name refcheck_h
+!end_node
+
+!begin_node Global Option -[rR] (set REF)
+!html_name refcheck_r
+!end_node
+
+!begin_node CHECK-Option -a (add)
+!html_name refcheck_a
+!end_node
+
+!begin_node CHECK-Option -c (make catalog)
+!html_name refcheck_c
+!end_node
+
+!begin_node CHECK-Option -d (delete)
+!html_name refcheck_d
+!end_node
+
+!begin_node CHECK-Option -f (force making of catalog)
+!html_name refcheck_f
+!end_node
+
+!begin_node CHECK-Option -g (global)
+!html_name refcheck_g
+!end_node
+
+!begin_node CHECK-Option -i (interactive)
+!html_name refcheck_i
+!end_node
+
+!begin_node CHECK-Option -m (move)
+!html_name refcheck_m
+!end_node
+
+!begin_node CHECK-Option -s (silent)
+!html_name refcheck_s
+!end_node
+
+!begin_node LINK-Option -A (Add to reflib)
+!html_name refcheck_aa
+!end_node
+
+!begin_node LINK-Option -M (Move into REF)
+!html_name refcheck_mm
+!end_node
+
+!begin_node LINK-Option -D (Delete)
+!html_name refcheck_dd
+!end_node
+
+!begin_node LINK-Option -E (Extract)
+!html_name refcheck_ee
+!end_node
+
+!begin_node LINK-Option -F (list module names in REF-Files)
+!html_name refcheck_ff
+!end_node
+
+!begin_node LINK-Option -L (List contents of REF-files)
+!html_name refcheck_ll
+!end_node
+
+!end_node # Calling
+
+!begin_node Examples
+!html_name refcheck_example
+!end_node
+
+!begin_node Files
+!html_name refcheck_files
+!begin_xlist [ST-GUIDE.INF]
+    !item [ST-GUIDE.INF] (!nl)
+    Must be in the directory set by the environment variable $HOME.
+    This file is used to read the variables REF, PATHS, REFPATHS,
+    REFCHECK-OPT and $STOOL.
+!end_xlist
+!end_node
+
+!begin_node Environment
+!html_name refcheck_env
+!begin_xlist [SHELL]
+    !item [HOME] (!nl)
+        Will be used when search for (!file [ST-GUIDE.INF]).
+
+    !item [SHELL] (!nl)
+        Will be used when calling (!STOOL).
+!end_xlist
+!end_node
+
+!begin_node Copyright
+!html_name refcheck_copy
+!end_node
+
+!begin_node Author & Thanks
+!html_name refcheck_author
+!end_node
+
+!begin_appendix
+
+!begin_node Version History
+!html_name refcheck_version
+!end_node
+
+!include ref.ui
+
+!end_appendix
+
+!end_document

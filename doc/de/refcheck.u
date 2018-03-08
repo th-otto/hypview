@@ -1,0 +1,697 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Der Hypertext zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] (!REFCHECK)
+!docinfo [author] Thorsten Otto
+
+!macro PROGRAM (!REFCHECK)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!raw [stg] @subject "Dokumentation/ST-Guide"
+!raw [stg] @options "+zz -t4 +i -s"
+!docinfo [stgdatabase] REFCHECK Dokumentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!tableofcontents !depth 1
+!toc_title Dokumentation zu REFCHECK
+
+!raw [stg] @xref "HypView.hyp/Main" "HypView Dokumentation"
+!raw [stg] @xref "hcp.hyp/Main" "HCP Dokumentation"
+!raw [stg] @xref "stool.hyp/Main" "STool Dokumentation"
+
+!begin_node Allgemeines
+!html_name refcheck_general
+
+Das Programm REFCHECK dient dazu, die vom HCP erzeugten REF-Dateien und
+REF-Bibliotheken zu verwalten und auf dem Laufenden zu halten.
+
+Diese Bibliothek dient dem  ST-Guide  zum  Auffinden  von  Stichworten,
+welche in anderen als der aktuell dargestellten Hypertextdatei definiert
+wurden.
+
+Als Bibliothek wird hierbei defaultmÑûig die in der ST-GUIDE.INF-Variablen
+'REF' angegebene Datei verwendet. Falls diese Variable nicht existiert, und
+in der Kommandozeile auch keine Bibliotheks-Datei angegeben wurde
+(Option -r), so wird eine Datei namens 'ALL.REF' im aktuellen Verzeichnis
+verwendet.
+
+REFCHECK kennt zwei Arten von Optionen. Die kleingeschriebenen (CHECK-Modus)
+und die groûgeschriebenen (LINK-Modus). Diese Unterscheidung ergibt sich aus
+KompatibilitÑtsgrÅnden zu frÅheren Versionen und zu REFLINK. CHECK- und
+LINK-Optionen dÅrfen in der Kommandozeile nicht gemischt werden (also
+entweder oder)! Von den LINK-Optionen darf immer nur eine alleine benutzt
+werden.
+
+!subtoc [all] !depth 1
+
+!begin_node CHECK-Modus (kleine Optionsbuchstaben)
+!html_name refcheck_check
+Im CHECK-Modus liest REFCHECK zuerst aus der Datei ST-GUIDE.INF die
+Variablen PATHS und REF (Ausnahme siehe Option -r). Sollte auûerdem die
+Variable REFPATHS existieren, wird diese anstelle von PATHS benutzt. So kann
+man bestimmen, daû nur die REF-Dateien von Hypertexten aus bestimmten Pfaden
+in die ALL.REF aufgenommen werden.
+
+Die in der Variablen REF stehende REF-Bibliothek (z.B. ALL.REF) wird
+geladen und auf ihre Korrektheit und AktualitÑt ÅberprÅft.
+
+Dazu werden alle HYP-Dateien, die sich in den hinter [REF]PATHS angegebenen
+Pfaden befinden, gesucht, mit der ALL.REF verglichen und in der ALL.REF
+ÅberflÅssige Module (zu denen keine HYP-Datei existiert) angezeigt. Evtl.
+vorhandene (und zu den HYPs passende) REF-Dateien werden auf AktualitÑt und
+Existenz in der ALL.REF ÅberprÅft. Auf Wunsch wird die ALL.REF automatisch
+aktualisiert (Optionen -a, -d und -g).
+
+Wahlweise kann anschlieûend automatisch ein Programm zur Erzeugung eines
+neuen Kataloges aufgerufen werden ($STOOL).
+
+Ist die Option -s nicht gesetzt werden alle gefundenen HYP-Dateien und
+Modulnamen zusammen mit Offset und LÑnge des Moduls auf dem Bildschirm
+ausgegeben. Erscheint hinter einem Modulnamen ein Ausrufezeichen (!),
+bedeutet das, daû der Dateiname nicht mit dem Modulnamen Åbereinstimmt, was
+aber nur selten vorkommt. Bei solchen Hypertexten sollte man die REF-Datei
+nicht lîschen, weil REFCHECK sonst beim nÑchsten Lauf das Modul in der
+ALL.REF nicht zu einem Hypertext zuordnen kann und evtl. wieder lîschen
+lÑût! Bei gesetzter Option -m werden solche Files automatisch so behandelt,
+als wÑre nur die Option -a gesetzt!
+
+Der CHECK-Modus ist auch aktiv, wenn REFCHECK mit leerer Kommandozeile
+aufgerufen wird!
+!end_node
+
+!begin_node LINK-Modus (groûe Optionsbuchstaben)
+!html_name refcheck_link
+In diesem Modus kann man gezielt bestimmte REF-Dateien, REF-Bibliotheken
+und Module daraus bearbeiten (hinzufÅgen, lîschen, auflisten u.a.).
+
+Um die Bildschirm-Ausgaben von REFCHECK in eine Datei zu schreiben,
+benutzen Sie eine Kommando-Shell mit Ausgabeumlenkung (z.B. Mupfel)!
+!end_node
+
+!end_node
+
+!begin_node Aufruf
+!html_name refcheck_usage
+
+!begin_blist
+!item [Aufruf:]
+
+refcheck [-hH][-rR reflib][-acdfgims]|[[-A|-D|-E|-F|-L|-M] [file ...]]
+
+!item [Globale Optionen:]
+
+!begin_xlist [-r reflib oder -R reflib:] !compressed
+    !item [(!link [-h oder -H] [Option -h]):] Am Ende auf Tastendruck warten
+    !item [(!link [-r reflib oder -R reflib] [Option -r]):] Zu bearbeitende REF-Datei setzen
+                              (Default: REF aus ST-GUIDE.INF)
+!end_xlist
+
+!item [CHECK-Optionen:]
+
+!begin_xlist [-m:] !compressed
+    !item [-a:] Neue bzw. aktuellere REF-Dateien in REF aufnehmen/aktualisieren
+    !item [-c:] $STOOL aufrufen, falls énderungen gefunden wurden
+    !item [-d:] Bei in [REF]PATHS fehlenden HYP-Dateien die Module aus REF
+        lîschen
+    !item [-f:] $STOOL aufrufen
+    !item [-g:] Bei allen in [REF]PATHS gefundenen HYP-Dateien die REF-Dateien
+        (soweit vorhanden) in REF aufnehmen/aktualisieren
+    !item [-i:] Bei -a/-d/-g einzeln nachfragen
+    !item [-m:] Bei -a/-g die REF-Datei anschlieûend lîschen
+    !item [-s:] Sparsame Bildschirmausgaben
+!end_xlist
+
+Alle CHECK-Optionen kînnen auch Åber die Variable REFCHECK-OPT in der
+Datei ST-GUIDE.INF gesetzt werden. Diese Variable wird aber nur
+ausgewertet, wenn die Kommandozeile von REFCHECK leer ist!
+
+Beispiel: REFCHECK-OPT=ads
+
+!item [LINK-Optionen:]
+
+!label reffile
+Bedeutung der unten verwendeten Namen:
+!begin_xlist ['reffile'] !compressed
+!item ['reffile'] = REF-Datei (kann auch eine REF-Bibliothek sein).
+!label reflib
+!item ['reflib']  = REF-Bibliothek (mehrere REF-Dateien in einer Datei).
+!item ['REF']     = REF-Bibliothek, die in der ST-GUIDE.INF hinter der Variablen
+            REF angegeben ist bzw. die mit der Option -r gesetzte
+            REF-Bibliothek.
+!label module
+!item ['module']  = Bestandteil (einzelne REF-Datei) einer REF-Bibliothek, wobei
+            Module in einer REF-Bibliothek immer ohne die Extension
+            '.ref' erscheinen und auch so anzugeben sind.
+!end_xlist
+
+Angaben in eckigen Klammern sind optional und kînnen weggelassen werden.
+Drei Punkte bedeuten, daû beliebig viele Argumente des vor den Punkten
+stehenden Typs Åbergeben werden dÅrfen.
+
+!begin_xlist [[-A] reffile ... :] !compressed
+    !item [(!link [[-A!]] [Option -A]) reffile ... :] reffiles zu REF hinzufÅgen (default)
+    !item [-M reffile ... :] reffile in REF hineinschieben
+    !item [-D module ... :] modules aus REF lîschen
+    !item [-E module ... :] modules aus REF extrahieren
+    !item [-F [reflib ...!] :] Modulnamen aus reflibs (REF) auflisten
+    !item [-L [reflib ...!] :] Inhalt von reflibs (REF) auflisten
+!end_xlist
+
+Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
+
+!end_blist
+
+!begin_node Globale Option -[hH] (hold)
+!alias Option -h
+!alias -h
+!html_name refcheck_h
+!begin_xlist [-h oder -H]
+!item [-h oder -H] (!nl)
+        (hold) (!nl)
+        Am Ende auf Tastendruck warten.
+!end_xlist
+
+!end_node
+
+!begin_node Globale Option -[rR] (set REF)
+!alias Option -r
+!alias -r
+!html_name refcheck_r
+!begin_xlist [-h oder -H]
+!item [-r (!link [reflib] [reflib]) oder -R reflib] (!nl)
+        (set REF) (!nl)
+        Normalerweise wird bei allen Optionen/Kommandos automatisch die
+        REF-Bibliothek bearbeitet, die in der Datei ST-GUIDE.INF mit der
+        Variablen REF definiert ist. Mit dieser Option kann man eine
+        beliebige andere REF-Datei/-Bibliothek bestimmen, die stattdessen
+        bearbeitet wird.
+!end_xlist
+
+!end_node
+
+!begin_node CHECK-Option -a (add)
+!alias Option -a
+!alias -a
+!html_name refcheck_a
+!begin_xlist [-h oder -H]
+    !item [-a] (!nl)
+        (add) (!nl)
+        Neue bzw. aktuellere REF-Dateien in [REF]PATHS automatisch in REF
+        aufnehmen bzw. aktualisieren.
+!end_xlist
+!end_node
+
+!begin_node CHECK-Option -c (make catalog)
+!alias Option -c
+!alias -c
+!html_name refcheck_c
+!begin_xlist [-h oder -H]
+    !item [-c] (!nl)
+        (make catalog) (!nl)
+        Falls beim REFCHECK-Lauf énderungen gefunden wurden, wird
+        anschlieûend automatisch das Programm aufgerufen, das in der
+        (!file [ST-GUIDE.INF]) hinter der Variablen $STOOL definiert ist. Hierbei ist
+        mit 'énderungen' das HinzufÅgen von REF-Dateien oder das Lîschen von
+        Modulen gemeint (auch wenn dieses nur angezeigt und nicht
+        ausgefÅhrt wird).
+        
+        Da zuerst versucht wird, $STOOL Åber das system()-Kommando zu
+        starten, kann es sich dabei z.B. auch um ein Mupfel-Script handeln,
+        sofern eine System-Shell installiert ist!
+!end_xlist
+
+!end_node
+
+!begin_node CHECK-Option -d (delete)
+!alias Option -d
+!alias -d
+!html_name refcheck_d
+!begin_xlist [-h oder -H]
+    !item [-d] (!nl)
+        (delete) (!nl)
+        Bei in [REF]PATHS nicht mehr vorhandenen HYP-Dateien automatisch
+        die dazu gehîrenden Module aus REF lîschen.
+!end_xlist
+
+!end_node
+
+!begin_node CHECK-Option -f (force making of catalog)
+!alias Option -f
+!alias -f
+!html_name refcheck_f
+!begin_xlist [-h oder -H]
+    !item [-f] (!nl)
+        (force making of catalog) (!nl)
+        Hiermit wird $STOOL nach dem REFCHECK-Lauf immer aufgerufen, auch
+        wenn keine énderungen gefunden wurden. Ansonsten gelten die
+        Aussagen bei der Beschreibung zur Option -c.
+        
+        Die Option -f ist dann sinnvoll, wenn man die Variable REFPATHS
+        in ST-GUIDE.INF definiert hat und somit evtl. nicht alle Hypertexte
+        erfaût werden.
+!end_xlist
+
+!end_node
+
+!begin_node CHECK-Option -g (global)
+!alias Option -g
+!alias -g
+!html_name refcheck_g
+!begin_xlist [-h oder -H]
+    !item [-g] (!nl)
+        (global) (!nl)
+        Alle in [REF]PATHS gefundenen REF-Dateien in REF aufnehmen bzw.
+        aktualisieren, egal ob schon vorhanden und/oder gleiche ModullÑnge.
+!end_xlist
+
+!end_node
+
+!begin_node CHECK-Option -i (interactive)
+!alias Option -i
+!alias -i
+!html_name refcheck_i
+!begin_xlist [-h oder -H]
+    !item [-i] (!nl)
+        (interactive) (!nl)
+        Bei a/d/g einzeln nachfragen. Dabei wird jeweils die zu bearbeitende
+        REF-Datei bzw. das Modul angezeigt und kontextabhÑngig gefragt, ob
+        das HinzufÅgen bzw. die Lîschung durchgefÅhrt werden soll.
+        !begin_xlist [J:] !compressed
+        !item [J:] Aktion ausfÅhren (auch Return, deshalb ein groûes "J").
+        !item [n:] Aktion nicht ausfÅhren.
+        !item [a:] Wie "J" und alle weiteren Aktionen ohne Nachfrage. Die Option -i
+           wird also zurÅckgesetzt.
+        !item [q:] Wie "n" und keine weiteren Aktionen mehr durchfÅhren. Intern
+           werden hierbei die Optionen -a/-d/-g gelîscht.
+        !end_xlist
+!end_xlist
+!end_node
+
+!begin_node CHECK-Option -m (move)
+!alias Option -m
+!alias -m
+!html_name refcheck_m
+!begin_xlist [-h oder -H]
+    !item [-m] (!nl)
+        (move into) (!nl)
+        Bei a/g werden hinzugefÅgte REF-Dateien anschlieûend automatisch
+        gelîscht (s.a. LINK-Option -M).
+!end_xlist
+!end_node
+
+!begin_node CHECK-Option -s (silent)
+!alias Option -s
+!alias -s
+!html_name refcheck_s
+!begin_xlist [-h oder -H]
+    !item [-s] (!nl)
+        (silent) (!nl)
+        Die Bildschirmausgaben werden auf das nîtigste beschrÑnkt, wodurch
+        eine hîhere Geschwindigkeit erzielt wird.
+!end_xlist
+!end_node
+
+!begin_node LINK-Option -A (Add to reflib)
+!alias Option -A
+!alias -A
+!html_name refcheck_aa
+!begin_xlist [-h oder -H]
+    !item [[-A!] (!link [reffile] [reffile]) ...] (!nl)
+        (Add to (!link [reflib] [reflib])) (!nl)
+        Die REF-Dateien '(!link [reffile] [reffile]) ...' werden zur REF-Bibliothek REF
+        hinzugefÅgt. Ist eine der REF-Dateien in REF schon vorhanden, wird
+        sie ersetzt. Der Optionsbuchstabe -A kann hier auch weggelassen
+        werden. So ist es mîglich eine oder mehrere REF-Dateien (mehrere
+        z.B. unter Gemini, Thing, Ease, ...) auf REFCHECK.TTP zu ziehen, um
+        diese in seine ALL.REF aufnehmen zu lassen. Auûerdem kann man
+        natÅrlich REFCHECK im Desktop auf den Dateityp "*.REF" anmelden, so
+        daû REFCHECK beim Doppelklick auf eine REF-Datei gestartet wird und
+        die REF-Datei in die Default-REF-Bibliothek einfÅgt.
+
+!end_xlist
+!end_node
+
+!begin_node LINK-Option -M (Move into REF)
+!alias Option -M
+!alias -M
+!html_name refcheck_mm
+!begin_xlist [-h oder -H]
+    !item [-M (!link [reffile] [reffile]) ...] (!nl)
+        (Move into REF) (!nl)
+        Wie -A, nur daû die reffiles nach dem HinzufÅgen gleich gelîscht
+        werden, also ein Verschieben in die REF-Bibliothek stattfindet.
+!end_xlist
+
+!end_node
+
+!begin_node LINK-Option -D (Delete)
+!alias+ Option -D
+!alias -D
+!html_name refcheck_dd
+!begin_xlist [-h oder -H]
+    !item [-D (!link [module] [module]) ...] (!nl)
+        (Delete) (!nl)
+        Alle angegebenen Module '(!link [module] [module]) ...' werden aus REF gelîscht.
+!end_xlist
+!end_node
+
+!begin_node LINK-Option -E (Extract)
+!alias+ Option -E
+!alias -E
+!html_name refcheck_ee
+!begin_xlist [-h oder -H]
+    !item [-E (!link [module] [module]) ...] (!nl)
+        (Extract) (!nl)
+        Die angegebenen Module '(!link [module] [module]) ...' werden aus REF extrahiert, d.h.
+        aus jedem Modul wird eine REF-Datei auf der Platte erzeugt. Die
+        extrahierten Module bleiben in REF erhalten.
+!end_xlist
+!end_node
+
+!begin_node LINK-Option -F (list module names in REF-Files)
+!alias+ Option -F
+!alias -F
+!html_name refcheck_ff
+!begin_xlist [-h oder -H]
+    !item [-F [(!link [reflib] [reflib]) ...!]] (!nl)
+        (list (!link [module] [module]) names in REF-Files) (!nl)
+        Listet die Namen aller Module aus den REF-Dateien bzw. -Bibliotheken
+        '(!link [reflib] [reflib]) ...' (Default: REF) auf dem Bildschirm auf.
+!end_xlist
+!end_node
+
+!begin_node LINK-Option -L (List contents of REF-files)
+!alias+ Option -L
+!alias -L
+!html_name refcheck_ll
+!begin_xlist [-h oder -H]
+    !item [-L [(!link [reflib] [reflib]) ...!]] (!nl)
+    (List contents of REF-files) (!nl)
+        Listet den Inhalt aller Module aus den REF-Dateien bzw.
+        -Bibliotheken '(!link [reflib] [reflib]) ...' (Default: REF) auf dem Bildschirm auf.
+!end_xlist
+!end_node
+
+!end_node # Aufruf
+
+!begin_node Beispiele
+!html_name refcheck_example
+
+!begin_xlist [refcheck -dg]
+    !item [refcheck] (!nl)
+        Die Ergebnisse werden nur am Bildschirm angezeigt (evtl. -h setzen).
+        Es finden keine Schreibzugriffe statt. Hiermit kann man sich also
+        erstmal einen öberblick verschaffen.
+
+    !item [refcheck -ad] (!nl)
+        Die ALL.REF wird automatisch und ohne Nachfragen auf den neuesten
+        Stand gebracht.
+
+    !item [refcheck -dg] (!nl)
+        refcheck erkennt geÑnderte Module mit der Option -a nur daran, daû
+        sich die ModullÑnge geÑndert hat. Will man ganz sicher gehen, kann
+        man mit der Option -g ALLE REF-Dateien nochmal neu in die ALL.REF
+        schreiben lassen. Anschlieûend enthÑlt diese auf jeden Fall alle
+        aktuellen REF-Dateien! Wenn man viele Hypertexte mit REF-Dateien
+        hat, kann das natÅrlich etwas lÑnger dauern!
+!end_xlist
+
+!end_node
+
+!begin_node Dateien
+!html_name refcheck_files
+
+!begin_xlist [ST-GUIDE.INF]
+    !item [ST-GUIDE.INF] (!nl)
+        Muû sich im HOME-Directory oder im Wurzelverzeichnis des
+        Bootlaufwerkes befinden. Aus dieser Datei werden die Variablen
+        REF, PATHS, [REFPATHS], REFCHECK-OPT und $STOOL gelesen.
+!end_xlist
+!end_node
+
+!begin_node Environment
+!html_name refcheck_env
+!begin_xlist [SHELL]
+    !item [HOME] (!nl)
+        Wird bei der Suche nach der ST-GUIDE.INF ausgewertet.
+
+    !item [SHELL] (!nl)
+        Wird evtl. beim Aufruf von $STOOL benutzt.
+!end_xlist
+!end_node
+
+!begin_node Copyright
+!html_name refcheck_copy
+
+    (!REFCHECK) ist Freeware, d.h. das Programm darf beliebig  weitergegeben
+    werden, allerdings nur unverÑndert und komplett mit allen Dateien.
+
+    !subheading Disclaimer
+
+    Ich Åbernehme keine Haftung fÅr SchÑden jeglicher Art, die durch die
+    Benutzung oder Nicht-Benutzung von (!REFCHECK) entstanden sind.
+!end_node
+
+!begin_node Autor und Dank
+!html_name refcheck_author
+
+!begin_quote
+    Frank RÅger (!nl)
+    Tecklenburger Straûe 21 (!nl)
+    D-49525 Lengerich
+!end_quote
+
+!begin_quote
+    email: Frank RÅger @ OS2 im Mausnetz bzw. (!nl)
+    ~~~~~~~Frank_Rueger@os2.maus.de aus dem InterNet
+!end_quote
+
+    Vielen Dank an Holger Weets @ OL (Autor des ST-Guide-Systems) fÅr die
+    ZurverfÅgungstellung (nettes Wort:-) des (!REFLINK)-Quelltextes, der von
+    mir noch etwas Åberarbeitet wurde.
+
+!end_node
+
+!begin_appendix
+
+!begin_node Versions-History
+!html_name refcheck_version
+
+!begin_xlist [9.99] !compressed
+    !item [2.02]
+    !begin_itemize !compressed
+    !item Wenn die Option -s gesetzt war, wurde die Option -c nicht
+          beachtet, falls neue Hypertexte gefunden wurden.
+    !item Es werden keine Escapesequenzen mehr nach stdout ausgegeben.
+    !end_itemize
+
+    !item [2.01]
+    !begin_itemize !compressed
+    !item Bugfix: Die Envrionmentvariable SHELL (zum Starten von $STOOL)
+          wurde nicht gefunden, weil ich fÅr meinen letzten Test "SHELLx"
+          draus gemacht hatte und dann vergessen habe, das x wieder zu
+          entfernen;-)
+    !end_itemize
+    
+    !item [2.0]
+    !begin_itemize !compressed
+    !item Super() (bei der Ermittlung des Bootlaufwerks) durch Supexec()
+          ersetzt.
+    !item REFLINK wird jetzt als externes Programm nicht mehr benîtigt, da
+          es komplett in REFCHECK integriert wurde (Dank an Holger fÅr den
+          Quelltext)!
+    !item Das HinzufÅgen von REF-Dateien zur ALL.REF im REFCHECK-Modus wurde
+          erheblich beschleunigt, da nun alle Files auf einmal behandelt
+          werden, sofern die Option -i nicht gesetzt ist. Die Add-Routine
+          des REFLINK-Moduls wurde dahingehend optimiert.
+    !item REFCHECK-Option -k heiût jetzt -m (move into).
+    !item Zwei neue Optionen zum automatischen Aufruf eines
+          Katalogerzeugungsprogramms, das Åber die Variable $STOOL in der
+          ST-GUIDE.INF definiert sein muû. Da zuerst versucht wird, $STOOL
+          Åber das system()-Kommando zu starten, kann es sich dabei z.B.
+          auch um ein Mupfel-Script handeln, sofern eine System-Shell
+          installiert ist! Die beiden Optionen sind:
+          !begin_xlist [-c:] !compressed
+          !item [-c:] $STOOL aufrufen, wenn énderungen gefunden wurden. Hierbei ist
+              mit 'énderungen' das HinzufÅgen einer REF-Datei oder das
+              Lîschen eines Moduls gemeint (auch wenn dieses nur angezeigt
+              und nicht ausgefÅhrt wird).
+          !item [-f:] $STOOL auf jeden Fall aufrufen.
+          !end_xlist
+    !item Neue Option '-r (!link [reflib] [reflib])', mit der man fÅr alle Aktionen die zu
+          bearbeitende REF-Bibliothek festlegen kann. DefaultmÑûig wird die
+          REF-Bibliothek aus der ST-GUIDE.INF-Variablen REF benutzt. Die
+          Angabe der REF-Bibliothek als erstes File in der Kommandozeile,
+          wie frÅher bei REFLINK ist also bei keiner Option mehr nîtig bzw.
+          mîglich und muû explizit Åber die Option -r erfolgen, wenn nicht
+          die Default-REF benutzt werden soll.
+    !end_itemize
+
+    !item [1.7]
+    !begin_itemize !compressed
+    !item Bugfix: REFCHECK stÅrzte ab, wenn keine ALL.REF existierte.
+    !end_itemize
+
+    !item [1.6]
+    !begin_itemize !compressed
+    !item Zum Starten von REFLINK muû jetzt zwingend die Variable
+          REFLINK in der ST-GUIDE.INF definiert sein. Der Start Åber
+          eine System-Shell wird nicht mehr unterstÅtzt!
+    !item Wenn in der ST-GUIDE.INF die Variable REFPATHS gefunden wird, wird
+          diese anstelle von PATHS benutzt. So kann man bestimmen, daû nur
+          die REF-Dateien von Hypertexten aus bestimmten Pfaden in die
+          ALL.REF aufgenommen werden.
+    !item Die mîgliche Anzahl der HYP-Dateien/Module ist nur noch durch
+          den freien Speicherplatz beschrÑnkt.
+    !end_itemize
+
+    !item [1.5]
+    !begin_itemize !compressed
+    !item HYP/REF-Dateien und Module in der ALL.REF werden jetzt auch dann
+          einander korrekt zugeordnet, wenn der Name der HYP-Datei nicht mit
+          dem Modulnamen in der REF-Datei Åbereinstimmt. Aktuelles Beispiel:
+          Dateiname: POV.HYP/REF, Modulname: POV_DEUT (deutsche Version)!
+    !item Wenn der Dateiname nicht mit dem Modulnamen Åbereinstimmt,
+          erscheint in der Ausgabeliste (wenn Option -s nicht gesetzt) ein
+          Ausrufezeichen (!) hinter dem Modulnamen. Auûerdem wird eine
+          gesetzte move-Option (-k) fÅr diese REF-Datei deaktiviert, damit
+          die Datei erhalten bleibt und REFCHECK beim nÑchsten Aufruf den
+          Modulnamen korrekt zuordnen kann (sonst wÅrde das Modul evtl.
+          gleich wieder aus der ALL.REF gelîscht)!
+    !end_itemize
+
+    !item [1.4]
+    !begin_itemize !compressed
+    !item Variablen REFLINK und REFCHECK-OPT in der Datei ST-GUIDE.INF
+          werden ausgewertet.
+    !end_itemize
+
+    !item [1.3]
+    !begin_itemize !compressed
+    !item Bei den SuchvorgÑngen werden jetzt alle gefundenen Module und
+          Dateien angezeigt. Beim Scannen der ALL.REF wird jeweils
+          Modulname, Offset und -lÑnge, bei der HYP-Suche HYP-Name und falls
+          vorhanden "+REF", Modulname und -lÑnge ausgegeben!
+    !item Absturz beseitigt, wenn die ALL.REF ein Modul mit einer LÑnge
+          >32767 Bytes enthielt.
+    !item REFCHECK berÅcksichtigt jetzt die Tatsache, daû auch einfache
+          REF-Dateien mehr als ein Modul enthalten kînnen, z.B. ENG_GER.REF.
+    !item Wenn die Option -k gesetzt ist, wird die REF-Datei jetzt nicht
+          mehr von REFCHECK gelîscht, sondern REFLINK mit der Option -m
+          (move) gestartet.
+    !item Speicheranforderungen (malloc) werden jetzt ÅberprÅft.
+    !item Fehlerhaftes spawn-Binding ersetzt. Dank an Jerry Geiger @ B,
+          der mir die korrigierte spawn3.o als UUE geschickt hat:-)
+    !item REFLINK-Aufrufe mit der Option -d (lîschen) werden jetzt in einem
+          einzigen Aufruf zusammengefaût, wenn die REFCHECK-Option -i nicht
+          gesetzt ist oder bei einer Abfrage durch [a] deaktiviert wurde!
+    !item Option -s (silent) beschrÑnkt die Bildschirmausgaben auf das
+          nîtigste -> schneller.
+    !item Die Option -g (global) wurde nicht beachtet, wenn eine REF-Datei
+          noch nicht in der ALL.REF vorhanden war.
+    !end_itemize
+
+    !item [1.21]
+    !begin_itemize !compressed
+    !item Starten von REFLINK funktionierte nicht richtig, wenn weder eine
+          Shell gefunden wurde, noch die System-Environmentvariable PATH
+          existierte oder einen gÅltigen Pfad fÅr REFLINK enthielt. Im
+          aktuellen Verzeichnis wurde auch nicht gesucht. Jetzt wird, wenn
+          keie Shell existiert, zuerst im aktuellen Verzeichnis gesucht und
+          erst wenn das fehlschÑgt, wird REFLINK mit spawnlp() gestartet.
+    !end_itemize
+
+    !item [1.2]
+    !begin_itemize !compressed
+    !item Neue Option -k. Hiermit werden die REF-Dateien nach erfolgreicher
+          Aktualisierung/Aufnahme von der Platte gelîscht! Besonders
+          geeignet fÅr diejenigen, die nur mit der ALL.REF arbeiten!
+    !item Optionsbeschreibung im Usage-Text an die man page angepaût.
+    !item Wenn die Environmentvariable HOME existiert, wird die ST-GUIDE.INF
+          zuerst dort gesucht.
+    !end_itemize
+
+    !item [1.1]
+    !begin_itemize !compressed
+    !item Compiliert mit hcc 2.00x23 und gelinkt mit den neuen XDLibs aus
+          dem Sozobon-Release 07
+    !item Sollte jetzt auch mit Alias-Programmen unter Gemini zurechtkommen
+          (reflink.ttp), da zuerst versucht wird, das Programm mit system()
+          zu starten.
+    !item Bugfix: Ein lokales Array war zu groû fÅr den Stack. Eigentlich
+          hÑtte das Programm abstÅrzen mÅssen. Warum es trotzdem lief,
+          weiû ich auch nicht;-)
+    !item In den Beipielen der man page stand "reflink" statt "refcheck".
+    !item Man page jetzt auch als Hypertext REFCHECK.HYP.
+    !item Modulnamen wurden evtl. nicht in voller LÑnge verglichen. Z.B.
+          wurde beim Modul "aip" irrtÅmlich auch "aip_auto" oder "aip_prog"
+          erkannt!
+    !item Neues Konzept: Es wird nicht mehr nach REF-Dateien, sondern nach
+          HYP-Dateien und dann erst nach der passenden REF-Datei gesucht!
+          Dadurch funktioniert der Schalter -d jetzt auch, wenn man nur mit
+          der ALL.REF arbeitet und die Module werden nicht gelîscht. Nur,
+          wenn die HYP-Datei fehlt, wird ein Modul aus der ALL.REF gelîscht!
+    !item Maximale Anzahl der HYP-Dateien auf 1024 erhîht (bisher 200). Ich
+          denke, das sollte fÅrs erste ausreichen!
+    !end_itemize
+
+    !item [1.0]
+    !begin_itemize !compressed
+    !item Erstverîffentlichung.
+    !end_itemize
+    
+!end_xlist
+
+!end_node
+
+!include ref.ui
+
+!end_appendix
+
+!end_document

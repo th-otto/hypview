@@ -1,0 +1,163 @@
+/*
+ * HypView - (c)      - 2006 Philipp Donze
+ *               2006 -      Philipp Donze & Odd Skancke
+ *
+ * A replacement hypertext viewer
+ *
+ * This file is part of HypView.
+ *
+ * HypView is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HypView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HypView; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#include "hv_defs.h"
+#include "hypdebug.h"
+#include "hypview.h"
+
+
+static RSHDR *skin_rsh;
+
+
+void Init(void)
+{
+	_WORD dummy;
+	_WORD font_w, font_h;
+	char *skin;
+	
+	/*  VDI-Initialisierung:    */
+	/************************/
+
+	/*  Standard-Werte fr die VDI-Text-Ausgaben */
+	vswr_mode(vdi_handle, MD_TRANS);
+
+	if (vq_gdos())						/*  GDOS installiert?   */
+		vst_load_fonts(vdi_handle, 0);	/*  Zeichensaetze laden */
+
+	sel_font_id = gl_profile.viewer.font_id ? gl_profile.viewer.font_id : aes_fontid;
+	sel_font_pt = gl_profile.viewer.font_pt ? gl_profile.viewer.font_pt : aes_fontsize;
+	
+	vst_font(vdi_handle, sel_font_id);		/*  Font einstellen */
+	vst_point(vdi_handle, sel_font_pt, &font_w, &font_h, &font_cw, &font_ch);
+
+	if (ProportionalFont(&font_w))
+		font_cw = font_w;
+
+	/*  Text-Ausgabe-Ausrichtung konfigurieren  */
+	vst_alignment(vdi_handle, TA_LEFT, TA_TOP, &dummy, &dummy);
+
+	/*  Standard-Werte fuer die VDI-Fuell-Funktionen    */
+	vsf_color(vdi_handle, G_WHITE);
+	vsf_interior(vdi_handle, FIS_SOLID);
+	vsf_perimeter(vdi_handle, 0);
+
+	/*  Standard-Wert fuer User-spezifisches Linienattribut */
+	vsl_udsty(vdi_handle, 0xAAAA);		/*  Gepunktetes Linienmuster    */
+	vsl_width(vdi_handle, 1);
+	vsl_ends(vdi_handle, 0, 0);
+	vsl_type(vdi_handle, SOLID);
+	vsl_color(vdi_handle, G_BLACK);
+
+	/*  AES-Initialisierung:    */
+	/************************/
+
+	/*  Toolbar/Skin laden  */
+	skin = gl_profile.viewer.skin_path;
+	if (!empty(skin))
+	{
+		char *path;
+		
+		if (*skin != '$' && !g_path_is_absolute(skin))
+			skin = g_build_filename("$BINDIR", "Skins", skin, NULL);
+		else
+			skin = g_strdup(skin);
+		path = path_subst(skin);
+		g_free(skin);
+		if (rsrc_load(path))
+		{
+			OBJECT **skin_rs_trindex;
+			OBJECT *skin_rs_object;
+			RSHDR *rsh = skin_rsh;
+			OBJECT *rsc_toolbar = toolbar_tree;
+			
+			skin_rsh = rsh = (RSHDR *) _AESrscmem;
+			skin_rs_trindex = (OBJECT **) (((char *) rsh) + rsh->rsh_trindex);
+			skin_rs_object = (OBJECT *) (((char *) rsh) + rsh->rsh_object);
+			hfix_objs(skin_rsh, skin_rs_object, rsh->rsh_nobs);
+			toolbar_tree = skin_rs_trindex[0];
+			/*
+			 * copy the strings from the original resource,
+			 * which might have been localized
+			 */
+#define copystr(o) \
+			toolbar_tree[o].ob_spec.free_string = rsc_toolbar[o].ob_spec.free_string; \
+			toolbar_tree[o].ob_width = rsc_toolbar[o].ob_width; \
+			toolbar_tree[o].ob_height = rsc_toolbar[o].ob_height
+			copystr(TO_SEARCH);
+			copystr(TO_STRNOTFOUND);
+#undef copystr
+		} else
+		{
+			HYP_DBG(("Could not load skin '%s'", printnull(path)));
+		}
+		g_free(path);
+	}
+
+#if 0
+	{
+		_WORD i;
+		
+		/*  Entferne jeglichen Icon-Text    */
+		for (i = ROOT; ; i++)
+		{
+			switch (toolbar_tree[i].ob_type & 0xff)
+			{
+			case G_ICON:
+			case G_CICON:
+				toolbar_tree[i].ob_spec.iconblk->ib_wtext = 0;
+				toolbar_tree[i].ob_spec.iconblk->ib_htext = 0;
+				break;
+			}
+			if (toolbar_tree[i].ob_flags & OF_LASTOB)
+				break;
+		}
+	}
+#endif
+
+	/* adjust size of background object */
+	toolbar_tree[TO_BACKGRND].ob_height =
+		max(toolbar_tree[TO_SEARCHBOX].ob_height, toolbar_tree[TO_BUTTONBOX].ob_height);
+	/* move boxes to final location */
+	toolbar_tree[TO_SEARCHBOX].ob_y = (toolbar_tree[TO_BACKGRND].ob_height - toolbar_tree[TO_SEARCHBOX].ob_height) >> 1;
+	toolbar_tree[TO_BUTTONBOX].ob_y = (toolbar_tree[TO_BACKGRND].ob_height - toolbar_tree[TO_BUTTONBOX].ob_height) >> 1;
+
+
+
+	/*  diverse Initialisierungen:  */
+	/******************************/
+
+
+	/*  Lade Marken */
+	MarkerInit();
+}
+
+
+void Exit(void)
+{
+	MarkerSaveToDisk();
+
+	hv_userdef_exit();
+	
+	if (vq_gdos() && vdi_handle)
+		vst_unload_fonts(vdi_handle, 0);
+}

@@ -1,0 +1,19 @@
+# language-dependent text parts for the library index
+
+!language german
+
+!macro NAME         Name
+!macro DEFINITION   Definition
+!macro PROTOTYPE    Prototype in
+!macro DESCRIPTION  Beschreibung
+!macro RESULT       Ergebnis
+!macro GROUP        Gruppe
+!macro CROSSREF     Siehe auch
+!macro MISS         Description missing
+!macro NYI          Not yet implemented
+
+!ifnset RIGHT
+!macro RIGHT Rechts
+!macro LEFT Links
+!macro ALT  Alt-
+!endif

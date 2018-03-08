@@ -1,0 +1,343 @@
+
+			HELPFILE RECOMPILER  Ver. 1.0	Nov  7 2013
+			=============================
+
+				(c) Volker Reichel
+
+Optionen: slt
+
+
+Header of Helpfile pd.HLP
+
+	Screens					:  114
+	Start String Tabelle	: 592 (0x250)
+	LÑnge					: 12414 (0x307e)
+	die hÑufigsten Zeichen	:  -enirtasdl\1D
+	Start sensitive Tabelle	: 13720 (0x3598)
+	LÑnge					: 0 (0x0)
+	Anz. sens. Worte	: 0 (0x0)
+	Start capsens. Tabelle	: 13006 (0x32ce)
+	LÑnge					: 714 (0x2ca)
+	Anz. capsens Worte	: 48 (0x30)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Capsensitive Tabelle
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+	Position   Code  Suchwort
+	   0x120   8038  "Action"
+	   0x121   81d0  "Animate"
+	   0x123   8218  "Arguments"
+	   0x127   80b0  "Assembly..."
+	   0x12d   8170  "Block..."
+	   0x130   80f8  "Breakpoint..."
+	   0x138   8088  "Breakpoints"
+	   0x13e   80c0  "CPU"
+	   0x13c   8160  "Change..."
+	   0x140   8068  "Close Window"
+	   0x147   8070  "Cycle Windows"
+	   0x14f   8278  "Debugger"
+	   0x152   81a0  "Delete"
+	   0x153   81a8  "Delete all"
+	   0x158   8210  "Directories"
+	   0x15e   80b8  "Dump..."
+	   0x160   8168  "Edit..."
+	   0x162   81e0  "Environment"
+	   0x168   8028  "File"
+	   0x167   80c8  "File..."
+	   0x169   80e8  "Find Same"
+	   0x16d   80e0  "Find..."
+	   0x16f   8080  "Function..."
+	   0x175   80f0  "Goto Line..."
+	   0x17c   8050  "Help"
+	   0x17b   8060  "Info..."
+	   0x17d   8148  "Inspect..."
+	   0x182   8220  "Load"
+	   0x181   8058  "Load..."
+	   0x183   80d0  "Log"
+	   0x181   8158  "Log..."
+	   0x182   8018  "Menu"
+	   0x181   80a0  "Modules"
+	   0x183   8048  "Options"
+	   0x185   81d8  "Program reset"
+	   0x18d   8078  "Quit"
+	   0x18c   81b0  "Run"
+	   0x18a   8040  "Run-MenÅ"
+	   0x18d   8228  "Save"
+	   0x18c   80a8  "Stack"
+	   0x18c   81c0  "Step over"
+	   0x190   81b8  "Trace into"
+	   0x195   81c8  "Until return"
+	   0x19c   80d8  "User Screen"
+	   0x1a2   8090  "Variables"
+	   0x1a6   8030  "View"
+	   0x1a5   8150  "Watch..."
+	   0x1a8   8098  "Watches"
+
+
+================================================================================
+			Namenstabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<68881/2                         > SCREEN_NAME  0x80C0 = 0x17
+<680x0                           > SCREEN_NAME  0x80C0 = 0x17
+<Watchpoint                      > SCREEN_NAME  0x8138 = 0x26
+<Watch...                        > CAPSENSITIVE 0x8150 = 0x29
+<Watches                         > CAPSENSITIVE 0x8098 = 0x12
+<Watch-Fenster                   > SCREEN_NAME  0x8098 = 0x12
+<View/Watches                    > SCREEN_NAME  0x8098 = 0x12
+<View, Brekpoints                > SCREEN_NAME  0x8088 = 0x10
+<View/Variables                  > SCREEN_NAME  0x8090 = 0x11
+<View                            > CAPSENSITIVE 0x8030 = 0x5
+<View/Stack                      > SCREEN_NAME  0x80A8 = 0x14
+<Versionsnummer                  > SCREEN_NAME  0x8020 = 0x3
+<View/Modules                    > SCREEN_NAME  0x80A0 = 0x13
+<Variables                       > CAPSENSITIVE 0x8090 = 0x11
+<View/Function                   > SCREEN_NAME  0x8080 = 0xF
+<Variablen-Liste                 > SCREEN_NAME  0x8090 = 0x11
+<View/Dump                       > SCREEN_NAME  0x80B8 = 0x16
+<Variablen-Fenster               > SCREEN_NAME  0x8090 = 0x11
+<View-MenÅ                       > SCREEN_NAME  0x8030 = 0x5
+<Variable changed                > SCREEN_NAME  0x8108 = 0x20
+<Use VDI graphics                > SCREEN_NAME  0x8208 = 0x40
+<User Screen                     > CAPSENSITIVE 0x80D8 = 0x1A
+<Until return                    > CAPSENSITIVE 0x81C8 = 0x38
+<Taschenrechner                  > SCREEN_NAME  0x8158 = 0x2A
+<Trace into                      > CAPSENSITIVE 0x81B8 = 0x36
+<Tabulatorgrîûe                  > SCREEN_NAME  0x8250 = 0x49
+<Source address                  > SCREEN_NAME  0x8178 = 0x2E
+<Suchen von Funkt.               > SCREEN_NAME  0x8080 = 0xF
+<Smart                           > SCREEN_NAME  0x8240 = 0x47
+<Step over                       > CAPSENSITIVE 0x81C0 = 0x37
+<Shortcuts                       > SCREEN_NAME  0x8270 = 0x4D
+<Stack-Fenster                   > SCREEN_NAME  0x80A8 = 0x14
+<Seiteneffekt                    > SCREEN_NAME  0x82A0 = 0x53
+<Stack                           > CAPSENSITIVE 0x80A8 = 0x14
+<Save                            > CAPSENSITIVE 0x8228 = 0x44
+<Run-MenÅ                        > CAPSENSITIVE 0x8040 = 0x7
+<Run                             > CAPSENSITIVE 0x81B0 = 0x35
+<Quit                            > CAPSENSITIVE 0x8078 = 0xE
+<Quelltext-Fenster               > SCREEN_NAME  0x82B8 = 0x56
+<Quelltext-Liste                 > SCREEN_NAME  0x80A0 = 0x13
+<Quelltext                       > SCREEN_NAME  0x82B8 = 0x56
+<Programm-Informationen          > SCREEN_NAME  0x8060 = 0xB
+<Program reset                   > CAPSENSITIVE 0x81D8 = 0x3A
+<Programm laden                  > SCREEN_NAME  0x8058 = 0xA
+<Program Counter                 > SCREEN_NAME  0x82C0 = 0x57
+<Programm beenden                > SCREEN_NAME  0x8078 = 0xE
+<Pass count                      > SCREEN_NAME  0x8120 = 0x23
+<Options-MenÅ                    > SCREEN_NAME  0x8048 = 0x8
+<Options                         > CAPSENSITIVE 0x8048 = 0x8
+<Never                           > SCREEN_NAME  0x8248 = 0x48
+<MenÅ, Help-                     > SCREEN_NAME  0x8050 = 0x9
+<Modules-Fenster                 > SCREEN_NAME  0x80A0 = 0x13
+<MenÅ, File-                     > SCREEN_NAME  0x8028 = 0x4
+<Modules                         > CAPSENSITIVE 0x80A0 = 0x13
+<MenÅ, Action-                   > SCREEN_NAME  0x8038 = 0x6
+<MenÅleiste                      > SCREEN_NAME  0x8018 = 0x2
+<Menu                            > CAPSENSITIVE 0x8018 = 0x2
+<MenÅ, View-                     > SCREEN_NAME  0x8030 = 0x5
+<Memory changed at               > SCREEN_NAME  0x8110 = 0x21
+<MenÅ, Run-                      > SCREEN_NAME  0x8040 = 0x7
+<MC 68881/2                      > SCREEN_NAME  0x80C0 = 0x17
+<MenÅ, Options-                  > SCREEN_NAME  0x8048 = 0x8
+<MC 680x0                        > SCREEN_NAME  0x80C0 = 0x17
+<Log...                          > CAPSENSITIVE 0x8158 = 0x2A
+<Load                            > CAPSENSITIVE 0x8220 = 0x43
+<Log-Fenster                     > SCREEN_NAME  0x80D0 = 0x19
+<Liste der Variablen             > SCREEN_NAME  0x8090 = 0x11
+<Log-Datei                       > SCREEN_NAME  0x80D0 = 0x19
+<Liste der Quelltexte            > SCREEN_NAME  0x80A0 = 0x13
+<Log file name                   > SCREEN_NAME  0x8260 = 0x4B
+<Liste der Funktionen            > SCREEN_NAME  0x8090 = 0x11
+<Log                             > CAPSENSITIVE 0x80D0 = 0x19
+<Liste der Breakpoints           > SCREEN_NAME  0x8088 = 0x10
+<Load...                         > CAPSENSITIVE 0x8058 = 0xA
+<Length                          > SCREEN_NAME  0x8188 = 0x30
+<Konfigurationsdatei             > SCREEN_NAME  0x8228 = 0x44
+<Komplexer Breakpoint            > SCREEN_NAME  0x8140 = 0x27
+<Informationen zum Prg.          > SCREEN_NAME  0x8060 = 0xB
+<Inspect...                      > CAPSENSITIVE 0x8148 = 0x28
+<Info...                         > CAPSENSITIVE 0x8060 = 0xB
+<Inspect-Fenster                 > SCREEN_NAME  0x8148 = 0x28
+<Index                           > SCREEN_NAME  0x8010 = 0x1
+<Hotkeys                         > SCREEN_NAME  0x8270 = 0x4D
+<Help                            > CAPSENSITIVE 0x8050 = 0x9
+<Help-MenÅ                       > SCREEN_NAME  0x8050 = 0x9
+<Haupt-MenÅ                      > SCREEN_NAME  0x8018 = 0x2
+<Goto Line...                    > CAPSENSITIVE 0x80F0 = 0x1D
+<Grafikkarten                    > SCREEN_NAME  0x8208 = 0x40
+<Globaler Breakpoint             > SCREEN_NAME  0x8138 = 0x26
+<Funktionen-Liste                > SCREEN_NAME  0x8090 = 0x11
+<File...                         > CAPSENSITIVE 0x80C8 = 0x18
+<Funktionen, Aufrufreihenfolge   > SCREEN_NAME  0x80A8 = 0x14
+<File-MenÅ                       > SCREEN_NAME  0x8028 = 0x4
+<Funktionen ansehen              > SCREEN_NAME  0x8080 = 0xF
+<File name                       > SCREEN_NAME  0x8198 = 0x32
+<Function...                     > CAPSENSITIVE 0x8080 = 0xF
+<File                            > CAPSENSITIVE 0x8028 = 0x4
+<Finden von Funkt.               > SCREEN_NAME  0x8080 = 0xF
+<Fenster, Wechseln der           > SCREEN_NAME  0x8070 = 0xD
+<Find...                         > CAPSENSITIVE 0x80E0 = 0x1B
+<Fenster, Variables-             > SCREEN_NAME  0x8090 = 0x11
+<Find Same                       > CAPSENSITIVE 0x80E8 = 0x1C
+<Fenster, Stack-                 > SCREEN_NAME  0x80A8 = 0x14
+<Fill pattern                    > SCREEN_NAME  0x8190 = 0x31
+<Fenster, Schlieûen der          > SCREEN_NAME  0x8068 = 0xC
+<File/Quit                       > SCREEN_NAME  0x8078 = 0xE
+<Fenster, Modules-               > SCREEN_NAME  0x80A0 = 0x13
+<File/Load...                    > SCREEN_NAME  0x8058 = 0xA
+<Fenster, Inspect-               > SCREEN_NAME  0x8148 = 0x28
+<File/Info...                    > SCREEN_NAME  0x8060 = 0xB
+<Fenster, Dump-                  > SCREEN_NAME  0x80B8 = 0x16
+<File/Close Windows              > SCREEN_NAME  0x8070 = 0xD
+<Fenster, Breakpoint-            > SCREEN_NAME  0x8088 = 0x10
+<File/Close Window               > SCREEN_NAME  0x8068 = 0xC
+<Farbbildschirme                 > SCREEN_NAME  0x8208 = 0x40
+<Expression true                 > SCREEN_NAME  0x8118 = 0x22
+<Enable                          > SCREEN_NAME  0x8128 = 0x24
+<Environment                     > CAPSENSITIVE 0x81E0 = 0x3B
+<Einfacher Breakpoint            > SCREEN_NAME  0x8130 = 0x25
+<Ende                            > SCREEN_NAME  0x8078 = 0xE
+<Editor file name                > SCREEN_NAME  0x8258 = 0x4A
+<Enable/Disable                  > SCREEN_NAME  0x8128 = 0x24
+<Edit...                         > CAPSENSITIVE 0x8168 = 0x2C
+<Directories                     > CAPSENSITIVE 0x8210 = 0x41
+<DurchlaufzÑhler                 > SCREEN_NAME  0x8120 = 0x23
+<Destination address             > SCREEN_NAME  0x8180 = 0x2F
+<Dump...                         > CAPSENSITIVE 0x80B8 = 0x16
+<Delete all                      > CAPSENSITIVE 0x81A8 = 0x34
+<Dump-Fenster                    > SCREEN_NAME  0x80B8 = 0x16
+<Delete                          > CAPSENSITIVE 0x81A0 = 0x33
+<Display swapping via Vdicopy    > SCREEN_NAME  0x8200 = 0x3F
+<Default tab size                > SCREEN_NAME  0x8250 = 0x49
+<Display swapping via Memcopy    > SCREEN_NAME  0x81F8 = 0x3E
+<Debugger (MenÅ)                 > SCREEN_NAME  0x8020 = 0x3
+<Display swapping via Address    > SCREEN_NAME  0x81F0 = 0x3D
+<Debugger                        > CAPSENSITIVE 0x8278 = 0x4E
+<Display swapping via            > SCREEN_NAME  0x81E8 = 0x3C
+<Deaktivieren eines Breakpoint   > SCREEN_NAME  0x8128 = 0x24
+<Display swapping                > SCREEN_NAME  0x8230 = 0x45
+<Dateiauswahlbox                 > SCREEN_NAME  0x82C8 = 0x58
+<Disable                         > SCREEN_NAME  0x8128 = 0x24
+<Datei-Fenster                   > SCREEN_NAME  0x80C8 = 0x18
+<Cycle Windows                   > CAPSENSITIVE 0x8070 = 0xD
+<Close Window                    > CAPSENSITIVE 0x8068 = 0xC
+<Cursorbewegung                  > SCREEN_NAME  0x82A8 = 0x54
+<Change...                       > CAPSENSITIVE 0x8160 = 0x2B
+<Cursor                          > SCREEN_NAME  0x82A8 = 0x54
+<CPU                             > CAPSENSITIVE 0x80C0 = 0x17
+<Copyright                       > SCREEN_NAME  0x8008 = 0x0
+<CONTROL                         > SCREEN_NAME  0x8288 = 0x50
+<Breakpoint enable               > SCREEN_NAME  0x8128 = 0x24
+<Byteliste                       > SCREEN_NAME  0x8298 = 0x52
+<Breakpoint disable              > SCREEN_NAME  0x8128 = 0x24
+<Breakpoints                     > CAPSENSITIVE 0x8088 = 0x10
+<Breakpoint deaktivieren         > SCREEN_NAME  0x8128 = 0x24
+<Breakpoint...                   > CAPSENSITIVE 0x80F8 = 0x1E
+<Breakpoint at                   > SCREEN_NAME  0x8100 = 0x1F
+<Breakpoint-Liste                > SCREEN_NAME  0x8088 = 0x10
+<Breakpoint aktivieren           > SCREEN_NAME  0x8128 = 0x24
+<Breakpoint-Formular             > SCREEN_NAME  0x80F8 = 0x1E
+<Block...                        > CAPSENSITIVE 0x8170 = 0x2D
+<Breakpoint-Fenster              > SCREEN_NAME  0x8088 = 0x10
+<Bildschirmumschaltung           > SCREEN_NAME  0x81E8 = 0x3C
+<Breakpoint, komplexer           > SCREEN_NAME  0x8140 = 0x27
+<Bewegung in den Fenstern mitt   > SCREEN_NAME  0x82A8 = 0x54
+<Breakpoint, globaler            > SCREEN_NAME  0x8138 = 0x26
+<Betrachten von Funkt.           > SCREEN_NAME  0x8080 = 0xF
+<Breakpoint, einfacher           > SCREEN_NAME  0x8130 = 0x25
+<Betrachten von AusdrÅcken       > SCREEN_NAME  0x8098 = 0x12
+<Animate time step               > SCREEN_NAME  0x8268 = 0x4C
+<Auswertung von AusdrÅcken       > SCREEN_NAME  0x8098 = 0x12
+<Animate                         > CAPSENSITIVE 0x81D0 = 0x39
+<AusdrÅcke auswerten             > SCREEN_NAME  0x8098 = 0x12
+<Always                          > SCREEN_NAME  0x8238 = 0x46
+<Ausdruck                        > SCREEN_NAME  0x8290 = 0x51
+<Aktivieren eines Breakpoints    > SCREEN_NAME  0x8128 = 0x24
+<Aufrufreihenfolge der Funktio   > SCREEN_NAME  0x80A8 = 0x14
+<Action/Inspect...               > SCREEN_NAME  0x8148 = 0x28
+<Assembly...                     > CAPSENSITIVE 0x80B0 = 0x15
+<Action-MenÅ                     > SCREEN_NAME  0x8038 = 0x6
+<Assembly-Fenster                > SCREEN_NAME  0x80B0 = 0x15
+<Action                          > CAPSENSITIVE 0x8038 = 0x6
+<Assembly                        > SCREEN_NAME  0x80B0 = 0x15
+<ALTERNATE-Help                  > SCREEN_NAME  0x82B0 = 0x55
+<Arguments                       > CAPSENSITIVE 0x8218 = 0x42
+<ALTERNATE                       > SCREEN_NAME  0x8280 = 0x4F
+
+186 Namen gefunden.
+
+================================================================================
+			Link Tabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<globaler Breakpoints            >    LINK      0x8138 von 0x53
+<Hilfesystems                    >    LINK      0x8050 von 0x4D
+<Quelltextfenstern               >    LINK      0x82B8 von 0x49
+<Vdicopy                         >    LINK      0x8200 von 0x3C
+<Memcopy                         >    LINK      0x81F8 von 0x3C
+<Address                         >    LINK      0x81F0 von 0x3C
+<Program Counters                >    LINK      0x82C0 von 0x39
+<Dump                            >    LINK      0x80B8 von 0x2B
+<Variable                        >    LINK      0x8108 von 0x27
+<globalen Breakpoint             >    LINK      0x8138 von 0x27
+<einfachen                       >    LINK      0x8130 von 0x27
+<Seiteneffekten                  >    LINK      0x82A0 von 0x26
+<einfache Breakpoints            >    LINK      0x8130 von 0x1F
+<aktivieren                      >    LINK      0x8128 von 0x1E
+<deaktivieren                    >    LINK      0x8128 von 0x1E
+<Quelltextmodulen                >    LINK      0x82B8 von 0x1B
+<Eintragungen                    >    LINK      0x8158 von 0x19
+<Breakpoint                      >    LINK      0x80F8 von 0x19
+<FPIAR                           >    LINK      0xFFFF von 0x17
+<FPSR                            >    LINK      0xFFFF von 0x17
+<FPCR                            >    LINK      0xFFFF von 0x17
+<FP7                             >    LINK      0xFFFF von 0x17
+<FP0                             >    LINK      0xFFFF von 0x17
+<ISP                             >    LINK      0xFFFF von 0x17
+<MSP                             >    LINK      0xFFFF von 0x17
+<CACR                            >    LINK      0xFFFF von 0x17
+<CAAR                            >    LINK      0xFFFF von 0x17
+<DFC                             >    LINK      0xFFFF von 0x17
+<SFC                             >    LINK      0xFFFF von 0x17
+<VBR                             >    LINK      0xFFFF von 0x17
+<SR                              >    LINK      0xFFFF von 0x17
+<SSP                             >    LINK      0xFFFF von 0x17
+<PC                              >    LINK      0xFFFF von 0x17
+<A7                              >    LINK      0xFFFF von 0x17
+<A0                              >    LINK      0xFFFF von 0x17
+<D7                              >    LINK      0xFFFF von 0x17
+<D0                              >    LINK      0xFFFF von 0x17
+<Geltungsbereiche                >    LINK      0x80F8 von 0x10
+<AbhÑngigkeiten                  >    LINK      0x80F8 von 0x10
+<Modul                           >    LINK      0x80A0 von 0xF
+<Assembler                       >    LINK      0xFFFF von 0x9
+<Libraries                       >    LINK      0xFFFF von 0x9
+<C Language                      >    LINK      0xFFFF von 0x9
+
+43 Link-Verweise gefunden.
+	*** WARNUNG: Globaler Verweis <C Language>
+	*** WARNUNG: Globaler Verweis <Libraries>
+	*** WARNUNG: Globaler Verweis <Assembler>
+	*** WARNUNG: Globaler Verweis <D0>
+	*** WARNUNG: Globaler Verweis <D7>
+	*** WARNUNG: Globaler Verweis <A0>
+	*** WARNUNG: Globaler Verweis <A7>
+	*** WARNUNG: Globaler Verweis <PC>
+	*** WARNUNG: Globaler Verweis <SSP>
+	*** WARNUNG: Globaler Verweis <SR>
+	*** WARNUNG: Globaler Verweis <VBR>
+	*** WARNUNG: Globaler Verweis <SFC>
+	*** WARNUNG: Globaler Verweis <DFC>
+	*** WARNUNG: Globaler Verweis <CAAR>
+	*** WARNUNG: Globaler Verweis <CACR>
+	*** WARNUNG: Globaler Verweis <MSP>
+	*** WARNUNG: Globaler Verweis <ISP>
+	*** WARNUNG: Globaler Verweis <FP0>
+	*** WARNUNG: Globaler Verweis <FP7>
+	*** WARNUNG: Globaler Verweis <FPCR>
+	*** WARNUNG: Globaler Verweis <FPSR>
+	*** WARNUNG: Globaler Verweis <FPIAR>
+
+0 Fehler. 22 Warnungen. 22 Verweise in andere HELP-Dateien.

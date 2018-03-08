@@ -1,0 +1,285 @@
+>compdict.hyp
+>Bruce Tonkin
+>Computer/General
+>Tonkin's First Computer Dictionary
+Humourous explanation of various computer concepts, in ST-Guide
+format. Converted by Christoph Zwerschke.
+
+>twoinone.hyp
+>Gregor Duchalski @ DO
+>Documentation/Shells
+>Documentation for Two-in-One
+Context-sensitive ST-Guide on-line help and documentation for 
+Two-in-One, an excellent archive manager for all Atari users.
+
+>red.hyp
+>Holger Weets @ OL
+>Documentation/Editors
+>RED Documentation
+RED is a shareware Resource Editor, short, fast and safe, offering 
+several features that no other program of this kind offers
+(optimisation, translation etc). A restricted version for viewing 
+and testing is available.
+
+>setkey_e.hyp
+>Andr‚ Leistner @ B
+>Documentation/Utilities
+>Documentation for SetKey¿
+English documentation for SetKey¿, a program by Holger Schmidt.
+SetKey¿ is a tool for CKBD.
+
+>sysmon.hyp
+>Carsten Isakovic @ B
+>Documentation/Utilities
+>SysMon Documentation
+SysMon is a memory monitor and tracer for system calls. Since 
+March 1994 the documentation is in ST-Guide format.
+
+>windoze.hyp
+>Dirk Haun @ WI2
+>Programming/C
+>Documentation Windoze (C-Lib)
+Windoze is a simple window library for Pure C. Supports Iconify with 
+and without ICFS as well as using the MultiTOS method.
+
+>history.hyp
+>Volker Burggr„f @ OL
+>Specialist texts
+>Milestones in world history
+Overview of history from the stone age, in ST-Guide format.
+
+>se-fakt.hyp
+>Carsten Setje-Eilers @ KI
+>Documentation/Utilities
+>SE-Fakt Documentation
+Documentation for Se-Fakt the invoicing and cash-till program, in
+ST-Guide format.
+
+>xedit.hyp
+>Dirk Allard @ WI2
+>Documentation/Editors
+>Documentation for xEDIT 2.10
+>in preparation
+Documentation for xEDIT v2.10, the universal editor, in ST-Guide Format.
+
+>cmos_ic.hyp
+>Rolf Meurer @ DU
+>Hardware/ICs
+>CMOS Reference
+>0.1 (29.10.93)
+Contains many (somewhat small) circuits (originally available in
+1stGuide format.
+
+>smileys.hyp
+>Volker Burggr„f @ OL
+>Computer/Nets
+>Smiley reference
+Collection of common Smileys, in ST-Guide format.
+
+>chatwin.hyp
+>Dirk Haun @ WI2
+>Documentation/Shells
+>Documentation for Chatwin
+Chatwin  is a universal development environment for virtually all
+compiler languages and similar systems (e.g. TeX).
+The hypertext exists in both ST-Guide & 1stGuide formats.
+
+>zeigsmir.hyp
+>Dirk Allard @ WI2
+>Documentation/Utilities
+>Documentation for the file viewer 'Zeigsmir' (Show me)
+Documentation for the universal file viewer 'Zeigsmir' by Reiner
+Rosin @ WI2. Interesting above all for its module interfaces.
+
+>gnuplot.hyp
+>GNU, Christoph Zwerschke @KA
+>Documentation
+>GNU-Plot Documentation
+Documentation for GNU-Plot, originally in GNU-Plot format, converted
+to ST-Guide format.
+
+>new_doku.hyp
+>Dirk Hagedorn @ PB
+>Documentation/Shells
+>Documentation for NEWDESK.INF
+>03.01.1994
+Documentation attempt for NEWDESK.INF, in 1stGuide format. With a 
+small tool that is included the documentation can be converted into
+an ASCII file.
+
+>lang_o2.hyp
+>Dirk Theisen@SU.maus.de (no mails >16k, please)
+>Programming/Oberon
+>Documentation for Oberon-2
+>0.9
+Documentation for the Oberon-2 programming language, in ST-Guide format.
+Available from Maus SU, 02226/12326, Group program section OBERON.
+
+>myrezept.hyp
+>Dirk Allard @ WI2
+>Specialist texts/Cooking
+>Cocktail Recipes
+>in preparation (V0.2)
+Recipes for cocktails etc, in ST-Guide format.
+
+>catguide.hyp
+>Rdiger Merklein @ M4
+>Documentation/Comms
+>Documentation for CAT
+CAT documentation in 1stGuide format, available in short and long
+versions.
+
+>saugutil.hyp
+>Frank Rger @ OS
+>Documentation/Comms
+>Documentation for Saug-Utility
+Management of Maus file-lists. Context sensitive ST-Guide on-line help
+for windows and menus.
+
+>d_box.hyp
+>Michael Heng @ HH
+>Documentation/Comms
+>Documentation for D-Box
+D-Box exchange packet (including DB_POINT)
+1stGuide format, possibly also ST-Guide format soon.
+
+>rezept.hyp
+>Andreas Kohout @ M4
+>Specialist texts/Cooking
+>Recipes
+>rezept.hyp V1.10
+Heaps of recipes of all types, in 1stGuide format.
+
+>ufp-info.hyp
+>Marko Radke, Thomas Schmidt
+>Entertainment/Science fiction
+>Information about Star Trek
+Star Trek info in 1stGuide Format, Shareware(?)
+
+>xedlatex.hyp
+>Christoph Zwerschke @KA
+>Documentation/Editors
+>xEdit und LaTeX
+In ST-Guide Format
+
+>pacshell.hyp
+>Holger Weets @ OL
+>Documentation/Shells
+>Dokumentation for Pacshell
+Context-sensitive on-line help and documentation for Pacshell, a 
+packer-shell for the Atari. In ST-Guide Format.
+
+>st-guide.hyp
+>Christian Wempe, Holger Weets @ OL
+>Documentation/ST-Guide
+>Documentation for ST-Guide
+The documentation for ST-Guide itself, and naturally in ST-Guide
+format.
+
+>hcp.hyp
+>Christian Wempe, Holger Weets @ OL
+>Documentation/ST-Guide
+>Documentation for HCP
+Documentation in ST-Guide format for Hypertext Compiler HCP.
+
+>1st_conv.hyp
+>Holger Weets @ OL
+>Documentation/ST-Guide
+>Documentation for 1stConv
+Documentation for Converter 1stGuide --> ST-Guide, in ST-Guide Format.
+
+>pc_conv.hyp
+>Holger Weets @ OL
+>Documentation/ST-Guide
+>Documentation for PC-Conv
+Documentation for Converter PureC --> ST-Guide, in ST-Guide format.
+
+>reflink.hyp
+>C. Wempe, H. Weets @ OL
+>Documentation/ST-Guide
+>RefLink Documentation
+Documentation for the Reference-file Linker for ST-Guide, in
+ST-Guide format.
+
+>man2stg.hyp
+>Holger Weets @ OL
+>Documentation/ST-Guide
+>Documentation for MAN2STG
+Documentation for Manual Page Converter, in ST-Guide format.
+
+>c_rsc.hyp
+>Holger Weets @ OL
+>Documentation/Utilities
+>Documentation for C_RSC
+Context-sensitive on-line help and documentation in ST-Guide format.
+for C-RSC, the RSC -> C converter.
+
+>dlibs.hyp
+>Joachim Wiechmann @ OL
+>Programming/C
+>Documentation for the PD C-Library (X)Dlibs
+>1.00
+Reference work for PC C-Library, in ST-Guide format.
+
+>gator.hyp
+>Joachim Wiechmann @ OL
+>Documentation/Comms
+>Gateway Infos
+>1.00
+In ST-Guide format
+
+>gdosfont.hyp
+>Holger Weets @ OL
+>Documentation/Utilities
+>Documentation for GDOS-Font Utility
+Documentation for GDOS-Font Utility, in ST-Guide format.
+
+>jcnshell.hyp
+>Holger Weets @ OL
+>Documentation/Utilities
+>Documentation for JCN-Shell
+Context-sensitive on-line help and documentation in ST-Guide format
+for C-RSC, the RSC -> C converter.
+
+>7up.hyp
+>Michael Thaenitz @ BI (?)
+>Documentation/Editors
+>Documentation for the Shareware editor 7UP
+Documentation for 7UP the Shareware editor, in 1stGuide format.
+
+>gemini.hyp
+>Henning Schreiber @ DO
+>Documentation/Shells
+>Documentation for GEMINI v1.2 Desktop
+Documentation for GEMINI v1.2, in 1stGuide format.
+
+>ttl_ic.hyp
+>Ralf Zimmermann @ OF2
+>Hardware/ICs
+>TTL Reference
+The file contains information about TTL-ICs of the
+74-series. Above all one will find pin assignments 
+as an image. DIY electronic hobbyists may find this
+file quite useful for reference.
+
+>tex_help.hyp
+>Ralf Zimmermann @ OF2
+>Computer/TeX
+>TeX On-line help
+A comprehensive LaTeX-help, as reference work and on-line help.
+Now even more LaTeX-commands made clear! ST-Guide format.
+
+>eng2ger.hyp
+>Ralf Zimmermann @ OF2
+>Lexicons
+>Dictionary Englisch->Deutsch
+This is an English --> German dictionary.
+Although it cannot really replace a real dictionary,
+now and then something like this can be quite helpful.
+
+>latex.hyp
+>Oliver Stenzel
+>Computer/TeX
+>LaTeX On-line help
+A comprehensive LaTeX-help, as reference work and on-line help.
+Now even more LaTeX-commands made clear! ST-Guide format.

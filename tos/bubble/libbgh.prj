@@ -1,0 +1,6 @@
+libbgh.lib 
+.C[-Ic:\src\hypview\include]
+.L[-J]
+=
+
+bgh.c

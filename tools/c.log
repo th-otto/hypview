@@ -1,0 +1,241 @@
+
+			HELPFILE RECOMPILER  Ver. 1.0	Nov  7 2013
+			=============================
+
+				(c) Volker Reichel
+
+Optionen: slt
+
+
+Header of Helpfile c.HLP
+
+	Screens					:   82
+	Start String Tabelle	: 464 (0x1d0)
+	LÑnge					: 8676 (0x21e4)
+	die hÑufigsten Zeichen	:  enrit1a0s-d
+	Start sensitive Tabelle	: 10078 (0x275e)
+	LÑnge					: 34 (0x22)
+	Anz. sens. Worte	: 3 (0x3)
+	Start capsens. Tabelle	: 9140 (0x23b4)
+	LÑnge					: 938 (0x3aa)
+	Anz. capsens Worte	: 68 (0x44)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Capsensitive Tabelle
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+	Position   Code  Suchwort
+	   0x198   8171  "#define"
+	   0x19a   81a9  "#elif"
+	   0x19a   81a1  "#else"
+	   0x19a   81a1  "#endif"
+	   0x19b   81d9  "#error"
+	   0x19c   81a1  "#if"
+	   0x19a   81b1  "#ifdef"
+	   0x19b   81b9  "#ifndef"
+	   0x19d   8169  "#include"
+	   0x1a0   81c1  "#line"
+	   0x1a0   81c9  "#pragma"
+	   0x1a2   81d1  "#pragma warn"
+	   0x1a9   8191  "#undef"
+	   0x1aa   8019  "C Language"
+	   0x1af   8121  "Escapesequenzen"
+	   0x1b9   8059  "Flieûkommaformat"
+	   0x1c4   8181  "Funktionen-Makros"
+	   0x1d0   8151  "NULL"
+	   0x1cf   8061  "ParameterÅbergabe"
+	   0x1db   8149  "Prototypen"
+	   0x1e0   8159  "PrÑprozessor"
+	   0x1e7   8189  "__68881__"
+	   0x1eb   8189  "__DATE__"
+	   0x1ee   8189  "__FILE__"
+	   0x1f1   8189  "__LINE__"
+	   0x1f4   8189  "__PUREC__"
+	   0x1f8   8189  "__STDC__"
+	   0x1fb   8189  "__TIME__"
+	   0x1fe   8189  "__TOS__"
+	   0x200   8189  "__TURBOC__"
+	   0x205   8021  "auto"
+	   0x204   8029  "break"
+	   0x204   80e1  "case"
+	   0x203   8031  "cdecl"
+	   0x203   8039  "char"
+	   0x202   8041  "const"
+	   0x202   8049  "continue"
+	   0x205   80e1  "default"
+	   0x207   8199  "defined"
+	   0x209   8051  "do"
+	   0x206   8059  "double"
+	   0x207   8089  "else"
+	   0x206   8069  "enum"
+	   0x205   8071  "extern"
+	   0x206   8059  "float"
+	   0x206   8079  "for"
+	   0x204   8081  "goto"
+	   0x203   8089  "if"
+	   0x200   8091  "int"
+	   0x1fe   8099  "long"
+	   0x1fd   8059  "long double"
+	   0x203   8129  "main"
+	   0x202   80a1  "pascal"
+	   0x203   80a9  "register"
+	   0x206   80b1  "return"
+	   0x207   80b9  "short"
+	   0x207   80c1  "signed"
+	   0x208   80c9  "sizeof"
+	   0x209   80d1  "static"
+	   0x20a   80d9  "struct"
+	   0x20b   80e1  "switch"
+	   0x20c   80e9  "typedef"
+	   0x20e   80f1  "union"
+	   0x20e   80c1  "unsigned"
+	   0x211   80f9  "void"
+	   0x210   8101  "volatile"
+	   0x213   81d1  "warn"
+	   0x212   8109  "while"
+
+
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+		Sensitive Tabelle
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+	Position   Code  Suchwort
+	   0x12   8131  "ARGC"
+	   0x11   8139  "ARGV"
+	   0x10   8141  "ENVP"
+
+
+================================================================================
+			Namenstabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<__TURBOC__                      > CAPSENSITIVE 0x8189 = 0x30
+<#pragma                         > CAPSENSITIVE 0x81C9 = 0x38
+<__TOS__                         > CAPSENSITIVE 0x8189 = 0x30
+<#line                           > CAPSENSITIVE 0x81C1 = 0x37
+<__TIME__                        > CAPSENSITIVE 0x8189 = 0x30
+<#include                        > CAPSENSITIVE 0x8169 = 0x2C
+<__STDC__                        > CAPSENSITIVE 0x8189 = 0x30
+<#ifndef                         > CAPSENSITIVE 0x81B9 = 0x36
+<__PUREC__                       > CAPSENSITIVE 0x8189 = 0x30
+<#ifdef                          > CAPSENSITIVE 0x81B1 = 0x35
+<__LINE__                        > CAPSENSITIVE 0x8189 = 0x30
+<#if                             > CAPSENSITIVE 0x81A1 = 0x33
+<__FILE__                        > CAPSENSITIVE 0x8189 = 0x30
+<#error                          > CAPSENSITIVE 0x81D9 = 0x3A
+<__DATE__                        > CAPSENSITIVE 0x8189 = 0x30
+<#endif                          > CAPSENSITIVE 0x81A1 = 0x33
+<__68881__                       > CAPSENSITIVE 0x8189 = 0x30
+<#else                           > CAPSENSITIVE 0x81A1 = 0x33
+<#undef                          > CAPSENSITIVE 0x8191 = 0x31
+<#elif                           > CAPSENSITIVE 0x81A9 = 0x34
+<#pragma warn                    > CAPSENSITIVE 0x81D1 = 0x39
+<#define                         > CAPSENSITIVE 0x8171 = 0x2D
+<while                           > CAPSENSITIVE 0x8109 = 0x20
+<warn                            > CAPSENSITIVE 0x81D1 = 0x39
+<volatile                        > CAPSENSITIVE 0x8101 = 0x1F
+<Vordefinierte Makros            > SCREEN_NAME  0x8189 = 0x30
+<void                            > CAPSENSITIVE 0x80F9 = 0x1E
+<unsigned                        > CAPSENSITIVE 0x80C1 = 0x17
+<union                           > CAPSENSITIVE 0x80F1 = 0x1D
+<typedef                         > CAPSENSITIVE 0x80E9 = 0x1C
+<static                          > CAPSENSITIVE 0x80D1 = 0x19
+<switch                          > CAPSENSITIVE 0x80E1 = 0x1B
+<sizeof                          > CAPSENSITIVE 0x80C9 = 0x18
+<struct                          > CAPSENSITIVE 0x80D9 = 0x1A
+<signed                          > CAPSENSITIVE 0x80C1 = 0x17
+<Steuerzeichen                   > SCREEN_NAME  0x8121 = 0x23
+<short                           > CAPSENSITIVE 0x80B9 = 0x16
+<register                        > CAPSENSITIVE 0x80A9 = 0x14
+<return                          > CAPSENSITIVE 0x80B1 = 0x15
+<Rangfolge der Operatoren        > SCREEN_NAME  0x8119 = 0x22
+<Prototypen                      > CAPSENSITIVE 0x8149 = 0x28
+<PrÑprozessor-Anweisungen        > SCREEN_NAME  0x8161 = 0x2B
+<pascal                          > CAPSENSITIVE 0x80A1 = 0x13
+<PrÑprozessor                    > CAPSENSITIVE 0x8159 = 0x2A
+<ParameterÅbergabe               > CAPSENSITIVE 0x8061 = 0xB
+<NULL                            > CAPSENSITIVE 0x8151 = 0x29
+<main                            > CAPSENSITIVE 0x8129 = 0x24
+<long double                     > CAPSENSITIVE 0x8059 = 0xA
+<long                            > CAPSENSITIVE 0x8099 = 0x12
+<Konstanten-Makros               > SCREEN_NAME  0x8179 = 0x2E
+<Index                           > SCREEN_NAME  0x8011 = 0x1
+<int                             > CAPSENSITIVE 0x8091 = 0x11
+<if                              > CAPSENSITIVE 0x8089 = 0x10
+<goto                            > CAPSENSITIVE 0x8081 = 0xF
+<Funktionen-Makros               > CAPSENSITIVE 0x8181 = 0x2F
+<float                           > CAPSENSITIVE 0x8059 = 0xA
+<for                             > CAPSENSITIVE 0x8079 = 0xE
+<Flieûkommaformat                > CAPSENSITIVE 0x8059 = 0xA
+<enum                            > CAPSENSITIVE 0x8069 = 0xC
+<extern                          > CAPSENSITIVE 0x8071 = 0xD
+<else                            > CAPSENSITIVE 0x8089 = 0x10
+<Escapesequenzen                 > CAPSENSITIVE 0x8121 = 0x23
+<ENVP                            >  SENSITIVE   0x8141 = 0x27
+<double                          > CAPSENSITIVE 0x8059 = 0xA
+<defined                         > CAPSENSITIVE 0x8199 = 0x32
+<do                              > CAPSENSITIVE 0x8051 = 0x9
+<default                         > CAPSENSITIVE 0x80E1 = 0x1B
+<char                            > CAPSENSITIVE 0x8039 = 0x6
+<Copyright                       > SCREEN_NAME  0x8009 = 0x0
+<cdecl                           > CAPSENSITIVE 0x8031 = 0x5
+<continue                        > CAPSENSITIVE 0x8049 = 0x8
+<case                            > CAPSENSITIVE 0x80E1 = 0x1B
+<const                           > CAPSENSITIVE 0x8041 = 0x7
+<C Language                      > CAPSENSITIVE 0x8019 = 0x2
+<break                           > CAPSENSITIVE 0x8029 = 0x4
+<Bitfelder                       > SCREEN_NAME  0x8111 = 0x21
+<ASCII-Tabelle                   > SCREEN_NAME  0x81E1 = 0x3B
+<auto                            > CAPSENSITIVE 0x8021 = 0x3
+<ARGV                            >  SENSITIVE   0x8139 = 0x26
+<Ausdruck                        > SCREEN_NAME  0x8199 = 0x32
+<ARGC                            >  SENSITIVE   0x8131 = 0x25
+
+81 Namen gefunden.
+
+================================================================================
+			Link Tabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<Warnungen                       >    LINK      0xFFFF von 0x39
+<getchar                         >    LINK      0xFFFF von 0x2F
+<Konstanten-Makro                >    LINK      0x8179 von 0x29
+<öbergaberegister                >    LINK      0x8061 von 0x28
+<getenv                          >    LINK      0xFFFF von 0x27
+<envp                            >    LINK      0x8141 von 0x24
+<argv                            >    LINK      0x8139 von 0x24
+<argc                            >    LINK      0x8131 von 0x24
+<abort                           >    LINK      0xFFFF von 0x24
+<exit                            >    LINK      0xFFFF von 0x24
+<Compileroptionen                >    LINK      0xFFFF von 0x17
+<ADDQ                            >    LINK      0xFFFF von 0xB
+<A1                              >    LINK      0xFFFF von 0xB
+<A0                              >    LINK      0xFFFF von 0xB
+<D2                              >    LINK      0xFFFF von 0xB
+<D1                              >    LINK      0xFFFF von 0xB
+<D0                              >    LINK      0xFFFF von 0xB
+<xdcnv                           >    LINK      0xFFFF von 0xA
+<dxcnv                           >    LINK      0xFFFF von 0xA
+
+19 Link-Verweise gefunden.
+	*** WARNUNG: Globaler Verweis <dxcnv>
+	*** WARNUNG: Globaler Verweis <xdcnv>
+	*** WARNUNG: Globaler Verweis <D0>
+	*** WARNUNG: Globaler Verweis <D1>
+	*** WARNUNG: Globaler Verweis <D2>
+	*** WARNUNG: Globaler Verweis <A0>
+	*** WARNUNG: Globaler Verweis <A1>
+	*** WARNUNG: Globaler Verweis <ADDQ>
+	*** WARNUNG: Globaler Verweis <Compileroptionen>
+	*** WARNUNG: Globaler Verweis <exit>
+	*** WARNUNG: Globaler Verweis <abort>
+	*** WARNUNG: Globaler Verweis <abort>
+	*** WARNUNG: Globaler Verweis <exit>
+	*** WARNUNG: Globaler Verweis <exit>
+	*** WARNUNG: Globaler Verweis <getenv>
+	*** WARNUNG: Globaler Verweis <Compileroptionen>
+	*** WARNUNG: Globaler Verweis <getchar>
+	*** WARNUNG: Globaler Verweis <Compileroptionen>
+	*** WARNUNG: Globaler Verweis <Compileroptionen>
+	*** WARNUNG: Globaler Verweis <Warnungen>
+
+0 Fehler. 20 Warnungen. 20 Verweise in andere HELP-Dateien.

@@ -1,0 +1,485 @@
+
+			HELPFILE RECOMPILER  Ver. 1.0	Nov  7 2013
+			=============================
+
+				(c) Volker Reichel
+
+Optionen: slt
+
+
+Header of Helpfile pc.HLP
+
+	Screens					:  115
+	Start String Tabelle	: 596 (0x254)
+	L„nge					: 19172 (0x4ae4)
+	die h„ufigsten Zeichen	:  e-nirtasldo
+	Start sensitive Tabelle	: 20248 (0x4f18)
+	L„nge					: 0 (0x0)
+	Anz. sens. Worte	: 0 (0x0)
+	Start capsens. Tabelle	: 19768 (0x4d38)
+	L„nge					: 480 (0x1e0)
+	Anz. capsens Worte	: 42 (0x2a)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Capsensitive Tabelle
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+	Position   Code  Suchwort
+	   0xfc   82c0  "#"
+	   0xf8   81d0  "Compileroptionen"
+	   0x103   8278  "Editor"
+	   0x104   8200  "Error"
+	   0x104   8018  "Menu"
+	   0x103   8058  "Options"
+	   0x105   82a8  "Projektdatei"
+	   0x10c   81d8  "Warning"
+	   0x10e   81d8  "Warnungen"
+	   0x112   81f0  "amb"
+	   0x110   81f0  "amp"
+	   0x10e   81f8  "apt"
+	   0x10c   81e8  "aus"
+	   0x10a   82c0  "capsensitive"
+	   0x111   81f8  "cln"
+	   0x10f   81f8  "cpt"
+	   0x10d   81e8  "def"
+	   0x10b   81e0  "dup"
+	   0x109   81e8  "eff"
+	   0x107   82c0  "end"
+	   0x105   82c0  "link"
+	   0x104   81f0  "mlt"
+	   0x102   81f0  "nod"
+	   0x100   81e8  "par"
+	   0xfe   81e8  "pia"
+	   0xfc   81f0  "pro"
+	   0xfa   81e8  "rch"
+	   0xf8   81e0  "ret"
+	   0xf6   81f8  "rng"
+	   0xf4   81f8  "rpt"
+	   0xf2   81e8  "rvl"
+	   0xf0   82c0  "screen"
+	   0xf1   82c0  "sensitive"
+	   0xf5   81f8  "sig"
+	   0xf3   81e0  "str"
+	   0xf1   81e0  "stu"
+	   0xef   81f0  "stv"
+	   0xed   81e0  "sus"
+	   0xeb   81f8  "ucp"
+	   0xe9   81f0  "use"
+	   0xe7   81e0  "voi"
+	   0xe5   81e0  "zst"
+
+
+================================================================================
+			Namenstabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<*.PDB                           > SCREEN_NAME  0x81C0 = 0x37
+<#                               > CAPSENSITIVE 0x82C0 = 0x57
+<Zeilennummer erfragen           > SCREEN_NAME  0x8148 = 0x28
+<zst                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Zeile suchen                    > SCREEN_NAME  0x8148 = 0x28
+<while, Fehlermeldungen          > SCREEN_NAME  0x8228 = 0x44
+<Warnungen (Help-Compiler)       > SCREEN_NAME  0x82C8 = 0x58
+<Weniger h„ufige Fehler          > SCREEN_NAME  0x81F0 = 0x3D
+<Warnungen                       > CAPSENSITIVE 0x81D8 = 0x3A
+<Warnungen vor Portabilit„tspr   > SCREEN_NAME  0x81F8 = 0x3E
+<Warning                         > CAPSENSITIVE 0x81D8 = 0x3A
+<voi                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Verletzung des ANSI-Standards   > SCREEN_NAME  0x81E0 = 0x3B
+<Undo                            > SCREEN_NAME  0x80C8 = 0x18
+<User Screen                     > SCREEN_NAME  0x8108 = 0x20
+<ucp                             > CAPSENSITIVE 0x81F8 = 0x3E
+<use                             > CAPSENSITIVE 0x81F0 = 0x3D
+<USR.HLP                         > SCREEN_NAME  0x82B8 = 0x56
+<Textausschnitt drucken          > SCREEN_NAME  0x8090 = 0x11
+<Textselektierung                > SCREEN_NAME  0x8298 = 0x52
+<Textausrcken                   > SCREEN_NAME  0x80F0 = 0x1D
+<Textmarkierung                  > SCREEN_NAME  0x8298 = 0x52
+<Textauschnitt kopieren          > SCREEN_NAME  0x80D8 = 0x1A
+<Texteinrcken                   > SCREEN_NAME  0x80F8 = 0x1E
+<Textauschnitt ausschneiden      > SCREEN_NAME  0x80D0 = 0x19
+<Textausschnitt einfgen         > SCREEN_NAME  0x80E0 = 0x1B
+<TOS Shell                       > SCREEN_NAME  0x80B8 = 0x16
+<switch, Fehlermeldungen         > SCREEN_NAME  0x8230 = 0x45
+<Search/Search project...        > SCREEN_NAME  0x8150 = 0x29
+<sus                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Search/Search multiple...       > SCREEN_NAME  0x8158 = 0x2A
+<Suchen und Ersetzen             > SCREEN_NAME  0x8128 = 0x24
+<Search/Replace...               > SCREEN_NAME  0x8128 = 0x24
+<Suchen                          > SCREEN_NAME  0x8110 = 0x21
+<Search/Replace Same             > SCREEN_NAME  0x8130 = 0x25
+<Suche wiederholen               > SCREEN_NAME  0x8118 = 0x22
+<Search/Goto Line                > SCREEN_NAME  0x8148 = 0x28
+<stv                             > CAPSENSITIVE 0x81F0 = 0x3D
+<Search/Find...                  > SCREEN_NAME  0x8110 = 0x21
+<stu                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Search/Find Selection           > SCREEN_NAME  0x8120 = 0x23
+<str                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Search/Find Same                > SCREEN_NAME  0x8118 = 0x22
+<Statements, Fehlermeldungen     > SCREEN_NAME  0x8238 = 0x46
+<Search/Find Error               > SCREEN_NAME  0x8140 = 0x27
+<Speichern einer Datei           > SCREEN_NAME  0x80A8 = 0x14
+<Search/Check Braces             > SCREEN_NAME  0x8138 = 0x26
+<sig                             > CAPSENSITIVE 0x81F8 = 0x3E
+<Search-Men                     > SCREEN_NAME  0x8040 = 0x7
+<Shift Right                     > SCREEN_NAME  0x80F8 = 0x1E
+<Search project...               > SCREEN_NAME  0x8150 = 0x29
+<Shift Left                      > SCREEN_NAME  0x80F0 = 0x1D
+<Search multiple...              > SCREEN_NAME  0x8158 = 0x2A
+<Shelloptionen                   > SCREEN_NAME  0x81B8 = 0x36
+<Search                          > SCREEN_NAME  0x8040 = 0x7
+<sensitive                       > CAPSENSITIVE 0x82C0 = 0x57
+<screen                          > CAPSENSITIVE 0x82C0 = 0x57
+<Selektierung                    > SCREEN_NAME  0x8298 = 0x52
+<Save as...                      > SCREEN_NAME  0x80B0 = 0x15
+<Select...                       > SCREEN_NAME  0x8188 = 0x30
+<Save ''                         > SCREEN_NAME  0x8268 = 0x4C
+<Select All                      > SCREEN_NAME  0x80E8 = 0x1C
+<Save                            > SCREEN_NAME  0x80A8 = 0x14
+<rvl                             > CAPSENSITIVE 0x81E8 = 0x3C
+<ret                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Run ''                          > SCREEN_NAME  0x8198 = 0x32
+<Replace...                      > SCREEN_NAME  0x8128 = 0x24
+<rpt                             > CAPSENSITIVE 0x81F8 = 0x3E
+<Replace Same                    > SCREEN_NAME  0x8130 = 0x25
+<rng                             > CAPSENSITIVE 0x81F8 = 0x3E
+<rch                             > CAPSENSITIVE 0x81E8 = 0x3C
+<Quit                            > SCREEN_NAME  0x80C0 = 0x17
+<Quelltext assemblieren          > SCREEN_NAME  0x8178 = 0x2E
+<Querverweise (Help)             > SCREEN_NAME  0x82C0 = 0x57
+<Quelldatei bersetzen           > SCREEN_NAME  0x8160 = 0x2B
+<Quelltext bersetzen            > SCREEN_NAME  0x8168 = 0x2C
+<Quelldatei compilieren          > SCREEN_NAME  0x8160 = 0x2B
+<Quelltext compilieren           > SCREEN_NAME  0x8168 = 0x2C
+<Quelldatei assemblieren         > SCREEN_NAME  0x8170 = 0x2D
+<Project/Link ''                 > SCREEN_NAME  0x81B0 = 0x35
+<Pure-C-Men                     > SCREEN_NAME  0x8020 = 0x3
+<Project/Debug ''                > SCREEN_NAME  0x8190 = 0x31
+<Pure Debugger                   > SCREEN_NAME  0x8190 = 0x31
+<Project-Men                    > SCREEN_NAME  0x8050 = 0x9
+<Pr„prozessor, Fehler            > SCREEN_NAME  0x8208 = 0x40
+<Project Help                    > SCREEN_NAME  0x81C0 = 0x37
+<Projektmanager (rekursiver Au   > SCREEN_NAME  0x82A8 = 0x54
+<Project                         > SCREEN_NAME  0x8050 = 0x9
+<Projektmanager                  > SCREEN_NAME  0x82A8 = 0x54
+<Programmende                    > SCREEN_NAME  0x80C0 = 0x17
+<Projektdatei ausw„hlen          > SCREEN_NAME  0x8188 = 0x30
+<Programm starten                > SCREEN_NAME  0x8180 = 0x2F
+<Projektdatei                    > CAPSENSITIVE 0x82A8 = 0x54
+<pro                             > CAPSENSITIVE 0x81F0 = 0x3D
+<Projekt-Datenbank               > SCREEN_NAME  0x81C0 = 0x37
+<Print Selection                 > SCREEN_NAME  0x8090 = 0x11
+<Project/Select...               > SCREEN_NAME  0x8188 = 0x30
+<Print                           > SCREEN_NAME  0x8088 = 0x10
+<Project/Run ''                  > SCREEN_NAME  0x8198 = 0x32
+<pia                             > CAPSENSITIVE 0x81E8 = 0x3C
+<Project/Make all ''             > SCREEN_NAME  0x81A8 = 0x34
+<Paste                           > SCREEN_NAME  0x80E0 = 0x1B
+<Project/Make ''                 > SCREEN_NAME  0x81A0 = 0x33
+<par                             > CAPSENSITIVE 0x81E8 = 0x3C
+<Options/Save                    > SCREEN_NAME  0x8268 = 0x4C
+<Optionen (Help-Compiler)        > SCREEN_NAME  0x82B8 = 0x56
+<Options/Load...                 > SCREEN_NAME  0x8260 = 0x4B
+<Open .S                         > SCREEN_NAME  0x8078 = 0xE
+<Options-Men                    > SCREEN_NAME  0x8058 = 0xA
+<Open .PRJ                       > SCREEN_NAME  0x8080 = 0xF
+<Options                         > CAPSENSITIVE 0x8058 = 0xA
+<Open .H                         > SCREEN_NAME  0x8070 = 0xD
+<Optionen sichern                > SCREEN_NAME  0x8268 = 0x4C
+<Open .C                         > SCREEN_NAME  0x8068 = 0xC
+<Optionen laden                  > SCREEN_NAME  0x8260 = 0x4B
+<Object-File Caching             > SCREEN_NAME  0x81C8 = 0x38
+<nod                             > CAPSENSITIVE 0x81F0 = 0x3D
+<Name des benutzerdef. Help      > SCREEN_NAME  0x82B8 = 0x56
+<mlt                             > CAPSENSITIVE 0x81F0 = 0x3D
+<Men, File-                     > SCREEN_NAME  0x8030 = 0x5
+<Messages                        > SCREEN_NAME  0x8280 = 0x4F
+<Men, Edit-                     > SCREEN_NAME  0x8038 = 0x6
+<Menleiste                      > SCREEN_NAME  0x8018 = 0x2
+<Men, Compile-                  > SCREEN_NAME  0x8048 = 0x8
+<Men, Search-                   > SCREEN_NAME  0x8040 = 0x7
+<Menu                            > CAPSENSITIVE 0x8018 = 0x2
+<Men, Pure-C-                   > SCREEN_NAME  0x8020 = 0x3
+<Markierung                      > SCREEN_NAME  0x8298 = 0x52
+<Men, Project-                  > SCREEN_NAME  0x8050 = 0x9
+<Make all ''                     > SCREEN_NAME  0x81A8 = 0x34
+<Men, Options-                  > SCREEN_NAME  0x8058 = 0xA
+<Make ''                         > SCREEN_NAME  0x81A0 = 0x33
+<Linker                          > SCREEN_NAME  0x8258 = 0x4A
+<L”schen des Cache               > SCREEN_NAME  0x81C8 = 0x38
+<Linken eines Projekts           > SCREEN_NAME  0x81B0 = 0x35
+<Load...                         > SCREEN_NAME  0x8260 = 0x4B
+<Link ''                         > SCREEN_NAME  0x81B0 = 0x35
+<Linkeroptionen                  > SCREEN_NAME  0x8258 = 0x4A
+<link                            > CAPSENSITIVE 0x82C0 = 0x57
+<Konfiguration sichern           > SCREEN_NAME  0x8268 = 0x4C
+<Kontextsensitives Help          > SCREEN_NAME  0x82C0 = 0x57
+<Konfiguration laden             > SCREEN_NAME  0x8260 = 0x4B
+<Kontextsensitive Hilfe          > SCREEN_NAME  0x8060 = 0xB
+<Kommandozeileninterpreter       > SCREEN_NAME  0x80B8 = 0x16
+<Konstanten, Fehlermeldungen     > SCREEN_NAME  0x8240 = 0x47
+<Klammertest                     > SCREEN_NAME  0x8138 = 0x26
+<Include-File Caching            > SCREEN_NAME  0x81C8 = 0x38
+<Index                           > SCREEN_NAME  0x8010 = 0x1
+<if, Fehlermeldungen             > SCREEN_NAME  0x8230 = 0x45
+<Hotkeys (CONTROL)               > SCREEN_NAME  0x82A0 = 0x53
+<Hilfesystem                     > SCREEN_NAME  0x8060 = 0xB
+<Hotkeys (ALTERNATE)             > SCREEN_NAME  0x8270 = 0x4D
+<Hierarchie-Test                 > SCREEN_NAME  0x8138 = 0x26
+<Help-Sprache                    > SCREEN_NAME  0x82C0 = 0x57
+<Help                            > SCREEN_NAME  0x8060 = 0xB
+<Help-Quelltext                  > SCREEN_NAME  0x82C0 = 0x57
+<Header-File Caching             > SCREEN_NAME  0x81C8 = 0x38
+<Help-Language                   > SCREEN_NAME  0x82C0 = 0x57
+<Hauptmen                       > SCREEN_NAME  0x8018 = 0x2
+<Help-Compiler                   > SCREEN_NAME  0x82B0 = 0x55
+<H„ufig auftretende Fehler       > SCREEN_NAME  0x81E8 = 0x3C
+<HC                              > SCREEN_NAME  0x82B0 = 0x55
+<Goto Line...                    > SCREEN_NAME  0x8148 = 0x28
+<File/Abandon                    > SCREEN_NAME  0x80A0 = 0x13
+<for, Fehlermeldungen            > SCREEN_NAME  0x8228 = 0x44
+<File-Men                       > SCREEN_NAME  0x8030 = 0x5
+<Finden von Deklarationen        > SCREEN_NAME  0x81C0 = 0x37
+<File Dependences                > SCREEN_NAME  0x82A8 = 0x54
+<Find...                         > SCREEN_NAME  0x8110 = 0x21
+<Fensterwechsel                  > SCREEN_NAME  0x8100 = 0x1F
+<Find Selection                  > SCREEN_NAME  0x8120 = 0x23
+<Fenster schliežen               > SCREEN_NAME  0x8098 = 0x12
+<Find Same                       > SCREEN_NAME  0x8118 = 0x22
+<Fehlersuche                     > SCREEN_NAME  0x8140 = 0x27
+<Find Error                      > SCREEN_NAME  0x8140 = 0x27
+<Fehlermeldungen in Statements   > SCREEN_NAME  0x8238 = 0x46
+<File/TOS Shell                  > SCREEN_NAME  0x80B8 = 0x16
+<Fehlermeldungen des Pr„prozes   > SCREEN_NAME  0x8208 = 0x40
+<File/Save as...                 > SCREEN_NAME  0x80B0 = 0x15
+<Fehlermeldungen des Compilers   > SCREEN_NAME  0x8200 = 0x3F
+<File/Save                       > SCREEN_NAME  0x80A8 = 0x14
+<Fehlermeldungen bei Schleifen   > SCREEN_NAME  0x8228 = 0x44
+<File/Quit                       > SCREEN_NAME  0x80C0 = 0x17
+<Fehlermeldungen bei Konstante   > SCREEN_NAME  0x8240 = 0x47
+<File/Print Selection            > SCREEN_NAME  0x8090 = 0x11
+<Fehlermeldungen bei If-/Switc   > SCREEN_NAME  0x8230 = 0x45
+<File/Print                      > SCREEN_NAME  0x8088 = 0x10
+<Fehlermeldungen bei Funktions   > SCREEN_NAME  0x8210 = 0x41
+<File/Open  .S                   > SCREEN_NAME  0x8078 = 0xE
+<Fehlermeldungen bei Funktions   > SCREEN_NAME  0x8218 = 0x42
+<File/Open  .PRJ                 > SCREEN_NAME  0x8080 = 0xF
+<Fehlermeldungen bei Deklarati   > SCREEN_NAME  0x8220 = 0x43
+<File/Open  .H                   > SCREEN_NAME  0x8070 = 0xD
+<Fehlermeldungen (Help-Compile   > SCREEN_NAME  0x82C8 = 0x58
+<File/Open  .C                   > SCREEN_NAME  0x8068 = 0xC
+<Fehlermeldung                   > SCREEN_NAME  0x8140 = 0x27
+<File/Close                      > SCREEN_NAME  0x8098 = 0x12
+<Fehler                          > SCREEN_NAME  0x8200 = 0x3F
+<Edit/User Screen                > SCREEN_NAME  0x8108 = 0x20
+<Execute...                      > SCREEN_NAME  0x8180 = 0x2F
+<Edit/Undo                       > SCREEN_NAME  0x80C8 = 0x18
+<Ersetzen wiederholen            > SCREEN_NAME  0x8130 = 0x25
+<Edit/Shift Right                > SCREEN_NAME  0x80F8 = 0x1E
+<Ersetzen                        > SCREEN_NAME  0x8128 = 0x24
+<Edit/Shift Left                 > SCREEN_NAME  0x80F0 = 0x1D
+<Error                           > CAPSENSITIVE 0x8200 = 0x3F
+<Edit/Select All                 > SCREEN_NAME  0x80E8 = 0x1C
+<end                             > CAPSENSITIVE 0x82C0 = 0x57
+<Edit/Paste                      > SCREEN_NAME  0x80E0 = 0x1B
+<eff                             > CAPSENSITIVE 0x81E8 = 0x3C
+<Edit/Cut                        > SCREEN_NAME  0x80D0 = 0x19
+<Editorfunktionen                > SCREEN_NAME  0x8288 = 0x50
+<Edit/Copy                       > SCREEN_NAME  0x80D8 = 0x1A
+<Editor                          > CAPSENSITIVE 0x8278 = 0x4E
+<Edit-Men                       > SCREEN_NAME  0x8038 = 0x6
+<Editieroperationen rckg„ngig   > SCREEN_NAME  0x80C8 = 0x18
+<Edit                            > SCREEN_NAME  0x8038 = 0x6
+<dup                             > CAPSENSITIVE 0x81E0 = 0x3B
+<Debug ''                        > SCREEN_NAME  0x8190 = 0x31
+<Drucken eines Textauschnitts    > SCREEN_NAME  0x8090 = 0x11
+<Dateiinhalt selektieren         > SCREEN_NAME  0x80E8 = 0x1C
+<Drucken einer Datei             > SCREEN_NAME  0x8088 = 0x10
+<Dateiinhalt markieren           > SCREEN_NAME  0x80E8 = 0x1C
+<do-while, Fehlermeldungen       > SCREEN_NAME  0x8228 = 0x44
+<Dateiauswahlbox                 > SCREEN_NAME  0x8028 = 0x4
+<Diverse Fehlermeldungen         > SCREEN_NAME  0x8248 = 0x48
+<Dateiabh„ngigkeiten             > SCREEN_NAME  0x82A8 = 0x54
+<Deklarationen, Fehlermeldunge   > SCREEN_NAME  0x8220 = 0x43
+<Datei speichern                 > SCREEN_NAME  0x80A8 = 0x14
+<def                             > CAPSENSITIVE 0x81E8 = 0x3C
+<Datei drucken                   > SCREEN_NAME  0x8088 = 0x10
+<Compile/Compile ''              > SCREEN_NAME  0x8168 = 0x2C
+<Cycle Windows                   > SCREEN_NAME  0x8100 = 0x1F
+<Compile/Assemble...             > SCREEN_NAME  0x8170 = 0x2D
+<Cut                             > SCREEN_NAME  0x80D0 = 0x19
+<Compile/Assemble ''             > SCREEN_NAME  0x8178 = 0x2E
+<cpt                             > CAPSENSITIVE 0x81F8 = 0x3E
+<Compile...                      > SCREEN_NAME  0x8160 = 0x2B
+<Copyright                       > SCREEN_NAME  0x8008 = 0x0
+<Compile-Men                    > SCREEN_NAME  0x8048 = 0x8
+<Copy                            > SCREEN_NAME  0x80D8 = 0x1A
+<Compile ''                      > SCREEN_NAME  0x8168 = 0x2C
+<Compilieren und starten         > SCREEN_NAME  0x8198 = 0x32
+<Compile                         > SCREEN_NAME  0x8048 = 0x8
+<Compilieren und Debuggen        > SCREEN_NAME  0x8190 = 0x31
+<Close                           > SCREEN_NAME  0x8098 = 0x12
+<Compilieren ge„nderter Dateie   > SCREEN_NAME  0x81A0 = 0x33
+<cln                             > CAPSENSITIVE 0x81F8 = 0x3E
+<Compilieren aller Dateien       > SCREEN_NAME  0x81A8 = 0x34
+<Check Braces                    > SCREEN_NAME  0x8138 = 0x26
+<Compileroptionen                > CAPSENSITIVE 0x81D0 = 0x39
+<capsensitive                    > CAPSENSITIVE 0x82C0 = 0x57
+<Compile/Execute...              > SCREEN_NAME  0x8180 = 0x2F
+<Cache                           > SCREEN_NAME  0x81C8 = 0x38
+<Compile/Compile...              > SCREEN_NAME  0x8160 = 0x2B
+<CONTROL                         > SCREEN_NAME  0x82A0 = 0x53
+<Blockselektierung               > SCREEN_NAME  0x8298 = 0x52
+<Block auschneiden               > SCREEN_NAME  0x80D0 = 0x19
+<Blockoperationen                > SCREEN_NAME  0x8290 = 0x51
+<Benutzerdefiniertes Help        > SCREEN_NAME  0x82B0 = 0x55
+<Blockmarkierung                 > SCREEN_NAME  0x8298 = 0x52
+<Benutzerbildschirm              > SCREEN_NAME  0x8108 = 0x20
+<Block kopieren                  > SCREEN_NAME  0x80D8 = 0x1A
+<Benutzerausgaben                > SCREEN_NAME  0x8108 = 0x20
+<Block einfgen                  > SCREEN_NAME  0x80E0 = 0x1B
+<Befehlsdateien (Help-Compiler   > SCREEN_NAME  0x82B8 = 0x56
+<apt                             > CAPSENSITIVE 0x81F8 = 0x3E
+<aus                             > CAPSENSITIVE 0x81E8 = 0x3C
+<amp                             > CAPSENSITIVE 0x81F0 = 0x3D
+<Aufruf eines Kommandozeilenin   > SCREEN_NAME  0x80B8 = 0x16
+<amb                             > CAPSENSITIVE 0x81F0 = 0x3D
+<Assembleroptionen               > SCREEN_NAME  0x8250 = 0x49
+<Aktuelle Zeilennummer           > SCREEN_NAME  0x8148 = 0x28
+<Assemble...                     > SCREEN_NAME  0x8170 = 0x2D
+<Abandon                         > SCREEN_NAME  0x80A0 = 0x13
+<Assemble ''                     > SCREEN_NAME  0x8178 = 0x2E
+<ALTERNATE                       > SCREEN_NAME  0x8270 = 0x4D
+
+277 Namen gefunden.
+
+================================================================================
+			Link Tabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<Option                          >    LINK      0x82B8 von 0x58
+<Quelldateien                    >    LINK      0x82C0 von 0x55
+<Befehlsdatei                    >    LINK      0x82B8 von 0x55
+<Editors                         >    LINK      0x8278 von 0x51
+<Block                           >    LINK      0x8290 von 0x4E
+<Shell                           >    LINK      0x81B8 von 0x4D
+<Compiler                        >    LINK      0x81D0 von 0x4D
+<Assembler                       >    LINK      0x8250 von 0x4D
+<typedef                         >    LINK      0xFFFF von 0x46
+<goto                            >    LINK      0xFFFF von 0x46
+<va_end                          >    LINK      0xFFFF von 0x46
+<va_arg                          >    LINK      0xFFFF von 0x46
+<va_start                        >    LINK      0xFFFF von 0x46
+<const                           >    LINK      0xFFFF von 0x46
+<switch                          >    LINK      0xFFFF von 0x45
+<else                            >    LINK      0xFFFF von 0x45
+<if                              >    LINK      0xFFFF von 0x45
+<default                         >    LINK      0xFFFF von 0x45
+<case                            >    LINK      0xFFFF von 0x45
+<while                           >    LINK      0xFFFF von 0x44
+<continue                        >    LINK      0xFFFF von 0x44
+<break                           >    LINK      0xFFFF von 0x44
+<do                              >    LINK      0xFFFF von 0x44
+<union                           >    LINK      0xFFFF von 0x43
+<static                          >    LINK      0xFFFF von 0x43
+<enum                            >    LINK      0xFFFF von 0x43
+<void                            >    LINK      0xFFFF von 0x42
+<int                             >    LINK      0xFFFF von 0x41
+<extern                          >    LINK      0xFFFF von 0x41
+<pascal                          >    LINK      0xFFFF von 0x41
+<cdecl                           >    LINK      0xFFFF von 0x41
+<signed                          >    LINK      0xFFFF von 0x41
+<unsigned                        >    LINK      0xFFFF von 0x41
+<#endif                          >    LINK      0xFFFF von 0x40
+<#if                             >    LINK      0xFFFF von 0x40
+<#error                          >    LINK      0xFFFF von 0x40
+<#define                         >    LINK      0xFFFF von 0x40
+<#include                        >    LINK      0xFFFF von 0x40
+<Funktionen-Makros               >    LINK      0xFFFF von 0x40
+<Fehlermeldungen bei Konstanten  >    LINK      0x8240 von 0x3F
+<Fehlermeldungen bei If-/Switch-s>    LINK      0x8230 von 0x3F
+<Fehlermeldungen bei Deklaratione>    LINK      0x8220 von 0x3F
+<Fehlermeldungen bei Funktionsauf>    LINK      0x8218 von 0x3F
+<Fehlermeldungen bei Funktionsdek>    LINK      0x8210 von 0x3F
+<Fehlermeldungen des Pr„prozessor>    LINK      0x8208 von 0x3F
+<Parameterbergabe               >    LINK      0xFFFF von 0x3D
+<Prototypen                      >    LINK      0xFFFF von 0x3D
+<#undef                          >    LINK      0xFFFF von 0x3B
+<Warninglevel                    >    LINK      0x81D0 von 0x3B
+<Warnungen vor Portabilit„tsprobl>    LINK      0x81F8 von 0x3A
+<#pragma warn                    >    LINK      0xFFFF von 0x3A
+<Options/Shell/Cache             >    LINK      0x81B8 von 0x38
+<Shell/Options/Project           >    LINK      0x81B8 von 0x37
+<benutzerdefiniertem Help        >    LINK      0x82B0 von 0x37
+<Object- und Header-File Caching >    LINK      0x81C8 von 0x36
+<Project help                    >    LINK      0x81C0 von 0x36
+<Blockoperation                  >    LINK      0x8290 von 0x18
+<selektiert                      >    LINK      0x8298 von 0x11
+<Libraries                       >    LINK      0xFFFF von 0xB
+<C Language                      >    LINK      0xFFFF von 0xB
+<Linker...                       >    LINK      0x8258 von 0xA
+<Assembler...                    >    LINK      0x8250 von 0xA
+<Compiler...                     >    LINK      0x81D0 von 0xA
+<Shell...                        >    LINK      0x81B8 von 0xA
+<File                            >    LINK      0x8030 von 0x2
+<Pure C                          >    LINK      0x8020 von 0x2
+
+66 Link-Verweise gefunden.
+	*** WARNUNG: Globaler Verweis <C Language>
+	*** WARNUNG: Globaler Verweis <Libraries>
+	*** WARNUNG: Globaler Verweis <#pragma warn>
+	*** WARNUNG: Globaler Verweis <#pragma warn>
+	*** WARNUNG: Globaler Verweis <#undef>
+	*** WARNUNG: Globaler Verweis <#pragma warn>
+	*** WARNUNG: Globaler Verweis <#pragma warn>
+	*** WARNUNG: Globaler Verweis <Prototypen>
+	*** WARNUNG: Globaler Verweis <Parameterbergabe>
+	*** WARNUNG: Globaler Verweis <Funktionen-Makros>
+	*** WARNUNG: Globaler Verweis <#include>
+	*** WARNUNG: Globaler Verweis <#define>
+	*** WARNUNG: Globaler Verweis <#error>
+	*** WARNUNG: Globaler Verweis <#include>
+	*** WARNUNG: Globaler Verweis <#if>
+	*** WARNUNG: Globaler Verweis <#include>
+	*** WARNUNG: Globaler Verweis <#include>
+	*** WARNUNG: Globaler Verweis <#endif>
+	*** WARNUNG: Globaler Verweis <Funktionen-Makros>
+	*** WARNUNG: Globaler Verweis <unsigned>
+	*** WARNUNG: Globaler Verweis <signed>
+	*** WARNUNG: Globaler Verweis <cdecl>
+	*** WARNUNG: Globaler Verweis <pascal>
+	*** WARNUNG: Globaler Verweis <extern>
+	*** WARNUNG: Globaler Verweis <int>
+	*** WARNUNG: Globaler Verweis <void>
+	*** WARNUNG: Globaler Verweis <unsigned>
+	*** WARNUNG: Globaler Verweis <signed>
+	*** WARNUNG: Globaler Verweis <cdecl>
+	*** WARNUNG: Globaler Verweis <pascal>
+	*** WARNUNG: Globaler Verweis <enum>
+	*** WARNUNG: Globaler Verweis <static>
+	*** WARNUNG: Globaler Verweis <extern>
+	*** WARNUNG: Globaler Verweis <extern>
+	*** WARNUNG: Globaler Verweis <static>
+	*** WARNUNG: Globaler Verweis <union>
+	*** WARNUNG: Globaler Verweis <do>
+	*** WARNUNG: Globaler Verweis <break>
+	*** WARNUNG: Globaler Verweis <continue>
+	*** WARNUNG: Globaler Verweis <while>
+	*** WARNUNG: Globaler Verweis <case>
+	*** WARNUNG: Globaler Verweis <case>
+	*** WARNUNG: Globaler Verweis <default>
+	*** WARNUNG: Globaler Verweis <if>
+	*** WARNUNG: Globaler Verweis <break>
+	*** WARNUNG: Globaler Verweis <else>
+	*** WARNUNG: Globaler Verweis <switch>
+	*** WARNUNG: Globaler Verweis <case>
+	*** WARNUNG: Globaler Verweis <default>
+	*** WARNUNG: Globaler Verweis <const>
+	*** WARNUNG: Globaler Verweis <va_start>
+	*** WARNUNG: Globaler Verweis <va_arg>
+	*** WARNUNG: Globaler Verweis <va_end>
+	*** WARNUNG: Globaler Verweis <goto>
+	*** WARNUNG: Globaler Verweis <typedef>
+	*** WARNUNG: Globaler Verweis <enum>
+
+0 Fehler. 56 Warnungen. 56 Verweise in andere HELP-Dateien.

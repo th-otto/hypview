@@ -1,0 +1,375 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help "Help page"
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!docinfo [title] Documentation for
+!docinfo [program] HCP
+!docinfo [author] H. Weets, C. Wempe
+!docinfo [programimage] (!IMAGES)hcp
+
+!macro PROGRAM HCP
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!docinfo [stgdatabase] HCP Documentation
+!ifdest [stg,amg]
+!begin_raw
+@subject "Documentation/ST-Guide"
+@options "+g +i +z -t4 -d12"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+@extern ST-Guide "st-guide.hyp/Main"
+!end_raw
+!endif
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!raw [stg] @noref
+!tableofcontents !depth 1
+!toc_title Documentation for HCP
+
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide Documentation"
+!raw [stg] @xref "stool.hyp/Main" "STool Documentation"
+!raw [stg] @xref "reflink.hyp/Main" "Reflink Documentation"
+
+!begin_node Calling HCP
+!alias+ HCPCall
+!alias+ Hypertext compiler HCP
+!raw [stg] @xref "Options overview"
+!html_name usage_hcp
+
+The program HCP is a compiler for hypertexts, and is controlled from  a
+Command line.
+
+Due to the construction of the source texts from which the hypertext is
+created, as well as the features it contains, the HCP is implemented as
+a two-pass compiler, which means  that the whole input file  (inclusive
+of all  (!link [include] [Command @include])-files that  may  be present)  will be  read  completely
+twice.
+
+The first pass plays  more of an  organisational role, creating  tables
+etc, while the  second pass  undertakes the actual  translation of  the
+text.
+
+The compiler is called using any of the following options:
+
+HCP [(!link [-l[F!]] [Option l: Contents of a hypertext])
+     (!link [-r] [Option r: Reconstruct])
+     (!link [-v] [Option v: ASCII Output])]
+    [(!link [+-q[qq!]] [Option q: Switch off output])
+     (!link [-pVAL] [Option p: Type of reconstructed images]) (!nl)
+~~~~~(!link [-wVAL] [Option w: Wait for keypress])
+     (!link [+-a] [Option a: Auto-referencer])
+     (!link [+-c] [Option c: Compression])
+     (!link [+-s] [Option s: Line-breaks])
+     (!link [+-f] [Option f: Aliases in the index page]) (!nl)
+~~~~~(!link [+-g] [Option g: Alabels in the index page])
+     (!link [+-i] [Option i: Create index automatically])
+     (!link [+-n] [Option n: Nodes in the index])
+     (!link [+-x] [Option x: Title in place of node name in the index])
+     (!link [+-y] [Option y: 1. Char insensitive])
+     (!link [+-m] [Option m: Replace images by frames])
+     (!link [+-z[z!]] [Option z: REFerence files]) (!nl)
+~~~~~(!link [-dN] [Option d: Minimum distance between cross-references])
+     (!link [-jN] [Option j: Column widths for index])
+     (!link [-tN] [Option t: Tab size])
+     (!link [-bSIZ] [Option b: Output buffer size for pages])
+     (!link [-kVAL] [Option k: Compatibility flags]) (!nl)
+~~~~~(!link [-oOUTFILE] [Option o: Output file])
+     (!link [-eERRFILE] [Option e: Error file])
+     (!link [-uHYPFILE] [Option u: References to other hypertexts])] (!nl)
+~~~~file [nodes]
+
+If no command is specified then the input file will be translated.
+
+!end_node
+
+!include hcpopts.ui
+
+!include hcpcmds.ui
+
+!begin_node External cross-references
+!raw [stg] @xref "Command @uses"
+!raw [stg] @xref "Command @extern"
+!raw [stg] @xref "@link"
+!html_name xref_hcp
+
+An example of cross-references to other hypertexts is:
+
+!begin_quote
+    See also @{form_do link aes.hyp/form_do}.
+!end_quote
+
+The word 'form_do' will be emphasised  and when selected by the  reader
+the file AES.HYP will  be loaded and the  page with the name  'form_do'
+displayed from it.
+
+One should note that, after the file  name, the name of the page to  be
+displayed should  follow, separated  by a  further slash  or  backslash
+(either character can be used).
+
+If the file is specified  without a path, or  only a partial one,  then
+ST-Guide will search for it in this order in the following directories:
+
+!begin_enumerate !compressed
+    !item In all directories that were specified in the 'PATHS' 
+       environment variables
+    !item In the directory of the currently loaded file.
+!end_enumerate
+
+A different type of external references can be created with:
+
+!begin_quote
+See also @{form_do link form_do}
+!end_quote
+
+Although this command  looks like  an ordinary link  statement, if  the
+page 'form_do' is not present in the  same file then it will become  an
+external  cross-reference.  After  a  click  on  this  cross-reference,
+ST-Guide would first of all look for  it as a file in all search  paths
+as above, and if this fails search  for the word 'form_do' as a  symbol
+in the file specified  in the variable  'REF' of ST-GUIDE.INF,  extract
+the file from this, search through it and finally display it.
+
+Naturally for  external cross-references  too one  can specify  a  line
+number after the first link parameter, which will become the first line
+in the window when the  corresponding page is displayed. However,  it's
+(naturally) not possible to specify a label here.
+
+If a link is  created to an  ASCII file, one must  of course specify  a
+page name as well, even though ASCII files do not possess such  things.
+In such cases 'Main' is to be  used. If another name is used,  ST-Guide
+will use it as  a search pattern and  the first matching text  position
+becomes the first line displayed in the window.
+
+(!U)Example(!u):
+
+!begin_quote
+The FILE-structure is in the file @{stdio link "stdio.h/FILE"}.
+!end_quote
+
+On selection of this cross-reference, ST-Guide will look for the  first
+occurrence of 'FILE' in  the file STDIO.H  (due to 'stdio.h/FILE')  and
+the found line will become the first visible in the window.
+
+!end_node
+
+!begin_node Tasks and properties of the compiler
+!alias+ Compiler features
+!html_name tasks_hcp
+
+The  hypertext  compiler  HCP  translates  a  hypertext  file  into   a
+structured, optionally also compressed format which can be used by  the
+display program ST-Guide to access individual pages of the text simply,
+and to follow the hypertext cross-reference links quickly. For this,  a
+table containing some information is created  at the head of the  file.
+In contrast  to other  hypertext systems  the HCP  can do  a lot  more,
+though. A description of the special functions of the compiler follows:
+
+!begin_xlist [~~~~]
+!item [Pages are compressed:] (!nl)
+    The compiler can compress  the individual pages  so that the  files
+    produced become appreciably shorter.  This compression will not  be
+    noticed when the text is  displayed as the decompression  algorithm
+    is fast  enough  to fulfill  its  task without  delay.  However,the
+    translation to hypertext format  will then take appreciably  longer
+    so one can  also switch the  compression off (option  (!link [-c] [Option c])); in  that
+    case one won't have  to wait so  long for HCP  to finish, which  is
+    useful while the hypertext  is being constructed (when  translation
+    often has to be carried out repeatedly).
+
+!item Automatic creation of hypertext links:] (!nl)
+    Normally, wherever the  compiler finds the  name of a  page in  the
+    source text, it will create a cross-reference link to this page. By
+    including special instructions, it is even possible to arrange  for
+    the creation of links to pages in other hypertexts or ASCII  texts.
+    A number of instructions exist  that support the compiler for  this
+    task. There is more about this  in the description of the  language
+    of the system. This facility can save one an appreciable amount  of
+    time. Those who would  prefer to specify  all the links  explicitly
+    can do this also and disable this function completely.
+
+!item [Creation of an Index-table]: (!nl)
+    Creates an (!link [index] [Command @index]) page, just like  those in a printed book. Such  an
+    index can be created automatically  by the compiler which  includes
+    page-names that are determined  by the structure  of the text.  One
+    can control very accurately  what is to be  included, and there  is
+    also an  instruction that  makes it  possible to  incorporate  each
+    given entry in the index under a  name of your choice. One can,  of
+    course, disable this  as well  and create the  index completely  by
+    hand, or leave it out.
+
+!item [Insertion of images:] (!nl)
+    One can also  freely position images  on a page.  The compiler  can
+    read pictures in .IMG, .ICN  and .IFF formats and incorporate  them
+    in the  hypertext file.  This is  of particular  interest when  one
+    wants to explain the functions of icons in the documentation for  a
+    program. If one  sees the  icon while reading  the description  one
+    knows at once which one is meant, which is not always the case with
+    a description  like  'The icon  with  the bar  and  many  dots...'.
+    Naturally one can extract the images again during reconstruction.
+
+!item [Reconstruction of hypertext files:] (!nl)
+    As already  mentioned, the  compiler can  also turn  the  hypertext
+    files it has created  back into a source  text form. Naturally  the
+    reconstructed version mostly no  longer corresponds exactly to  the
+    original, though if it  is re-translated to  a hypertext once  more
+    the version produced should look  exactly the same as the  previous
+    hypertext file. The  reconstruction facility is  useful if one  has
+    lost the source  text, or  does not have  it because  the file  was
+    originated by  someone  else,  and  one would  like  to  make  some
+    alterations to the hypertext.
+!end_xlist
+!end_node
+
+!begin_node Writing a hypertext
+!html_name writing_hcp
+
+The technical side of writing a hypertext can be explained quite simply
+and quickly
+
+A  hypertext  starts  with  a   header  which  contains  some   general
+information:
+
+!begin_xlist [~~~] !compressed
+    !item [] @database <Theme of the hypertext>
+    !item [] @author  <Who has written the text>
+    !item [] @subject  <Where it is to be placed in the catalogue>
+    !item [] @$VER:    <Filename> <Version number> <Creation-date>
+    !item [] [@options <Compiler options>]
+    !item [] [@help <Page displayed if the Help key is pressed>]
+!end_xlist
+
+ That's it! This is followed in order by all the pages that are later to
+be displayed by ST-Guide, each started  with the @node and ended  with
+@endnode:
+
+!begin_xlist [~~~] !compressed
+    !item [] @node <page-name> [<window-title>]
+    !item [] [@symbol [flags] <further names of this page>]
+!end_xlist
+
+The body of the text that is to appear on the page is placed here.  For
+setting cross  references to  a given  line within  the text  one  (!link [uses] [Command @uses])
+(!link [@symbol] [Command @symbol]) once again.  But it  is only  very seldom  necessary to  place
+cross references explicitly in  this way, since  normally this will  be
+done automatically by the compiler(HCP). Usually one can just write the
+text without having  to have  detailed knowledge of  the (!link [@options] [Command @options])  and
+working of the compiler. Once a  page is finished, the HCP is  informed
+about this by the command
+
+!begin_xlist [~~~] !compressed
+    !item [] @endnode
+!end_xlist
+
+This can be followed by any number of pages, again introduced by (!link [@node] [Command @node])
+and closed by (!link [@endnode] [Command @endnode]).
+
+Naturally many more possibilities exist than those detailed here, and a
+budding hypertext (!link [author] [Command @author]) should at  least have read the description  of
+all defined commands once, and understood them.
+
+A few rules to which one should keep, as far as possible, while writing
+a hypertext:
+
+!begin_itemize
+!item The first page of a hypertext should carry the name 'Main'
+
+!item The pages of a hypertext should be readable even in the system  font
+   on an SM 124 monitor without the need for horizontal scrolling, so a
+   line length restricted to a maximum of 75 characters is recommended.
+
+!item The clearer a hypertext page is,the more likely it is to be read and
+   understood. In  particular the  pages  should be  kept as  short  as
+   possible  and   in   addition   text   attributes   (bold,   italic,
+   underlined...), (!link [lines] [Command @line]) or boxes should be used sparingly.
+   
+   On the other hand, experience shows that small graphics that (!link [help] [Command @help]) in
+   understanding the text, strewn around  suitable parts of the  pages,
+   can well increase the motivation of the reader.
+
+!item It has become more or less customary to place a header at the  start
+   of each page, which can be done either with: (!nl)
+     (!link [@{U}] [Set text attributes])<page-name>~~~~~~~~~~~~~~~[<hypertext name>]@{u} (!nl)
+   or with (!nl)
+     <page-name>~~~~~~~~~~~~~~~~~~~~[<hypertext name>] (!nl)
+     @line 1 <page-width> 0 0 7 (!nl)
+!end_itemize
+!end_node
+
+!include hypfmt.ui
+!include filetype.ui
+
+!begin_node* Help page
+!html_name helppage_hcp
+This text  is part  of  the ST-Guide documentation for  the  Hypertext
+ComPiler (HCP) and describes its  features, method of calling and  use,
+including the details of its associated (!link [@options] [Command @options]).
+
+The HCP was written by Christian Wempe (Amiga) and Holger Weets (Atari)
+using SOZOBON-C V2.00x10.
+
+
+(!B)Criticism and suggestions to:(!b)
+!begin_preformatted
+  Holger Weets                          Joe Connor
+  Tangastrasse 45                       65 Mill Road
+  D-26121 Oldenburg                     Colchester, Essex
+  Germany                               CO4 5LJ
+                                        England
+ 
+  E-Mail: 
+  Holger Weets @ OL (Mausnet)           jconnor@cix.compulink.co.uk
+  Holger_Weets@OL.maus.de (Internet)
+!end_preformatted
+
+(!B)Fairware-contribution:(!b)
+!begin_preformatted
+            Bank 24
+            Kto.(account)  : 1776764
+            BLZ.(sort code): 380 707 24
+!end_preformatted
+
+!end_node
+
+!begin_appendix
+
+!end_appendix
+
+!end_document

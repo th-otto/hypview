@@ -1,0 +1,36 @@
+!begin_node Credits and thanks
+
+I would like to thank a few people here:
+
+!begin_blist !compressed
+!item [Volker BurggrÑf]
+  For the work that he had, has and will have supporting the package in
+  the Maus  OL,  and  for  his creative  suggestions  from  the  user's
+  viewpoint. Furthermore the new version of the (German)  documentation
+  is due to him.
+!item [Christoph Zwerschke]
+  For highly productive tests of all components and his useful tips.
+!item [Peter Nagel],
+!item [Dirk Theisen],
+!item [Jîrg Westheide],
+!item [Frank RÅger],
+!item [Ralf Zimmermann],
+!item [Gregor Duchalski] and
+!item [Christian Grunenberg]
+  For their bug reports, publicity and distribution of the system
+!item [Peter West & Mick Lock]
+  For the translation of the documentation into English
+!item [Joe Connor]
+  For the revision/correction of the  English language version and  his
+  UK support and registration scheme
+!item [Christoph Spengler],
+!item [Frank RÅger],
+!item [Dirk Hagedorn]
+  For their  accessory tools  that  have made  this package  even  more
+  powerful.
+!item []
+And naturally all the people who have motivated me/us with their kind
+  messages.
+!end_blist
+
+!end_node

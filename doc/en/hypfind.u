@@ -1,0 +1,173 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+!use_about_udo          [none]
+!use_auto_toptocs       [none]
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help "Help-page"
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] The hypertext of
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] The Windows help of
+!else
+!ifdest [rtf]
+!docinfo [title] The book of
+!else
+!docinfo [title] The guide of
+!endif
+!endif
+!endif
+!docinfo [program] (!HYPFIND)
+!docinfo [author] Joe Connor/Holger Weets/Thorsten Otto
+
+!macro PROGRAM (!HYPFIND)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!ifdest [stg,amg]
+!begin_raw
+@subject "Documentation/ST-Guide"
+@options "+z -t4 +g -i -s"
+!end_raw
+!endif
+!docinfo [stgdatabase] HypFind Documentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords HypFind
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!begin_node HypFind: Search utility
+!html_name hypfind_main
+
+!raw [stg] @box 3 68 4 0
+~ (!nl)
+~~~~~~HypFind, an automatic search utility and hypertext generator (!nl)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~English release 4
+
+ (!nl)
+ (!nl)
+Contents:
+
+~~(!link [General] [General]) (!nl)
+~~(!link [HypFind calls] [HypFind calls]) (!nl)
+~~(!link [Operation] [Operation]) (!nl)
+~~(!XLINK [Credits] [st-guide] [Credits and thanks])
+
+!end_node
+
+!begin_node General
+!html_name hypfind_general
+
+HypFind is a utility which automatically generates a hypertext of
+references for any search mask. Here's an example:
+
+Run HypFind and enter the following command line then select 'OK':
+
+!begin_quote
+-p Joe
+!end_quote
+
+HypFind examines each hypertext found in the directories listed under
+the ST-GUIDE.INF PATH variable and creates a hypertext containing each
+occurrence of the word 'Joe'. Here's an extract:
+
+!begin_verbatim
+...
+STGINTRO.HYP, Node 'Using boxes'
+:   Click me now!    Author: Joe Connor
+
+OCR_E.HYP, Node 'Updates'
+: Joe Connor, 65 Mill Road, Colchester, CO4 5LJ, England
+...
+!end_verbatim
+
+Click on any desired reference to load the specified hypertext opened
+at the relevant page!
+
+!end_node
+
+!begin_node HypFind calls
+!html_name hypfind_usage
+
+Syntax: hypfind [-q -c] -p <pattern> [hypertext]
+
+!begin_xlist [xhypertextx] !compressed
+!item [q:]          Suppress output (Q for quiet)
+!item [c:]          No compile
+!item [p:]          The search expression follows AFTER A SPACE CHARACTER; if it
+contains any space characters the expression must be
+surrounded using quotes, for example: (!nl)
+
+-p 'Two words' (!nl)
+
+!item [[hypertext!]] Optionally a single hypertext, including its path, may follow.
+            If no hypertext is defined all the hypertexts in the PATHS
+            variable are searched.
+
+!end_xlist
+
+!end_node
+
+!begin_node Operation
+!html_name hypfind_operation
+
+A file called HYPFIND.STG will be created in the GUIDES folder containing
+any patterns found (if the compile option is turned OFF) otherwise the
+(!XLINK [Hypertext ComPiler (HCP!!)] [hcp] [Main]) automatically compiles HYPFIND.HYP from
+HYPFIND.STG which is subsequently deleted(!)
+
+Matches are created thus: (!nl)
+@{File, Node '<name>' link file/node line} (!nl)
+: <reference line>
+
+Pnodes and pages with the name 'Index' are not searched.
+
+Missing features:
+!begin_itemize !compressed
+!item sensitive/insensitive search.
+!item only one reference per node reported.
+!item Page names compared with search mask.
+!end_itemize
+
+have fun testing HypFind :-)
+
+!end_node
+
+!begin_node* Help-page
+!html_name hypfind_helppage
+
+This text describes how to use HypFind, a utility to automatically
+generate a hypertext of references for any search mask.
+
+!end_node
+
+!end_document

@@ -1,0 +1,2286 @@
+!code_source [tos]
+
+# language independent macros
+!include macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help "Help page for ST-Guide"
+
+!use_udo_index [html,hh]
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] The hypertext of
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] The Windows help of
+!else
+!ifdest [rtf]
+!docinfo [title] The book of
+!else
+!docinfo [title] The guide of
+!endif
+!endif
+!endif
+!docinfo [program] (!STGUIDE)
+!docinfo [author] H.Weets,C.Wempe,V.Burggr„f & P.West
+!docinfo [programimage] (!IMAGES)st-guide
+
+!macro PROGRAM (!STGUIDE)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!docinfo [stgdatabase] ST-Guide Documentation
+!ifdest [stg,amg]
+!begin_raw
+@subject "Documentation/ST-Guide"
+@options "+g +i -s +z -t4 -d12"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+!end_raw
+!endif
+# HCP is also a label in this document;
+# dont let UDO generate links to it when
+# we want an external link
+!macro HCP (!nolink [HCP])
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!tableofcontents !depth 2
+!toc_title Documentation for ST-Guide
+!alias Main
+
+!raw [stg] @xref "hcp.hyp/Main" "Hypertext-Compiler HCP"
+!raw [stg] @xref "reflink.hyp/Main" "Reference File Linker RefLink"
+!raw [stg] @xref "stool.hyp/Main" "Catalogue Utility STool"
+!raw [stg] @xref "1st_conv.hyp/Main" "Converter 1stConv"
+!raw [stg] @xref "pc_conv.hyp/Main" "Converter PC-Conv"
+!raw [stg] @xref "man2stg.hyp/Main" "Manual Page Converter MAN2STG"
+!raw [stg] @xref "Remarker.hyp/Main" "Notepad Manager Remarker"
+!raw [stg] @xref "stg-faq.hyp/Main" "Frequently Asked Questions STG-FAQ"
+
+!begin_node General
+
+!include legal.ui
+
+!begin_node Introduction
+
+"Nobody reads instructions today..."
+
+!begin_center
+ (!B)HANG ON!(!b) These times have gone, or have they?
+!end_center
+
+Whatever  the  position,   clearly  the  time   has  come  when   these
+instructions need sprucing up! ST-Guide has become a widely distributed
+system in the  meantime, has  been completely  translated into  English
+(program and docs) and  belongs to the  standard configuration of  many
+home and professional Atari system users (pardon me - for some time now
+also increasingly on Apples under MagiC MAC!).
+
+Fewer and fewer authors  today are willing to  forego the inclusion  of
+online Help in the form of  a hypertext with their programs. There  are
+dictionaries, subject overviews, info-booklets, legal texts and even  a
+labyrinth game as ST-Guide hypertexts in addition to countless  on-line
+documentation - in fact anything that can somehow be accommodated in  a
+hypertext.
+
+!begin_blist
+!item [But why hypertext?]
+
+A text document receives a sort of additional dimension as a hypertext:
+One can  not only  'wander'  through it  linearly in  the  conventional
+manner, but also  jump 'sideways' to  other portions of  the text.  Any
+character string  in  the text  can  be  marked as  a  cross  reference
+'pattern' for a link. This  allows one to cross-connect related  pages,
+or simply arrange them in a handy structure.
+
+The advantage: Readers are presented with the text in small chunks with
+a clear layout. In particular, if the text has been prepared  correctly
+one can  reach all  chapters quickly  with a  few mouse-clicks  or  key
+presses.
+
+This leaves it up to the user  how he/she wants to read the  hypertext:
+Either each page in turn from the start, or narrowly focussed  starting
+from a given point.
+
+!item [And now, off we go]!
+
+
+Here it should  be noted that  (!B)this(!b) hypertext may  be read by  browsing
+continuously through the  pages with  the right-facing  arrow icon,  or
+also by using the key-combination (!key [Control - ]) ! Although this will not
+reach (!B)every(!b) page of this  hypertext automatically, it will include  all
+the important topics. If required,  further details can be obtained  on
+the way with suitable mouse-clicks.
+
+As quite a bit of development  has taken place, it is recommended  that
+even those familiar  with earlier  versions of ST-Guide  should take  a
+look at this hypertext. It also serves as a demonstration of ST-Guide's
+capabilities, such as (!link [graphics] [Lines, arrows and boxes]), for instance.
+!end_blist
+
+!begin_center
+!raw [stg] @rbox 22 31 3 0
+ (!nl)
+                      Have fun with ST-Guide!!!
+!end_center
+
+!end_node # Introduction
+
+
+!begin_node The Philosophy of ST-Guide
+!alias Philosophy
+
+Hypertexts are new. That may not seem to be so when one considers  that
+they have been  available for  years, but compared  to the  traditional
+form,  books,  they  offer,  besides   new  options,  a  new  type   of
+presentation - for which one needs to adopt a different way of working.
+In order not to make things unnecessarily difficult, ST-Guide as far as
+possible adopts the way that books are structured:
+
+!begin_itemize !compressed
+  !item Main table of contents and perhaps sub tables of contents
+  !item An alphabetic index
+  !item The body of text arranged in chapters
+!end_itemize
+
+What does this mean in use?
+
+!begin_itemize !compressed
+  !item One can browse through the text page-by-page forwards and backwards
+  !item One can jump from each page to the overlying (sub)table of contents
+    (Contents icon)
+  !item One can jump from anywhere to the (!link [index] [Index])
+  !item One can set a mark to a page as a bookmark
+  !item Notes can be included in the form of See also cross references
+  !item For quick orientation there is a Help page, comparable in a way  to
+    a r‚sum‚ on the (!link [back] [Back icon]) cover of a book.
+!end_itemize
+
+!end_node
+
+!begin_node Function overview
+
+It hardly needs saying that ST-Guide can do more than just 'imitate'  a
+book. It is a very live  system. A collection of interested people  are
+constantly discussing how ST-Guide can be made even better. The  result
+of efforts to date is a collection of useful functions that are briefly
+outlined here:
+
+!begin_blist
+!item [Advantages of using ST-Guide format hypertexts:]
+
+!begin_itemize !compressed
+  !item Comprehensive graphics facilities
+
+     !begin_itemize !compressed
+     !item Popup-nodes as alternatives to normal pages
+     !item Incorporation of graphics, see the Symbol bar page, for instance
+     !item (!link [Lines, arrows and various box-types] [Lines, arrows and boxes]) (!I)(!link [<-] [Last page]) Tip: Click here!(!i)
+     !item Various (!link [text attributes] [Text attributes])
+     !end_itemize
+     
+  !item Minimal storage requirements on floppy/hard disks
+  !item Minimal memory requirements in working RAM
+  !item Database facilities:
+
+    !begin_itemize !compressed
+    !item The  reference  files  belonging  to  the  hypertexts  can   be
+       amalgamated with  RefLink  into  a  global  index  file  of  all
+       hypertexts,  in  which  a   (!link [REF-find] [Find as REFerence])  can  quickly  find   cross
+       references to any of the hypertexts
+    !item The utility STool automatically collects together all  available
+       hypertexts and produces a catalogue from them, using the linking
+       information contained in the hypertexts
+    !end_itemize
+    
+  !item Can be used as a desk accessory as well as a program
+  !item You can also convert Hypertexts in other formats to ST-Guide format
+  !item Comprehensive (!link [keyboard] [Keyboard functions]) functions (as an alternative to the mouse)
+  !item Several find functions, including wildcard support
+  !item You can branch to Help pages even from normal ASCII texts
+  !item If GDOS is installed you can select any desired screen font
+  !item ST-Guide  is  (!link [Fairware] [Legal]),  which  means that  its  use  is  free  but
+    voluntary contributions are requested.
+!end_itemize
+
+!item [Benefits is you want to write hypertexts yourself:]
+
+  !begin_itemize !compressed
+  !item Easily learned commands syntax
+  !item Compiler creates cross references to other pages (!I)automatically(!i)!
+  !item Compiler creates an (!link [index] [Index]) (!I)automatically(!i)!
+  !item All hypertext pages contained in a single, compact file
+  !item Large variety of design options
+  !item ST-Guide enables context-sensitive on-line Help to be called 
+    directly from within your programs
+  !item Original RSC files of programs can be incorporated
+  !item ST-Guide has now found very wide distribution!
+  !end_itemize
+!end_blist
+
+!begin_pnode Popup-nodes
+This  is  an   example  of   a
+(!B)popup-node.(!b)
+
+Pnodes  are  used  for   short
+explanations for certain words
+or phrases, without having  to
+open a new window for them.
+!end_node
+
+!begin_pnode Text attributes
+Normal (!nl)
+(!B)Bold(!b)     (!nl)
+(!U)Underlined(!u) (!nl)
+(!I)Italic(!i)  (!nl)
+(!G)Grey or Light(!g) (!nl)
+(!O)Outlined(!o) (!nl)
+(!S)Shadowed(!s)
+!end_node
+
+!begin_node Lines, arrows and boxes
+
+!image (!IMAGES)lines
+
+!end_node
+
+!begin_node Floppy and hard disks
+
+ST-Guide is very frugal with its mass storage requirements:
+
+!begin_itemize
+!item The compiler is able to 'pack' hypertexts, i.e. reduce the amount  of
+  space they occupy on disk. It uses the LH5-algorithm for this,  which
+  also used by the LHARC packer.  In this manner hypertext files  (with
+  the extension HYP) can  be reduced by up  to two-thirds in size.  For
+  displaying the  hypertext on  the  screen the  packed pages  will  be
+  unpacked again without a perceivable delay.
+
+!item A further space advantage is achieved by the fact that a hypertext is
+  always saved as a  single file: Hypertext systems  that create a  new
+  file for every page (e.g. 1st-Guide) have the disadvantage that  each
+  of these files - be it ever  so small - always occupies at least  one
+  cluster of your floppy  or hard disk, which  actually means at  least
+  1024 bytes are consumed (more with large hard disk partitions). If  a
+  hypertext contains many pages whose contents are appreciably  smaller
+  than 1024 bytes or a multiple of this, then the actual room  required
+  on disk rises  appreciably because  any space up  to the  end of  the
+  cluster is wasted.
+  With ST-Guide this problem  does not arise, since  all the pages  are
+  stored as a  single file (moreover  in compressed form),  so that  no
+  wasteful cluster left-overs are created.
+!end_itemize
+
+!end_node # Floppy
+
+!begin_node Working memory
+
+ST-Guide only makes meager demands on your computer's memory:
+
+!begin_itemize
+!item (!file [ST-GUIDE.ACC]) itself is  very small, much  smaller than other  similar
+  programs with comparable capabilities.
+
+!item Although hypertexts are always saved as a complete file, only a small
+  part of this is loaded  into RAM at any time  -- namely only the  page
+  that is  to be  displayed!  Therefore the  amount of  working  memory
+  occupied by ST-Guide is hardly worth mentioning.
+!end_itemize
+
+!end_node
+
+!begin_node Accessory
+
+ST-Guide can be started as a desk  accessory or a program - the  choice
+is up to  you. If required,  simply change the  file extension .ACC  to
+.PRG!
+
+But basically the use as a desk accessory is recommended, specially  if
+you are not using  a multitasking operating  system. This way  ST-Guide
+can also  be  called up  from  within  other programs,  either  in  its
+function as on-line help, or as a universal reference search system for
+text editors etc.
+
+!end_node # Accessory
+
+!begin_node ASCII
+!raw [stg] @xref "Extra -> Find"
+
+Even when the displayed file  contains only plain ASCII text,  ST-Guide
+can branch to other texts.
+
+That works as follows: If you click on a word in the text that you wish
+to find  a  cross-reference  to,  ST-Guide  checks  (with  a  so-called
+reference  search)  whether  an   explanatory  page  exists  for   this
+reference, and will display  it if found. It  is not necessary for  the
+reference to be specially emphasised, since the search is made for  the
+character string of the  word clicked on  (hyphenated words are  looked
+for as a combination).
+
+If it  does  not exist  then  ST-Guide looks  for  '(!link [similar] [Similar])'  character
+patterns and displays a list of such references it has found,  together
+with the name of the  text it has found it  in. Clicking on one of  the
+entries will take you straight to the relevant page.
+
+An unsuccessful search will be reported in an appropriate dialogue.
+
+!end_node # ASCII
+
+!end_node # Function overview
+
+!begin_node Configuration
+
+How does one adapt ST-Guide to its environment?
+
+All  components  of  ST-Guide  can  be  configured  via  a  file  named
+ST-GUIDE.INF which has  to reside  in a  folder specified  by the  HOME
+environment  variable   or  in   the  root   directory  of   the   boot
+disk/partition (usually C:\ with a hard disk, otherwise A:\).
+
+It is constructed  for the most  part in a  similar way to  environment
+files of various AUTO folder environment setting programs
+
+Several variables  are set  in  the ST-GUIDE.INF  file, some  of  which
+ST-Guide  evaluates  itself  while  others  are  required  by  external
+associated programs. The (!file [ST-GUIDE.INF]) file included in the distribution
+already contains a full complement of settings (with comments) and need
+not be  altered  if the  ST-Guide  archive  was unpacked  to  the  root
+directory of the C: partition.
+
+ST-GUIDE.INF is a pure ASCII file that can be edited by any ASCII  text
+editor (e.g. Everest...) if required.
+
+The following environment variables are evaluated by ST-Guide:
+
+!raw [stg] @box 1 12 12 0
+!begin_table [ll]
+   PATHS
+   (!link [HCP] [HCP])
+   HYPFIND
+   HYPFOLD
+   REF                !! Important access paths
+   REMARKER
+   EXTVIEW
+   DEFHYP
+   HYPTOP
+   PRINTER
+   MARKFILE
+   (!link [<ext>] [<ext>])
+!end_table
+
+!raw [stg] @box 1 12 3 0
+!begin_table [ll]
+   TXTCOLOR
+   REFCOLOR           !! Only relevant for colour display
+   BCK3D
+!end_table
+
+!raw [stg] @box 1 12 5 0
+!begin_table [ll]
+   FONT
+   XFONT
+   WINSIZE            !! Appearance of the ST-Guide window display
+   TXTOFFSET
+   TABSIZE
+!end_table
+ 
+!raw [stg] @box 1 12 3 0
+!begin_table
+   RIGHTBACK
+   REFONLY            !! Mouse-behaviour
+   BACKWIND
+!end_table
+
+!raw [stg] @box 1 12 4 0
+!begin_table
+   HCP_OPT
+   ARROWPATCH         !! Miscellaneous
+   NOREFBOX
+   $<name>
+!end_table
+
+
+(!B)Example of the construction of a line of this file:(!b)
+!begin_verbatim
+ ...
+ HYPFOLD=C:\GUIDES\
+ ...
+!end_verbatim
+
+The entire file is line-oriented, and  there must be no surplus  spaces
+in the lines. The syntax is:
+
+!begin_verbatim
+  <Variable>=<Value>
+!end_verbatim
+
+Note that  there  may  be  no  spaces before  or  after  the  '=',  and
+<Variable> and  <Value>  must (!B)not(!b)  be  enclosed in  angle  brackets  or
+quotes.
+
+!begin_node ST-GUIDE.INF
+
+The following environment variables are in use at present:
+
+!begin_blist
+!label TABSIZE
+!item [TABSIZE]
+    Sets the desired tabulator width.
+    A default value of 8 is used unless this value is specified.
+
+!label WINSIZE
+!item [WINSIZE]
+    Contains the size (in pixels) of the ST-Guide window on opening. If
+    this variable isn't specified the window fills the entire screen.
+
+    For example: WINSIZE=40,40,560,360 (!nl)
+    The first two values  (40,40) set the window  top left corner.  The
+    next two values (560,360)  set the window  bottom right corner.  In
+    ST-High (640x400 pixels)  the example  results in  a 520x320  pixel
+    window positioned centrally on  the screen with  a 40 pixel  border
+    all round.
+
+    Or: WINSIZE=100,100,400,200 (!nl)
+    This opens a  300x100 pixel ST-Guide  window near the  centre of  a
+    640x400 pixel screen.
+
+!label TXTOFFSET
+!item [TXTOFFSET]
+    Sets the vertical separation in pixels of the window contents  from
+     the dividing line below  the icons. The default  value of 6  pixels
+    will be  used if  this  variable is  not specified.  This  variable
+    allows one to set a 'top margin' in the hypertexts to suit personal
+    taste, without the  hypertext author  having to pre-set  it with  a
+    blank line.
+    (ST-Guide)
+ 
+!label REFCOLOR
+!item [REFCOLOR]
+    REFCOLOR=<Colour> displays references using the specified <colour>.
+    If this variable  is set,  then ST-Guide references  are no  longer
+    shown bold and underlined but in  normal text in the chosen  colour
+    instead. This variable is ignored in monochrome resolutions.
+
+!label TXTCOLOR
+!item [TXTCOLOR]
+    TXTCOLOR=<Colour>  displays  the  main  text  using  the  specified
+    <colour>. This variable is ignored in monochrome resolutions.
+
+    Default colours (Note! Your system may change these values!):
+
+!begin_table [llll]
+    ~0=White      !! ~1=Black      !! ~2=Red         !! ~3=Green
+    ~4=Blue       !! ~5=Cyan       !! ~6=Yellow      !! ~7=Magenta
+    ~8=Grey       !! ~9=Dark grey  !! 10=Dark red    !! 11=Dark green
+    12=Dark blue  !! 13=Dark cyan  !! 14=Dark yellow !! 15=Dark magenta
+!end_table
+
+!label BCK3D
+!item [BCK3D]
+    BCK3D=<the value  is  immaterial> sets  the  colour of  the  window
+    background to light grey;  if this variable  is not supplied,  then
+    the ST-Guide window background will be white.
+
+    This variable is ignored in monochrome resolutions.
+
+!label PATHS
+!item [PATHS]
+    Contains a list of paths ST-Guide searches to locate files that are
+    to be  displayed  via  external references  (see  'Link'  for  more
+    details). Several paths may be entered by seperating each path with
+    a comma or semi-colon.
+
+    For example:
+    
+        PATHS=c:\guides\;c:\;c:\bin\
+        
+    will, when a file is being searched for, look successively in (!nl)
+        (!file [C:\GUIDES\]) (!nl)
+        (!file [C:\]) (!nl)
+    and (!nl)
+        (!file [C:\BIN\]) (!nl)
+    (ST-Guide, STool)
+
+!label EXTVIEW
+!item [EXTVIEW]
+    Contains the name  of the desk  accessory or program  (ACC/PRG/APP)
+    used to display  non-hypertext files whose  file extenders are  not
+    explicitly listed and assigned  to a viewer. The  full path to  the
+    viewer  must  be   specified  unless  one   can  ensure  that   the
+    corresponding viewer  has already  been started.  Under single  TOS
+    this means it  has been  installed as  an ACC,  in a  multi-tasking
+    environment the viewer can also be a parallel running application.
+    Additionally  viewers  for   individual  file   extenders  can   be
+    installed.
+!label <ext>
+    Add line/s in the following format:
+    
+    <Extender>=<Program>        (e.g. IMG=C:\1STVIEW\1STVIEW.PRG)
+
+    The viewer specified in this way will be searched for when ST-Guide
+    loads a file with an installed extender, and then either passed  to
+    the desktop for starting, or started by ST-Guide itself as long  as
+    MagiC 2 has been installed.
+
+    If this variable does not exist, or the extender of the file to be
+    displayed does not have a  viewer assigned, then the  corresponding
+    file is loaded and displayed by ST-Guide in ASCII format.
+    (ST-Guide)
+
+!label HCP_OPT
+!item [HCP_OPT]
+    contains the  default options  for HCP.  These are  set before  the
+    command line is read in and  so can be overwritten by direct  input
+    when calling HCP.
+    (hcp)
+
+!label PRINTER
+!item [PRINTER]
+    If this variable is set, in the form of
+    
+        PRINTER=<program>   (e.g. PRINTER=C:\TOOLS\PRINTER.APP)
+        
+    then the  printing function  will not  be carried  out by  ST-Guide
+    itself, but the marked block or current page will be copied to  the
+    clipboard, and the program specified here will be started. This may
+    permit printing in different fonts, line spacings etc.
+    (ST-Guide)
+ 
+!label FORMFEED
+!item [FORMFEED]
+    Ensures that a Formfeed is performed after a page has been printed.
+    (ST-Guide)
+
+!label MARKFILE
+!item [MARKFILE]
+    If this variable is set then ST-Guide automatically loads and saves
+    any and all marks that are set.
+    Example: MARKFILE=c:\guides\marks.dat
+    (ST-Guide)
+
+!label* HCP
+!item [HCP]
+    Contains the  complete path  to (!file [HCP.TTP])  and is  currently used  by
+    STool if its COMPILE option is switched on, as well as the  HypFind
+    utility that outputs its search result to a hypertext.
+    (STool, HypFind)
+
+!label* HYPFIND
+!item [HYPFIND]
+    Contains the complete path to  HypFind, a utility which can  search
+    for any  desired mask  (string  pattern) (!link [in all pages] [Find in all pages])  of  one/all
+    hypertexts. Currently this variable is only used by ST-Guide if the
+    corresponding button in the '(!link [Find] [Extra -> Find])' dialogue is selected.
+   (ST-Guide)
+ 
+!label* REMARKER
+!item [REMARKER]
+    Optionally contains  a '!'  as well  as the  complete path  of  the
+    Remarker utility; if this variable is defined without the '!', then
+    ST-Guide will  start  the utility  directly  it opens  its  window;
+    irrespective of the '!' flag, Remarker will be started by
+    (!key [Alternate + R]), as long as this variable has been set.
+
+        REMARKER=C:\ST-GUIDE\REMARKER.PRG
+
+    starts Remarker automatically when opening the ST-Guide window,  as
+    well as with (!key [Alternate + R]).
+
+        REMARKER=!C:\ST-GUIDE\REMARKER.PRG
+
+    only starts Remarker with (!key [Alternate + R]).
+    (ST-Guide)
+ 
+!label HYPFOLD
+!item [HYPFOLD]
+    Contains the default path to the folder containing your hypertexts.
+    So if no  output file  is specified  for the  conversion, HCP  will
+    create new hypertexts  in the  folder specified  by this  variable.
+    ST-Guide also uses this  variable to preset  the default path  when
+    opening the file selector. HypFind also creates its output file  in
+    this folder.
+    (ST-Guide, hcp, HypFind)
+
+!label ARROWPATCH
+!item [ARROWPATCH]
+    When this  variable  is  defined  (the  value  is  immaterial)  and
+    ST-Guide is started as an ACC in a single-tasking operating system,
+    this patch corrects an  AES bug which prevents  the scroll bars  in
+    windowed  accessories  from  working  correctly  with  certain  TOS
+    versions. If you exerience this behaviour:
+    !begin_itemize !compressed
+!item Activate  the patch  by removing  the preceding  #. Unless  you  use
+   several windowed accessories which also suffer the same problem this
+   is the simplest solution, but it only fixes ST-Guide itself.
+!item A better alternative to this patch is to install the ARROWFIX  patch
+   in your AUTO folder  so all your accessories  can take advantage  of
+   the fix.
+!item Even better, use  WINX in your AUTO  folder. This utility adds  many
+   desirable features to all GEM  windows and removes the problem  with
+   scroll arrows in  windowed accessories. Arrowfix  and WINX are  both
+   available from BBSs and PD  libraries and are naturally included  on
+   the registered user disk!
+!item  Use MultiTOS which doesn't suffer from this AES bug. 
+!end_itemize
+    (ST-Guide)
+
+!label NOREFBOX
+!item [NOREFBOX]
+    Setting this variable (the  assigned value is immaterial)  prevents
+    the Find  box  with  the  find  word  in  a  REF-file,  from  being
+    displayed.
+   (ST-Guide)
+
+!label RIGHTBACK
+!item [RIGHTBACK]
+    If this  variable  is  defined  (the  value  is  immaterial),  then
+    pressing the right mouse button will be interpreted in the same way
+    as a click on the Back icon. This variable is not set as a default,
+    because:
+    !begin_itemize !compressed
+    !item it has the disadvantage that  one can no longer perform  actions
+    in background (untopped) windows and
+    !item right-clicks  are  handled  in different  ways  by  various  TOS
+    versions (source: Martin 'WINX' Osieka)
+    !end_itemize
+    (ST-Guide)
+
+!label BACKWIND
+!item [BACKWIND]
+    A right  click will  make  the ST-Guide  window in  the  background
+    usable by bringing it to the top.
+    (ST-Guide)
+
+!label REFONLY
+!item [REFONLY]
+    If this variable is defined (the value is immaterial), then  clicks
+    on words not emphasised as cross-references will be ignored.
+   (ST-Guide)
+
+!label DEFHYP
+!item [DEFHYP]
+    Contains the complete  default path and  filename of the  hypertext
+    automatically loaded  by  ST-Guide if  called  (!U)without parameters(!u),
+    typically ST-GUIDE.HYP (or HCP).
+    (ST-Guide)
+
+!label HYPTOP
+!item [HYPTOP]
+    Contains the complete path and  filename for the CATALOG  hypertext
+    which  can   be  automatically   created  using   STool.   ST-Guide
+    automatically loads this file  if no parameters  are passed and  no
+    default hypertext has been specified in DEFHYP.
+    (ST-Guide, STooL)
+
+!label FONT
+!item [FONT]
+    Contains the  font and  point  size to  be  used in  the  following
+    format: FONT,SIZE
+
+    For example: 98,9  (GEMINI bold, small character set)
+
+    ST-Guide loads  this  variable  as  it opens  the  window,  so  any
+    available font can be selected any time before a window is  opened,
+    though it's  currently not  possible to  change the  font while  an
+    ST-Guide window is open.
+
+    If FONT is given as 0 (e.g.: 0,9) then the system character set  in
+    the given size is used.
+
+    In principle proportional character sets  can be used, but  because
+    calculations for graphical objects  (images, icons, lines etc)  are
+    made based on the average character width, pages which combine text
+    and graphics may not look their best!
+    (ST-Guide)
+
+!label XFONT
+!item [XFONT]
+    Contains the font and point size to be used in the following 
+    format: FONT,SIZE
+    Definition of  2 default  fonts; this  enables the  user to  switch
+    between FONT and XFONT by using (!key [Control + Z]); Useful when you want
+    to read with  a proportional font,  but come across  a page with  a
+    table in it.
+
+!label REF
+!item [REF]
+    Contains the path and filename of the REF file used by ST-Guide  to
+    find cross references  which haven't  been defined  in the  current
+    hypertext. This file is also used as the default by RefLink for all
+    of its functions.
+    (ST-Guide, RefLink, hcp)
+
+!label $<name>
+!item [$<name>]
+    Can be repeated a number of times (naturally with different  names)
+    and contains in each case the complete path to an external  program
+    that can then be started from within hypertexts with the (!XLINK [@{ system }] [hcp] [@{ system }]) 
+    command.    Example:
+
+       $STOOL=c:\st-guide\stool.tos
+
+    Those writing  hypertexts  making  use of  this  function  have  to
+    provide information about which $-lines are required.
+    (ST-Guide)
+!end_blist
+
+!end_node # ST-GUIDE.INF
+
+!end_node # Configuration
+
+!include filetype.ui
+
+!end_node # General
+
+!begin_node Using ST-Guide
+
+!begin_node The icons in the ST-Guide window
+!alias Icon bar
+!index Icon bar
+!alias Symbol bar
+!index Symbol bar
+!raw [stg] @xref "Keyboard functions"
+!raw [stg] @xref "Mouse functions"
+!raw [stg] @xref "Auto locator"
+
+The icons visible at  the top of the  ST-Guide window provide a  simple
+way of controlling the program, as well as for visibly browsing through
+the text. Each is only selectable  when the function it performs has  a
+sensible use; thus, for instance, the Index icon can only be called  if
+you are  not in  the  index page  already  - quite  logical,  actually.
+Non-selectable icons  are always  'disabled', i.e.  greyed out  in  the
+display.
+
+(!link [Back] [Back icon])~~~~~~Marks~~~(!link [Contents] [Contents icon])~~~~(!link [Index] [Index icon])~~~See also~~~~(!link [Info] [Info Dialogue])~~~~~~(!link [Extra] [Extra popup])
+!ifdest [stg]
+!begin_raw
+@line 3 0 2 1 1
+@line 13 0 2 1 1
+@line 23 0 2 1 1
+@line 33 0 2 1 1
+@line 43 0 2 1 1
+@line 53 0 2 1 1
+@line 63 0 2 1 1
+
+
+@image "images/stg_back.img" 1
+@image "images/stg_hist.img" 6
+@image "images/stg_mark.img" 11
+@image "images/stg_prev.img" 16
+@image "images/stg_up.img" 21
+@image "images/stg_next.img" 26
+@image "images/stg_idx.img" 31
+@image "images/stg_kat.img" 36
+@image "images/stg_xref.img" 41
+@image "images/stg_help.img" 46
+@image "images/stg_info.img" 51
+@image "images/stg_load.img" 56
+@image "images/stg_xtra.img" 61
+@image "images/stg_rem.img" 66
+
+
+@line 8 0 2 2 1
+@line 18 0 4 2 1
+@line 28 0 2 2 1
+@line 38 0 4 2 1
+@line 48 0 2 2 1
+@line 58 0 4 2 1
+@line 68 0 2 2 1
+!end_raw
+!endif
+
+ (!nl)
+History popup~~~~~~~~~Next page~~~~~~~~~~~Help page~~~~~~~~~~~(!link [Remarker] [Extra -> Remarker])
+
+~~~~~~~~~~~~~Last page~~~~~~~~~~~Catalogue~~~~~~~~~~~Load file
+ 
+Nearly all  of  the icon  functions  can also  be  called up  from  the
+(!link [keyboard] [Keyboard functions]).
+
+!begin_node Back icon
+
+!stg_limage [off]
+!image (!IMAGES)stg_back
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] ST-Guide remembers in which order one has called up which pages,
+       by storing them on a stack that may hold up to sixteen pages.
+
+       With the Back  icon one  can browse  back through  the pages  in
+       reverse order,  thus  more  or less  reversing  one's  steps  in
+       reaching the current page. Naturally this only works when  there
+       are some pages on the stack, which is not the case when ST-Guide
+       is first  opened, for  instance.  One can  erase the  stack,  if
+       desired, at the press of a mouse button. This function can  also
+       be carried out with  the  (!key [Esc])  or  (!key [Undo])   keys, as well as  with
+       the right mouse button (if RIGHTBACK is set).
+
+       If one wants to jump back (!B)several(!b) pages at once, the one can use
+       the adjacent icon to bring up the History popup.
+!end_xlist
+ 
+!end_node
+
+!begin_node History popup
+
+!stg_limage [off]
+!image (!IMAGES)stg_hist
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Clicking on this icon allows one to jump (!link [back] [Back icon]) several pages. The
+       last 12  stack  entries will  be  displayed  in the  form  of  a
+       History- popup, with the page read  last at the top and the  one
+       read first at the  bottom. Clicking on one  of the entries  with
+       the mouse immediately opens the relevant page. The phrase in the
+       popup may not be longer  than forty characters! Anything  beyond
+       this will be cut off.
+
+       The icon  is  not  selectable  (greyed  out)  if  there  are  no
+       hypertext pages  on  the  stack.  This will  be  the  case  when
+       ST-Guide is  first  opened,  and after  using  the  (!link [Erase stack] [Extra -> Erase stack]) 
+       function.
+
+       The suspicion that selecting the  first entry in this popup  has
+       the same  effect  as  using  the  Back  icon  is  correct!  (The
+       relationship of  the effects  of these  two icons  is  therefore
+       illustrated by the use of a thinner dividing line between them.)
+       The Back  icon merely  permits faster  access to  the page  read
+       (!B)last(!b).
+!end_xlist
+
+!end_node
+
+!begin_node Marks popup
+!alias Marks
+!index Marks
+
+!stg_limage [off]
+!image (!IMAGES)stg_mark
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Clicking on this icon opens a Popup where up to a maximum of  10
+       marks can be defined,  they then can be  selected using a  mouse
+       click.
+
+       To use, you must  first define the mark  using the key  sequence
+       (!key [Shift + Fx]), it  is  subsequently  retrieved  using  just  the
+       function key (!key [Fx]), or with a mouse click as previousl  described.
+       The defined marks  can be  retained after  switch off,  provided
+       that the variable MARKFILE has  been set, this will ensure  that
+       marks are loaded and saved automatically by ST-Guide.
+!end_xlist
+
+!end_node
+
+!begin_node Last page
+
+!stg_limage [off]
+!image (!IMAGES)stg_prev
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Click on  this  icon  to  make  ST-Guide  show  the  page  lying
+       physically just before it in the hypertext, or the page that was
+       defined with  the  (!XLINK [@prev] [hcp] [Command @prev])-directive in  the  source text  as  the
+       predecessor page.
+
+       One can do this from the (!link [keyboard] [Keyboard functions]) with either (!key [Control - ])  or
+       with the  (!key [-])-key on the number-pad.
+!end_xlist
+
+!end_node
+
+
+!begin_node Contents icon
+
+!stg_limage [off]
+!image (!IMAGES)stg_up
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] After clicking on this icon (or using (!key [Alternate + T])), ST-Guide
+       will display the hypertext  page that lies hierarchically  above
+       the current page.  This may be  the main page  of the  hypertext
+       (the main Contents  page), or a  subordinate page which,  though
+       ranking above the current page,  is itself ranked below a  still
+       'higher' ranked  page.  Repeated clicking  here  must  therefore
+       quickly lead to the  Main page of the  hypertext - depending  on
+       how deeply one had been in it originally.
+
+!ifdest [stg]
+!begin_raw
+@box 15 18 1 0
+              Main Contents page
+@line 24 -10 2 0 1
+@line 24 0 2 0 1
+@line 24 10 2 0 1
+
+
+@box 10 8 1 0
+@box 19 10 1 0
+@box 30 8 1 0
+          Page 1   Branch 1   Page 2
+@line 24 -5 2 0 1
+@line 24 5 2 0 1
+
+
+@box 15 8 1 0
+@box 25 8 1 0
+               Page 3    Page 4
+!end_raw
+!endif
+
+       To reach a different  page than the one  that is physically  the
+       first in the  text with  the Contents  icon, the  author of  the
+       hypertext has to define  it as the Contents  page with the  (!XLINK [@toc] [hcp] [Command @toc]) 
+       command.
+
+       As always, one can return to the previously viewed page with the 
+       Back icon.
+!end_xlist
+
+!end_node
+
+!begin_node Next page
+
+!stg_limage [off]
+!image (!IMAGES)stg_next
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Click on  this  icon  to  make  ST-Guide  show  the  page  lying
+       physically just after it in the hypertext, or the page that  was
+        defined with the  '(!XLINK [@next] [hcp] [Command @next])'-directive in  the source  text as  the
+       successor page.
+
+       One can do  this from the  (!link [keyboard] [Keyboard functions]) with either (!key [Control - ])  or
+       with the (!key [+])-key on the number-pad.
+!end_xlist
+
+!end_node
+
+
+!begin_node Index icon
+
+!stg_limage [off]
+!image (!IMAGES)stg_idx
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] With this button one jumps to  the end of the 'book', namely  to
+       the  Index,  to  be  able  to  search  for  a  given   reference
+       word/phrase. ST-Guide  will display  that  page of  the  current
+       hypertext that carries  the name 'Index'.  This will be  created
+       automatically by the HCP  if the text author  has not done  this
+       manually.
+       
+       The index may also be opened with the combination (!key [Alternate + X]).
+ 
+       The index page contains all  of the important references of  the
+       hypertext as catchwords arranged  in alphabetical order, to  any
+       of which one can jump, of course, with a mouse click.
+!end_xlist
+
+!end_node
+
+!begin_node Catalogue
+!raw [stg] @xref "catalog.hyp/Main" "Catalogue display"
+
+!stg_limage [off]
+!image (!IMAGES)stg_kat
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] With this function (also reachable with (!key [Alternate - K])) one can
+       load in the catalogue file  created by STool. More exactly,  the
+       file identified by the variable HYPTOP in the (!file [ST-GUIDE.INF])  file
+       will be loaded.
+
+       If you have  not yet  created a  catalogue, or  if your  present
+       catalogue is no longer quite  up to date because new  hypertexts
+       have been added, then  you can also create  a current one  right
+       here. A  click on  the 'button'  visible below  starts STool.  I
+       hope! If not, then it is likely that the following line in  your
+       ST-GUIDE.INF file is wrong or absent:
+
+       $STOOL=<path>stool.tos
+
+!ifdest [stg]
+!begin_raw
+@box 26 7 1 0
+                   Start  @{"STool" SYSTEM "$STOOL"} !
+!end_raw
+!endif
+
+       As a check you can (!XLINK [call up] [catalog] [Main])! the catalogue right now!
+
+!end_xlist
+
+!end_node
+
+!begin_node See also
+!raw [stg] @xref "hcp.hyp/Command @xref" "The @xref-command"
+
+!stg_limage [off]
+!image (!IMAGES)stg_xref
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] This function  is new.  If  this icon  is selectable  (i.e.  not
+       greyed out) it indicates  that the author  of the hypertext  has
+       incorporated in the current page one or more cross-references to
+       other pages, which  can include pages  in other hypertexts  (the
+       (!XLINK [@xref] [hcp] [Command @xref])-command is used for this).
+
+       A click on  the icon  opens a popup  in which  all the  matching
+       cross- references are listed below  each other. One only has  to
+       select the desired one.  Naturally one can  also quit the  popup
+       without making a selection.
+
+       The advantage of this propcess  is that references of this  kind
+       are always quickly available without  occupying any room in  the
+       text.
+!end_xlist
+
+!end_node
+
+!begin_node Help page
+!label- Help icon
+
+!stg_limage [off]
+!image (!IMAGES)stg_help
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] If a Help page has been  specified via (!XLINK [@help] [hcp] [Command @help]), then this will  be
+       displayed when this icon is  clicked on, otherwise a page  named
+       'Help' in  the currently  loaded  text will  be looked  for  and
+       displayed if found.  The whole point  of this icon  is to  allow
+       fast access to a short r‚sum‚ of the contents of the  hypertext,
+        which is why every text ought to contain such a page.
+       Instead of clicking on the icon one also press the (!key [Help])-key.
+
+       If such  a  page  does not  exist  then  the Help  icon  is  not
+       selectable (i.e. it is greyed out).
+!end_xlist
+
+!end_node
+
+!begin_node Info Dialogue
+!alias Info
+!index Info
+!label- Info icon
+
+!stg_limage [off]
+!image (!IMAGES)stg_info
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] This function displays a dialogue in which one can find the name
+       of the program,  the version number  as well as  the author  and
+       his/her address. The key-combination  (!key [Control + I]) has the same
+       effect.
+       
+       In addition the dialogue contains  a button marked 'Help'  which
+       when clicked  on  loads  and  displays  this  on-line  help  for
+       ST-Guide.
+       
+       Other relevant information for the currently displayed file will
+       also be shown here, namely author, theme, file name and  version
+       of the text. All these details  will naturally only be shown  if
+       they  were  included  in  the  hypertext  ((!XLINK [@author] [hcp] [Command @author]) ,   (!XLINK [@database] [hcp] [Command @database]),
+       (!XLINK [@$VER:] [hcp] [Command @$VER:])).
+!end_xlist
+
+!end_node
+
+!begin_node Load file
+!index Load
+
+!stg_limage [off]
+!image (!IMAGES)stg_load
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] With this function one  can load a hypertext  or an ASCII  file,
+       with the type  being recognised automatically.  A file  selector
+       will appear in  which the  desired file may  be selected,  after
+       which this will be loaded,  provided there is sufficient  memory
+       available. The key combination for this function is incidentally
+       (!key [Control + O]).
+
+       The preselected path in the file selector will be chosen in  the
+       following manner:
+       !begin_enumerate !compressed
+          !item Variable  HYPFOLD  (in  the file  ST-GUIDE.INF),  if  this
+             exists,
+          !item Path of the file last loaded, if HYPFOLD does not exist,
+             or
+          !item Current path, if no file  has yet been loaded and  HYPFOLD
+             does not exist.
+       !end_enumerate
+       
+       The file extension mask will normally be preset to 'HYP'.
+
+       If the file to be selected is not a hypertext, then holding down
+       Shift when clicking on the  icon or using the (!link [keyboard] [Keyboard functions])  shortcut
+       will bring up the file selector with '*.*' preselected. After  a
+       file is selected, ST-Guide proceeds as follows:
+
+       !begin_enumerate !compressed
+       !item The extension of the selected file will be searched for as
+             a variable in the INF file  (i.e. 'IMG=' for a file  named
+             PICTURE.IMG)
+       !item If  1.  is  unsuccessful, the  variable  EXTVIEW  will  be
+             searched for in the INF file
+       !item If  1  and  2. were  unsuccessful,  ST-Guide  will  itself
+             display the file in  ASCII format, otherwise the  assigned
+             program will be searched  for first under already  running
+             applications, and if not  found there ST-Guide will  cause
+             the desktop to start  the corresponding program. The  last
+             will however  only  work  if  the  desktop  used  has  the
+             appropriate  functions   available,   i.e.   if   it   has
+             implemented the AV protocol.
+       !end_enumerate
+       
+       If an AV-capable desktop is in use then the file to be displayed
+       can also be dragged directly to the ST-Guide window.
+!end_xlist
+
+!end_node
+
+
+!begin_node Extra popup
+!index Extra
+
+!stg_limage [off]
+!image (!IMAGES)stg_xtra
+!stg_limage [on]
+!begin_xlist [~~~~~~] !compressed
+!item [      ] Clicking on this symbol brings up a popup menu with the 
+       following items for selection:
+!end_xlist
+
+!begin_xlist [~~~~~~~~~~~]
+!raw [stg] @box 15 18 10 0
+              ~Find~~~~~~~~~~^F (!nl)
+              ~(!link [Repeat find] [Extra -> Repeat find])~~~^G (!nl)
+              ~(!link [Erase stack] [Extra -> Erase stack])~~~E (!nl)
+              (!G)(---)(---)(---)(---)(---)(---)(!g) (!nl)
+              ~(!link [Copy] [Extra -> Copy])~~~~~~~~~~^C (!nl)
+              ~(!link [Paste] [Extra -> Paste])~~~~~~~~~^V (!nl)
+              ~(!link [Print page] [Extra -> Print page])~~~~^P (!nl)
+              (!G)(---)(---)(---)(---)(---)(---)(!g) (!nl)
+              ~(!link [Font] [Extra -> Font])~~~~~~~~~~Y (!nl)
+              ~(!link [Remarker] [Extra -> Remarker])~~~~~~R
+
+!end_xlist
+
+!begin_node Extra -> Find
+!raw [stg] @xref "Extra -> Repeat find"
+!label Find
+!index Find functions
+
+On selecting  this function  (also  accessible with  (!key [Control - F]))  a
+dialogue appears in which a search pattern may be input. The  following
+buttons are available to narrow the choice:
+
+!begin_xlist [~~~~~~~~]
+!raw [stg] @box 10 50 5 0
+~
+!raw [stg] @box 12 9 1 0
+!raw [stg] @box 23 9 1 0
+!raw [stg] @box 34 14 1 0
+!raw [stg] @box 50 8 1 0
+            ~(!link [In page] [Find in page])~~~~(!link [As page] [Find as page])~~~~(!link [As REFerence] [Find as REFerence])~~~~(!link [Cancel] [Cancel])
+
+!raw [stg] @box 12 19 1 0
+!raw [stg] @box 33 25 1 0
+            ~~~(!link [In all pages] [Find in all pages])~~~~~~~~(!link [... of all hypertexts] [Find in all pages])
+!end_xlist
+
+
+!begin_node Find in page
+
+All lines from the first visible line to the end of the current page
+are searched for matches to the string input as the search  pattern.
+If a match is  found, the text scrolls  so that the line  containing
+the match is the first to be  visible in the window. This search  is
+(!link [case insensitive] [insens]) and can be repeated using the (!link [Repeat find] [Extra -> Repeat find]) option.
+
+!begin_pnode insens
+'case insensitive' means that 
+capital and lower case characters 
+are treated as equivalent. 
+Therefore 'TEST', 'test' and 'Test' 
+will be treated as identical patterns.
+!end_node
+
+!end_node # Find in page
+
+!begin_node Find as page
+
+This searches the current hypertext's  index for the search  pattern
+that  was  input.  Wildcards  may   be  used,  and  the  search   is
+(!link [case insensitive] [insens]).
+!label Hitlist
+If more  than one  match is  found a  dialogue appears  listing  all
+matching index entries. Select the desired entry using the mouse  or
+(!link [keyboard] [Keyboard functions]) shortcut. In this dialogue one line is always  highlighted,
+and the following shortcuts are available:
+
+!begin_xlist [Shift + Curs.down] !compressed
+       !item [Return]             Selects the line
+       !item [Cursor up]          Selects the previous line
+       !item [Cursor down]        Selects the next line
+       !item [Undo]               Same as the (!link [Cancel] [Cancel]) button
+       !item [Shift + Curs.up]    Displays the previous page in list
+       !item [Shift + Curs.down]  Displays the next page in list
+       !item [ClrHome]            Displays the first page in list
+       !item [Shift + ClrHome]    Displays the last page in list
+!end_xlist
+
+Naturally the sliders and other functions work like you'd expect  in
+any GEM window.
+
+The hitlist line contains the name of the page along with the  theme
+of the  corresponding hypertext.  If a  match to  a  cross-reference
+within a page is found, then  this will be displayed after the  page
+name as well, separated by a 'bullet' dot.
+
+!label- Similar
+!index Similar
+If no exact  match is  found, references  that are  similar will  be
+presented for selection. 'Similar' here is defined as follows:
+
+!begin_itemize !compressed
+!item Upper and lower case differences are ignored
+!item '„' is treated the same as 'ae', '' as 'ue' etc.
+!item '*' fits any number of characters, even none
+!item '?' fits exactly one character
+!item Depending on the length of  the word a few characters are  allowed
+ to differ. For example 'option' and 'optoin' will be treated as  a
+ match.
+!end_itemize
+
+!begin_pnode Cancel
+This button quits the dialogue
+without starting a search.
+!end_node
+
+!end_node # Find as page
+
+!begin_node Find as REFerence
+!label REF-find
+
+The input string pattern will be searched for in the file specified
+in the REF  variable; apart from  this the search  is identical  to
+Find as page.
+
+To express  this  more  clearly:  This  search  method  deals  with
+searching for a cross-reference or a character string in the global
+reference file  specified in  ST-GUIDE.INF  with the  REF  variable
+(usually ALL.REF) which  has been produced  by the RefLink  utility
+that combines the cross-  reference files of individual  hypertexts
+into a master  file. Thus the  search is not  confined to just  one
+hypertext, but extended to  the cross-references of all  hypertexts
+that have been processed by RefLink.
+
+This search method is useful, for  instance, if one selects a  word
+in a correspondingly  equipped text editor  and then activates  the
+Help function. If  a hypertext page  corresponding to the  searched
+for word  or character  string (which  may contain  several  words)
+exists somewhere, then ST-Guide will find this page and display it.
+ 
+!end_node # Find as REFerence
+
+!begin_node Find in all pages
+
+   This utilises the external ST-Guide utility HypFind included in  the
+   ST-Guide distribution.  The  environment variable  HYPFIND  must  be
+   defined in ST-GUIDE.INF.
+
+   The search is case insensitive and  the utility produces a hit  list
+   of all all matching entries in the form of a hypertext that will be
+   loaded automatically by  ST-Guide when HypFind  terminates. So  that
+   HypFind can be called, one has to either;
+   !begin_itemize !compressed
+   !item install MagiC, in which case ST-Guide starts the  utility  itself, 
+   or
+   !item use an AV-desktop,  such as Thing or  Gemini for instance (it  may
+     also work with Ease), in which case ST-Guide instructs the desktop
+     to start HypFind.
+   !end_itemize
+   
+   Users for whom neither of the above conditions apply can only  start
+   HypFind manually and use its command line.
+
+!end_node # Find in all pages
+
+!end_node # Extra -> Find
+
+!begin_node Extra -> Repeat find
+!raw [stg] @xref "Extra -> Find"
+!alias Repeat find
+!index Repeat find
+
+With this function the  current page is searched  again for the  search
+pattern last input, but the search starts from the second visible  line
+in the window so that one does not have to scroll first before one  can
+continue the search.
+
+The key combination for this function is (!key [Control + G]).
+
+!end_node # Repeat Find
+
+!begin_node Extra -> Erase stack
+!alias Erase stack
+
+This function erases the  stack in which the  pages that one can  reach
+with 'Back'  are  stored. Alternatively  one  can also  press  the  key
+combination (!key [Alternate + E]).
+
+This action deactivates both the Back icon and the History popup.
+
+!end_node
+
+!begin_node Extra -> Copy
+!raw [stg] @xref "Extra -> Paste"
+!alias Copy
+!index Copy
+
+This function (or the key-code (!key [Control + C])) writes the  current  page
+as an ASCII-text (i.e. without attributes or cross-references) into the
+clipboard and thus makes it available to other GEM applications. If  no
+clipboard exists as yet then one will be created, as usual as a  folder
+CLIPBRD on the boot drive.
+
+If during this action  one of the (!key [Shift])-keys is  held down, then  any
+previous clipboard contents will not  be overwritten, but the new  text
+will be appended to the existing one.
+
+!end_node
+
+!begin_node Extra -> Paste
+!raw [stg] @xref "Extra -> Copy"
+!alias Paste
+!index Paste
+
+Clicking on this  entry, or pressing (!key [Control + V])  causes ST-Guide  to
+load the file SCRAP.TXT from the clipboard, if it can, and then display
+it in the window.
+
+!end_node
+
+!begin_node Extra -> Print page
+!alias Print page
+!index Print
+
+This function (also available  with the key-combination (!key [Control + P]))
+does exactly what one would expect  from it, namely output the  current
+page as ASCII text to the printer.
+
+The notorious 'Atari-ž' will be converted by ST-Guide automatically  to
+the 'correct ž' during this, so  that all the German Umlaut  characters
+should appear correctly in the printout.
+
+Alternatively there is the option  of defining the variable PRINTER  in
+the ST-GUIDE.INF file. In that case, instead of printing directly  when
+the 'Print' function is called,  the program specified in the  variable
+will be started  and the contents  of the  page to be  printed will  be
+copied to the  clipboard from where  they can be  read by the  external
+program. This diversion also works in the (!link [Block popup] [Mouse functions])16}.
+
+As may have already become clear, one can thus use the 'Print' function
+to call  an external  printing  program (that  may allow  selection  of
+fonts, line-spacing etc.)  on the one  hand, and on  the other hand  to
+also use it  for other purposes  such as calling  an editor or  similar
+program, for instance.
+
+!end_node
+
+!begin_node Extra -> Font
+!alias Font
+
+ST-Guide supports the so-called font-protocol by Christian  Grunenberg,
+for which the environment  variable FONTSELECT is  evaluated. If it  is
+possible to call up a  font selector in this  way, then one can  select
+any desired font via this entry of the Extra popup for ST-Guide to  use
+for displaying text in its window.
+
+If no font selector is installed then a corresponding message  appears,
+and if no GDOS  or equivalent has been  installed then only the  system
+font can be used for display.
+
+(!B)Note:(!b) Most available hypertexts assume  that a monospaced font, i.e.  a
+non-proportional type, is in use. Hence it is strongly recommended that
+one should basically work with  such monospaced fonts to prevent  gross
+distortions in the  appearance of the  pages, particularly those  using
+the graphical commands.
+
+The key-combination for this function is (!key [Alternate + Y]) (on English, US
+and similar keyboards; German keyboards use (!key [Alternate + Z]).)
+
+!end_node
+
+
+!begin_node Extra -> Remarker
+!raw [stg] @xref "remarker.hyp/Main" "Notepads-Tool REMARKER"
+!index Remarker
+
+!stg_limage [off]
+!image (!IMAGES)stg_rem
+!stg_limage [on]
+!begin_xlist [~~~~~~] !compressed
+!item [      ] The REMARKER,  written by  Christoph  Spengler, is  a  companion
+       program to ST-Guide that allows annotations for given  hypertext
+       pages to be created, stored and recalled again at any time  very
+       simply. ST-Guide is well prepared for cooperation with Remarker.
+
+       If the variable REMARKER is defined in ST-GUIDE.INF, or Remarker
+       is also running,  then this menu  entry can be  selected in  the
+       Extra popup or activated by the key-combination (!key [Alternate + R]).
+       ST-Guide then  calls  or starts  the  Remarker. If  REMARKER  is
+       already in memory,  ST-Guide will  show this  by displaying  the
+       'Notes' icon at the far right of the icon-bar.
+
+       One  can  deduce   two  things  from   the  appearance  of   the
+       REMARKER-icon:
+
+       !begin_enumerate
+       !item If it is visible, then it means that the Remarker is  already
+          present in memory.
+       !item The icon can take also take one of two possible forms: It can
+          be drawn greyed out  or in black.  The latter indicates  that
+          one or more notes exist for the currently displayed hypertext
+          page. 
+          
+          (!B)Attention:(!b) The Remarker-icon is also selectable when it is in
+          its greyed out form! In this it differs from the other icons,
+          but due to this one can  access the Remarker faster when  one
+          wishes to input  notes. People who  find this  'inconsistent'
+          can of course  continue using menu  selection from the  (!link [Extra] [Extra popup])
+          popup.
+       !end_enumerate
+       
+       After being  called  the  REMARKER thus  opens  its  window  and
+       displays any notes that  may be present. If  there are none  the
+       notes window is empty, of course,  but new notes may be  entered
+       from the keyboard.  Further details  are given  in the  Remarker
+       documentation.
+
+       (!B)Note(!b): The REMARKER is a Shareware program.
+
+!end_xlist
+
+!end_node
+
+!end_node # Extra popup
+
+!end_node # The icons in the ST-Guide window
+
+!begin_node Mouse functions
+!raw [stg] @xref "Symbol bar" "Icon bar"
+!raw [stg] @xref "Keyboard functions"
+!raw [stg] @xref "Auto locator"
+
+Mouse operation has been kept very simple. A single click with the left
+mouse button is all that is needed in virtually any case. This  applies
+both to the icons as well as clicking on text in the window.
+
+(!B)Note:(!b) You can click  not just on words  or phrases emphasised as  cross
+references, but also on unmarked words as long as the REFONLY  variable
+has not been set in ST-GUIDE.INF.  ST-Guide will then find the  Reflink
+generated global cross reference index file (REF) for the word  clicked
+on, and display the corresponding page if the find was successful.
+
+
+In a few exceptional cases,  mouse operation needs something  different
+from a simple left-click:
+!label Block popup
+
+!begin_itemize
+!item Holding down  the left  mouse button marks  the line  the cursor  is
+   resting on as a block, which  can be extended downwards by  dragging
+   the mouse. After releasing the button  a popup appears in which  you
+   can choose to copy  the marked block to  the clipboard or print  the
+   block.
+
+!item The right mouse  button can be  used as an  alternative to the  Back
+   icon if the RIGHTBACK variable has been defined in ST-GUIDE.INF  and
+   the click  is made  when the  mouse cursor  is inside  the  ST-Guide
+   window. This  function  is  not fully  'blessed'  by  the  operating
+   system, so to speak, and is therefore not activated at first.  Mouse
+   fetishists may  however  see  an advantage  in  the  fast  jump-(!link [back] [Back icon])
+   facility,  and  it  is  for   them  that  this  function  has   been
+   implemented.
+!end_itemize
+
+!end_node # Mouse functions
+
+!begin_node Keyboard functions
+!raw [stg] @xref "Symbol bar" "Icon bar"
+!raw [stg] @xref "Mouse functions"
+!raw [stg] @xref "Auto locator"
+!label* Keyboard
+
+ST-Guide can  be  operated almost  completely  from the  keyboard.  The
+control  functions  are  implemented   from,  or  together  with,   non
+alphanumeric keys. If alphanumeric characters  are input, on the  other
+hand, then the auto- locator springs into action.
+
+
+(!B)Here follow the defined keyboard shortcuts:(!b)
+
+!begin_table [ll]
+  Cursor  keys                !! Scroll one line or column
+                              !! (like scroll arrows in a window)
+  Shift + Cursor  keys        !! Scroll one page (like clicks 
+                              !! under/over/next to sliders)
+  Number pad  -  or
+  Ctrl + Cursor up/left       !! Turn to previous page
+  Number pad  +  or
+  Ctrl + Cursor down/right    !! Turn to next page (like icon [(!link [->] [Next page])])
+  Escape  or  Undo            !! To last page displayed (like Back icon)
+  ClrHome                     !! To start of current page (like dragging
+                              !! slider right to the top)
+  Shift + ClrHom   e          !! To end of  current page (like  dragging
+                              !! slider right to the bottom)
+  Tab                         !! Sets  mark   to  the  next   reference
+                              !! (cycling  through  visible  portion  of
+                              !! window only)
+  Shift + Tab                 !! Sets  mark  to the  previous  reference
+                              !! cycling  through  visible  portion  of
+                              !!  window only)
+  Return  or  Enter           !! Display marked reference
+  Alternate + T               !! Display  contents page  (like  (!link [Contents] [Contents icon])
+                              !! icon)
+  Alternate + X               !! Display index page (like Index icon)
+
+  Control + I                 !! Program information (like (!link [Info icon] [Info Dialogue]))
+  Help                        !! Displays Help page of the current  text
+                              !! (like Help icon)
+  Alternate + K               !! Load Catalogue
+  Alternate + D               !! Load DEFHYP
+  Alternate + R               !! Open Remarker if this is running or if
+                              !! the variable REMARKER is defined
+  Control + O                 !! Load file (like (!link [Load icon] [Load file]))
+  Shift + Control + O         !! Like Control + O , but with *.*  preset
+                              !! as mask in file selector that appears
+  Control + F                 !! Find  character  string  pattern  (like
+                                Extra -> Find)
+  Control + G                 !! Find next occurrence of string pattern
+  Alternate + E               !! (!link [Erase stack] [Extra -> Erase stack]) (like Extra -> Erase stack)
+  Control + C                 !! (!link [Copy] [Extra -> Copy])  current page  to clipboard  (like
+                                Extra -> Copy)
+  Control + V                 !! Load contents of clipboard into  window
+                                (like (!link [Extra -> Paste] [Extra -> Paste]))
+  Control + P                 !! Print current page (like (!link [Extra -> Print page] [Extra -> Print page]))
+  Control + U                 !! Close Window (like clicking on Closer symbol in window)
+                              !! Quits ST-Guide if this was the last open window
+  Control + Q                 !! Quit ST-Guide
+  F1 .. F10                   !! Call bookmarks 1 to 10
+  Shift - F1 .. Shift - F10   !! Define bookmarks 1 to 10
+!end_table
+
+!end_node # Keyboard functions
+
+!begin_node Auto locator
+!raw [stg] @xref "Symbol bar" "Icon bar"
+!raw [stg] @xref "Keyboard functions"
+!raw [stg] @xref "Mouse functions"
+
+If characters of any kind are input without non alphanumeric keys (such
+as  (!key [Control]), (!key [Alternate])  etc) being pressed  at  the same  time, then
+ST-Guide interprets the  input as  a character string  'pattern' to  be
+searched for. In that case the icon-bar vanishes temporarily and a text
+field appears  showing the  string that  has been  input; this  may  be
+edited.
+
+For each character input an immediate attempt will be made to find  the
+complete character string (!link [case insensitive] [insens]) in the current page; if found,
+the display  scrolls  automatically  to the  corresponding  line.  This
+search is a  pure text  search and  so does  not differentiate  between
+marked cross references  and 'plain'  text. If  the found  string is  a
+cross reference then pressing the (!key [Tab])  key (followed by (!key [Return])) or a
+mouse click will suffice to bring this up on the screen.
+
+With the (!key [Insert]) key  one can  repeat the  search for  the same  string
+pattern in the rest  of the page. The (!key [Backspace])  key deletes the typed
+string one character at a  time backwards, while additionally  pressing
+the Shift key the clears the complete line at once.
+
+The (!link [Icon bar] [Symbol bar]) will  re-appear immediately when  any window scrolling  is
+initiated with the cursor keys or  the mouse, so that the  auto-locator
+text area will be covered until it is activated anew. The input  string
+pattern will  remain,  however, and  will  reappear with  further  auto
+locator input. Changing to another  hypertext page will however  delete
+it.
+
+!end_node # Auto locator
+
+!end_node # Using ST-Guide
+
+!begin_node ST-Guide and its environment
+
+!begin_node Hypertexts in other formats
+
+!begin_blist
+!item [1stGuide]
+
+An alternative hypertext system called 1stGuide by Guido Vollbeding has
+been available for some time.
+
+In order to simplify the change-over to ST-Guide (to save storage space
+on floppy/hard disk, for instance) a conversion program called  (!link [1stConv] [Converter])
+is provided. This  makes it  relatively painless to  convert 1st  Guide
+hyper- texts into ST-Guide format.
+
+Since 1stGuide also follows  the AV- and  PureC-Help protocols, it  can
+simply be replaced by ST-Guide.
+
+@line 20 35 0 0 7
+
+!item [PureC-Help]
+
+To make  the  transition  to  ST-Guide easier,  it's  been  made  fully
+compatible to the PureC-HelpACC,  at least as far  as the messages  are
+concerned. This means that ST-Guide  understands all the messages  that
+can also  be evaluated  by the  PureC-ACC and  replies to  them in  the
+corresponding manner.
+
+Any programs  which  support the  PureC-ACC  should work  happily  with
+ST-Guide. Simply rename ST-GUIDE  to "PC_HELP.ACC" so calling  programs
+can recognise it as such and access it.
+
+Programmers should find the (!link [List of messages] [The PureC-Help protocol]) of interest.
+
+A conversion program  for converting PureC  Help-texts to the  ST-Guide
+format is now part of the system and is called (!link [PC-Conv] [Converter]).
+
+!end_blist
+
+!begin_node The PureC-Help protocol
+!alias PureC-protocol
+!index PureC-protocol
+
+The basic construction of such a message is:
+!begin_table [lll]
+
+  buffer[0] = !! <Message-type>                   !! (e.g. AC_HELP)
+  buffer[1] = !! <Sender ID>                      !! (from appl_init())
+  buffer[2] = !! <Version number>                 !! (for AC_REPLY)
+              !! 0                                !! (all others)
+  buffer[3] = !! Pointer to search pattern (High) !! (for AC_HELP)
+              !! <Handle of the ACC-window>       !! (for AC_REPLY)
+              !! 0                                !! (all others)
+  buffer[4] = !! Pointer to search pattern (Low)  !! (for AC_HELP)
+              !! 0                                !! (all others)
+  buffer[5] = !! 0x1993                           !! (poss. for AC_HELP)
+              !! 0                                !! (all others)
+  buffer[6] = !! Pointer to Index file (High)     !! (if AC_HELP & 0x1993)
+              !! 0                                !! (otherwise)
+  buffer[7] = !! Pointer to Index file (Low)      !! (if AC_HELP & 0x1993)
+              !! 0                                !! (otherwise)
+!end_table
+
+!begin_blist [AC_VERSION]
+!label AC_HELP
+!item [AC_HELP]     (1025) 
+    (!U)APP -> ACC(!u): 'Show the Info for the reference given'.
+    
+    (!U)ACC -> APP(!u): AC_REPLY (see there), after the matching file has  been
+    searched for and the desired  page displayed, or the search  broken
+    off if unsuccessful.
+
+    The search for the reference is  made in the file specified  either
+    in 'REF' or in  the message. Similar string  patterns will also  be
+    found.
+
+!label AC_REPLY
+!item [AC_REPLY]    (1026)
+    (!U)ACC -> APP(!u): Reply to all messages.
+
+!label AC_VERSION
+!item [AC_VERSION]  (1027)
+    (!U)APP -> ACC(!u): 'Tell me your version number'. (!nl)
+    (!U)ACC -> APP(!u): AC_REPLY (see there).
+
+!label AC_COPY
+!item [AC_COPY]     (1028)
+    (!U)APP -> ACC(!u): 'Write the current page to the clipboard'. (!nl)
+    (!U)ACC -> APP(!u): AC_REPLY (see there),  after the current  page
+    has been written as ASCII text (SCRAP.TXT) into the clipboard.
+!end_blist
+
+!end_node # PureC-protocol
+
+!end_node # Hypertexts in other formats
+
+!begin_node ST-Guide and the AV-protocol
+!alias AV-protocol
+
+The AV-protocol, which originated from the alternative desktop  GEMINI,
+enjoys widespread support, so it seemed sensible to support it.
+
+Programmers should find the list of messages of interest:
+
+The basic construction of such a message is:
+
+!begin_table [lll]
+    buffer[0] = !! <Message-type>              (e.g. VA_START)
+    buffer[1] = !! <Sender-ID>                 (from appl_init())
+    buffer[2] = !! 0                           ('overlength')
+    buffer[3] = !! <Control-keys>              (SENDKEY)
+                !! <Window-handle>             (ACCWINDOPEN)
+                !! <Window-handle>             (ACCWINDCLOSED)
+                !! <Window-handle>             (DRAGACCWIND)
+                !! Pointer to path (Low)       (STARTPROG)
+    buffer[4] = !! <Pressed key>               (SENDKEY)
+                !! Pointer to path (High)      (STARTPROG)
+                !! <Mouse X-Pos.>              (DRAGACCWIND)
+                !! 0                           (all others)
+    buffer[5] = !! <Pointer to line> (Low)     (STARTPROG)
+                !! <Mouse Y-Pos.>              (DRAGACCWIND)
+                !! 0                           (all others)
+    buffer[6] = !! <Pointer to line> (High)    (STARTPROG)
+                !! <Pointer to path> (Low)     (DRAGACCWIND)
+                !! 0                           (all others)
+    buffer[7] = !! <Pointer to path> (High)    (DRAGACCWIND)
+                !! 0                           (all others)
+!end_table
+
+The following messages are recognised/used:
+
+!begin_blist [AV_ACCWINDCLOSED]
+
+!label VA_START
+!item [VA_START]:     (0x4711)
+    (!U)APP -> ACC(!u): 'Wake up and start work'; (!nl)
+    (!U)ACC -> APP(!u):  Perhaps AV_ACCWINDOPEN, after  the window has  opened
+    and any selected file has been  loaded. If a command line has  been
+    input and contains more than one argument, then everything starting
+    from the first space is interpreted as  the name of the page to  be
+    displayed.
+ 
+    According to the AV-documentation all  file names must be input  in
+    capitals with complete paths. In  order to comply with this  whilst
+    bearing in  mind  the called  application  doesn't know  where  the
+    hypertext is, the special case  of 'drive *' has been  implemented:
+    '*:\AES.HYP' instructs ST-Guide to search for AES.HYP in all  known
+    paths.
+
+    A call using 'C:\AES.HYP appl_init' loads AES.HYP and displays  the
+    <appl_init> page from it.
+
+    A call using 'C:\AES.REF appl_init' would search for the  reference
+    <appl_init> in the file AES.REF,  and if successful would load  the
+    file AES.HYP and display that page  from it in which the  reference
+    searched for was defined.
+
+    A call using 'C:\AES.HYP' loads the selected file and displays  the
+    first page from it.
+
+    A call using 'appl_init' searches  for a matching reference in  the
+    file  assigned  to  the  REF  variable  in  ST-GUIDE.INF   (usually
+    ALL.REF).  If  a  matching  reference  is  found  the   appropriate
+    hypertext is loaded and displayed at the appropriate page.
+
+
+!label VA_DRAGACCWIND
+!item [VA_DRAGACCWIND]:   (0x4725)
+    APP -> ACC: 'A file has been dragged to one of your windows, here's
+    the path'. Following this ST-Guide  loads the file and displays  it
+    in the window. The complete path/filename must be given.
+
+!label AV_SENDKEY
+!item [AV_SENDKEY]:       (0x4710)
+    ACC -> APP: 'A key has been pressed which I can't do anything with,
+    so you can  have it'. This  makes it possible  to use the  keyboard
+    shortcuts in  an application  even if  an accessory  is the  topped
+    window.
+
+!label AV_STARTPROG
+!item [AV_STARTPROG]:     (0x4723)
+    ACC -> APP: 'Start  up the program specified  in this message  with
+    the (possibly) specified command line'. ST-Guide uses this  message
+    to execute SYSTEM instructions. With Thing and GEMINI you can  also
+    specify non-executable files and if a program is installed for  the
+    given extension it will be started and the file loaded. APP -> ACC:
+    VA_PROGSTART, which will however be ignored by ST-Guide.
+
+!label AV_ACCWINDOPEN
+!item [AV_ACCWINDOPEN]:   (0x4724)
+    ACC -> APP: 'I've just opened a window'. Since the window's  handle
+    is also passed, this  serves the purpose,  among others, to  extend
+    window cycling of the main application  to the windows of the  ACC,
+    or to report to the  ACC when objects have  been dragged to one  of
+    its windows (see VA_DRAGACCWIND).
+
+!label AV_ACCWINDCLOSED
+!item [AV_ACCWINDCLOSED]: (0x4726)
+    ACC -> APP: 'I've  just closed one of  my windows'. Counterpart  to
+    ACCWINDOPEN.
+
+!label AV_EXIT
+!item [AV_EXIT]:
+    ACC -> APP: 'I'm closing down - and goodbye'
+
+!label AV_PROTOKOLL
+!item [AV_PROTOKOLL]:
+    ACC -> APP: 'I'm here'
+
+!end_blist
+
+!end_node # ST-Guide and the AV-protocol
+
+!end_node # ST-Guide and its environment
+
+!begin_node And to finish off ...
+!begin_node How do I write a hypertext?
+!raw [stg] @xref "hcp.hyp/Writing a hypertext" "Writing a hypertext"
+!alias Hypertext?
+
+The corresponding page in the (!XLINK [HCP documentation] [hcp] [Tips for writing a hypertext]) gives some  information
+about this.
+ 
+Otherwise this well-founded  and frequently asked  question can not  be
+answered here exhaustively.  Those needing  further stimulation  should
+consult (!XLINK [STG-FAQ] [stg_faq] [Main]), a collection of  (!U)F(!u)requently (!U)A(!u)sked (!U)Q(!u)uestions, which  is
+included as a hypertext in the distribution bundle. And a study of  the
+commands and their usage in the HCP documentation should be taken  for
+granted.
+
+!raw [stg] @box 2 73 5 0
+!begin_quote
+!begin_center
+ (!nl)
+       (!B)In any case, the included source text for the ST-GUIDE 
+       hypertext ought to provide sufficient examples of how the 
+       commands of the HCP should be used!(!b)
+!end_center
+ (!nl)
+!end_quote
+
+(!B)Construction:(!b)
+
+!begin_itemize
+  !item At present there are no binding rules for constructing  hypertexts,
+    but it's certain that their fitness for use will strongly influence
+    their ranking between 'good' and 'poor'.
+
+    Those seeking stimulation  are referred to  many of the  hypertexts
+    already available, among which some  very good - but  unfortunately
+    also a few poor - examples may be found.
+
+  !item It has proved advantageous to duplicate the page name as the  title
+     line in the window (as practised  here). In that way the name  will
+    not be lost if you want to (!link [print] [Extra -> Print page]) or copy a complete page.
+!end_itemize
+
+
+!end_node # How do I write a hypertext?
+
+!include thanks.ui
+
+!end_node
+
+!begin_appendix
+
+!begin_node Software used
+The following programs were used in the development of ST-Guide:
+
+!begin_ilist [SOZOBON V2.00x10]
+!item [SOZOBON V2.00x10]
+    As C compiler system (!nl)
+    Authors: The SOZOBON-people, Christian Wempe and Holger Weets
+
+!item [ACE]
+    Editor and programming environment (!nl)
+    Author: Holger Weets
+
+!item [RED]
+    As resource editor (!nl)
+    Author: Holger Weets
+
+!item [C-RSC]
+    As converter of the resources to C source-text (!nl)
+    Author: Holger Weets
+
+!item [LHarc and its source codes]
+    As  the  basis  for  implementing  the  packing/unpacking  of   the
+    hypertext pages (!nl)
+    Author: Yoshi, Christian Grunenberg
+!end_ilist
+
+!end_node # Software used
+
+!begin_node Converter
+!label 1stConv
+!label PC-Conv
+
+The converters for creating ST-Guide source texts from other  hypertext
+formats are contained in another  archive, which presently carries  the
+name STG-UT10.LZH.  These converters  were originally  included in  the
+ST-Guide archive, but have been available separately for some time.  If
+you have  the hypertexts  for these  utilities, then  you have  here  a
+suitable jumping off point to their instructions:
+
+!raw [stg] @box 15 9 1 0
+!raw [stg] @box 38 9 1 0
+~~~~~~~~~~~~~~(!XLINK [~1stConv~] [1st_conv] [Main])~~~~~~~~~~~~~~(!XLINK [~PC-Conv~] [pc_conv] [Main])
+
+!end_node # Converter
+
+!begin_node Amendments in this Update
+!index Update history
+
+!begin_blist [27.11.96]
+
+!item [27.11.96:]
+!begin_xlist [ST-Guide] !compressed
+!item [ST-Guide:] Iconify still woolly(?) at times, should now provide optimal
+           results under MagiC and MTOS
+!item [ST-Guide:] Problems with  several pictures in a  line along with  fonts
+           smaller than 12 pixels high, rectified
+!item [ST-Guide:] New  variable NOREFBOX switches  the Find box  off when  the
+           REF-find appears
+!item [ST-Guide:] Problems with the Slider on very long pages rectified
+!item [ST-Guide:] Catalogue icon included
+!item [ST-Guide:] If Remarker is not applied  in the INF file and hasn't  been
+           manually  started,   ST-Guide   swaps  its   icon   with   a
+           fontselector
+!item [ST-Guide:] TOS-programs now started under MagiC without an AV Server in
+           the window (VT 52)
+!item [ST-Guide:] "Erase stack" is disabled if the stack is empty
+!item [ST-Guide:] After 'copy' all  regular programs get a SC_CHANGED  message
+           (in Mtasking)
+!item [ST-Guide:] Use of external references will now allow you to define 
+           paths including the first '/' or '\\', the statement of 
+           paths to files is no longer possible (only caused problems 
+           anyway), to use seperate paths for node names can also be 
+           acheived (see also option -k of HCP)
+!item [ST-Guide:] 'Set mark' and 'Go to  mark' have been removed in favour  of
+           10 freely definable marks; Set by Shift-Fx, Call by Fx
+!item [ST-Guide:] New variable MARKFILE contains  the access path to the  file
+           that stores all the set marks, which is automatically  saved
+           when ST-Guide  is closed  and is  automatically loaded  when
+           ST-Guide is started  again; this  will enable  you to  setup
+           your list of "most important" hypertext pages
+!item [ST-Guide:] New icon next to the History icon opens a Popup with all the
+           set marks, clicking it, calls it (if it's set), Shift  click
+           sets it, in  ST-Guide :  Safety messages built  in when  the
+           hypertext  is  faulty  or  has  been  erased,  whilst  being
+           displayed in ST-Guide
+!item [ST-Guide:] Small Bug in memory shortage behaviour, rectified
+!item [ST-Guide:] Pictures can now be centred
+!item [ST-Guide:] Windows can't be made smaller  than an icon plus three  text
+           lines, this will avoid a display errror
+!item [ST-Guide:] Positioning  error with graphic  objects in connection  with
+           fonts that  are  narrower or  wider  than the  system  font,
+           rectified
+!item [ST-Guide:] Problems with case sensitive filesystems in connection  with
+           the display of No hypertext rectified 
+!item [ST-Guide:] Dialogues are now displayed  in light grey when the 3D  flag
+           is set and 16 colours are available
+!item [ST-Guide:] The  keys PageUp and PageDown are now evaluated
+!item [ST-Guide:]  New variable  BACKWIND make  the window  in the  background
+           usable by bringing it to the top by a right mouse click
+!item [ST-Guide:] The alert boxes 'XY could not be opened' have now a  context
+           sensitive help
+!item [ST-Guide:] Bug in connection with @tree and pages which begin directly 
+           with an attribute rectified
+!item [ST-Guide:] Scrolling in background windows is now flicker free
+!item [ST-Guide:] Hopefully a workaround  found for the  problems with  scroll
+           time (sudden block marking)
+!item [ST-Guide:] Problems with file finders using long filenames rectified
+!item [ST-Guide:] New variable FORMFEED which  will produce a formfeed at  the
+           end of a print
+!item [ST-Guide:] Displays pictures with upto  16 colours, I  think this is  a
+           fair compromise for  a hypertexts, allowing  graphics to  be
+           inserted without overfilling the hypertexts uneccesarily.
+!item [ST-Guide:] Colour depths of less than 16 or more than 256 colours  will
+           be displayed in B/W; ST-Guide  dithers the pictures using  a
+           special optimised process (Default mask), or to the relevant
+           picture preset  mask as  set in  the .stg  for snapshots  of
+           dialogues etc
+!item [ST-Guide:] New variable  XFONT,  gives a  second  font for  the  window
+           setup; switched over using [Control]+Y
+!item [ST-Guide:] Error when  scrolling during  block  marking in  colour  now
+           rectified
+!item [HCP:] Lines longer than  127 characters (net)  will now always  be
+           split
+!item [HCP:] Error when recompiling XREFs, rectified
+!item [HCP:] Warning, when undefined variables  have been used, built  in
+!item [HCP:] To get the characters  '@:' in the text '@@:' has to be used
+!item [HCP:] Dangerous internal  errors  rectified, that  caused  crashes
+           when translating or erroneous XREFs to be followed.
+!item [HCP:] Problems  with  VERY  long   lines  (>256  characters)   now
+           hopefully rectified
+!item [HCP:] The number of images is no longer "mis-counted" and should 
+           always end by outputting 'none'
+!item [HCP:] Problems with pairing indexon/indexoff rectified
+!item [HCP:] '-j' not functioning as a parameter for @options, rectified
+!item [HCP:] New option -k<value> settable flag
+!item [HCP:] Extension for pictures: Centres display using a statement of 
+           0 as the X-co-ordinate
+!item [HCP:] Neither 'ž's are treated as word separators by the Auto 
+           referencer. Previously one was but not the other
+!item [HCP:] Some  newlines  removed, passing  more  to the  screen  (for
+           console windows that can't forward scroll)
+!item [HCP:] Error(s)  with  @if  in connection  with  number  constants
+           rectified
+!item [HCP:] '+q' will also toggle to  '-q', using it allows you to  undo
+           locally what HCP is to do as defined as a preset in  HCP_OPT
+           by using  +i1 you  can  now build  a "distributed",  i.e.  a
+           seperate page for each character
+!item [HCP:] Problems  with  @uses in  REF-Files  and use  of  @symbols
+           rectified
+!item [HCP:] No more superfluous blanks in the Index page
+!item [HCP:] @image  & @limage  can  now be  given an  optional  dither
+           mask,that ST-Guide can use instead  of the default mask  for
+           converting coloured pictures into B/W.
+!item [HCP:] Small Bug in connection with @uses and pnodes rectified
+!item [HCP:] Problems with @uses with long filenames removed
+!item [HCP:] Header I.D. for Mac defined as (3), for hyperion
+!item [HCP:] Writes new OS-Header in REF-Files for hyperion
+!item [HCP:] Now  lets  a space  character  at the  end  of a  line,  for
+           hyperion
+!item [HCP:] New commands @x, @{... x} and @os for hyperion 
+!end_xlist
+
+!end_blist
+
+!end_node # Amendments in this Update
+
+!end_appendix
+
+!begin_node* Help page for ST-Guide
+
+This text represents the documentation for the present hypertext system
+and describes the operation and use of all components belonging to this
+system.
+
+It should be mentioned  once again here that  ST-Guide is Fairware,  so
+contributions or gifts of  any size are  expressly requested to  ensure
+the continued  development  of this  system  (even small  gifts  please
+me...)
+
+(!I)Contact addresses:(!i)
+!begin_preformatted
+  Holger Weets                          Joe Connor
+  Tangastrasse 45                       65 Mill Road
+  D-26121 Oldenburg                     Colchester, Essex
+  Germany                               CO4 5LJ
+
+                                        England
+(!I)Email:(!i)
+Holger Weets @ OL (Mausnet)             jconnor@cix.compulink.co.uk
+
+(!I)Contributions:(!i) 
+               Bank 24
+               Kto.(Account No): 1776764
+               BLZ.(Sort code) : 380 707 24
+!end_preformatted
+
+Alternatively  UK  users  can  register  locally;  refer  to  the  file
+(!file [SUPPORT.TXT]) in the distribution.
+
+!end_node
+
+!begin_node* Oh no!
+!label- %Oh no
+
+... it's not quite that easy! Where are you trying to get to? Oh  well,
+you may go (!link [back] [Back icon]) to the Index.
+
+!begin_center
+       What's that?  OK, to the (!link [Main page] [Main]) as well.
+!end_center
+
+!end_node
+
+
+!begin_node* Pattern not found
+!label- %e1
+
+The requested pattern could not be found.
+
+Possible causes:
+
+!begin_itemize
+!item You have searched for a particular idea in a page, but no page exists
+  in the current hypertext;
+
+    Remedy: Try modifying your idea and  looking again, or look in  the
+            index.
+
+!item You have found the idea in the current page and come to a stop;
+ 
+    Remedy: Try modifying your idea and looking again, or find it in an
+    earlier page that is thematically the same idea.
+
+!item The REF-file of the hypertext  that recognises the idea your  looking
+  for, could not be searched ;
+
+    Remedy: Use RefLink or RefCheck, to add in the relevant REF file.
+
+!item You don't have  any hypertexts on your  disk that recognise the  idea
+  your looking for;
+
+    Remedy: Perhaps you introduce a suitable hypertext for it?
+
+!end_itemize
+
+!end_node
+
+
+!begin_node* File not found
+!label- %e3
+
+The hypertext that the recognised idea your looking for, is in can  not
+be found, although its REF-file still exists.
+
+Possible causes:
+
+!begin_itemize
+!item You have erased the hypertext and not erased the REF-file;
+ 
+    Remedy: Use it RefLink or RefCheck to remove the "REF-body".
+
+!item You still possess the hypertext,  but ST-Guide can't find it  because
+  it's located in a directory that can't be found;
+
+    Remedy: (!link [Copy] [Extra -> Copy]) the hypertext  to the Guides  directory i.e.. the  one
+    that is defined in the ST-Guide.Inf file under "PATHS=", or  extend
+    this line to include the directory where the hypertext is located.
+
+!end_itemize
+
+!end_node
+
+
+!begin_node* REF-file not found
+!label- %e4
+
+The REF-file could not be found.
+
+Possible causes:
+
+!begin_itemize
+!item you have not created a REF-file;
+ 
+    Remedy: Use RefLink or RefCheck to create it.
+
+!item You actually have a REF-file, however it is not defined correctly  in
+  the ST-Guide.Inf file;
+ 
+    Remedy: Put it in your ST-Guide.Inf file in the "REF=" line, giving
+    the right path and names of the  file, or copy its location of  the
+    REF-file to the "REF=" line.
+!end_itemize
+
+!end_node
+
+
+!begin_node* Program  not found
+!label- %e5
+
+A program  should have  been  started from  within the  hypertext,  but
+didn't, even though its path is given in the ST-Guide.Inf.
+
+Possible causes:
+
+!begin_itemize
+!item The author of the hypertext has forgotten to inform you how you  need
+  to install it in your ST-Guide.Inf file;
+
+    Remedy: Ask the author of the  relevant hypertext what you have  to
+    do here.
+
+!item You  have  forgotten to  identify  the necessary  extensions  in  the
+  ST-Guide.Inf file;
+ 
+    Remedy: Put the missing ones in immediately.
+!end_itemize
+
+!end_node
+
+
+!begin_node* File not generated
+!label- %e6
+
+A file could not be created.
+
+Possible causes:
+
+!begin_itemize
+!item Your data storage device (floppy/hard disk) is full to the limit;
+
+    Remedy: Delete some files or get a bigger data storage device.
+
+!item There is a write protected file  with the same name in the  directory
+  you are trying to create your file.
+
+    Remedy: Delete it  after removing the  'Read Only' attribute.  This
+    can be  done by  selecting  the 'Show  (!link [Info] [Info Dialogue])'  menu option'  in  the
+    Desktop.
+!end_itemize
+
+!end_node
+
+
+!begin_node* HYP-File not found
+!label- %e7
+
+The requested file was not found, therefore can't be displayed.
+
+Possible causes:
+
+!begin_itemize
+!item You don't possess the file;
+
+    Remedy: Ask the  author of the  hypertext, i.e. the  author of  the
+    program,that ST-Guide has instructed you  to find where to get  the
+    file.
+
+!item You actually possess the file, but it is in the archives or a  folder
+  that is hidden from ST-Guide;
+
+    Remedy: Copy the file into the GUIDES directory i.e. in one of  the
+    directories  that  is  listed  in  the  ST-GUIDE.INF  file  in  the
+    'PATHS=' line, or include the directory where the file is located.
+
+!item You have renamed the file;
+
+    Remedy: Give the file it's original name.
+!end_itemize
+
+!end_node
+
+!end_document

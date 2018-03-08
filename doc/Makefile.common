@@ -1,0 +1,643 @@
+BIN_DIR=	$(abs_builddir)/../output
+
+if CROSS_COMPILING
+UDO=		$(build_triplet)-udo
+HCP=		$(build_triplet)-hcp
+UDO_DEP=
+HCP_DEP=
+else
+UDO=		$(top_builddir)/src/udo
+HCP=		$(top_builddir)/tools/hypview/hyp/hcp
+UDO_DEP=	$(UDO)$(EXEEXT)
+HCP_DEP=	$(HCP)$(EXEEXT)
+endif
+MKDIRHIER=	mkdir -p
+RMDIRHIER=	rm -rf
+CP=		cp
+MV=		mv
+# check for explicit .exe here, hcp.ttp might be the ST-Guide compiler
+HC31=		hcp.exe
+HCRTF=		hcrtf
+HHC=		hhc
+PCHELP=		hc
+LATEX=		latex
+PDFLATEX=	pdflatex
+MAKEINDEX=	makeindex
+MAKEINFO=	makeinfo
+
+MAKEFILE=	$(builddir)/Makefile
+
+####################################################################
+
+HTML_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/html/
+APPLEHELP_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/applehelp/
+HTMLHELP_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/htmlhelp/
+WINHELP3_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/winhelp3/
+WINHELP4_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/winhelp4/
+STGUIDE_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/stguide/
+AMGUIDE_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/amigaguide/
+PCHELP_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/pchelp/
+QUICKVIEW_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/quickview/
+TEX_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/tex/
+RTF_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/rtf/
+PDF_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/pdf/
+LYX_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/lyx/
+INFO_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/info/
+
+HYPVIEW_DOC=	$(srcdir)/header.ui \
+		$(srcdir)/hyphen.ui \
+		$(srcdir)/lang.ui \
+		$(srcdir)/version.ui \
+		$(srcdir)/hypview.u $(srcdir)/incompat.ui \
+		$(srcdir)/hcp.u $(srcdir)/hcpcmds.ui $(srcdir)/hcpopts.ui $(srcdir)/hypfmt.ui \
+		$(srcdir)/refcheck.u \
+		$(srcdir)/reflink.u \
+		$(srcdir)/hypfind.u \
+		$(srcdir)/stg_faq.u \
+		$(srcdir)/stool.u \
+		$(srcdir)/filetype.ui \
+		$(srcdir)/ref.ui
+
+OTHERS=		
+
+IMAGES= \
+		$(srcdir)/images/help.ico \
+		$(srcdir)/images/favicon.ico \
+		$(srcdir)/images/hcp.img \
+		$(srcdir)/images/hcp.bmp \
+		$(srcdir)/images/hcp.gif \
+		$(srcdir)/images/hcp_logo.img \
+		$(srcdir)/images/hcp_logo.bmp \
+		$(srcdir)/images/hcp_logo.gif \
+		$(srcdir)/images/lines.img \
+		$(srcdir)/images/lines.bmp \
+		$(srcdir)/images/lines.gif \
+		$(srcdir)/images/reflink.img \
+		$(srcdir)/images/reflink.bmp \
+		$(srcdir)/images/reflink.gif \
+		$(srcdir)/images/stool.img \
+		$(srcdir)/images/stool.bmp \
+		$(srcdir)/images/stool.gif \
+		$(srcdir)/images/st-guide.img \
+		$(srcdir)/images/st-guide.bmp \
+		$(srcdir)/images/st-guide.gif \
+		$(srcdir)/images/stg_back.img \
+		$(srcdir)/images/stg_back.bmp \
+		$(srcdir)/images/stg_back.gif \
+		$(srcdir)/images/stg_help.img \
+		$(srcdir)/images/stg_help.bmp \
+		$(srcdir)/images/stg_help.gif \
+		$(srcdir)/images/stg_hist.img \
+		$(srcdir)/images/stg_hist.bmp \
+		$(srcdir)/images/stg_hist.gif \
+		$(srcdir)/images/stg_idx.img \
+		$(srcdir)/images/stg_idx.bmp \
+		$(srcdir)/images/stg_idx.gif \
+		$(srcdir)/images/stg_info.img \
+		$(srcdir)/images/stg_info.bmp \
+		$(srcdir)/images/stg_info.gif \
+		$(srcdir)/images/stg_kat.img \
+		$(srcdir)/images/stg_kat.bmp \
+		$(srcdir)/images/stg_kat.gif \
+		$(srcdir)/images/stg_load.img \
+		$(srcdir)/images/stg_load.bmp \
+		$(srcdir)/images/stg_load.gif \
+		$(srcdir)/images/stg_mark.img \
+		$(srcdir)/images/stg_mark.bmp \
+		$(srcdir)/images/stg_mark.gif \
+		$(srcdir)/images/stg_next.img \
+		$(srcdir)/images/stg_next.bmp \
+		$(srcdir)/images/stg_next.gif \
+		$(srcdir)/images/stg_prev.img \
+		$(srcdir)/images/stg_prev.bmp \
+		$(srcdir)/images/stg_prev.gif \
+		$(srcdir)/images/stg_rem.img \
+		$(srcdir)/images/stg_rem.bmp \
+		$(srcdir)/images/stg_rem.gif \
+		$(srcdir)/images/stg_up.img \
+		$(srcdir)/images/stg_up.bmp \
+		$(srcdir)/images/stg_up.gif \
+		$(srcdir)/images/stg_xref.img \
+		$(srcdir)/images/stg_xref.bmp \
+		$(srcdir)/images/stg_xref.gif \
+		$(srcdir)/images/stg_xtra.img \
+		$(srcdir)/images/stg_xtra.bmp \
+		$(srcdir)/images/stg_xtra.gif
+
+HYPVIEW_DOC_DEP =	$(srcdir)/../macros.ui $(HYPVIEW_DOC) $(IMAGES) $(UDO_DEP)
+
+EXTRA_DIST = $(HYPVIEW_DOC) $(OTHERS) $(IMAGES)
+
+TOOL_DOCS = hypview hcp refcheck reflink stg_faq stool hypfind
+
+####################################################################
+
+all:		help
+
+####################################################################
+
+# create default formats of manual
+help:	hypview_help
+
+hypview_help:		win4 \
+			html \
+			htmlhelp \
+			stg
+
+# create all formats of manual
+help-all: ascii man stg tex rtf pch html win info tvh ldoc aqv hph lyx nroff src srp ipf drc htmlhelp pdf win4 ps amg hah udo
+
+####################################################################
+
+manpage:	hypview.1
+
+hypview.1:	$(srcdir)/manpage.u
+		$(AM_V_GEN)$(UDO) --nroff -o $@ $(srcdir)/manpage.u
+
+man: .stamp.man
+
+.stamp.man: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating Man documentation"; \
+		$(UDO) --man -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.man -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+ascii txt: .stamp.ascii
+
+.stamp.ascii: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating Ascii documentation"; \
+		$(UDO) --asc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.txt -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+stg: .stamp.stguide
+
+.stamp.stguide:	$(HYPVIEW_DOC_DEP) $(HCP_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(STGUIDE_DIR)/images || exit 1; \
+		 $(CP) $(srcdir)/images/*.img $(STGUIDE_DIR)/images; \
+		 echo "generating ST-Guide documentation"; \
+		 if test "`type $(HCP) 2>/dev/null`" = ""; then \
+		   echo "ST-Guide Help Compiler ($(HCP)) not found" >&2; \
+		 else \
+		 for i in $(TOOL_DOCS); do \
+			$(UDO) --stg -o $(STGUIDE_DIR)$$i.stg -l $(srcdir)/$$i.u || exit 1; \
+			$(HCP) -o $(STGUIDE_DIR)$$i.hyp $(STGUIDE_DIR)$$i.stg || exit 1; \
+		 done; \
+		 fi; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+tex latex: .stamp.tex
+
+.stamp.tex:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(TEX_DIR) || exit 1; \
+		 echo "generating LaTeX documentation"; \
+		 $(CP) $(srcdir)/images/*.eps $(TEX_DIR); \
+		 $(UDO) --tex --save-upr -o $(TEX_DIR)hypview.tex -D teTeX -l $(srcdir)/hypview.u || exit 1; \
+		 if test "`type $(LATEX) 2>/dev/null`" = ""; then \
+		   echo "LaTex ($(LATEX)) not found" >&2; \
+		 else \
+		 (cd $(TEX_DIR); \
+		 $(LATEX) hypview.tex; \
+		 $(LATEX) hypview.tex; \
+		 $(LATEX) hypview.tex; \
+		 if test -f hypview.idx; then \
+		   if test "`type $(MAKEINDEX) 2>/dev/null`" = ""; then \
+		     echo "makeindex ($(MAKEINDEX)) not found; index may not be correct" >&2; \
+		   else \
+		     $(MAKEINDEX) hypview.idx; \
+		     $(LATEX) -interaction=batchmode hypview.tex; \
+		   fi; \
+		 fi; \
+		 $(RM) hypview.aux hypview.idx hypview.ilg hypview.ind hypview.log hypview.toc missfont.log \
+		 ); \
+		 fi \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+rtf: .stamp.rtf
+
+.stamp.rtf:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(RTF_DIR) || exit 1; \
+		 echo "generating rtf documentation"; \
+		 $(UDO) --rtf -o $(RTF_DIR)hypview.rtf -l $(srcdir)/hypview.u || exit 1; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+pch pchelp: .stamp.pchelp
+
+.stamp.pchelp:	$(HYPVIEW_DOC_DEP)
+		@($(MKDIRHIER) $(PCHELP_DIR) || exit 1; \
+		 echo "generating PC-Help documentation"; \
+		 $(UDO) --pchelp -o $(PCHELP_DIR)hypview.scr -l $(srcdir)/hypview.u || exit 1; \
+		 if test "`type $(PCHELP)$(EXEEXT) 2>/dev/null`" = ""; then \
+		 echo "PC-Help Help Compiler ($(PCHELP)) not found" >&2; \
+		 else \
+		 (cd $(PCHELP_DIR); \
+		   $(PCHELP)$(EXEEXT) hypview.cmd; \
+		 ); \
+		 fi; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+html: .stamp.html
+
+.stamp.html:	$(HYPVIEW_DOC_DEP) $(srcdir)/../hypview.css
+		$(AM_V_at)$(MKDIRHIER) $(HTML_DIR) || exit 1; \
+		echo "generating Html documentation"; \
+		( cd $(HTML_DIR) && $(RM) `ls .`) ; \
+		$(CP) $(srcdir)/../hypview.css $(HTML_DIR); \
+		$(CP) $(srcdir)/images/*.gif $(HTML_DIR); \
+		$(CP) $(srcdir)/images/favicon.ico $(HTML_DIR); \
+		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(HTML_DIR)"; \
+		for i in $(TOOL_DOCS); do \
+			$(UDO) --html --force-short --check --tree --save-upr -o "$(HTML_DIR)$$i.html" $(srcdir)/$$i.u || exit 1; \
+		done; \
+		: $(RM) $(HTML_DIR)*.u?h
+		$(AM_V_at)touch $@
+
+####################################################################
+
+win winhelp3: .stamp.winhelp
+
+.stamp.winhelp:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) "$(WINHELP3_DIR)" || exit 1; \
+		 echo "generating WinHelp3 documentation"; \
+		 $(UDO) --win -o "$(WINHELP3_DIR)hypview.rtf" -l $(srcdir)/hypview.u || exit 1; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hlp; \
+		 if test "`type $(HC31) 2>/dev/null`" = ""; then \
+		   echo "WinHelp Help Compiler ($(HC31)) not found" >&2; \
+		 else \
+		  (cd "$(WINHELP3_DIR)"; \
+		   $(HC31) hypview.hpj; \
+		   $(HC31) hypview.hpj \
+		  ); \
+		  $(CP) "$(WINHELP3_DIR)hypview.hlp" $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hlp || exit 1; \
+		  : $(RMDIRHIER) "$(WINHELP3_DIR)"; \
+		 fi; \
+		 chmod -f +w $(BIN_DIR)/$(OUTPUT_LANG)/hypview.fts $(BIN_DIR)/$(OUTPUT_LANG)/hypview.FTS 2>/dev/null; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.gid $(BIN_DIR)/$(OUTPUT_LANG)/hypview.GID; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.fts $(BIN_DIR)/$(OUTPUT_LANG)/hypview.FTS \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+info: .stamp.info
+
+.stamp.info: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(INFO_DIR) || exit 1; \
+		 echo "generating info documentation"; \
+		 $(UDO) --info -o $(INFO_DIR)/hypview.texinfo -l $(srcdir)/hypview.u || exit 1; \
+		 if test "`type $(MAKEINFO) 2>/dev/null`" = ""; then \
+		   echo "makeinfo ($(MAKEINFO)) not found" >&2; \
+		 else \
+		  (cd $(INFO_DIR); $(MAKEINFO) --number-sections hypview.texinfo; \
+                  : $(RM) hypview.texinfo \
+                  ); \
+		 fi \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+tvh vision: .stamp.tvh
+
+.stamp.tvh: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)(echo "generating Turbo-Vision documentation"; \
+		 $(UDO) --vision -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.tvh -l $(srcdir)/hypview.u || exit 1; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+ldoc linuxdoc: .stamp.linuxdoc
+
+.stamp.linuxdoc: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)(echo "generating Linux-Doc documentation"; \
+		 $(UDO) --linuxdoc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.sgml -l $(srcdir)/hypview.u || exit 1; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+aqv quickview: .stamp.quickview
+
+.stamp.quickview: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(QUICKVIEW_DIR) || exit 1; \
+		 echo "generating Apple QuickView documentation"; \
+		 $(UDO) --quickview -o $(QUICKVIEW_DIR)hypview.aqv -l $(srcdir)/hypview.u || exit 1; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+hph helptag: .stamp.helptag
+
+.stamp.helptag: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)(echo "generating HP Helptag documentation"; \
+		 $(UDO) --helptag -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hph -l $(srcdir)/hypview.u || exit 1; \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+lyx: .stamp.lyx
+
+.stamp.lyx:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(LYX_DIR) || exit 1; \
+		 echo "generating LyX documentation"; \
+		 $(MKDIRHIER) $(LYX_DIR)images/ || exit 1; \
+		 $(CP) $(srcdir)/images/*.eps $(LYX_DIR)images; \
+		 $(RM) hypview*.eps hypview.ul?; \
+		 $(UDO) --lyx --tree --save-upr -o hypview.lyx $(srcdir)/hypview.u || exit 1; \
+		 $(CP) hypview.lyx $(LYX_DIR)hypview.lyx || exit 1; \
+		 $(RM) hypview.lyx; \
+		 $(MV) hypview*.eps hypview.upr hypview.utl hypview.ul? $(LYX_DIR); \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+nroff: .stamp.nroff
+
+.stamp.nroff: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating Nroff documentation"; \
+		$(UDO) --nroff -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.1 -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+src: .stamp.src
+
+.stamp.src: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating C-Source documentation"; \
+		$(UDO) --c -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.c -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+srp: .stamp.srp
+
+.stamp.srp: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating Pascal-Source documentation"; \
+		$(UDO) --pascal -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pas -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+ipf: .stamp.ipf
+
+.stamp.ipf: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating OS/2 IPF documentation"; \
+		$(UDO) --ipf -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ipf -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+drc: .stamp.drc
+
+.stamp.drc: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating David's Readme Compiler documentation"; \
+		$(UDO) --drc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.drc -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+htmlhelp: .stamp.htmlhelp
+
+.stamp.htmlhelp:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)$(MKDIRHIER) "$(HTMLHELP_DIR)" || exit 1; \
+		echo "generating HtmlHelp documentation"; \
+		$(CP) $(srcdir)/images/*.gif "$(HTMLHELP_DIR)"; \
+		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}.gif "$(HTMLHELP_DIR)"; \
+		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(HTMLHELP_DIR)"; \
+		for i in $(TOOL_DOCS); do \
+			$(UDO) --htmlhelp --check --force-short -o "$(HTMLHELP_DIR)$$i.html" -l $(srcdir)/$$i.u || exit 1; \
+		done; \
+		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.chm; \
+		if test "`type $(HHC) 2>/dev/null`" = ""; then \
+		 echo "HTML Help Compiler ($(HHC)) not found" >&2; \
+		 else \
+		(cd $(HTMLHELP_DIR); \
+		 for i in $(TOOL_DOCS); do \
+		   $(HHC) $$i.hhp; \
+		 done; \
+		); \
+		$(CP) $(HTMLHELP_DIR)*.chm $(BIN_DIR)/$(OUTPUT_LANG) || exit 1; \
+		: $(RMDIRHIER) "$(HTMLHELP_DIR)"; \
+		fi
+		$(AM_V_at)touch $@
+
+####################################################################
+
+pdf pdflatex: .stamp.pdflatex
+
+.stamp.pdflatex:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) $(PDF_DIR)images/ || exit 1; \
+		 echo "generating PDF documentation"; \
+		 $(CP) $(srcdir)/images/*.png $(PDF_DIR)images; \
+		 $(UDO) --pdflatex --save-upr -o $(PDF_DIR)hypview.tex -D mikTeX -l $(srcdir)/hypview.u || exit 1; \
+		 if test "`type $(PDFLATEX) 2>/dev/null`" = ""; then \
+		   echo "PDFLaTex ($(PDFLATEX)) not found" >&2; \
+		 else \
+		 (cd $(PDF_DIR); \
+		 $(PDFLATEX) hypview.tex; \
+		 $(PDFLATEX) hypview.tex; \
+		 $(PDFLATEX) hypview.tex; \
+		 if test -f hypview.idx; then \
+		   if test "`type $(MAKEINDEX) 2>/dev/null`" = ""; then \
+		     echo "makeindex ($(MAKEINDEX)) not found; index may not be correct" >&2; \
+		   else \
+		     $(MAKEINDEX) hypview.idx; \
+		     $(PDFLATEX) -interaction batchmode hypview.tex; \
+		   fi; \
+		 fi; \
+		 ); \
+		 $(CP) $(PDF_DIR)hypview.pdf $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pdf || exit 1; \
+		 : $(RMDIRHIER) "$(PDF_DIR)"; \
+		 fi \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+win4 winhelp4: .stamp.winhelp4
+
+.stamp.winhelp4:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)($(MKDIRHIER) "$(WINHELP4_DIR)images" || exit 1; \
+		 echo "generating WinHelp4 documentation"; \
+		 for i in $(TOOL_DOCS); do \
+			 $(UDO) --win4 --check -o "$(WINHELP4_DIR)$$i.rtf" -l $(srcdir)/$$i.u || exit 1; \
+		 done; \
+		 $(CP) $(srcdir)/images/help.ico "$(WINHELP4_DIR)help.ico"; \
+		 $(CP) $(srcdir)/images/*.bmp "$(WINHELP4_DIR)images"; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.hlp $(BIN_DIR)/$(OUTPUT_LANG)/*.cnt; \
+		 -chmod -f +w $(BIN_DIR)/$(OUTPUT_LANG)/*.fts $(BIN_DIR)/$(OUTPUT_LANG)/*.FTS 2>/dev/null; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.gid $(BIN_DIR)/$(OUTPUT_LANG)/*.GID; \
+		 $(RM) $(BIN_DIR)/$(OUTPUT_LANG)/*.fts $(BIN_DIR)/$(OUTPUT_LANG)/*.FTS; \
+		 if test "`type $(HCRTF) 2>/dev/null`" = ""; then \
+		   echo "WinHelp4 Help Compiler ($(HCRTF)) not found" >&2; \
+		 else \
+		   ( \
+		   cd "$(WINHELP4_DIR)"; \
+		   $(RM) *.HLP *.hlp; \
+		   for i in $(TOOL_DOCS); do \
+			$(HCRTF) -x -NG $$i.hpj; \
+			$(HCRTF) -x -NG $$i.hpj; \
+			$(CP) "$$i.HLP" "$(BIN_DIR)/$(OUTPUT_LANG)/$$i.hlp" || cat "$$i.err"; \
+			$(CP) "$$i.cnt" "$(BIN_DIR)/$(OUTPUT_LANG)/$$i.cnt" || exit 1; \
+		   done; \
+		   ); \
+		   : $(RMDIRHIER) "$(WINHELP4_DIR)"; \
+		 fi \
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+ps: .stamp.ps
+
+.stamp.ps: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)echo "generating PostScript documentation"; \
+		$(UDO) --ps -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ps -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+amg: .stamp.amguide
+
+.stamp.amguide: $(HYPVIEW_DOC_DEP)
+		$(AM_V_at)$(MKDIRHIER) "$(AMGUIDE_DIR)" || exit 1; \
+		echo "generating AmigaGuide documentation"; \
+                $(CP) $(srcdir)/images/*.img "$(AMGUIDE_DIR)"; \
+		$(UDO) --amg -o $(AMGUIDE_DIR)/hypview.guide -l $(srcdir)/hypview.u || exit 1
+		$(AM_V_at)touch $@
+		
+####################################################################
+
+hah applehelp: .stamp.applehelp
+
+.stamp.applehelp:	$(HYPVIEW_DOC_DEP) $(srcdir)/../hypview.css
+		$(AM_V_at)$(MKDIRHIER) $(APPLEHELP_DIR) || exit 1; \
+		echo "generating AppleHelp documentation"; \
+		( cd $(APPLEHELP_DIR) && $(RM) `ls .`) ; \
+		$(CP) $(srcdir)/../hypview.css $(APPLEHELP_DIR); \
+		$(CP) $(srcdir)/images/*.gif $(APPLEHELP_DIR); \
+		$(CP) $(top_srcdir)/src/images/udo_{hm,up,lf,rg}_trans.gif "$(APPLEHELP_DIR)"; \
+		$(UDO) --hah --force-short --check --tree --save-upr -o $(APPLEHELP_DIR)index.html $(srcdir)/hypview.u || exit 1; \
+		: $(RM) $(APPLEHELP_DIR)*.u?h
+		$(AM_V_at)touch $@
+
+####################################################################
+
+udo: .stamp.udo
+
+.stamp.udo:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_at)(echo "generating UDO documentation"; \
+		 $(UDO) --udo --check -o $(BIN_DIR)/$(OUTPUT_LANG)/manual.u -l $(srcdir)/hypview.u || exit 1
+		)
+		$(AM_V_at)touch $@
+
+####################################################################
+
+news.txt:	$(srcdir)/news.u
+		$(AM_V_GEN)$(UDO) --asc -o $@ $(srcdir)/news.u
+
+####################################################################
+
+hypview.txt:	$(HYPVIEW_DOC_DEP)
+		$(AM_V_GEN)$(UDO) --asc -o $@ $(srcdir)/hypview.u
+
+####################################################################
+
+hypview.man:	$(srcdir)/manpage.u
+		$(AM_V_GEN)$(UDO) --man -o $@ $(srcdir)/manpage.u
+
+####################################################################
+
+clean-local:
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.txt
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.man
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hyp $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ref
+	if test -d "$(STGUIDE_DIR)"; then $(RMDIRHIER) "$(STGUIDE_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.tex
+	$(RM) hypview.tex hypview.aux hypview.idx hypview.ilg hypview.ind hypview.log hypview.toc missfont.log hypview.dvi
+	if test -d "$(TEX_DIR)"; then $(RMDIRHIER) "$(TEX_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.rtf
+	if test -d $(RTF_DIR); then $(RMDIRHIER) $(RTF_DIR); fi
+	$(RM) hypview.rtf hypview4.rtf
+	$(RM) hypview.stg
+	$(RM) hypview.guide
+	if test -d "$(PCHELP_DIR)"; then $(RMDIRHIER) "$(PCHELP_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hlp $(BIN_DIR)/$(OUTPUT_LANG)/hypview.HLP
+	if test -d "$(HTML_DIR)"; then $(RMDIRHIER) "$(HTML_DIR)"; fi
+	$(RM) hypview.hpj hypview.hpc
+	if test -d "$(WINHELP3_DIR)"; then $(RMDIRHIER) "$(WINHELP3_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hlp  $(BIN_DIR)/$(OUTPUT_LANG)/hypview.gid  $(BIN_DIR)/$(OUTPUT_LANG)/hypview.cnt $(BIN_DIR)/$(OUTPUT_LANG)/hypview.fts
+	$(RM) hypview.texinfo hypview.texi
+	if test -d "$(INFO_DIR)"; then $(RMDIRHIER) "$(INFO_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.tvh
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.sgml
+	if test -d "$(QUICKVIEW_DIR)"; then $(RMDIRHIER) "$(QUICKVIEW_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hph
+	if test -d $(LYX_DIR); then $(RMDIRHIER) $(LYX_DIR); fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.1
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.c
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pas
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ipf $(BIN_DIR)/$(OUTPUT_LANG)/udo_mw.bmp
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.drc
+	$(RM) hypview.drc
+	if test -d "$(HTMLHELP_DIR)"; then $(RMDIRHIER) "$(HTMLHELP_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.chm
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pdf
+	if test -d $(PDF_DIR); then $(RMDIRHIER) $(PDF_DIR); fi
+	chmod -f +w $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.fts $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.FTS 2>/dev/null || true
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.hlp $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.gid $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.GID $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.cnt $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.fts $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.FTS
+	if test -d "$(WINHELP4_DIR)"; then $(RMDIRHIER) "$(WINHELP4_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ps
+	if test -d "$(AMGUIDE_DIR)"; then $(RMDIRHIER) "$(AMGUIDE_DIR)"; fi
+	if test -d "$(APPLEHELP_DIR)"; then $(RMDIRHIER) "$(APPLEHELP_DIR)"; fi
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/manual.u
+	$(RM) hypview.hhp
+	$(RM) hypview.err
+	$(RM) hypview.txt
+	$(RM) hypview.1
+	$(RM) hypview.man
+	$(RM) hypview.sgml
+	$(RM) hypview.ipf
+	$(RM) hypview.lyx
+	$(RM) hypview.ps
+	$(RM) hypview.cnt
+	$(RM) hypview.upr
+	$(RM) *.ul?
+	$(RM) *.uh?
+	$(RM) *.ut?
+	$(RM) *.upr
+	$(RM) *.img
+	$(RM) *.bmp
+	$(RM) *.gif
+	$(RM) *.eps
+	$(RM) *.png
+	$(RM) core gmon.out
+	for i in man ascii stguide tex rtf pchelp html winhelp info tvh linuxdoc quickview helptag lyx nroff src srp ipf drc htmlhelp pdflatex winhelp4 ps amguide applehelp udo; do \
+		$(RM) .stamp.$$i; \
+	done
+
+####################################################################
+
+# There are several output formats that generate
+# the same log file names, and automatically generated
+# images may be the same for some, so we cant run anything
+# in parallel here:
+.NOTPARALLEL:

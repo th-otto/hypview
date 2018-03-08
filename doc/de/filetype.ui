@@ -1,0 +1,73 @@
+!begin_node Dateitypen
+!raw [stg] @xref "reflink.hyp/Main" "RefLink"
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide"
+!raw [stg] @xref "1stconv.hyp/Main" "1stConv"
+!html_name filetypes
+
+Folgende Dateitypen werden im Zusammenhang mit dem Hypertext-System
+verwendet:
+
+!begin_xlist [*.HLP, *.TXT, *]
+!index STG
+!item [*.STG]
+    Dateien dieses Typs enthalten den Quelltext fÅr einen Hypertext, sie
+    dienen also als Eingabedateien fÅr den HCP; sie gehîren zur Gruppe der
+    ASCII-Dateien
+
+!index HYP
+!item  [*.HYP]
+    Dateien dieses Typs enthalten einen Hypertext, sie werden von HCP
+    erzeugt und vom ST-Guide gelesen
+
+!index REF
+!item [*.REF]
+    Dateien dieses Typs enthalten Referenztabellen zu einem oder mehreren
+    Hypertexten, auch diese Dateien werden vom HCP erzeugt, aber auch
+    der RefLink kann sie (durch Extraktion) erzeugen.
+    Optional (+z) erzeugt der HCP zu jedem Hypertext eine solche Datei,
+    welche (ebenfalls optional, +zz) auch gleich in die Hauptreferenz
+    ((!file [ALL.REF])) aufgenommen wird.
+
+    Die Aufnahme solcher Dateien in die Hauptreferenz kann jedoch auch
+    durch den RefLink/RefCheck vorgenommen werden.
+
+    Gelesen werden kînnen diese Dateien durch den RefLink, den HCP und
+    insbesondere durch den ST-Guide, dieser verwendet die Referenzdateien
+    zum Auffinden von Begriffen, welche per PureC-Protokoll Åbergeben
+    wurden und zum Suchen in der REF-Datei "von Hand" Åber den
+    Such-Dialog.
+
+!index SCR
+!index TXT
+!item [*.SCR, *.TXT]
+    Wenn Dateien mit dieser Endung durch eines der Programme HELP_RC oder
+    HELPDISK erzeugt wurden, dann enthalten sie einen Quelltext zu einem
+    Hypertext im PureC-Format. So erzeugte Dateien kînnen mit dem
+    PC-Conv in eine STG-Datei mit entsprechendem Format umgewandelt
+    werden, so daû der HCP sie anschlieûend Åbersetzen kann.
+
+!index HLP
+!index TXT
+!item [*.HLP, *.TXT, *]
+    Gehîren Dateien mit dieser Endung zu einem "Hypertext" fÅr das
+    Programm 1stGuide, so enthalten sie einen Teil des Quelltextes zu
+    einem 1stGuide-Hypertext. Diese Dateien kînnen mit dem 1stConv in eine
+    STG-Datei mit entsprechendem Format umgewandelt werden, so daû der HCP
+    sie anschlieûend Åbersetzen kann.
+
+!item [*.H]
+    Dateien mit dieser Endung enthalten C-Quelltext. Wurden sie von einem
+    Resource-Editor erzeugt, so kînnen sie per @include vom HCP gelesen
+    und interpretiert werden, so daû sie zur einfachen Erzeugung von
+    Dokumentationen fÅr Dialogboxen Verwendung finden kînnen.
+
+!index RSC
+!item [*.RSC]
+    Dateien mit dieser Endung enthalten Menues, Dialoge Alertboxen etc.
+    und werden von Resource-Editoren erzeugt. Solche Dateien kînnen zwar
+    vom ST-Guide nicht direkt angezeigt werden, jedoch kînnen sie per link
+    Kommando in Hypertexte eingebunden und "Dialogweise" dargestellt und
+    bearbeitet werden.
+!end_xlist
+
+!end_node

@@ -1,0 +1,68 @@
+HELPDISC - Pure Pascal help file de-compiler
+=================================================================
+
+Idea, program, Copyright etc.: Joergen von Bargen (Maus HH)
+Small improvements: Christoph Zwerschke (Maus KA)
+
+With HELPDISC one can turn help-files  in Pure-Pascal format back 
+into  source-files.  The Pure-Pascal  format is also incidentally 
+used by the Pure-Profiler, but not by Pure-C v1.x.
+
+So with HELPDISC one can:
+
+ - Print out help-files
+ - Correct or supplement help-files
+ - Convert help-files to other formats (1st-Guide, ST-Guide).
+
+Example:
+
+From the help-file PP.HLP one can use
+
+HELPDISC PP.HLP PP.TXT
+
+to  reconstruct  the  source-file PP.TXT.  This file  can  now be 
+printed out or corrected/supplemented with a text editor.
+
+A warning in passing:  The source-files can become very long. For 
+instance the  source-file for  UNIT.HLP  does not fit on a normal 
+DS/DD floppy disk.  It's therefore desirable (also for reasons of 
+speed)  to always  use a large RAM-disk or  hard disk for editing 
+help-files.
+
+From the source-file PP.TXT one can use the Pure Pascal help-file 
+compiler HELPCOMP and the command-file
+
+-V
+PP.HLP
+PP.TXT
+
+to once again generate a help-file PP.HLP.
+
+One can ignore the warnings 'link to unknown screen page-1'
+-these are references to other help-files.
+
+ST-Guide users can create from the source-file PP.TXT for 
+Pure-Pascal using:
+
+PC_CONV -a +n PP.TXT
+
+a source-file PP.STG for ST-Guide.  From that source-file one can 
+then finally use
+
+HCP -a -n -s -oPP.HYP PP.STG
+
+to create a hypertext-file PP.HYP for ST-Guide.
+
+Copyright message from J³rgen:
+
+This program may be copied and/or deleted by anyone.  I accept no
+liability  for  any  consequences  that may arise from the use of 
+this program in any manner.
+
+Please keep this reference text together with this program!
+
+Greetings to one and all!
+
+JJvB in the DBOX-Hamburg 040/8324543
+-----------------------------------------------------------------
+1st July 1994

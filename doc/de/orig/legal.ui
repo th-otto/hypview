@@ -1,0 +1,87 @@
+!begin_node Rechtliches
+!alias Fairware
+
+Dieses Hypertext-System ist Fairware, d.h. jedermann kann es unbegrenzt
+lange kostenlos benutzen und an jede Person weitergeben, vorausgesetzt,
+da die Weitergabe kostenlos ist. (!B)Bei regelm„iger Benutzung sollte
+der Autor jedoch mit einer Spende bedacht werden, da nur so die
+Weiterentwicklung dieses Systems gew„hrleistet ist.(!b)
+
+Der ST-Guide darf als Zusatz zu eigenen Programmpaketen weitergegeben
+werden, egal welcher Art diese sind, d.h. auch innerhalb von Shareware und
+kommerziellen Progammen, ohne da hierfr Lizenzgebhren f„llig werden
+(obwohl ein kleine Anerkennung in diesem Fall wohl mehr als fair w„re). Es
+mu aber ein Hinweis vorhanden sein, da der ST-Guide Fairware und von mir
+ist, so da beim Endanwender nicht der Eindruck entsteht, da seine Spende
+fr den ST-Guide im Kaufpreis des Paketes enthalten ist.
+
+Nett w„re es in diesem Fall, wenn mir eine Disk mit dem betreffenden
+Programm und dem zugeh”rigen Hypertext zugesand wrde, quasi als
+Belegexemplar.
+
+Da es der Hauptverwendungszweck des ST-Guide ist, Dokumentationen zu
+anderen Programmen zu schreiben, darf er in zwei Formen weitergegeben
+werden:
+
+!begin_itemize
+!item Vollst„ndig, als komplettes Programmpaket mit allen zugeh”rigen
+       Dateien. Diese Form ist auf jeden Fall vorzuziehen, auch wenn die
+       Weitergabe innerhalb eines anderen Programmpaketes erfolgt.
+
+!item Nur der Viewer und die Dokumentation, falls die Weitergabe
+       innerhalb eines anderen Programmpaketes erfolgt (!B)und(!b) eine
+       Dokumentation zu diesem Programm im Format des ST-Guide dabei
+       ebenfalls mitgeliefert wird.
+!end_itemize
+
+
+Soweit die Weitergabe als Zugabe zu irgendwelchen Programmen oder durch
+PD-H„ndler erfolgt, erbitte ich eine kurze Mitteilung darber, damit ich
+!begin_itemize !compressed
+!item absch„tzen k”nnen, wie weit das Paket sich verbreitet, und
+!item evtl. Auskunft ber Updates geben k”nnen.
+!end_itemize
+
+Natrlich bin ich auch sehr daran interessiert zu sehen, in welchen
+Programmen der ST-Guide verwendet wird. Wem es also m”glich ist, kann mir
+gerne auch eine Kopie seines Programmes zukommen lassen.
+
+!index Spenden
+Spenden: In diesem Programmpaket steckt inzwischen sehr viel Arbeit.
+         Trotzdem habe ich mich entschieden es als Fairware zu
+         ver”ffentlichen, um jedem zu erm”glichen, damit Dokumentationen
+         zu seinen Programmen zu schreiben. Es w„re aber nur fair, mir
+         eine kleine Anerkennung fr meine Arbeit zukommen zu lassen.
+         Auch kleine Spenden motivieren mich, auch in Zukunft noch an
+         diesem Projekt zu arbeiten, es zu erweitern und zu verbessern.
+
+Kein Programm ist wirklich fehlerfrei, deshalb kann und will ich
+keinerlei Garantien fr die Lauff„higkeit oder Tauglichkeit dieses Paketes
+fr irgendeinen Zweck bernehmen und k”nnen insbesondere nicht haftbar
+gemacht werden fr irgendwelche Sch„den, die durch die Benutzung dieses
+Paketes theoretisch entstehen k”nnten.
+
+!index Holgers Adresse
+!label* Adresse
+Fr Lob, Kritik, Vorschl„ge und Spenden bin ich folgendermaen
+erreichbar:
+!begin_preformatted
+                Holger Weets
+                Tangastrasse 45
+                D-26121 Oldenburg
+
+                E-Mail: Holger Weets @@ OL (Mausnet)
+                        holger_weets@@ol.maus.de (Internet)
+
+                Bankverbindung:
+                Bank 24
+                Kto.: 1776764
+                BLZ.: 380 707 24
+!end_preformatted
+
+Wer eine neue Version direkt von mir haben m”chte, schicke bitte einen
+frankierten Rckumschlag, eine DD/HD-Disk und 10 Mark an diese Adresse.
+Dieser Betrag dient mir als Aufwandsentsch„digung, denn ich m”chte bei
+diesem Projekt wenigstens nicht auch noch draufzahlen.
+
+!end_node

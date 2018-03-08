@@ -1,0 +1,366 @@
+!code_source [tos]
+
+# language independent macros
+!include macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help "Hilfsseite"
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!docinfo [title] Dokumentation des
+!docinfo [program] HCP
+!docinfo [author] H. Weets, C. Wempe
+!docinfo [programimage] (!IMAGES)hcp
+
+!macro PROGRAM HCP
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!docinfo [stgdatabase] HCP Dokumentation
+!ifdest [stg,amg]
+!begin_raw
+@subject "Dokumentation/ST-Guide"
+@options "+g +i +z -t4 -d12"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+@extern ST-Guide "st-guide.hyp/Main"
+!end_raw
+!endif
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!raw [stg] @noref
+!tableofcontents !depth 1
+!toc_title Dokumentation des HCP
+
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide Dokumentation"
+!raw [stg] @xref "stool.hyp/Main" "STool Dokumentation"
+!raw [stg] @xref "reflink.hyp/Main" "Reflink Dokumentation"
+
+!begin_node Aufruf des HCP
+!label HCPCall
+!alias Hypertext-Compiler HCP
+!raw [stg] @xref "Optionen-öbersicht"
+
+Bei dem Programm HCP handelt es sich um den Compiler fÅr Hypertexte,
+welcher Åber eine Kommandozeile gesteuert wird.
+
+Bedingt durch den Aufbau der Hyper-Quelltexte sowie die enthaltenen
+Features ist der HCP als 2 Pass Compiler implementiert, d.h. die gesamte
+Eingabedatei (evtl. inklusive aller Includefiles) werden zwei mal komplett
+gelesen.
+
+Der erste Pass hat dabei eine mehr organisierende Rolle, er legt Tabellen
+an etc., wÑhrend der zweite Pass die eigentliche öbersetzung des Textes
+Åbernimmt.
+
+Der Aufruf des Compilers erfolgt durch
+
+HCP [(!link [-l[F!]] [Option l: Inhalt eines Hypertextes])
+     (!link [-r] [Option r: Recompilieren])
+     (!link [-v] [Option v: ASCII-Ausgabe])]
+    [(!link [+-q[qq!]] [Option q: GesprÑchigkeit])
+     (!link [-pVAL] [Option p: Typ recompilierter Bilder]) (!nl)
+~~~~~(!link [-wVAL] [Option w: Warten auf Taste])
+     (!link [+-a] [Option a: AutoRefererenzer])
+     (!link [+-c] [Option c: Komprimierung])
+     (!link [+-s] [Option s: Zeilenumbruch])
+     (!link [+-f] [Option f: Aliase in den Index])
+     (!link [+-g] [Option g: Alabels in den Index])
+     (!link [+-i] [Option i: Index automatisch erzeugen]) (!nl)
+~~~~~(!link [+-n] [Option n: Nodes in den Index])
+     (!link [+-x] [Option x: Titel statt Nodenamen in den Index])
+     (!link [+-y] [Option y: 1. Zeichen insensitiv])
+     (!link [+-m] [Option m: Bilder durch Rahmen ersetzen])
+     (!link [+-z[z!]] [Option z: REFerenzdateien])
+     (!link [-dN] [Option d: Abstand von Verweisen])
+     (!link [-jN] [Option j: Spaltenbreite fÅr Index])
+     (!link [-tN] [Option t: Tabulatorweite])
+     (!link [-bSIZ] [Option b: Seitengrîûe])
+     (!link [-kVAL] [Option k: KompatibilitÑts-Flags]) (!nl)
+~~~~~(!link [-oOUTFILE] [Option o: Ausgabedatei])
+     (!link [-eERRFILE] [Option e: Fehlerdatei])
+     (!link [-uHYPFILE] [Option u: Einbeziehen anderer Hypertexte])] (!nl)
+~~~~file [nodes]
+
+Falls kein Kommando angegeben wird, so wird die Eingabedatei Åbersetzt.
+
+!end_node
+
+!include hcpopts.ui
+
+!include hcpcmds.ui
+
+!begin_node Externe Querverweise
+!raw [stg] @xref "Kommando @uses"
+!raw [stg] @xref "Kommando @extern"
+!raw [stg] @xref "@link"
+
+Ein Beispiel fÅr Querverweise in andere Hypertexte ist:
+
+!begin_quote
+    Siehe auch @{form_do link aes.hyp/form_do}.
+!end_quote
+
+Das Wort "form_do" wird hervorgehoben und bei Auswahl durch den Leser wird
+die Datei AES.HYP geladen und daraus die Seite mit dem Namen 'form_do'
+gezeigt.
+
+Man beachte, daû hinter dem Dateinamen durch einen weiteren Slash oder
+Backslash (beide Zeichen kînnen wahlweise verwendet werden) der Name der
+anzuzeigenden Seite folgt.
+
+Falls die Datei ohne oder mit einem Teilpfad angegeben wird, so sucht der
+ST-Guide in dieser Reihenfolge in folgenden Verzeichnissen:
+!begin_enumerate !compressed
+    !item in allen Verzeichnissen, die in der  Environment-Variablen
+       'PATHS' angegeben wurden
+    !item im Verzeichnis der aktuell geladenen Datei
+!end_enumerate
+
+Eine andere Art von externen Verweisen kann durch
+
+!begin_quote
+Siehe auch @{form_do link form_do}
+!end_quote
+
+erzeugt werden. Dieses Kommando sieht zwar aus, wie ein gewîhnliches link
+Statement, wenn sich die Seite 'form_do' jedoch nicht in der selben Datei
+befindet, wird sie zu einem externen Verweis. Bei Klick auf diesen Verweis
+wÅrde der ST-Guide sie zunÑchst wie oben als Datei in allen Suchpfaden
+suchen, und falls dies fehlschlÑgt, daû Wort 'form_do' in der durch die
+Variable 'REF' angegebenen Datei als Symbol suchen, daraus die Datei
+entnehmen, diese suchen und anschlieûend darstellen.
+
+NatÅrlich kann auch bei externen Verweisen hinter dem ersten Parameter des
+'link' eine Zeilennummer angegeben werden, welche beim Anzeigen der
+betreffenden Seite als erste Zeile im Fenster dargestellt wird. Allerdings
+ist es (natÅrlich) nicht mîglich, hier ein Label anzugeben.
+
+Falls ein link auf eine ASCII-Datei ereugt wird, muû natÅrlich ebenfalls
+ein Seitenname angegeben werden, auch wenn ASCII-Dateien keine solchen
+besitzen. In diesem Fall ist 'Main' zu verwenden. Wird ein anderer Name
+verwendet, so benutzt der ST-Guide diesen als Suchbegriff, die erste
+gefundene Textstelle wird zur ersten im Fenster dargestellten Zeile.
+
+(!U)Beispiel(!u):
+!begin_quote
+Die FILE-Struktur ist in der Datei @{stdio link "stdio.h/FILE"}
+zu finden.
+!end_quote
+
+Bei Auswahl dieses Verweises sucht der ST-Guide das erste Vorkommen von
+"FILE" in der Datei stdio.h (wegen stdio.h/FILE) und die gefundene Zeile
+wird zur ersten im Fenster sichtbaren.
+!end_node
+
+!begin_node Aufgaben und Eigenschaften des Compilers
+!alias Compiler Features
+
+Der Hypertext-Compiler HCP Åbersetzt einen Hypertext in ein
+strukturiertes, optional auch gepacktes Format, welches es dem
+Anzeigeprogramm ST-Guide ermîglicht, ohne groûen Aufwand auf die einzelnen
+Seiten des Textes zuzugreifen und die Hypertext-Links schnell auszufÅhren.
+Dazu wird am Anfang der Datei eine Tabelle mit einigen Informationen
+abgelegt.
+
+Im Gegensatz zu anderen Hypertext-Systemen kann der HCP jedoch noch eine
+ganze Menge mehr. Hier jetzt eine Beschreibung der besonderen Funktionen
+des Compilers:
+
+!begin_xlist [~~~~]
+!item [Seiten werden gepackt:] (!nl)
+    Der Compiler kann die einzelnen Seiten packen, so daû die erzeugten
+    Dateien erheblich kÅrzer werden. Beim Anzeigen des Textes merkt man
+    dies jedoch nicht, da der Entpackalgorithmus schnell genug ist, um
+    seine Aufgabe verzîgerungsfrei zu erfÅllen. Nur das öbersetzen dauert
+    dann erheblich lÑnger und daher kann man dies abstellen (Option c),
+    damit man wÑhrend der Entwicklung des Textes, wenn man ihn îfter mal
+    Åbersetzen muû, nich zu lange warten muû.
+
+!item [Automatisches setzen von Hypertext-Links:] (!nl)
+    StandardmÑûig erzeugt der Compiler Åberall, wo er denn Namen einer
+    Seite im Text findet einen Link auf diese Seite. Mit speziellen
+    Instuktionen ist es sogar mîglich, Links auf die Seiten anderer
+    Hypertexte und sogar auf ASCII-Texte erzeugen lassen. Hierzu
+    existieren eine ganze Menge Instruktionen, die den Compiler hierbei
+    unterstÅtzen. Mehr dazu steht in der Beschreibung der Sprache des
+    Systems. Dies kann einem eine ganze Menge Arbeit ersparen. Wer jedoch
+    lieber alle Links explizit angeben mîchte, kann dies auch tun und
+    diese Funktion ganz abschalten.
+
+!item [Erzeugen einer Indextabelle:] (!nl)
+    Hiermit ist eine Indextabelle, wie sie in BÅchern oft zu finden ist,
+    gemeint. Einen solchen Index kann der Compiler automatisch
+    erzeugen und bestimmte, durch die Struktur des Textes schon gegebene
+    Namen hier aufnehmen. Was aufgenommen wird, lÑût sich aber ganz genau
+    steuern und zusÑtzlich existiert noch eine Instruktion, die es
+    ermîglicht, jede bestimmte Position mit einem anzugebenden Namen in
+    die Indextabelle aufzunehmen. NatÅrlich kann man auch dies abstellen
+    und die Index-Seite auch von Hand erstellen oder ganz
+    weglassen.
+
+!item [EinfÅgen von Bildern:] (!nl)
+    Innerhalb einer Seite lassen sich auch beliebig Bilder plazieren. Der
+    Compiler kann Bilder der Formate IMG, ICN und IFF lesen und in die
+    Hypertext-Datei einbinden. Dies ist insbesondere interessant, wenn man
+    in der Dokumentation zu seinem Programm die Funktion von Icons
+    erklÑren will. Wenn man das Icon bei der Beschreibung sieht, weiû man
+    sofort, welches gemeint ist, was bei einer Beschreibung wie: "das Icon
+    mit den Balken und den vielen Punkten bedeutet"... wohl nicht gerade
+    der Fall ist. NatÅrlich kînnen Bilder beim Recompilieren auch wieder
+    extrahiert werden.
+
+!item [Recompilieren von Hypertext-Dateien:] (!nl)
+    Wie schon erwÑhnt, kann der Compiler die von ihm erzeugten
+    Hypertext-Dateien auch wieder in einen Quelltext zurÅck verwandeln.
+    NatÅrlich entspricht die recompilierte Version meist nicht mehr ganz
+    dem Original, jedoch sollte die dann wieder Åbersetzte Version wieder
+    genau so aussehen, wie die andere Hypertext-Datei. NÅtzlich ist dies,
+    wenn man mal seinen Quelltext verloren hat oder diesen gar nicht hat,
+    weil die Datei von jemand anderem stammt, und man daran noch einige
+    énderungen vornehmen mîchte.
+!end_xlist
+!end_node
+
+!begin_node Schreiben eines Hypertextes
+Die technische Seite beim Schreiben eines Hypertextes ist recht einfach
+und auch schnell erklÑrt.
+
+Ein Hypertext beginnt mit einem Kopf, in dem allgemeine Information
+festgelegt wird:
+
+!begin_xlist [~~~] !compressed
+    !item [] @database <Thema des Textes>
+    !item [] @author  <wer hat den Text geschrieben>
+    !item [] @subject  <wo soll der Text im Katalog einsortiert werden>
+    !item [] @$VER:    <Name der Datei> <Versionsnummer> <ErstellDatum>
+    !item [] [@options <optionen>]
+!end_xlist
+
+Das war's schon. Jetzt folgen der Reihe nach alle Seiten, die spÑter
+im St-Guide zu sehen sind, eingeleitet werden sie mit dem @node
+Kommando, beendet durch @endnode:
+
+!begin_xlist [~~~] !compressed
+    !item [] @node <Seitenname> [<Fenstertitel>]
+    !item [] [@symbol [flags] <weitere Namen dieser Seite>]
+!end_xlist
+
+Hier steht der eigentliche Text. FÅr Verweise auf eine bestimmte Zeile
+innerhalb des Textes ist wiederum (!link [symbol] [Kommando @symbol]) zu verwenden. Die Querverweise
+mÅssen in den seltensten FÑllen von Hand gesetzt werden, somit kann der
+Text i.a. einfach aufgeschrieben werden, ohne das detailierte Kenntnisse
+der Mîglichkeiten des Compilers notwendig sind. Ist die Seite zuende, so
+wird dies dem hcp durch das Kommando
+
+!begin_xlist [~~~] !compressed
+    !item [] @endnode
+!end_xlist
+
+mitgeteilt.
+
+Hier kînnen nun beliebig viele weitere Seiten folgen, jeweils wieder
+eingeleitet durch @node und abgeschlossen durch @endnode.
+
+SelbstverstÑndlich bestehen sehr viel mehr Mîglichkeiten, als die hier
+aufgezÑhlten, jedoch sollte der geneigte Autor dazu die Beschreibung aller
+definierten Kommandos zumindest einmal gelesen und verstanden haben.
+
+Ein paar Regeln noch, an die man sich beim Schreiben eines Hypertextes
+nach Mîglichkeit halten sollte:
+
+!begin_itemize
+!item Die erste Seite eines Hypertextes sollte den Namen 'Main' tragen
+
+!item Die Seiten eines Hypertextes sollten bei Verwendung des Systemfonts
+   auch auf einem SM 124 ohne den Zwang zum horizontalen Scrollen lesbar
+   sein, es empfielt sich also, nicht mehr als 75 Zeichen pro Zeile zu
+   verwenden.
+
+!item Je Åbersichtlicher eine Hypertextseite ist, desto eher wird sie gelesen
+   und verstanden. Insbesondere sollten die Seiten also mîglichst kurz
+   gehalten werden, sofern dies mîglich ist, auûerdem sollten Text-
+   Attribute, Linien Boxen etc. sparsam verwendet werden.
+   
+   Andererseits zeigt die Erfahrung, daû kleine das VerstÑndnis des Textes
+   unterstÅtzende Grafiken an sinnvollen Stellen in den Seiten eingestreut
+   die Motivation des Lesenden durchaus erhîhen kînnen.
+
+!item Mittlerweile hat es sich mehr oder weniger durchgesetzt, allen Seiten
+   eine Kopfzeile voranzustellen, dies kann entweder durch (!nl)
+     (!link [@{U}] [Textattribute setzen])<Seitenname>~~~~~~~~~~~~~~~[<Hypertextname>]@{u} (!nl)
+   oder durch (!nl)
+     <Seitenname>~~~~~~~~~~~~~~~~~~~~[<Hypertextname>] (!nl)
+     @line 1 <Seitenbreite> 0 0 7 (!nl)
+   erfolgen.
+!end_itemize
+!end_node
+
+!include hypfmt.ui
+!include filetype.ui
+
+!begin_node* Hilfsseite
+Dieser Text stellt die Dokumentation des (!xlink [ST-Guide] [st-guide.hyp/Main]) Hypertext-Compilers dar
+und beschreibt dessen Features, Aufruf und Anwendung dieses Programmes.
+
+Geschrieben wurde der HCP von Christian Wempe (AMIGA) und Holger Weets
+(ATARI) mit SOZOBON-C V2.00x10.
+
+Kritik und Anregungen an
+!begin_preformatted
+            Holger Weets
+            Tangastr. 45
+            26121 Oldenburg
+            E-Mail: Holger Weets @ OL       (Mausnet)
+                    Holger_Weets@OL.maus.de (Internet)
+!end_preformatted
+
+(!B)Fairware-Beitrag:(!b)
+!begin_preformatted
+            Bank 24
+            Kto.: 1776764
+            BLZ.: 380 707 24
+!end_preformatted
+
+!end_node
+
+!begin_appendix
+
+!include legal.ui
+!include thanks.ui
+
+!end_appendix
+
+!end_document

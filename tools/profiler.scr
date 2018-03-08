@@ -1,0 +1,783 @@
+screen("page0","?":SENSITIVE,"HELP":SENSITIVE,"HILFE":SENSITIVE)
+Hilfesystem
+------------------------------------------------------------------
+
+Das Pure-Profiler-Hilfesystem bietet Ihnen jederzeit Hilfstexte
+an, sowohl zur Arbeit mit dem Profiler selbst, als auch zu den
+Sprachen C, Pascal und Assembler, sowie den dazugeh”rigen Stan-
+dardroutinen und Bibliotheken.
+
+Die Hilfen zum Profiler erreichen Sie ber das Help-Men, eben-
+so zu den Sprachen und den Bibliotheken. Fr die letzteren beiden
+k”nnen Sie die Hilfe auch kontextsensitiv anfordern. Sie haben
+beispielsweise einen Quelltext, in dem die Prozedur Writeln auf-
+gerufen wird. Nun m”chten Sie wissen, was diese Prozedur macht.
+Dann positionieren Sie den Cursor auf Writeln und drcken die
+Help-Taste. Das Hilfesystem gibt Ihnen nun den fr Writeln ver-
+fgbaren Hilfstext. Eine weitere M”glichkeit Hilfe zu bestimmten
+Begriffen anzufordern ist der Befehl \link("page3")Help/Help...\#. Hier mssen
+Sie den Begriff explizit eingeben.
+
+Querverweis:     \link("page1")Help-Fenster\#
+                 \link("page2")Suchpfad fr Help-Dateien\#\end
+screen("page1")
+\link("page0")Hilfesystem\#: Help-Fenster
+------------------------------------------------------------------
+
+Das Help-Fenster verh„lt sich wie ein \link("page-1")Quelltextfenster\#. Sie
+k”nnen in ihm \link("page-1")Textbl”cke selektieren\# und diese gegebenenfalls
+auf das GEM-Clipboard \link("page49")kopieren\#. Ebenso stehen Ihnen die
+\link("page25")Suchfunktionen\# zur Verfgung. Mit dem Cursor k”nnen Sie sich
+wie gewohnt bewegen.
+
+Querverweise auf andere Hilfstexte sind fett und unterstrichen
+dargestellt. Zu ihnen gelangen Sie, indem Sie den Cursor auf
+den Querverweis setzen und dann die Help-Taste drcken. Querver-
+weise lassen sich besonders schnell mit Control-Cursor-Up und
+Control-Cursor-Down anspringen. Erstere Tastenkombination
+selektiert den jeweils vor dem Cursor befindlichen Querverweis,
+letztere den dem Cursor folgenden Querverweis. Danach liefert
+wiederum ein Druck auf die Help-Taste den zugeh”rigen Hilfstext.
+
+Die Undo-Taste bzw. der Befehl \link("page18")File/Previous help\# liefern den
+Hilfstext des Querverweises, der zum aktuellen Hilfstext fhrte.\end
+screen("page2")
+\link("page0")Hilfesystem\#: Suchpfad fr Help-Dateien (Help files)
+------------------------------------------------------------------
+
+Das Hilfesystem kann bis zu 10 Help-Dateien verwalten. Diese
+drfen auf verschiedene Laufwerke und Verzeichnisse verteilt
+sein. Damit das Hilfesystem trotzdem die Help-Dateien schnell
+finden kann (und vor allem die richtigen!), mssen Sie ihm die
+entsprechenden Suchpfade mitteilen. Dies machen Sie mit dem
+Befehl \link("page38")Options/Environment...\#.
+
+Sie k”nnen auch eine Liste von Suchpfaden angeben. In der Liste
+werden die einzelnen Pfaden durch Semikolons getrennt.\end
+screen("page3")
+Help/Help...                                          Control-Help
+------------------------------------------------------------------
+
+Der Befehl Help/Help... ”ffnet eine Dialogbox, in die Sie einen
+Begriff eingeben k”nnen, zu dem Sie eine Hilfestellung haben
+m”chten.
+
+
+Querverweis:     \link("page0")Hilfesystem\#\end
+screen("page4","Menu":CAPSENSITIVE)
+Menu
+------------------------------------------------------------------
+
+\link("page5")Profiler\#  \link("page6")File\#  \link("page7")View\#  \link("page8")Search\#  \link("page9")Run\#  \link("page10")Options\#  \link("page11")Help\#\end
+screen("page5")
+Profiler Menu
+------------------------------------------------------------------
+
+  \link("page12")About Pure Profiler...\#
+--------------------------
+  No accessories!\end
+screen("page6")
+File Menu
+------------------------------------------------------------------
+
+  \link("page13")Load program...\#  ^O
+----------------------
+  \link("page14")Load profile...\#  ^J
+  \link("page15")Save profile...\#  ^K
+----------------------
+  \link("page17")Cycle window\#     ^W
+  \link("page16")Close window\#     ^U
+  \link("page18")Close\#            ^Z
+----------------------
+  \link("page19")Quit\#             ^Q\end
+screen("page7")
+View Menu
+------------------------------------------------------------------
+
+  \link("page20")Program info...\#  ^R
+----------------------
+  \link("page-1")Profile\#          ^P
+  \link("page-1")Calling chains\#   ^N
+  \link("page-1")File I/O\#         ^D
+  \link("page-1")Memory usage\#     ^E
+----------------------
+  \link("page22")Modules\#          ^M
+  \link("page23")Breakpoints\#      ^B
+  \link("page21")Disassemble...\#   ^A
+---------------------
+  \link("page24")User screen\#     Esc\end
+screen("page8")
+Search Menu
+------------------------------------------------------------------
+
+  \link("page25")Find...\#         ^F
+  \link("page26")Find same\#       ^G
+  \link("page27")Find selection\#  ^I
+---------------------
+  \link("page28")Show source...\#  ^S
+  \link("page29")Goto line...\#    ^L\end
+screen("page9")
+Run Menu
+------------------------------------------------------------------
+
+  \link("page30")Profile\#        P
+  \link("page31")Code coverage\#  C
+--------------------
+  \link("page32")Run\#            R
+  \link("page33")Step over\#      S
+  \link("page34")Trace into\#     T
+  \link("page35")Until return\#   U
+--------------------
+  \link("page36")Program reset\#  Z\end
+screen("page10")
+Options Menu
+------------------------------------------------------------------
+
+  \link("page-1")Profiler...\#        O
+  \link("page38")Environment...\#     E
+  \link("page37")Commandline...\#     A
+------------------------
+  \link("page40")Load config...\#     L
+  \link("page39")Save xxxxxxxx.CFG\#  K\end
+screen("page11")
+Help Menu
+------------------------------------------------------------------
+
+  \link("page3")Help...\#   ^Help
+------------------
+  \link("page4")Menu\#
+  \link("page41")Profiler\#
+  \link("page-1")C Language\#
+  \link("page-1")Libraries\#
+  \link("page-1")Pascal\#
+  \link("page-1")Units\#
+  \link("page-1")Assembler\#\end
+screen("page12")
+Profiler/About Pure Profiler...
+------------------------------------------------------------------
+
+Dieser Befehl zeigt Ihnen eine Dialogbox, die neben einem Copy-
+right-Vermerk die Versionsnummer und das Versionsdatum des von
+Ihnen verwendeten Profilers enth„lt.\end
+screen("page13")
+File/Load program...                                     Control-O
+------------------------------------------------------------------
+
+Mit dem Befehl File/Load program... wird das zu untersuchende
+Programm geladen. Es erscheint eine \link("page-1")Dateiauswahlbox\#, in der
+ausfhrbare Dateien angezeigt werden, von denen eine auszu-
+w„hlen ist.\end
+screen("page14")
+File/Load profile...                                     Control-J
+------------------------------------------------------------------
+
+Der Befehl File/Load profile... l„dt ein Profile, das nach einer
+frheren Leistungsmessung mit \link("page15")File/Save profile...\# abgespei-
+chert wurde.
+
+Durch eine \link("page-1")Dateiauswahlbox\# wird bestimmt, welches Profile ge-
+laden werden soll. Profiles haben die Dateiendung '.PRO'.  Da-
+nach ”ffnet sich ein \link("page-1")Profile-Fenster\#. Existiert zu dem ge-
+ladenen Profile auch eine Indexdatei (gleicher Name, aber mit
+Dateiendung '.PR0'; wird beim Speichern automatisch angelegt),
+so wird Inhalt des Profiles hierarchisch geordnet. Andernfalls
+wird der Inhalt des Profiles 'an einem Stck' angezeigt.\end
+screen("page15")
+File/Load profile...                                     Control-K
+------------------------------------------------------------------
+
+Der Befehl File/Save profile... speichert das aktuelle Profile.
+Ist keine Selektierung im \link("page-1")Profile-Fenster\# vorhanden, wird das
+komplette Profile gespeichert. Andernfalls werden ausschlielich
+die selektierten Ebenen gesichert.
+
+šber eine \link("page-1")Dateiauswahlbox\# wird der Name des Profile bestimmt.
+Profiles haben die Dateiendung '.PRO' und werden als ASCII-Datei
+gespeichert. Somit k”nnen sie mit jedem beliebigen Editor ge-
+laden und betrachtet werden.
+Wollen Sie ein Profile sp„ter wieder in den Profiler laden (mit
+dem Befehl \link("page14")File/Load profile...\#), drfen Sie die Datei nicht
+editieren. Damit wieder eine hierarchische Anordnung des Pro-
+files erzeugt werden kann, wird automatisch eine Indexdatei
+gleichen Namens mit der Endung '.PR0' abgespeichert.\end
+screen("page16")
+File/Close window                                        Control-U
+------------------------------------------------------------------
+
+Der Befehl File/Close window schliet das oberste Fenster.\end
+screen("page17")
+File/Cycle window                                        Control-W
+------------------------------------------------------------------
+
+Der Befehl File/Cycle window bl„ttert durch alle offenen Fenster.
+Das heit, da das unterste Fenster zum obersten wird. Drckt
+man zus„tzlich eine Shift-Taste, wird andersrum gebl„ttert. Das
+oberste Fenster wird zum untersten und das unmittelbar unter dem
+alten obersten Fenster befindliche zum neuen obersten Fenster.\end
+screen("page18")
+File/Close                                               Control-Z
+File/Previous help                                            Undo
+------------------------------------------------------------------
+
+Ist das \link("page0")Hilfe-Fenster\# oberstes Fenster, so bewirkt dieser Befehl,
+da man in der Liste der nacheinander ausgew„hlten Hilfemeldungen
+die vorletzte angezeigt wird. Gleichzeitig wird die aktuelle
+Meldung aus der Liste entfernt (erkennbar auch an der Titelzeile
+des Hilfe-Fensters).
+
+In den \link("page-1")Profile-Fenstern\#, dem \link("page-1")Calling-Chains-Fenster\# und dem
+\link("page-1")File-I/O-Fenster\#, sowie dem \link("page-1")Memory-Usage-Fenster\#, deren Inhalt
+hierarchisch aufgebaut ist, bewirkt dieser Befehl die Rckkehr
+zur bergeordneten Ebene. Wurde diese bereits angezeigt, so
+wird das Fenster geschlossen.\end
+screen("page19")
+File/Quit                                                Control-Q
+------------------------------------------------------------------
+
+Der Befehl File/Quit beendet die Arbeit mit Pure Profiler. Haben
+Sie die \link("page47")Option zum automatischen Speichern der Arbeitsumgebung\#
+an, so wird zuvor eine \link("page46")Konfigurationsdatei\# geschrieben. Drcken
+Sie w„hrend des Ausl”sens der Befehls zus„tzlich eine Shift-Taste
+wird das Speichern der Konfigurationsdatei unterbunden.\end
+screen("page20")
+View/Program info...                                     Control-R
+------------------------------------------------------------------
+
+Der Befehl View/Program info... ”ffnet eine Dialogbox, die
+generelle Informationen ber das zu untersuchende Programm
+enth„lt.
+
+Angezeigt wird der Programmname (Program name), die Gr”e der
+Programmdatei (File size), sowie Datum und Uhrzeit der Programm-
+erstellung (File date, File time). Fr die drei Programmsegmente
+Text, Data und Bss (Segments) findet man hier deren Startadressen
+(start) und Gr”e (size). Der Zustand der sog. Program-Flags
+(Fastload flag, Load program to ST-RAM, Mallocs for ST-RAM,
+Heap size) wird entschlsselt. Schlielich bekommt man den
+aktuellen Grad des \link("page31")Code Coverage\# (Current code coverage) in
+Prozent angezeigt.\end
+screen("page21")
+View/Disassemble...                                      Control-A
+------------------------------------------------------------------
+
+Der Befehl View/Disassemble... ”ffnet eine Dialogbox, in die eine
+Adresse, \link("page53")Quelltextposition\# oder der Name einer Routine einge-
+geben werden mu. Gegebenenfalls wird nun das \link("page-1")Disassembly-Fenster\#
+ge”ffnet. Schlielich wird ab der gewnschten Adresse der Spei-
+cherinhalt in disassemblierter Form ausgegeben.\end
+screen("page22")
+View/Modules                                             Control-M
+------------------------------------------------------------------
+
+Der Befehl View/Modules ”ffnet das Modules-Fenster. Dieses ent-
+h„lt eine Liste aller fr ein geladenes Programm vorhandener
+Quelltexte.
+
+Das Modules-Fenster besitzt einen Cursorbalken (erkennbar an
+seinem rechteckigen Rahmen). Er kann mit der Cursor-Up-Taste
+eine Zeile nach oben bewegt werden, mit der Cursor-Down-Taste
+eine Zeile nach unten. Shift-Cursor-Up bzw. Down bewegen ihn
+eine Fensterseite nach oben bzw. nach unten. Schlielich posi-
+tioniert die Home-Taste den Cursor auf das erste Quelltext-
+modul und Shift-Home auf das letzte.
+
+Drcken Sie die Return-Taste oder fhren Sie einen Doppelklick
+auf einem Eintrag aus, so wird der entsprechende \link("page-1")Quelltext\# ge-
+laden. Man kann einen Quelltext auch mittels \link("page54")inkrementeller Suche\#
+ausw„hlen.
+
+Das Modules-Fenster kann mit dem Befehl View/Modules ge”ffnet
+bzw. getoppt werden.\end
+screen("page23")
+View/Breakpoints                                         Control-B
+
+\link("page41")Profiler\#: Breakpoint-Fenster
+------------------------------------------------------------------
+
+Im Breakpoint-Fenster werden alle gesetzten \link("page59")Breakpoints\# aufge-
+listet.
+
+Das Breakpoint-Fenster besitzt einen Cursorbalken (erkennbar an
+seinem rechteckigen Rahmen). Er kann mit der Cursor-Up-Taste
+eine Zeile nach oben bewegt werden, mit der Cursor-Down-Taste
+eine Zeile nach unten. Shift-Cursor-Up bzw. Down bewegen ihn
+eine Fensterseite nach oben bzw. nach unten. Schlielich posi-
+tioniert die Home-Taste den Cursor auf den ersten Breakpoint
+und Shift-Home auf den letzten.
+
+Drcken Sie die Return-Taste oder fhren Sie einen Doppelklick
+auf einem Eintrag aus, so wird der Quelltext bzw. das Disassem-
+blerlisting fr die Stelle, an der der Breakpoint gesetzt ist,
+angezeigt.
+
+Das Breakpoints-Fenster kann mit dem Befehl View/Breakpoints ge-
+”ffnet bzw. getoppt werden.\end
+screen("page24")
+View/User screen                                               Esc
+------------------------------------------------------------------
+
+Mit dem Befehl View/User screen schaltet man auf den User screen
+um. Ausgaben von untersuchten Programmen erfolgen auf dem User
+screen, einem sozusagen 'zweiten' Bildschirm. M”chte man sich
+diese Ausgaben nach dem Programmende bzw. w„hrend des Profilens
+ansehen, so mu man mit View/User screen auf diesen Bildschirm
+umschalten. Um zum Profiler zurckzukehren, mu eine beliebige
+Taste gedrckt werden (die linke Maus-Taste ist ebenfalls m”glich).\end
+screen("page25")
+Search/Find...                                           Control-F
+------------------------------------------------------------------
+
+Der Befehl Search/Find... dient dem Suchen von Text in einem
+\link("page-1")Quelltextfenster\#. Es ”ffnet sich eine Dialogbox, in die ein
+Suchbegriff (Search for) eingegeben werden mu.
+
+Zus„tzlich kann man diverse Suchoptionen setzen. Die Option
+'Ignore case' bewirkt, da bei der Suche nicht zwischen
+Gro- und Kleinschreibung unterschieden wird. Will man nur
+nach Worten suchen, so mu die Option 'Whole words only' ge-
+setzt werden. Ist der Suchbegriff beispielsweise "in", so wird
+nur "in" gefunden, nicht jedoch "mein".
+
+Die Suchrichtung (Direction) versteht sich stets relativ zum
+Cursor. 'Forward' startet die Suche in Richtung Textende,
+'Backward' sucht zum Textanfang hin. Ist eine Selektion vor-
+handen, wird bei 'Forward' am Selektionsende begonnen, bei
+'Backward' am Selektionsanfang.
+
+Kann keine passende Textstelle gefunden werden, ert”nt ein
+akustisches Signal und die Suchrichtung wird gewechselt.\end
+screen("page26")
+Search/Find same                                         Control-G
+------------------------------------------------------------------
+
+Der Befehl Search/Find same wiederholt die Suche nach dem mit dem
+Befehl \link("page25")Search/Find...\# oder \link("page27")Search/Find selection\# festgelegten
+Suchbegriff.\end
+screen("page27")
+Search/Find selection                                    Control-I
+------------------------------------------------------------------
+
+Der Befehl \link("page27")Search/Find selection\# sucht nach der durch eine
+\link("page-1")Selektion\# festgelegten Textstelle. Ist kein Text selektiert,
+so wird, sofern m”glich, das Wort unter dem Cursor selektiert.
+
+Zur Suche werden die Optionen, die mit dem Befehl Search/Find...
+gesetzt werden, bernommen.\end
+screen("page28")
+Search/Show source...                                    Control-S
+------------------------------------------------------------------
+
+Mit dem Befehl Search/Show source... l„t sich eine Quelltextpo-
+sition suchen. Sie mssen dazu in die Dialogbox den Namen einer
+Routine oder eine \link("page53")Quelltextposition\# eingeben.\end
+screen("page29")
+Search/Goto line...                                      Control-L
+------------------------------------------------------------------
+
+Der Befehl Search/Goto line... dient zum Auffinden einer be-
+stimmten Zeile in einem \link("page-1")Quelltextfenster\#. Dazu geben Sie
+die Nummer der Zeile, die Sie suchen, in die erscheinende Dia-
+logbox ein. Vorgeben ist die Nummer der Zeile, in der sich der
+Cursor befindet. Sprich, Sie k”nnen somit auch herausfinden, in
+welcher Zeile der Cursor steht.\end
+screen("page30")
+Run/Profile                                            Alternate-P
+------------------------------------------------------------------
+
+Der Befehl Run/Profile fhrt das Programm bis zu seinem Ende,
+dem Erreichen eines \link("page59")Breakpoints\# oder einem \link("page61")User-Break\# aus
+und sorgt dafr, da Leistungsdaten aufgezeichnet werden.
+
+Nach dem Ausfhren des Befehls enth„lt das \link("page-1")Profile-Fenster\#
+Informationen darber, wieviel Zeit bestimmte Codeabschnitte
+verbrauchten.
+Hatten Sie die Option zum \link("page-1")Aufzeichen der Aufrufpfade\# gesetzt,
+so k”nnen Sie sich im \link("page-1")Calling-Chain-Fenster\# ansehen, welche
+Routine wen und wieoft aufgerufen hat.\end
+screen("page31")
+Run/Code coverage                                      Alternate-C
+------------------------------------------------------------------
+
+Der Befehl Run/Code coverage fhrt das Programm bis zu seinem
+Ende, dem Erreichen eines \link("page59")Breakpoints\# oder einem \link("page61")User-Break\#
+aus und fhrt eine \link("page-1")Code-Coverage-Analyse\# durch.
+
+Bei der Code-Coverage-Analyse werden alle Quelltextzeilen, die
+w„hrend eines Programmlaufs ausgefhrt werden markiert. Nach
+Beendung des Befehls werden diese Quelltextzeilen fett gedruckt
+in den \link("page-1")Quelltextfenstern\# dargestellt.\end
+screen("page32")
+Run/Run                                                Alternate-R
+------------------------------------------------------------------
+
+Der Befehl Run/Run fhrt das Programm bis zu seinem Ende, dem Er-
+reichen eines \link("page59")Breakpoints\# oder einem \link("page61")User-Break\# aus.
+
+Die Leistungsdaten fr das Profile bleiben von diesem Befehl un-
+beeinflut, sprich es werden keine Aufzeichnungen fr das Profile
+gemacht.\end
+screen("page33")
+Run/Step over                                          Alternate-S
+------------------------------------------------------------------
+
+Der Befehl Run/Step over fhrt eine einzelne Anweisung aus.
+Enth„lt die Zeile einen Unterprogrammaufruf und dieses wiederum
+einen \link("page59")Breakpoint\#, so wird die Programmausfhrung beim Erreichen
+des Breakpoints unterbrochen. Mit dem Befehl \link("page35")Run/Until return\#
+kann man das Unterprogramm verlassen.
+
+Die Leistungsdaten fr das Profile bleiben von diesem Befehl un-
+beeinflut, sprich es werden keine Aufzeichnungen fr das Profile
+gemacht.
+
+Ist das oberste Fenster das \link("page-1")Disassembly-Fenster\#, so bedeutet
+eine Anweisung genau eine Assemblerinstruktion, ansonsten
+steht Anweisung fr eine Quelltextzeile (sofern vorhanden).\end
+screen("page34")
+Run/Trace into                                         Alternate-T
+------------------------------------------------------------------
+
+Der Befehl Run/Trace into fhrt eine einzelne Anweisung aus.
+Enth„lt die Zeile einen Unterprogrammaufruf, wird in dieses ver-
+zweigt. Mittels des Befehls \link("page35")Run/Until return\# kann man das Unter-
+programm verlassen.
+
+Die Leistungsdaten fr das Profile bleiben von diesem Befehl un-
+beeinflut, sprich es werden keine Aufzeichnungen fr das Profile
+gemacht.
+
+Ist das oberste Fenster das \link("page-1")Disassembly-Fenster\#, so bedeutet
+eine Anweisung genau eine Assemblerinstruktion, ansonsten
+steht Anweisung fr eine Quelltextzeile (sofern vorhanden).\end
+screen("page35")
+Run/Until return                                       Alternate-U
+------------------------------------------------------------------
+
+Der Befehl Run/Until return fhrt ein Unterprogramm bis zu seinem
+Ende aus und kehrt dann zum Aufrufer zurck. Trifft der Befehl auf
+einen \link("page59")Breakpoint\#, so wird die Programmausfhrung beim Erreichen
+des Breakpoints unterbrochen.
+
+Die Leistungsdaten fr das Profile bleiben von diesem Befehl un-
+beeinflut, sprich es werden keine Aufzeichnungen fr das Profile
+gemacht.\end
+screen("page36")
+Run/Program reset                                      Alternate-Z
+
+\link("page41")Profiler\#: Neustarten eines Programms
+------------------------------------------------------------------
+
+Mit dem Befehl Run/Program reset k”nnen Sie ein Programm jeder-
+zeit in seinen Anfangszustand zurckversetzen, um es danach neu
+zu starten.
+
+Abh„ngig von den \link("page-1")Profileroptionen\# werden die aktuellen Leistungs-
+daten des Programms gel”scht bzw. aufgehoben.
+
+War das Programm noch nicht beendet, so ist Vorsicht geboten, wenn
+es beispielsweise Systemparameter ver„ndert hat.\end
+screen("page37")
+Options/Commandline...                                 Alternate-A
+------------------------------------------------------------------
+
+Mit diesem Befehl l„t sich eine Kommandozeile fr das zu unter-
+suchende Programm setzen.\end
+screen("page38")
+Options/Environment...                                 Alternate-E
+------------------------------------------------------------------
+
+Der Befehl Options/Environment... setzt folgende Grundeinstel-
+lungen fr die Arbeitsumgebung des \link("page41")Profilers\#:
+
+\link("page47")Automatisches Speichern der Konfiguration\#  (Auto save config)
+\link("page48")Live Scrolling in Fenstern\#                 (Live scrolling)
+\link("page49")Benutzen des GEM-Clipboards\#                (Copy to GEM-clipboard...)
+\link("page50")Tabulatorweite fr Quelltextfenster\#        (Tabsize)
+\link("page51")Umschaltungsmodus auf den User screen\#      (User screen swap)
+\link("page52")Umschaltungstechnik auf den User screen\#    (User screen swap via)
+\link("page2")Suchpfad fr Help-Dateien\#                  (Help files)\end
+screen("page39")
+Options/Save xxxxxxxx.CFG                              Alternate-K
+------------------------------------------------------------------
+
+Der Befehl Options/Save xxxxxxxx.CFG speichert die aktuelle
+\link("page46")Konfigurationsdatei\# xxxxxxxx.CFG.\end
+screen("page40")
+Options/Load config...                                 Alternate-L
+------------------------------------------------------------------
+
+Der Befehl Options/Load config... ”ffnet eine \link("page-1")Dateiauswahlbox\#
+zum Laden bzw. Neuanlegen (New) einer Konfigurationsdatei.
+
+Falls das \link("page47")automatische Speichern der Konfigurationsdateien\# ein-
+geschaltet ist, wird zuvor die alte Konfigurationsdatei gesichert.\end
+screen("page41","Profiler":CAPSENSITIVE)
+Profiler
+------------------------------------------------------------------
+
+Profiler ermitteln die Leitungsf„higkeit von Programmen. Sie
+finden u.a. heraus, wieviel Zeit in bestimmten Programmab-
+schnitten verbraucht wird und welche Systemresourcen ben”tigt
+werden.
+
+Um ein Programm mit dem Pure Profiler untersuchen zu k”nnen,
+mu es mindestens DRI-Symbolinformationen enthalten. Es kann
+dann auf Assemblerebene untersucht werden. Wurde das Programm
+mit Pure C, Turbo C 2.0 oder Pure Pascal 1.1 bersetzt und
+enth„lt Debuginformationen, so k”nnen Sie auf Quelltextebene
+profilen.
+
+Die Leistungsdaten eines Programms, das zuvor mit dem Befehl
+\link("page13")File/Load program...\# geladen werden mu, werden mittels
+\link("page30")Run/Profile\# aufgezeichnet. Danach kann man sich im
+\link("page-1")Profile-Fenster\# ansehen, wieviel Zeit in den diversen
+Programmabschnitten und dem Betriebssystem verbracht wurde.
+
+Will man die Leistungsanalyse auf bestimmte Programmbereiche
+beschr„nken, so kann man diese mittels \link("page23")Breakpoints\# mar-
+kieren. Der Befehl \link("page32")Run/Run\# fhrt das Programm bis zum er-
+reichen eines Breakpoints aus, ohne Leistungsdaten aufzu-
+zeichnen.
+
+Der Speicher- und Stackbedarf des zu untersuchenden Programms
+wird st„ndig beobachtet und kann im \link("page-1")Memory-Usage-Fenster\#
+betrachtet werden. Gleiches gilt fr Disketten-Operationen,
+die im \link("page-1")File-I/O-Fenster\# protokolliert werden.
+
+Darberhinaus kann man mit dem Befehl \link("page31")Run/Code coverage\#
+diejenigen Programmteile markieren lassen, die ausgefhrt
+wurden. So kann man sich einen šberblick verschaffen, welche
+Teile eines Programms getestet wurden.
+
+
+Querverweise:    \link("page42")Allgemeine Bedienungshinweise\#
+                 \link("page55")Programmsteuerung\#
+                 \link("page-1")Auswerten von Leistungsdaten\#\end
+screen("page42")
+\link("page41")Profiler\#: Allgemeine Bedienungshinweise
+------------------------------------------------------------------
+
+Wie Sie sicherlich gemerkt haben, ist Pure Profiler kein echtes
+GEM-Programm. Stattdessen ist die GEM-Schnittstelle nachpro-
+grammiert worden. Leider waren wir zu dieser Manahme gezwungen,
+da man andernfalls keine GEM-Programme mit dem Pure Profiler
+untersuchen k”nnte.
+
+Bedauerlicherweise fallen dieser Tatsache die GEM-Accessories
+zum Opfer. Als Entsch„digung erh„lt man aber ein paar Erleich-
+terungen beim Umgang mit Dialogboxen und Fenstern:
+
+       \link("page43")Verschiebbare Dialogboxen\#
+       \link("page44")Tastaturbedienung von Dialogboxen\#
+       \link("page45")History-Funktion fr Eingaben in Dialogboxen\#
+       \link("page48")Live Scrolling in Fenstern\#\end
+screen("page43")
+Verschiebbare Dialogboxen
+------------------------------------------------------------------
+
+Die Pure-Profiler-Dialogboxen sind verschiebbar. Klicken Sie auf
+eine Fl„che, die kein Eingabefeld oder Button ist und halten Sie
+die Maustaste gedrckt. Sie k”nnen nun die Dialogbox an die ge-
+wnschte Stelle ziehen.\end
+screen("page44")
+Tastaturbedienung von Dialogboxen
+------------------------------------------------------------------
+
+Einige der Kn”pfe in den Pure-Profiler-Dialogboxen lassen sich
+auch per Tastatur bedienen. Drcken Sie dazu die Alternate-
+Taste zusammen mit dem unterstrichenen Zeichen.\end
+screen("page45")
+History-Funktion fr Eingaben in Dialogboxen
+------------------------------------------------------------------
+
+Die Pure-Profiler-Dialogboxen verfgen ber eine sogenannte
+History-Funktion. Damit k”nnen Sie sich die letzten 15 Eingaben
+die Sie in die Eingabefelder get„tigt haben, zurckholen und
+sich somit ein l„stiges Neueintippen ersparen.
+
+Um eine Eingabe zurckzuholen, mssen Sie entweder Shift-Cursor-
+Up oder Shift-Cursor-Down drcken.\end
+screen("page46","KONFIGURATIONSDATEI":SENSITIVE)
+Konfigurationsdateien
+------------------------------------------------------------------
+
+Eine Konfigurationsdatei enth„lt Daten, die den Arbeitszustand
+des Pure-Profiler-Systems beschreiben. Dieser Arbeitszustand l„t
+sich jederzeit speichern oder auch neu laden. Nach dem Laden ent-
+spricht der Zustand der Entwicklungsumgebung (ge”ffnete Fenster
+und Optionen) exakt demjenigen der beim Speichern bestand.
+Folgende Befehle fr Konfigurationsdateien sind verfgbar:
+
+        \link("page39")Speichern einer Konfigurationsdatei\#
+        \link("page40")Laden und Neuanlegen einer Konfigurationsdatei\#\end
+screen("page47")
+\link("page38")Environment\#:
+Automatisches Speichern der Konfiguration (Auto save...)
+------------------------------------------------------------------
+
+Vor dem Verlassen des Pure Profiler wird automatisch eine
+\link("page46")Konfigurationsdatei\# geschrieben, in der unter anderem die
+Optionen und offenen Fenster abgespeichert sind, so da
+man bei einem erneuten Start des Pure Profilers denselben
+Arbeitszustand wiederfindet.
+Die automatische Speicherung findet ebenfalls vor dem Laden
+einer neuen Konfigurationsdatei statt.\end
+screen("page48")
+\link("page38")Environment\#: Live Scrolling in Fenstern (Live scrolling)
+------------------------------------------------------------------
+
+Unter Live Scrolling versteht man, da der Fensterinhalt analog
+zu Sliderbewegungen dargestellt wird. Sie k”nnen somit leichter
+bestimmte Stellen in den Fenstern finden, da Sie bei jeder
+Sliderbewegung sofort die zur neuen Sliderposition geh”rige
+Stelle im Fenster angezeigt bekommen.\end
+screen("page49")
+\link("page38")Environment\#:
+Benutzen des GEM-Clipboards (Copy to GEM-clipboard via ^C)
+------------------------------------------------------------------
+
+Ist die Option zur Benutzung des GEM-Clipboards gesetzt, so
+k”nnen Sie selektierten Text aus den \link("page-1")Quelltextfenstern\#, den
+\link("page-1")Profile-Fenstern\# und dem \link("page-1")Disassembly-Fenster\# ber das Tastatur-
+kommando Control-C in das Clipboard kopieren.
+
+(Das GEM-Clipboard ist bei Floppy-Disk-Betrieb unter A:\\CLIPBRD
+und bei Hard-Disk-Betrieb unter C:\\CLIPBRD zu finden).\end
+screen("page50")
+\link("page38")Environment\#: Tabulatorweite fr Quelltextfenster (Tabsize)
+------------------------------------------------------------------
+
+Die Tabulatorweite legt fest, in welchen Spalten Tabulatoren ge-
+setzt werden sollen. Eine Tabulatorweite von 4 legt beispiels-
+weise fest, da in jeder 4.Spalte ein Tabulator sein soll. In
+einem Quelltext befindliche Tabulatorzeichen rcken den nach-
+folgenden Text bis zur n„chsten Tabulatorposition ein.\end
+screen("page51")
+\link("page24")User screen\#: Umschaltungsmodus auf den User screen
+------------------------------------------------------------------
+Der Umschaltungsmodus (einstellbar mittels \link("page38")Options/Environment...\#)
+legt fest, wann auf den User screen umgeschaltet werden soll. Man
+hat die Wahl zwischen den Modi 'Immer' (Always), 'Niemals' (Never)
+und 'Falls sinnoll' (Smart). 'Immer' schaltet zu Beginn jeder
+\link("page55")Run-Operation\# um, 'Niemals' nie und 'Falls sinnvoll', wenn ein
+Befehl im Programm erkannt wird, der eine Ausgabe vornimmt.\end
+screen("page52")
+\link("page24")User screen\#: Umschaltungstechnik auf den User screen
+------------------------------------------------------------------
+
+Mit dem Befehl \link("page38")Options/Environment...\# l„t sich unter anderem fest-
+legen, welche Technik zum Umschalten auf den User screen benutzt
+werden soll. Zur Auswahl stehen die zwei Methoden der Ver„nderung
+der Startadresse des Bildschirms (Address) und des Kopierens des
+Bildschirminhalts (Vdicopy).
+
+Das Ver„ndern der Startadresse ist die schnellere Methode. Jedoch
+wird sie von manchen Grafikkarten nicht untersttzt.\end
+screen("page53")
+Quelltextpositionen
+------------------------------------------------------------------
+
+Eine Quelltextposition beginnt mit einem Doppelkreuz (#). Danach
+folgt der Dateiname des Quelltexts. Hat er die Dateierweiterung
+'.C', '.S' oder '.PAS' kann man diese weglassen. Danach folgt ein
+weiteres Doppelkreuz und die Angabe einer Quelltextzeile.\end
+screen("page54")
+Inkrementelles Suchen
+------------------------------------------------------------------
+
+Mit der inkrementellen Suche k”nnen Sie in \link("page-1")Profile-Fenstern\#,
+dem \link("page22")Modules-Fenster\# und dem \link("page-1")Calling-Chains-Fenster\# bestimmte
+Eintr„ge besonders schnell durch Eintippen des Namens des
+Eintrags finden. Der Cursor stellt sich dann nach jedem neuen
+Zeichen auf die Datei, auf die die eingegebenen Zeichen passen.
+In der Info-Zeile des Fensters werden die Zeichen ausgegeben.
+Sobald Sie die passende Datei gefunden haben, k”nnen die Eingabe
+abbrechen. Haben Sie Sich vertippt, k”nnen Sie das letzte Zeichen
+mit Backspace l”schen, Undo l”scht alle Zeichen.\end
+screen("page55")
+\link("page41")Profiler\#: Programmsteuerung
+------------------------------------------------------------------
+
+Um die Ausfhrung eines Programmes steuern zu k”nnen, mu man na-
+trlich wissen, wo man sich gerade befindet. Die \link("page-1")Quelltextfenster\#
+und das \link("page-1")Disassembly-Fenster\# haben an ihrem linken Rand eine
+Spalte. Nachdem Sie mit dem Befehl \link("page13")File/Load program...\# ein
+Programm geladen haben, sehen Sie neben dem ersten Befehl des
+Programms einen kleinen, nach rechts zeigenden, schwarzen Pfeil.
+Dieser wird als PC-Pfeil (Program Counter) bezeichnet. Er steht
+stets vor der Anweisung, die als n„chste ausgefhrt wird. Ist
+der PC-Pfeil hohl dargestellt, so befindet man sich innerhalb
+einer Quelltextzeile bzw. einer Anweisung.
+
+Zur Programmsteuerung gibt es mehrere Befehle bzw. Techniken:
+
+             \link("page56")Aufzeichnen von Leistungsdaten\#
+             \link("page57")Erstellen einer Code Coverage Analyse\#
+             \link("page58")Programmausfhrung und Breakpoints\#
+             \link("page60")Einzelschrittausfhrung\#
+             \link("page36")Neustarten eines Programms\#\end
+screen("page56")
+\link("page41")Profiler\#: Aufzeichnen von Leistungsdaten
+------------------------------------------------------------------
+
+\end
+screen("page57")
+\link("page41")Profiler\#: Erstellen einer Code Coverage Analyse
+------------------------------------------------------------------
+
+\end
+screen("page58")
+\link("page41")Profiler\#: Programmausfhrung und Breakpoints
+------------------------------------------------------------------
+
+Die einfachste Art ein Programm ausfhren zu lassen, ist der
+Befehl \link("page32")Run/Run\#. Er l„t das Programm solange laufen, bis es
+entweder beendet ist oder durch einen Breakpoint gestoppt wird
+(siehe auch \link("page61")User-Break\#). Es werden keine Leistungsdaten fr
+ein Profile aufgezeichnet. Gleiches gilt fr die Befehle zur
+\link("page60")Einzelschrittausfhrung\#.
+
+Ein \link("page59")Breakpoint\# ist eine Markierung im Quelltext oder im Dis-
+assemblerlisting, die beim Erreichen eine Programmunterbrechung
+bewirkt. Auf diese Art und Weise kann man beispielsweise fest-
+stellen, wann ein Programm eine bestimmte Stelle passiert.\end
+screen("page59")
+\link("page41")Profiler\#: Breakpoint
+------------------------------------------------------------------
+
+Ein Breakpoint wird gesetzt, indem im Quelltext oder Disassem-
+blerlisting, in der linken Spalte neben der gewnschten Zeile
+einmal mit der Maus geklickt wird. Nochmaliges Klicken l”scht
+den Breakpoint. Ein Breakpoint wird als ausgeflltes Achteck in
+der linken Fensterspalte dargestellt. Enth„lt eine Zeile keinen
+Code so kann kein Breakpoint gesetzt werden.
+
+Im \link("page23")Breakpoint-Fenster\# werden alle gesetzten Breakpoints aufge-
+listet.\end
+screen("page60")
+\link("page41")Profiler\#: Einzelschrittausfhrung
+------------------------------------------------------------------
+
+Um zu sehen, was eine einzelne Anweisung bewirkt, oder um zu
+ganz bestimmten Programmstellen zu gelangen, werden die Befehle
+zur Einzelschrittausfhrung ben”tigt.
+
+Hierfr stehen zwei verschiedene Befehle zur Verfgung.
+\link("page33")Run/Step over\# fhrt eine Anweisung komplett aus, d.h.
+wenn es sich um einen Unterprogrammaufruf handelt, wird
+auch dieses ausgefhrt. \link("page34")Run/Trace into\# verh„lt sich „hn-
+lich, jedoch wird, falls die Zeile einen Unterprogrammauf-
+ruf enth„lt, in dieses verzweigt.
+
+Ist das oberste Fenster das \link("page-1")Disassembly-Fenster\#, so bedeutet
+eine Anweisung genau eine Assemblerinstruktion, ansonsten
+steht Anweisung fr eine Quelltextzeile (sofern vorhanden).\end
+screen("page61")
+\link("page41")Profiler\#: User-Break                               Shift-Shift
+------------------------------------------------------------------
+
+Die Ausfhrung des im Profiler befindlichen Programms kann jeder-
+zeit durch gleichzeitiges Drcken beider Shift-Tasten unterbrochen
+werden. Falls sich das Programm in der Ausfhrung einer Betriebs-
+systemroutine befindet, wartet der Profiler, bis diese beendet
+ist, bevor er das Programm anh„lt.\end

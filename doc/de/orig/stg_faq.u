@@ -1,0 +1,965 @@
+!code_source [tos]
+
+# language independent macros
+!include macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+# ---------------------------------------------
+!docinfo [title] ST-Guide FAQ
+!docinfo [author] Michael Wurm @ PB
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!docinfo [stgdatabase] ST-Guide FAQ
+!ifdest [stg,amg]
+!begin_raw
+@help "Wichtige Hinweise"
+@subject "Dokumentation/ST-Guide"
+@options "+i -s +zz -t4"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+!end_raw
+!endif
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+
+!begin_node Inhalt
+!ignore_toptoc
+
+!begin_center
+(!U)FAQ - Fragen zum ST-Guide(!u)
+!end_center
+
+!begin_xlist [16.] !compressed
+!item [(!link [1.] [Was ist ST-Guide])] Was ist dieses ST-Guide eigentlich?
+!item [(!link [2.] [1st Guide Hypertexte])] Ich habe vorher den 1stGuide benutzt und mîchte meine alten
+     Hypertexte jetzt auch mit dem ST-Guide benutzen, wie stelle ich das an?
+!item [(!link [3.] [UnterstÅtzte Dateiformate])] Welche Dateiformate werden vom ST-Guide unterstÅtzt?
+Hypertexte jetzt auch mit dem ST-Guide benutzen, wie stelle ich das an?
+!item [(!link [4.] [Bilder in Farbe])] Ich bekomme hier auf meinem Farbmonitor die Bilder in den
+    Hypertexten nicht zu sehen. Warum nicht?
+!item [(!link [5.] [Shortcuts im Fenster])] Mir gefallen die TastenkÅrzel nicht, mit denen ich z.B. die MenÅ-
+    funktionen des ST-Guide auslîsen kann, kann ich  die Ñndern?
+!item [(!link [6.] [Shortcuts in Dialogen])] Warum haben die Dialoge von ST-Guide keine Shortcuts?
+!item [(!link [7.] [Mehr Dateiformate! ])] ST-Guide soll Sounds, Bewegtbilder und meinen Kaffee-Automaten
+    unterstÅtzen.
+!item [(!link [8.] [Begriffe aus dem Editor heraus suchen])] Wenn ich in meinem Editor ein Wort markiere und Help drÅcke, dann
+    zeigt ST-Guide keine Hilfe zu diesem Begriff, wieso nicht?
+!item [(!link [9.] [Wo gibt's Hypertexte?])] Wo bekomme ich eigentlich Hypertexte fÅr ST-Guide?
+!item [(!link [10.] [Verweise per Tastatur wÑhlen])] Wo ist die Tastaturselektierung geblieben? Kann ich die Verweise
+    jetzt nur noch per Maus auswÑhlen?
+!item [(!link [11.] [privileg violation])] Wenn der ST-Guide unter MTOS von einem anderen Programm aufgerufen
+    wird, meldet MTOS einen 'privileg violation error'. Was soll das?
+!item [(!link [12.] [ST-Guide aus eigenen Programmen aufrufen])] Der Aufruf des ST-Guide per appl_write() aus  meinem  Programm
+    heraus funktioniert nicht. Woran liegt das?
+!item [(!link [13.] [ST-Guide als Anwendung anmelden])] Ich benutze den ATARI-Desktop, habe ST-Guide als ACC installiert und
+    mîchte gerne, daû der ST-Guide als ACC aktiviert wird, wenn ich
+    einen Doppelklick auf eine Datei mit der Endung .HYP mache. Was muû
+    ich tun?
+!item [(!link [14.] [Alternative Desktops])] Das ist aber umstÑndlich. Geht das nicht besser?
+!item [(!link [15.] [Die Ref-Dateien])] Werden die .REF Dateien eigentlich noch als einzelne Dateien
+    benîtigt, nachdem sie mit REFLINK in die ALL.REF eingebunden wurden?
+!item [(!link [16.] [Hypertexte und eigene Programme])] Mein selbstgeschriebenes Programm findet seinen Hypertext nicht?
+!end_xlist
+
+(!link [Wichtige Hinweise] [Wichtige Hinweise])
+
+(!xlink [Welche Hypertexte gibt es?] [hyp_list.hyp/Main])
+
+(!link [Fragen von Hypertext Autoren] [Fragen von Hypertext Autoren])
+
+(!link [Sonstige Fragen] [Sonstige Fragen]) - Diese Seite (!B)unbedingt(!b) lesen!
+
+# 1.
+!begin_node Was ist ST-Guide
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Was ist dieses ST-Guide eigentlich?
+
+!item [Antwort:]
+
+ST-Guide ist ein Hypertextsystem mit  diversen  Vorteilen  fÅr alle
+Beteiligten:
+
+!begin_itemize 
+!item Programmierer: Dokumentationen im Hypertextformat werden von mehr
+  Leuten gelesen, als ASCII-Dokus und deshalb mÅssen sich weniger User
+  mit ihren Fragen an den Autor wenden
+!item Programmierer: der ST-Guide darf jedem Programm beigelegt werden, so
+  daû es leicht mîglich ist, fÅr JEDES Programm eine Onlinehilfe oder
+  Doku im Hypertextformat zu liefern, ohne daû die Anwender sich hierzu
+  erst um die Beschaffung oder Bezahlung der nîtigen Software kÅmmern
+  mÅûten
+!item Anwender: die Dokumentation kann gelesen werden, wÑhrend das Programm
+  lÑuft, evtl. lÑût das Programm selbst sogar die fÅr die jeweilige
+  Situation wichtige Seite vom ST-Guide anzeigen ('context sensitiv')
+!item Anwender: die gerade benîtigte Information lÑût sich wesentlich
+  schneller in einem Hypertext finden, als in einer ASCII Dokumentation
+!end_itemize
+Es gibt sicherlich viele weitere Punkte, die hier noch erwÑhnt werden
+kînnten, aber das artet dann zu sehr in Werbung aus.
+
+!end_blist
+
+!end_node # 1. Was ist ST-Guide
+
+# 2.
+!begin_node 1st Guide Hypertexte
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich habe vorher den 1stGuide benutzt und mîchte meine alten Hypertexte
+jetzt auch mit dem ST-Guide benutzen, wie stelle ich das an?
+
+!item [Antwort:]
+
+Hierzu gibt es Konvertierer. FÅr 1stGuide Hilfen wird der (!xlink [1stConv] [1stconv.hyp/Main])
+verwendet, welcher einfach mit der Hauptdatei (die mit dem Inhalts-
+verzeichnis) als Parameter aufgerufen wird.
+
+FÅr PureC/PurePascal Hilfen gibt es  ebenfalls  einen  Konvertierer, den (!xlink [PC-Conv] [pc-conv.hyp/Main]).
+HierfÅr ist jedoch zusÑtzlich ein Recompiler notwendig, der HELP_RC oder
+der HELPDISC. Beide liegen im Archiv STG-UTIL.LZH bei.
+
+!end_blist
+
+!end_node # 2. 1st Guide Hypertexte
+
+# 3.
+!begin_node UnterstÅtzte Dateiformate
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Welche Dateiformate werden vom ST-Guide unterstÅtzt?
+
+!item [Antwort:]
+
+Der ST-Guide selber kann nur Hypertexte  (*.HYP) sowie ASCII Texte an-
+zeigen. Hypertexte kînnen allerdings Bilder enthalten, welche im IFF-,
+ICN- oder IMG-Format vorliegen mÅssen. Diese befinden sich jedoch direkt
+im Hypertext und liegen in einem speziellen Format vor, so daû der ST-
+Guide keine Algorithmen zur Darstellung von Bilddateien enthÑlt.
+
+Aus Hypertexten heraus kînnen Resourcedateien bzw. Teile daraus angezeigt
+werden. Diese werden erst bei Bedarf geladen, kînnen jedoch nicht direkt
+(d.h. ohne Aufruf aus einem Hypertext) angezeigt werden.
+
+Ebenfalls aus dem Hypertext heraus kînnen Kommandos an die (bzw. eine)
+laufende Applikation gesendet werden, um z.B. Musik zu spielen, ein
+Archiv zu îffnen, eine Diashow zu zeigen o.Ñ., aber all diese Dinge
+werden dann von einer speziellen Applikation und nicht vom ST-Guide
+erledigt.
+
+!end_blist
+
+!end_node # 3. UnterstÅtzte Dateiformate
+
+# 4.
+!begin_node Bilder in Farbe
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich bekomme hier auf meinem Farbmonitor die Bilder in den Hypertexten
+nicht zu sehen. Warum nicht?
+
+!item [Antwort:]
+
+Weil ich das noch nicht eingebaut habe. Dieser Fehler ist jedoch bekannt.
+Da die Darstellung nicht ohne bestimmte Verfahren zur Darstellung
+auskommt und Holger keine Testmîglichkeit hat, wird das nicht in absehbarer
+Zeit kommen. Aktuell kînnen farbige Bilder bereits in monochromer
+Darstellung angesehen werden.
+
+!end_blist
+
+!end_node # 4. Bilder in Farbe
+
+# 5.
+!begin_node Shortcuts im Fenster
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Mir gefallen die TastenkÅrzel nicht, mit denen ich z.B. die MenÅfunk-
+tionen des ST-Guide auslîsen kann, kann ich die Ñndern?
+
+!item [Antwort:]
+
+Nein. FrÅher ging das mal, Holger hat das aber wieder ausgebaut.
+
+!end_blist
+
+!end_node # 5. Shortcuts im Fenster
+
+# 6.
+!begin_node Shortcuts in Dialogen
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Warum haben die Dialoge von ST-Guide keine Shortcuts?
+
+!item [Antwort:]
+
+Haben sie, wenn Let' em Fly von Oliver Scheel benutzt wird.
+
+!end_blist
+
+!end_node # 6. Shortcuts in Dialogen
+
+# 7.
+!begin_node Mehr Dateiformate!
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+ST-Guide soll Sounds, Bewegtbilder und meinen Kaffee-Automaten
+unterstÅtzen.
+
+!item [Antwort:]
+
+Keine Chance. Der ST-Guide  ist  als  reiner  Hypertext-Viewer ausgelegt
+und das wird auch so bleiben. Bei entsprechender Resonanz und aus-
+reichend vielen (!link [Spenden] [Wichtige Hinweise]) kommen vielleicht mal externe
+Viewermodule, aber direkt eingebaut werden solche Dinge nicht (ST-Guide
+soll so kurz wie mîglich bleiben).
+
+Abgesehen davon ist es auch jetzt schon mîglich, quasi beliebige Dateien
+anzeigen/abspielen zu lassen, sofern ein Programm im Speicher ist,
+welches das (!xlink [AV-Protokoll] [st-guide.hyp/AV-Protokoll]) und die Behandlung
+des gewÅnschten Formates beherrscht. Der ST-Guide kann nÑmlich Meldungen
+an im Hypertext festgelegte Applikationen senden, wobei eine frei
+definierbare Kommandozeile an dieses Programm Åbergeben werden kann.
+
+!end_blist
+
+!end_node # 7. Mehr Dateiformate!
+
+# 8.
+!begin_node Begriffe aus dem Editor heraus suchen
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Wenn ich in meinem Editor ein Wort markiere und Help drÅcke, dann zeigt ST-
+Guide keine Hilfe zu diesem Begriff, wieso nicht?
+
+!item [Antwort:]
+
+Das kann verschiedene GrÅnde  haben,  je  nach  dem,  wie  der
+ST-Guide reagiert:
+!begin_itemize
+!item ST-Guide reagiert Åberhaupt nicht
+   In diesem Fall bitte prÅfen, ob das verwendete Programm Åberhaupt in
+   der Lage ist, den ST-Guide zu aktivieren; gegebenenfalls ST-Guide als
+   Help-ACC im Programm eintragen:
+   !begin_xlist [Everest:] !compressed
+   !item [CAT:]     geht per Dialog
+   !item [7UP:]     geht per Dialog
+   !item Everest:] kann mittlerweile den ST-Guide ansprechen, aber nur, wenn
+            kein anderes Hypertextsystem installiert ist, weil ST-Guide
+            als letztes gesucht wird
+   !item [QED:]     geht per Dialog (Optionen/Globales)
+   !item [Tempus:]  keine Information
+   !item [xEDIT:]   keine Information
+   !end_xlist
+!item ST-Guide meldet: "REF-Datei nicht gefunden"
+    In diesem Fall steht die REF-Datei nicht dort, wo sie laut REF-
+    Variable stehen sollte.
+    
+    Abhilfe: In der Datei (!file [ST-GUIDE.INF]) den Eintrag REF korrigieren
+!item ST-Guide meldet "<datei>.HYP nicht gefunden"
+    Die REF-Datei wurde gefunden, der Suchbegriff auch, aber die Hypertext
+    Datei steht in keinem der durch PATHS angegebenen Pfade.
+    
+    Abhilfe: In der Datei ST-GUIDE.INF den Eintrag PATHS erweitern
+!item [ST-Guide meldet "<Begriff> nicht gefunden"
+    Der gesuchte Begriff steht nicht in der REF-Datei.
+    
+    Abhilfe: Per (!xlink [RefLink] [reflink.hyp/Main]) alle gewÅnschten REF-Dateien in die
+             Default-Datei eintragen lassen, wenn das nicht hilft, dann
+             einen Hypertext besorgen, welcher den gewÅnschten Begriff
+             enthÑlt.
+!end_itemize
+
+!end_blist
+
+!end_node 8. Begriffe aus dem Editor heraus suchen
+
+# 9.
+!begin_node Wo gibt's Hypertexte?
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Wo bekomme ich eigentlich Hypertexte fÅr ST-Guide?
+
+!item [Antwort:]
+
+Die meisten ST-Guide Hypertexte sind in der Maus OL zu finden. Auûerdem
+gibt es eine Sammlung in der Quark CB im Brett 211, da kÅmmert sich auch
+jemand darum, daû dort immer die aktuellen Versionen bereitliegen.
+Speziell die CAT-Onlinehilfe ist als CAT_STG.LZH z.B. in OL, HB2, DU2,
+WI2 zu bekommen.
+
+!end_blist
+
+!end_node # 9. Wo gibt's Hypertexte?
+
+# 10.
+!begin_node Verweise per Tastatur wÑhlen
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Wo ist die Tastaturselektierung geblieben? Kann ich die Verweise
+    jetzt nur noch per Maus auswÑhlen?
+
+!item [Antwort:]
+
+Nein, die Tastaturselektierung ist nach wie vor vorhanden, sie erscheint
+jedoch erst nach der ersten BetÑtigung von [SHIFT-]TAB. Auûerdem wird sie
+beim Scrollen nicht mehr im Fenster gehalten, sondern ausgeschaltet,
+sobald sie nicht mehr sichtbar ist. Dies hat den Vorteil, daû das
+Scrolling nicht mehr "rukkelt", sondern jetzt gleichmÑûig lÑuft.
+
+!end_blist
+    
+!end_node # 10. Verweise per Tastatur wÑhlen
+
+# 11.
+!begin_node privileg violation
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Wenn der ST-Guide unter MTOS von einem anderen Programm aufgerufen
+    wird, meldet MTOS einen 'privileg violation error'. Was soll das?
+
+!item [Antwort:]
+
+Unter MTOS mit entsprechendem Prozessor unterliegt jeder Speicherbereich
+einem gewissen, definierbaren Schutz. DefaultmÑûig darf z.B. nur das
+Programm selbst und das AES den Speicher eines laufenden Prozesses lesen
+oder schreiben. Wenn ein solches Programm eine Meldung an  den ST-Guide
+sendet, dann kopiert das AES hiervon nur die Zeiger auf Pfade und
+Suchbegriffe, nicht jedoch die Strings selbst, d.h. der Speicher, in dem sie
+sich befinden, gehîrt dem aufrufenden Prozess und auch ein lesender
+Zugriff des ST-Guide wird von MTOS angemeckert.
+
+Abhilfe:
+!begin_enumerate
+!item (Notlîsung): Die Flags des Programmes (NICHT des ST-Guide) auf
+   private/readable setzen, hierzu eignet sich z.B. das Programm
+   GD_FLAGS von Gregor Duchalski.
+!item  (Beste Lîsung): Das aufrufende Programm benutzt Mxalloc() mit
+   entsprechenden Parametern, um den Speicher fÅr die zu Åbergebenden
+   Strings anzufordern.
+!end_enumerate
+NÑheres zu beiden Lîsungen findet sich in der MTOS-Doku.
+
+!end_blist
+
+!end_node 11. privileg violation
+
+# 12.
+!begin_node ST-Guide aus eigenen Programmen aufrufen
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Der Aufruf des ST-Guide per appl_write() aus  meinem  Programm
+    heraus funktioniert nicht. Woran liegt das?
+
+!item [Antwort:]
+
+Der ST-Guide kopiert die Åbergebenen Strings zwar, aber zwischen dem
+Aufruf und dem Kopieren der Parameter vergeht eine gewisse Zeit. Das
+aufrufende Programm muû daher den String so anlegen, daû er zumindest
+noch eine gewisse Zeit lang unverÑndert vorliegt, er darf also
+insbesondere nicht als lokale Variable auf dem Stack liegen. Am besten ein
+globales Array verwenden, dann funktioniert es auch.
+
+Beispiel ((!xlink [AV-Protokoll] [st-guide.hyp/AV-Protokoll])):
+!begin_preformatted
+char HelpString[100];
+
+Help(char *pattern)
+{
+    int msg[8], i;
+
+    if ((i=appl_find("ST-GUIDE"))>=0) {
+        msg[0] = VA_START;
+        msg[1] = global[2];
+        msg[2] = 0;
+        sprintf(HelpString, "*:\\MYPROG.HYP %s", pattern);
+        *(char **)&msg[3] = HelpString;
+        msg[5] = 0;
+        msg[6] = 0;
+        msg[7] = 0;
+        appl_write(i, 16, msg);
+    }
+}
+!end_preformatted
+
+Beispiel ((!xlink [PureC-Protokoll] [st-guide.hyp/PureC-Protokoll])):
+
+!begin_preformatted
+char HelpString[100];
+
+Help(char *pattern)
+{
+    int msg[8], i;
+
+    if ((i=appl_find("ST-GUIDE"))>=0) {
+        msg[0] = AC_HELP;
+        msg[1] = global[2];
+        msg[2] = 0;
+        strcpy(HelpString, Pattern);
+        *(char **)&msg[3] = HelpString;
+        msg[5] = 0;
+        msg[6] = 0;
+        msg[7] = 0;
+        appl_write(i, 16, msg);
+    }
+}
+!end_preformatted
+
+!end_blist
+
+!end_node # 12. ST-Guide aus eigenen Programmen aufrufen
+
+# 13.
+!begin_node ST-Guide als Anwendung anmelden
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich benutze den ATARI-Desktop, habe ST-Guide als ACC installiert und
+    mîchte gerne, daû der ST-Guide als ACC aktiviert wird, wenn ich
+    einen Doppelklick auf eine Datei mit der Endung .HYP mache. Was muû
+    ich tun?
+
+!item [Antwort:]
+
+Der neuen Version liegt ein kleines Programm Namens CALL-ACC bei. Dieses
+kann als Anwendung fÅr *.HYP angemeldet werden und aktiviert dann den
+ST-Guide, der seinerseits die gewÅnschte Datei anzeigt.
+Also: CALL-ACC selektieren, 'Anwendung anmelden' auswÑhlen und HYP als
+Endung eingeben. Anschlieûend 'Arbeit sichern'.
+
+!end_blist
+
+!end_node # 13. ST-Guide als Anwendung anmelden
+
+# 14.
+!begin_node Alternative Desktops
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Die Verwendung von CALL-ACC ist aber umstÑndlich. Geht das nicht besser?
+
+!item [Antwort:]
+
+Ja, GEMINI benutzen (oder eine anderen modernen Desktop), dort lassen
+sich auch ACCs als Anwendung anmelden. In der Version 1.99 muû die Option
+'Dateinamen in Kleinbuchstaben' jedoch unbedingt abgeschaltet sein, sonst
+funktionierts nicht.
+
+!end_blist
+
+!end_node # 14. Alternative Desktops
+
+# 15.
+!begin_node Die Ref-Dateien
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Werden die .REF Dateien eigentlich noch als einzelne Dateien
+    benîtigt, nachdem sie mit REFLINK in die ALL.REF eingebunden wurden?
+
+!item [Antwort:]
+
+Nî, und wenn Du sie doch noch mal benîtigst (zwecks Weitergabe z.B.),
+dann kannst du sie mit RefLink wieder extrahieren lassen.
+
+!end_blist
+
+!end_node # 15. Die Ref-Dateien
+
+# 16.
+!begin_node Hypertexte und eigene Programme
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Mein selbstgeschriebenes Programm findet seinen Hypertext nicht?
+
+!item [Antwort:]
+
+Offenbar liegt der Hypertext nicht in einem der Pfade, die von ST-Guide
+durchsucht werden.
+
+Abhilfe:
+!begin_itemize
+!item die Anwender tragen den entsprechenden Pfad in ihre PATHS Variable ein
+item die Anwender kopieren den Hypertext in eines ihrer PATHS Verzeichnisse
+!item man erlaubt den Anwendern, daû sie den Hypertext auch im Start-
+  verzeichnis dieses Programmes unterbringen dÅrfen, in dem dann beim
+  VA_START "<startdir>\eigener.hyp" anstatt "*:\eigener.hyp" Åbergibt.
+  Dieses bewirkt sozusagen eine temporÑre Erweiterung von PATHS, d.h.
+  der Hypertext wird trotzdem in allen PATHS Verzeichnissen gefunden.
+!end_itemize
+
+!end_blist
+
+!end_node # 16. Hypertexte und eigene Programme
+
+
+!begin_node Sonstige Fragen
+
+Sollte sich das Problem jetzt noch nicht erledigt haben, dann setzen sie
+sich bitte mit mit dem Autor des ST-Guide ((!link [Holger Weets] [authoraddress])) in Verbindung.
+Damit sie berÅcksichtigt werden kann, sollten ihr folgende Informationen
+zu entnehmen sein:
+!begin_enumerate
+1item Welche Version wird benutzt (evtl. in der Maus OL nachsehen, ob es
+   bereits eine neuere gibt und ggfls. mit dieser noch mal probieren)?
+!item Mit welcher Komponente tritt das Problem auf?
+!item Wie Ñuûert es sich; diesen Punkt so  ausfÅhrlich wie mîglich behan-
+   deln, mit Meldungen wie "der Konverter Åbersetzt meinen Text nicht"
+   kann man nichts anfangen! Die sicherste Methode ist hier, Holger eine
+   Datei zukommen zu lassen, mit der sich das Problem reproduzieren
+   lÑsst. Wenn  z.B. der HCP einen Fehler enthÑlt, dann hilft Ihm eine
+   Beispiel-Node, die diesen Fehler produziert, am ehesten.
+!item Insbesondere bei Problemen mit dem ACC einmal nur dieses booten, also
+   alle anderen ACC's und den Autoordner disablen. Wenn das Problem dann
+   nicht mehr auftritt, dann durch schrittweises mitbooten der anderen
+   ACC's und Auto-Prog's versuchen herauszufinden, mit welcher Kombination
+   das Problem auftritt und Holger mitteilen.
+!end_enumerate
+
+!end_node
+
+!begin_node Wichtige Hinweise
+
+Dieses Dokument behandelt hÑufig gestellte Fragen im Zusammenhang mit
+dem ST-Guide (engl. 'frequently asked questions', kurz FAQ). Um die Fragen
+schnell wiederfinden zu kînnen, gibt es einen Index und ein
+(!link [Inhaltsverzeichnis] [Inhalt]), im Gegensatz zu ASCII-FAQs muû also nicht der ganze Text gelesen
+werden, um die interessierende Frage zu finden.
+Die neuste Version dieses Hypertetxtes liegt immer in der Quark PB im
+Brett ST-HYPERTEXT. Im Brett TEXTFILES liegt dieser Hypertext auch im
+ASCII-Format. Im Mausnetz wird dieses FAQ monatlich in der Gruppe
+HYPERTEXT gepostet.
+
+An dieser Stelle sei aus aktuellem Anlaû noch einmal erwÑhnt, daû der
+ST-Guide zwar nicht Shareware ist, um Spenden in jeder Hîhe jedoch aus-
+drÅcklich gebeten wird, um die  Weiterentwicklung dieses Programmes zu
+gewÑhrleisten (Holger freut sich auch Åber kleine Spenden...)
+
+Anregungen, Lob und Kritik zu diesem Hypertext an:
+    Michael Wurm @ PB (Mausnet)
+
+!label authoraddress
+Anregungen, Lob und Kritik zum ST-Guide an:
+!begin_preformatted
+    Holger Weets
+    Tangastr. 45
+    26121 Oldenburg
+    E-Mail: Holger Weets @ OL (Mausnet)
+!end_preformatted
+
+Spenden an:
+!begin_preformatted
+    Holger Weets
+    KTO.: 023 182 041
+    BLZ.: 280 501 00
+    Landessparkasse zu Oldenburg
+!end_preformatted
+
+!end_node
+
+!begin_node Fragen von Hypertext Autoren
+
+!subtoc [all] !depth 1
+
+!begin_node Wie schreibe ich einen Hypertext?
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Was muû ich denn jetzt anstellen, um selber einen Hypertext zu schreiben?
+
+!item [Antwort:]
+
+Erstmal die beiliegenden Dokumentationen zu HCP und ST-Guide lesen.
+Hypertexte sind nÑmlich im Prinzip wie Programme aufgebaut, so daû es
+unumgÑnglich ist, zumindest die wichtigsten Kommandos zu kennen, bevor
+ein Hypertext geschrieben werden kann.
+
+Jetzt muû der gewÅnschte Text mit den gerade erlernten Kommandos in Form
+eines Hypertextes aufgeschrieben, und anschlieûend noch durch einen
+Aufruf des hcp Åbersetzt werden, wonach er dann vom ST-Guide angezeigt
+werden kann.
+
+(!xlink [ST-Guide Doku lesen] [st-guide.hyp/Main]) (!nl)
+(!xlink [HCP Doku lesen] [hcp.hyp/Main])
+
+!end_blist
+
+!end_node
+
+!begin_node Minimalwissen eines Hypertext Autors
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich habe keine Lust, so viel Text zu lesen, was muû ich denn mindestens
+wissen, um einen einfachen Hypertext zu schreiben?
+
+!item [Antwort:]
+
+Im Prinzip reichen die Kommandos (!xlink [@node] [hcp.hyp/@node]), (!xlink [@endnode] [hcp.hyp/@endnode]) und (!xlink [@symbol] [hcp.hyp/@symbol]).
+
+   (!U)Beispiel(!u):
+
+        (!xlink [##] [hcp.hyp/@remark]) Header des Hypertextes (!nl)
+        (!xlink [@database] [hcp.hyp/@database]) <Thema des Textes> (!nl)
+        (!xlink [@author] [hcp.hyp/@author])   <wer hat den Text geschrieben> (!nl)
+        (!xlink [@subject] [hcp.hyp/@subject])  <wo soll der Text im Katalog einsortiert werden> (!nl)
+        (!xlink [@$VER:] [hcp.hyp/@$VER:])    <Name der Datei> <Versionsnummer> <ErstellDatum>
+
+        (!xlink [##] [hcp.hyp/@remark]) Seiten des Hypertextes (!nl)
+        (!xlink [@node] [hcp.hyp/@node]) <Seitenname> [<Fenstertitel>] (!nl)
+        [(!xlink [@symbol] [hcp.hyp/@symbol]) [flags] <weitere Namen dieser Seite>]
+
+        Hier steht der eigentliche Text. FÅr Verweise auf eine bestimmte
+        Zeile innerhalb des Textes ist wiederum (!xlink [@symbol] [hcp.hyp/@symbol]) zu verwenden.
+
+        (!xlink [@endnode] [hcp.hyp/@endnode])
+
+Dabei ist darauf zu achten, daû alle hier in <> geschriebenen Begriffe
+durch AnfÅhrungszeichen geklammert werden mÅssen, wenn sie Leerzeichen
+enthalten, also (!xlink [@node] [hcp.hyp/@node]) "foo bar".
+Auûerdem bedeutet [Text] wie Åblich, daû 'Text' optional angegeben
+werden kann, aber nicht muû.
+
+!end_blist
+
+!end_node
+
+!begin_node Nodenamen und die Indexseite
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Wie kann ich verhindern, daû eine (!xlink [@node] [hcp.hyp/@node] oder (!xlink [@pnode] [hcp.hyp/@pnode])  in  der
+   Indexseite erscheint?
+
+!item [Antwort:]
+
+Wenn der Name einer Seite mit einem '%' Zeichen beginnt, dann wird diese
+nicht automatisch in den Index aufgenommen. Also (!xlink [@node] [hcp.hyp/@node]) "Test" kommt
+in den Index, @node "%Test" nicht. Solche node's mÅssen jedoch aktuell
+i.a. auch Åber explizite (!xlink [link] [hcp.hyp/@link])'s angesprochen werden,
+da der (!link [AutoReferenzer] [Automatische VerweisErstellung]) das '%' noch mitvergleicht.
+Automatisches Referenzieren kann bei node's natÅrlich trotzdem erreicht
+werden durch '(!xlink [@symbol] [hcp.hyp/@symbol]) a Test'.
+
+!end_blist
+
+!end_node
+
+!begin_node Linien im Text
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich mîchte gerne AbsÑtze im Text durch Linien voneinander trennen, aber
+mit '(---)(--)' sieht das so unprofessionell aus, geht das eigentlich auch
+eleganter?
+
+!raw [stg] @line 1 66 0 0 7
+!raw [stg] ##
+
+!item [Antwort:]
+
+NatÅrlich. Hierzu gibts das (!xlink [@line] [hcp.hyp/@line])-Kommando, welches frei definierbare
+Linien in Hypertextseiten zeichnen kann, hier kînnen sogar verschiedene
+Linienmuster und Pfeilspitzen verwendet werden.
+
+!end_blist
+
+!end_node
+
+!begin_node Jeder Seite ihre Datei
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich finde die Handhabung des (!xlink [1stGuide] [1stGuide.hyp/Main]), jede Seite in einer eigenen
+Datei zu haben viel besser, als alles in einer Datei zu halten. Geht das
+mit dem ST-Guide auch?
+
+!item [Antwort:]
+
+Ja, natÅrlich. Man verwende den (!xlink [@include] [hcp.hyp/@include])-Befehl.
+
+!end_blist
+
+!end_node
+
+!begin_node Verteilte Hypertexte
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Dann bekomme ich aber als Resultat eine einzige Datei. Ich fÑnde es aber
+schîner, meine Hypertexte in mehrere Parts aufzuteilen, damit z.B. jeder
+Anwender nur die Teile des Textes auf seiner Platte beherbergen muû, die
+ihn auch interessieren.
+
+Also: mehrere Texte, aber alle miteinander verbunden!
+
+!item [Antwort:]
+
+Auch das geht, hierzu gibt es den (!xlink [@uses] [hcp.hyp/@uses]) Befehl. Uses kann als
+Parameter sowohl HYP- als auch REF- Dateien verarbeiten und automatisiert
+die Erstellung von TextÅbergreifenden Verweisen.
+
+(!U)Beispiel(!u): (!nl)
+     Text1.stg enthÑlt einige Seiten, die in Text2.stg angesprochen
+     werden sollen. Dazu schreibt man in Text2.stg:
+     
+     "(!xlink [@uses] [hcp.hyp/@uses]) text1.hyp".
+     
+     Dadurch liest der hcp alle Seitennamen aus Text1.hyp ein und
+     setzt die Verweise automatisch, ganz so, als wÅrden sich die
+     Seiten innerhalb eines Textes befinden.
+
+!end_blist
+
+!end_node
+
+!begin_node ASCII-Dateien als Verweise
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Kann ich auch ASCII-Dateien (z.B. Headerfiles fÅr C) als Verweis benutzen?
+
+!item [Antwort:]
+
+Ja, hierzu ist (wie fÅr alle anderen Verweise auch) der (!xlink [link] [hcp.hyp/@link]) Befehl zu
+verwenden.
+
+Beispiel: ... im @{"Standard Header" (!xlink [link] [hcp.hyp/@link]) stdio.h/Main} ...
+
+Man beachte hierbei, daû hinter dem Dateinamen IMMER der Name der
+anzuzeigenden Seite stehen muû. Da ASCII-Dateien keine Seitennamen
+besitzen, wird dort als Name 'Main' benutzt.
+
+!item [Frage:]
+
+Ich mîchte gerne in meinen Hypertext Verweise auf ASCII-Dateien einbauen
+und weiû jetzt ja auch, daû so etwas  mit (!xlink [@extern] [hcp.hyp/@extern]) und/oder
+@{... (!xlink [link] [hcp.hyp/@link]) ...} gemacht wird. Das Problem ist nun, daû
+die ASCII-Dateien ab einer bestimmten Stelle angezeigt werden sollen,
+also nicht vom Textanfang. Geht das?
+
+!item [Antwort:]
+
+Klar. Sowohl bei (!xlink [@extern] [hcp.hyp/@extern]) also auch bei (!xlink [link] [hcp.hyp/@link])  kînnen  optional
+Zeilennummern angegeben werden. Diese benutzt der ST-Guide dann als
+Nummer der ersten dargestellten Zeile.
+
+!item [Frage:]
+
+Fein, aber da gibt's noch ein Problem: die ASCII-Dateien  kînnen sich
+Ñndern, so daû die im Hypertext angegebenen Zeilennummern nicht mehr
+stimmen wÅrden, muû ich also jedesmal den Hypertext anpassen und neu
+Åbersetzen, wenn sich eine der ASCII-Dateien Ñndert?
+
+!item [Antwort:]
+
+Nicht unbedingt. Die anzuzeigenden Textstellen kînnen vom ST-Guide auch
+direkt und automatisch beim Laden des Textes gesucht werden. Dies wird
+erreicht durch:
+
+@{<Text zum Anklicken> (!xlink [link] [hcp.hyp/@link]) <ASCII-Datei>/<Seitenname>}
+
+Wenn <Seitenname> NICHT 'Main' ist, dann wird er im  Text gesucht und die
+erste Trefferzeile wird erste Zeile im Fenster.
+
+!item [Frage:]
+
+Sehr schîn, da gibts dann nur noch ein Problem: die Textstellen kommen in
+meiner ASCII-Datei alle mehrfach vor, einmal am Anfang im Inhaltsver-
+zeichnis und dann noch mal mit Beschreibung. Wenn jetzt immer ab
+Textanfang  gesucht wird, dann wird also immer das "falsche" Vorkommen
+gefunden.
+
+!item [Antwort:]
+
+Sowohl (!xlink [@extern] [hcp.hyp/@extern]) als auch (!xlink [link] [hcp.hyp/@link]) kînnen als zusÑtzlichen Parameter eine
+Zeilennummer bekommen. Im Zusammenhang mit dem Suchbegriff wird diese
+als Startzeile benutzt. Also einfach eine Nummer angegeben, die
+einigermaûen nahe an der gewÅnschten Stelle ist, und schon geht's.
+
+!end_blist
+
+!end_node
+
+!begin_node Automatische VerweisErstellung
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Gibt es eine Mîglichkeit, in einer Node mit eingeschaltetem Autoref-
+erenzer ein Wort so zu maskieren, daû es nicht als Referenz erkannt
+wird?
+
+!item [Antwort:]
+
+Per (!xlink [@autorefoff] [hcp.hyp/@autorefoff])/(!xlink [@autorefon] [hcp.hyp/@autorefon]) fÅr beliebige Zeilen:
+
+     @autorefoff (!nl)
+     testtest nix zeilenrest (!nl)
+     @autorefon
+
+wird in der Textzeile nichts markieren, davor und danach jedoch schon.
+
+Per @{... (!xlink [ignore] [hcp.hyp/ignore])} fÅr beliebige Teile von Zeilen:
+
+'testtest @{"nix" ignore} zeilenrest'
+
+wird <nix> nicht zum Verweis machen, auch wenn es ein alias/node/symbol mit
+diesem Namen gibt.
+
+!end_blist
+
+!end_node
+
+!begin_node Begriffe nicht referenzieren
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Schîn und gut, aber ich habe in meinem Text ein paar Seiten, deren Namen
+sehr hÑufig in verschiedenen nodes vorkommen, die aber nirgendwo
+automatisch referenziert werden sollen. Da sind die oben beschriebenen
+Lîsungen fÅr mich sehr aufwendig, geht das auch anders?
+
+!item [Antwort:]
+
+HierfÅr gibt es das Kommando (!xlink [@noref] [hcp.hyp/Kommando @noref]). Die Nodes,
+innerhalb derer dieses Kommando  auftaucht, werden nicht automatisch
+referenziert, sondern nur noch durch explizites Setzen von @{... (!xlink [link] [hcp.hyp/@link]) ...}
+-Kommandos.
+
+!end_blist
+
+!end_node
+
+!begin_node Wieso sind hier die Knîpfe fÅr Seite vor/zurÅck nicht wÑhlbar?
+
+!begin_blist [Antwort:]
+
+!item [Frage:]
+
+Ich mîchte die Lesereihenfolge meiner Seiten gerne selber festlegen, und
+wie ich gerade gesehen habe, geht das auch, nur wie?
+
+!item [Antwort:]
+
+Hierzu gibt es die Kommandos:
+
+!begin_itemize
+!item (!xlink [@prev] [hcp.hyp/@prev]) -- legt fest, welche Seite bei "Seite <" gezeigt wird
+!item (!xlink [@next] [hcp.hyp/@next]) -- legt fest, welche Seite bei "Seite >" gezeigt wird
+!item (!xlink [@toc] [hcp.hyp/@toc])  -- legt fest, welche Seite bei "Inhalt" gezeigt wird
+!end_itemize
+
+FÅr alle drei Kommandos gilt, daû wenn als Parameter der Name der
+aktuellen Seite angegeben wird, dann ist der betreffende Button nicht
+wÑhlbar.
+
+Wird (!xlink [@next] [hcp.hyp/@next]) oder (!xlink [@prev] [hcp.hyp/@prev]) in einer Seite nicht angegeben, dann wird auf
+die physikalische Nachfolger- bzw. VorgÑnger-Seite verwiesen, wird
+(!xlink [@toc] [hcp.hyp/@toc]) nicht angegeben, so wird als 'Table  of contents' die erste
+Seite des Textes verwendet.
+
+Diese Kommandos ermîglichen es z.B. hierarchische Inhaltsverzeichnisse
+zu gestalten, wie hier auch gezeigt wird. In dieser Seite ist z.B. der
+Button "Seite >" nicht wÑhlbar, obwohl im Quelltext noch Seiten folgen
+kînnen (und der hcp hinter dieser Seite automatisch noch eine Indexseite
+anlegt). Der Grund hierfÅr ist, daû dies die letzte behandelte Autoren-
+Frage ist, auf der nachfolgenden Seite also etwas neues anfÑngt.
+
+!end_blist
+
+!end_node
+
+!end_node # Fragen von Hypertext Autoren
+
+!end_node
+
+!end_document

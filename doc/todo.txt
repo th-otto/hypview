@@ -1,0 +1,97 @@
+HypView
+=======
+-Tabulatorweite fuer Text-Dateien einstellbar
+ * TABSIZE
+    enthaelt die gewuenschte Tabulatorweite. Ist diese Variable nicht
+    vorhanden, so wird der Wert 8 verwendet. (hcp, ST-Guide)
+
+-Zeichensatztabellen fuer Text-Dateien unterstuetzen (ISO Latin, PC, ...)
+ via KeyTab oder so 
+
+-Fehlermeldung falls keine weiteren Fenster mehr vorhanden.
+
+-ST-Guide kann bei Verwendung eines Fonts mit kleineren Ausmassen als denen 
+ des Standard-Systemfonts, unter bestimmten Umstaenden Texte so plazieren, 
+ da Text und Grafik sich nicht ueberschneiden. Angenommen auf einer
+ Hypertextseite soll zuerst ein Bild und darunter Text erscheinen.
+ Damit jetzt bei Verwendung von @image plus Leerzeilen - anstelle von
+ @limage (dieser Befehl setzt ja automatisch Text unter die Grafik) -
+ der Text unabhaengig von der Hoehe des Fonts immer unterhalb des Bildes
+ erscheint, benutzt ST-Guide an der Stelle, wo die Grafik erscheint,
+ Leerzeilen mit der Hoehe des Standard-Systemfonts.
+
+-Intelligenter "Fuller" berarbeiten: die linke obere Ecke des Fensters
+ sollte nur wenn absolut noetig veraendert (=das Fenster verschoben) werden.
+ Falls das vergroesserte Fenster platz auf dem Bildschirm hat, bleibt die
+ Ecke unveraendert.
+
+-Anpassen der Fensterbreite und -hoehe (=WIN_ADJUST) sollte separat
+ konfigurierbar sein.
+
+-bei der Selektion sind ein paar Bugs drin. Z.B. auch bei leere Zeilen
+ fuehren zu Redraw-Fehlern.
+
+-Kontext-Menue mit dem Befehl "Im Text-Editor oeffnen..." erweitern
+
+-nach Veraenderung der ASCII-Konfigurationsdatei ueber einen Editor, d.h.
+ direkt nach dem Abspeichern im Editor, diese Datei einzulesen und sofort
+ alle aenderungen in HypView zu uebernehmen.
+
+-Schnellerer Seitenaufbau (z.B. indem man die Text-Ausmasse nur einmal
+ berechnet!)
+
+-Bug: Hintergrund Farbbilder werden falsch konvertiert mit Imagine VDI
+
++"Zurueck" ins Kontext-Men aufnehmen(erledigt).
+ (evtl. Rechtsklick fuer "Zurueck"-Funktion anstatt Kontext-Men)
+
+-Zurueck via Rechtsklick (wie bei ST-Guide) einbauen. Konfigurierbar!
+ Rechte Maustaste als Alternative zum Zurueck-Icon, falls die Variable
+ RIGHTBACK in der ST-GUIDE.INF definiert ist und der Klick dann
+ geschieht, wenn der Mauszeiger sich gerade im ST-Guide-Fenster befindet.
+ Diese Funktion ist von einigen Betriebssystemen gewissermaen nicht voll
+ "abgesegnet" und daher zunchst nicht aktiviert. Mausfetischisten
+ moegen aber in der schnellen Ruecksprungmoeglichkeit einen Gewinn sehen.
+ Ihnen zuliebe wurde diese Funktion implementiert.
+ * RIGHTBACK
+   Falls diese Variable definiert ist (Wert egal), so wird das Bettigen
+   der rechten Maustaste wie ein Klick auf den 'zurck' Button interpre-
+   tiert. Defaultmig ist diese Variable nicht gesetzt, weil das a) den
+   Nachteil hat, da Aktionen im hintenliegenden Fenster nicht mehr
+   mglich sind, und b) werden Rechtsklicks von den verschiedenen TOS-
+   Versionen unterschiedlich behandelt (Quelle: Martin "WINX" Osieka)
+
+- ALT-R - Remarker oeffnen, falls dieser laeuft oder die Variable REMARKER
+          definiert ist
+
+- SHIFT-CTRL-O - wie CTRL-O, nur mit *.* als Pattern im erscheinenden
+                 Fileselektor
+
+- Ctrl-F - Pattern suchen (wie Extra -> Suchen)
+  Bei Auswahl dieser Funktion (auch aktivierbar durch  Control - F )
+  erscheint ein Dialog, in dem ein Suchbegriff eingegeben werden kann.
+  Folgende Knoepfe stehen zur Auswahl:
+     Im Text   Als Seite   Als REFerenz   Abbruch
+     In allen Seiten      ... aller Hypertexte
+
+- Ctrl-G   Pattern erneut suchen  (wie Extra -> Weitersuchen)
+
+- BubbleGEM fuer Icon
+
+
+--------------------------------
+> Probably not too hard ;) Try for example to have some default hyp file,
+> click on ACC, it's opened, all right. Click again and 0x00000000 memory
+> violation occurs.
+
+I'm not able to reproduce this on my Milan. However, I can make it crash
+with a NULL-pointer by topping and the hiding it when it has no open
+windows. This only happens when using it as an accessory, as it exits if
+there are no open windows when running as an application.
+
+
+Topping an already open window doesn't crash here. But attempting to top
+Hypview (by sending it AC_OPEN) will crash it if it has had an open
+window but no open windows now. This happens every time.
+
+J-------------------------

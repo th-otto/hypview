@@ -1,0 +1,122 @@
+
+			HELPFILE RECOMPILER  Ver. 1.0	Nov  7 2013
+			=============================
+
+				(c) Volker Reichel
+
+Optionen: slt
+
+
+Header of Helpfile usr.HLP
+
+	Screens					:   31
+	Start String Tabelle	: 260 (0x104)
+	L„nge					: 1666 (0x682)
+	die h„ufigsten Zeichen	:  enrtisauodm
+	Start sensitive Tabelle	: 2220 (0x8ac)
+	L„nge					: 14 (0xe)
+	Anz. sens. Worte	: 1 (0x1)
+	Start capsens. Tabelle	: 1926 (0x786)
+	L„nge					: 294 (0x126)
+	Anz. capsens Worte	: 21 (0x15)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Capsensitive Tabelle
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+	Position   Code  Suchwort
+	   0x7e   8024  "Nactive"
+	   0x80   807c  "Ndisable"
+	   0x83   8084  "Nenable"
+	   0x85   803c  "Nlock"
+	   0x85   804c  "Nlocked"
+	   0x87   8034  "Nlogged"
+	   0x89   806c  "Nmsg"
+	   0x88   808c  "Nname"
+	   0x88   802c  "Nnodeid"
+	   0x8a   8054  "Nprinter"
+	   0x8d   8064  "Nrecord"
+	   0x8f   8074  "Nremote"
+	   0x91   805c  "Nreset"
+	   0x92   8044  "Nunlock"
+	   0x94   8094  "Termcap-Library"
+	   0x9e   809c  "tgetent"
+	   0xa0   80a4  "tgetflag"
+	   0xa3   80ac  "tgetnum"
+	   0xa5   80b4  "tgetstr"
+	   0xa7   80bc  "tgoto"
+	   0xa7   80c4  "tputs"
+
+
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+		Sensitive Tabelle
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+	Position   Code  Suchwort
+	   0x6   801c  "PAMSNET"
+
+
+================================================================================
+			Namenstabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<tgetnum                         > CAPSENSITIVE 0x80AC = 0x14
+<tputs                           > CAPSENSITIVE 0x80C4 = 0x17
+<tgetflag                        > CAPSENSITIVE 0x80A4 = 0x13
+<tgoto                           > CAPSENSITIVE 0x80BC = 0x16
+<tgetent                         > CAPSENSITIVE 0x809C = 0x12
+<tgetstr                         > CAPSENSITIVE 0x80B4 = 0x15
+<Termcap-Library                 > CAPSENSITIVE 0x8094 = 0x11
+<PAMSNET                         >  SENSITIVE   0x801C = 0x2
+<PamsNet                         > SCREEN_NAME  0x801C = 0x2
+<Nunlock                         > CAPSENSITIVE 0x8044 = 0x7
+<Nmsg                            > CAPSENSITIVE 0x806C = 0xC
+<Nreset                          > CAPSENSITIVE 0x805C = 0xA
+<Nlogged                         > CAPSENSITIVE 0x8034 = 0x5
+<Nremote                         > CAPSENSITIVE 0x8074 = 0xD
+<Nlocked                         > CAPSENSITIVE 0x804C = 0x8
+<Nrecord                         > CAPSENSITIVE 0x8064 = 0xB
+<Nlock                           > CAPSENSITIVE 0x803C = 0x6
+<Nprinter                        > CAPSENSITIVE 0x8054 = 0x9
+<Nenable                         > CAPSENSITIVE 0x8084 = 0xF
+<Nnodeid                         > CAPSENSITIVE 0x802C = 0x4
+<Ndisable                        > CAPSENSITIVE 0x807C = 0xE
+<Nname                           > CAPSENSITIVE 0x808C = 0x10
+<Nactive                         > CAPSENSITIVE 0x8024 = 0x3
+<Index                           > SCREEN_NAME  0x8014 = 0x1
+<Copyright                       > SCREEN_NAME  0x800C = 0x0
+
+25 Namen gefunden.
+
+================================================================================
+			Link Tabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<Curses-Library                  >    LINK      0xFFFF von 0x12
+<Fseek                           >    LINK      0xFFFF von 0xB
+<Frunlock                        >    LINK      0xFFFF von 0xB
+<Frlock                          >    LINK      0xFFFF von 0xB
+<Rsconf                          >    LINK      0xFFFF von 0x9
+<Setprt                          >    LINK      0xFFFF von 0x9
+<Nversion                        >    LINK      0xFFFF von 0x3
+<GEMDOS                          >    LINK      0xFFFF von 0x2
+
+8 Link-Verweise gefunden.
+	*** WARNUNG: Globaler Verweis <GEMDOS>
+	*** WARNUNG: Globaler Verweis <GEMDOS>
+	*** WARNUNG: Globaler Verweis <Nversion>
+	*** WARNUNG: Globaler Verweis <Nversion>
+	*** WARNUNG: Globaler Verweis <Setprt>
+	*** WARNUNG: Globaler Verweis <Rsconf>
+	*** WARNUNG: Globaler Verweis <Rsconf>
+	*** WARNUNG: Globaler Verweis <Setprt>
+	*** WARNUNG: Globaler Verweis <Frlock>
+	*** WARNUNG: Globaler Verweis <Frunlock>
+	*** WARNUNG: Globaler Verweis <Fseek>
+	*** WARNUNG: Globaler Verweis <Curses-Library>
+	*** WARNUNG: Globaler Verweis <Curses-Library>
+	*** WARNUNG: Globaler Verweis <Curses-Library>
+	*** WARNUNG: Globaler Verweis <Curses-Library>
+	*** WARNUNG: Globaler Verweis <Curses-Library>
+	*** WARNUNG: Globaler Verweis <Curses-Library>
+
+0 Fehler. 17 Warnungen. 17 Verweise in andere HELP-Dateien.

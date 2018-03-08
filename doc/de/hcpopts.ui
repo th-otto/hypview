@@ -1,0 +1,675 @@
+!begin_node Optionen-öbersicht
+!html_name options_hcp
+
+!raw [stg] @xref "Aufruf des HCP" "Kommandozeile"
+!raw [stg] @xref "Kommando @options"
+
+!begin_table [ll]
+ (!link [-l[F!]] [Option l: Inhalt eines Hypertextes])  !! Inhaltsverzeichnis zeigen
+ (!link [-r] [Option r: Recompilieren])                 !! recompilieren
+ (!link [-v] [Option v: ASCII-Ausgabe])                 !! als ASCII recompilieren
+ (!link [+-q[qq!]] [Option q: GesprÑchigkeit])          !! Ausgaben -abschalten
+ (!link [-pVAL] [Option p: Typ recompilierter Bilder])  !! Typ zu recompilierender Bilder
+ (!link [+-s] [Option s: Zeilenumbruch])                !! -kein Zeilenumbruch
+ (!link [-bSIZ] [Option b: Seitengrîûe])                !! Grîûe des Ausgabepuffers
+ (!link [-tN] [Option t: Tabulatorweite])               !! Tabulatorweite
+ (!link [-dN] [Option d: Abstand von Verweisen])        !! min. Verweis-Abstand
+ (!link [+-z[z!]] [Option z: REFerenzdateien])          !! REF +erzeugen [updaten]
+ (!link [+-n] [Option n: Nodes in den Index])           !! Seitennamen -nicht in Indexseite
+ (!link [+-i] [Option i: Index automatisch erzeugen])   !! Index -nicht erzeugen
+ (!link [+-g] [Option g: Alabels in den Index])         !! alabels +in Indexseite
+ (!link [+-f] [Option f: Aliase in den Index])          !! aliase +in Indexseite
+ (!link [-wVAL] [Option w: Warten auf Taste])           !! am Ende auf Taste warten
+ (!link [+-c] [Option c: Komprimierung])                !! -nicht komprimieren
+ (!link [+-a] [Option a: AutoRefererenzer])             !! Autoreferenzer -abschalten
+ (!link [+-m] [Option m: Bilder durch Rahmen ersetzen]) !! Images -nicht lesen
+ (!link [+-x] [Option x: Titel statt Nodenamen in den Index]) !! +Titel statt Name in Index
+ (!link [+-y] [Option y: 1. Zeichen insensitiv])        !! 1. Zeichen +insensitiv
+ (!link [-kVAL] [Option k: KompatibilitÑts-Flags])      !! KompatibilitÑts-Flags
+ (!link [-jN] [Option j: Spaltenbreite fÅr Index])      !! Min. Spalten-Breite fÅr Indexseite
+ (!link [-uHYPFILE] [Option u: Einbeziehen anderer Hypertexte]) !! Name einer '@uses' Datei
+ (!link [-eERRFILE] [Option e: Fehlerdatei])            !! Name der Fehlerdatei
+ (!link [-oOUTFILE] [Option o: Ausgabedatei])           !! Name der Ausgabedatei
+!end_table
+
+!begin_node Option r: Recompilieren
+!raw [stg] @xref "Option v: ASCII-Ausgabe"
+!alias Option r
+!index -r
+!html_name option_r_hcp
+
+Das Kommando -r recompiliert den als Eingabe angegebenen Hypertext. Dabei
+werden die nîtigen Kommandos wieder in den Text eingefÅgt, so daû die
+Ausgabedatei anschlieûend ohne énderungen wieder Åbersetzt werden kann und
+sich daraus ein fÅr den Betrachter identisches Compilat ergibt.
+
+Falls keine Ausgabedatei mit (!link [-o] [Option o]) angegeben wurde, so erfolgt die Ausgabe
+auf dem Bildschirm.
+
+(!U)Beispiele(!u):
+
+!begin_quote
+    HCP -r TEST.HYP
+!end_quote
+
+    zeigt alle Seiten aus der Datei TEST.HYP mit den darin enthaltenen
+    Kommandos auf dem Bildschirm an.
+
+!begin_quote
+    HCP -r -oAUSGABE.TXT TEST.HYP
+!end_quote
+
+    schreibt alle Seiten aus der Datei TEST.HYP in Form eines Hypertextes
+    in die Datei AUSGABE.TXT
+
+!end_node
+
+!begin_node Option l: Inhalt eines Hypertextes
+!alias Option l
+!index -l[F]
+!html_name option_l_hcp
+
+Das -l Kommando zeigt quasi das Inhaltsverzeichnis des als Eingabedatei
+angegebenen Hypertextes an, d.h. es werden alle Seitennamen, externen
+Referenzen und sonstigen Informationen auf dem Bildschirm (bzw. in die mit
+(!link [-o] [Option o]) angegebene Datei) ausgegeben.
+
+ZusÑtzlich wird fÅr jede Seite deren gepackte und entpackte LÑnge gezeigt.
+
+<F> kann optional angegeben werden und definiert eine Filtermaske, d.h.
+hierdurch kann gezielt festgelegt werden, welche Teile des Inhaltes
+ausgegeben werden sollen;
+
+<F> ist eine Bitmaske, die sich zusammensetzt aus:
+!begin_xlist [128:] !compressed
+        !item [1:] Nodes
+        !item [2:] Pnodes
+        !item [4:] externe Nodes
+        !item [8:] Bilder
+        !item [16:] system Kommandos
+        !item [32:] rx Kommandos
+        !item [64:] rxs Kommandos
+        !item [128:] Quit Kommandos
+!end_xlist
+Um eine Maske zusammenzustellen sind einfach die angegebenen Werte zu
+addieren.
+
+Wird <F> nicht angegeben, so wird der Inhalt vollstÑndig ausgegeben.
+
+Falls es sich bei der angegebenen Eingabedatei um eine REF Datei handelt,
+so wird deren Inhalt ausgegeben und <F> wird ignoriert.
+
+!end_node
+
+!begin_node Option v: ASCII-Ausgabe
+!alias Option v
+!raw [stg] @xref "Option r: Recompilieren"
+!index -v
+!html_name option_v_hcp
+
+Das -v Kommando zeigt aus dem als Eingabedatei angegebenen Hypertext alle
+Seiten, oder falls angegeben, bestimmte Seiten in Form von ASCII-Text an
+oder schreibt sie in die mit @{"-o" LINK "Option o"} als Ausgabedatei angegebene Datei, etwa
+um sie anschlieûend ausdrucken zu kînnen.
+
+(!U)Beispiele(!u):
+
+!begin_quote
+    HCP -v TEST.HYP Main Hallo Index
+!end_quote
+
+    zeigt aus der Datei TEST.HYP die Seiten "Main", "Hallo" und "Index" in
+    Form eines ASCII-Textes auf dem Bildschirm
+
+!begin_quote
+    HCP -v TEST.HYP
+!end_quote
+
+    zeigt alle Seiten aus der Datei TEST.HYP in Form eines ASCII-Textes
+    auf dem Bildschirm an.
+
+!begin_quote
+    HCP -v -oAUSGABE.TXT TEST.HYP
+!end_quote
+
+    schreibt alle Seiten aus der Datei TEST.HYP in Form eines ASCII-Textes
+    in die Datei AUSGABE.TXT
+
+!end_node
+
+!begin_node Option a: AutoRefererenzer
+!alias Option a
+!index +-a
+!index AutoReferenzer
+!raw [stg] @xref "Kommando @autorefon"
+!raw [stg] @xref "Kommando @autorefoff"
+!raw [stg] @xref "@{ ignore }" "ignore"
+!html_name option_a_hcp
+
+Eines der wesentlichen Features dieses Systemes ist, daû die
+"Verzeigerung" der Seiten durch Referenzen grîûtenteils automatisch
+erfolgt, so daû der Autor des Hypertextes sich um die wesentlichen Dinge
+kÅmmern kann und nicht durch organisatorisches abgelenkt ist. Falls diese
+'automatische Verzeigerung' einmal nicht gewÅnscht ist, kann sie durch -a
+abgeschaltet werden.
+
+Beim Recompilieren und Anzeigen von Hypertexten durch den Compiler
+bewirkt die Angabe von -a, daû alle Referenzen durch link Statements
+erzeugt werden, denn defaultmÑûig werden nur dort link Statements erzeugt,
+wo der Autoreferenzer sie nicht von selbst setzen wÅrde.
+
+Defaultwert:    eingeschaltet
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option b: Seitengrîûe
+!alias+ Option b
+!index -bSIZ
+!index Seitengrîûe
+!raw [stg] @xref "Option c"
+!html_name option_b_hcp
+
+Implementationsbedingt muû eine Seite Text beim Komprimieren in einem
+StÅck im Hauptspeicher vorliegen. DefaultmÑûig wird hierzu ein Buffer von
+8 KB Grîûe verwendet. Bei sehr langen Seiten kann dies natÅrlich mal nicht
+ausreichen, weshalb die Grîûe des verwendeten Buffers mit der Option -b
+eingestellt werden kann.
+
+Falls nicht komprimiert wird, kînnen die einzelnen Seiten "beliebig" lang
+werden, denn in diesem Fall kann der Text "stÅckchenweise" in die
+Ausgabedatei geschrieben werden.
+
+(!U)Beispiel(!u):
+
+!begin_quote
+    HCP -b16 TEST.TXT
+!end_quote
+
+    Åbersetzt die Datei TEST.TXT und benutzt fÅr das Packen der Seiten
+    einen Buffer von 16 KB.
+
+Falls die vorgegebene/eingestellte Buffergrîûe fÅr eine Seite nicht
+ausreicht, so versucht der HCP selbststÑndig, den Buffer zu vergrîûern.
+Dazu wird jedoch kurzzeitig mehr als doppelt so viel Speicher benîtigt,
+als die Buffergrîûe angibt. Wenn der Hauptspeicher also relativ voll
+ist, kann dieses Verfahren fehlschlagen, obwohl der Speicher eigentlich
+reichen wÅrde.
+
+Defaultwert:    8 KB
+Setzbar:        HCP_OPT, Kommandozeile
+!end_node
+
+!begin_node Option c: Komprimierung
+!alias Option c
+!index +-c
+!index Komprimierung
+!raw [stg] @xref "Option m: Bilder durch Rahmen ersetzen"
+!html_name option_c_hcp
+
+Damit auch sehr lange Hypertexte nicht unnîtig Platz auf dem DatentrÑger
+belegen, werden die einzelnen Seiten mit einem sehr effizienten
+Packverfahren komprimiert. Dadurch dauert das öbersetzen eines Textes
+natÅrlich etwas lÑnger. Wenn das Dokument also noch Åberarbeitet wird und
+zwischendurch nur mal eben schnell Åbersetzt werden soll, um das
+vorlÑufige Ergebnis im ST-Guide sehen zu kînnen, dann kann mit -c das
+Komprimieren abgeschaltet werden.
+
+Defaultwert:    eingeschaltet
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option d: Abstand von Verweisen
+!alias+ Option d
+!index -dN
+!html_name option_d_hcp
+
+Mit dieser Option kann bestimmt werden, welchen Abstand zwei automatisch
+gesetzte gleiche Querverweise mindestens haben sollen. DefaultmÑûig ist
+dies 1, d.h. pro Zeile wird derselbe Begriff hîchstens einmal automatisch
+zu einem Verweis.
+
+(!U)Beispiel(!u):
+
+!begin_quote
+"Wenn Fliegen hinter Fliegen fliegen, fliegen Fliegen Fliegen nach"
+!end_quote
+
+Wenn es im gleichen Text eine Seite Namens 'Fliegen' gibt, dann wird in
+obiger Zeile nur das erste Vorkommen dieses Begriffes markiert. WÅrde
+dagegen -d0 angegeben, dann markiert der HCP alle Vorkommen des Begriffes
+in der obigen Zeile.
+
+Der eigentliche Sinn dieser Option ist jedoch der, daû die Seiten nicht
+mit Referenzen ÅberfÅllt werden, denn hierdurch werden "ÅberflÅssige" weil
+mehrfache Referenzen eingespart.
+
+Defaultwert:    1, also eine Markierung pro Zeile
+Setzbar:        HCP_OPT, Kommandozeile, @{"@options" LINK "Kommando @options"}
+!end_node
+
+!begin_node Option e: Fehlerdatei
+!alias+ Option e
+!index -eERRFILE
+!index Fehlerdatei
+!raw [stg] @xref "Option q"
+!html_name option_e_hcp
+
+Mit dieser Option werden Name und Pfad der zu verwendenden Datei fÅr
+Meldungen des HCP bestimmt. Falls keine Datei angegeben wurde, erfolgen
+die Ausgaben von Warnungen und Fehlermeldungen auf dem Bildschirm.
+
+(!U)Beispiel(!u):
+
+!begin_quote
+    HCP -eERRORS.TXT test.txt
+!end_quote
+
+    Åbersetzt die Datei TEST.TXT und schreibt dabei alle Meldungen in
+    die Datei ERRORS.TXT, so daû alle Meldungen anschlieûend im Editor
+    gelesen und berichtigt werden kînnen.
+
+Die Angabe der Fehlerdatei muû in der Kommandozeile (!B)VOR(!b) dem Namen
+der Eingabedatei stehen!
+
+Defaultwert:    ausgeschaltet, also Meldungen auf den Bildschirm ausgeben
+Setzbar:        HCP_OPT, Kommandozeile
+
+!end_node
+
+!begin_node Option f: Aliase in den Index
+!alias+ Option f
+!index +-f
+!raw [stg] @xref "Kommando @alias"
+!raw [stg] @xref "Kommando @index"
+!raw [stg] @xref "Option i"
+!html_name option_f_hcp
+
+Mit dieser Option lÑût sich bestimmen, ob die Aliasnamen, die durch das
+(!link [@alias] [Kommando @alias]) Kommando definiert wurden, auch in die Indextabelle aufgenommen
+werden sollen, defaultmÑûig erscheinen solche Namen nicht im Index.
+
+Defaultwert:    aliase nicht in den Index aufnehmen
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option g: Alabels in den Index
+!alias+ Option g
+!index +-g
+!raw [stg] @xref "Kommandos @label/@alabel"
+!raw [stg] @xref "Kommando @index"
+!raw [stg] @xref "Option i"
+!html_name option_g_hcp
+
+Mit dieser Option lÑût sich bestimmen, ob die Namen, die durch das
+(!link [@alabel] [Kommandos @label/@alabel]) Kommando definiert wurden, auch in die Indextabelle aufgenommen
+werden sollen, was defaultmÑûig nicht der Fall ist.
+
+Defaultwert:    alabels nicht in den Index aufnehmen
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option i: Index automatisch erzeugen
+!alias+ Option i
+!index +-i
+!raw [stg] @xref "Kommando @width"
+!raw [stg] @xref "Option j"
+!html_name option_i_hcp
+
+Mit dieser Option lÑût sich die automatische Erzeugung einer Indextabelle
+ein- und ausschalten. DefaultmÑûig ist sie eingeschaltet und es wird eine
+Indextabelle erzeugt, es sei denn, es existiert bereits eine Seite, die
+den Namen "Index" trÑgt. Die Seite mit diesem Namen wird im Viewer bei
+Auswahl des Index-Knopfes dargestellt. Durch das Abschalten der
+automatischen Erzeugung des Index kann man auch Hypertexte ohne Index
+schreiben. Dadurch daû man die Seite mit dem eigenen Index diesen Namen
+gibt, kann man ihn auch per Hand erzeugen. So hat man dabei die grîûte
+FlexibilitÑt, aber auch die meiste Arbeit.
+
+Wird diese Seite automatisch erzeugt, so berechnet der Compiler die Anzahl
+der Spalten, die er erzeugen kann (abhÑngig vom lÑngsten Wort, der
+eingestellten Zeilenbreite ((!link [@width] [Kommando @width])) und der minimalen Spaltenbreite
+((!link [-jN] [Option j])).
+
+Defaultwert:    Index erzeugen
+Setzbar:        HCP_OPT, Kommandozeile, @options
+!end_node
+
+!begin_node Option j: Spaltenbreite fÅr Index
+!alias Option j
+!index -jN
+!raw [stg] @xref "Option i: Index automatisch erzeugen"
+!raw [stg] @xref "Kommando @index"
+!raw [stg] @xref "Kommando @symbol"
+!raw [stg] @xref "Kommando @width"
+!html_name option_j_hcp
+
+Mit dieser Option kann die minimale Spalten-Breite fÅr die Formatierung
+der Indexseite vorgegeben werden. DefaultmÑûig ist diese auf 0 Zeichen
+gesetzt, was bedeutet, daû die Spaltenbreite sich nach der LÑnge des
+lÑngsten Eintrages richtet. Ist N nicht 0, so wird der angegebene Wert als
+Spaltenbreite verwendet, sofern er grîûer ist, als der lÑngste Eintrag.
+
+Defaultwert:    0, Spaltenbreite wird passend berechnet
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option k: KompatibilitÑts-Flags
+!alias+ Option k
+!index -kVAL
+!html_name option_k_hcp
+
+Mit dieser Option kann das Verhalten des @{"ST-Guide" LINK "st-guide.hyp/Main"} beeinfluût werden. VAL
+ist dabei als Bitvektor ausgelegt:
+
+!begin_xlist [Bit 0:]
+    !item [Bit 0:] bei externen Referenzen Pfade zulassen (!nl)
+           Ab Release 15 sieht der ST-Guide bei externen Referenzen alles
+           ab dem ersten (Back-)Slash als Nodenamen an, was den Vorteil
+           hat, daû auch (Back-)Slashes innerhalb der Nodenamen erlaubt
+           sind; wer dieses Feature nicht benîtigt und stattdessen Pfade
+           bei externen Referenzen angeben mîchte, kann also -k1 als
+           Option setzen und bekommt das gewÅnschte.
+           Beispiel:
+           !begin_itemize
+           !item "sub.hyp/I/O functions" wird nur ohne -k1 Option korrekt
+             behandelt
+           !item "ordner/sub.hyp/Testseite" wird nur mit -k1 Option korrekt
+             behandelt
+           !end_itemize
+!end_xlist
+
+Defaultwert:    -k0
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option m: Bilder durch Rahmen ersetzen
+!alias+ Option m
+!index +-m
+!raw [stg] @xref "Kommando @image"
+!raw [stg] @xref "Kommando @limage"
+!raw [stg] @xref "Option c: Komprimierung"
+!html_name option_m_hcp
+
+Mit dieser Option kann das Einlesen vom Bildern aus- und eingeschaltet
+werden. Dies soll der Tatsache Rechnung tragen, daû die Compilierung von
+Bildern sehr zeitaufwendig ist und es daher wÅnschenswert scheint, wÑhrend
+der Entwicklung eines Hypertextes, in der Tastphase also, diese Zeit
+einzusparen.
+
+Wird das Einlesen von Bildern abgeschaltet, so erzeugt der hcp fÅr jeden
+@image-Befehl eine @box, damit sichtbar bleibt, wo im Text sich Bilder
+befinden.
+
+Defaultwert:    eingeschaltet (Bilder werden gelesen)
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option n: Nodes in den Index
+!alias+ Option n
+!index +-n
+!raw [stg] @xref "Kommando @indexon"
+!raw [stg] @xref "Kommando @indexoff"
+!raw [stg] @xref "Kommando @index"
+!raw [stg] @xref "Kommando @symbol"
+!raw [stg] @xref "Option i"
+!raw [stg] @xref "Option g"
+!raw [stg] @xref "Option f"
+!html_name option_n_hcp
+
+Mit dieser Option lÑût sich ein- und ausschalten, ob die Namen der Seiten
+automatisch in die Indextabelle aufgenommen werden oder nicht. Zu Beginn
+ist diese Option eingeschaltet und die Seitennamen werden dort
+aufgenommen. Wenn man aber, z.B. durch das (!link [@index] [Kommando @index]) Kommando ganz genau
+selbst bestimmen will, was in die Indextabelle aufgenommen werden soll,
+muû man dies aber eben auch abstellen kînnen.
+
+Defaultwert:    eingeschaltet, Seitennamen werden in den Index aufgenommen
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option o: Ausgabedatei
+!alias+ Option o
+!index -oOUTFILE
+!index Ausgabedatei
+!html_name option_o_hcp
+
+Mit dieser Option werden Name und Pfad der zu verwendenden Ausgabedatei
+festgelegt. Dieser Parameter ist optional, weil:
+!begin_itemize
+!item Beim öbersetzen die Ausgabedatei auch automatisch erzeugt werden kann
+  durch éndern der Endung der Eingabe auf ".HYP". Aus TEST.TXT wird also
+  ohne -o eine Datei TEST.HYP im durch HYPFOLD festgelegten Verzeichnis
+  erzeugt.
+  
+  Wird das Tildezeichen '~' als Name der Ausgabedatei angegeben, also
+  '-o~', dann wird die Ausgabedatei im Verzeichnis der Eingabedatei
+  erzeugt.
+!item Bei (!link [-v] [Option v]) (view) (!link [-r] [Option r]) (recompile) und (!link [-l] [Option l]) (list) erfolgen die Ausgaben jeweils
+  auf dem Bildschirm, falls keine Datei angegeben wurde.
+!end_itemize
+
+(!U)Beispiele(!u):
+
+!begin_quote
+    HCP -oAUSGABE.HYP TEST.TXT
+!end_quote
+
+    Åbersetzt die Datei TEST.TXT und schreibt das Ergebnis in die Datei
+    AUSGABE.HYP
+
+!begin_quote
+    HCP TEST.TXT
+!end_quote
+
+    Åbersetzt die Datei TEST.TXT und schreibt das Ergebnis in die Datei
+    TEST.HYP
+
+Die Angabe der Ausgabedatei muû in der Kommandozeile (!B)VOR(!b) dem Namen
+der Eingabedatei stehen!
+
+Defaultwert:    Name der Eingabedatei mit Endung .HYP im Ordner HYPFOLD
+Setzbar:        HCP_OPT, Kommandozeile
+
+!end_node
+
+!begin_node Option p: Typ recompilierter Bilder
+!alias+ Option p
+!index -pVAL
+!raw [stg] @xref "Kommando @image"
+!raw [stg] @xref "Kommando @limage"
+!html_name option_p_hcp
+
+Mit dieser Option kann der Typ von zu recompilierenden Bildern explizit
+festgelegt werden. DefaultmÑûig werden alle Bilder in das Format
+recompiliert, in dem sie auch eingelesen wurden. Diese Option hat einen
+Parameter, welcher das gewÅnschte Format spezifiziert; dabei bedeutet:
+!begin_xlist [3:] !compressed
+    !item [0:] recompilieren, wie eingelesen
+    !item [1:] IFF-Format
+    !item [2:] ICN-Format
+    !item [3:] IMG-Format
+!end_xlist
+
+Defaultwert:    0
+Setzbar:        HCP_OPT, Kommandozeile
+!end_node
+
+!begin_node Option q: GesprÑchigkeit
+!alias+ Option q
+!index +-q[qq]
+Mit der (evtl. wiederholt angegebenen) -q Option kann das Ausgabeverhalten
+des HCP gesteuert werden.
+!html_name option_q_hcp
+
+Normalerweise werden sowohl im Pass 1 als auch im Pass 2 jeweils die Namen
+der Seiten ausgegeben, welche gerade Åbersetzt werden. Auûerdem wird am
+Ende von Pass 2 eine kleine Statistik gezeigt.
+
+!begin_xlist [-qqq] !compressed
+!item [-q]    schaltet die Ausgaben von Pass 1 ab
+!item [-qq]   schalten die Ausgabe der Seitennamen beider Passes ab
+!item [-qqq]  schalten alle Bildschirm-Ausgaben ab, sofern es sich
+      nicht um Fehler oder Warnungen handelt. Diese Ausgaben
+      kînnen mit (!link [-e] [Option e]) jedoch in eine Datei geschrieben werden.
+!end_xlist
+Entsprechend viele +q machen die -q Angaben wieder rÅckgÑngig.
+
+Defaultwert:    0, alle Ausgaben
+Setzbar:        HCP_OPT, Kommandozeile, @options
+!end_node
+
+!begin_node Option s: Zeilenumbruch
+!alias+ Option s
+!index +-s
+!html_name option_s_hcp
+
+Normalerweise bricht der HCP automatisch alle Zeilen, die lÑnger sind als
+mit @width angegeben, um. Falls dies einmal nicht erwÅnscht sein sollte,
+so kann dieses Feature mit der Option -s abgeschaltet werden.
+
+Defaultwert:    eingeschaltet
+Setzbar:        HCP_OPT, Kommandozeile, @options
+!end_node
+
+!begin_node Option t: Tabulatorweite
+!alias+ Option t
+!index -tN
+!raw [stg] @xref "Kommando @tabsize"
+!html_name option_t_hcp
+
+Falls ein zu Åbersetzender Text Tabulatorzeichen enthÑlt, so werden diese
+vom HCP zu Leerzeichen expandiert. DefaultmÑûig wird als Tabulatorweite 8
+Zeichen angenommen, da die meisten Editoren jedoch auch andere Werte
+erlauben, kann mit der -t Option die wirklich verwendete Tabulatorweite
+eingestellt werden.
+
+(!U)Beispiel(!u):
+
+!begin_quote
+    HCP -t4 TEST.TXT
+!end_quote
+
+    Åbersetzt die Datei TEST.TXT und expandiert dabei alle Tabulatorzeichen
+relativ zu 4 Leerzeichen.
+
+Defaultwert:    8
+Setzbar:        HCP_OPT, Kommandozeile, @options
+!end_node
+
+!begin_node Option u: Einbeziehen anderer Hypertexte
+!alias+ Option u
+!index -uHYPFILE
+!raw [stg] @xref "Kommando @uses"
+!raw [stg] @xref "Kommando @extern"
+!html_name option_u_hcp
+
+Mit dieser Option kînnen von der Kommandozeile aus Dateien angegeben
+werden, zu denen automatisch Referenzen erzeugt werden sollen.
+
+Die Option -u hat die selbe Wirkung wie das Kommando @uses.
+
+Defaultwert:    keine Aktion
+Setzbar:        HCP_OPT, Kommandozeile
+!end_node
+
+!begin_node Option w: Warten auf Taste
+!alias+ Option w
+!index -wVAL
+Mit dieser Option kann konfiguriert werden, wann der hcp vor dem Beenden
+auf eine Taste wartet; dies ist insbesondere sinnvoll, wenn er vom Desktop
+aus gestarteet wird, da es in diesem Fall nicht mîglich ist, alle Ausgaben
+zu lesen, wenn hcp nicht auf einen Tastendruck wartet.
+!html_name option_w_hcp
+
+Zusammenfassung:
+!begin_xlist [-w2:] !compressed
+!item [-w0:] niemals auf Taste warten, selbst wenn Fehler aufgetreten sind
+!item [-w1:] auf Taste warten, falls ein Fehler auftritt (Default)
+!item [-w2:] immer auf eine Taste warten, aus KompatibilitÑtsgrÅnden ist dieser
+     Modus auch bei -w (also ohne Ziffer) aktiv
+!end_xlist
+
+Defaultwert:    0
+Setzbar:        HCP_OPT, Kommandozeile
+!end_node
+
+!begin_node Option x: Titel statt Nodenamen in den Index
+!alias+ Option x
+!index +-x
+!raw [stg] @xref "Option n: Nodes in den Index"
+!raw [stg] @xref "Kommando @indexon"
+!raw [stg] @xref "Kommando @index"
+!raw [stg] @xref "Kommando @symbol"
+!html_name option_x_hcp
+
+Einschalten dieser Option bewirkt, daû nicht die Nodenamen, sondern
+deren Titel (falls angegeben) in die Indexseite aufgenommen werden.
+
+Defaultwert:    ausgeschaltet
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option y: 1. Zeichen insensitiv
+!alias+ Option y
+!index +-y
+!html_name option_y_hcp
+
+Einschalten dieser Option bewirkt, daû der (!link [AutoReferenzer] [Option a]) das jeweils
+erste Zeichen jedes Nodenamens daraufhin prÅft, ob es ein Groûbuchstabe
+ist, und wenn ja, dann automatisch ein (!link [alias] [Kommando @alias]) erzeugt in welchem dieser
+Buchstabe klein geschrieben ist.
+
+Zu "@node Test" wird also automatisch ein "@alias test" erzeugt, im Text
+also alle Worte "Test" und "test" als Verweis auf diese Seite markiert.
+Dies ist insbesondere fÅr englischsprachige Texte von Nutzen, da dort
+bekanntlich auch Substantive im Satz klein geschrieben werden.
+
+Defaultwert:    ausgeschaltet
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!begin_node Option z: REFerenzdateien
+!alias+ Option z
+!index +-z[z]
+!raw [stg] @xref "reflink.hyp/Main" "RefLink"
+!raw [stg] @xref "st-guide.hyp/Extra -> Suchen" "Suchen im ST-Guide"
+!raw [stg] @xref "st-guide.hyp/AV-Protokoll" "AV Protokoll"
+!raw [stg] @xref "st-guide.hyp/PureC-Protokoll" "PureC Protokoll"
+!html_name option_z_hcp
+
+Mit dieser Option wird festgelegt, ob der Compiler eine Referenz-Datei
+erzeugen soll, oder nicht. DefaultmÑûig wird keine solche Datei erzeugt,
+dies muû somit durch '+z' eingeschaltet werden.
+
+Wird +zz angegeben, so Åbernimmt der Compiler neben der Erzeugung der
+REF-Datei zusÑtzlich die Aufgabe, diese in die Default REF-Datei
+einzubinden.
+
+Die Referenzdatei dient dem ST-Guide dazu, externe Referenzen, als
+Parameter Åbergebene Pattern oder auch Suchbegriffe schnell und sicher
+aufzufinden, ohne dazu erst alle existierenden Hypertext Dateien
+einlesen zu mÅssen. Hierzu solten alle erzeugten REF Dateien mit dem
+Programm RefLink zu einem globalen, fÅr den ST-Guide auffindbaren
+"Lexikon" verbunden werden.
+
+Hierzu ist es natÅrlch notwendig oder zumindest ratsam, die HYP Datei
+immer zusammen mit der zugehîrigen REF Datei weiterzugeben, damit alle
+Leser ihr persînliches "Lexikon" erweitern bzw. auf den neusten Stand
+bringen kînnen.
+
+Defaultwert:    0
+Setzbar:        HCP_OPT, Kommandozeile, @options
+
+!end_node
+
+!end_node

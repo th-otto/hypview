@@ -1,0 +1,286 @@
+!begin_node Technical
+For all who are interested a description of the file formats follows.
+
+Format of a hypertext file (*.HYP):
+!begin_enumerate !compressed
+!item (!link [Header] [Header of a hypertext file])
+!item (!link [Index table] [Index region of a hypertext])
+!item (!link [Extended headers] [Extended Headers])
+!item (!link [Data] [Data region of a hypertext])
+!end_enumerate
+
+(!xlink [The construction of a hypertext reference (*.REF!)] [reflink.hyp/REF-format])
+
+!begin_node Header of a hypertext file
+The header of a hypertext file is constructed as follows:
+!begin_xlist [4] !compressed
+  !item [4] bytes Magic ('HDOC')
+  !item [4] bytes Length of the index table
+    (Pages, images, external references, system, rexx)
+  !item [2] bytes Number of entries in this table
+  !item [1] byte I.D. showing which version of the compiler was used 
+    (currently 3)
+  !item [1] byte I.D. under which operating system the translation was made
+    (0: Unknown, 1: AMIGA, 2: ATARI, 3: Macintosh)
+!end_xlist
+!end_node
+
+!begin_node Index region of a hypertext
+!alias index table
+!begin_xlist [4] !compressed
+    !item [1] byte Length of this entry
+    !item [1] Type of this entry:
+        !begin_xlist [7:] !compressed
+        !item [0:] Internal page        ((!link [@node] [Command @node]))
+        !item [1:] Popup-node           ((!link [@pnode] [Command @pnode])
+        !item [2:] External reference     ((!link [@{... link FILE [LINE!]}] [@{ link }]))
+        !item [3:] Image                 ((!link [@image] [Command @image]))
+        !item [4:] SYSTEM-argument      ((!link [@{... system ARG}] [@{ system }]))
+        !item [5:] REXX-script          ((!link [@{... rxs FILE}] [@{ rxs }]))
+        !item [6:] REXX-command        ((!link [@{... rx ARG}] [@{ rx }]))
+        !item [7:] QUIT dummy-entry   ((!link [@{... quit}] [@{ quit }]))
+        !end_xlist
+    !item [4] bytes Seek offset into the file
+    !item [2] bytes Difference decompressed/compressed length of the object
+    !item [2] bytes Index of the successor (following object)
+    !item [2] bytes Index of the predecessor
+    !item [2] bytes Index of the table of contents for this object
+    !item [x] bytes Name of the object, NUL-terminated
+    !item [ ] Possibly a further NUL-byte so that the next entry starts at an 
+     even address again.
+    !end_xlist
+    
+    There are as many of these structures in the file as given by  the
+     corresponding value in the header.
+
+    The length of the page  is calculated from the difference  between
+     the seek-offset of this page and that of the successor object.
+
+Because images can be larger than 65KB, and the information about
+the length of the uncompressed data is restricted to two bytes (= up to
+65536 bytes of data), the 'next' entry is used to calculate the
+true size:
+!begin_quote
+   uncompressed size = comp. size + (index->next<<16)+index->comp_diff
+!end_quote
+!end_node
+
+!begin_node Extended Headers
+
+Extended headers  in  general  serve  the  purpose  to  keep  all  data
+compatible to older versions even if the system is extended.
+
+The construction of such a header is as follows:
+!begin_xlist [2] !compressed
+!item [2] bytes I.D.
+!item [2] bytes Length
+!item [n] bytes Data
+!end_xlist
+
+At present the following headers exist:
+!begin_xlist [11] !compressed
+!item [0]   End-I.D., no further headers follow
+!item [1]   Database name, followed by length and C-string
+    ((!link [@database] [Command @database]))
+!item [2]   Name of the default-node, followed by length and C-string
+    ((!link [@default] [Command @default]))
+!item [3]   Name of the host-application(s), followed by length & C-string(s)
+    ((!link [@hostname] [Command @hostname]))
+!item [4]   Options that differ from the default settings, followed by length 
+    and C-String
+    (@options, Command line)
+!item [5]  Name of the author, followed by length and C-string
+         ((!link [@author] [Command @author]))
+!item [6] Version-information, followed by length and C-string
+    ((!link [@$VER:] [Command @$VER:]))
+!item [7]   Name of the Help page, followed by length and C-string
+    ((!link [@help] [Command @help]))
+!item [8]   Description of the domains into which the text is to be
+    classified, followed by length and C-string
+    ((!link [@subject] [Command @subject]))
+!item [9]   HypTree header comprising: (!nl)
+    4 bytes: sum of the length of all explicit titles (!nl)
+    Array of word bit-vectors: (!nl)
+    ~1st word: Bit n == 1 -> Page n has an explicit (!link [title] [Command @title]) (!nl)
+    ~2nd word: Bit n == 1 -> Page 16+n has an explicit title (!nl)
+    ~etc.
+!item [10]  Flags for ST-Guide
+!item [11]  Used line length ((!link [@width] [Command @width]))
+!end_xlist
+
+A read algorithm for  these headers must skip  over all the headers  it
+does not recognise without warning or error messages.
+
+!end_node
+
+!begin_node Data region of a hypertext
+
+This comprises all pages, popup's and images that have been defined  in
+the hypertext. Usually  the data is  present in a  compressed form,  so
+that  it  cannot  be  used  as  is.  The  compression  algorithm   used
+corresponds to the lh5 process of  LHarc, and so is very efficient  and
+also fast enough, at least for decompression.
+
+The  sequence of the data objects corresponds to the (!link [index] [Command @index]) page; external references,
+system and  rexx-entries  do not  have  any  data in  this  region,  so
+consequently the data always belong to  a 
+    !begin_itemize
+    !item (!link [text page] [Format of a text object]) or to an
+    !item (!link [image] [Format of an image object])
+    !end_itemize
+
+!begin_node Format of a text object
+If the  data belongs  to a  text page  ((!link [@node] [Command @node]), (!link [@pnode] [Command @pnode]))  then  the
+(decompressed) data has the following format:
+
+!begin_xlist [f)]
+    !item [a)] Optional graphic region ((!link [@node] [Command @node]) only) (!nl)
+        Here all graphic objects of this page are described as 
+       follows:
+        !begin_xlist [1] !compressed
+        !item [1] byte I.D (27, ESCAPE)
+        !item [1] byte Type
+            !begin_xlist [53:]
+            !item [50:] Image                    ((!link [@image] [Command @image]))
+            !item [51:] Line                     ((!link [@line] [Command @line]))
+            !item [52:] Box                      ((!link [@box] [Command @box]))
+            !item [53:] Box with rounded corners ((!link [@rbox] [Command @rbox]))
+            !end_xlist
+        !item [2] bytes Index, if an (!link [image] [Command @image]) (!nl)
+            So that no NUL-bytes result, this value is present to a 
+          base of 255 and a value of 1 is added to both bytes
+        !item [1] byte X-offset in characters (!nl)
+           (X == 0 for centered images)
+        !item [2] bytes Y-offset in characters (!nl)
+            So that no NUL-bytes result, this value is present to a 
+          base of 255 and a value of 1 is added to both bytes
+        !item [1] byte width of the object in characters (!nl)
+          (width == 1 for (!link [@limage] [Command @limage]))
+        !item [1] byte Height of the object in characters
+        !item [1] byte Data, if not an image (!nl)
+            !begin_xlist [Line:] !compressed
+            !item [Line:] Bit 0 == 1: Arrowhead at start
+            !item [     ] Bit 1 == 1: Arrowhead at end
+            !item [     ] Bit 2: unused
+            !item [     ] Remaining bits: Line style
+            !item [Box:]
+            !item [RBox:]  Fill-pattern
+            !end_xlist
+        !end_xlist
+        For images width and height will be ignored, for (!link [lines] [Command @line]) they 
+       form the bounding rectangle.
+
+    !item [b)] Optional up to 12 cross-reference data blocks
+        !begin_xlist [1] !compressed
+        !item [1] byte I.D. (27, ESCAPE)
+        !item [1] byte Type (48)
+        !item [1] byte Length (over all)
+        !item [2] bytes Index number of the target (!link [node] [Command @node])
+        !item [ ] Text for the popup, NUL-terminated
+        !end_xlist
+        
+    !item [c)] Optional further data blocks
+        !begin_xlist [1] !compressed
+        !item [1] byte I.D. (27, ESCAPE)
+        !item [1] byte Type (40-47)
+        !item [1] byte Length (over all)
+        !item [ ] Daten
+        !end_xlist
+        
+    !item [d)] Optional window (!link [title] [Command @title]) ((!link [@node] [Command @node]), (!link [@title] [Command @title]))
+        !begin_xlist [1] !compressed
+        !item [1] byte I.D. (27, ESCAPE)
+        !item [1] byte Type (35)
+        !item [ ] Window title, NUL-terminated
+        !item [ ] Possible fill-byte so that the text starts at an even 
+        address.
+        !end_xlist
+
+    !item [e)] Optional table with objects & pages ((!link [@tree] [Commands @tree/@endtree]))
+        !begin_xlist [1] !compressed
+        !item [1] byte I.D. (27, ESCAPE)
+        !item [1] byte Type     (49, ObjTable)
+        !item [2] bytes Line-number in the target page
+        !item [2] bytes Number of the (!link [tree] [Commands @tree/@endtree])
+        !item [2] bytes Object in this tree
+        !item [2] bytes Page index
+        !end_xlist
+       So that no  NUL-bytes result,  this value is  present to  a
+       base of 255 and a value of 1 is added to both bytes;
+
+    !item [f)] Optional  text  with  attributes (!nl)
+       The  individual lines  are
+       terminated with a NUL-byte, and  can contain any amount  of
+       supplementary information that is not to be output.
+
+        These information sequences are always headed by the  ESCAPE
+       (27) character, which is followed  by a further ESCAPE or  a
+       type; in the first case the ESCAPE character is to be output
+       and in the second case the type determines how one proceeds:
+        !begin_xlist [>= 100:] !compressed
+            !item [36:] Reference to another page (!nl)
+                    @{... link NODE}
+            !item [37:] as 36, but with line number (!nl)
+                    @{... link NODE LINE}
+            !item [38:] as 36, but only created with 'alink' (!nl)
+                    @{... alink NODE}
+            !item [39:] as 38, but with line number (!nl)
+                    @{... alink NODE LINE}
+            !item [>= 100:] Vector for text-attributes:
+                After subtracting 100 the following bit-vector is 
+                the result:
+                !begin_xlist [32:] !compressed
+                !item [ 1:] Bold characters
+                !item [ 2:] Ghosted (grey) characters
+                !item [ 4:] Italic characters
+                !item [ 8:] Underlined characters
+                !item [16:] 'Outlined' characters
+                !item [32:] Shadowed characters
+                !end_xlist
+            !end_xlist
+            
+            With types 37 and 39 a  2 byte line number follows;  so
+            that no NULL-bytes result, this  value is present to  a
+            base of 255 and a value of 1 is added to both bytes.
+
+            For types 36-39 there now follow
+            !begin_xlist [1] !compressed
+            !item [2] bytes Index into the table from the Index-region
+                  So that  no  NULL-bytes  result,  this  value  is
+                  present to a  base of  255 and  a value  of 1  is
+                  added to both bytes
+            !item [1] byte Length of the corresponding string + 32  If
+                  the length  equals  32,  then  the  name  of  the
+                  indicated  object  is  to  be  output   directly,
+                  otherwise as many character as given in  'length'
+                  minus 32 from the following character string.
+            !end_xlist
+    !end_xlist
+!end_node
+
+!begin_node Format of an image object
+
+    If the data belongs to an image, then the (decompressed) data  has
+     the following format:
+    !begin_xlist [a)]
+    !item [a)] Header
+            !begin_xlist [2] !compressed
+            !item [2] bytes width of the image in pixels (will be ignored)
+            !item [2] bytes Height of the image in pixels (will be ignored)
+            !item [1] byte Number of planes (1..8)
+            !item [1] byte 'Planepic': Bit n == 1 --> Data for plane n 
+            present
+            !item [1] byte 'PlaneOnOff': Bit n == 1 --> Plane completely 
+            filled
+            !item [1] byte filler: Ensures the (!link [image] [Command @image]) start at an even address
+            !end_xlist
+    !item [b)] 1st Plane
+    !item [  ] Optional 2nd. Plane
+    !item [  ]  ...
+    !item [  ] Optional 8th Plane
+    !end_xlist
+!end_node
+
+!end_node # Data region of a hypertext
+
+!end_node # Technical

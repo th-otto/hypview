@@ -1,0 +1,173 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+!use_about_udo          [none]
+!use_auto_toptocs       [none]
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help Hilfsseite
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Der Hypertext zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] (!HYPFIND)
+!docinfo [author] Holger Weets/Thorsten Otto
+
+!macro PROGRAM (!HYPFIND)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!!ifdest [stg,amg]
+!begin_raw
+@subject "Dokumentation/ST-Guide"
+@options "+z -t4 +g -i -s"
+!end_raw
+!endif
+!docinfo [stgdatabase] HypFind Dokumentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords HypFind
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+
+!begin_node HypFind: Such-Werkzeug
+!html_name hypfind_main
+
+!raw [stg] @box 3 68 3 0
+~ (!nl)
+~~~~HypFind, ein automatisches Such-Werkzeug und Hypertext Generator (!nl)
+
+ (!nl)
+ (!nl)
+Inhaltsverzeichnis:
+
+~~(!link [Allgemeines] [Allgemeines]) (!nl)
+~~(!link [Aufruf von HypFind] [Aufruf von HypFind]) (!nl)
+~~(!link [Arbeitsweise] [Arbeitsweise]) (!nl)
+~~(!XLINK [Danksagung] [st-guide] [Danksagung])
+
+!end_node
+
+!begin_node Allgemeines
+!html_name hypfind_general
+
+HypFind ist ein Hilfsprogramm das automatisch einen Hypertext mit
+Querverweisen auf gefundene Textstellen erzeugen kann. Hier ist ein Beispiel:
+
+Starte HypFind und gib folgende Kommandozeile ein, dann wÑhle 'OK':
+
+!begin_quote
+-p Joe
+!end_quote
+
+HypFind durchsucht alle Hypertexte in allen Verzeichnissen die in
+der ST-GUIDE.INF Variablen PATH angegeben sind, und erzeugt
+einen Hypertext mit Verweisen auf alle Stellen in denen das
+Wort 'Joe' vorkommt. Hier ist ein Auszug:
+
+!begin_verbatim
+...
+STGINTRO.HYP, Node 'Using boxes'
+:   Click me now!    Author: Joe Connor
+
+OCR_E.HYP, Node 'Updates'
+: Joe Connor, 65 Mill Road, Colchester, CO4 5LJ, England
+...
+!end_verbatim
+
+Click on any desired reference to load the specified hypertext opened
+at the relevant page!
+
+!end_node
+
+!begin_node Aufruf von HypFind
+!html_name hypfind_usage
+
+Syntax: hypfind [-q -c] -p <pattern> [hypertext]
+
+!begin_xlist [xhypertextx] !compressed
+!item [q:]          keine Ausgaben machen (quiet)
+!item [c:]          nicht compilieren
+!item [p:]          hier folgt DURCH EIN LEERZEICHEN GETRENNT der Suchbegriff; enthÑlt
+   er Leerzeichen, so ist er durch Hochkommata einzuschlieûen, also (!nl)
+
+-p 'zwei Worte' (!nl)
+
+!item [[hypertext!]] Wird kein Hypertext angegeben, so werden alle aus PATHS durchsucht,
+ansonsten nur die angegebenen; die Hypertexte mÅssen mit Pfad angegeben
+werden.
+
+!end_xlist
+
+!end_node
+
+!begin_node Arbeitsweise
+!html_name hypfind_operation
+
+Erzeugt wird eine Datei Namens HYPFIND.STG im GUIDES Ordner, wurde das
+Pattern gefunden (und die Compilierung nicht abgestellt), so wird
+anschlieûend gleich der hcp aufgerufen, um einen Hypertext Namens
+HYPFIND.HYP zu erzeugen. Diese Datei wird direkt beim Aufruf von hypfind
+gelîscht(!)
+
+Erzeugt werden dabei Paare (!nl)
+@{Datei, Node '<name>' link datei/node Zeile} (!nl)
+: <Trefferzeile>
+
+Pnodes sowie Seiten mit dem Namen 'Index' werden nicht durchsucht.
+
+Zur Zeit nicht implementiert:
+!begin_itemize !compressed
+!item sensitiv/insensitiv suchen
+!item nur einen Treffer pro node ausgeben
+!item auch Seitennamen mit Pattern vergleichen
+!end_itemize
+
+Viel Spaû beim Testen :-)
+
+!end_node
+
+!begin_node* Hilfsseite
+!html_name hypfind_helppage
+Dieser Text beschreibt die Funktionsweise und Anwendung  des
+Textsuch-Programms HypFind.
+
+!end_node
+
+!end_document

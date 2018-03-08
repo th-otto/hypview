@@ -1,0 +1,1506 @@
+
+
+screen( "Copyright" )
+PD.HLP wurde Åbersetzt am 3.Februar 1992.
+
+(c) 1990 Borland International, Inc.
+\end
+
+screen( "Index" )
+Index der verfÅgbaren SchlÅsselwîrter:
+
+     \#A..\#       \#B..\#       \#C..\#      \#D..\#
+
+     \#E..\#       \#F..\#       \#G..\#      \#H..\#
+
+     \#I..\#       \#J..\#       \#K..\#      \#L..\#
+
+     \#M..\#       \#N..\#       \#O..\#      \#P..\#
+
+     \#Q..\#       \#R..\#       \#S..\#      \#T..\#
+
+     \#U..\#       \#V..\#       \#W..\#      \#X..\#
+
+     \#Y..\#       \#Z..\#
+
+     \#Sonstiges\#
+\end
+
+screen( "Haupt-MenÅ",
+		"MenÅleiste",
+		capsensitive("Menu") )
+Die MenÅleiste
+----------------------------------------------------------------------
+
+\#Debugger\# \#File\# \#View\# \#Action\# \#Run\# \#Options\# \#Help\#
+\end
+
+screen( "Versionsnummer",
+		"Debugger (MenÅ)" )
+Der MenÅtitel 'Debugger'
+----------------------------------------------------------------------
+
+Hier gelangt man zum  Eintrag Åber das Copyright, in dem sich die
+Versionsnummer Ihres Debuggers befindet.
+\end
+
+screen( "File-MenÅ",
+		"MenÅ, File-",
+		capsensitive("File") )
+Der MenÅtitel 'File'
+----------------------------------------------------------------------
+
+    \#Load...\#            Programm laden
+    \#Info...\#            Informationen Åber das Programm ausgeben
+
+    \#Close Window\#       Aktuelles Fenster schlie·en
+    \#Cycle Windows\#      Zum nÑchsten Fenster springen
+
+    \#Quit\#               Pure Debugger beenden
+\end
+
+screen( "MenÅ, View-",
+		"View-MenÅ",
+		capsensitive("View") )
+Der MenÅtitel 'View'
+----------------------------------------------------------------------
+
+    \#Function...\#        Zur angegebenen Funktion springen
+    \#Breakpoints\#        Breakpoint-Fenster îffnen
+    \#Variables\#          Variablen-Fenster îffnen
+    \#Watches\#            Watches-Fenster îffnen
+    \#Modules\#            Auswahlliste fÅr Module
+    \#Stack\#              Stack-Fenster îffnen
+
+    \#Assembly...\#        Assembly-Fenster aktivieren
+    \#Dump...\#            Dump-Fenster aktivieren
+    \#CPU\#                CPU-Fenster îffnen
+
+    \#File...\#            File-Fenster îffnen
+    \#Log\#                Log-Fenster îffnen
+    \#User Screen\#        Ausgabebildschirm zeigen
+\end
+
+screen( "MenÅ, Action-",
+		"Action-MenÅ",
+		capsensitive("Action") )
+Der MenÅtitel 'Action'
+----------------------------------------------------------------------
+
+    \#Find...\#            Ausdruck suchen
+    \#Find Same\#          Suche wiederholen
+    \#Goto Line...\#       GewÅnschte Zeile anspringen
+
+    \#Breakpoint...\#      Breakpoint-Formular aktivieren
+    \#Inspect...\#         Datenobjekt ins Inspect-Fenster aufnehmen
+    \#Watch...\#           Ausdruck im Watches-Fenster eintragen
+    \#Log...\#             Ausdruck auswerten und protokollieren
+
+    \#Change...\#          Werte Ñndern
+    \#Edit...\#            Aufruf eines externen Editors
+    \#Block...\#           Formular zur Manipulation von Speicherblîcken
+    \#Delete\#             Eintrag lîschen
+    \#Delete all\#         Fensterinhalt lîschen
+\end
+
+screen( "MenÅ, Run-",
+		capsensitive("Run-MenÅ") )
+Der MenÅtitel 'Run'
+----------------------------------------------------------------------
+
+    \#Run\#                Programm starten
+    \#Trace into\#         Einzelne Zeilen oder Befehle ausfÅhren
+    \#Step over\#          Einzelne Zeilen oder Befehle ausfÅhren,
+                       Unterprogramme Åberspringen
+    \#Until return\#       Programm laufen lassen bis die Funktion
+                       beendet ist
+    \#Animate\#            Programm automatisch Schritt fÅr Schritt
+                       langsam abarbeiten
+    \#Program reset\#      Programm erneut laden
+\end
+
+screen( "Options-MenÅ",
+		"MenÅ, Options-",
+		capsensitive("Options") )
+Der MenÅtitel 'Options'
+----------------------------------------------------------------------
+
+    \#Environment\#        VerÑndern der Standardkonfiguration
+    \#Directories\#        Verzeichnis fÅr die Suche der Quelltextdateien
+    \#Arguments\#          Dialogbox zum Setzen von Kommandozeilenargumenten
+
+    \#Load\#               Konfigurationsdatei laden
+    \#Save\#               Konfigurationsdatei speichern
+\end
+
+screen( "MenÅ, Help-",
+		"Help-MenÅ",
+		capsensitive("Help") )
+Der MenÅtitel 'Help'
+----------------------------------------------------------------------
+
+Nach Auswahl der gewÅnschten Hilfestellung erscheint ein Fenster mit
+informativem Text, wobei einige Stichwîrter in Fettschrift und unter-
+strichen dargestellt sind. Wenn man diese mit der Maus doppelt oder
+einfach anklickt bzw. den Cursor darauf positioniert und die 'Help'-
+Taste drÅckt, erscheint ein neues Fenster, das noch detailliertere
+Informationen zum jeweiligen Stichwort enthÑlt. Mit der 'Undo'-Taste
+gelangen Sie zum vohergehenden Stichwort zurÅck. Beenden lÑût sich die
+Help-Funktion entweder durch Anklicken des Schlieûfeldes oben links im
+Fenster oder durch DrÅcken der Tastenkombination \#CONTROL\#-U.
+
+    \#Menu\#         enthÑlt MenÅ-Struktur von Pure Debugger.
+    \#Debugger\#     enthÑlt eine öbersicht der Funtionen von
+                 Pure Debugger.
+    \link("%%GLOBAL%%")C Language\#   enthÑlt Informationen Åber die Syntax
+                 der Programmiersprache C.
+    \link("%%GLOBAL%%")Libraries\#    enthÑlt ausfÅhrliche ErlÑuterungen Åber alle
+                 verfÅgbaren Funktionen der Pure-C-Bibliotheken.
+    \link("%%GLOBAL%%")Assembler\#    liefert Informationen zum Assembler.
+    \#Index\#        enthÑlt ein Verzeichnis der Åber Help
+                 verfÅgbaren Informationen.
+\end
+
+screen( "Programm laden",
+		"File/Load...",
+		capsensitive("Load...") )
+\#File\#/Load                                                    \#CONTROL\#-O
+----------------------------------------------------------------------
+
+Mit Hilfe des Befehls \#File\#/Load... kînnen Sie ein anderes Programm
+zum Debuggen laden. Es erscheint eine \#Dateiauswahlbox\#, in der Sie
+das gewÅnschte Programm selektieren mÅssen.
+
+WÑhlen Sie mit der Maus die Datei aus, die Sie laden wollen, und
+drÅcken Sie RETURN oder verwenden Sie den Maus-Doppelklick.
+\end
+
+screen( "Programm-Informationen",
+		"Informationen zum Prg.",
+		"File/Info...",
+		capsensitive("Info...") )
+\#File\#/Info                                                    \#CONTROL\#-I
+----------------------------------------------------------------------
+
+Mit dem Befehl \#File\#/Info... erhalten Sie einen öberblick Åber die
+Speicherbereiche, die von Pure Debugger und von Ihrem Programm
+belegt werden, sowie die Startadresse und LÑnge der Text-, Data-
+und Bss-Segmente. Die Angaben erfolgen in hexadezimaler Darstellung.
+Desweiteren wird Ihnen der Name des Programms, das Sie gerade
+debuggen, angegeben. Diese Informationen erscheinen in einer
+Dialogbox, die man mit RETURN verlassen kann.
+\end
+
+screen( "File/Close Window",
+		"Fenster, Schlieûen der",
+		capsensitive("Close Window") )
+\#File\#/Close Window                                            \#CONTROL\#-U
+----------------------------------------------------------------------
+
+Geîffnete Fenster kînnen Sie mit dem Befehl \#File\#/Close Window
+wieder schlie·en.
+\end
+
+screen( "Fenster, Wechseln der",
+		"File/Close Windows",
+		capsensitive("Cycle Windows") )
+\#File\#/Cycle Window                                            \#CONTROL\#-W
+----------------------------------------------------------------------
+
+Falls Sie mehrere Fenster geîffnet haben, kînnen Sie diese mit dem
+Befehl \#File\#/Cycle Window zyklisch durchblÑttern.
+\end
+
+screen( "Ende",
+		"Programm beenden",
+		"File/Quit",
+		capsensitive("Quit") )
+\#File\#/Quit                                                    \#CONTROL\#-Q
+----------------------------------------------------------------------
+
+Wenn Sie Pure Debugger mit dem Befehl \#File\#/Quit verlassen, wird
+die Fenstereinstellung mit abgespeichert und beim nÑchsten Aufruf von
+Pure Debugger erscheinen Ihre Fenster in derselben Anordnung. Verlassen
+Sie Pure Debugger mit dem Befehl SHIFT-\#CONTROL\#-Q wird Ihre
+Konfigurierung nicht mit abgespeichert.
+
+Querverweis:   \#Konfigurationsdatei\#
+\end
+
+screen( "Suchen von Funkt.",
+		"Funktionen ansehen",
+		"Finden von Funkt.",
+		"Betrachten von Funkt.",
+		"View/Function",
+		capsensitive("Function...") )
+\#View\#/Function...                                             \#CONTROL\#-S
+----------------------------------------------------------------------
+
+Wen Sie den MenÅpunkt 'Function...' aufrufen, erscheint eine Dialogbox,
+in die Sie den Namen der Funktion eintragen  kînnen, die Sie gerne
+betrachten wollen. Pure Debugger springt dann an den Anfang der
+angegebenen Funktion. Dieser Befehl wird Åbergreifend fÅr das gesamte
+Programm ausgefÅhrt, unabhÑngig in welchem \link("Fenster, Modules-")Modul\# Sie sich
+befinden.
+\end
+
+screen( "Liste der Breakpoints",
+		"View, Brekpoints",
+		"Breakpoint-Fenster",
+		"Fenster, Breakpoint-",
+		"Breakpoint-Liste",
+		capsensitive("Breakpoints") )
+\#View\#/Breakpoints                                             \#CONTROL\#-B
+----------------------------------------------------------------------
+
+Das Breakpoint-Fenster enthÑlt die von Ihnen gesetzten \#Breakpoints\#.
+Ein Breakpoint bezeichnet eine Stelle in Ihrem Programm, an  der es
+unterbrochen werden soll, damit Sie dessen Zustand ÅberprÅfen kînnen.
+Im Breakpoint-Fenster kînnen Sie ebenfalls sehen, welche
+\link("Breakpoint-Formular")AbhÑngigkeiten\# und \link("Breakpoint-Formular")Geltungsbereiche\# die von Ihnen gesetzten
+Breakpoints haben.
+\end
+
+screen( "Funktionen-Liste",
+		"View/Variables",
+		"Variablen-Liste",
+		"Liste der Variablen",
+		"Variablen-Fenster",
+		"Liste der Funktionen",
+		"Fenster, Variables-",
+		capsensitive("Variables") )
+\#View\#/Variables                                               \#CONTROL\#-V
+----------------------------------------------------------------------
+
+Sie kînnen sich globale und lokale Variablen, Funktionen und Variablen,
+die nur in dem Modul bekannt sind, in dem der \#Program Counter\# steht,
+anzeigen lassen. Am unteren linken Fensterrand finden Sie die Buchstaben
+G, L, F, S und A. Sie stehen jeweils fÅr global, lokal, funktions- und
+modulbezogen (sprich statisch), sowie fÅr Assembler-Symbole. Sie kînnen
+sich zum Beispiel nur globale Variablen anzeigen lassen oder nur
+Funktionen, evtl. noch zusÑtzlich die Assembler-Symbole. Sie kînnen
+aber alle Anzeigearten beliebig kombinieren. Die EintrÑge sind inner-
+halb des Fensters alphabetisch geordnet.
+
+Wird bei Verwendung des Schalters A gleichzeitig auch der Schalter F
+selektiert, werden alle Assembler-Symbole im Textsegment angezeigt.
+Ist F deselektiert, sind die restlichen Symbole zu sehen. Nach jedem
+Symbol steht als Wert die Adresse, die durch das Symbol reprÑsentiert
+wird. Wenn man einen Doppelklick auf ein Textsymbol macht, wird  die
+zugehîrige Stelle im Quelltext gezeigt, sofern Debug-Informationen
+hierfÅr vorhanden sind. Ansonsten wird das Assembly-Fenster geîffnet,
+und der Code ab der entsprechenden Stelle disassembliert.
+Bei Doppelclick auf ein anderes Symbol wird ein Dump-Fenster  geîffnet
+und ein Speicherauszug ab der Symboladresse ausgegeben.
+
+Sie kînnen mit einem Mausklick eine Variable oder Funktion selektieren.
+FÅhren Sie einen Doppelklick auf eine Variable aus, so îffnet sich
+ein Inspect-Fenster. Dieses lÑ·t sich ebenfalls aktivieren, wenn
+Sie die RETURN-Taste drÅcken. Wenn Sie einen Doppelklick auf eine
+Funktion ausfÅhren oder die RETURN-Taste drÅcken, wird die zur
+Funktion gehîrende Quelltextposition dargestellt, die Sie sich auch
+mit dem Befehl \#View\#/\#Function...\# zeigen lassen kînnen.
+
+Sobald Sie einmal einen Eintrag mit der Maus selektiert haben, kînnen
+Sie diesen 'Selektor' auch mit den Cursor-Tasten  und  auf und
+ab bewegen.
+\end
+
+screen( "Auswertung von AusdrÅcken",
+		"Betrachten von AusdrÅcken",
+		"Watch-Fenster",
+		"AusdrÅcke auswerten",
+		"View/Watches",
+		capsensitive("Watches") )
+\#View\#/Watches                                                 \#CONTROL\#-E
+----------------------------------------------------------------------
+
+Das Watches-Fenster zeigt Variablen und AusdrÅcke, sowie deren
+sich verÑndernde Werte wÑhrend des Programmablaufs. Es werden
+auch Variablen angezeigt, die momentan nicht definiert sind,
+sie erhalten dann den Zusatz 'undefined Symbol(s)'.
+
+Sie kînnen eine Variable oder einen \#Ausdruck\# in dieses Fenster
+mittels \#Action\#/\#Watch...\# aufnehmen.
+
+Wenn Sie das Watches-Fenster schlieûen, bleiben alle darin enthaltenen
+EintrÑge erhalten.
+\end
+
+screen( "Fenster, Modules-",
+		"Liste der Quelltexte",
+		"View/Modules",
+		"Modules-Fenster",
+		"Quelltext-Liste",
+		capsensitive("Modules") )
+\#View\#/Modules                                                 \#CONTROL\#-M
+----------------------------------------------------------------------
+
+Das Modules-Fenster enthÑlt eine Liste aller zum Programm gehîrender
+Quelltexte. In diesem Fenster kînnen Sie mit einem Doppelklick oder
+RETURN das von Ihnen gewÅnschte Modul in einem \#Quelltext\#-Fenster
+darstellen.
+\end
+
+screen( "Funktionen, Aufrufreihenfolge",
+		"View/Stack",
+		"Aufrufreihenfolge der Funktio",
+		"Stack-Fenster",
+		"Fenster, Stack-",
+		capsensitive("Stack") )
+\#View\#/Stack                                                   \#CONTROL\#-T
+----------------------------------------------------------------------
+
+Das Stack-Fenster zeigt die Aufrufreihenfolge der Funktionen.
+\end
+
+screen( "Assembly",
+		"Assembly-Fenster",
+		capsensitive("Assembly...") )
+\#View\#/Assembly...                                             \#CONTROL\#-A
+----------------------------------------------------------------------
+
+Wenn Sie den Unterpunkt Assembly... des \#View\#-MenÅs anklicken
+erscheint eine Dialogbox. In diese geben Sie dann die Adresse ein,
+von der ab Sie das Programm dissambliert ansehen wollen. Im Assembly-
+Fenster steht dann fÅr jede Quelltext-Zeile der entsprechende
+Assembler-Code.
+\end
+
+screen( "Dump-Fenster",
+		"Fenster, Dump-",
+		"View/Dump",
+		capsensitive("Dump...") )
+\#View\#/Dump                                                    \#CONTROL\#-D
+----------------------------------------------------------------------
+
+Das Dump-Fenster zeigt den Inhalt eines Speicherbereiches an. Sie
+tragen in die Dialogbox die Adresse ein, ab der Sie den Speicherinhalt
+in hexadezimal Schreibweise ansehen wollen.
+
+Sie kînnen von hexadezimaler Darstellung auf ASCII-Schreibweise
+umschalten, indem Sie am linken unteren Rand das A anklicken.
+
+Wenn Sie den Buchstaben B links unten anklicken, werden die Einheiten
+byteweise angeordnet, mit W erhalten Sie sie wortweise und mit L lang-
+wortweise gruppiert. Mit den Pfeilensymbolen (ebenfalls links unten)
+kînnen Sie die Start-Adresse des ersten Elements im Dump-Fenster
+um eine Anzeigeeinheit erniedrigen oder erhîhen.
+
+In der Ñuûersten linken Spalte des Dump-Fensters finden Sie die
+absolute Adresse des ersten angezeigten Elements der jeweiligen
+Zeile.
+\end
+
+screen( "68881/2",
+		"MC 68881/2",
+		"MC 680x0",
+		"680x0",
+		capsensitive("CPU") )
+\#View\#/CPU                                                     \#CONTROL\#-C
+----------------------------------------------------------------------
+
+Das CPU-Fenster gibt den aktuellen Zustand der CPU wieder. Dieses
+Fenster enthÑlt beim MC68000-Prozessor die Datenregister \link("%%GLOBAL%%")D0\# bis
+\link("%%GLOBAL%%")D7\#, die Adressregister \link("%%GLOBAL%%")A0\# bis \link("%%GLOBAL%%")A7\#, den Program Counter
+(\link("%%GLOBAL%%")PC\#), den Supervisor Stack Pointer (\link("%%GLOBAL%%")SSP\#) und das Status
+Register (\link("%%GLOBAL%%")SR\#).
+
+Bei den Prozessoren MC68020 und MC68030 werden zusÑtzlich noch das
+Vector Base Register \link("%%GLOBAL%%")VBR\#, das Source Function Code Register \link("%%GLOBAL%%")SFC\#,
+das Destination Function Code Register \link("%%GLOBAL%%")DFC\#, das Cache Address
+Register \link("%%GLOBAL%%")CAAR\# und das Cache Control Register \link("%%GLOBAL%%")CACR\#, sowie
+Master- oder Interrupt Stackpointer (\link("%%GLOBAL%%")MSP\# und \link("%%GLOBAL%%")ISP\#) aufgefÅhrt.
+
+Wenn Sie einen Coprozessor MC68881 oder MC68882 verwenden, werden
+auch die Flieûkomma-Datenregister \link("%%GLOBAL%%")FP0\# - \link("%%GLOBAL%%")FP7\#, das Flieûkomma-
+Kontrollregister \link("%%GLOBAL%%")FPCR\#, das Flieûkomma-Statusregister \link("%%GLOBAL%%")FPSR\# und
+das Flieûkomma-Befehlsadressregister \link("%%GLOBAL%%")FPIAR\# angezeigt.
+
+\end
+
+screen( "Datei-Fenster",
+		capsensitive("File...") )
+\#View\#/File                                                    \#CONTROL\#-H
+----------------------------------------------------------------------
+
+Das File-Fenster zeigt den Inhalt einer Datei, die Sie mittels der
+\#Dateiauswahlbox\# ausgewÑhlen kînnen. Die Datei kann entweder
+hexadezimal oder als ASCII-Text dargestellt werden.
+
+Diese Option ist nÅtzlich, wenn Sie ein Programm debuggen, das Dateien
+bearbeitet. Sie kînnen beispielsweise eine Datei, die vom Programm
+erzeugt wurde, untersuchen, um nachzuprÅfen, ob deren Inhalt korrekt
+ist.
+\end
+
+screen( "Log-Fenster",
+		"Log-Datei",
+		capsensitive("Log") )
+\#View\#/Log                                                     \#CONTROL\#-J
+----------------------------------------------------------------------
+
+Das Log-Fenster enthÑlt ein Protokoll der folgenden von Pure Debugger
+erzeugten Meldungen:
+
+            ˘ AusfÅhrung der Befehle
+                      \#Load...\#
+                      \#Run\#
+                      \#Step over\#
+                      \#Trace into\#
+                      \#Until return\#
+                      \#Program reset\#
+
+            ˘ 'Fehlermeldungen' (z.B. Bus Error)
+
+            ˘ Programmabruch durch
+                      einen \link("Breakpoint-Formular")Breakpoint\#
+                      \#ALTERNATE-Help\#
+                      Programmende
+
+DarÅberhinaus kînnen Sie auch selber \link("Taschenrechner")Eintragungen\# in das Log-Fenster
+vornehmen.
+
+Der in der unteren linken Fensterecke stehende L besagt, falls er
+selektiert ist, da· die Protokollfunktion aktiv ist. Wenn Sie das
+L durch Anklicken mit der Maus deselektieren, werden alle Ausgaben
+in das Log-Fenster unterdrÅckt.
+Das neben dem L befindliche F soll andeuten, da· der Fensterinhalt
+in eine Datei gespeichert werden soll. Wird das F invertiert
+dargestellt, so wird nach jeder Ausgabe in das Log-Fenster, diese
+unmittelbar auch in die Log-Datei geschrieben. Sie kînnen das
+kontinuierliche Aktuallisieren der Log-Datei verhindern, indem Sie
+das F mit der Maus anklicken, um es zu deselektieren. Nun erfolgen
+die Ausgaben ausschlie·lich in das Log-Fenster.
+
+Den Namen, unter dem der Inhalt des Log-Fensters abgespeichert werden
+soll, kînnen Sie unter \#Options\#/\#Environment\# festlegen.
+\end
+
+screen( capsensitive("User Screen") )
+\#View\#/User Screen                                                   ESC
+----------------------------------------------------------------------
+
+... schaltet von der Pure Debugger BenutzeroberflÑche auf den
+Ausgabebildschirm des gerade debuggten Programms um. Mit dem
+nÑchsten Tastendruck kehrt man wieder zu Pure Debugger zurÅck.
+Damit lassen sich Bildschirmausgaben von Programmen kontrollieren.
+\end
+
+screen( capsensitive("Find...") )
+\#Action\#/Find                                                  \#CONTROL\#-F
+----------------------------------------------------------------------
+
+Mit diesem Befehl kann man Strings unter BerÅcksichtigung von Groû-
+und Kleinschreibung, vorwÑrts und rÅckwÑrts und der Bedingung, da·
+der String als ganzes Wort vorliegen mu·, im \#Log-Fenster\#, in
+\link("Quelltext")Quelltextmodulen\# und im \#Datei-Fenster\# (bei ASCII-Darstellung)
+suchen. Im \#Datei-Fenster\# (bei Hex-Darstellung) und \#Dump-Fenster\# erfolgt
+die Suche nach einer \#Byteliste\#.
+
+In der nach dem Aufruf erscheinenden Dialogbox kînnen Sie die
+gegebenenfalls die Suchoptionen per Mausklick selektieren. In
+das Editierfeld tragen Sie den Suchbegriff ein.
+\end
+
+screen( capsensitive("Find Same") )
+\#Action\#/Find Same                                             \#CONTROL\#-G
+----------------------------------------------------------------------
+
+Mit diesem Befehl kann man die Suche nach einem String, wie
+sie in \#Action\#/\#Find...\# vorgenommen wurde, wiederholen.
+\end
+
+screen( capsensitive("Goto Line...") )
+\#Action\#/Goto Line                                             \#CONTROL\#-L
+----------------------------------------------------------------------
+
+Mit \#Action\#/Goto line kann man zu einer bestimmten Zeile im \#Quelltext\#
+springen. Nach dem Aufruf dieses Befehls erscheint eine Dialogbox,
+in der als Zeilennummer die aktuelle Position eingegeben ist.
+Diese kann durch die Zeilennummer der neuen Position ersetzt werden.
+Wenn Sie lediglich die aktuelle Position ermitteln wollen, verlassen
+Sie die Dialogbox ohne eine énderung vorzunehmen. Falls Sie eine
+nicht existierende Zeilennummer angegeben haben, wird der Cursor auf das
+Textende positioniert.
+\end
+
+screen( "Breakpoint-Formular",
+		capsensitive("Breakpoint...") )
+\#Action\#/Breakpoint...                                       \#ALTERNATE\#-B
+----------------------------------------------------------------------
+
+Mit dem Befehl \#Action\#/Breakpoint... kînnen Sie einen Breakpoint
+setzen.
+
+Zur genauen Beschreibung des Breakpoints stehen Ihnen fÅnf Optionen
+zur VerfÅgung:
+
+            \#Breakpoint at\#
+            \#Variable changed\#
+            \#Memory changed at\#
+            \#Expression true\#
+            \#Pass count\#
+
+Sie selektieren eine dieser fÅnf Optionen, indem Sie das Viereck vor
+der zugehîrigen Zeile anklicken. Diese wird daraufhin mit einem
+HÑkchen gekennzeichnet.
+
+Sie haben auch die Mîglichkeit Breakpoints kurzfristig zu \link("Breakpoint aktivieren")deaktivieren\#
+bzw. wieder zu \link("Breakpoint aktivieren")aktivieren\#.
+
+Mittels der Optionen kînnen Sie folgende Typen von Breakpoints
+definieren:
+
+            ˘ \#Einfacher Breakpoint\#
+
+            ˘ \#Globaler Breakpoint\#
+
+            ˘ \#Komplexer Breakpoint\#
+\end
+
+screen( "Breakpoint at" )
+Breakpoint at
+----------------------------------------------------------------------
+
+Sie kînnen \link("Breakpoint, einfacher")einfache Breakpoints\# im Breakpoint-Formular in der
+Zeile 'Breakpoint at' (engl. Unterbrechung bei) definieren. Geben
+Sie dazu in das zugehîrige Editierfeld die absolute Adresse, einen
+Funktions- bzw. Labelnamen oder eine \#Quelltext\#-Position ein.
+Als Standardvorgabe steht hier die Quelltextposition des
+\#Program Counter\#.
+
+Querverweis:   \#Breakpoint-Formular\#
+\end
+
+screen( "Variable changed" )
+Variable changed
+----------------------------------------------------------------------
+
+Mit 'Variable changed' (engl. Variable verÑndert) wird Åberwacht,
+ob sich der Inhalt einer Variablen Ñndert. Falls dieses der Fall
+sein sollte, wird das Programm unterbrochen, und der Program Counter
+zeigt auf die der VerÑnderung folgende Zeile. Den Namen der zu
+beobachtenden Variablen tragen Sie in das Editierfeld neben
+'Variable changed' ein.
+
+Beachten Sie, da· Ihr Programm nun deutlich langsamer ablÑuft als
+normalerweise. Das rÅhrt daher, da· Pure Debugger nun nach jedem
+ausgefÅhrten Befehl Ihres Programms den Inhalt der betreffenden
+Variable testen mu·, also das Programm im Einzelschrittmodus ausfÅhrt.
+
+Querverweis:   \#Breakpoint-Formular\#
+\end
+
+screen( "Memory changed at" )
+Memory changed at
+----------------------------------------------------------------------
+
+Wenn die Option 'Memory changed at' (engl. Speicherbereich verÑndert
+ab) ausgewÑhlt wurde, dann  wird ein Speicherbereich bestimmter
+LÑnge beobachtet.
+éndert sich der betreffende Speicherausschnitt, wird ein Breakpoint
+ausgelîst. Sie mÅssen einen Ausdruck eingeben, der die Adresse des
+zu beobachtenden Objekts spezifiziert und zudem die Anzahl der Byte
+bestimmen, die Åberwacht werden sollen. Die Gesamtzahl der Byte
+im Speicherbereich ergibt sich aus der Grî·e des Objekts, multipliziert
+mit der Anzahl der Objekte.
+
+Wenn Sie zum Beispiel die ersten vier Elemente des Feldes
+
+   long a[23];
+
+beobachten wollen, dann wÑre der Speicherbereich, der Åberwacht
+werden soll, 16 Byte lang, da ein long 4 Byte umfa·t und Sie vier
+Objekte haben. Sie mÅ·ten als in das Editierfeld Memory changed at
+a eintragen und in das Feld Length 16.
+
+Beachten Sie, da· Ihr Programm nun deutlich langsamer ablÑuft als
+normalerweise. Das rÅhrt daher, da· Pure Debugger nun nach jedem
+ausgefÅhrten Befehl Ihres Programms den Inhalt des betreffenden
+Speicherbereichs testen mu·, also das Programm im Einzelschrittmodus
+ausfÅhrt.
+
+Querverweis:   \#Breakpoint-Formular\#
+\end
+
+screen( "Expression true" )
+Expression true
+----------------------------------------------------------------------
+
+Mit der gesetzten Option 'Expression true' (engl. Ausdruck trifft zu)
+wird ein Breakpoint dann ausgelîst, wenn ein Ausdruck den logischen
+Wert wahr ergibt, also zutrifft. Den zu erfÅllenden Ausdruck kînnen
+Sie in das Editierfeld hinter 'Expression true' eingeben.
+
+Querverweis:   \#Breakpoint-Formular\#
+\end
+
+screen( "Pass count",
+		"DurchlaufzÑhler" )
+Pass count
+----------------------------------------------------------------------
+
+Die Angabe von 'Pass count' (engl. DurchlaufzÑhler) legt die Anzahl
+der DurchlÑufe fest, in denen eine Breakpoint-Bedingung zutreffen
+mu·, bevor der Breakpoint ausgelîst wird. Die im Editierfeld hinter
+'Pass count' angegebene Zahl wird nur dann heruntergezÑhlt, wenn
+die Bedingungen, die an einen bestimmten Breakpoint gestellt werden,
+zutreffen. Das bedeutet, da· der Breakpoint im Falle einer Zusatz-
+bedingung nur dann ausgelîst wird, wenn die Bedingungen so oft wie
+angegeben zutrafen.
+
+Querverweis:   \#Breakpoint-Formular\#
+\end
+
+screen( "Breakpoint aktivieren",
+		"Deaktivieren eines Breakpoint",
+		"Breakpoint enable",
+		"Breakpoint deaktivieren",
+		"Enable/Disable",
+		"Disable",
+		"Aktivieren eines Breakpoints",
+		"Enable",
+		"Breakpoint disable" )
+Enable/Disable
+----------------------------------------------------------------------
+
+Die Einstellung 'Enable/Disable' (engl. aktivieren/deaktivieren)
+aktiviert einen Breakpoint oder schaltet ihn vorÅbergehend aus.
+Ein ausgeschalteter Breakpoint wird als leeres Achteck darge-
+stellt.
+
+Dieser Befehl ist sehr praktisch, wenn man einen sehr komplizierten
+Breakpoint definiert hat, den man im Moment nicht braucht, der aber
+spÑter vielleicht wieder verwendet werden soll. Er erspart es Ihnen,
+den Breakpoint zu lîschen und dann alle Bedingungen wieder neu
+einzugeben.
+
+Querverweis:   \#Breakpoint-Formular\#
+\end
+
+screen( "Breakpoint, einfacher",
+		"Einfacher Breakpoint" )
+Einfacher Breakpoint
+----------------------------------------------------------------------
+
+Ein einfacher Breakpoint stoppt ein Programm, wenn der \#Program Counter\#
+die Stelle im Progeramm erreicht, an der der Breakpoint gesetzt
+wurde.
+
+Sie setzen eine einfachen Breakpoint im \#Breakpoint-Formular\# durch
+Anklicken der Option '\#Breakpoint at\#'. Noch schneller geht es, wenn
+Sie einen Doppelklick auf der linken vertikalen Randleiste in einem
+\#Quelltext\#- oder dem \#Assembly\#-Fenster ausfÅhren.
+\end
+
+screen( "Globaler Breakpoint",
+		"Breakpoint, globaler",
+		"Watchpoint" )
+Globaler Breakpoint
+----------------------------------------------------------------------
+
+Ein globaler Breakpoint (auch Watchpoint genannt) hÑlt ein Programm
+an, wenn sich der Wert oder Inhalt einer Variablen oder eines
+Speicherbereichs Ñndert. Auf diese Weise kînnen Sie der allseits
+gefÅrchteten \link("Seiteneffekt")Seiteneffekten\# Herr werden.
+
+Sie definieren einen globalen Breakpoint im \#Breakpoint-Formular\#
+durch Wahl einer der Optionen \#Variable changed\# oder
+\#Memory changed at\#. Beachten Sie, daû Sie nur eine dieser beiden
+Optionen auswÑhlen kînnen.
+\end
+
+screen( "Breakpoint, komplexer",
+		"Komplexer Breakpoint" )
+Komplexer Breakpoint
+----------------------------------------------------------------------
+
+Einen komplexen Breakpoint erzeugen Sie, indem Sie einen \link("Breakpoint, einfacher")einfachen\#
+mit einem \link("Globaler Breakpoint")globalen Breakpoint\# kombinieren.
+FÅr das \#Breakpoint-Formular\# bedeutet das, da· Sie sowohl die Option
+\#Breakpoint at\# als auch eine der Optionen fÅr einen globalen Breakpoint
+(\link("Variable changed")Variable\# oder \#Memory changed at\#) anklicken.
+
+Die Angabe eines komplexen Breakpoints verlangsamt die AusfÅhrung
+Ihres Programms nicht im geringsten, da die Variable bzw. der
+Speicherbereich nur dann ÅberprÅft wird, wenn der einfache Breakpoint
+erreicht wird.
+\end
+
+screen( "Fenster, Inspect-",
+		"Action/Inspect...",
+		"Inspect-Fenster",
+		capsensitive("Inspect...") )
+\#Action\#/Inspect...                                          \#ALTERNATE\#-I
+----------------------------------------------------------------------
+
+Beim Aufruf des Befehls \#Action\#/Inspect... erscheint eine Dialogbox,
+in die Sie den Namen der Variablen oder den Ausdruck, den Sie
+untersuchen wollen, eintragen kînnen. Daraufhin wird automatisch
+ein Inspect-Fenster geîffnet, das den Inhalt der Variable oder
+des Ausdruckes anzeigt.FÅr den Aufruf von Inspect kînnen Sie
+sich auch der Maus bedienen, markieren Sie die gewÅnschte Variable
+und rufen den Befehl Inspect... auf, die Dialogbox enthÑlt daraufhin
+bereits den von Ihnen selektierten Begriff, den Sie nun noch editieren
+kînnen.
+
+Das Inspect-Fenster ist besonders dann interessant, wenn es um
+komplizierte Datenstrukturen geht, zum Beispiel um Arrays oder eine
+verkettete Liste. Durch einen Doppelklick auf eine Komponente in
+einem Inspect-Fenster (oder durch drÅcken von RETURN), wird ein
+weiteres Inspect-Fenster mit detailierten Informationen zu dieser
+Komponente geîffnet. Somit kînnen Sie sich durch verkette Listen
+durchhangeln. Falls wÑhrend des Doppelklicks die SHIFT-Taste gedrÅckt
+halten, so Sie wird fÅr die neuen Informationen kein weiteres
+Fenster geîffnet, sondern die alten EintrÑge Åberschrieben.
+\end
+
+screen( capsensitive("Watch...") )
+\#Action\#/Watch...                                            \#ALTERNATE\#-W
+----------------------------------------------------------------------
+
+Wie beim \#Inspect...\#-Befehl kînnen Sie auch mittels Watch Variablen und
+AusdrÅcke untersuchen. Die Darstellung im Watches-Fenster ist aber
+wesentlich kompakter als in den Inspect-Fenstern.
+Zwar nimmt jeder auszuwertende Ausdruck nur eine Zeile ein, dafÅr
+lassen sich aber mehrere AusdrÅcke im Watches-Fenster auflisten.
+
+Geîffnet wird das Watches-Fenster mittels \#View\#/\#Watches\#. Neue
+EintrÑge werden mittels \#Action\#/Watch... aufgenommen. Es îffnet
+sich dann eine Dialogbox, in die Sie den zu beobachtenden Ausdruck
+eingeben. Falls Sie zuvor eine Variable oder einen Ausdruck im
+\#Quelltext\# selektiert hatten, wird dieser im Editfeld vorgegeben.
+\end
+
+screen( "Taschenrechner",
+		capsensitive("Log...") )
+\#Action\#/Log...                                              \#ALTERNATE\#-L
+----------------------------------------------------------------------
+
+Wenn Sie Variableninhalte protokollieren wollen, rufen Sie \#Action\#/
+Log... auf und tragen in die daraufhin erscheinende Dialogbox den Namen
+der betreffenden Variablen ein. Nach dem Quittieren der Dialogbox
+wird der Wert der Variablen in das \#Log-Fenster\# eingetragen.
+
+Ein Geheimtip: Sie kînnen den \#Action\#/Log...-Befehl auch als einfachen
+Taschenrechner mi·brauchen. Schreiben Sie in die Dialogbox statt
+dem Variablennamen einfach den Term, den Sie ausrechnen wollen und
+Pure Debugger prÑsentiert sich als ØTurbo TaschenrechnerÆ.
+
+Schlie·lich kînnen Sie noch Kommentare in das \#Log-Fenster\# schreiben.
+Auch hierzu rufen Sie wieder \#Action\#/Log... auf und schreiben Ihre
+Bemerkung als C-Kommentar, beispielsweise
+
+/* Dies ist ein Kommentar. */.
+\end
+
+screen( capsensitive("Change...") )
+\#Action\#/Change                                              \#ALTERNATE\#-C
+----------------------------------------------------------------------
+
+Sie kînnen im \#CPU\#-, \#Variables\#-, \#Watches\#- und \#Inspect-Fenster\# Werte
+verÑndern, indem Sie in die Dialogbox, die mittels \#Action\#/Change...
+aufgerufen wird, in die Zeile 'New values:' einen neuen Wert eintragen.
+Den zu modifizierenden Wert mÅssen Sie vor der AusfÅhrung dieses Befehls
+markieren.
+
+Falls Sie den 'Change...'-Befehl im \#File\#- und im \link("Dump-Fenster")Dump\#-Fenster
+einsetzen, zeigt die Dialogbox die Abfrage 'Byte list:'.
+Sie mÅssen dann eine \#Byteliste\# eingeben, welche die Byte ab der
+Markierung ersetzt.
+\end
+
+screen( capsensitive("Edit...") )
+\#Action\#/Edit...                                             \#ALTERNATE\#-E
+----------------------------------------------------------------------
+
+Mit dem Befehl \#Action\#/Edit... kînnen Sie den Editor aufrufen, den
+Sie vorher im MenÅ \#Options\#/\#Environment\# eingetragen haben.
+\end
+
+screen( capsensitive("Block...") )
+\#Action\#/Block...                                            \#ALTERNATE\#-K
+----------------------------------------------------------------------
+
+Mit dem Befehl \#Action\#/Block... kînnen Sie Speicherbereiche kopieren
+(copy) oder lîschen (clear), mit verschiedenen Mustern fÅllen (fill),
+von DatentrÑgern lesen (read) oder auf diese schreiben (write).
+
+            \#Source address\#
+            \#Destination address\#
+            \#Length\#
+            \#Fill pattern\#
+            \#File name\#
+\end
+
+screen( "Source address" )
+Source address
+----------------------------------------------------------------------
+
+In diesem Feld geben Sie die Startadresse des Speicherblocks ein.
+
+Querverweis:   \#Block...\#
+\end
+
+screen( "Destination address" )
+Destination address
+----------------------------------------------------------------------
+
+FÅr den Copy-Befehl mÅssen Sie hier die Zieladresse eintragen, an die
+der Speicherblock kopiert werden soll.
+
+Querverweis:   \#Block...\#
+\end
+
+screen( "Length" )
+Length
+----------------------------------------------------------------------
+
+Im Feld 'Length' mÅssen Sie die LÑnge des Speicherblocks angeben.
+
+Querverweis:   \#Block...\#
+\end
+
+screen( "Fill pattern" )
+Fill pattern
+----------------------------------------------------------------------
+
+Hier kînnen Sie die \#Byteliste\# fÅr ein FÅllmuster eintragen.
+
+Querverweis:   \#Block...\#
+\end
+
+screen( "File name" )
+File name
+----------------------------------------------------------------------
+
+Im Feld 'File name' kînnen Sie den Namen einer Datei angeben, in die
+Sie den Block abspeichern bzw. aus der Sie ihn lesen wollen.
+
+Querverweis:   \#Block...\#
+\end
+
+screen( capsensitive("Delete") )
+\#Action\#/Delete                                                   DELETE
+----------------------------------------------------------------------
+
+Mit dem Befehl \#Action\#/Delete kînnen Sie im \link("Breakpoint-Formular")Breakpoint\#-
+und \#Watches\#-Fenster Zeilen lîschen. Sie mÅssen dafÅr den zu
+lîschenden Begriff auswÑhlen, indem Sie ihn selektieren und dann
+entweder Åber den MenÅpunkt 'Delete' lîschen.
+\end
+
+screen( capsensitive("Delete all") )
+\#Action\#/Delete all
+----------------------------------------------------------------------
+
+Wenn Sie den gesamten Fensterinhalt des \#Log\#-, \link("Breakpoint-Formular")Breakpoint\#-
+oder \#Watches\#-Fenster lîschen wollen, kînnen Sie das mit dem Befehl
+\#Action\#/Delete all in einem Schwung machen.
+\end
+
+screen( capsensitive("Run") )
+\#Run\#/Run                                                    \#ALTERNATE\#-R
+----------------------------------------------------------------------
+
+Durch den Befehl \#Run\#/Run wird das Programm mit der vollen Ablauf-
+geschwindigkeit ausgefÅhrt. Pure Debugger erhÑlt erst dann wieder
+die Kontrolle, wenn eines der folgenden Ereignisse eintritt:
+
+            ˘ das Programm wird beendet;
+
+            ˘ das Programm 'stÅrzt' ab;
+
+            ˘ ein Breakpoint wird erreicht;
+
+            ˘ Sie unterbrechen das Programm mit \#ALTERNATE-Help\#.
+
+Dieser Befehl lÑût sich auch durch anklicken von R in der linken
+unteren Ecke in einem \#Quelltext\#-oder dem \#Assembly\#-Fenster
+auslîsen.
+\end
+
+screen( capsensitive("Trace into") )
+\#Run\#/Trace Into                                             \#ALTERNATE\#-T
+----------------------------------------------------------------------
+
+Eine einzelne Quelltextzeile oder einen Maschinensprachebefehl kann
+man mit dem Befehl \#Run\#/Trace into ausfÅhren. Wenn die aktuelle Zeile
+einen Funktionsaufruf enthÑlt, dann geht Pure Debugger in diese
+Routine. Falls Sie im \#Assembly\#-Fenster sind, dann wird nur ein
+einziger Assemblerbefehl ausgefÅhrt.
+
+In einem \#Quelltext\#- oder dem \#Assembly\#-Fenster kann der Befehl
+auch durch Anklicken des Buchstaben T in der linkeren unteren
+Fensterecke gestartet werden.
+\end
+
+screen( capsensitive("Step over") )
+\#Run\#/Step Over                                              \#ALTERNATE\#-S
+----------------------------------------------------------------------
+
+Der Befehl \#Run\#/Step over fÅhrt eine einzelne Quelltextzeile oder einen
+Maschinensprachebefehl aus, Åbergeht jedoch alle Funktionsaufrufe.
+Wenn Sie im \#Assembly\#-Fenster sind, dann wird nur ein einzelner
+Maschinensprachebefehl ausgefÅhrt.
+
+Wenn Sie mittels 'Step over' eine Quelltextzeile ausfÅhren, die einen
+Funktionsaufruf enthÑlt, so wird die betreffende Funktion in einem
+Schritt ausgefÅhrt. Sie gelangen also direkt zur nÑchsten Zeile in
+der aktuellen Routine oder in die Funktion, die diese Routine
+aufgerufen hat.
+
+Dieser Befehl lÑût sich auch durch anklicken von S in der linken
+unteren Ecke in einem \#Quelltext\#- oder dem \#Assembly\#-Fenster
+auslîsen.
+\end
+
+screen( capsensitive("Until return") )
+\#Run\#/Until Return                                           \#ALTERNATE\#-U
+----------------------------------------------------------------------
+
+Nach der Eingabe des Befehls \#Run\#/Until return wird das Programm
+solange ausgefÅhrt, bis die aktuelle Funktion zur aufrufenden Funktion
+zurÅckkehrt. Das ist vor allem dann sehr praktisch, wenn Sie mit \#Run\#/
+\#Trace into\# aus Versehen in eine Funktion hineingegangen sind, die
+Sie eigentlich gar nicht interessiert, oder wenn Sie festgestellt
+haben, da· die aktuelle Funktion zu Ihrer Zufriedenheit funktioniert
+und Sie den Rest gar nicht mehr ÅberprÅfen wollen.
+\end
+
+screen( capsensitive("Animate") )
+\#Run\#/Animate                                                \#ALTERNATE\#-A
+----------------------------------------------------------------------
+
+Mit dem Befehl \#Run\#/Animate wird das Programm verlangsamt Schritt fÅr
+Schritt ausgefÅhrt, Sie erhalten somit einen kontinuierlichen
+Einzelschrittlauf. Die Inhalte aller geîffneten Fenster und des
+User Screens werden dabei stÑndig aktualisiert. Damit kann man die
+Position des \link("Program Counter")Program Counters\# und die Variablenwerte verfolgen.
+
+Dieser Befehl wird mit einem beliebigen Tastendruck abgebrochen.
+\end
+
+screen( capsensitive("Program reset") )
+\#Run\#/Program Reset                                          \#ALTERNATE\#-Z
+----------------------------------------------------------------------
+
+Der Befehl \#Run\#/Program reset lÑdt das Programm, das Sie debuggen,
+erneut und reinitialisiert Pure Debugger. Verwenden Sie diesen
+Befehl, wenn Sie mit der AusfÅhrung des Programms Øzu weitÆ gegangen
+sind (d.h., wenn Sie die Fehlerstelle Åbersprungen haben).
+\end
+
+screen( capsensitive("Environment") )
+\#Options\#/Environment                                        \#ALTERNATE\#-N
+----------------------------------------------------------------------
+
+Der Befehl \#Options\#/Environment zeigt eine Dialogbox, die Ihnen
+mehrere Mîglichkeiten bietet, die Darstellung der Ausgaben von Pure
+Debugger zu beeinflussen:
+
+            \#Display swapping\#
+            \#Display swapping via\#
+            \#Use VDI graphics\#
+            \#Default tab size\#
+            \#Editor file name\#
+            \#Log file name\#
+            \#Animate time step\#
+\end
+
+screen( "Display swapping via",
+		"Bildschirmumschaltung" )
+Display swapping via
+----------------------------------------------------------------------
+
+Diese Option bestimmt die Art der Bildschirmumschaltung zwischen
+\#User Screen\# und der OberflÑche von Pure Debugger. Dazu stehen
+drei verschiedene Methoden zur VerfÅgung, die je nach Hardware
+angewendet werden kînnen:
+
+                           \link("Display swapping via Address")Address\#
+                           \link("Display swapping via Memcopy")Memcopy\#
+                           \link("Display swapping via Vdicopy")Vdicopy\#
+\end
+
+screen( "Display swapping via Address" )
+Display swapping via Address
+----------------------------------------------------------------------
+
+Auf diese Art kînnen alle Rechner, die mit einem Standard-Monitor,
+d.h. ohne Zusatzhardware ausgestattet sind, zwischen User Screen
+und BenutzeroberflÑche umschalten.
+
+Falls Sie Schwierigkeiten mit der Bildschirmumschaltung auf den
+User Screen haben, versuchen Sie
+
+                  \#Display swapping via Memcopy\#
+                  \#Display swapping via Vdicopy\#
+\end
+
+screen( "Display swapping via Memcopy" )
+Display swapping via Memcopy
+----------------------------------------------------------------------
+
+Dieser Modus eignet sich fÅr Rechner, die Åber eine Grafikkarte
+eigenem Video-Memory verfÅgt.
+
+Falls Sie auch hier Schwierigkeiten mit der Bildschirmumschaltung
+auf den User Screen haben, versuchen Sie
+
+                  \#Display swapping via Vdicopy\#
+\end
+
+screen( "Display swapping via Vdicopy" )
+Display swapping via Vdicopy
+----------------------------------------------------------------------
+
+Dieser Form der Bildschirmumschaltung zwischen User Screen und
+BenutzeroberflÑche lÑuft auf allen Rechner mit jeglicher Grafik-
+ausstattung. Sie ist jedoch langsamer als die anderen beiden
+Methoden.
+\end
+
+screen( "Grafikkarten",
+		"Use VDI graphics",
+		"Farbbildschirme" )
+Use VDI graphics
+----------------------------------------------------------------------
+
+Pure Debugger kennt zwei Arten seine eigene OberflÑche zu zeichnen.
+Er kann direkt in den Bildschirmspeicher schreiben. Diese Form der
+Ausgabe ist sehr schnell, hat jedoch den Nachteil, daû sie nur
+auf monochromen Standard-Bildschirmen funktioniert.
+Bei einigen Grafikkarten und fÅr Farbbildschirme kann die Grafik
+Åber das VDI ausgegeben werden. Dazu mÅssen Sie den Schalter
+Use VDI Graphics selektieren.
+\end
+
+screen( capsensitive("Directories") )
+\#Options\#/Directories                                        \#ALTERNATE\#-D
+----------------------------------------------------------------------
+
+Der Befehl\#Options\#/Directories bestimmt die Verzeichnisse, in denen
+Pure Debugger nach Ihren Quelltextdateien sucht. Sie kînnen
+drei Directories angeben, zunÑchst sucht Pure Debugger jedoch
+immer in dem Verzeichnis, in dem sich auch das zu debuggende
+Programm befindet.
+\end
+
+screen( capsensitive("Arguments") )
+\#Options\#/Arguments                                          \#ALTERNATE\#-P
+----------------------------------------------------------------------
+
+Mit Hilfe des Befehls \#Options\#/Arguments kînnen Sie neue Kommando-
+zeilenargumente fÅr Ihr Programm festlegen. Diese werden dann bei
+jedem Neustart an Ihr Programm Åbergeben.
+\end
+
+screen( capsensitive("Load") )
+\#Options\#/Load                                               \#ALTERNATE\#-J
+----------------------------------------------------------------------
+
+Damit kînnen Sie abgespeicherte Einstellungen aus einer Konfigurations-
+datei lesen. Sie mÅssen dabei eine Datei angeben, die mit dem Befehl
+\#Options\#/\#Save\# gespeichert wurde.
+
+Eine neue Konfigurationsdatei legen Sie an, indem Sie in der
+\#Dateiauswahlbox\# den Eintrag 'New' anklicken.
+\end
+
+screen( "Konfigurationsdatei",
+		capsensitive("Save") )
+\#Options\#/Save                                              \#ALTERNATE\#-H
+----------------------------------------------------------------------
+
+Dieser Befehl speichert die Optionen, die Sie eingestellt haben, in
+einer Konfigurationsdatei auf dem aktuellen Laufwerk. Dazu zÑhlen
+
+            ˘ die aktuelle Fensteraufteilung,
+
+            ˘ alle Einstellungen, die im MenÅ \#Options\# vorgenommen
+              worden sind.
+
+Diese Einstellungen werden automatisch in der aktuellen Konfigurations-
+datei beim Verlassen von Pure Debugger mittels \#File\#/\#Quit\# bzw.
+\#CONTROL\#-Q (nicht bei SHIFT-CONTROL-Q !) abgespeichert.
+\end
+
+screen( "Display swapping" )
+Display swapping
+----------------------------------------------------------------------
+
+Mit der Option 'Display swapping' stehen Ihnen drei Einstellungs-
+mîglichkeiten zur VerfÅgung, wann und wie zwischen dem \#User Screen\#
+und der BenutzeroberflÑche von Pure Debugger hin- und hergeschaltet
+werden soll. Die drei Einstellungen sind:
+
+            \#Always\#
+            \#Smart\#
+            \#Never\#
+
+Querverweis:   \#Environment\#
+\end
+
+screen( "Always" )
+Always
+----------------------------------------------------------------------
+
+Es wird nach jedem ausgefÅhrten Befehl auf den \#User Screen\#
+umgeschaltet. BenÅtzen Sie diese Option, wenn die Option \#Smart\#
+nicht auf alle Bildschirmausgaben Ihres Programms reagiert.
+
+Querverweis:   \#Display swapping\#
+\end
+
+screen( "Smart" )
+Smart
+----------------------------------------------------------------------
+
+Es wird nur dann auf den Benutzerbildschirm umgeschaltet, wenn Pure
+Debugger glaubt,daû Ihr Programm etwas auf den Bildschirm ausgibt.
+Pure Debugger wechselt die Bildschirme, sobald Sie eine Routine
+Åberspringen, oder wenn Sie einen Befehl oder eine Zeile ausfÅhren,
+die unter UmstÑnden aus dem Bildschirmspeicher liest oder dort
+hineinschreibt. Dies ist die Standardeinstellung.
+
+Querverweis:   \#Display swapping\#
+\end
+
+screen( "Never" )
+Never
+----------------------------------------------------------------------
+
+Es wird nicht zwischen den beiden Bildschirmen hin- und hergeschaltet.
+BenÅtzen Sie diese Option, wenn Sie ein Programm debuggen, das
+keine Bildschirmausgaben macht.
+
+Querverweis:   \#Display swapping\#
+\end
+
+screen( "Default tab size",
+		"Tabulatorgrîûe" )
+Default tab size - Tabulatorgrîûe
+----------------------------------------------------------------------
+
+Mit der Option 'Default tab size' kînnen Sie einstellen, mit welcher
+LÑnge ein Tabulatorzeichen expandiert werden soll.
+
+Sie haben sie Wahl zwischen einer Tabulatorgrîûe von 0 bis 9 Leer-
+zeichen, wobei die Grundeinstellung 4 ist. Wenn Sie unter \#Options\#/
+\#Environment\# die 'Default tab size' Ñndern und diese dann in einer
+Konfigurationsdatei sichern, werden fortan Tabulatoren standardmÑûig
+mit der von Ihnen eingestellten Grîûe expandiert.
+
+Beachten Sie, daû énderungen der 'Tab Size' in den \link("Quelltext")Quelltextfenstern\#
+auschlieûlich temporÑr und lokal, d.h. fÅr dieses Fenster, wirken.
+
+Querverweis:   \#Environment\#
+\end
+
+screen( "Editor file name" )
+Editor file name
+----------------------------------------------------------------------
+
+Wenn Sie aus Pure Debugger heraus einen Editor aufrufen wollen, so
+kînnen Sie dies mittels \#Action\#/\#Edit...\# tun.
+Sie mÅssen dazu den Namen und den Suchpfad des Editor angeben.
+
+Querverweis:   \#Environment\#
+\end
+
+screen( "Log file name" )
+Log file name
+----------------------------------------------------------------------
+
+Hier geben Sie den Namen an, unter dem die \#Log-Datei\# gespeichert
+werden soll. StandardmÑ·ig ist der Name PDLOG.LOG vorgegeben.
+
+Querverweis:   \#Environment\#
+\end
+
+screen( "Animate time step" )
+Animate time step
+----------------------------------------------------------------------
+
+Mit der Option 'Animate time step' kînnen Sie einstellen wie kurz
+oder wie lange die Pausen, die zwischen zwei Einzelschritten
+eingelegt werden, sein sollen, wenn Sie Ihr Programm mit \#Run\#/\#Animate\#
+durchlaufen. Mit anderen Worten, Sie kînnen die Zeit einstellen,
+wie schnell sich das schrittweise ØanimierenÆ vollziehen soll,
+ob Sie zwischen je zwei Schritten eine lÑngere oder eine kÅrzere
+Pause haben mîchten.
+
+Die Grundeinstellung dieser Option ist 1 Sekunde.
+
+Querverweis:   \#Display swapping\#
+\end
+
+screen( "Shortcuts",
+		"Hotkeys" )
+Hotkeys
+----------------------------------------------------------------------
+
+Durch Tastenkombinationen mit der \#ALTERNATE\#, bzw. der \#CONTROL\#-
+Taste kînnen die verschiedenen MenÅ-EintrÑge von Pure Debugger
+direkt aufgerufen werden. Folgende Tasten/Tastenkombinationen
+stehen zur VerfÅgung:
+
+   ESC       Umschalten auf den Ausgabebildschirm (\#User Screen\#)
+
+   HELP      Aufruf des \link("MenÅ, Help-")Hilfesystems\#
+
+   UNDO      Im Hilfe-System RÅckkehr zum vorhergehenden Stichwort
+
+   Tasten zu \#Cursor\#-Steuerung
+
+Kombination der \#ALTERNATE\#- oder \#CONTROL\#-Taste mit einer
+anderen um die Funktionen in der MenÅ-Leiste aufzurufen.
+\end
+
+screen( capsensitive("Debugger") )
+Pure Debugger fÅr den ATARI ST/TT
+----------------------------------------------------------------------
+
+Mit Hilfe von Pure Debugger ist es mîglich, Fehler in Programmen
+auf Quelltext-Ebene zu suchen und schrittweise den Programmablauf
+zu beobachten. Dazu stellt Ihnen Pure Debugger Åber das \#Menu\#
+verschiedene Hilfsmittel zur VerfÅgung. Im \#Run-MenÅ\# finden Sie
+Funktionen zur schrittweisen ausfÅhrung des Programms, im \#View\#-MenÅ
+kînnen Sie Informations-Fenster îffen, die Ihnen Variablen-Inhalte,
+Assembler-Code, Datei-Inhalte usw. anzeigen. öber das \#Action\#-MenÅ
+kînnen Sie gezielt den Inhalt von Variablen oder Strukturen abfragen,
+Breakpoints setzen oder z.B. Zeichenfolgen in Ihrem Sourcecode suchen.
+Mehr Informationen zu den einzelnen Funktionen erhalten Sie durch das
+integrierte \#Help\#-System.
+\end
+
+screen( "ALTERNATE" )
+'Alternate Codes' in Pure Debugger
+----------------------------------------------------------------------
+
+  Taste(n)      Funktion
+----------------------------------------------------------------------
+  ALTERNATE-A   kontinuierlicher Einzelschrittablauf (\#Animate\#)
+  ALTERNATE-B   Breakpoints setzen/lîschen (\#Breakpoint...\#)
+  ALTERNATE-C   Wert Ñndern (\#Change...\#)
+  ALTERNATE-D   Quelltext Directories einstellen(\#Directories\#)
+  ALTERNATE-E   Editor aufrufen (\#Edit...\#)
+  ALTERNATE-H   Konfiguration-Datei speichern (\#Save\#)
+  ALTERNATE-I   Ausdruck im Inspect-Fenster ansehen (\#Inspect...\#)
+  ALTERNATE-J   Konfigurations-Datei einlesen (\#Load\#)
+  ALTERNATE-K   Speicherbereiche bearbeiten (\#Block...\#)
+  ALTERNATE-L   Eintrag in Protokoll-Fenster (\#Log...\#)
+  ALTERNATE-N   Environment Dialog (\#Environment\#)
+  ALTERNATE-P   Kommandozeile eingeben (\#Arguments\#)
+  ALTERNATE-R   Programm starten (\#Run\#)
+  ALTERNATE-S   Eine Zeile ausfÅhren und Funktionen Åberspringen
+                (\#Step over\#)
+  ALTERNATE-T   Eine Zeile ausfÅhren (\#Trace into\#)
+  ALTERNATE-U   Programm ausfÅhren bis zur RÅckkehr zur aufrufenden
+                Funktion (\#Until return\#)
+  ALTERNATE-W   Ausdruck im Watch-Fenster ansehen (\#Watch...\#)
+  ALTERNATE-Z   Programm in den Ausgangszustand setzen (\#Program reset\#)
+
+  ALTERNATE-Help   Programmlauf unterbrechen (\#ALTERNATE-Help\#)
+
+Querverweis:   \#CONTROL\#, \#Hotkeys\#
+\end
+
+screen( "CONTROL" )
+'Control Codes' in Pure Debugger
+----------------------------------------------------------------------
+
+  Taste(n)      Funktion
+----------------------------------------------------------------------
+  CONTROL-A     Assembly-Fenster îffnen (\#Assembly...\#)
+  CONTROL-B     Liste der Breakpoints (\#Breakpoints\#)
+  CONTROL-C     CPU-Register anzeigen (\#CPU\#)
+  CONTROL-D     Speicherbreich anzeigen (\#Dump...\#)
+  CONTROL-E     Watch-Fenster aufrufen (\#Watches\#)
+  CONTROL-F     String suchen (\#Find...\#)
+  CONTROL-G     Suche wiederholen (\#Find Same\#)
+  CONTROL-H     Datei in HEX oder ASCII anzeigen (\#File...\#)
+  CONTROL-I     Informationen Åber geladenes Programm (\#Info...\#)
+  CONTROL-J     Protokoll-Fenster aufrufen (\#Log\#)
+  CONTROL-L     Zeilennummer im Quelltext anspringen (\#Goto Line...\#)
+  CONTROL-M     Liste der Module (\#Modules\#)
+  CONTROL-O     Programm zum Debuggen laden (\#Load...\#)
+  CONTROL-Q     Pure Debugger verlassen (\#Quit\#)
+  CONTROL-S     Funktion ansehen (\#Function...\#)
+  CONTROL-T     Stack-Fenster aufrufen (\#Stack\#)
+  CONTROL-U     Fenster schlieûen (\#Close Window\#)
+  CONTROL-V     Liste der Variablen (\#Variables\#)
+  CONTROL-W     zyklisch durch Fenster blÑttern (\#Cycle Windows\#)
+
+Querverweis:   \#ALTERNATE\#, \#Hotkeys\#
+\end
+
+screen( "Ausdruck" )
+AusdrÅcke
+----------------------------------------------------------------------
+
+AusdrÅcke kînnen eine Kombination aus Variablenbezeichnungen, Adreû-
+beschreibung, Konstanten und Operatoren der Programmiersprache C
+sein. Pure Debugger wertet AusdrÅcke aus und teilt Ihnen das
+Ergebnis mit. Sie kînnen einen Ausdruck bei allen Eingaben ver-
+wenden, in denen Sie einen Wert oder eine Speicheradresse angeben
+sollen.
+\end
+
+screen( "Byteliste" )
+Byteliste
+----------------------------------------------------------------------
+
+Eine Byteliste kann eine beliebige, durch Kommata getrennte Mischung
+aus skalaren Zahlen (keine Flieûkommazahlen), Zeichenkonstanten und
+Strings sein.
+
+Die Skalare bewegen sich maximal im Bereich von -2147483648 bis
+4294967295, wobei die erste Zahl den kleinsten vorzeichenbehafteten
+und letztere Zahl den grîûtmoglichen vorzeichenlosen Long-Wert
+darstellt. Bei Long-Werten muû an deren Ende ein l oder L stehen,
+bei vorzeichenlosen Werten ein u oder U. Zeichenkonstanten werden
+wie in C in Hochkommata eingeschlossen. Es kînnen bis zu vier Zeichen
+angegeben werden. Bei einem Zeichen wird sie als Byte-, bei zwei als
+Wort- und bei vier als Langwortkonstante interpretiert. Sollte Ihre
+Konstante aus drei Zeichen bestehen, so wird sie zu einem Langwort
+erweitert. Werden mehr als vier Zeichen angegeben, so werden nur die
+letzten vier als gÅltig betrachtet. Strings werden wie in C durch
+Doppelte Hochkomma begrenzt, wobei zu beachten ist, daû diese keine
+abschlieûende Null hat.
+\end
+
+screen( "Seiteneffekt" )
+Seiteneffekte
+----------------------------------------------------------------------
+
+Seiteneffekte sind des Programmierers Ñrgste Feinde. Sie verÑndern
+unbeabsichtigt die Inhalte von Variablen und fÅhren somit zu
+unerklÑrlichen Resultaten. Mittels \link("Globaler Breakpoint")globaler Breakpoints\#
+sind sie jedoch leicht aufzuspÅren.
+\end
+
+screen( "Cursorbewegung",
+		"Cursor",
+		"Bewegung in den Fenstern mitt" )
+Bewegung in den Fenstern mittels Tastatur
+----------------------------------------------------------------------
+
+Die \#Quelltext\#-, das \#Assembly\#-, \#Log\#-, \#File\#- und \#Help\#-Fenster besitzen
+einen als senkrechter Strich dargestellten Cursor. Er dient der
+schnelleren Fortbewegung in diesen Fenstern.
+
+Die Cursorposition kann Åber folgende Tasten/Tastenkombinationen
+beeinfluût werden:
+
+  Taste(n)      Funktion
+----------------------------------------------------------------------
+  Home          An den Anfang des Textes (nicht im \#Assembly-Fenster\#)
+  SHIFT-Home    An das Ende des Textes (nicht im \#Assembly-Fenster\#)
+               Eine Zeile nach Oben
+  SHIFT-       Eine Seite nach Oben
+               Eine Zeile nach Unten
+  SHIFT-       Eine Seite nach Unten
+               Ein Zeichen nach Links
+  SHIFT-       An den Zeilen-Anfang (nicht im \#Assembly-Fenster\#)
+               Ein Zeichen nach Rechts
+  SHIFT-       An das Zeilen-Ende (nicht im \#Assembly-Fenster\#)
+\end
+
+screen( "ALTERNATE-Help" )
+ALTERNATE-Help
+----------------------------------------------------------------------
+
+Mit der Tastenkombination \#ALTERNATE\#-Help kînnen Sie das Programm
+fast immer abgebrechen und zum Debugger zurÅckkehren.
+
+Unter folgenden Bedingungen ist ein Abbruch nicht mîglich:
+
+   ˘ Das Programm steck in einer Schleife in der alle Interrupts
+     ausgeschaltet sind.
+   ˘ Das System hat sich aufgrund eines fehlerhaften Programms
+     aufgehÑngt.
+\end
+
+screen( "Quelltext",
+		"Quelltext-Fenster" )
+Quelltext-Fenster
+----------------------------------------------------------------------
+
+Das Quelltext-Fenster entspricht einem normalen GEM-Fenster, von zwei
+Ausnahmen abgesehen.
+
+Die erste ist der vertikale Balken am linken Fensterrand, in dem der
+\#Program Counter\# in Form eines nach rechts deutenden Pfeiles befindet.
+
+Auûerdem werden in diesem Balken auch gesetzte \#Breakpoints\# angezeigt.
+
+Ganz links unten fallen die Pfeile mit der 4 in der Mitte auf ( 4 ).
+Sie dienen der individuellen Einstellung der Expandierung von Tabula-
+toren durch 0 bis 9 Leerzeichen.
+
+Die Buchstaben R, S, T entsprechen den MenÅ-EintrÑgen '\#Run\#',
+'\#Step over\#' und '\#Trace into\#'.
+\end
+
+screen( "Program Counter" )
+Program Counter
+----------------------------------------------------------------------
+
+Der Program Counter wird im \#Quelltext\#- oder \#Assembly-Fenster\# als nach
+rechts deutender massiver Pfeil dargestellt. Er zeigt auf den nÑchsten
+abzuarbeitenden Befehl im Programm. Wird er nur umrandet dargestellt,
+befindet er sich in der Abarbeitung der Zeile, auf die er zeigt, z.B.
+in der Abarbeitung einer Quelltextzeile die auf Assembler-Ebene aus
+mehreren Assemblerbefehlen bestehen kann.
+\end
+
+screen( "Dateiauswahlbox" )
+Besondere Features der Dateiauswahlbox von Pure Debugger
+----------------------------------------------------------------------
+
+'Open'       îffnet eine im Auswahlfenster selektierte Datei.
+             Ein Doppelklick auf den Dateinamen tut dasselbe.
+             Aufruf Åber die Tastatur mit RETURN.
+'New'        legt eine neue Datei an; dabei wird nach dem neuen Namen
+             gefragt.
+             Aufruf Åber die Tastatur mit INSERT.
+'Cancel'     schlieût die Dateiauswahlbox, ohne eine Datei zu îffnen.
+             Aufruf Åber die Tastatur mit CONTROL-U.
+'New Folder' legt einen neuen Ordner an; dabei wird nach dem neuen
+             Namen gefragt.
+'Delete'     lîscht eine im Auswahlfenster selektierte Datei.
+             Aufruf Åber die Tastatur mit DELETE.
+'Touch'      Schreibt Systemzeit und Systemdatum als Dateidatum
+             einer im Auswahlfenster selektierten Datei.
+             (entspricht dem gleichnamigen UNIX-Befehl).
+'Copy'       kopiert die im Auswahlfenster selektierte Datei; dabei
+             wird nach dem neuen Namen gefragt. Mit '..' wird die
+             Datei mit gleichen Namen in den Åbergeordneten Ordner
+             kopiert.
+'Info'       zeigt Name, Grîûe, Datum und Uhrzeit der im Auswahl-
+             fenster selektierten Datei an. Dabei kann der Dateiname
+             ediert werden.
+'*.*'        wechselt zwischen der Anzeige der gewÅnschten Datei-
+             erweiterung und der Anzeige aller Dateierweiterungen.
+             Die Extension des untersten Extensionsbuttons lÑût sich
+             mit einem Doppelklick durch den Benutzer definieren. 
+Hinweis:     Durch DrÅcken eines Buchstabens werden alle Dateien
+             mit nachfolgendem Anfangsbuchstaben angezeigt. Mit den
+             Cursortasten  und  kînnen Sie scrollen. Die Taste
+             UNDO bewirkt dasselbe wie das Schlieûfeld. Mit
+             ALTERNATE-Laufwerksbuchstabe kînnen Sie das Lauf-
+             werk selektieren. Der Aufruf der Standarddatei-
+             erweiterungen erfolgt Åber folgende Tasten:
+             
+                CONTROL-A     *.*
+                CONTROL-C     *.C
+                CONTROL-H     *.H
+                CONTROL-S     *.S
+                CONTROL-P     *.PRJ
+                CONTROL-F     *.CFG
+                CONTROL-R     *.PRG
+                CONTROL-D     *.???
+\end

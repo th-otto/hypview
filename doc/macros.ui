@@ -1,0 +1,58 @@
+# paths, file names, extensions, etc.
+# !macro  file (!teal)(!B)(!I)(!T)(!1)(!t)(!i)(!b)(!coloff)
+!macro  file (!red)(!U)(!I)(!T)(!1)(!t)(!i)(!u)(!coloff)
+
+# code snippets
+!macro code (!B)(!T)(!1)(!t)(!b)
+!macro key (!I)(!1)(!i)
+
+# if those text-attributes are not supported by your UDO version:
+#!macro G (!raw [stg] [@{G}])
+#!macro g (!raw [stg] [@{g}])
+#!macro O (!raw [stg] [@{O}])
+#!macro o (!raw [stg] [@{o}])
+#!macro S (!raw [stg] [@{S}])
+#!macro s (!raw [stg] [@{s}])
+
+# path to images. for html based formats, these
+# have to be copied to the output directory,
+# otherwise the pathname will be part of the link,
+# which is not what we want
+# (if you want to have the images in a separate
+# directory make sure the local directory name
+# is the same as on the server)
+!ifdest [html,hh,hah,tex]
+!macro IMAGES 
+!endif
+
+!ifnset IMAGES
+!macro IMAGES images/
+!endif
+
+!macro REFLINK RefLink
+!macro REFCHECK RefCheck
+!macro STGUIDE ST-Guide
+!macro STOOL STooL
+!macro HCP HCP
+!macro HYPFIND HypFind
+
+# should actually be !if output charset == atarist
+# uses the symbols for right and left arrows
+!ifdest [stg]
+!macro RIGHT (!raw [stg] [])
+!macro LEFT (!raw [stg] [])
+!macro ALT (!raw [stg] [])
+!endif
+
+!ifdest [stg,amg]
+!macro XLINK (!xlink [(!1)] [(!2).hyp/(!3)])
+!endif
+!ifdest [wh4,win]
+!macro XLINK (!xlink [(!1)] [(!3)@(!2).hlp])
+!endif
+!ifdest [html,hh,hah]
+!macro XLINK (!xlink [(!1)] [(!2).html#(!3)])
+!endif
+!ifnset XLINK
+!macro XLINK (!xlink [(!1)] [(!2)/(!3)])
+!endif

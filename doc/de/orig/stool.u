@@ -1,0 +1,727 @@
+!code_source [tos]
+
+# language independent macros
+!include macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Dokumentation zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] Stool
+!docinfo [author] Christian Wempe
+!docinfo [programimage] (!IMAGES)stool
+
+!macro PROGRAM Stool
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!raw [stg] @subject "Dokumentation/ST-Guide"
+!raw [stg] @options "+z -t4 +i -d10"
+!docinfo [stgdatabase] Dokumentation zu STool
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+!html_keywords RefCheck
+!html_keywords STooL
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!tableofcontents !depth 1
+!toc_title Dokumentation zu Stool
+
+!raw [stg] @xref "ST-Guide.HYP/Main" "ST-Guide Dokumentation"
+!raw [stg] @xref "HCP.HYP/Main" "HCP Dokumentation"
+!raw [stg] @xref "refcheck.hyp/Main" "RefCheck Dokumentation"
+
+!begin_node Die Idee hinter diesem Programm
+!alias Die Idee
+
+    Will man Texte irgendwie ordnen, dann kann man dies am besten in
+    einem Baum. Dies entspricht  hier  einer  hierachischen  Ordnung
+    nach  dem  Thema,  Unterthema,  Unterunterthema  usw..  In   den
+    (!link [Bl„ttern] [Blatt])  dieses  Baumes  stehen  dann  letztendlich  die  Texte
+    selbst. So ein Baum k”nnte z.B. so aussehen:
+
+!label Beispielbaum
+!begin_preformatted
+               -------------- Wurzel---------------
+               |                |                 |
+          Dokumentation    Programmieren    Unterhaltung
+                             |  |     |
+                      |-------  |     -------|
+                   Pascal      Basic     Assembler
+                                             |
+                                        MC68000.HYP
+!end_preformatted
+
+    Man mžte also immer einen  Hypertext  haben,  der  diesen  Baum
+    repr„sentiert. Da man ja wohl  ”fter  einmal  einen  neuen  Text
+    installiert, oder einen alten l”scht, w„re das Verwalten  dieses
+    Textes doch etwas  aufwendig.  Man  mžte  ihn  also  am  besten
+    automatisch erzeugen k”nnen. Genau dies ist auch die  Idee,  die
+    hinter diesem Progamm steckt. Dazu gibt es nun im  Compiler  das
+    Schlsselwort  (!xlink [@subject] [HCP.HYP/Kommando @subject]),  mit  dem  man  zu   dem   Beispieltext
+    MC68000.hyp in diesem Fall
+
+!begin_quote
+        @subject "Programmieren/Assembler"
+!end_quote
+
+    angeben mžte. Diese Information wird im Hypertext abgelegt  und
+    von diesem Programm dann ausgelesen, um den  Text  in  den  Baum
+    einzuordnen. Eine zus„tzliche M”glichkeit  besteht  darin,  auch
+    ASCII-Texte und Texte, die  man  gar  nicht  besitzt  aus  einer
+    Katalogdatei aufzunehemen.
+
+    Vom Viewer ST-Guide aus, ist der  so  erzeugte  Hypertext  immer
+    direkt erreichbar und wird auch  gleich  angezeigt,  wenn  keine
+    andere Default-Datei angegeben wurde.
+
+    Natrlich sollte dieses Programm auch  so  einfach  zu  Bedienen
+    sein, wie m”glich und deshalb hat es auch keine  Optionen.  Alle
+    wichtigen Informationen stehen in  der  Konfigurationsdatei  und
+    die Einstellungen braucht man also nur dort  einmal  vorzunehmen
+    und kann das  Programm  dann  immer  einfach  durch  Doppelklick
+    starten, um diesen Haupttext zu aktualisieren.
+
+!begin_pnode Blatt
+ Ein Blatt ist eine Seite dieses Hypertextes,
+ auf dem nur Texte  angegeben  sind.  Es  ist
+ nicht m”glich, daž Themen-Verweise und Texte
+ auf einer  Seite  gemischt  vorhanden  sind.
+!end_node
+
+
+!end_node
+
+!begin_node Was macht dieses Programm
+!alias Programmablauf
+!index Programmablauf
+    Wenn man das Programm STool startet, fhrt es folgende  Schritte
+    in folgender Reihenfolge aus:
+
+!begin_enumerate
+    !item Durchsuchen der in der Environmentvariablen PATHS angegebenen
+       Pfade nach Hypertextdateien.
+
+    !item Lesen der Katalogdatei (file [KATALOG.TXT])  und  erg„nzen  der  noch
+       nicht vorhandenen Informationen aus dieser Datei.  D.h.  alle
+       noch nicht in der Liste befindlichen Hypertexte werden in die
+       Liste aufgenommen und bei den dort befindlichen Texten werden
+       die fehlenden Information evtl. erg„nzt.
+
+    !item Einlesen der  Konfigurationsdatei  und  Aufbauen  des  Baumes
+       hieraus.
+
+    !item Wenn die Option CREATE eingeschaltet  ist,  oder  wenn  keine
+       Konfigurationsdatei gefunden wurde, dann wird der Baum  durch
+       die Themenangaben aus den Hypertexten erg„nzt.
+
+    !item Wenn die Option SHRINK eingeschaltet ist, werden danach leere
+       Seiten wieder aus  dem  Baum  entfernt.  Ist  zus„tzlich  die
+       Option PULLUP eingeschaltet, werden auch Seiten mit nur einer
+       Auswahlm”glichkeit aufgel”st.
+
+    !item Erzeugen des STG-Files aus dem so erzeugten Baum.
+
+    !item Wenn die Option COMPILE eingeschaltet ist, dann wird hiernach
+       noch  der  (!xlink [hcp] [HCP.HYP/Main])  aufgerufen,  um  das  erzeugte  STG-File   zu
+       bersetzen.
+!end_enumerate
+
+!end_node
+
+!begin_node Starten des Programms
+!alias Programmstart
+!index Programmstart
+    Um dieses Programm zu starten, reicht es einen  Doppelklick  auf
+    dem Desktop auf das Programmicon zu  machen.  Das  Programm  hat
+    keine Kommandozeilen-Optionen.  Alle  notwendigen  Informationen
+    werden aus den  Environment-Variablen,  der  Konfigurationsdatei
+    und aus der Katalogdatei entnommen.
+!end_node
+
+!begin_node Die Konfigurationsdatei
+!alias Konfigurationsdatei
+!index Konfigurationsdatei
+
+Die Konfigurationsdatei, die das STool liest,  sollte  immer  im
+selben Verzeichnis stehen wie der zu erzeugende  Hypertext  (Siehe
+Environmentvariable HYPTOP), und die Endung .CFG bei dem  selben
+Dateinamen haben. Steht also in der Variablen HYPTOP  die  Datei
+(!file [c:\GUIDES\INHALT.HYP]), so  wird  nach  einer  Konfigurationsdatei
+(!file [c:\GUIDES\INHALT.CFG]) gesucht.  Ist  sie  in  diesem  Verzeichnis
+nicht zu finden, dann wird noch im  aktuellen  Verzeichnis  nach
+dieser Datei gesucht, also nach "INHALT.CFG".
+
+In dieser Datei stehen mehrere wichtige Informationen:
+
+!begin_enumerate
+!item  Die Optionen des Programms. Zeilen, die mit  einem  '+'  oder
+   mit  einem  '-'  Zeichen   beginnen   werden   als   Optionen
+   interpretiert. Das '+' am Zeilenanfang  heižt  brigens,  daž
+   die Option eingeschaltet ist und  das  '-',  daž  die  Option
+   ausgeschaltet ist. Die Optionen im  einzelnen  sind:  CREATE,
+   SHRINK, PULLUP, INDEX, COMPILE, EXONLY und UPDATEREF.
+
+!item Die Hilfsseite, die in  den  erzeugten  Hypertext  integriert
+   wird. Dieser Text wird eingeleitet durch eine Zeile,  in  der
+   '>HELP' steht. Der danach  folgende  Text  bis  zur  n„chsten
+   Zeile,  die  mit  einem  '>'-Zeichen  beginnt,  wird  in  die
+   Hilfsseite aufgenommen.
+
+!item Eine Liste mit Themenangaben zu Hypertext-Dateien der Form: (!nl)
+   .NAME.HYP (!nl)
+   Thema/Unterthema/Unterunterthema... (!nl)
+   Diese Angaben werden bei den Hypertexten ersetzt und so  kann
+   man die Texte auch anders einordnen lassen, als der Autor des
+   Textes  es  mit  seiner  Themenangabe  durch  das  (!xlink [@subject] [HCP.HYP/Kommando @subject])-
+   Kommando beabsichtigte.
+
+!item Alle   Zeichenketten,  die   in   den   erzeugten   Hypertext
+   geschrieben werden, lassen sich auch  in  der  Hypertextdatei
+   umdefinieren. Ein Beispiel hierfr ist der Titel  der  ersten
+   Seite des erzeugten Hypertextes. Alle Zeilen,  die  nach  dem
+   '>STRINGS' - Kommando stehen, werden so interpretiert.
+
+!item Das wichtigste ist aber wohl  der  Themenbaum,  der  hier  in
+   seinem Aussehen definiert wird. Dies geschieht in  der  Form,
+   daž  man  jeden  Teilpfad  des  Baumes  hier  in  eine  Zeile
+   beginnend  mit  einem  '>'-Zeichen  schreibt   und   darunter
+   beliebig viele Zeilen erkl„renden Text hinzufgt. Bsp.:
+
+!begin_quote
+   >Dokumentation (!nl)
+   Dokumentationen zu meinen Programmen. (!nl)
+   >Programmieren (!nl)
+   Texte, die sich mit Programmieren besch„ftigen. (!nl)
+   >Programmieren/Assembler (!nl)
+   Texte, die sich mit der Assembler-Programmierung befassen.
+!end_quote
+
+   Wichtig ist in jeder Ebene besonders der letzte Knoten.  Hier
+   werden alle Texte eingeordnet, deren Themen-Pfad  auf  dieser
+   Ebene zuende  ist  und  (je  nach  Option)  auch  die,  deren
+   Themen-Pfadangabe hier nicht existiert.
+
+!item Die šbersetzungstabelle fr Subjects in anderen Sprachen.
+!end_enumerate
+
+!subtoc [all] !depth 1
+
+!begin_node Die Option SHRINK
+!alias SHRINK
+!index SHRINK
+Ist diese Option  eingeschaltet,  wo  wird  der  Baum  nach  dem
+Einfgen der Texte sozusagen wieder geschrumpft. Das heižt,  das
+leere Seiten wieder entfernt werden. Auf diese Weise enth„lt man
+dann einen Text, in dem jeder Verweis letztendlich auch zu einer
+Seite fhrt, die mindestens einen  Text  enth„lt.  Leere  Seiten
+entstehen immer dann, wenn man zu einem Thema keinen  Text  hat.
+
+Diese Option ist defaultm„žig ausgeschaltet.
+!end_node
+
+!begin_node Die Option CREATE
+!alias CREATE
+!index CREATE
+
+Ist diese Option eingeschaltet, dann wird der Baum nicht nur aus
+der Konfigurationsdatei erzeugt, sondern auch  um  die  mit  dem
+(!xlink [@subject] [HCP.HYP/Kommando @subject])-Kommado angegebenen Themen aus den Hypertexten erg„nzt.
+Es kann ja immer mal vorkommen, daž ein Text ein Thema angegeben
+hat, das man in seinem pers”nlichen  Baum  gar  nicht  angegeben
+hat. Normalerweise wandern  diese  Texte  dann  in  den  letzten
+Knoten einer jeden Seite. Will man das aber lieber so, daž diese
+Pfade erg„nzt werden, dann muž man diese Option einschalten.
+
+Wird auf diese Weise der erste Eintrag auf einer Seite  gemacht,
+so wird  dort  auch  gleichzeitig  immer  ein  'Sonstiges'-Zweig
+erzeugt. Diese ist fr die Texte, deren Themenangabe hier endet.
+
+Diese Option ist defaultm„žig ausgeschaltet.
+!end_node
+
+
+!begin_node Die Option INDEX
+!alias INDEX
+!index INDEX
+
+Besonders wenn man nur sehr wenige Texte hat, oder einfach  auch
+nur, weil man es besser findet, kann es sinnvoll  sein,  einfach
+nur eine Seite zu erzeugen, die alle Texte  als  Liste  enth„lt.
+Mit dieser Option kann man dies erreichen.  Diese  Option  heižt
+so, weil das Aussehen der  so  erzeugten  Seite  das  der  sonst
+erzeugten Index-Seite hat. Der Unterschied zur Index-Seite  ist,
+daž hier der Verweis direkt auf den Text erfolgt.
+
+Diese Option ist (natrlich) defaultm„žig ausgeschaltet.
+!end_node
+
+
+!begin_node Die Option PULLUP
+!alias PULLUP
+!index PULLUP
+Diese Option hat nur in Verbindung mit  der  SHRINK-Option  eine
+Wirkung. Ist sie eingeschaltet, so werden auch  Seiten  mit  nur
+einem Verweis aufgel”st und die Unterseite  nach  oben  gezogen.
+Dies l„žt sich am besten an einem Beispiel verdeutlichen:
+
+!begin_preformatted
+              -------Wurzel------
+              |                 |
+        Dokumentation       Unterhaltung
+                                |
+                            Fantasy----------
+                                |           |
+                            Hobbits.hyp   Zwerge.hyp
+!end_preformatted
+
+Wie man sieht, gibt es im Bereich Unterhaltung nur  den  Bereich
+Fantasy und darin dann die Texte.  Dies  entspr„che  dann  einer
+Seite, wo man dann aužer Fantasy keine  weitere  Wahlm”glichkeit
+hat.  Es  spr„che  also  nichts  dagegen,  den  Bereich  Fantasy
+aufzul”sen und die Texte nach oben zu holen. Der Baum h„tte dann
+das folgende Aussehen:
+
+!begin_preformatted
+              -------Wurzel------
+              |                 |
+        Dokumentation       Unterhaltung-------
+                                |             |
+                            Hobbits.hyp   Zwerge.hyp
+!end_preformatted
+
+Diese Option ist defaultm„žig ausgeschaltet.
+!end_node
+
+
+!begin_node Die Option COMPILE
+!alias COMPILE
+!index COMPILE
+
+Ist diese Option eingeschaltet, so ruft das  STool,  nachdem  es
+den Quell-Hypertext erzeugt hat auch  gleich  den  (!xlink [hcp] [HCP.HYP/Main])  auf,  um
+diesen zu bersetzen. Wichtig ist es hierbei,  daž  der  hcp  im
+gleichen Verzeichnis steht wie das STool, damit er auch gefunden
+werden kann.
+
+Diese Option ist defaultm„žig eingeschaltet.
+!end_node
+
+!begin_node Die Option EXONLY
+!alias EXONLY
+!index EXONLY
+Wenn diese Option eingeschaltet ist, so  wird  die  Katalogdatei
+nur dazu benutzt, um zu den wirklich existierenden  Texten  noch
+einen Kommentar hinzufgen  zu  k”nnen.  Es  werden  dann  keine
+Dateien in den  šbersichtshypertext  aufgenommen,  die  man  gar
+nicht hat.
+
+Diese Option gilt aber nur fr Hypertexte mit der Endung  ".HYP"
+und andere Texte  werden  unabh„ngig  von  dieser  Option  immer
+aufgenommen.
+
+Diese Option ist defaultm„žig ausgeschaltet.
+!end_node
+
+
+!begin_node Die Option UPDATEREF
+!alias UPDATEREF
+!index UPDATEREF
+
+Ist diese Option eingeschaltet und  es  existiert  eine  globale
+Referenzdatei, so werden Referenzen auf den von STool  erzeigten
+Hytertext hierein bernommen.
+
+Diese Option ist am 15. Juli 1995 hinzugekommen und vorher wurde
+dies  immer  gemacht.  Daher  ist  diese   Option   defaultm„žig
+eingeschaltet, so daž sich kein Unterschied ergibt, wenn man sie
+nicht in der Konfigurationsdatei ausschaltet.
+!end_node
+
+
+
+
+
+!begin_node Pfade des Beispielbaums
+    Der Beispielbaum wrde in der Konfigurationsdatei so ausehen:
+
+!begin_quote
+    >Dokumentation (!nl)
+    >Programmieren (!nl)
+    >Programmieren/Pascal (!nl)
+    >Programmieren/Basic (!nl)
+    >Programmieren/Assembler (!nl)
+    >Unterhaltung
+!end_quote
+
+    Die Texte, die zur n„heren Erkl„rung der Themen angegeben werden
+    k”nnen, fehlen hier.
+
+    Bei diesem Baum kann brigens auch  die  Unsch”nheit  auftreten,
+    daž Texte dort eingeordnet werden, wo sie gar nicht hingeh”ren.
+    Ein Text mit dem Thema Programmieren/Prolog wrde z.b.  hier  in
+    den Bereich Programmieren/Assembler eingeordnet  werden,  da  es
+    Programmieren/Prolog hier nicht gibt. Deshalb  sollte  man  auch
+    noch folgende Zeilen hinzufgen:
+
+!begin_quote
+    >Sonstiges (!nl)
+    >Programmieren/Sonstiges.
+!end_quote
+
+    Jetzt wrde der Text mit dem Thema Programmieren/Prolog  in  den
+    Bereich Programmieren/Sonstiges eingeordnet werden, was ja schon
+    eher passt. Eine weitere M”glichkeit, dieses Problem zu  beheben
+    ist das Angeben der Option CREATE, die  den  Bereich  Prolog  im
+    Bereich Programmieren dann automatisch nachtragen  wrde.  Damit
+    sind aber noch nicht alle Probleme gel”st, denn  Texte  die  nur
+    das Thema Programmieren angegeben haben, wrden  immer  noch  in
+    Programmieren/Assembler eingeordnet werden, denn auf jeder Seite
+    stehen entweder Themenangaben oder nur Textaufz„hlungen. Ist man
+    beim Einsortieren eines Textes noch nicht in einem  Blatt,  wird
+    solange in den letzten Zweig gegangen, bis man in einem ist.
+
+    (!B)Also:(!b) šberall eine Eintrag 'Sonstiges' machen!
+
+    (!link [Und so sieht dann der Hypertext aus] [Wurzel])
+!end_node
+
+!begin_node Die šbersetzungstabelle
+!alias šbersetzungstabelle
+!index šbersetzungstabelle
+
+Die   šbersetzungstabelle   dient   dazu,   Themanangaben    aus
+Hypertexten in anderen  Sprachen  zu  bersetzten  und  hat  die
+folgende Form:
+
+!begin_quote
+>TRANS (!nl)
+String1=Ersatzstring1 (!nl)
+String2=Ersatzstring2 (!nl)
+String3=Ersatzstring3
+!end_quote
+
+(!B)Achtung:(!b) Vor  und  nach  dem  Gleichheitszeichen  darf   kein
+         Leerzeichen stehen!!!
+
+Beispiel:
+!begin_quote
+>TRANS (!nl)
+Documentation=Dokumentation (!nl)
+Wordprocessors=Textverarbeitung (!nl)
+Games=Spiele (!nl)
+Dictionaries/Games=Nachschlagewerke/Unterhaltung
+!end_quote
+
+Wie man an dem Beispiel  sehen  sollte,  k”nnen  beliebig  lange
+Teilpfade angegeben werden, so daž ein Wort  in  anderen  Pfaden
+auch anders šbersetzt werden kann.
+
+Die šbersetzungen hier w„ren z.B.:
+
+Documentation/Wordprocessors    ==>  Dokumentation/Textverarbeitung (!nl)
+Documentation/Games             ==>  Dokumentation/Spiele (!nl)
+Dictionaries/Games              ==>  Nachschlagewerke/Unterhaltung
+
+!end_node
+
+!end_node #Konfigurationsdatei
+
+!begin_node Die Katalogdatei
+!alias Katalogdatei
+!index Katalogdatei
+
+Die Katalogdatei enth„lt  eine  Liste  von  (Hyper-)Texten,  die
+nicht auf der Platte gesucht werden, statt  dessen  werden  alle
+Informationen dazu aus dieser Datei entnommen. Als ein  weiteres
+Feature dieser Datei, kann das STool die fehlenden Informationen
+eines Hypertextes hieraus entnehmen und erg„nzen.
+
+Diese Datei enth„lt zu jedem Text erst einmal fnf  Zeilen,  die
+mit einem '>'-Zeichen beginnen. Diese Zeilen enthalten  die  fr
+das STool wichtigen Informationen.  Optional  kann  danach  eine
+Zeile folgen, die mit einem Ausrufezeichen ('!') beginnt.  Diese
+Zeile, ohne das Ausrufezeichen, wird fr ein  @keywords-Kommando
+benutzt, das vor den  gesamten  Eintrag  geschrieben  wird.  Mit
+anderen Worten: Dieser String kann in der Referenz-Datei gesucht
+werden und, so er denn dann da gefunden  wird,  kann  zu  dieser
+Stelle im Katalogtext  gesprungen  werden.  Danach  k”nnen  noch
+beliebig viele Zeilen beschreibender Text folgen:
+
+!begin_quote
+>Dateiname (mit oder ohne Pfad) (!nl)
+>Name des Autors (fr (!xlink [@author] [HCP.HYP/Kommando @author])) (!nl)
+>Thema (fr (!xlink [@subject] [HCP.HYP/Kommando @subject])) (!nl)
+>Titel (fr (!xlink [@database] [HCP.HYP/Kommando @database])) (!nl)
+>Version (fr (!xlink [@$VER:] [HCP.HYP/Kommando @$VER:])) (!nl)
+Beschreibender Text... (!nl)
+!end_quote
+
+Obwohl bei den ersten fnf Zeilen hinten auch welche weggelassen
+werden k”nnen, sollte man dies nicht tun. Es ist  immer  besser,
+wenn alle n”tigen Informationen  dann  auch  im  erzeugten  Text
+erscheinen.
+
+Auf diese Dateien wird dann auch ein Link gesetzt,  so  daž  man
+sie auch schon erreichen kann, wenn man sie nachtr„glich an  dem
+angegebenen Pfad, oder  in  einem  der  Suchpfade  des  ST-Guide
+installiert.
+
+Der Dateiname der Katalogdatei ist  festgelegt,  sie  muž  immer
+KATALOG.TXT heižen. Gesucht wird sie immer zuerst im Verzeichnis
+wo der Hypertext erzeugt  werden  soll  und  dann  im  aktuellen
+Verzeichnis.
+
+(!U)Neu in den Versionen ab 8.11.94:(!u)
+Im beschreibenden Text werden Zeilen, deren erstes Zeichen ein @
+ist und deren zweites Zeichen weder ein @ noch ein { ist,  nicht
+mehr eingerckt, so daž man auch zus„tzliche Kommandos in dieses
+Text schreiben kann.
+
+!end_node # Katalogdatei
+
+!begin_node Vorgegebene Themen
+
+Wer mehr ber die von uns schon vorgegebenen Themen wissen will,
+muž in die (!xlink [mitgelieferte Konfigurationsdatei] [KATALOG.CFG/MAIN]) schauen.  Es  w„re
+sinnlos, all dies hier nocheinmal aufzufhren und aužerdem  kann
+die Liste dort jederzeit erweitert werden und  mžte  dann  auch
+hier aktualisiert werden.
+
+Nach einiger Zeit sollte sich aber hoffentlich ein Baum  bilden,
+an dem nicht mehr  viel  ge„ndert  werden  muž.  Wer  also  noch
+Vorsch„ge fr Themen hat, die man noch  aufnehmen  sollte,  m”ge
+sich also bei uns melden.
+
+!end_node
+
+!begin_node So kann ich ASCII-Texte aufnehmen
+!alias ASCII-Texte
+!index ASCII-Texte
+
+Man kann auch ASCII-Texte in den erzeugten Hypertext  aufnehmen,
+schliesslich kann der ST-Guide ja auch diese anzeigen. Wer  also
+auf diese Art auch auf alle Dokumentationen zugreifen will,  die
+noch im ASCII-Format vorliegen, kann dies tun.
+
+M”glich  ist  dies  ber  die  Katalogdatei.  Dort  wird   nicht
+getestet, ob es sich um einen Hypertext handelt. Steht dort also
+eine ASCII-Datei, wird sie auch aufgenommen  und  ein  Link  auf
+diese erstellt. Es ist dann aber sinnvoll, dort  den  Dateinamen
+mit vollem Pfad anzugeben, damit diese Datei auch gefunden wird,
+falls sie nicht in einem der Pfade steht, wo  standardm„žig  vom
+ST-Guide gesucht wird.
+
+!end_node
+
+!begin_node Das Žndern oder Erg„nzen von Themen
+!alias Thema „ndern
+!index Thema „ndern
+!index Thema erg„nzen
+
+Da das (!xlink [@subject] [HCP.HYP/Kommando @subject]) Kommando
+nicht von Anfang an  im  (!xlink [hcp] [HCP.HYP/Main])  war  oder
+auch weil ein Autor aus irgend einem Grund kein Thema  angegeben
+hat, ist es wohl  n”tig,  daž  man  dies  noch  selber  irgendwo
+nachtragen kann. Im Hypertext geht dies nicht so  einfach,  also
+kann man dies  in  der  Konfigurationsdatei  machen.  Solch  ein
+Eintrag fr einen Hypertext besteht aus zwei Zeilen,  wobei  die
+erste mit einem  Punkt  beginnt,  nach  dem  (ohne  Leerzeichen)
+gleich der Dateinahme (ohne Pfad stehen  muž).  In  der  zweiten
+Zeile steht dann der Pfad des Themas.
+
+(!U)Beispiele:(!u)
+!begin_quote
+.XYZ.HYP (!nl)
+Lernen/Buchstabieren (!nl)
+.BIER.HYP (!nl)
+Sachtexte/Getr„nke
+!end_quote
+
+Die hier gemachten Angaben haben brigens eine h”here  Priorit„t
+als die in den Hypertexten. So kann  man  sich  das  Thema  auch
+umdefinieren, falls einem die Angabe in einem Hypertext nun ganz
+und gar nicht gef„llt.
+
+!end_node
+
+!begin_node Environment-Variablen
+
+Dieses  Programm  benutzt   einige   Environment-Variablen.   Im
+einzelnen sind dies:
+
+!label HYPTOP
+!begin_blist [HYPTOP]
+!item [HYPTOP] (!nl)
+In  dieser  Variablen  (!I)muž(!i)  der  Dateiname  (mit  Pfad)  des  zu
+erzeugenden Hypertextes stehen, z.B. "(!file [C:\GUIDES\INHALT.HYP])".  In
+dem Pfad dieser Datei sucht das STool auch die anderen  Dateien.
+In diesem Fall w„ren das die  Datei  "(!file [C:\GUIDES\INHALT.CFG])"  als
+Konfigurationsdatei und die  Datei  "(!file [C:\GUIDES\KATALOG.TXT])"  als
+Katalogdatei.  Existiert  diese  Variable  nicht,  so  wird  als
+Notl”sung  die  Datei  (!file [KATALOG.STG])  im   aktuellen   Verzeichnis
+erzeugt.  So  wrden  also  auch  die  Dateien  (!file [KATALOG.CFG])  und
+(!file [KATALOG.TXT]) im aktuellen Verzeichnis gesucht.
+
+!label PATHS
+!item [PATHS] (!nl)
+Alle Hypertexte (Endung .hyp) aus dieser Pfadliste werden in die
+erzeugte  Datei  aufgenommen.
+
+Existiert  diese  Variable  nicht,   wird   nur   das   aktuelle
+Verzeichnis durchsucht.
+
+!end_blist
+
+!end_node
+
+!begin_node Navigation im erzeugten Hypertext
+!alias Navigation
+!index Navigation
+
+Noch einmal der Beispiel Baum:
+
+!begin_preformatted
+                    -------------- Wurzel---------------
+                    |                |                 |
+1. Ebene        Dokumentation    Programmieren    Unterhaltung
+                                    |  |     |
+                            |-------   |     -------|
+2. Ebene                Pascal       Basic      Assembler
+                                                    |
+3. Ebene                                       MC68000.HYP
+!end_preformatted
+
+Folgendermažen kann man sich  mit  den  Kn”pfen  und  durch  das
+Ausw„hlen eines Verweises in dem erzeugten Hypertext bewegen:
+
+!begin_xlist [Verweis ausw„hlen:]
+!item [Verweis ausw„hlen:]
+Hiermit kommt man in die ausgew„hlte Unterebene. W„hlt man  z.B.
+auf der ersten Seite 'Programmieren' aus, gelangt  man  auf  die
+Seite auf der in die Seiten 'Pascal',  'Basic'  und  'Assembler'
+verzweigt  werden  kann.  Etwas  anderes  ist   es,   wenn   der
+ausgew„hlte Verweis ein Text-Verweis  ist.  Damit  gelangt  man,
+falls der Text installiert ist, in diesen Text.
+
+!item [Knopf Inhalt:]
+Wenn man diesen Knopf anw„hlt, kommt man eine Ebene h”her.  Hier
+also z.B. aus der Seite, wo Pascal, Basic  und  Assembler  steht
+(2. Ebene) in die  Seite  wo  Dokumentation,  Programmieren  und
+Unterhaltung steht (1. Ebene).
+
+!item [Knopf Seite >:]
+Hiermit gelangt man in den Unterbaum des  rechten  Nachbarn  auf
+der n„chst  h”heren  Ebene.  Ist  man  hier  z.B.  im  Unterbaum
+Programmieren (da wo Pascal, Basic und Assembler steht), gelangt
+man in den Unterbaum Unterhaltung (hier leer).
+
+!item [Knopf Seite <:]
+Hiermit gelangt man in den Unterbaum des linken Nachbarn auf der
+n„chst  h”heren  Ebene.  Ist  man   hier   z.B.   im   Unterbaum
+Programmieren (da wo Pascal, Basic und Assembler steht), gelangt
+man in den Unterbaum Dokumentation (hier leer).
+
+!item [Knopf Index:]
+Hiermit gelangt man auf die  Index-Seite,  die  vom  STool  auch
+erzeugt wird. W„hlt man hier einen Verweis aus, gelangt man  auf
+die Seite, wo die Beschreibung dieses Textes steht.
+!end_xlist
+
+Zum Ausprobieren: (!link [In den Beispieltext gehen] [Wurzel])
+
+!begin_node šbersicht ber alle Hypertexte
+!alias Wurzel
+!index Beispieltext
+!ignore_index
+
+(!link [Dokumentation] [Dokumentation])
+
+(!link [Programmieren] [Programmieren])
+
+(!link [Unterhaltung] [Unterhaltung])
+
+(!link [Sonstiges] [Sonstiges])
+
+!begin_node Dokumentation
+!ignore_index
+!end_node
+
+!begin_node Programmieren
+!ignore_index
+(!link [Pascal] [Programmieren/Pascal])
+
+(!link [Basic] [Programmieren/Basic])
+
+(!link [Assembler] [Programmieren/Assembler])
+
+!begin_node Programmieren/Pascal
+!alias Pascal
+!ignore_index
+!end_node
+!begin_node Programmieren/Basic
+!alias Basic
+!ignore_index
+!end_node 
+!begin_node Programmieren/Assembler
+!alias Assembler
+!ignore_index
+!begin_quote
+    (!xlink [Programmierung des MC68000] [MC68030.HYP/Main]) (!nl)
+    Autor: Erich Mustermann (!nl)
+    Version 68000er.hyp 1.00 (1/1/90) (!nl)
+    Datei: c:\guides\68000er.hyp
+!end_quote
+!end_node
+!end_node #Programmieren
+
+!begin_node Unterhaltung
+!ignore_index
+!end_node
+
+!begin_node Sonstiges
+!ignore_index
+!end_node
+
+!end_node #šbersicht ber alle Hypertexte
+
+!end_node #Navigation
+
+!end_document

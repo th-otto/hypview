@@ -1,0 +1,1557 @@
+
+			HELPFILE RECOMPILER  Ver. 1.0	Nov  7 2013
+			=============================
+
+				(c) Volker Reichel
+
+Optionen: slt
+
+
+Header of Helpfile pasm.HLP
+
+	Screens					:  423
+	Start String Tabelle	: 1828 (0x724)
+	L„nge					: 40658 (0x9ed2)
+	die h„ufigsten Zeichen	:  -enritsad\1Dl
+	Start sensitive Tabelle	: 42502 (0xa606)
+	L„nge					: 6602 (0x19ca)
+	Anz. sens. Worte	: 573 (0x23d)
+	Start capsens. Tabelle	: 42486 (0xa5f6)
+	L„nge					: 16 (0x10)
+	Anz. capsens Worte	: 1 (0x1)
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Capsensitive Tabelle
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+	Position   Code  Suchwort
+	   0x6   801b  "Assembler"
+
+
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+		Sensitive Tabelle
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+	Position   Code  Suchwort
+	   0xd6e   853b  "*="
+	   0xd6b   84f3  "="
+	   0xd67   811b  "A0"
+	   0xd64   811b  "A1"
+	   0xd61   811b  "A2"
+	   0xd5e   811b  "A3"
+	   0xd5b   811b  "A4"
+	   0xd58   811b  "A5"
+	   0xd55   811b  "A6"
+	   0xd52   8123  "A7"
+	   0xd4f   86eb  "ABCD"
+	   0xd4e   8383  "AC"
+	   0xd4b   86f3  "ADD"
+	   0xd49   86fb  "ADDA"
+	   0xd48   8703  "ADDI"
+	   0xd47   870b  "ADDQ"
+	   0xd46   8713  "ADDX"
+	   0xd45   8543  "ALIGN"
+	   0xd45   859b  "ALINE"
+	   0xd45   871b  "AND"
+	   0xd43   8723  "ANDI"
+	   0xd42   8513  "ASCII"
+	   0xd42   851b  "ASCIIL"
+	   0xd43   8523  "ASCIIZ"
+	   0xd44   873b  "ASL"
+	   0xd42   8743  "ASR"
+	   0xd40   83eb  "BAC0"
+	   0xd3f   83eb  "BAC1"
+	   0xd3e   83eb  "BAC2"
+	   0xd3d   83eb  "BAC3"
+	   0xd3c   83eb  "BAC4"
+	   0xd3b   83eb  "BAC5"
+	   0xd3a   83eb  "BAC6"
+	   0xd39   83eb  "BAC7"
+	   0xd38   83e3  "BAD0"
+	   0xd37   83e3  "BAD1"
+	   0xd36   83e3  "BAD2"
+	   0xd35   83e3  "BAD3"
+	   0xd34   83e3  "BAD4"
+	   0xd33   83e3  "BAD5"
+	   0xd32   83e3  "BAD6"
+	   0xd31   83e3  "BAD7"
+	   0xd30   874b  "BCC"
+	   0xd2e   8753  "BCHG"
+	   0xd2d   875b  "BCLR"
+	   0xd2c   874b  "BCS"
+	   0xd2a   874b  "BEQ"
+	   0xd28   8763  "BFCHG"
+	   0xd28   876b  "BFCLR"
+	   0xd28   8773  "BFEXTS"
+	   0xd29   877b  "BFEXTU"
+	   0xd2a   8783  "BFFFO"
+	   0xd2a   878b  "BFINS"
+	   0xd2a   8793  "BFSET"
+	   0xd2a   879b  "BFTST"
+	   0xd2a   874b  "BGE"
+	   0xd28   874b  "BGT"
+	   0xd26   874b  "BHI"
+	   0xd24   87a3  "BKPT"
+	   0xd23   874b  "BLE"
+	   0xd21   874b  "BLS"
+	   0xd1f   874b  "BLT"
+	   0xd1d   874b  "BMI"
+	   0xd1b   874b  "BNE"
+	   0xd19   874b  "BPL"
+	   0xd17   87ab  "BRA"
+	   0xd15   87b3  "BSET"
+	   0xd14   87bb  "BSR"
+	   0xd12   8563  "BSS"
+	   0xd10   87ab  "BT"
+	   0xd0d   87c3  "BTST"
+	   0xd0c   874b  "BVC"
+	   0xd0a   874b  "BVS"
+	   0xd08   81eb  "CAAR"
+	   0xd07   81f3  "CACR"
+	   0xd06   8373  "CAL"
+	   0xd04   87cb  "CALLM"
+	   0xd04   87d3  "CAS"
+	   0xd02   87db  "CAS2"
+	   0xd01   8133  "CCR"
+	   0xcff   87e3  "CHK"
+	   0xcfd   87eb  "CHK2"
+	   0xcfc   87f3  "CLR"
+	   0xcfa   87fb  "CMP"
+	   0xcf8   881b  "CMP2"
+	   0xcf7   8803  "CMPA"
+	   0xcf6   880b  "CMPI"
+	   0xcf5   8813  "CMPM"
+	   0xcf4   8593  "COMM"
+	   0xcf3   82db  "CRP"
+	   0xcf1   8113  "D0"
+	   0xcee   8113  "D1"
+	   0xceb   8113  "D2"
+	   0xce8   8113  "D3"
+	   0xce5   8113  "D4"
+	   0xce2   8113  "D5"
+	   0xcdf   8113  "D6"
+	   0xcdc   8113  "D7"
+	   0xcd9   855b  "DATA"
+	   0xcd8   8823  "DBCC"
+	   0xcd7   8823  "DBCS"
+	   0xcd6   8823  "DBEQ"
+	   0xcd5   882b  "DBF"
+	   0xcd3   8823  "DBGE"
+	   0xcd2   8823  "DBGT"
+	   0xcd1   8823  "DBHI"
+	   0xcd0   8823  "DBLE"
+	   0xccf   8823  "DBLS"
+	   0xcce   8823  "DBLT"
+	   0xccd   8823  "DBMI"
+	   0xccc   8823  "DBNE"
+	   0xccb   8823  "DBPL"
+	   0xcca   882b  "DBRA"
+	   0xcc9   8823  "DBT"
+	   0xcc7   8823  "DBVC"
+	   0xcc6   8823  "DBVS"
+	   0xcc5   8503  "DC"
+	   0xcc2   850b  "DCB"
+	   0xcc0   81ab  "DFC"
+	   0xcbe   8833  "DIVS"
+	   0xcbd   8833  "DIVSL"
+	   0xcbd   883b  "DIVU"
+	   0xcbc   883b  "DIVUL"
+	   0xcbc   82eb  "DRP"
+	   0xcba   852b  "DS"
+	   0xcb7   85fb  "ELSE"
+	   0xcb6   8613  "END"
+	   0xcb4   860b  "ENDC"
+	   0xcb3   8603  "ENDIF"
+	   0xcb3   862b  "ENDM"
+	   0xcb2   865b  "ENDMOD"
+	   0xcb3   8843  "EOR"
+	   0xcb1   884b  "EORI"
+	   0xcb0   84e3  "EQU"
+	   0xcae   8663  "ERROR"
+	   0xcae   854b  "EVEN"
+	   0xcad   8863  "EXG"
+	   0xcab   8633  "EXITM"
+	   0xcab   864b  "EXPORT"
+	   0xcac   886b  "EXT"
+	   0xcaa   886b  "EXTB"
+	   0xca9   8a4b  "FABS"
+	   0xca8   8a5b  "FACOS"
+	   0xca8   8a63  "FADD"
+	   0xca7   8a73  "FASIN"
+	   0xca7   8a7b  "FATAN"
+	   0xca7   8a83  "FATANH"
+	   0xca8   8a8b  "FBEQ"
+	   0xca7   8a8b  "FBF"
+	   0xca5   8a8b  "FBGE"
+	   0xca4   8a8b  "FBGL"
+	   0xca3   8a8b  "FBGLE"
+	   0xca3   8a8b  "FBGT"
+	   0xca2   8a8b  "FBLE"
+	   0xca1   8a8b  "FBLT"
+	   0xca0   8a8b  "FBNE"
+	   0xc9f   8a8b  "FBNGE"
+	   0xc9f   8a8b  "FBNGL"
+	   0xc9f   8a8b  "FBNGLE"
+	   0xca0   8a8b  "FBNGT"
+	   0xca0   8a8b  "FBNLE"
+	   0xca0   8a8b  "FBNLT"
+	   0xca0   8a8b  "FBOGE"
+	   0xca0   8a8b  "FBOGL"
+	   0xca0   8a8b  "FBOGT"
+	   0xca0   8a8b  "FBOLE"
+	   0xca0   8a8b  "FBOLT"
+	   0xca0   8a8b  "FBOR"
+	   0xc9f   8a8b  "FBSEQ"
+	   0xc9f   8a8b  "FBSF"
+	   0xc9e   8a8b  "FBSNE"
+	   0xc9e   8a8b  "FBST"
+	   0xc9d   8a8b  "FBT"
+	   0xc9b   8a8b  "FBUEQ"
+	   0xc9b   8a8b  "FBUGE"
+	   0xc9b   8a8b  "FBUGT"
+	   0xc9b   8a8b  "FBULE"
+	   0xc9b   8a8b  "FBULT"
+	   0xc9b   8a8b  "FBUN"
+	   0xc9a   8a93  "FCMP"
+	   0xc99   8a9b  "FCOS"
+	   0xc98   8aa3  "FCOSH"
+	   0xc98   8a53  "FDABS"
+	   0xc98   8a6b  "FDADD"
+	   0xc98   8aab  "FDBEQ"
+	   0xc98   8aab  "FDBF"
+	   0xc97   8aab  "FDBGE"
+	   0xc97   8aab  "FDBGL"
+	   0xc97   8aab  "FDBGLE"
+	   0xc98   8aab  "FDBGT"
+	   0xc98   8aab  "FDBLE"
+	   0xc98   8aab  "FDBLT"
+	   0xc98   8aab  "FDBNE"
+	   0xc98   8aab  "FDBNGE"
+	   0xc99   8aab  "FDBNGL"
+	   0xc9a   8aab  "FDBNGLE"
+	   0xc9c   8aab  "FDBNGT"
+	   0xc9d   8aab  "FDBNLE"
+	   0xc9e   8aab  "FDBNLT"
+	   0xc9f   8aab  "FDBOGE"
+	   0xca0   8aab  "FDBOGL"
+	   0xca1   8aab  "FDBOGT"
+	   0xca2   8aab  "FDBOLE"
+	   0xca3   8aab  "FDBOLT"
+	   0xca4   8aab  "FDBOR"
+	   0xca4   8aab  "FDBSEQ"
+	   0xca5   8aab  "FDBSF"
+	   0xca5   8aab  "FDBSNE"
+	   0xca6   8aab  "FDBST"
+	   0xca6   8aab  "FDBT"
+	   0xca5   8aab  "FDBUEQ"
+	   0xca6   8aab  "FDBUGE"
+	   0xca7   8aab  "FDBUGT"
+	   0xca8   8aab  "FDBULE"
+	   0xca9   8aab  "FDBULT"
+	   0xcaa   8aab  "FDBUN"
+	   0xcaa   8abb  "FDDIV"
+	   0xcaa   8ab3  "FDIV"
+	   0xca9   8b23  "FDMOVE"
+	   0xcaa   8b53  "FDMUL"
+	   0xcaa   8b63  "FDNEG"
+	   0xcaa   8bcb  "FDSQRT"
+	   0xcab   8bdb  "FDSUB"
+	   0xcab   8ac3  "FETOX"
+	   0xcab   8acb  "FETOXM1"
+	   0xcad   8ad3  "FGETEXP"
+	   0xcaf   8adb  "FGETMAN"
+	   0xcb1   8ae3  "FINT"
+	   0xcb0   8aeb  "FINTRZ"
+	   0xcb1   85a3  "FLINE"
+	   0xcb1   8b03  "FLOG10"
+	   0xcb2   8b0b  "FLOG2"
+	   0xcb2   8af3  "FLOGN"
+	   0xcb2   8afb  "FLOGNP1"
+	   0xcb4   8b13  "FMOD"
+	   0xcb3   8b1b  "FMOVE"
+	   0xcb3   8b33  "FMOVECR"
+	   0xcb5   8b3b  "FMOVEM"
+	   0xcb6   8b4b  "FMUL"
+	   0xcb5   8b5b  "FNEG"
+	   0xcb4   8b6b  "FNOP"
+	   0xcb3   826b  "FP0"
+	   0xcb1   826b  "FP1"
+	   0xcaf   826b  "FP2"
+	   0xcad   826b  "FP3"
+	   0xcab   826b  "FP4"
+	   0xca9   826b  "FP5"
+	   0xca7   826b  "FP6"
+	   0xca5   826b  "FP7"
+	   0xca3   827b  "FPCR"
+	   0xca2   82cb  "FPIAR"
+	   0xca2   8293  "FPSR"
+	   0xca1   8b73  "FREM"
+	   0xca0   8b7b  "FRESTORE"
+	   0xca3   8a53  "FSABS"
+	   0xca3   8a6b  "FSADD"
+	   0xca3   8b83  "FSAVE"
+	   0xca3   8b8b  "FSCALE"
+	   0xca4   8abb  "FSDIV"
+	   0xca4   8b93  "FSEQ"
+	   0xca3   8b93  "FSF"
+	   0xca1   8b93  "FSGE"
+	   0xca0   8b93  "FSGL"
+	   0xc9f   8b9b  "FSGLDIV"
+	   0xca1   8b93  "FSGLE"
+	   0xca1   8ba3  "FSGLMUL"
+	   0xca3   8b93  "FSGT"
+	   0xca2   8bab  "FSIN"
+	   0xca1   8bb3  "FSINCOS"
+	   0xca3   8bbb  "FSINH"
+	   0xca3   8b93  "FSLE"
+	   0xca2   8b93  "FSLT"
+	   0xca1   8b23  "FSMOVE"
+	   0xca2   8b53  "FSMUL"
+	   0xca2   8b93  "FSNE"
+	   0xca1   8b63  "FSNEG"
+	   0xca1   8b93  "FSNGE"
+	   0xca1   8b93  "FSNGL"
+	   0xca1   8b93  "FSNGLE"
+	   0xca2   8b93  "FSNGT"
+	   0xca2   8b93  "FSNLE"
+	   0xca2   8b93  "FSNLT"
+	   0xca2   8b93  "FSOGE"
+	   0xca2   8b93  "FSOGL"
+	   0xca2   8b93  "FSOGT"
+	   0xca2   8b93  "FSOLE"
+	   0xca2   8b93  "FSOLT"
+	   0xca2   8b93  "FSOR"
+	   0xca1   8bc3  "FSQRT"
+	   0xca1   8b93  "FSSEQ"
+	   0xca1   8b93  "FSSF"
+	   0xca0   8b93  "FSSNE"
+	   0xca0   8bcb  "FSSQRT"
+	   0xca1   8b93  "FSST"
+	   0xca0   8bdb  "FSSUB"
+	   0xca0   8b93  "FST"
+	   0xc9e   8bd3  "FSUB"
+	   0xc9d   8b93  "FSUEQ"
+	   0xc9d   8b93  "FSUGE"
+	   0xc9d   8b93  "FSUGT"
+	   0xc9d   8b93  "FSULE"
+	   0xc9d   8b93  "FSULT"
+	   0xc9d   8b93  "FSUN"
+	   0xc9c   8be3  "FTAN"
+	   0xc9b   8beb  "FTANH"
+	   0xc9b   8bf3  "FTENTOX"
+	   0xc9d   8bfb  "FTRAPEQ"
+	   0xc9f   8bfb  "FTRAPF"
+	   0xca0   8bfb  "FTRAPGE"
+	   0xca2   8bfb  "FTRAPGL"
+	   0xca4   8bfb  "FTRAPGLE"
+	   0xca7   8bfb  "FTRAPGT"
+	   0xca9   8bfb  "FTRAPLE"
+	   0xcab   8bfb  "FTRAPLT"
+	   0xcad   8bfb  "FTRAPNE"
+	   0xcaf   8bfb  "FTRAPNGE"
+	   0xcb2   8bfb  "FTRAPNGL"
+	   0xcb5   8bfb  "FTRAPNGLE"
+	   0xcb9   8bfb  "FTRAPNGT"
+	   0xcbc   8bfb  "FTRAPNLE"
+	   0xcbf   8bfb  "FTRAPNLT"
+	   0xcc2   8bfb  "FTRAPOGE"
+	   0xcc5   8bfb  "FTRAPOGL"
+	   0xcc8   8bfb  "FTRAPOGT"
+	   0xccb   8bfb  "FTRAPOLE"
+	   0xcce   8bfb  "FTRAPOLT"
+	   0xcd1   8bfb  "FTRAPOR"
+	   0xcd3   8bfb  "FTRAPSEQ"
+	   0xcd6   8bfb  "FTRAPSF"
+	   0xcd8   8bfb  "FTRAPSNE"
+	   0xcdb   8bfb  "FTRAPST"
+	   0xcdd   8bfb  "FTRAPT"
+	   0xcde   8bfb  "FTRAPUEQ"
+	   0xce1   8bfb  "FTRAPUGE"
+	   0xce4   8bfb  "FTRAPUGT"
+	   0xce7   8bfb  "FTRAPULE"
+	   0xcea   8bfb  "FTRAPULT"
+	   0xced   8bfb  "FTRAPUN"
+	   0xcef   8c03  "FTST"
+	   0xcee   8c0b  "FTWOTOX"
+	   0xcf0   857b  "GLOBL"
+	   0xcf0   85f3  "IF"
+	   0xced   85f3  "IF1"
+	   0xceb   85f3  "IF2"
+	   0xce9   85f3  "IFB"
+	   0xce7   85f3  "IFEQ"
+	   0xce6   85f3  "IFF"
+	   0xce4   85f3  "IFGE"
+	   0xce3   85f3  "IFGT"
+	   0xce2   85f3  "IFLE"
+	   0xce1   85f3  "IFLT"
+	   0xce0   85f3  "IFNB"
+	   0xcdf   85f3  "IFNE"
+	   0xcde   8873  "ILLEGAL"
+	   0xce0   8643  "IMPORT"
+	   0xce1   85c3  "INCLUDE"
+	   0xce3   8253  "ISP"
+	   0xce1   887b  "JMP"
+	   0xcdf   8883  "JSR"
+	   0xcdd   8573  "LCOMM"
+	   0xcdd   888b  "LEA"
+	   0xcdb   8893  "LINK"
+	   0xcda   85e3  "LIST"
+	   0xcd9   863b  "LOCAL"
+	   0xcd9   873b  "LSL"
+	   0xcd7   889b  "LSR"
+	   0xcd5   861b  "MACRO"
+	   0xcd5   85ab  "MC68000"
+	   0xcd7   85ab  "MC68010"
+	   0xcd9   85ab  "MC68020"
+	   0xcdb   85ab  "MC68030"
+	   0xcdd   85ab  "MC68040"
+	   0xcdf   85ab  "MC68851"
+	   0xce1   85ab  "MC68881"
+	   0xce3   8653  "MODULE"
+	   0xce4   88a3  "MOVE"
+	   0xce3   88ab  "MOVE16"
+	   0xce4   88db  "MOVEA"
+	   0xce4   88e3  "MOVEC"
+	   0xce4   88eb  "MOVEM"
+	   0xce4   88f3  "MOVEP"
+	   0xce4   88fb  "MOVEQ"
+	   0xce4   8903  "MOVES"
+	   0xce4   825b  "MSP"
+	   0xce2   890b  "MULS"
+	   0xce1   8913  "MULU"
+	   0xce0   891b  "NBCD"
+	   0xcdf   8923  "NEG"
+	   0xcdd   892b  "NEGX"
+	   0xcdc   85eb  "NOLIST"
+	   0xcdd   8933  "NOP"
+	   0xcdb   893b  "NOT"
+	   0xcd9   856b  "OFFSET"
+	   0xcda   8943  "OR"
+	   0xcd7   8533  "ORG"
+	   0xcd5   894b  "ORI"
+	   0xcd3   8963  "PACK"
+	   0xcd2   85db  "PAGE"
+	   0xcd1   8c13  "PBAC"
+	   0xcd0   8c13  "PBAS"
+	   0xccf   8c13  "PBBC"
+	   0xcce   8c13  "PBBS"
+	   0xccd   8c13  "PBCC"
+	   0xccc   8c13  "PBCS"
+	   0xccb   8c13  "PBGC"
+	   0xcca   8c13  "PBGS"
+	   0xcc9   8c13  "PBIC"
+	   0xcc8   8c13  "PBIS"
+	   0xcc7   8c13  "PBLC"
+	   0xcc6   8c13  "PBLS"
+	   0xcc5   8c13  "PBSC"
+	   0xcc4   8c13  "PBSS"
+	   0xcc3   8c13  "PBWC"
+	   0xcc2   8c13  "PBWS"
+	   0xcc1   818b  "PC"
+	   0xcbe   836b  "PCSR"
+	   0xcbd   8c1b  "PDBAC"
+	   0xcbd   8c1b  "PDBAS"
+	   0xcbd   8c1b  "PDBBC"
+	   0xcbd   8c1b  "PDBBS"
+	   0xcbd   8c1b  "PDBCC"
+	   0xcbd   8c1b  "PDBCS"
+	   0xcbd   8c1b  "PDBGC"
+	   0xcbd   8c1b  "PDBGS"
+	   0xcbd   8c1b  "PDBIC"
+	   0xcbd   8c1b  "PDBIS"
+	   0xcbd   8c1b  "PDBLC"
+	   0xcbd   8c1b  "PDBLS"
+	   0xcbd   8c1b  "PDBSC"
+	   0xcbd   8c1b  "PDBSS"
+	   0xcbd   8c1b  "PDBWC"
+	   0xcbd   8c1b  "PDBWS"
+	   0xcbd   896b  "PEA"
+	   0xcbb   8c23  "PFLUSH"
+	   0xcbc   8c23  "PFLUSH.N"
+	   0xcbf   8c23  "PFLUSHA"
+	   0xcc1   8c23  "PFLUSHA.N"
+	   0xcc5   8c23  "PFLUSHS"
+	   0xcc7   8c2b  "PLOADR"
+	   0xcc8   8c2b  "PLOADW"
+	   0xcc9   8c33  "PMOVE"
+	   0xcc9   8c33  "PMOVEFD"
+	   0xccb   8c3b  "PRESTORE"
+	   0xcce   85cb  "PRINT"
+	   0xcce   8c4b  "PSAC"
+	   0xccd   8c4b  "PSAS"
+	   0xccc   8c43  "PSAVE"
+	   0xccc   8c4b  "PSBC"
+	   0xccb   8c4b  "PSBS"
+	   0xcca   8c4b  "PSCC"
+	   0xcc9   8c4b  "PSCS"
+	   0xcc8   8c4b  "PSGC"
+	   0xcc7   8c4b  "PSGS"
+	   0xcc6   8c4b  "PSIC"
+	   0xcc5   8c4b  "PSIS"
+	   0xcc4   8c4b  "PSLC"
+	   0xcc3   8c4b  "PSLS"
+	   0xcc2   835b  "PSR"
+	   0xcc0   8c4b  "PSSC"
+	   0xcbf   8c4b  "PSSS"
+	   0xcbe   8c4b  "PSWC"
+	   0xcbd   8c4b  "PSWS"
+	   0xcbc   8c53  "PTESTR"
+	   0xcbd   8c53  "PTESTW"
+	   0xcbe   8c5b  "PTRAPAC"
+	   0xcc0   8c5b  "PTRAPAS"
+	   0xcc2   8c5b  "PTRAPBC"
+	   0xcc4   8c5b  "PTRAPBS"
+	   0xcc6   8c5b  "PTRAPCC"
+	   0xcc8   8c5b  "PTRAPCS"
+	   0xcca   8c5b  "PTRAPGC"
+	   0xccc   8c5b  "PTRAPGS"
+	   0xcce   8c5b  "PTRAPIC"
+	   0xcd0   8c5b  "PTRAPIS"
+	   0xcd2   8c5b  "PTRAPLC"
+	   0xcd4   8c5b  "PTRAPLS"
+	   0xcd6   8c5b  "PTRAPSC"
+	   0xcd8   8c5b  "PTRAPSS"
+	   0xcda   8c5b  "PTRAPWC"
+	   0xcdc   8c5b  "PTRAPWS"
+	   0xcde   8c63  "PVALID"
+	   0xcdf   8113  "R0"
+	   0xcdc   8113  "R1"
+	   0xcd9   811b  "R10"
+	   0xcd7   811b  "R11"
+	   0xcd5   811b  "R12"
+	   0xcd3   811b  "R13"
+	   0xcd1   811b  "R14"
+	   0xccf   8123  "R15"
+	   0xccd   8113  "R2"
+	   0xcca   8113  "R3"
+	   0xcc7   8113  "R4"
+	   0xcc4   8113  "R5"
+	   0xcc1   8113  "R6"
+	   0xcbe   8113  "R7"
+	   0xcbb   811b  "R8"
+	   0xcb8   811b  "R9"
+	   0xcb5   84fb  "REG"
+	   0xcb3   8623  "REPT"
+	   0xcb2   8973  "RESET"
+	   0xcb2   897b  "ROL"
+	   0xcb0   8983  "ROR"
+	   0xcae   898b  "ROXL"
+	   0xcad   8993  "ROXR"
+	   0xcac   899b  "RTD"
+	   0xcaa   89a3  "RTE"
+	   0xca8   89ab  "RTM"
+	   0xca6   89b3  "RTR"
+	   0xca4   89bb  "RTS"
+	   0xca2   89c3  "SBCD"
+	   0xca1   89cb  "SCC"
+	   0xc9f   89cb  "SCS"
+	   0xc9d   89cb  "SEQ"
+	   0xc9b   84eb  "SET"
+	   0xc99   89cb  "SF"
+	   0xc96   81a3  "SFC"
+	   0xc94   89cb  "SGE"
+	   0xc92   89cb  "SGT"
+	   0xc90   89cb  "SHI"
+	   0xc8e   89cb  "SLE"
+	   0xc8c   89cb  "SLS"
+	   0xc8a   89cb  "SLT"
+	   0xc88   89cb  "SMI"
+	   0xc86   89cb  "SNE"
+	   0xc84   8123  "SP"
+	   0xc81   89cb  "SPL"
+	   0xc7f   812b  "SR"
+	   0xc7c   82e3  "SRP"
+	   0xc7a   8183  "SSP"
+	   0xc78   89cb  "ST"
+	   0xc75   89d3  "STOP"
+	   0xc74   89db  "SUB"
+	   0xc72   89e3  "SUBA"
+	   0xc71   89eb  "SUBI"
+	   0xc70   89f3  "SUBQ"
+	   0xc6f   89fb  "SUBX"
+	   0xc6e   85b3  "SUPER"
+	   0xc6e   89cb  "SVC"
+	   0xc6c   89cb  "SVS"
+	   0xc6a   8a03  "SWAP"
+	   0xc69   8a0b  "TAS"
+	   0xc67   8323  "TC"
+	   0xc64   8553  "TEXT"
+	   0xc63   8a13  "TRAP"
+	   0xc62   8a1b  "TRAPCC"
+	   0xc63   8a1b  "TRAPCS"
+	   0xc64   8a1b  "TRAPEQ"
+	   0xc65   8a1b  "TRAPGE"
+	   0xc66   8a1b  "TRAPGT"
+	   0xc67   8a1b  "TRAPHI"
+	   0xc68   8a1b  "TRAPLE"
+	   0xc69   8a1b  "TRAPLS"
+	   0xc6a   8a1b  "TRAPLT"
+	   0xc6b   8a1b  "TRAPMI"
+	   0xc6c   8a1b  "TRAPNE"
+	   0xc6d   8a1b  "TRAPPL"
+	   0xc6e   8a1b  "TRAPT"
+	   0xc6e   8a23  "TRAPV"
+	   0xc6e   8a1b  "TRAPVC"
+	   0xc6f   8a1b  "TRAPVS"
+	   0xc70   8a2b  "TST"
+	   0xc6e   838b  "TT0"
+	   0xc6c   838b  "TT1"
+	   0xc6a   85d3  "TTL"
+	   0xc68   8a33  "UNLK"
+	   0xc67   8a3b  "UNPK"
+	   0xc66   85bb  "USER"
+	   0xc65   817b  "USP"
+	   0xc63   837b  "VAL"
+	   0xc61   819b  "VBR"
+	   0xc5f   858b  "XDEF"
+	   0xc5e   8583  "XREF"
+	   0xc5d   8263  "ZPC"
+
+
+================================================================================
+			Namenstabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<=                               >  SENSITIVE   0x84F3 = 0x9D
+<*=                              >  SENSITIVE   0x853B = 0xA6
+<Zeichensatz                     > SCREEN_NAME  0x8063 = 0xB
+<ZPC                             >  SENSITIVE   0x8263 = 0x4B
+<XREF                            >  SENSITIVE   0x8583 = 0xAF
+<xn                              > SCREEN_NAME  0x80C3 = 0x17
+<XDEF                            >  SENSITIVE   0x858B = 0xB0
+<Write Allocate                  > SCREEN_NAME  0x81FB = 0x3E
+<Wertemenge                      > SCREEN_NAME  0x8A43 = 0x147
+<Verschachtelung von Makrodefi   > SCREEN_NAME  0x8683 = 0xCF
+<Validate Access Level           > SCREEN_NAME  0x837B = 0x6E
+<Verarbeitungszeit               > SCREEN_NAME  0x86E3 = 0xDB
+<VBR                             >  SENSITIVE   0x819B = 0x32
+<Vector Base                     > SCREEN_NAME  0x819B = 0x32
+<VAL                             >  SENSITIVE   0x837B = 0x6E
+<šbersetzungsbaum                > SCREEN_NAME  0x83C3 = 0x77
+<User Stack Pointer              > SCREEN_NAME  0x817B = 0x2E
+<šberlauf                        > SCREEN_NAME  0x816B = 0x2C
+<User Program Space              > SCREEN_NAME  0x81CB = 0x38
+<USP                             >  SENSITIVE   0x817B = 0x2E
+<User Data Space                 > SCREEN_NAME  0x81C3 = 0x37
+<USER                            >  SENSITIVE   0x85BB = 0xB6
+<Un„re Operatoren                > SCREEN_NAME  0x80F3 = 0x1D
+<UNPK                            >  SENSITIVE   0x8A3B = 0x146
+<šbersetzungstabelle             > SCREEN_NAME  0x83CB = 0x78
+<UNLK                            >  SENSITIVE   0x8A33 = 0x145
+<TRAPNE                          >  SENSITIVE   0x8A1B = 0x142
+<Transparent Translation         > SCREEN_NAME  0x838B = 0x70
+<TRAPMI                          >  SENSITIVE   0x8A1B = 0x142
+<Translation Control             > SCREEN_NAME  0x8323 = 0x63
+<TRAPLT                          >  SENSITIVE   0x8A1B = 0x142
+<Transfer-Befehle                > SCREEN_NAME  0x869B = 0xD2
+<TRAPLS                          >  SENSITIVE   0x8A1B = 0x142
+<Trace                           > SCREEN_NAME  0x8143 = 0x27
+<TRAPLE                          >  SENSITIVE   0x8A1B = 0x142
+<Table Indices                   > SCREEN_NAME  0x8353 = 0x69
+<TRAPHI                          >  SENSITIVE   0x8A1B = 0x142
+<Table Address                   > SCREEN_NAME  0x831B = 0x62
+<TRAPGT                          >  SENSITIVE   0x8A1B = 0x142
+<TTL                             >  SENSITIVE   0x85D3 = 0xB9
+<TRAPGE                          >  SENSITIVE   0x8A1B = 0x142
+<TT1                             >  SENSITIVE   0x838B = 0x70
+<TRAPEQ                          >  SENSITIVE   0x8A1B = 0x142
+<TT0                             >  SENSITIVE   0x838B = 0x70
+<TRAPCS                          >  SENSITIVE   0x8A1B = 0x142
+<TST                             >  SENSITIVE   0x8A2B = 0x144
+<TRAPCC                          >  SENSITIVE   0x8A1B = 0x142
+<TRAPVS                          >  SENSITIVE   0x8A1B = 0x142
+<TRAP                            >  SENSITIVE   0x8A13 = 0x141
+<TRAPVC                          >  SENSITIVE   0x8A1B = 0x142
+<TIx                             > SCREEN_NAME  0x8353 = 0x69
+<TRAPV                           >  SENSITIVE   0x8A23 = 0x143
+<TEXT                            >  SENSITIVE   0x8553 = 0xA9
+<TRAPT                           >  SENSITIVE   0x8A1B = 0x142
+<TC                              >  SENSITIVE   0x8323 = 0x63
+<TRAPPL                          >  SENSITIVE   0x8A1B = 0x142
+<TAS                             >  SENSITIVE   0x8A0B = 0x140
+<Symbole                         > SCREEN_NAME  0x808B = 0x10
+<STOP                            >  SENSITIVE   0x89D3 = 0x139
+<Supervisor Stackpointer         > SCREEN_NAME  0x8183 = 0x2F
+<ST                              >  SENSITIVE   0x89CB = 0x138
+<Supervisor Root Pointer         > SCREEN_NAME  0x82E3 = 0x5B
+<SSP                             >  SENSITIVE   0x8183 = 0x2F
+<Supervisor Program Space        > SCREEN_NAME  0x81DB = 0x3A
+<SRP Enable                      > SCREEN_NAME  0x8333 = 0x65
+<Supervisor Data Space           > SCREEN_NAME  0x81D3 = 0x39
+<SRP                             >  SENSITIVE   0x82E3 = 0x5B
+<Supervisior Root Pointer Enab   > SCREEN_NAME  0x8333 = 0x65
+<SR                              >  SENSITIVE   0x812B = 0x24
+<Stringkonstanten                > SCREEN_NAME  0x80A3 = 0x13
+<SPL                             >  SENSITIVE   0x89CB = 0x138
+<Statusregister                  > SCREEN_NAME  0x812B = 0x24
+<SP                              >  SENSITIVE   0x8123 = 0x23
+<Stackpointer                    > SCREEN_NAME  0x8123 = 0x23
+<SNE                             >  SENSITIVE   0x89CB = 0x138
+<Spurious Interrupt              > SCREEN_NAME  0x8443 = 0x87
+<SMI                             >  SENSITIVE   0x89CB = 0x138
+<Sprungziel                      > SCREEN_NAME  0x808B = 0x10
+<SLT                             >  SENSITIVE   0x89CB = 0x138
+<Source Function Code            > SCREEN_NAME  0x81A3 = 0x33
+<SLS                             >  SENSITIVE   0x89CB = 0x138
+<Signaling NaN                   > SCREEN_NAME  0x84BB = 0x96
+<SLE                             >  SENSITIVE   0x89CB = 0x138
+<Shared Globaly                  > SCREEN_NAME  0x84C3 = 0x97
+<SHI                             >  SENSITIVE   0x89CB = 0x138
+<SWAP                            >  SENSITIVE   0x8A03 = 0x13F
+<SGT                             >  SENSITIVE   0x89CB = 0x138
+<SVS                             >  SENSITIVE   0x89CB = 0x138
+<SGE                             >  SENSITIVE   0x89CB = 0x138
+<SVC                             >  SENSITIVE   0x89CB = 0x138
+<SFC                             >  SENSITIVE   0x81A3 = 0x33
+<SUPER                           >  SENSITIVE   0x85B3 = 0xB5
+<SF                              >  SENSITIVE   0x89CB = 0x138
+<SUBX                            >  SENSITIVE   0x89FB = 0x13E
+<SET                             >  SENSITIVE   0x84EB = 0x9C
+<SUBQ                            >  SENSITIVE   0x89F3 = 0x13D
+<SEQ                             >  SENSITIVE   0x89CB = 0x138
+<SUBI                            >  SENSITIVE   0x89EB = 0x13C
+<SCS                             >  SENSITIVE   0x89CB = 0x138
+<SUBA                            >  SENSITIVE   0x89E3 = 0x13B
+<SCC                             >  SENSITIVE   0x89CB = 0x138
+<SUB                             >  SENSITIVE   0x89DB = 0x13A
+<SBCD                            >  SENSITIVE   0x89C3 = 0x137
+<REPT                            >  SENSITIVE   0x8623 = 0xC3
+<Rotierbefehle                   > SCREEN_NAME  0x86BB = 0xD6
+<REG                             >  SENSITIVE   0x84FB = 0x9E
+<Root Pointer                    > SCREEN_NAME  0x82F3 = 0x5D
+<R9                              >  SENSITIVE   0x811B = 0x22
+<Rekursive Makroaufrufe          > SCREEN_NAME  0x867B = 0xCE
+<R8                              >  SENSITIVE   0x811B = 0x22
+<Register-Spezifikationen        > SCREEN_NAME  0x807B = 0xE
+<R7                              >  SENSITIVE   0x8113 = 0x21
+<Redefinieren von Makros         > SCREEN_NAME  0x868B = 0xD0
+<R6                              >  SENSITIVE   0x8113 = 0x21
+<Read/Write Mask                 > SCREEN_NAME  0x83A3 = 0x73
+<R5                              >  SENSITIVE   0x8113 = 0x21
+<Read/Write                      > SCREEN_NAME  0x83A3 = 0x73
+<R4                              >  SENSITIVE   0x8113 = 0x21
+<RTS                             >  SENSITIVE   0x89BB = 0x136
+<R3                              >  SENSITIVE   0x8113 = 0x21
+<RTR                             >  SENSITIVE   0x89B3 = 0x135
+<R2                              >  SENSITIVE   0x8113 = 0x21
+<RTM                             >  SENSITIVE   0x89AB = 0x134
+<R15                             >  SENSITIVE   0x8123 = 0x23
+<RTE                             >  SENSITIVE   0x89A3 = 0x133
+<R14                             >  SENSITIVE   0x811B = 0x22
+<RTD                             >  SENSITIVE   0x899B = 0x132
+<R13                             >  SENSITIVE   0x811B = 0x22
+<ROXR                            >  SENSITIVE   0x8993 = 0x131
+<R12                             >  SENSITIVE   0x811B = 0x22
+<ROXL                            >  SENSITIVE   0x898B = 0x130
+<R11                             >  SENSITIVE   0x811B = 0x22
+<ROR                             >  SENSITIVE   0x8983 = 0x12F
+<R10                             >  SENSITIVE   0x811B = 0x22
+<ROL                             >  SENSITIVE   0x897B = 0x12E
+<R1                              >  SENSITIVE   0x8113 = 0x21
+<RESET                           >  SENSITIVE   0x8973 = 0x12D
+<R0                              >  SENSITIVE   0x8113 = 0x21
+<Quotient                        > SCREEN_NAME  0x82AB = 0x54
+<Prozessor                       > SCREEN_NAME  0x802B = 0x4
+<PMMU-Zugriffsverletzung         > SCREEN_NAME  0x849B = 0x92
+<Programmstruktur-Befehle        > SCREEN_NAME  0x86C3 = 0xD7
+<PMMU-Statusregister             > SCREEN_NAME  0x835B = 0x6A
+<Program Counter                 > SCREEN_NAME  0x818B = 0x30
+<PMMU-Kontrollregister           > SCREEN_NAME  0x82D3 = 0x59
+<privileged-Befehlssatz          > SCREEN_NAME  0x86DB = 0xDA
+<PMMU-Illegale Operation         > SCREEN_NAME  0x8493 = 0x91
+<Priorit„ten der Operatoren      > SCREEN_NAME  0x806B = 0xC
+<PMMU-Fehler                     > SCREEN_NAME  0x848B = 0x90
+<Positionsz„hler                 > SCREEN_NAME  0x80AB = 0x14
+<PMMU-Enable                     > SCREEN_NAME  0x832B = 0x64
+<pc (Abk.)                       > SCREEN_NAME  0x80CB = 0x18
+<PMMU-Befehle                    > SCREEN_NAME  0x86D3 = 0xD9
+<Parametersubstitution           > SCREEN_NAME  0x8673 = 0xCD
+<PMMU                            > SCREEN_NAME  0x83B3 = 0x75
+<Parameterbewertung              > SCREEN_NAME  0x866B = 0xCC
+<PLOADW                          >  SENSITIVE   0x8C2B = 0x184
+<Page Size                       > SCREEN_NAME  0x8343 = 0x67
+<PLOADR                          >  SENSITIVE   0x8C2B = 0x184
+<Page Descriptor                 > SCREEN_NAME  0x83D3 = 0x79
+<PLOAD                           > SCREEN_NAME  0x8C2B = 0x184
+<PVALID                          >  SENSITIVE   0x8C63 = 0x18B
+<PFLUSHS                         >  SENSITIVE   0x8C23 = 0x183
+<PTRAPcc                         > SCREEN_NAME  0x8C5B = 0x18A
+<PFLUSHA.N                       >  SENSITIVE   0x8C23 = 0x183
+<PTRAPWS                         >  SENSITIVE   0x8C5B = 0x18A
+<PFLUSHA                         >  SENSITIVE   0x8C23 = 0x183
+<PTRAPWC                         >  SENSITIVE   0x8C5B = 0x18A
+<PFLUSH.N                        >  SENSITIVE   0x8C23 = 0x183
+<PTRAPSS                         >  SENSITIVE   0x8C5B = 0x18A
+<PFLUSH                          >  SENSITIVE   0x8C23 = 0x183
+<PTRAPSC                         >  SENSITIVE   0x8C5B = 0x18A
+<PEA                             >  SENSITIVE   0x896B = 0x12C
+<PTRAPLS                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBcc                           > SCREEN_NAME  0x8C1B = 0x182
+<PTRAPLC                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBWS                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPIS                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBWC                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPIC                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBSS                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPGS                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBSC                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPGC                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBLS                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPCS                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBLC                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPCC                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBIS                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPBS                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBIC                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPBC                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBGS                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPAS                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBGC                           >  SENSITIVE   0x8C1B = 0x182
+<PTRAPAC                         >  SENSITIVE   0x8C5B = 0x18A
+<PDBCS                           >  SENSITIVE   0x8C1B = 0x182
+<PTESTW                          >  SENSITIVE   0x8C53 = 0x189
+<PDBCC                           >  SENSITIVE   0x8C1B = 0x182
+<PTESTR                          >  SENSITIVE   0x8C53 = 0x189
+<PDBBS                           >  SENSITIVE   0x8C1B = 0x182
+<PTEST                           > SCREEN_NAME  0x8C53 = 0x189
+<PDBBC                           >  SENSITIVE   0x8C1B = 0x182
+<PScc                            > SCREEN_NAME  0x8C4B = 0x188
+<PDBAS                           >  SENSITIVE   0x8C1B = 0x182
+<PSWS                            >  SENSITIVE   0x8C4B = 0x188
+<PDBAC                           >  SENSITIVE   0x8C1B = 0x182
+<PSWC                            >  SENSITIVE   0x8C4B = 0x188
+<PCSR                            >  SENSITIVE   0x836B = 0x6C
+<PSSS                            >  SENSITIVE   0x8C4B = 0x188
+<PC                              >  SENSITIVE   0x818B = 0x30
+<PSSC                            >  SENSITIVE   0x8C4B = 0x188
+<PBcc                            > SCREEN_NAME  0x8C13 = 0x181
+<PSR                             >  SENSITIVE   0x835B = 0x6A
+<PBWS                            >  SENSITIVE   0x8C13 = 0x181
+<PSLS                            >  SENSITIVE   0x8C4B = 0x188
+<PBWC                            >  SENSITIVE   0x8C13 = 0x181
+<PSLC                            >  SENSITIVE   0x8C4B = 0x188
+<PBSS                            >  SENSITIVE   0x8C13 = 0x181
+<PSIS                            >  SENSITIVE   0x8C4B = 0x188
+<PBSC                            >  SENSITIVE   0x8C13 = 0x181
+<PSIC                            >  SENSITIVE   0x8C4B = 0x188
+<PBLS                            >  SENSITIVE   0x8C13 = 0x181
+<PSGS                            >  SENSITIVE   0x8C4B = 0x188
+<PBLC                            >  SENSITIVE   0x8C13 = 0x181
+<PSGC                            >  SENSITIVE   0x8C4B = 0x188
+<PBIS                            >  SENSITIVE   0x8C13 = 0x181
+<PSCS                            >  SENSITIVE   0x8C4B = 0x188
+<PBIC                            >  SENSITIVE   0x8C13 = 0x181
+<PSCC                            >  SENSITIVE   0x8C4B = 0x188
+<PBGS                            >  SENSITIVE   0x8C13 = 0x181
+<PSBS                            >  SENSITIVE   0x8C4B = 0x188
+<PBGC                            >  SENSITIVE   0x8C13 = 0x181
+<PSBC                            >  SENSITIVE   0x8C4B = 0x188
+<PBCS                            >  SENSITIVE   0x8C13 = 0x181
+<PSAVE                           >  SENSITIVE   0x8C43 = 0x187
+<PBCC                            >  SENSITIVE   0x8C13 = 0x181
+<PSAS                            >  SENSITIVE   0x8C4B = 0x188
+<PBBS                            >  SENSITIVE   0x8C13 = 0x181
+<PSAC                            >  SENSITIVE   0x8C4B = 0x188
+<PBBC                            >  SENSITIVE   0x8C13 = 0x181
+<PRINT                           >  SENSITIVE   0x85CB = 0xB8
+<PBAS                            >  SENSITIVE   0x8C13 = 0x181
+<PRESTORE                        >  SENSITIVE   0x8C3B = 0x186
+<PBAC                            >  SENSITIVE   0x8C13 = 0x181
+<PMOVEFD                         >  SENSITIVE   0x8C33 = 0x185
+<PAGE                            >  SENSITIVE   0x85DB = 0xBA
+<PMOVE                           >  SENSITIVE   0x8C33 = 0x185
+<PACK                            >  SENSITIVE   0x8963 = 0x12B
+<Operandenfehler                 > SCREEN_NAME  0x847B = 0x8E
+<Overflow                        > SCREEN_NAME  0x816B = 0x2C
+<Operand Error                   > SCREEN_NAME  0x847B = 0x8E
+<Optionen                        > SCREEN_NAME  0x8033 = 0x5
+<ORI to SR                       > SCREEN_NAME  0x895B = 0x12A
+<Operatoren, Un„re               > SCREEN_NAME  0x80F3 = 0x1D
+<ORI to CCR                      > SCREEN_NAME  0x8953 = 0x129
+<Operatoren, Priorit„ten der     > SCREEN_NAME  0x806B = 0xC
+<ORI                             >  SENSITIVE   0x894B = 0x128
+<Operatoren, Bin„re              > SCREEN_NAME  0x80FB = 0x1E
+<ORG                             >  SENSITIVE   0x8533 = 0xA5
+<Operatoren                      > SCREEN_NAME  0x80EB = 0x1C
+<OR                              >  SENSITIVE   0x8943 = 0x127
+<Operator, Fliežkomma-           > SCREEN_NAME  0x8103 = 0x1F
+<OFFSET                          >  SENSITIVE   0x856B = 0xAC
+<Numerische Konstanten           > SCREEN_NAME  0x809B = 0x12
+<NOP                             >  SENSITIVE   0x8933 = 0x125
+<Null                            > SCREEN_NAME  0x8163 = 0x2B
+<NOLIST                          >  SENSITIVE   0x85EB = 0xBC
+<Non-Autovektor-Interrupt        > SCREEN_NAME  0x8453 = 0x89
+<NEGX                            >  SENSITIVE   0x892B = 0x124
+<Negativ                         > SCREEN_NAME  0x815B = 0x2A
+<NEG                             >  SENSITIVE   0x8923 = 0x123
+<NOT                             >  SENSITIVE   0x893B = 0x126
+<NBCD                            >  SENSITIVE   0x891B = 0x122
+<MOVE to USP                     > SCREEN_NAME  0x88D3 = 0x119
+<M”gliche Ver„nderungen          > SCREEN_NAME  0x814B = 0x28
+<MOVE to SR                      > SCREEN_NAME  0x88C3 = 0x117
+<Mode Control                    > SCREEN_NAME  0x828B = 0x50
+<MOVE to CCR                     > SCREEN_NAME  0x88B3 = 0x115
+<Master Stack Pointer            > SCREEN_NAME  0x825B = 0x4A
+<MOVE from USP                   > SCREEN_NAME  0x88D3 = 0x119
+<Makros                          > SCREEN_NAME  0x84DB = 0x9A
+<MOVE from SR                    > SCREEN_NAME  0x88CB = 0x118
+<Makrorekursion                  > SCREEN_NAME  0x867B = 0xCE
+<MOVE from CCR                   > SCREEN_NAME  0x88BB = 0x116
+<Makrodefinition                 > SCREEN_NAME  0x861B = 0xC2
+<MOVE                            >  SENSITIVE   0x88A3 = 0x113
+<MULU                            >  SENSITIVE   0x8913 = 0x121
+<MODULE                          >  SENSITIVE   0x8653 = 0xC9
+<MULS                            >  SENSITIVE   0x890B = 0x120
+<MC68nnn                         > SCREEN_NAME  0x85AB = 0xB4
+<MSP                             >  SENSITIVE   0x825B = 0x4A
+<MC68881                         >  SENSITIVE   0x85AB = 0xB4
+<MOVES                           >  SENSITIVE   0x8903 = 0x11F
+<MC68851                         >  SENSITIVE   0x85AB = 0xB4
+<MOVEQ                           >  SENSITIVE   0x88FB = 0x11E
+<MC68040                         >  SENSITIVE   0x85AB = 0xB4
+<MOVEP                           >  SENSITIVE   0x88F3 = 0x11D
+<MC68030                         >  SENSITIVE   0x85AB = 0xB4
+<MOVEM                           >  SENSITIVE   0x88EB = 0x11C
+<MC68020                         >  SENSITIVE   0x85AB = 0xB4
+<MOVEC                           >  SENSITIVE   0x88E3 = 0x11B
+<MC68010                         >  SENSITIVE   0x85AB = 0xB4
+<MOVEA                           >  SENSITIVE   0x88DB = 0x11A
+<MC68000                         >  SENSITIVE   0x85AB = 0xB4
+<MOVE16                          >  SENSITIVE   0x88AB = 0x114
+<MACRO                           >  SENSITIVE   0x861B = 0xC2
+<Limitfield                      > SCREEN_NAME  0x830B = 0x60
+<Lokale Labels                   > SCREEN_NAME  0x8083 = 0xF
+<Labels, Lokale                  > SCREEN_NAME  0x8083 = 0xF
+<Logische Befehle                > SCREEN_NAME  0x86AB = 0xD4
+<Label                           > SCREEN_NAME  0x808B = 0x10
+<Logical Address Mask            > SCREEN_NAME  0x8393 = 0x71
+<LSR                             >  SENSITIVE   0x889B = 0x112
+<Logical Address Base            > SCREEN_NAME  0x8393 = 0x71
+<LSL                             >  SENSITIVE   0x873B = 0xE6
+<Listing-Datei                   > SCREEN_NAME  0x803B = 0x6
+<LOCAL                           >  SENSITIVE   0x863B = 0xC6
+<Listing                         > SCREEN_NAME  0x803B = 0x6
+<LIST                            >  SENSITIVE   0x85E3 = 0xBB
+<Line-F-Vektor                   > SCREEN_NAME  0x8423 = 0x83
+<LINK                            >  SENSITIVE   0x8893 = 0x111
+<Line-A-Vektor                   > SCREEN_NAME  0x841B = 0x82
+<LEA                             >  SENSITIVE   0x888B = 0x110
+<Limitflag                       > SCREEN_NAME  0x8303 = 0x5F
+<LCOMM                           >  SENSITIVE   0x8573 = 0xAD
+<Konstanten, Numerische          > SCREEN_NAME  0x809B = 0x12
+<Kontrollregister, PMMU          > SCREEN_NAME  0x82D3 = 0x59
+<Konstanten, Fliežkomma-         > SCREEN_NAME  0x8103 = 0x1F
+<Kontrollregister, FPU           > SCREEN_NAME  0x8273 = 0x4D
+<Kommentare                      > SCREEN_NAME  0x810B = 0x20
+<Kontrollregister, CPU           > SCREEN_NAME  0x8193 = 0x31
+<Kommandozeilenparameter         > SCREEN_NAME  0x8033 = 0x5
+<Konstanten, String-             > SCREEN_NAME  0x80A3 = 0x13
+<Kommandozeilen-Fehler           > SCREEN_NAME  0x804B = 0x8
+<JSR                             >  SENSITIVE   0x8883 = 0x10F
+<JMP                             >  SENSITIVE   0x887B = 0x10E
+<Invalid Operation               > SCREEN_NAME  0x82C3 = 0x57
+<ILLEGAL                         >  SENSITIVE   0x8873 = 0x10D
+<Interruptmaske                  > SCREEN_NAME  0x813B = 0x26
+<IFcc                            > SCREEN_NAME  0x85F3 = 0xBD
+<Interrupt Stack Pointer         > SCREEN_NAME  0x8253 = 0x49
+<IFNE                            >  SENSITIVE   0x85F3 = 0xBD
+<Instruction Burst Enable        > SCREEN_NAME  0x822B = 0x44
+<IFNB                            >  SENSITIVE   0x85F3 = 0xBD
+<Initial Shift                   > SCREEN_NAME  0x834B = 0x68
+<IFLT                            >  SENSITIVE   0x85F3 = 0xBD
+<Inexact Result                  > SCREEN_NAME  0x8463 = 0x8B
+<IFLE                            >  SENSITIVE   0x85F3 = 0xBD
+<Inexact Operation               > SCREEN_NAME  0x8463 = 0x8B
+<IFGT                            >  SENSITIVE   0x85F3 = 0xBD
+<Inexact Decimal Input           > SCREEN_NAME  0x8463 = 0x8B
+<IFGE                            >  SENSITIVE   0x85F3 = 0xBD
+<Index                           > SCREEN_NAME  0x8013 = 0x1
+<IFF                             >  SENSITIVE   0x85F3 = 0xBD
+<Illegaler Befehl                > SCREEN_NAME  0x840B = 0x80
+<IFEQ                            >  SENSITIVE   0x85F3 = 0xBD
+<Identifier                      > SCREEN_NAME  0x8073 = 0xD
+<IFB                             >  SENSITIVE   0x85F3 = 0xBD
+<ISP                             >  SENSITIVE   0x8253 = 0x49
+<IF2                             >  SENSITIVE   0x85F3 = 0xBD
+<INCLUDE                         >  SENSITIVE   0x85C3 = 0xB7
+<IF1                             >  SENSITIVE   0x85F3 = 0xBD
+<IMPORT                          >  SENSITIVE   0x8643 = 0xC7
+<IF                              >  SENSITIVE   0x85F3 = 0xBD
+<Gr”žen-Spezifikationen          > SCREEN_NAME  0x8093 = 0x11
+<GLOBL                           >  SENSITIVE   0x857B = 0xAE
+<FPU underflow                   > SCREEN_NAME  0x8473 = 0x8D
+<Function Code Spezifikation     > SCREEN_NAME  0x81BB = 0x36
+<FPU overflow                    > SCREEN_NAME  0x8483 = 0x8F
+<Function Code Mask              > SCREEN_NAME  0x83AB = 0x74
+<FPSR                            >  SENSITIVE   0x8293 = 0x51
+<Function Code Lookup Enable     > SCREEN_NAME  0x833B = 0x66
+<FPIAR                           >  SENSITIVE   0x82CB = 0x58
+<Function Code Base              > SCREEN_NAME  0x83AB = 0x74
+<FPCR                            >  SENSITIVE   0x827B = 0x4E
+<Function Code                   > SCREEN_NAME  0x81B3 = 0x35
+<FP7                             >  SENSITIVE   0x826B = 0x4C
+<Freeze Instruction Cache        > SCREEN_NAME  0x8243 = 0x47
+<FP6                             >  SENSITIVE   0x826B = 0x4C
+<Freeze Data Cache               > SCREEN_NAME  0x821B = 0x42
+<FP5                             >  SENSITIVE   0x826B = 0x4C
+<Formatfehler                    > SCREEN_NAME  0x8433 = 0x85
+<FP4                             >  SENSITIVE   0x826B = 0x4C
+<Formale Beschreibung            > SCREEN_NAME  0x8023 = 0x3
+<FP3                             >  SENSITIVE   0x826B = 0x4C
+<Fliežkomma-Statusregister       > SCREEN_NAME  0x8293 = 0x51
+<FP2                             >  SENSITIVE   0x826B = 0x4C
+<Fliežkomma-Kontrollregister     > SCREEN_NAME  0x827B = 0x4E
+<FP1                             >  SENSITIVE   0x826B = 0x4C
+<Fliežkomma-Konstanten           > SCREEN_NAME  0x8103 = 0x1F
+<FP0                             >  SENSITIVE   0x826B = 0x4C
+<Fliežkomma-Datenregister        > SCREEN_NAME  0x826B = 0x4C
+<FNOP                            >  SENSITIVE   0x8B6B = 0x16C
+<Fliežkomma-Befehlsadrežregist   > SCREEN_NAME  0x82CB = 0x58
+<FNEG                            >  SENSITIVE   0x8B5B = 0x16A
+<Fliežkomma-Befehle              > SCREEN_NAME  0x86CB = 0xD8
+<FMUL                            >  SENSITIVE   0x8B4B = 0x168
+<Fliežkomma-Ausdrcke            > SCREEN_NAME  0x8103 = 0x1F
+<FMOVEM FPcr                     > SCREEN_NAME  0x8B43 = 0x167
+<Fliežkomma Operatoren           > SCREEN_NAME  0x8103 = 0x1F
+<FMOVEM                          >  SENSITIVE   0x8B3B = 0x166
+<Fehlermeldungen                 > SCREEN_NAME  0x8043 = 0x7
+<FMOVECR                         >  SENSITIVE   0x8B33 = 0x165
+<Fehler, Kommandozeilen-         > SCREEN_NAME  0x804B = 0x8
+<FMOVE FPcr                      > SCREEN_NAME  0x8B2B = 0x164
+<Fehler, Fatale                  > SCREEN_NAME  0x805B = 0xA
+<FMOVE                           >  SENSITIVE   0x8B1B = 0x162
+<Fehler, Assemblierungs-         > SCREEN_NAME  0x8053 = 0x9
+<FMOD                            >  SENSITIVE   0x8B13 = 0x161
+<Fehler im Quelltext             > SCREEN_NAME  0x8053 = 0x9
+<FLOGNP1                         >  SENSITIVE   0x8AFB = 0x15E
+<Fatale Fehler                   > SCREEN_NAME  0x805B = 0xA
+<FLOGN                           >  SENSITIVE   0x8AF3 = 0x15D
+<Falscher Interrupt Vektor       > SCREEN_NAME  0x843B = 0x86
+<FLOG2                           >  SENSITIVE   0x8B0B = 0x160
+<FTWOTOX                         >  SENSITIVE   0x8C0B = 0x180
+<FLOG10                          >  SENSITIVE   0x8B03 = 0x15F
+<FTST                            >  SENSITIVE   0x8C03 = 0x17F
+<FLINE                           >  SENSITIVE   0x85A3 = 0xB3
+<FTRAPcc                         > SCREEN_NAME  0x8BFB = 0x17E
+<FINTRZ                          >  SENSITIVE   0x8AEB = 0x15C
+<FTRAPUN                         >  SENSITIVE   0x8BFB = 0x17E
+<FINT                            >  SENSITIVE   0x8AE3 = 0x15B
+<FTRAPULT                        >  SENSITIVE   0x8BFB = 0x17E
+<FGETMAN                         >  SENSITIVE   0x8ADB = 0x15A
+<FTRAPULE                        >  SENSITIVE   0x8BFB = 0x17E
+<FGETEXP                         >  SENSITIVE   0x8AD3 = 0x159
+<FTRAPUGT                        >  SENSITIVE   0x8BFB = 0x17E
+<FETOXM1                         >  SENSITIVE   0x8ACB = 0x158
+<FTRAPUGE                        >  SENSITIVE   0x8BFB = 0x17E
+<FETOX                           >  SENSITIVE   0x8AC3 = 0x157
+<FTRAPUEQ                        >  SENSITIVE   0x8BFB = 0x17E
+<FDSUB                           >  SENSITIVE   0x8BDB = 0x17A
+<FTRAPT                          >  SENSITIVE   0x8BFB = 0x17E
+<FDSQRT                          >  SENSITIVE   0x8BCB = 0x178
+<FTRAPST                         >  SENSITIVE   0x8BFB = 0x17E
+<FDNEG                           >  SENSITIVE   0x8B63 = 0x16B
+<FTRAPSNE                        >  SENSITIVE   0x8BFB = 0x17E
+<FDMUL                           >  SENSITIVE   0x8B53 = 0x169
+<FTRAPSF                         >  SENSITIVE   0x8BFB = 0x17E
+<FDMOVE                          >  SENSITIVE   0x8B23 = 0x163
+<FTRAPSEQ                        >  SENSITIVE   0x8BFB = 0x17E
+<FDIV                            >  SENSITIVE   0x8AB3 = 0x155
+<FTRAPOR                         >  SENSITIVE   0x8BFB = 0x17E
+<FDDIV                           >  SENSITIVE   0x8ABB = 0x156
+<FTRAPOLT                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBcc                           > SCREEN_NAME  0x8AAB = 0x154
+<FTRAPOLE                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBUN                           >  SENSITIVE   0x8AAB = 0x154
+<FTRAPOGT                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBULT                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPOGL                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBULE                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPOGE                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBUGT                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNLT                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBUGE                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNLE                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBUEQ                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNGT                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBT                            >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNGLE                       >  SENSITIVE   0x8BFB = 0x17E
+<FDBST                           >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNGL                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBSNE                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNGE                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBSF                           >  SENSITIVE   0x8AAB = 0x154
+<FTRAPNE                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBSEQ                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPLT                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBOR                           >  SENSITIVE   0x8AAB = 0x154
+<FTRAPLE                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBOLT                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPGT                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBOLE                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPGLE                        >  SENSITIVE   0x8BFB = 0x17E
+<FDBOGT                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPGL                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBOGL                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPGE                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBOGE                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPF                          >  SENSITIVE   0x8BFB = 0x17E
+<FDBNLT                          >  SENSITIVE   0x8AAB = 0x154
+<FTRAPEQ                         >  SENSITIVE   0x8BFB = 0x17E
+<FDBNLE                          >  SENSITIVE   0x8AAB = 0x154
+<FTENTOX                         >  SENSITIVE   0x8BF3 = 0x17D
+<FDBNGT                          >  SENSITIVE   0x8AAB = 0x154
+<FTANH                           >  SENSITIVE   0x8BEB = 0x17C
+<FDBNGLE                         >  SENSITIVE   0x8AAB = 0x154
+<FTAN                            >  SENSITIVE   0x8BE3 = 0x17B
+<FDBNGL                          >  SENSITIVE   0x8AAB = 0x154
+<FScc                            > SCREEN_NAME  0x8B93 = 0x171
+<FDBNGE                          >  SENSITIVE   0x8AAB = 0x154
+<FSUN                            >  SENSITIVE   0x8B93 = 0x171
+<FDBNE                           >  SENSITIVE   0x8AAB = 0x154
+<FSULT                           >  SENSITIVE   0x8B93 = 0x171
+<FDBLT                           >  SENSITIVE   0x8AAB = 0x154
+<FSULE                           >  SENSITIVE   0x8B93 = 0x171
+<FDBLE                           >  SENSITIVE   0x8AAB = 0x154
+<FSUGT                           >  SENSITIVE   0x8B93 = 0x171
+<FDBGT                           >  SENSITIVE   0x8AAB = 0x154
+<FSUGE                           >  SENSITIVE   0x8B93 = 0x171
+<FDBGLE                          >  SENSITIVE   0x8AAB = 0x154
+<FSUEQ                           >  SENSITIVE   0x8B93 = 0x171
+<FDBGL                           >  SENSITIVE   0x8AAB = 0x154
+<FSUB                            >  SENSITIVE   0x8BD3 = 0x179
+<FDBGE                           >  SENSITIVE   0x8AAB = 0x154
+<FST                             >  SENSITIVE   0x8B93 = 0x171
+<FDBF                            >  SENSITIVE   0x8AAB = 0x154
+<FSSUB                           >  SENSITIVE   0x8BDB = 0x17A
+<FDBEQ                           >  SENSITIVE   0x8AAB = 0x154
+<FSST                            >  SENSITIVE   0x8B93 = 0x171
+<FDADD                           >  SENSITIVE   0x8A6B = 0x14C
+<FSSQRT                          >  SENSITIVE   0x8BCB = 0x178
+<FDABS                           >  SENSITIVE   0x8A53 = 0x149
+<FSSNE                           >  SENSITIVE   0x8B93 = 0x171
+<FCOSH                           >  SENSITIVE   0x8AA3 = 0x153
+<FSSF                            >  SENSITIVE   0x8B93 = 0x171
+<FCOS                            >  SENSITIVE   0x8A9B = 0x152
+<FSSEQ                           >  SENSITIVE   0x8B93 = 0x171
+<FCMP                            >  SENSITIVE   0x8A93 = 0x151
+<FSQRT                           >  SENSITIVE   0x8BC3 = 0x177
+<FBcc                            > SCREEN_NAME  0x8A8B = 0x150
+<FSOR                            >  SENSITIVE   0x8B93 = 0x171
+<FBUN                            >  SENSITIVE   0x8A8B = 0x150
+<FSOLT                           >  SENSITIVE   0x8B93 = 0x171
+<FBULT                           >  SENSITIVE   0x8A8B = 0x150
+<FSOLE                           >  SENSITIVE   0x8B93 = 0x171
+<FBULE                           >  SENSITIVE   0x8A8B = 0x150
+<FSOGT                           >  SENSITIVE   0x8B93 = 0x171
+<FBUGT                           >  SENSITIVE   0x8A8B = 0x150
+<FSOGL                           >  SENSITIVE   0x8B93 = 0x171
+<FBUGE                           >  SENSITIVE   0x8A8B = 0x150
+<FSOGE                           >  SENSITIVE   0x8B93 = 0x171
+<FBUEQ                           >  SENSITIVE   0x8A8B = 0x150
+<FSNLT                           >  SENSITIVE   0x8B93 = 0x171
+<FBT                             >  SENSITIVE   0x8A8B = 0x150
+<FSNLE                           >  SENSITIVE   0x8B93 = 0x171
+<FBST                            >  SENSITIVE   0x8A8B = 0x150
+<FSNGT                           >  SENSITIVE   0x8B93 = 0x171
+<FBSNE                           >  SENSITIVE   0x8A8B = 0x150
+<FSNGLE                          >  SENSITIVE   0x8B93 = 0x171
+<FBSF                            >  SENSITIVE   0x8A8B = 0x150
+<FSNGL                           >  SENSITIVE   0x8B93 = 0x171
+<FBSEQ                           >  SENSITIVE   0x8A8B = 0x150
+<FSNGE                           >  SENSITIVE   0x8B93 = 0x171
+<FBOR                            >  SENSITIVE   0x8A8B = 0x150
+<FSNEG                           >  SENSITIVE   0x8B63 = 0x16B
+<FBOLT                           >  SENSITIVE   0x8A8B = 0x150
+<FSNE                            >  SENSITIVE   0x8B93 = 0x171
+<FBOLE                           >  SENSITIVE   0x8A8B = 0x150
+<FSMUL                           >  SENSITIVE   0x8B53 = 0x169
+<FBOGT                           >  SENSITIVE   0x8A8B = 0x150
+<FSMOVE                          >  SENSITIVE   0x8B23 = 0x163
+<FBOGL                           >  SENSITIVE   0x8A8B = 0x150
+<FSLT                            >  SENSITIVE   0x8B93 = 0x171
+<FBOGE                           >  SENSITIVE   0x8A8B = 0x150
+<FSLE                            >  SENSITIVE   0x8B93 = 0x171
+<FBNLT                           >  SENSITIVE   0x8A8B = 0x150
+<FSINH                           >  SENSITIVE   0x8BBB = 0x176
+<FBNLE                           >  SENSITIVE   0x8A8B = 0x150
+<FSINCOS                         >  SENSITIVE   0x8BB3 = 0x175
+<FBNGT                           >  SENSITIVE   0x8A8B = 0x150
+<FSIN                            >  SENSITIVE   0x8BAB = 0x174
+<FBNGLE                          >  SENSITIVE   0x8A8B = 0x150
+<FSGT                            >  SENSITIVE   0x8B93 = 0x171
+<FBNGL                           >  SENSITIVE   0x8A8B = 0x150
+<FSGLMUL                         >  SENSITIVE   0x8BA3 = 0x173
+<FBNGE                           >  SENSITIVE   0x8A8B = 0x150
+<FSGLE                           >  SENSITIVE   0x8B93 = 0x171
+<FBNE                            >  SENSITIVE   0x8A8B = 0x150
+<FSGLDIV                         >  SENSITIVE   0x8B9B = 0x172
+<FBLT                            >  SENSITIVE   0x8A8B = 0x150
+<FSGL                            >  SENSITIVE   0x8B93 = 0x171
+<FBLE                            >  SENSITIVE   0x8A8B = 0x150
+<FSGE                            >  SENSITIVE   0x8B93 = 0x171
+<FBGT                            >  SENSITIVE   0x8A8B = 0x150
+<FSF                             >  SENSITIVE   0x8B93 = 0x171
+<FBGLE                           >  SENSITIVE   0x8A8B = 0x150
+<FSEQ                            >  SENSITIVE   0x8B93 = 0x171
+<FBGL                            >  SENSITIVE   0x8A8B = 0x150
+<FSDIV                           >  SENSITIVE   0x8ABB = 0x156
+<FBGE                            >  SENSITIVE   0x8A8B = 0x150
+<FSCALE                          >  SENSITIVE   0x8B8B = 0x170
+<FBF                             >  SENSITIVE   0x8A8B = 0x150
+<FSAVE                           >  SENSITIVE   0x8B83 = 0x16F
+<FBEQ                            >  SENSITIVE   0x8A8B = 0x150
+<FSADD                           >  SENSITIVE   0x8A6B = 0x14C
+<FATANH                          >  SENSITIVE   0x8A83 = 0x14F
+<FSABS                           >  SENSITIVE   0x8A53 = 0x149
+<FATAN                           >  SENSITIVE   0x8A7B = 0x14E
+<FRESTORE                        >  SENSITIVE   0x8B7B = 0x16E
+<FASIN                           >  SENSITIVE   0x8A73 = 0x14D
+<FREM                            >  SENSITIVE   0x8B73 = 0x16D
+<FADD                            >  SENSITIVE   0x8A63 = 0x14B
+<FPn                             > SCREEN_NAME  0x826B = 0x4C
+<FACOS                           >  SENSITIVE   0x8A5B = 0x14A
+<FPU-Kontrollregister            > SCREEN_NAME  0x8273 = 0x4D
+<FABS                            >  SENSITIVE   0x8A4B = 0x148
+<Extend-Flag                     > SCREEN_NAME  0x8153 = 0x29
+<EXG                             >  SENSITIVE   0x8863 = 0x10B
+<Exceptiontabelle                > SCREEN_NAME  0x83F3 = 0x7D
+<EVEN                            >  SENSITIVE   0x854B = 0xA8
+<Exceptions, PMMU                > SCREEN_NAME  0x83DB = 0x7A
+<ERROR                           >  SENSITIVE   0x8663 = 0xCB
+<Exception Status                > SCREEN_NAME  0x82B3 = 0x55
+<EQU                             >  SENSITIVE   0x84E3 = 0x9B
+<Exception Enable                > SCREEN_NAME  0x8283 = 0x4F
+<EORI to SR                      > SCREEN_NAME  0x885B = 0x10A
+<Exception                       > SCREEN_NAME  0x83F3 = 0x7D
+<EORI to CCR                     > SCREEN_NAME  0x8853 = 0x109
+<Enable TTn                      > SCREEN_NAME  0x839B = 0x72
+<EORI                            >  SENSITIVE   0x884B = 0x108
+<Enable Instruction Cache        > SCREEN_NAME  0x824B = 0x48
+<EOR                             >  SENSITIVE   0x8843 = 0x107
+<Enable Data Cache               > SCREEN_NAME  0x8223 = 0x43
+<ENDMOD                          >  SENSITIVE   0x865B = 0xCA
+<Einzelbit-Befehle               > SCREEN_NAME  0x86B3 = 0xD5
+<ENDM                            >  SENSITIVE   0x862B = 0xC4
+<EXTB                            >  SENSITIVE   0x886B = 0x10C
+<ENDIF                           >  SENSITIVE   0x8603 = 0xBF
+<EXT                             >  SENSITIVE   0x886B = 0x10C
+<ENDC                            >  SENSITIVE   0x860B = 0xC0
+<EXPORT                          >  SENSITIVE   0x864B = 0xC8
+<END                             >  SENSITIVE   0x8613 = 0xC1
+<EXITM                           >  SENSITIVE   0x8633 = 0xC5
+<ELSE                            >  SENSITIVE   0x85FB = 0xBE
+<DBVC                            >  SENSITIVE   0x8823 = 0x103
+<dn                              > SCREEN_NAME  0x8113 = 0x21
+<DBT                             >  SENSITIVE   0x8823 = 0x103
+<Division durch 0.0              > SCREEN_NAME  0x846B = 0x8C
+<DBRA                            >  SENSITIVE   0x882B = 0x104
+<Division durch 0                > SCREEN_NAME  0x8413 = 0x81
+<DBPL                            >  SENSITIVE   0x8823 = 0x103
+<Divide by Zero                  > SCREEN_NAME  0x846B = 0x8C
+<DBNE                            >  SENSITIVE   0x8823 = 0x103
+<disp                            > SCREEN_NAME  0x80D3 = 0x19
+<DBMI                            >  SENSITIVE   0x8823 = 0x103
+<Direktiven                      > SCREEN_NAME  0x84D3 = 0x99
+<DBLT                            >  SENSITIVE   0x8823 = 0x103
+<Destination Function Code       > SCREEN_NAME  0x81AB = 0x34
+<DBLS                            >  SENSITIVE   0x8823 = 0x103
+<Descriptor Type                 > SCREEN_NAME  0x8313 = 0x61
+<DBLE                            >  SENSITIVE   0x8823 = 0x103
+<Descriptor                      > SCREEN_NAME  0x82FB = 0x5E
+<DBHI                            >  SENSITIVE   0x8823 = 0x103
+<Definitionsmenge                > SCREEN_NAME  0x8A43 = 0x147
+<DBGT                            >  SENSITIVE   0x8823 = 0x103
+<Datenregister                   > SCREEN_NAME  0x8113 = 0x21
+<DBGE                            >  SENSITIVE   0x8823 = 0x103
+<Data Burst Enable               > SCREEN_NAME  0x8203 = 0x3F
+<DBF                             >  SENSITIVE   0x882B = 0x104
+<data                            > SCREEN_NAME  0x80E3 = 0x1B
+<DBEQ                            >  SENSITIVE   0x8823 = 0x103
+<DS                              >  SENSITIVE   0x852B = 0xA4
+<DBCS                            >  SENSITIVE   0x8823 = 0x103
+<DRP                             >  SENSITIVE   0x82EB = 0x5C
+<DBCC                            >  SENSITIVE   0x8823 = 0x103
+<DMA Root Pointer                > SCREEN_NAME  0x82EB = 0x5C
+<DATA                            >  SENSITIVE   0x855B = 0xAA
+<DIVUL                           >  SENSITIVE   0x883B = 0x106
+<D7                              >  SENSITIVE   0x8113 = 0x21
+<DIVU                            >  SENSITIVE   0x883B = 0x106
+<D6                              >  SENSITIVE   0x8113 = 0x21
+<DIVSL                           >  SENSITIVE   0x8833 = 0x105
+<D5                              >  SENSITIVE   0x8113 = 0x21
+<DIVS                            >  SENSITIVE   0x8833 = 0x105
+<D4                              >  SENSITIVE   0x8113 = 0x21
+<DFC                             >  SENSITIVE   0x81AB = 0x34
+<D3                              >  SENSITIVE   0x8113 = 0x21
+<DCB                             >  SENSITIVE   0x850B = 0xA0
+<D2                              >  SENSITIVE   0x8113 = 0x21
+<DC                              >  SENSITIVE   0x8503 = 0x9F
+<D1                              >  SENSITIVE   0x8113 = 0x21
+<DBVS                            >  SENSITIVE   0x8823 = 0x103
+<D0                              >  SENSITIVE   0x8113 = 0x21
+<Current Access Level            > SCREEN_NAME  0x8373 = 0x6D
+<CPU Space                       > SCREEN_NAME  0x81E3 = 0x3B
+<Copyright                       > SCREEN_NAME  0x800B = 0x0
+<CPU Root Pointer                > SCREEN_NAME  0x82DB = 0x5A
+<Coprozessor-Protokoll           > SCREEN_NAME  0x842B = 0x84
+<COMM                            >  SENSITIVE   0x8593 = 0xB1
+<Condition Codes, PMMU           > SCREEN_NAME  0x8363 = 0x6B
+<CMPM                            >  SENSITIVE   0x8813 = 0x101
+<Condition Codes, FPU            > SCREEN_NAME  0x82A3 = 0x53
+<CMPI                            >  SENSITIVE   0x880B = 0x100
+<Condition Codes, CPU            > SCREEN_NAME  0x8133 = 0x25
+<CMPA                            >  SENSITIVE   0x8803 = 0xFF
+<Condition Code                  > SCREEN_NAME  0x829B = 0x52
+<CMP2                            >  SENSITIVE   0x881B = 0x102
+<Codeoptimierung                 > SCREEN_NAME  0x84B3 = 0x95
+<CMP                             >  SENSITIVE   0x87FB = 0xFE
+<Clear Instruction Cache         > SCREEN_NAME  0x8233 = 0x45
+<CLR                             >  SENSITIVE   0x87F3 = 0xFD
+<Clear Entry in Instruction Ca   > SCREEN_NAME  0x823B = 0x46
+<CHK2                            >  SENSITIVE   0x87EB = 0xFC
+<Clear Entry in Data Cache       > SCREEN_NAME  0x8213 = 0x41
+<CHK                             >  SENSITIVE   0x87E3 = 0xFB
+<Clear Data Cache                > SCREEN_NAME  0x820B = 0x40
+<CCR                             >  SENSITIVE   0x8133 = 0x25
+<Carry                           > SCREEN_NAME  0x8173 = 0x2D
+<CAS2                            >  SENSITIVE   0x87DB = 0xFA
+<Cache Control                   > SCREEN_NAME  0x81F3 = 0x3D
+<CAS                             >  SENSITIVE   0x87D3 = 0xF9
+<Cache Address                   > SCREEN_NAME  0x81EB = 0x3C
+<CALLM                           >  SENSITIVE   0x87CB = 0xF8
+<Cache                           > SCREEN_NAME  0x84CB = 0x98
+<CAL                             >  SENSITIVE   0x8373 = 0x6D
+<CRP                             >  SENSITIVE   0x82DB = 0x5A
+<CACR                            >  SENSITIVE   0x81F3 = 0x3D
+<CPU-Kontrollregister            > SCREEN_NAME  0x8193 = 0x31
+<CAAR                            >  SENSITIVE   0x81EB = 0x3C
+<Busfehler                       > SCREEN_NAME  0x83FB = 0x7E
+<BLS                             >  SENSITIVE   0x874B = 0xE8
+<Breakpoint Acknowledge Datenr   > SCREEN_NAME  0x83E3 = 0x7B
+<BLE                             >  SENSITIVE   0x874B = 0xE8
+<Breakpoint Acknowledge Contro   > SCREEN_NAME  0x83EB = 0x7C
+<BKPT                            >  SENSITIVE   0x87A3 = 0xF3
+<Branch/Set on Unordered         > SCREEN_NAME  0x845B = 0x8A
+<BHI                             >  SENSITIVE   0x874B = 0xE8
+<Bitschiebe- und Rotierbefehle   > SCREEN_NAME  0x86BB = 0xD6
+<BGT                             >  SENSITIVE   0x874B = 0xE8
+<Bit-Befehle                     > SCREEN_NAME  0x86B3 = 0xD5
+<BGE                             >  SENSITIVE   0x874B = 0xE8
+<Bin„re Operatoren               > SCREEN_NAME  0x80FB = 0x1E
+<BFTST                           >  SENSITIVE   0x879B = 0xF2
+<Bezeichner                      > SCREEN_NAME  0x8073 = 0xD
+<BFSET                           >  SENSITIVE   0x8793 = 0xF1
+<Benutzerreservierte Exception   > SCREEN_NAME  0x84A3 = 0x93
+<BFINS                           >  SENSITIVE   0x878B = 0xF0
+<Beispiele der Adressierungsar   > SCREEN_NAME  0x80BB = 0x16
+<BFFFO                           >  SENSITIVE   0x8783 = 0xEF
+<Befehlsbersicht                > SCREEN_NAME  0x8693 = 0xD1
+<BFEXTU                          >  SENSITIVE   0x877B = 0xEE
+<Befehlssatz                     > SCREEN_NAME  0x85AB = 0xB4
+<BFEXTS                          >  SENSITIVE   0x8773 = 0xED
+<Befehlsl„nge                    > SCREEN_NAME  0x86E3 = 0xDB
+<BFCLR                           >  SENSITIVE   0x876B = 0xEC
+<Befehle, Transfer-              > SCREEN_NAME  0x869B = 0xD2
+<BFCHG                           >  SENSITIVE   0x8763 = 0xEB
+<Befehle, Rotier-                > SCREEN_NAME  0x86BB = 0xD6
+<BEQ                             >  SENSITIVE   0x874B = 0xE8
+<Befehle, Programmstruktur-      > SCREEN_NAME  0x86C3 = 0xD7
+<BCS                             >  SENSITIVE   0x874B = 0xE8
+<Befehle, Memory Managment       > SCREEN_NAME  0x86D3 = 0xD9
+<BCLR                            >  SENSITIVE   0x875B = 0xEA
+<Befehle, Logische               > SCREEN_NAME  0x86AB = 0xD4
+<BCHG                            >  SENSITIVE   0x8753 = 0xE9
+<Befehle, Fliežkomma             > SCREEN_NAME  0x86CB = 0xD8
+<BCC                             >  SENSITIVE   0x874B = 0xE8
+<Befehle, Einzelbit-             > SCREEN_NAME  0x86B3 = 0xD5
+<BAD7                            >  SENSITIVE   0x83E3 = 0x7B
+<Befehle, Bitschiebe-            > SCREEN_NAME  0x86BB = 0xD6
+<BAD6                            >  SENSITIVE   0x83E3 = 0x7B
+<Befehle, Arithmetische          > SCREEN_NAME  0x86A3 = 0xD3
+<BAD5                            >  SENSITIVE   0x83E3 = 0x7B
+<BVS                             >  SENSITIVE   0x874B = 0xE8
+<BAD4                            >  SENSITIVE   0x83E3 = 0x7B
+<BVC                             >  SENSITIVE   0x874B = 0xE8
+<BAD3                            >  SENSITIVE   0x83E3 = 0x7B
+<BTST                            >  SENSITIVE   0x87C3 = 0xF7
+<BAD2                            >  SENSITIVE   0x83E3 = 0x7B
+<BT                              >  SENSITIVE   0x87AB = 0xF4
+<BAD1                            >  SENSITIVE   0x83E3 = 0x7B
+<BSUN                            > SCREEN_NAME  0x845B = 0x8A
+<BAD0                            >  SENSITIVE   0x83E3 = 0x7B
+<BSS                             >  SENSITIVE   0x8563 = 0xAB
+<BAC7                            >  SENSITIVE   0x83EB = 0x7C
+<BSR                             >  SENSITIVE   0x87BB = 0xF6
+<BAC6                            >  SENSITIVE   0x83EB = 0x7C
+<BSET                            >  SENSITIVE   0x87B3 = 0xF5
+<BAC5                            >  SENSITIVE   0x83EB = 0x7C
+<BRA                             >  SENSITIVE   0x87AB = 0xF4
+<BAC4                            >  SENSITIVE   0x83EB = 0x7C
+<BPL                             >  SENSITIVE   0x874B = 0xE8
+<BAC3                            >  SENSITIVE   0x83EB = 0x7C
+<BNE                             >  SENSITIVE   0x874B = 0xE8
+<BAC2                            >  SENSITIVE   0x83EB = 0x7C
+<BMI                             >  SENSITIVE   0x874B = 0xE8
+<BAC1                            >  SENSITIVE   0x83EB = 0x7C
+<BLT                             >  SENSITIVE   0x874B = 0xE8
+<BAC0                            >  SENSITIVE   0x83EB = 0x7C
+<Autovektor-Interrupt            > SCREEN_NAME  0x844B = 0x88
+<ASCII                           >  SENSITIVE   0x8513 = 0xA1
+<Ausdrcke, Fliežkomma-          > SCREEN_NAME  0x8103 = 0x1F
+<ANDI to SR                      > SCREEN_NAME  0x8733 = 0xE5
+<Ausdrcke                       > SCREEN_NAME  0x80EB = 0x1C
+<ANDI to CCR                     > SCREEN_NAME  0x872B = 0xE4
+<Aufruf                          > SCREEN_NAME  0x8033 = 0x5
+<ANDI                            >  SENSITIVE   0x8723 = 0xE3
+<Assemblierungsfehler            > SCREEN_NAME  0x8053 = 0x9
+<AND                             >  SENSITIVE   0x871B = 0xE2
+<Assembler                       > CAPSENSITIVE 0x801B = 0x2
+<ALINE                           >  SENSITIVE   0x859B = 0xB2
+<Arithmetische Befehle           > SCREEN_NAME  0x86A3 = 0xD3
+<ALIGN                           >  SENSITIVE   0x8543 = 0xA7
+<an                              > SCREEN_NAME  0x811B = 0x22
+<ADDX                            >  SENSITIVE   0x8713 = 0xE1
+<Adrežbersetzung                > SCREEN_NAME  0x83B3 = 0x75
+<ADDQ                            >  SENSITIVE   0x870B = 0xE0
+<Adrežregister                   > SCREEN_NAME  0x811B = 0x22
+<ADDI                            >  SENSITIVE   0x8703 = 0xDF
+<Adressierungsarten              > SCREEN_NAME  0x80B3 = 0x15
+<ADDA                            >  SENSITIVE   0x86FB = 0xDE
+<Adressfehler                    > SCREEN_NAME  0x8403 = 0x7F
+<ADD                             >  SENSITIVE   0x86F3 = 0xDD
+<Address Translation Cache       > SCREEN_NAME  0x83BB = 0x76
+<AC                              >  SENSITIVE   0x8383 = 0x6F
+<addr                            > SCREEN_NAME  0x80DB = 0x1A
+<ABCD                            >  SENSITIVE   0x86EB = 0xDC
+<Accrued Exception               > SCREEN_NAME  0x82BB = 0x56
+<A7                              >  SENSITIVE   0x8123 = 0x23
+<Access Control                  > SCREEN_NAME  0x8383 = 0x6F
+<A6                              >  SENSITIVE   0x811B = 0x22
+<Abkrzungen                     > SCREEN_NAME  0x84AB = 0x94
+<A5                              >  SENSITIVE   0x811B = 0x22
+<ATC                             > SCREEN_NAME  0x83BB = 0x76
+<A4                              >  SENSITIVE   0x811B = 0x22
+<ASR                             >  SENSITIVE   0x8743 = 0xE7
+<A3                              >  SENSITIVE   0x811B = 0x22
+<ASL                             >  SENSITIVE   0x873B = 0xE6
+<A2                              >  SENSITIVE   0x811B = 0x22
+<ASCIIZ                          >  SENSITIVE   0x8523 = 0xA3
+<A1                              >  SENSITIVE   0x811B = 0x22
+<ASCIIL                          >  SENSITIVE   0x851B = 0xA2
+<A0                              >  SENSITIVE   0x811B = 0x22
+
+827 Namen gefunden.
+
+================================================================================
+			Link Tabelle
+================================================================================
+Name				Attribute    Code     ScreenOffset
+<Fliežkomma-Statusregisters      >    LINK      0x8293 von 0x161
+<cc                              >    LINK      0x8133 von 0xE8
+<Register                        >    LINK      0x807B von 0xDA
+<Scc                             >    LINK      0x89CB von 0xD7
+<DBcc                            >    LINK      0x8823 von 0xD7
+<verschachtelte Definition       >    LINK      0x8683 von 0xD0
+<lokalen Labels                  >    LINK      0x8083 von 0xC9
+<Verschachtelung von Makrodefinit>    LINK      0x8683 von 0x9A
+<Bcc                             >    LINK      0x874B von 0x95
+<FPU                             >    LINK      0x82A3 von 0x94
+<CPU                             >    LINK      0x8133 von 0x94
+<Fliežkommabedingungen           >    LINK      0x82A3 von 0x8A
+<Benutzerreservierte Exceptions  >    LINK      0x84A3 von 0x7D
+<Privilegsverletzung             >    LINK      0x85B3 von 0x7D
+<TRAPcc                          >    LINK      0x8A1B von 0x7D
+<Breakpoint Acknowledge Datenregi>    LINK      0x83E3 von 0x7C
+<BAD                             >    LINK      0x83E3 von 0x7C
+<Breakpoint Acknowledge Control R>    LINK      0x83EB von 0x7B
+<Adrežbersetzungen              >    LINK      0x83B3 von 0x76
+<TTn                             >    LINK      0x838B von 0x72
+<Base                            >    LINK      0x8393 von 0x70
+<Address                         >    LINK      0x8393 von 0x70
+<Logical                         >    LINK      0x8393 von 0x70
+<Control Access Level Register   >    LINK      0x8373 von 0x6E
+<Descriptoren                    >    LINK      0x82FB von 0x62
+<bac7                            >    LINK      0x83EB von 0x59
+<bac6                            >    LINK      0x83EB von 0x59
+<bac5                            >    LINK      0x83EB von 0x59
+<bac4                            >    LINK      0x83EB von 0x59
+<bac3                            >    LINK      0x83EB von 0x59
+<bac2                            >    LINK      0x83EB von 0x59
+<bac1                            >    LINK      0x83EB von 0x59
+<bac0                            >    LINK      0x83EB von 0x59
+<bad7                            >    LINK      0x83E3 von 0x59
+<bad6                            >    LINK      0x83E3 von 0x59
+<bad5                            >    LINK      0x83E3 von 0x59
+<bad4                            >    LINK      0x83E3 von 0x59
+<bad3                            >    LINK      0x83E3 von 0x59
+<bad2                            >    LINK      0x83E3 von 0x59
+<bad1                            >    LINK      0x83E3 von 0x59
+<bad0                            >    LINK      0x83E3 von 0x59
+<tt1                             >    LINK      0x838B von 0x59
+<tt0                             >    LINK      0x838B von 0x59
+<ac                              >    LINK      0x8383 von 0x59
+<val                             >    LINK      0x837B von 0x59
+<cal                             >    LINK      0x8373 von 0x59
+<pcsr                            >    LINK      0x836B von 0x59
+<psr                             >    LINK      0x835B von 0x59
+<tc                              >    LINK      0x8323 von 0x59
+<drp                             >    LINK      0x82EB von 0x59
+<srp                             >    LINK      0x82E3 von 0x59
+<crp                             >    LINK      0x82DB von 0x59
+<Bedingungen                     >    LINK      0x82A3 von 0x52
+<Unordered                       >    LINK      0x845B von 0x4F
+<Set On                          >    LINK      0x845B von 0x4F
+<Branch                          >    LINK      0x845B von 0x4F
+<fpiar                           >    LINK      0x82CB von 0x4D
+<fpsr                            >    LINK      0x8293 von 0x4D
+<fpcr                            >    LINK      0x827B von 0x4D
+<                                >    LINK      0x80CB von 0x4B
+<Clear Entry in Instruction Cache>    LINK      0x823B von 0x3D
+<Allocate                        >    LINK      0x81FB von 0x3D
+<Write                           >    LINK      0x81FB von 0x3D
+<Dn                              >    LINK      0x8113 von 0x36
+<caar                            >    LINK      0x81EB von 0x31
+<cacr                            >    LINK      0x81F3 von 0x31
+<sfc                             >    LINK      0x81A3 von 0x31
+<dfc                             >    LINK      0x81AB von 0x31
+<vbr                             >    LINK      0x819B von 0x31
+<Statusregisters                 >    LINK      0x812B von 0x25
+<Extension                       >    LINK      0x8153 von 0x24
+<Master                          >    LINK      0x85B3 von 0x24
+<Supervisor                      >    LINK      0x85B3 von 0x24
+<ccr                             >    LINK      0x8133 von 0x24
+<msp                             >    LINK      0x825B von 0x23
+<isp                             >    LINK      0x8253 von 0x23
+<usp                             >    LINK      0x817B von 0x23
+<ssp                             >    LINK      0x8183 von 0x23
+<sr                              >    LINK      0x812B von 0x23
+<bin„re Operatoren               >    LINK      0x80FB von 0x1C
+<un„re Operatoren                >    LINK      0x80F3 von 0x1C
+<zpc                             >    LINK      0x8263 von 0x16
+<d1                              >    LINK      0x8113 von 0x16
+<d3                              >    LINK      0x8113 von 0x16
+<d7                              >    LINK      0x8113 von 0x16
+<d0                              >    LINK      0x8113 von 0x16
+<d2                              >    LINK      0x8113 von 0x16
+<a2                              >    LINK      0x811B von 0x16
+<sp                              >    LINK      0x8123 von 0x16
+<a3                              >    LINK      0x811B von 0x16
+<a0                              >    LINK      0x811B von 0x16
+<a6                              >    LINK      0x811B von 0x16
+<Beispiele der Adressierungsarten>    LINK      0x80BB von 0x15
+<pc                              >    LINK      0x80CB von 0x15
+<Positionz„hlers                 >    LINK      0x80AB von 0x10
+<Ausdrucks                       >    LINK      0x80EB von 0x9
+<absoluten Segment               >    LINK      0x856B von 0x9
+<Syntax                          >    LINK      0x8103 von 0x9
+<Adressierungsart                >    LINK      0x80B3 von 0x9
+<Optionszeichen                  >    LINK      0x8033 von 0x8
+<Option                          >    LINK      0x8033 von 0x8
+<Kommandozeile                   >    LINK      0x8033 von 0x8
+<Symbolen und Labels             >    LINK      0x808B von 0x6
+<Labels                          >    LINK      0x808B von 0x3
+<Befehle                         >    LINK      0x8693 von 0x2
+<Aufruf und Optionen             >    LINK      0x8033 von 0x2
+
+106 Link-Verweise gefunden.
+
+0 Fehler. 0 Warnungen. 0 Verweise in andere HELP-Dateien.

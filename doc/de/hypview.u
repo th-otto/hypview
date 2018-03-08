@@ -1,0 +1,2469 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help "Hilfe-Seite zum ST-Guide"
+
+!use_udo_index [html,hh]
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Der Hypertext zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] (!STGUIDE)
+!docinfo [author] H. Weets, C. Wempe, V.Burggr„f
+!docinfo [programimage] (!IMAGES)st-guide
+
+!macro PROGRAM (!STGUIDE)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!docinfo [stgdatabase] ST-Guide Dokumentation
+!ifdest [stg,amg]
+!begin_raw
+@subject "Dokumentation/ST-Guide"
+@options "+g +i -s +z -t4 -d12"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern STOOL "stool.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+@extern "HCP-Dokumentation" "hcp.hyp/Schreiben eines Hypertextes"
+!end_raw
+!endif
+# HCP is also a label in this document;
+# dont let UDO generate links to it when
+# we want an external link
+!macro HCP (!nolink [HCP])
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!raw [stg] @title "Dokumentation zu HypView"
+!tableofcontents !depth 2
+#!toc_title Dokumentation des ST-Guide
+# UDO already uses "Main" as nodename for the toc
+!ifndest [stg]
+!alias Main
+!endif
+
+!raw [stg] @xref "hcp.hyp/Main" "Hypertext-Compiler HCP"
+!raw [stg] @xref "reflink.hyp/Main" "Referenz-File Linker RefLink"
+!raw [stg] @xref "stool.hyp/Main" "Katalog-Utility STool"
+!raw [stg] @xref "1st_conv.hyp/Main" "Konverter 1stConv"
+!raw [stg] @xref "pc_conv.hyp/Main" "Konverter PC-Conv"
+!raw [stg] @xref "man2stg.hyp/Main" "Manual-Page Konverter MAN2STG"
+!raw [stg] @xref "Remarker.hyp/Main" "Notizen-Manager Remarker"
+!raw [stg] @xref "stg-faq.hyp/Main" "Oft gestellte Fragen STG-FAQ"
+
+!begin_node Allgemeines
+!html_name general
+
+!begin_node Einleitung
+!html_name intro
+
+"Kein Mensch liest heute Anleitungen ..."
+
+!begin_center
+(!B)HALT!(!b) Diese Zeiten sind vorbei. Oder?
+!end_center
+
+Wie dem auch sei, es ist nun ganz klar der Zeitpunkt gekommen, wo diese
+Anleitung einer Auffrischung bedarf! Der ST-Guide ist mittlerweile zu
+einem weit verbreiteten System geworden, wurde bereits komplett (Programm
+und Dokumentation) ins Englische bersetzt und geh”rt zur Standard-
+Konfiguration vieler heimischer und beruflich genutzter Atari-Systeme.
+(Pardon: seit einiger Zeit auch verst„rkt auf Apple's unter MagiCMac!)
+Immer weniger Autoren wollen es sich heute noch nehmen lassen, ihrem
+Programm eine Online-Hilfe in Form eines Hypertextes beizulegen. Es gibt
+Lexika, Sach-šbersichten, Info}-Broschren, Gesetzes-Texte und sogar schon
+ein Labyrinthspiel als ST-Guide-Hypertexte, dazu eine Unmenge an Online-
+Dokumentationen - eben alles, was sich irgendwie in einem Hypertext
+unterbringen l„t.
+
+!begin_blist
+!item [Aber warum Hypertext?]
+
+Als Hypertext erh„lt ein Textdokument gewissermaen eine zus„tzliche
+Dimension: man kann nicht nur linear durch den Text "wandern", sondern
+auch "quer-feld-ein" zu anderen Textstellen springen. Jede Zeichenkette im
+Text kann als Querverweis markiert werden. Damit lassen sich sinnverwandte
+Seiten kreuz und quer miteinander verbinden oder einfach in eine griffige
+Gliederung bringen.
+
+Der Vorteil: Der Leser bekommt den Text in bersichtlicher Form und in
+kleinen H„ppchen pr„sentiert, insbesondere sind bei entsprechender
+Aufmachung des Textes alle Kapitel schnell durch ein paar Mausklicks oder
+Tastendrcke zu erreichen.
+
+Damit steht es jedem offen, wie er/sie den Hypertext lesen will: entweder
+hbsch der Reihe nach oder ganz gezielt ab einem bestimmten Punkt.
+
+!item [Und nun geht's los]!
+
+An dieser Stelle sei angemerkt, da (!B)dieser(!b) Hypertext sich durch
+fortw„hrendes Bl„ttern mittels des Pfeil-nach-rechts-Icons oder auch durch
+die Tastenkombination (!key [Control - (!RIGHT!)])  lesen l„t! Zwar kommt man dabei
+nicht automatisch an (!B)jeder(!b) Seite dieses Hypertextes, wohl aber an den
+wesentlichen Stationen vorbei. N„here Erl„uterungen k”nnen bei Bedarf
+unterwegs durch entsprechende Mausklicks eingesehen werden.
+
+Da sich vieles weiterentwickelt hat, empfiehlt es sich auch fr "alte
+Hasen", sich diesen Hypertext mal wieder anzutun. Er taugt gleichzeitig als
+Demonstration der ST-Guide-F„higkeiten, wie z.B. der
+(!link [Grafik] [Linien, Pfeile und Boxen]).
+
+!end_blist
+
+!begin_center
+!raw [stg] @rbox 21 35 3 0
+ (!nl)
+                   Viel Spa mit dem ST-Guide!!!
+!end_center
+
+!end_node
+
+!begin_node Philosophie
+!html_name philosophy
+
+Hypertexte sind neu. Vielleicht scheint das nicht so, wenn man bedenkt,
+da es sie schon seit Jahren gibt, aber verglichen mit der herk”mmlichen
+Form, den Bchern, bedeuten sie neben den neuen M”glichkeiten auch eine
+neue Art der Pr„sentation - und damit auch ein Umlernen in der Bedienung.
+Um es nicht unn”tig schwierig zu machen, orientiert sich der ST-Guide
+weitestgehend an der Art, wie Bcher aufgebaut sind:
+
+!begin_itemize !compressed
+    !item Haupt-Inhaltsverzeichnis und evtl. Unterverzeichnisse
+    !item Ein alphabetischer Index
+    !item Nach Kapiteln geordnet der eigentliche Textk”rper
+!end_itemize
+
+Was bedeutet dies bei der Bedienung?
+
+!begin_itemize !compressed
+    !item Man kann seitenweise vorw„rts oder rckw„rts bl„ttern
+    !item Man kann von jeder Seite aus zum darberliegenden
+      (Zwischen-)Inhaltsverzeichnis springen (Inhalt-Icon)
+    !item Man kann von berall aus in den (!link [Index] [Index]) springen
+    !item Man kann als Lesezeichen Marken auf Seiten setzen
+    !item Anmerkungen sind in Form von "Siehe auch"-Verweisen m”glich
+    !item Zur Schnellorientierung gibt es eine Hilfe-Seite, vergleichbar
+      etwa mit der rckseitigen Kurzzusammenfassung eines Buches
+!end_itemize
+
+!end_node # Philosophie
+
+!begin_node Funktionsbersicht
+!html_name overview
+
+Es versteht sich von selbst, da der ST-Guide mehr kann, als nur ein Buch
+zu "imitieren". Er ist ein sehr lebendiges System. St„ndig befindet sich
+eine Reihe von interessierten Leuten in der Diskussion darber, wie der
+ST-Guide noch besser gemacht werden kann. Das Resultat der bisherigen
+Bemhungen ist eine Anzahl ntzlicher Funktionen, die hier kurz
+umrissen sei:
+
+!begin_blist
+!item [Davon profitieren Sie beim Lesen von Hypertexten:]
+
+!begin_itemize !compressed
+!item Umfangreiche Grafik-F„higkeiten
+    !begin_itemize !compressed
+       !item Popup-Nodes als Alternative zu den normalen Seiten
+       !item Einbindung von Grafiken, siehe z.B. die Seite "Symbolleiste"
+       !item (!link [Linien, Pfeile und verschiedene Boxentypen] [Linien, Pfeile und Boxen]) (!I)<- Tip!(!i)
+       !item Unterschiedliche Text-Attribute
+    !end_itemize
+  !item Geringer Speicherverbrauch auf der Diskette/Festplatte
+  !item Geringer Speicherverbrauch im Arbeitsspeicher des Computers
+  !item Datenbankqualit„ten:
+    !begin_itemize !compressed
+    !item Die zu den Hypertexten geh”renden Referenz-Dateien k”nnen mit dem
+       RefLink zu einer globalen Stichwortdatei aller Hypertexte
+       zusammengefgt werden, in der dann per (!link [REF-Suche] [Suchen als REFerenz]) binnen kurzem jeder
+       irgendwo erkl„rte Begriff gefunden wird.
+    !item Das Utility STool sammelt automatisch alle vorhandenen Hypertexte
+       ein und macht daraus einen Katalog, wobei die in den Hypertexten
+       enthaltenen Gliederungsinformationen verwendet werden.
+    !end_itemize
+  !item Benutzung sowohl als Accessory wie auch als Programm
+  !item Sie k”nnen auch Hypertexte anderer Formate an den ST-Guide anpassen
+  !item Weitgehende Tastatur-Bedienbarkeit (alternativ zur Maus)
+  !item Mehrere Suchfunktionen, darunter auch hnlichkeitssuche
+  !item Sogar aus normalen ASCII-Texten kann auf Hilfeseiten verzweigt werden
+  !item Wenn GDOS l„uft, kann der Anzeige-Zeichensatz selbst ausgew„hlt werden
+  !item Die Benutzung ist kostenlos, aber Spenden sind erbeten (Fairware)
+!end_itemize
+
+!item [Davon profitieren Sie, wenn Sie selbst Hypertexte schreiben wollen:]
+
+!begin_itemize !compressed
+  !item Leicht erlernbare Syntax der Befehle
+  !item Verweise zu anderen Seiten werden vom Compiler automatisch erstellt!
+  !item Ein (!link [Index] [Index]) wird vom Compiler automatisch erstellt
+  !item Alle Seiten eines Hypertextes befinden sich in einer Datei (kompakt!)
+  !item Groe Vielfalt der Gestaltungsm”glichkeiten
+  !item Der ST-Guide taugt als kontextabh„ngige Online-Hilfe fr Programme
+  !item Einbindung der Original-RSC-Files von Programmen m”glich
+  !item Der ST-Guide ist mittlerweile sehr verbreitet!
+!end_itemize
+
+
+!end_blist
+
+!begin_pnode Popup-Nodes
+!html_name popupnodes_hv
+Dies ist ein Beispiel fr
+eine (!B)Popup-Node.(!b)
+
+Pnodes dienen fr kurze
+Erkl„rungen zu bestimmten
+Begriffen, ohne da dabei
+ein neues Fenster ge”ffnet
+werden mu.
+!end_node
+
+!begin_pnode Text-Attribute
+!html_name textattr_hv
+normal (!nl)
+(!B)fett(!b) (!nl)
+(!U)unterstrichen(!u) (!nl)
+(!I)kursiv(!i) (!nl)
+(!G)hell(!g) (!nl)
+(!O)umrandet(!o) (!nl)
+(!S)schattiert(!s)
+!end_node
+
+!begin_node Linien, Pfeile und Boxen
+#!label Linien, Pfeile und verschiedene Boxentypen
+!html_name lines
+
+!image (!IMAGES)lines
+
+!end_node # Linien, Pfeile und Boxen
+
+!begin_node Diskette und Festplatte
+!html_name floppy
+
+Der ST-Guide geht sehr sparsam mit Ihren Massenspeichern um:
+
+!begin_itemize
+!item Der Compiler ist in der Lage, Hypertexte zu "packen", also ihren
+  Platzbedarf zu verringern. Dazu benutzt der den LH5-Algorithmus,
+  den auch der Packer LHARC verwendet. Auf diese Weise k”nnen
+  Hypertext-Dateien (mit der Endung HYP) um bis zu zwei Drittel
+  verkleinert werden. Beim Ansehen des Hypertextes werden die gepackten
+  Seiten ohne sprbaren Zeitverlust wieder ausgepackt und auf dem
+  Bildschirm angezeigt.
+
+!item Ein weiterer Platzvorteil ergibt sich aus der Tatsache, da ein
+  Hypertext immer als eine Datei gespeichert wird:
+  Bei Hypertext-Systemen, die fr jede Hilfeseite eine neue Datei anlegen,
+  entsteht der Nachteil, da jede dieser Dateien - sei sie auch noch so
+  klein - mindestens einen Cluster Ihres Disk- oder Plattenspeichers
+  verbraucht, das entspricht einem tats„chlichen Verbrauch von mindestens
+  1024 Bytes, bei groen Platten auch 16 KB oder mehr.
+  Enth„lt ein Hypertext viele Seiten, deren Umfang deutlich geringer ist
+  als 1024 Bytes, so erh”ht sich der tats„chliche Speicherbedarf um ein
+  vielfaches (jede noch so kleine Seite verschlingt mindestens einen
+  Cluster).
+  Der ST-Guide kennt dieses Problem nicht, da alle Seiten (obendrein in
+  komprimierter Form) in einer einzigen Datei abgelegt werden, soda keine
+  Cluster-Reste entstehen.
+!end_itemize
+
+!end_node
+
+!begin_node Arbeitsspeicher
+!html_name memory
+
+Der Arbeitsspeicher Ihres Computers wird durch den ST-Guide nur wenig
+belastet:
+
+!begin_itemize
+!item das (!file [ST-GUIDE.ACC]) selbst ist sehr kurz, viel krzer als andere vom
+  Leistungsumfang her vergleichbare Programme
+
+!item Zwar sind Hypertexte immer als eine komplette Datei abgespeichert,
+  bei der Anzeige wird aber nur ein kleiner Teil davon in den RAM-
+  Speicher geladen, n„mlich nur die gerade anzuzeigende Seite!
+  Damit "blockiert" der ST-Guide keinen nennenswerten Teil Ihres
+  Arbeitsspeichers.
+!end_itemize
+
+!end_node
+
+!begin_node Accessory
+!html_name accessory
+
+Der ST-Guide kann als Accessory oder als Programm gestartet werden,
+das bleibt Ihrer freien Entscheidung berlassen. Bei Bedarf einfach
+umbenennen!
+
+Grunds„tzlich empfiehlt sich aber der Einsatz als Accessory, und zwar
+insbesondere dann, wenn sie kein Multitasking-Betriebssystem besitzen.
+So kann der ST-Guide auch aus anderen Programmen heraus aufgerufen werden,
+sei es in seiner Funktion als Online-Hilfe oder als universelles Begriffs-
+Suchsystem fr Texteditoren usw.
+
+!end_node
+
+!begin_node ASCII
+!raw [stg] @xref "Extra -> Suchen"
+!html_name ascii
+
+Selbst dann, wenn die angezeigte Datei nur reinen ASCII-Text enth„lt,
+k”nnen Sie mit dem ST-Guide auf andere Texte verzweigen.
+
+Das geht so: Wenn Sie auf einen Begriff im Text klicken, prft der
+ST-Guide (mittels der sogenannten Referenz-Suche), ob es eine
+Erkl„rungs-Seite zu diesem Begriff gibt und zeigt sie ggf. an.
+Dazu mu dieser Begriff nicht besonders hervorgehoben sein, es kommt
+lediglich darauf an, da die angeklickte Zeichenkette gefunden wird.
+
+Existiert sie nicht, so sucht der ST-Guide nach „hnlichen Begriffen
+und zeigt eine Liste der gefundenen Verweise an.
+
+!end_node
+
+!end_node # Funktionsbersicht
+
+!begin_node Konfiguration
+!html_name configuration
+
+Wie pat man den ST-Guide an die Umgebung an?
+
+Alle Komponenten des ST-Guide k”nnen ber eine Datei konfiguriert werden,
+welche den Namen (!file [ST-GUIDE.INF]) tr„gt und sich im durch die
+Environmentvariable HOME angegebenen Ordner oder im Wurzelverzeichnis des
+Bootlaufwerkes befinden mu (meist C:\).
+
+Sie ist i.w. so aufgebaut wie die Environment-Dateien diverser
+Auto-Ordner-Environment-Setzer (tolles Wort...).
+
+In der Datei (!file [ST-GUIDE.INF]) werden mehrere Variablen gesetzt, wovon der
+ST-Guide selbst einige auswertet, andere wiederum werden von externen
+Zusatz-Programmen ben”tigt. Die mitgelieferte ST-GUIDE.INF enth„lt bereits
+ein vollst„ndiges Set von Einstellungen (mit Kommentaren) und braucht nicht
+ver„ndert zu werden, wenn das ST-Guide-Archiv im Wurzelverzeichnis der
+C:-Platte entpackt wurde.
+
+Folgende Variablen werden vom ST-Guide ausgewertet:
+
+!raw [stg] @box 1 12 12 0
+!begin_table [ll]
+   PATHS
+   (!link [HCP] [HCP])
+   HYPFIND
+   HYPFOLD
+   REF                !! Wichtige Zugriffspfade
+   REMARKER~~
+   EXTVIEW
+   DEFHYP
+   HYPTOP
+   PRINTER
+   MARKFILE
+   (!link [<ext>] [<ext>])
+!end_table
+
+!raw [stg] @box 1 12 3 0
+!begin_table [ll]
+   TXTCOLOR
+   REFCOLOR~~         !! Nur bei Farbe relevant
+   BCK3D
+!end_table
+
+!raw [stg] @box 1 12 5 0
+!begin_table [ll]
+   FONT
+   XFONT
+   WINSIZE            !! Erscheinungsbild des ST-Guide-Fensters
+   TXTOFFSET~
+   TABSIZE
+!end_table
+
+!raw [stg] @box 1 12 3 0
+!begin_table [ll]
+   RIGHTBACK~
+   REFONLY            !! Maus-Verhalten
+   BACKWIND
+!end_table
+
+!raw [stg] @box 1 12 4 0
+!begin_table [ll]
+   HCP_OPT
+   ARROWPATCH         !! Sonstige
+   NOREFBOX
+   $<name>
+!end_table
+
+(!B)Beispiel fr den Aufbau einer Zeile dieser Datei:(!b)
+!begin_verbatim
+  ...
+  HYPFOLD=c:\guides\
+  ...
+!end_verbatim
+
+Das ganze ist Zeilenorientiert und es drfen sich keinerlei berflssige
+Leerzeichen in den Zeilen befinden. Die Syntax ist
+!begin_verbatim
+  <Variable>=<Wert>
+!end_verbatim
+Man beachte, da keine Leerzeichen vor oder hinter dem '=' stehen drfen
+und <Wert> (!B)ohne(!b) Hochkommata angegeben wird.
+
+!begin_node ST-GUIDE.INF
+!html_name st_guide_inf
+!label INF-Datei
+
+Folgende Variablen werden zur Zeit benutzt:
+
+!begin_blist
+!label TABSIZE
+!item [TABSIZE]
+    enth„lt die gewnschte Tabulatorweite. Ist diese Variable nicht
+    vorhanden, so wird der Wert 8 verwendet. (hcp, ST-Guide)
+
+!label WINSIZE
+!item [WINSIZE]
+    enth„lt die Gr”e des ST-Guide Fensters beim ersten ™ffnen desselben.
+    ist diese Variable nicht vorhanden, so wird das Fenster mit voller
+    Bildschirmgr”e ge”ffnet.
+    
+    WINSIZE=100,100,400,200
+    
+    wird das Fenster des ST-Guide beim ersten ™ffnen in die Mitte eines
+    640x400 Pixel Bildschirmes positionieren.
+    (ST-Guide)
+
+!label TXTOFFSET
+!item [TXTOFFSET]
+    enth„lt den vertikalen Abstand des Fensterinhalts von der Trennlinie
+    unterhalb der Icons in Pixeln. Der Defaultwert betr„gt 6 Pixel. Mit
+    diese Variable kann also den Hypertexten - je nach pers”nlichem
+    Geschmack - ein "oberer Rand" gegeben werden, ohne da dieser vom
+    Hypertext-Autor per Leerzeile vorzugeben ist.
+    (ST-Guide)
+
+!label REFCOLOR
+!item [REFCOLOR]
+    REFCOLOR=<Farbe> setzt die Textfarbe fr Referenzen auf <Farbe>. Wird
+    diese Variable gesetzt, so stellt ST-Guide Referenzen nicht mehr Fett
+    und Unterstrichen dar, sondern in normaler Schrift mit der angegebenen
+    Farbe.
+    
+    Diese Variable wird in monochromen Aufl”sungen ignoriert.
+    (ST-Guide)
+
+!label TXTCOLOR
+!item [TXTCOLOR]
+    TXTCOLOR=<Farbe> setzt die Textfarbe auf <Farbe>.
+    Diese Variable wird in monochromen Aufl”sungen ignoriert.
+    (ST-Guide)
+
+!label BCK3D
+!item [BCK3D]
+    BCK3D=<egal> setzt Farbe des Fensterhintergrundes auf hellgrau; wird
+    diese Variable nicht angegeben, dann zeigt der ST-Guide ein Fenster
+    mit einem weien Hintergrund.
+    
+    Diese Variable wird in monochromen Aufl”sungen ignoriert.
+    (ST-Guide)
+
+!label PATHS
+!item [PATHS]
+    enth„lt eine durch Kommata oder Semikoli getrennte Liste von Pfaden,
+    welche zum Auffinden von Dateien verwendet wird, welche ber externe
+    Referenzen (siehe link) angezeigt werden sollen.
+    
+    PATHS=c:\guides\;c:\;c:\bin\
+    
+    wird, falls eine Datei gesucht wird, diese nacheinander in (!nl)
+        (!file [C:\GUIDES\]) (!nl)
+        (!file [C:\]) (!nl)
+    und (!nl)
+        (!file [C:\BIN\]) (!nl)
+    suchen
+    (ST-Guide, STool)
+
+!label EXTVIEW
+!item [EXTVIEW]
+    enth„lt den Namen desjenigen ACC/PRG, welches mit dem Anzeigen von
+    nicht Hypertext-Dateien beauftragt werden soll, sofern fr die Endung
+    der betreffenden Datei kein Viewer angemeldet wurde. Die Angaben
+    sollten mit vollst„ndigem Pfad erfolgen, sofern nicht sichergestellt
+    ist, da der betreffende Viewer bereits l„uft (also als ACC
+    installiert ist)
+!label <ext>
+    Ein Viewer fr bestimmte Dateiformate wird brigens installiert durch
+    
+        <Endung>=Programm (Beipiel: IMG=C:\BIN\1stview.prg)
+    
+    Der so angegebene Viewer wird bei Bedarf zun„chst gesucht und danach
+    entweder zum Starten an den Desktop weitergegeben oder vom ST-Guide
+    selbst gestartet, sofern MagiC 2 installiert ist.
+    Falls weder diese Variable noch die durch die Endung der Datei
+    vorgegebene Variable existiert, so wird die betreffende Datei im ASCII
+    Format vom ST-Guide angezeigt.
+    (ST-Guide)
+
+!label HCP_OPT
+!item [HCP_OPT]
+    enth„lt die Default-Optionen fr den HCP. Diese werden vor dem
+    Einlesen der Kommandozeile gesetzt und k”nnen somit durch direktes
+    Angeben beim Aufruf berschrieben werden.
+    (hcp)
+
+!label PRINTER
+item [PRINTER]
+    Falls diese Variable gesetzt ist in der Form
+    
+        PRINTER=<programm>   (z.B. PRINTER=C:\TOOLS\PRINTER.APP)
+    
+    dann wird die Drucken-Funktion nicht vom ST-Guide selbst ausgefhrt,
+    sondern der markierte Block bzw. die aktuelle Seite wird auf das
+    Klemmbrett kopiert, und das hier angegebene Programm wird gestartet.
+    (ST-Guide)
+
+!label FORMFEED
+item [FORMFEED]
+    Sorgt dafr, da nach dem Drucken einer Seite ein Formfeed auf
+    den Drucker ausgegeben wird.
+    (ST-Guide)
+
+!label MARKFILE
+!item [MARKFILE]
+    Wenn diese Variable gesetzt ist, dann speichert der ST-Guide in die
+    dort angegebene Datei automatisch bei nderungen alle definierten
+    Marken und l„dt sie auch automatisch wieder aus dieser Datei.
+    Beispiel: MARKFILE=c:\guides\marken.dat
+    (ST-Guide)
+
+!label* HCP
+!item [HCP]
+    enth„lt den vollst„ndigen Zugriffspfad des HCP und dient zum Starten
+    desselben.
+    (STool, HypFind)
+
+!label* HYPFIND
+!item [HYPFIND]
+    enth„lt den vollst„ndigen Zugriffspfad des HypFind, dem Tool zum
+   (!nolink [Suchen]) von Pattern (!link [in allen Seiten] [Suchen in allen Seiten]) eines/aller Hypertexte.
+    (ST-Guide)
+
+!label* REMARKER
+!item [REMARKER]
+    enth„lt optional ein '!' sowie den vollst„ndigen Zugriffspfad des
+    Remarker-Tools; ist diese Variable ohne '!' definiert, so startet
+    ST-Guide das Tool beim ™ffnen des Fensters direkt nach; unabh„ngig
+    vom '!' Flag wird Remarker bei (!key [Alternate-R]) nachgestartet, sofern
+    diese Variable gesetzt ist.
+    
+        REMARKER=C:\ST-GUIDE\REMARKER.PRG
+
+    startet Remarker automatisch beim ™ffnen, sowie bei (!key [Alternate-R])
+
+        REMARKER=!C:\ST-GUIDE\REMARKER.PRG
+
+    startet Remarker nur bei (!key [Alternate-R])
+    (ST-Guide)
+
+!label HYPFOLD
+!item [HYPFOLD]
+    enth„lt den Defaultpfad fr Hypertexte. Wird also beim šbersetzen
+    keine Ausgabedatei angegeben, so erzeugt der HCP die Hypertext-Datei
+    in dem durch diese Variable angegebenen Verzeichnis. Der ST-Guide
+    nutzt diese Variable ebenfalls, und zwar als Default-Pfad fr den
+    Fileselektor.
+    
+    Auch der HypFind erzeugt seine Ausgabedatei in diesem Verzeichnis.
+    (ST-Guide, hcp, HypFind)
+
+!label ARROWPATCH
+!item [ARROWPATCH]
+    Falls diese Variable definiert ist (Wert ist egal), der ST-GUIDE als
+    ACC gestartet wird und dies nicht unter einem MultiTask Betriebsystem,
+    so behebt ST-Guide den bekannten Fehler des Betriebsystems, welcher
+    bewirkt, da die Scrollpfeile sowie die Pager an Fenstern von ACCs
+    nicht funktionieren.
+
+    Die bessere Alternative zu diesem Patch ist allerdings die
+    Installation von ARROWFIX oder (besser) WINX im Autoordner. ST-Guide
+    behebt diesen Fehler nur fr sich selbst, alle anderen ACCs werden
+    damit auch weiterhin Probleme haben!
+    (ST-Guide)
+
+!label NOREFBOX
+!item [NOREFBOX]
+    Setzen dieser Variable (der zugewiesene Wert ist egal) bewirkt, da
+    beim Suchen in der REF-Datei die kleine Box nicht erscheint, in der
+    das Suchwort angezeigt wird.
+    (ST-Guide)
+
+!label RIGHTBACK
+!item [RIGHTBACK]
+    Falls diese Variable definiert ist (Wert egal), so wird das Bet„tigen
+    der rechten Maustaste wie ein Klick auf den 'zurck' Button interpretiert.
+    Defaultm„ig ist diese Variable nicht gesetzt, weil das a) den
+    Nachteil hat, da Aktionen im hintenliegenden Fenster nicht mehr
+    m”glich sind, und b) werden Rechtsklicks von den verschiedenen TOS-
+    Versionen unterschiedlich behandelt (Quelle: Martin "WINX" Osieka)
+    (ST-Guide)
+
+!label BACKWIND
+!item [BACKWIND]
+    Macht das Fenster des ST-Guide hintenliegend benutzbar, getopped
+    wird es dann mit Rechtsklick.
+    (ST-Guide)
+
+!label REFONLY
+!item [REFONLY]
+    Wenn diese Variable definiert ist (Wert egal), dann werden Klicks auf
+    nicht als Verweis markierte Textstellen ignoriert
+    (ST-Guide)
+
+!label DEFHYP
+!item [DEFHYP]
+    enth„lt den vollst„ndigen Zugriffspfad der Datei, die beim Aufruf des
+    ST-Guide (!U)ohne Parameter(!u) automatisch geladen werden soll.
+    (ST-Guide)
+
+!label HYPTOP
+!item [HYPTOP]
+    enth„lt den vollst„ndigen Zugriffspfad des Katalog-Hypertextes,
+    welcher durch STool automatisch erzeugt werden kann. ST-Guide l„dt die
+    hier angegebene Datei automatisch, falls beim ersten Aufruf keine
+    Parameter angegeben wurden und auch keine Default-Datei definiert ist
+    (durch DEFHYP)
+    (ST-Guide, STool)
+
+!label FONT
+!item [FONT]
+    enth„lt den zu benutzenden Font und die gwnschte Gr”e in folgendem
+    Format: FONT,SIZE
+    
+      Beispiel: 98,9      (GEMINI Bold, kleiner Satz)
+      
+    Der ST-Guide liest diese Var. beim ™ffnen des Fensters, der Font kann
+    also zwischen zwei Programmstarts ge„ndert werden, jedoch nicht solange
+    ST-Guide l„uft. Wird FONT zu 0 angegeben (z.B. 0,9), dann wird der
+    Systemzeichensatz mit der angegebenen Gr”e verwendet.
+
+    Prinzipiell funktioniert dies natrlich auch mit Proportional
+    Zeichens„tzen, jedoch stimmen dann die Positionen von Grafik-Objekten
+    evtl. nicht mehr ganz, da hier in diesem Falle mit einer gemittelten
+    Zeichenbreite gerechnet wird.
+    (ST-Guide)
+
+!label XFONT
+!item [XFONT]
+    enth„lt den zu benutzenden Font und die gwnschte Gr”e in folgendem
+    Format: FONT,SIZE
+    
+    Definiert einen 2. Defaultfont; zwischen den bei FONT und XFONT angegebenen
+    Fonts kann direkt per (!key [CTRL-Z]) umgeschaltet werden;
+    Sinnvoll z.B. dann, wenn zum Lesen ein Proportionalfont verwendet
+    wird und eine Seite eine Tabelle enth„lt.
+
+!label REF
+!item [REF]
+    enth„lt den Pfad & Namen derjenigen REF-Datei, welche vom ST-Guide zum
+    Auffinden von Begriffen verwendet wird, welche nicht im aktuellen
+    Dokument definiert wurden. Diese Datei wird auch vom RefLink
+    defaultm„ig fr alle Aktionen verwendet.
+    (ST-Guide, RefLink, hcp)
+
+!label $<name>
+!item [$<name>]
+    kann mehrfach vorkommen (freilich mit unterschiedlichen Namen) und
+    enth„lt jeweils den vollst„ndigen Pfad eines externen Programms, das
+    dann mit dem (!XLINK [@{ system }] [hcp] [@{ system }])-Kommando aus Hypertexten heraus gestartet werden
+    kann.
+    
+    Beispiel:
+    
+       $STOOL=c:\st-guide\stool.tos
+    
+    Wer Hypertexte schreibt, die von dieser Funktion Gebrauch machen, mu
+    darber Auskunft geben, welche $-Zeilen ben”tigt werden.
+    (ST-Guide)
+
+!end_blist
+
+!end_node
+
+!end_node # Konfiguration
+
+!include filetype.ui
+
+!end_node # Allgemeines
+
+!begin_node Bedienung des ST-Guide
+!html_name using_hv
+
+!begin_node Die Icons im ST-Guide-Fenster
+!alias Icon-Leiste
+!alias Symbolleiste
+!raw [stg] @xref "Tastatur-Funktionen"
+!raw [stg] @xref "Maus-Funktionen"
+!raw [stg] @xref "Auto-Locator"
+!html_name icons_hv
+
+Die oben im Fenster des ST-Guide sichtbaren Icons dienen der einfachen
+Steuerung des Programms sowie dem bersichtlichen Bl„ttern im Text. Sie
+sind immer nur dann ausw„hlbar, wenn die gewnschte Funktion auch sinnvoll
+ist. So l„t sich z.B. das Index-Icon nur dann aufrufen, wenn Sie sich
+nicht bereits auf der Index-Seite befinden - logisch eigentlich.
+Nicht-ausw„hlbare Icons sind immer "disabled", d.h. hell dargestellt.
+
+~(!link[Zurck] [Zurck-Icon])~~~~Marken~~~~(!link [Inhalt] [Inhalt-Icon])~~~~(!link [Index] [Index-Icon])~~~Siehe auch~~~(!link [Info] [Info-Dialog])~~~~~~(!link [Extra] [Extra-Popup])
+!ifdest [stg]
+!begin_raw
+@line 5 0 2 1 1
+@line 15 0 2 1 1
+@line 25 0 2 1 1
+@line 35 0 2 1 1
+@line 45 0 2 1 1
+@line 55 0 2 1 1
+@line 65 0 2 1 1
+
+
+@image "images/stg_back.img" 3
+@image "images/stg_hist.img" 8
+@image "images/stg_mark.img" 13
+@image "images/stg_prev.img" 18
+@image "images/stg_up.img" 23
+@image "images/stg_next.img" 28
+@image "images/stg_idx.img" 33
+@image "images/stg_kat.img" 38
+@image "images/stg_xref.img" 43
+@image "images/stg_help.img" 48
+@image "images/stg_info.img" 53
+@image "images/stg_load.img" 58
+@image "images/stg_xtra.img" 63
+@image "images/stg_rem.img" 68
+
+
+@line 10 0 2 2 1
+@line 20 0 4 2 1
+@line 30 0 2 2 1
+@line 40 0 4 2 1
+@line 50 0 2 2 1
+@line 60 0 4 2 1
+@line 70 0 2 2 1
+!end_raw
+!endif
+
+ (!nl)
+~~History-Popup~~~~~~~n„chste Seite~~~~~~~~Hilfe-Seite~~~~~~~~~~~(!link [Remarker] [Extra -> Remarker])
+
+~~~~~~~~~~~~~~vorige Seite~~~~~~~~~Katalog~~~~~~~~~~~Datei laden
+
+Die auf den Icons liegenden Funktionen k”nnen fast alle auch per Tastatur
+aufgerufen werden.
+
+
+!begin_node Zurck-Icon
+!alias zurck
+!html_name back_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_back
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Der ST-Guide merkt sich, in welcher Reihenfolge man welche Seiten
+       aufgerufen hat, indem er sie auf einem Stack (Stapel) ablegt, der
+       bis zu sechzehn Seiten fat.
+
+       Mit dem Zurck-Icon kann man nun in umgekehrter Reihenfolge wieder
+       zurckbl„ttern, also quasi den gleichen Weg wieder zurckgehen, auf
+       dem man bis zur aktuellen Seite gekommen ist. Dies funktioniert
+       freilich nur dann, wenn auch Seiten auf dem Stapel liegen, was z.B.
+       beim ersten ™ffnen des ST-Guide noch nicht der Fall ist. Wenn Bedarf
+       besteht, l„t sich auch per Knopfdruck sofort der Stack l”schen.
+
+       Diese Funktion l„t sich auch mit den Tasten (!key [Esc])  oder  (!key [Undo])  sowie
+       mit der rechten Maustaste (falls RIGHTBACK gesetzt ist) ausfhren.
+
+       Will man mit einem Satz um (!B)mehrere(!b) Seiten zurckspringen, dann kann
+       man mit dem nebenliegenden Icon das History-Popup aufrufen.
+!end_xlist
+
+!end_node
+
+!begin_node History-Popup
+!html_name historypop_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_hist
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Durch Klick auf dieses Icon kann man gleich um mehrere Seiten
+       zurckspringen. Es werden die letzten zw”lf Eintr„ge des Stacks
+       (Seiten-Stapel) in Form eines History-Popups angezeigt. Nun kann per
+       Mausklick direkt zu einem von ihnen zurckgesprungen werden.
+       Dabei erscheint die zuletzt gelesene Seite ganz oben, die erste
+       ganz unten.
+       Die Darstellung im Popup betr„gt aber nicht mehr als vierzig
+       Zeichen! Alles, was darber hinausgeht, wird abgeschnitten.
+
+       Das Icon ist nicht anw„hlbar, wenn sich keine Hypertextseiten auf
+       dem Stapel befinden. Dies ist beim ersten ™ffnen des ST-Guide der
+       Fall und nach Ausfhren der Funktion "Stack l”schen".
+
+       Die Vermutung, da man mit diesem Popup durch Auswahl des ersten
+       Eintrags das gleiche erreicht wie mit dem Zurck-Icon, ist
+       zutreffend! (Der inhaltliche Zusammenhang dieser beiden Icons ist
+       deshalb auch durch die schmalere Trennlinie zwischen ihnen
+       verdeutlicht.)
+       Das Zurck-Icon stellt lediglich einen schnelleren Zugang
+       zur (!B)zuletzt(!b) gelesenen Seite dar.
+!end_xlist
+!end_node
+
+!begin_node Marken-Popup
+!alias Marken
+!html_name marks_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_mark
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Durch Klick auf dieses Icon ”ffnet sich ein Popup mit maximal 10
+       definierten Marken, aus denen dann eine per Mausklick ausgew„hlt
+       werden kann.
+       Sie erscheinen in der Reihenfolge, in der sie den Funktionstasten
+       zugeordnet sind, ber die sie definiert (Shift-Fx) und abgerufen
+       (Fx) werden k”nnen.
+
+       Die so definierten Marken bleiben auch nach dem Ausschalten des
+       Rechners erhalten, sofern die Variable MARKFILE entsprechend
+       gesetzt wurde, denn in diesem Fall speichert und l„dt ST-Guide
+       die Marken vollautomatisch.
+
+!end_xlist
+       
+!end_node
+
+!begin_node Vorige Seite
+!alias vorige Seite
+!html_name prev_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_prev
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ]        Nach Bet„tigung dieses Icons zeigt der ST-Guide die physikalisch
+       vorhergehende Seite im Hypertext oder die Seite, welche durch die
+       '(!XLINK [@prev] [hcp] [Kommando @prev])'-Direktive im Quelltext als Vorg„ngerseite definiert wurde.
+
+       Per Tastatur geht das entweder mit (!key [Control - (!LEFT!)])  oder mit
+       der (!key [-])-Taste auf dem Ziffernblock.
+!end_xlist
+
+!end_node
+
+!begin_node Inhalt-Icon
+!html_name contents_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_up
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Nach Bet„tigung dieses Icons (oder (!key [Alternate - T])) zeigt der
+       ST-Guide die hierarchisch ber der gerade angezeigten Seite liegende
+       Hypertextseite an. Dies kann die Hauptseite des Hypertextes sein
+       (Haupt-Inhaltsverzeichnis), oder aber ein Unterverzeichnis, das zwar
+       der aktuellen Seite bergeordnet ist, sich seinerseits aber
+       unterhalb einer noch "h”her" gelegenen Seite befindet. Wiederholtes
+       Klicken mu demnach binnen kurzem zur Hauptseite des Hypertextes
+       fhren - je nachdem, wie tief drin man sich vorher befunden hat.
+!ifdest [stg]
+!begin_raw
+@box 15 18 1 0
+               Hauptverzeichnis
+@line 24 -10 2 0 1
+@line 24 0 2 0 1
+@line 24 10 2 0 1
+
+
+@box 10 8 1 0
+@box 20 8 1 0
+@box 30 8 1 0
+          Seite1    Verz.1    Seite2
+@line 24 -5 2 0 1
+@line 24 5 2 0 1
+
+
+@box 15 8 1 0
+@box 25 8 1 0
+               Seite3    Seite4
+!end_raw
+!endif
+
+Ein Klick auf das Inhalt-Icon bewirkt also immer einen Sprung um
+eine "Etage" nach oben. Wie viele Etagen es gibt, h„ngt allein vom
+Autor des jeweiligen Hypertextes ab. Ist man ganz oben gelandet,
+wird das Icon inaktiv (hell).
+
+       Um bei Bet„tigung des Inhalt-Icons eine andere Seite als die
+       physikalisch erste angezeigt zu bekommen, mu sie vom Autor des
+       Hypertextes per '(!XLINK [@toc] [hcp] [Kommando @toc])'-Kommando als
+       Inhalt-Seite definiert worden sein.
+
+       Zur vorher betrachteten Seite kann wie immer per Zurck-Icon
+       zurckgekehrt werden.
+
+!end_xlist
+
+!end_node
+
+!begin_node N„chste Seite
+!alias n„chste Seite
+!html_name next_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_next
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Nach Bet„tigung dieses Icons zeigt der ST-Guide die physikalisch
+       n„chste Seite im Hypertext oder die Seite, welche durch die
+       '(!XLINK [@next] [hcp] [Kommando @next])'-Direktive im Quelltext als Folgeseite definiert wurde.
+
+       Per Tastatur geht das entweder mit (!key [Control - (!RIGHT!)])  oder mit
+       der (!key [+])-Taste auf dem Ziffernblock.
+
+!end_xlist
+
+!end_node
+
+!begin_node Index-Icon
+!html_name index_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_idx
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Mit diesem Knopf springt man zum Ende des "Buches", n„mlich in den
+       (!link [Index] [Index]), um nach einem bestimmten Stichwort zu suchen.
+       Der ST-Guide zeigt dabei diejenige Seite des aktuellen Hypertextes
+       an, welche den Namen 'Index' tr„gt. Diese wird automatisch vom HCP
+       erzeugt, falls der Autor des Textes dies nicht manuell getan hat.
+
+       Der Index l„t sich auch mit der Kombination (!key [Alternate - X])  ”ffnen.
+
+       Auf dieser Seite befinden sich stichwortartig und in alphabetischer
+       Reihenfolge alle wichtigen Begriffe des Hypertextes, zu denen
+       natrlich per Mausklick gesprungen werden kann.
+!end_xlist
+
+!end_node
+
+!begin_node Katalog
+!raw [stg] @xref "katalog.hyp/Main" "Katalog anzeigen"
+!html_name catalogue_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_kat
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ]        Mit dieser Funktion (auch aufrufbar durch (!key [Alternate - K])) kann die
+       von STool erzeugte Katalog-Datei nachgeladen werden. Genaugenommen
+       wird die Datei, die durch die Variable HYPTOP in der (!file [ST-GUIDE.INF])
+       festgelegt wurde, nachgeladen.
+
+       Falls Sie noch keinen Katalog erzeugt haben, oder falls Ihr
+       vorhandener Katalog nicht mehr ganz aktuell ist, da neue Hypertexte
+       hinzugekommen sind, k”nnen Sie auch gleich hier einen aktuellen
+       erzeugen lassen. Ein Klick auf den unten sichtbaren "Knopf" startet
+       STool. Hoffenlich. Wenn nicht, dann ist wahrscheinlich die folgende
+       Zeile in Ihrer (!file [ST-GUIDE.INF]) falsch oder nicht vorhanden: (!nl)
+       $(!nolink [STOOL])=<pfad>stool.tos
+
+!ifdest [stg,amg]
+!begin_raw
+@box 19 7 1 0
+                   @{"STool" SYSTEM "$STOOL"}   starten!
+!end_raw
+!endif
+
+       Zum Kontrollieren k”nnen Sie den Katalog ja nun gleich mal (!XLINK [aufrufen] [katalog] [Main])!
+
+
+!end_xlist
+!end_node
+
+!begin_node Siehe auch
+#!alias siehe auch
+!html_name seealso_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_xref
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Wenn das Icon anw„hlbar ist, dann bedeutet dies, da der Autor des
+       Hypertextes fr die aktuelle Seite einen oder mehrere Querverweise
+       zu anderen Seiten (auch Seiten in anderen Hypertexten) eingebaut
+       hat (hierfr dient das '(!XLINK [@xref] [hcp] [Kommando @xref])'-Kommando).
+
+       Ein Klick auf das Icon ”ffnet ein Popup, in der alle Querverweise
+       untereinander aufgefhrt sind. Das gewnschte braucht nun nur noch
+       ausgew„hlt zu werden. Natrlich kann das Popup auch ohne Auswahl
+       wieder verlassen werden.
+
+       Der Vorteil dieses Vorgehens ist es, da Verweise dieser Art immer
+       sofort im Zugriff sind und keinen Platz im Textbereich verbrauchen.
+!end_xlist
+!end_node
+
+!begin_node Hilfe-Seite
+!label Hilfe
+!label- Hilfe-Icon
+!html_name helpicon_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_help
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Falls per '(!XLINK [@help] [hcp] [Kommando @help])' eine Hilfe-Seite angegeben wurde, so wird diese,
+       ansonsten eine Seite Namens 'Help' im aktuell geladenen Text
+       gesucht und bei erfolgreicher Suche angezeigt. Der Sinn der Sache
+       ist das schnelle Auffinden einer kurzen Zusammenfassung des
+       Inhaltes eines Hypertextes, weshalb jeder Text eine solche Seite
+       enthalten sollte. Alternativ zum Icon kann auch die (!key [Help])-Taste
+       gedrckt werden.
+
+       Existiert eine solche Seite nicht, ist das Hilfe-Icon nicht
+       ausw„hlbar.
+!end_xlist
+
+!end_node
+
+!begin_node Info-Dialog
+!alias Info
+!label- Info-Icon
+!index Info
+!html_name info_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_info
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ]        Diese Funktion zeigt einen Dialog, aus dem der Name des Programms,
+       die Versionsnummer sowie der Autor und dessen Adresse zu entnehmen
+       sind. Die Tastenkombination  (!key [Control - I])  tut dasselbe.
+
+       Auerdem findet sich hier ein Knopf mit der Aufschrift '(!nolink [Hilfe])', bei
+       dessen Bet„tigung diese Onlinehilfe zum ST-Guide nachgeladen und
+       gezeigt wird.
+
+       Angezeigt werden hier aber auch relevante Informationen zur aktuell
+       angezeigten Datei, dieses sind Autor, Thema, Dateiname und Version
+       des Textes. Alle Angaben werden natrlich nur gezeigt, sofern sie im
+       Hypertext angegeben wurden ((!XLINK [@author] [hcp] [Kommando @author]), (!XLINK [@database] [hcp] [Kommando @database]), (!XLINK [@$VER:] [hcp] [Kommando @$VER:])).
+!end_xlist
+
+!end_node
+
+!begin_node Datei laden
+!alias Laden
+!label- Laden-Icon
+!index Laden
+!html_name load_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_load
+!stg_limage [on]
+!begin_xlist [~~~~~~]
+!item [      ] Mit dieser Funktion kann ein Hypertext oder eine ASCII-Datei
+       geladen werden, die Erkennung erfolgt dabei automatisch. Es
+       erscheint hierzu ein Fileselektor, in dem die gewnschte Datei
+       ausgew„hlt werden kann, wonach sie, falls ausreichend Speicher
+       vorhanden ist, geladen wird. Die Tastenkombination fr diese
+       Funktion lautet brigens (!key [Control - O]).
+
+       Der voreingestellte Pfad fr den Selektor wird folgendermaen
+       gew„hlt:
+       !begin_enumerate !compressed
+       !item Variable HYPFOLD (in der Datei ST-GUIDE.INF), falls diese
+             existiert,
+       !item Pfad der zuletzt geladenen Datei, falls HYPFOLD nicht
+             existiert oder
+       !item aktueller Pfad, falls noch keine Datei geladen und HYPFOLD
+             nicht existiert.
+	   !end_enumerate
+	   
+       Falls es sich bei der gew„hlten Datei nicht um einen Hypertext
+       handelt, verf„hrt der ST-Guide folgendermaen:
+       !begin_enumerate !compressed
+       !item in der INF-Datei wird die Endung dieser Datei als Variable
+             gesucht (also "IMG=" fr eine Datei Namens BILD.IMG)
+       !item falls 1. fehlschl„gt, wird die Variable EXTVIEW in der
+             INF-Datei gesucht
+       !item falls 1. und 2. erfolglos waren, zeigt ST-Guide die Datei
+             selber im ASCII Format an, ansonsten wird das zugewiesene
+             Programm zun„chst unter den bereits laufenden Applikationen
+             gesucht, und falls es dort nicht gefunden wird, so beauftragt
+             ST-Guide den Desktop mit dem Start des betreffenden
+             Programmes. Letzteres funktioniert allerdings nur, wenn der
+             verwendete Desktop ber entsprechende Funktionen verfgt,
+             d.h. wenn er das AV Protokoll implementiert hat.
+	   !end_enumerate
+
+       Falls ein AV-f„higer Desktop verwendet wird, kann die anzuzeigende
+       Datei auch direkt auf das Fenster des ST-Guide gezogen werden.
+!end_xlist
+
+!end_node
+
+!begin_node Extra-Popup
+!index Extra
+!html_name extra_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_xtra
+!stg_limage [on]
+!begin_xlist [~~~~~~] !compressed
+!item [      ] Bei Klick auf dieses Symbol erscheint ein Popup-Men
+       mit folgender Auswahl:
+!end_xlist
+
+!begin_xlist [~~~~~~~~~~~]
+!raw [stg] @box 15 18 10 0
+               ~Suchen~~~~~~~~^F (!nl)
+               ~Weitersuchen~~^G (!nl)
+               ~Stack l”schen~(!ALT)E (!nl)
+              (!G)(---)(---)(---)(---)(---)(---)(!g) (!nl)
+               ~Kopieren~~~~~~^C (!nl)
+               ~Einfgen~~~~~~^V (!nl)
+               ~Seite drucken~^P (!nl)
+             (!G)(---)(---)(---)(---)(---)(---)(!g) (!nl)
+               ~Font~~~~~~~~~~(!ALT)Z (!nl)
+               ~(!link [Remarker] [Extra -> Remarker])~~~~~~(!ALT)R
+
+!end_xlist
+
+!begin_node Extra -> Suchen
+!raw [stg] @xref "Extra -> Weitersuchen"
+#!label- Suchen-Dialog
+!label Suchfunktionen
+!label Suchen
+!html_name find_hv
+
+Bei Auswahl dieser Funktion (auch aktivierbar durch (!key [Control - F]))
+erscheint ein Dialog, in dem ein Suchbegriff eingegeben werden kann.
+Folgende Kn”pfe stehen zur Auswahl:
+
+!begin_xlist [~~~~~~~~]
+!raw [stg] @box 10 50 5 0
+~
+!raw [stg] @box 12 9 1 0
+!raw [stg] @box 22 11 1 0
+!raw [stg] @box 34 14 1 0
+!raw [stg] @box 49 9 1 0
+           (!link [~Im Text~] [Suchen im Text]) (!link [~Als Seite~] [Suchen als Seite]) (!link [~Als REFerenz~] [Suchen als REFerenz])~~Abbruch
+
+!raw [stg] @box 12 21 1 0
+!raw [stg] @box 34 24 1 0
+           (!link [~~~In allen Seiten~~~] [Suchen in allen Seiten])~~~... aller Hypertexte
+!end_xlist
+
+!begin_node Suchen im Text
+!html_name find_inpage_hv
+
+    Der eingegebene Begriff wird in der aktuellen Seite ab der ersten
+    sichtbaren Zeile bis zum Textende in allen Zeilen gesucht. Wird er
+    gefunden, so wird die entsprechende Zeile neue erste Zeile des
+    Fensters. Die Suche erfolgt (!link [case insensitive] [insens]) und kann durch die
+    Funktion 'Weitersuchen' wiederholt werden.
+
+!begin_pnode Abbruch
+!html_name cancel_hv
+Dieser Knopf verl„t den Dialog,
+ohne eine Suche zu starten.
+!end_node
+
+!end_node
+
+!begin_node Suchen als Seite
+#!label Als Seite
+!html_name find_aspage_hv
+
+   Diese Suchart forscht in der aktuellen Indextabelle nach der
+   eingegebenen Zeichenkette. Es k”nnen Wildcards verwendet werden und der
+   Vergleich erfolgt (!link [case insensitive] [insens]).
+!label Trefferliste
+   Wird mehr als ein Treffer gefunden, so erscheint ein Dialog, in dem
+   alle passenden Namen aufgefhrt sind. Der gewnschte Begriff kann hier
+   durch Mausklick oder Tastatur ausgew„hlt werden. Hierzu ist immer eine
+   der Trefferzeilen selektiert,
+   !begin_xlist [Cursor Down] !compressed
+        !item [Return]      w„hlt diese Zeile aus
+        !item [Cursor Up]   setzt die Selektierung auf die vorige Zeile
+        !item [Cursor Down] setzt die Selektierung auf die n„chste Zeile
+        !item [Undo]        wirkt wie der Abbruch-Button
+        !item [Shift Up]    zeigt die vorige Seite der Liste
+        !item [Shift Dn]    zeigt die n„chste Seite der Liste
+        !item [Home]        zeigt die erste Seite der Liste
+        !item [Shift Home]  zeigt die letzte Seite der Liste
+   !end_xlist
+   
+   Der Slider bewirkt (natrlich) Onlinescrolling und funktioniert
+   ansonsten wie in einem GEM-Fenster.
+
+   Die Trefferzeilen enthalten jeweils den Namen der Seite sowie das Thema
+   des zugeh”rigen Hypertextes. Wird als Treffer ein Verweis innerhalb
+   einer Seite gefunden, so wird dieser hinter dem Namen der Seite, durch
+   einen Punkt getrennt ebenfalls gezeigt.
+
+!index hnliche
+#!label- „hnliche
+   Wird kein exakter Treffer gefunden, jedoch „hnliche Begriffe, so werden
+   diese zur Auswahl gestellt. hnlich ist hierbei wie folgt definiert:
+   !begin_itemize !compressed
+   !item Gro/Kleinschreibung wird ignoriert
+   !item '„' wird wie 'ae' behandelt, '' wie 'ue' etc.
+   !item '*' passt auf beliebig viele Zeichen
+   !item '?' passt auf genau ein Zeichen
+   !item abh„ngig von der L„nge des Suchwortes drfen sich ein paar
+     Zeichen unterscheiden ('option' passt auf 'optoin')
+   !end_itemize
+
+!begin_pnode insens
+!html_name insens_hv
+'case insensitive' bedeutet, da Grobuchstaben wie Kleinbuchstaben behandelt werden und umgekehrt.
+'TEST', 'test' und 'Test' sind danach identische Pattern.
+!end_node
+
+!end_node
+
+!begin_node Suchen als REFerenz
+!label REF-Suche
+#!label- Als REFerenz
+!html_name find_asref_hv
+
+    Der eingegebene Begriff wird in der durch die Variable 'REF'
+    angegebenen Datei gesucht, ansonsten ist diese Suchart identisch mit
+    dem Suchen als Seite.
+
+    Um es verst„ndlicher auszudrcken: Bei dieser Art der Suche handelt es
+    sich um die Suche nach einem Stichwort bzw. einer Zeichenkette in der
+    globalen Stichwortdatei (REF), die vom RefLink durch Zusammenfgen der
+    Stichwortdateien der einzelnen Hypertexte erzeugt wurde. Es wird also
+    nicht nur in einem Hypertext, sondern in der Stichwortliste aller
+    mit dem RefLink bearbeiteten Hypertexte gesucht.
+
+    Diese Suche wird z.B. dann benutzt, wenn man bei einem entsprechend
+    ausgestatteten Texteditor ein Wort markiert und die Help-Funktion
+    aktiviert. Wenn irgendwo eine Hypertextseite zu dem gesuchten Wort bzw.
+    der gesuchten Zeichenkette (k”nnen auch mehrere Worte sein) existiert,
+    dann findet der ST-Guide diese Seite und zeigt sie an.
+
+!end_node
+
+!begin_node Suchen in allen Seiten
+!label ... aller Hypertexte
+#!label In allen Seiten
+!html_name find_allpages_hv
+
+   Fr diese Art der Suche bedient sich der ST-Guide eines externen Tools
+   namens HypFind, welches dem Paket beiliegt und ber die Variable
+   (!link [HYPFIND] [HYPFIND]) definiert sein mu.
+
+   Die Suche erfolgt case insensitiv und das Tool erzeugt als Ausgabe eine
+   Trefferliste in Form eines Hypertextes, der vom ST-Guide nach der
+   Terminierung von HypFind automatisch nachgeladen wird. Damit HypFind
+   aufgerufen werden kann ist
+   !begin_itemize !compressed
+   !item entweder MagiC installiert, dann startet ST-Guide das Tool selbst, oder
+   !item es wird ein AV-Desktop verwendet, wie z.B. Thing oder Gemini (evtl.
+   funktioniert das auch mit Ease), in diesem Fall beauftragt ST-Guide den
+   Desktop mit dem Starten von HypFind
+   !end_itemize
+   
+   Alle Anwender, bei denen keine der beiden Bedingungen erfllt sind,
+   k”nnen HypFind nur von Hand starten.
+
+!end_node
+
+!end_node # Suchen
+
+!begin_node Extra -> Weitersuchen
+!raw [stg] @xref "Extra -> Suchen"
+!alias Weitersuchen
+!index Weitersuchen
+!html_name find_repeat_hv
+
+Durch diese Funktion wird die aktuelle Seite erneut nach dem zuletzt
+verwendeten Muster durchsucht, die Suche beginnt jedoch in der zweiten
+sichtbaren Zeile des Fensters, damit nicht erst gescrollt werden mu, um
+die Suche fortfhren zu k”nnen.
+
+Die Tastenkombination fr diese Funktion lautet (!key [Control - G]).
+
+!end_node
+
+!begin_node Extra -> Stack l”schen
+!alias Stack l”schen
+!html_name clearstack_hv
+
+Diese Funktion l”scht den Stack (Stapel), auf dem die Seiten abgelegt
+werden, zu denen per 'zurck' gelangt werden kann. Alternativ kann auch
+die Tastenkombination (!key [Alternate - E])  gedrckt werden.
+
+Sowohl das Zurck-Icon, als auch das History-Popup werden durch diese
+Aktion deaktiviert.
+
+!end_node
+
+!begin_node Extra -> Kopieren
+!raw [stg] @xref "Extra -> Einfgen"
+!alias Kopieren
+!index Kopieren
+!html_name extra_copy_hv
+
+Diese Funktion (oder der Tastencode (!key [Control - C])) schreibt die aktuelle
+Seite als ASCII-Text ins Clipboard und stellt sie damit allen anderen
+GEM-Applikationen zur Verfgung. Falls noch kein Clipboard existiert, so
+wird eines erzeugt, und zwar wie blich auf dem Bootlaufwerk als Ordner
+CLIPBRD.
+
+Wird bei dieser Aktion gleichzeitig eine (!key [Shift])-Taste gedrckt gehalten,
+so wird der vorige Klemmbrettinhalt nicht berschrieben, sondern der neue
+Text wird an den vorhandenen angeh„ngt.
+
+!end_node
+
+!begin_node Extra -> Einfgen
+!raw [stg] @xref "Extra -> Kopieren"
+!label Einfgen
+#!alias Paste
+!index Paste
+!html_name extra_paste_hv
+
+Durch Bet„tigung dieses Eintrags oder durch Drcken von (!key [Control - V]) wird
+der ST-Guide veranlat, die Datei (!file [SCRAP.TXT]) vom Clipboard zu laden, falls
+m”glich, und sie dann im Fenster anzuzeigen.
+
+!end_node
+
+!begin_node Extra -> Seite drucken
+!alias Seite drucken
+!index drucken
+!html_name extra_print_hv
+
+Diese Funktion (auch aufrufbar durch die Tastenkombination (!key [Control - P]))
+macht genau das, was man von ihr erwarten sollte, n„mlich die aktuelle
+Seite als ASCII-Text auf den Drucker ausgeben.
+
+Das berchtigte "Atari-(!beta)" wird dabei vom ST-Guide automatisch in das
+"richtige " gewandelt, soda alle Umlaute korrekt im Ausdruck erscheinen
+sollten.
+
+Alternativ gibt es die M”glichkeit, in der (!file [ST-GUIDE.INF]) die Variable
+PRINTER zu definieren. In diesem Fall wird beim Aufruf der Drucken-Funktion
+statt eines direkten Ausdrucks das dort angegebene Programm gestartet.
+Der Inhalt der auszudruckenden Seite wird dabei auf das Klemmbrett kopiert.
+Diese Umleitung funktioniert auch im Block-Popup.
+
+Wie bereits klar sein drfte, kann man also die Drucken-Funktion einerseits
+zum Aufruf eines externen Druck-Programms, andererseits aber auch
+zweckentfremdet einsetzen, um z.B. einen Editor o.„. aufzurufen.
+
+!end_node
+
+!begin_node Extra -> Font
+!label- Anzeige-Zeichensatz
+!alias Font
+!html_name extra_font_hv
+
+Der ST-Guide untersttzt das sogenannte Font-Protokoll von Christian
+Grunenberg. Es wird dazu die Environment-Variable FONTSELECT ausgewertet.
+
+Falls diese Variable nicht gesetzt ist, versucht der ST-Guide einen im
+Autoordner installierten Selektor zu finden (UFSL, FONTSEL, CALVINO,
+HUGO), und benutzt diesen.
+
+Falls auf einem dieser Wege ein Fontselektor aufrufbar ist, kann ber
+diesen Eintrag des Extra-Popups ein beliebiger Zeichensatz gew„hlt werden,
+mit dem der ST-Guide den Text in seinem Fenster anzeigen soll.
+
+Falls kein Fontselektor installiert ist, so erscheint eine entsprechende
+Meldung, und falls kein GDOS installiert ist, kann nur der
+Systemzeichensatz zur Darstellung verwendet werden.
+
+Anmerkung: Bei den meisten verfgbaren Hypertexten wird davon ausgegangen,
+da ein Monospaced-Font, also ein nicht-proportionaler Zeichensatz,
+eingestellt ist. Daher sei auch hier empfohlen, grunds„tzlich mit solchen
+Monospaced-Fonts zu arbeiten, um allzu heftige Verzerrungen im Seitenbild
+zu vermeiden.
+
+Die Tastenkombination fr diese Funktion lautet (!key [Alternate - Z]).
+
+!end_node
+
+!begin_node Extra -> Remarker
+!raw [stg] @xref "Remarker.hyp/Main" "Notizen-Tool REMARKER"
+!html_name extra_remarker_hv
+
+!stg_limage [off]
+!image (!IMAGES)stg_rem
+!stg_limage [on]
+!begin_xlist [~~~~~~] !compressed
+!item [      ] Der REMARKER ist ein von Christoph Spengler geschriebenes
+       Zusatz-Programm zum ST-Guide, mit dem sehr einfach Notizen zu
+       bestimmten Hypertextseiten erstellt, abgespeichert und jederzeit
+       wieder hervorgeholt werden k”nnen. Der ST-Guide ist auf die
+       Zusammenarbeit mit dem Remarker bestens vorbereitet.
+
+       Falls die Variable REMARKER in der (!link [ST-GUIDE.INF] [REMARKER]) definiert ist
+       oder Remarker ebenfalls l„uft, kann dieser Menpunkt im Extra-Popup
+       ausgew„hlt oder per Tastenkombination (!key [Alternate - R])  aktiviert
+       werden. Der ST-Guide ruft dann den Remarker auf bzw. startet ihn.
+       Wenn sich der REMARKER bereits im Speicher befindet, zeigt der
+       ST-Guide dies, indem ganz rechts in der Icon-Leiste das Notiz-Symbol
+       sichtbar ist.
+
+       Am REMARKER-Icon lassen sich zwei Dinge ablesen:
+
+       !begin_enumerate
+       !item Wenn es sichtbar ist, bedeutet dies, da der Remarker sich
+          bereits im Speicher befindet.
+       !item Das Icon kennt auerdem zwei Zust„nde: entweder ist es hell
+          oder kr„ftig gezeichnet. Im letzteren Fall heit das, da eine
+          oder mehrere Anmerkungen zur aktuell dargestellten Hypertext-
+          Seite existieren.
+          
+          (!B)Achtung:(!b) Das Remarker-Icon ist auch dann anw„hlbar, wenn es hell
+          dargestellt ist! In dieser Eigenschaft weicht es von den anderen
+          Icons ab, aber man bekommt dadurch einen schnelleren Zugriff auf
+          den Remarker, wenn man Anmerkungen eingeben will. Wem dies
+          "inkonsistent" erscheint, der kann natrlich weiterhin die
+          Men-Auswahl ber das Extra-Popup benutzen.
+       !end_enumerate
+       
+       Nach Aufruf ”ffnet der REMARKER also sein Fenster und zeigt diese
+       Anmerkungen, so vorhanden. Andernfalls bleibt das Anmerkungsfenster
+       natrlich leer, aber neue Anmerkungen k”nnen nun eingegeben werden.
+       N„heres erl„utert die Remarker-Anleitung.
+
+       Anmerkung: Der REMARKER ist ein Shareware-Programm.
+!end_xlist
+
+!end_node
+
+!end_node # Extra-Popup
+
+!end_node # Icon-Leiste
+
+
+
+!begin_node Maus-Funktionen
+!raw [stg] @xref "Symbolleiste" "Icon-Leiste"
+!raw [stg] @xref "Tastatur-Funktionen"
+!raw [stg] @xref "Auto-Locator"
+!html_name mouse_hv
+
+Die Mausbedienung ist recht einfach gehalten. Fast berall wird lediglich
+der einfache Klick mit der linken Maustaste ben”tigt. Dies gilt sowohl bei
+den Icons, als auch beim Anklicken von Text im Fenster.
+
+(!B)Merke:(!b) Nicht nur als solche kenntlich gemachte Verweise k”nnen angeklickt
+werden, sondern auch nicht-markierte Worte, sofern nicht die REFONLY-
+Variable in der (!file [ST-GUIDE.INF]) gesetzt wurde. Der ST-Guide sucht dann in der
+vom RefLink erzeugten globalen Stichwort-Datei (REF) nach dem angeklickten
+Wort und zeigt eine entsprechende Seite an, falls die Suche erfolgreich
+war.
+
+
+In wenigen Ausnahmef„llen gibt es aber vom einfachen Linksklick abweichende
+Maus-Bedienungen:
+!label Block-Popup
+
+!begin_itemize
+!item Ein gehaltener Mausklick mit anschlieendem Ziehen der Maus dient zum
+   zeilenweisen Markieren eines Blockes. Der markierte Bereich kann nach
+   Loslassen der Maustaste mittels Auswahl im erscheinenden Popup auf das
+   Klemmbrett kopiert oder gedruckt werden.
+
+!item Rechte Maustaste als Alternative zum Zurck-Icon, falls die Variable
+   RIGHTBACK in der (!file [ST-GUIDE.INF]) definiert ist und der Klick dann
+   geschieht, wenn der Mauszeiger sich gerade im ST-Guide-Fenster befindet.
+   Diese Funktion ist von einigen Betriebssystemen gewissermaen nicht voll
+   "abgesegnet" und daher zun„chst nicht aktiviert. Mausfetischisten
+   m”gen aber in der schnellen Rcksprungm”glichkeit einen Gewinn sehen.
+   Ihnen zuliebe wurde diese Funktion implementiert.
+!end_itemize
+
+!end_node # Maus-Funktionen
+
+!begin_node Tastatur-Funktionen
+!raw [stg] @xref "Symbolleiste" "Icon-Leiste"
+!raw [stg] @xref "Maus-Funktionen"
+!raw [stg] @xref "Auto-Locator"
+#!alias Tastaturbedienung
+!index Tastaturbedienung
+!label* Tastatur
+!html_name keyboard_hv
+
+
+Der ST-Guide l„t sich fast komplett per Tastatur bedienen. Die
+Steuerfunktionen werden dabei durch Steuertasten bzw. in Verbindung mit
+diesen ausgel”st. Werden dagegen alphanumerische Zeichen eingegeben, dann
+tritt der Auto-Locator in Funktion.
+
+
+Hier nun die definierten Tastatur-Shortcuts:
+
+!begin_table [ll]
+  Cursortasten              !! Zeilen/Spaltenweise scrollen 
+                            !! (wie Scrollpfeile am Fenster)
+  Shift+Cursortasten        !! Seitenweise scrollen
+                            !! (wie Klicks ber/unter/neben die Slider)
+  Ziffernblock -
+  Ctrl-Cursor hoch/links    !! zur vorigen Seite bl„ttern
+  Ziffernblock +
+  Ctrl-Cursor runter/rechts !! zur n„chsten Seite bl„ttern
+                            !! (wie Icon [(!link [->] [N„chste Seite])])
+  Escape, Undo              !! zur bergeordneten Seite
+                            !! (wie Zurck-Icon)
+  Home                      !! zum Anfang der aktuellen Seite
+                            !! (wie Slider ganz nach oben schieben)
+  Shift-Home                !! zum Ende der aktuellen Seite
+                            !! (wie Slider ganz nach unten schieben)
+  Tab                       !! Markierung auf n„chste Referenz setzen
+                            !! (zyklisch)
+  Shift-Tab                 !! Markierung auf vorige Referenz setzen
+                            !! (zyklisch)
+  Return, Enter             !! markierte Referenz anzeigen
+  ALT-T                     !! Inhalts-Seite zeigen (wie Inhalt-Icon)
+  ALT-X                     !! Indexseite zeigen (wie Index-Icon)
+  Ctrl-I                    !! Programm Information (wie (!link [Info-Icon] [Info-Icon]))
+  Help                      !! zeigt Hilfe-Seite des aktuellen Textes
+                            !!  (wie (!link [Hilfe-Icon] [Hilfe-Icon]))
+  ALT-K                     !! Katalog laden
+  ALT-D                     !! DEFHYP laden
+  ALT-R                     !! Remarker ”ffnen, falls dieser l„uft oder
+                            !! die Variable REMARKER definiert ist
+  Ctrl-O                    !! Datei laden (wie (!link [Laden-Icon] [Laden-Icon]))
+  Shift-Ctrl-O              !! wie CTRL-O, nur mit *.* als Pattern im
+                            !! erscheinenden Fileselektor
+  Ctrl-F                    !! Pattern suchen (wie Extra -> Suchen)
+  Ctrl-G                    !! Pattern erneut suchen
+                            !! (wie Extra -> Weitersuchen)
+  ALT-E                     !! Stack l”schen (wie Extra -> Stack l”schen)
+  Ctrl-C                    !! aktuelle Seite ins Clipboard kopieren
+                            !! (wie Extra -> Kopieren)
+  Ctrl-V                    !! Inhalt des Clipboard ins Fenster laden
+                            !! (wie Extra -> Einfgen)
+  Ctrl-P                    !! aktuelle Seite drucken
+                            !! (wie (!link [Extra -> Seite drucken] [Extra -> Seite drucken]))
+  Ctrl-U                    !! Fenster schlieen
+                            !! (wie Closer am Fenster anklicken)
+                            !! Beendet ST-Guide wenn dies das letzte Fenter war
+  Ctrl-Q                    !! ST-Guide schlieen
+  F1...F10                  !! eine von 10 Marken abrufen
+  Shift-F1...Shift-F10      !! eine von 10 Marken definieren
+!end_table
+
+!end_node # Tastatur-Funktionen
+
+!begin_node Auto-Locator
+!raw [stg] @xref "Symbolleiste" "Icon-Leiste"
+!raw [stg] @xref "Tastatur-Funktionen"
+!raw [stg] @xref "Maus-Funktionen"
+!html_name autoloc_hv
+
+Werden Zeichen aller Art ohne irgendwelche Steuertasten eingegeben, so
+interpretiert der ST-Guide die Eingabe als zu suchende Zeichenkette. Die
+Icons verschwinden in diesem Fall vorbergehend, und es erscheint ein
+Textbereich, in dem die eingegebene Zeichenkette angezeigt wird und
+editiert werden kann.
+
+Bei jedem eingegebenen Zeichen wird sofort versucht, die komplette
+Zeichenkette case-insensitive in der aktuellen Seite zu finden; die Anzeige
+scrollt dann automatisch zur entsprechenden Zeile. Diese Suche ist eine
+reine Textsuche und macht daher keinen Unterschied zwischen Verweisen und
+"nacktem" Text. Ist die gefundene Stelle ein Verweis, so gengt ein Druck
+auf die  (!key [Tab])-Taste (gefolgt von (!key [Return]) ) oder ein Mausklick, um diesen
+aufzurufen.
+
+Mit der  (!key [Insert])-Taste kann im verbleibenden Seitenrest erneut nach dem
+eingegebenen Suchmuster gesucht werden. Die  (!key [Backspace])-Taste l”scht
+zeichenweise von hinten den eingegebenen Suchstring, bei gleichzeitigem
+Drcken von (!key [Shift]) l”scht sie sofort die ganze Zeile.
+
+Sobald per Cursortasten oder Maus irgendeine Fenster-Scroll-Aktion
+ausgel”st wird, erscheint sofort wieder die Icon-Leiste, folglich wird der
+Autolocator-Textbereich berdeckt, bis er erneut aktiviert wird. Die
+eingegebene Zeichenkette bleibt aber erhalten und wird bei erneuter
+Autolocator-Aktion fortgesetzt. Beim Wechsel zu einer anderen Hypertext-
+Seite wird sie jedoch gel”scht.
+
+!end_node # Auto-Locator
+
+!end_node # Bedienung
+
+
+!begin_node Der ST-Guide und seine Umgebung
+!html_name environment_hv
+
+!begin_node Hypertexte anderer Formate
+!html_name other_hv
+
+!begin_blist
+!item [1stGuide]
+
+Ein alternatives, schon l„nger auf dem Markt befindliches Hypertext-
+System ist der 1stGuide von Guido Vollbeding.
+
+Um den Umstieg von diesem auf unser System zu erleichtern (z.B. um
+Speicherplatz auf Diskette/Festplatte zu sparen), wurde ein
+Konvertierungsprogramm Namens 1stConv geschrieben, welches die fr den
+1stGuide verwendbaren Texte in das ST-Guide Format umwandeln kann.
+
+Da der 1stGuide ebenfalls das AV- und das PureC-Help Protokoll beherrscht,
+kann dieser einfach gegen den ST-Guide ausgetauscht werden.
+
+!item [PureC-Help]
+
+Damit der Umstieg auf den ST-Guide leichter f„llt, wurde er voll
+kompatibel zum PureC-HelpACC gemacht, zumindest was die Meldungen angeht,
+d.h. der ST-Guide versteht alle Meldungen, die auch das PureC-ACC
+auswerten kann und beantwortet sie entsprechend.
+
+Das bedeutet insbesondere, da Programme, welche das PureC-ACC
+untersttzen, automatisch auch mit dem ST-Guide arbeiten, hierzu ist der
+ST-Guide lediglich in "PC_HELP.ACC" umzubenennen, damit die Programme ihn
+auch als solchen erkennen und ansprechen.
+
+Fr Programmierer interessant ist hierzu die (!link [Liste der Meldungen] [PureC-Protokoll]).
+
+Ein Konvertierungsprogramm, mit dem PureC-Helptexte in das ST-Guide-Format
+gewandelt werden k”nnen, ist Teil dieses Systems und tr„gt den Namen
+PC-Conv.
+
+!end_blist
+
+!begin_node Das PureC-Help Protokoll
+!alias PureC-Protokoll
+!html_name purec_hv
+Der grunds„tzliche Aufbau einer solchen Meldung ist:
+!begin_table [lll]
+    buffer[0] = !! <Meldungs-Typ>               !! (z.B. AC_HELP)
+    buffer[1] = !! <Sender ID>                  !! (von appl_init)
+    buffer[2] = !! <Versionsnummer>             !! (bei AC_REPLY)
+                !! 0                            !! (alle anderen)
+    buffer[3] = !! Zeiger auf Suchwort (High)   !! (bei AC_HELP)
+                !! <Handle des ACC-Fensters>    !! (bei AC_REPLY)
+                !! 0                            !! (alle anderen)
+    buffer[4] = !! Zeiger auf Suchwort (Low)    !! (bei AC_HELP)
+                !! 0                            !! (alle anderen)
+    buffer[5] = !! 0x1993                       !! (evtl. bei AC_HELP)
+                !! 0                            !! (alle anderen)
+    buffer[6] = !! Zeiger auf Indexdatei (High) !! (falls AC_HELP und 0x1993)
+                !! 0                            !! (sonst)
+    buffer[7] = !! Zeiger auf Indexdatei (Low)  !! (falls AC_HELP und 0x1993)
+                !! 0                            !! (sonst)
+!end_table
+
+!begin_blist [AC_VERSION]
+!label AC_HELP
+!item [AC_HELP]     (1025)
+    (!U)APP -> ACC(!u): "zeige mal die Infos zum angegebenen Begriff"
+
+    (!U)ACC -> APP(!u): AC_REPLY (siehe dort), nachdem die passende Datei
+    dazu gesucht und die gewnschte Seite angezeigt, bzw. die Suche
+    erfolglos abgebrochen wurde.
+
+    Die Suche nach dem Begriff erfolgt in der durch 'REF' bzw. der in der
+    Meldung angegebenen Datei. Gefunden werden auch „hnliche Begriffe.
+
+!label AC_REPLY
+!item [AC_REPLY]    (1026)
+    (!U)ACC -> APP(!u): Antwort auf alle Meldungen;
+
+!label AC_VERSION
+!item [AC_VERSION]  (1027)
+    (!U)APP -> ACC(!u): "sag mir, welche Versionsnummer Du tr„gst" (!nl)
+    (!U)ACC -> APP(!u): AC_REPLY (siehe dort)
+
+!label AC_COPY
+!item [AC_COPY]     (1028)
+    (!U)APP -> ACC(!u): "schreibe mal die aktuelle Seite ins Clipboard" (!nl)
+    (!U)ACC -> APP(!u): AC_REPLY (siehe dort), nachdem die aktuelle Seite
+    als ASCII-Text ((!file [SCRAP.TXT])) ins Clipboard geschrieben wurde.
+
+!end_blist
+
+!end_node
+
+!end_node
+
+!begin_node Der ST-Guide und das AV-Protokoll
+!html_name avprot_hv
+
+Das AV-Protokoll stammt ursprnglich vom alternativen Desktop GEMINI, hat
+jedoch mittlerweile eine sehr weite Verbreitung gefunden, so da es mir
+sinnvoll erschien, dieses zu untersttzen.
+
+Fr Programmierer interessant ist hierzu die Liste der Meldungen,
+folgende Nacrichten werden erkannt/verwendet:
+
+!begin_blist [AV_ACCWINDCLOSED]
+
+!label VA_START
+!item [VA_START]:     (0x4711)
+    (!U)APP -> ACC(!u): "erwache aus deinem Schlaf und beginne mit der Arbeit";
+    (!U)ACC -> APP(!u): evtl. AV_ACCWINDOPEN, nachdem das Fenster ge”ffnet
+    und die evtl. angegebene Datei geladen wurde. Falls eine
+    Kommandozeile angegeben wurde und sich mehr als ein Argument darin
+    befindet, so wird alles ab dem ersten Leerzeichen als Name der
+    anzuzeigenden Seite interpretiert.
+
+    Laut AV-Doku mssen alle Dateinamen in Grobuchstaben und mit
+    vollst„ndigem Pfad angegeben werden. Um diesem Umstand Rechnung zu
+    tragen und trotzdem zuzulassen, da die aufrufende Applikation nicht
+    wei, wo sich der Hypertext befindet, wurde als Spezialfall das
+    'Laufwerk' "*" implementiert: Angabe von "*:\AES.HYP" veranlat den
+    ST-Guide, die Datei AES.HYP auf allen angegebenen Pfaden zu suchen.
+
+    Aufruf mit 'C:\AES.HYP appl_init' wrde also AES.HYP laden und daraus
+    die Seite <appl_init> anzeigen.
+
+    Aufruf mit 'C:\AES.REF appl_init' wrde den Begriff <appl_init> in der
+    Datei AES.REF suchen und im Erfolgsfall die Datei AES.HYP laden und daraus
+    die Seite anzeigen, in der das gesuchte Symbol definiert wurde.
+
+    Aufruf mit 'C:\AES.HYP' wrde die angegebene Datei laden und die erste
+    Seite aus ihr darstellen.
+
+    Aufruf mit 'appl_init' wrde diesen Begriff in der durch 'REF'
+    angegebenen Datei suchen und die passende Seite aus der betreffenden
+    Datei darstellen
+
+!label VA_DRAGACCWIND
+!item [VA_DRAGACCWIND]:   (0x4725)
+    APP -> ACC: "es wurde eine Datei auf eines deiner Fenster gezogen,
+    hier hast du den Pfad"; der Guide l„dt daraufhin die so angegebene
+    Datei und zeigt sie im Fenster an. Auch hier mu der vollst„ndige
+    Zugriffspfad angegeben werden.
+
+!label AV_SENDKEY
+!item [AV_SENDKEY]:       (0x4710)
+    ACC -> APP: "es wurde eine Taste gedrckt, mit der ich nichts anfangen
+    kann, hier hast du sie"; hierdurch wird die Benutzung aller
+    Shortcuts der Applikation erm”glicht, auch wenn das ACC Besitzer des
+    obersten Fensters ist.
+
+!label AV_STARTPROG
+!item [AV_STARTPROG]:     (0x4723)
+    ACC -> APP: "starte mal das in dieser Meldung angegebene Programm mit
+    der evtl. ebenfalls angegebenen Kommandozeile"; Der Guide benutzt
+    diese Meldung fr die Ausfhrung von SYSTEM Anweisungen. Thing und
+    GEMINI untersttzen hier auch die Angabe von nicht ausfhrbaren
+    Dateien, fr deren Endung dann ein Programm gesucht und gestartet
+    wird.
+
+    APP -> ACC: VA_PROGSTART, wird vom Guide jedoch ignoriert.
+
+!label AV_ACCWINDOPEN
+!item [AV_ACCWINDOPEN]:   (0x4724)
+    ACC -> APP: "ich habe gerade ein Fenster ge”ffnet"; da das Handle
+    dieses Fensters mitgeliefert wird, dient es u.a. dem Zweck, das
+    Window-Cycling der Hauptapplikation auf die Fenster der ACC's
+    auszuweiten oder dem ACC zu melden, wenn Objekte auf eines seiner
+    Fenster gezogen wurden (siehe VA_DRAGACCWIND);
+
+!label AV_ACCWINDCLOSED
+!item [AV_ACCWINDCLOSED]: (0x4726)
+    ACC -> APP: "ich habe gerade eines meiner Fenster geschlossen";
+    Gegenstck zu ACCWINDOPEN.
+
+!label AV_EXIT
+!item [AV_EXIT]:
+    ACC -> APP: "ich melde mich ab - und Tsch"
+
+!label AV_PROTOKOLL
+!item [AV_PROTOKOLL]:
+    ACC -> APP: "hier bin ich"
+
+!end_blist
+
+!end_node
+
+!end_node # Umgebung
+
+!begin_node Zu guter letzt...
+!html_name lastword_hv
+
+!begin_node Wie schreibe ich einen Hypertext?
+!raw [stg] @xref "hcp.hyp/Schreiben eines Hypertextes" "Schreiben eines Hypertextes"
+!alias Hypertext?
+!html_name writing_hv
+
+Hierber gibt eine entsprechende Seite in der (!XLINK [HCP-Dokumentation] [hcp] [Schreiben eines Hypertextes])
+einige Ausknfte.
+Ansonsten kann diese gleichermaen berechtigte wie oft gestellte Frage hier
+nicht ersch”pfend beantwortet werden. Wer weitere zndende Anregungen
+braucht, dem seien die STG-FAQ empfohlen, eine Ansammlung oft gestellter
+Fragen, die ebenfalls als Hypertext vorliegt. Und eine Lektre der
+Befehlserl„uterungen in der (!HCP)-Dokumentation darf wohl vorausgesetzt
+werden.
+
+!raw [stg] @box 2 73 4 0
+!begin_center
+ (!nl)
+(!B)Im brigen sollte der mitgelieferte Quelltext zum ST-GUIDE-
+Hypertext gengend Beispiele liefern, wie die Kommandos des
+(!HCP) einzusetzen sind!(!b)
+!end_center
+ (!nl)
+
+(!B)Gestaltung:(!b)
+
+!begin_itemize
+!item Es gibt derzeit keine bindenden Regeln fr die Gestaltung von
+    Hypertexten, aber mit Sicherheit wird die Praxistauglichkeit sehr zur
+    Einstufung zwischen 'gut' und 'schlecht' beitragen.
+    Wer Anregungen sucht, sei auf die vielen schon vorhandenen Hypertexte
+    verwiesen, unter denen sich sehr gute - aber leider auch einige
+    schlecht gemachte finden lassen.
+!item Als vorteilhaft hat es sich erwiesen, den Seiten-Namen auch im Fenster
+    als Titelzeile nochmals zu erw„hnen (wie es ja auch hier praktiziert
+    wird). Somit geht er n„mlich nicht verloren, wenn Sie eine komplette
+    Seite drucken oder Kopieren wollen.
+!end_itemize
+
+
+!end_node
+
+!end_node # Zu guter letzt
+
+!begin_appendix
+
+!begin_node Verwendete Software
+!html_name software_hv
+
+Folgende Programme wurden zur Implementierung dieses Systemes verwendet:
+
+!begin_ilist [SOZOBON V2.00x10]
+!item [SOZOBON V2.00x10]
+    als C-Compiler System (!nl)
+    Autoren: die SOZOBON-Leute, Christian Wempe und Holger Weets
+
+!item [ACE]
+    als Editor und Programmierumgebung (!nl)
+    Autor: Holger Weets
+
+!item [RED]
+    als Resource-Editor (!nl)
+    Autor: Holger Weets
+
+!item [C-RSC]
+    als Umwandler der Resourcen in C-Quelltext (!nl)
+    Autor: Holger Weets
+
+!item [LHarc] bzw. dessen Sourcecodes
+    als Basis fr die Implementierung des Ein- und Auspackens der
+    Hypertext-Seiten (!nl)
+    Autor: Yoshi, Christian Grunenberg
+
+!end_ilist
+
+!end_node
+
+!begin_node Konverter
+!html_name converter_hv
+!label 1stConv
+!label PC-Conv
+Konverter                                                          ST-Guide
+
+Die Konverter, um aus anderen Hypertext-Formaten ST-Guide-Quelltexte zu
+erzeugen, befinden sich in einem anderen Archiv, das derzeit den Namen
+STG-UT10.LZH tr„gt. Diese Konverter befanden sich ursprnglich im
+ST-Guide-Archiv, werden aber seit einiger Zeit separat angeboten. Sollten
+Sie die Hypertexte zu diesen Tools besitzen, so ist dies hier ein
+geeigneter Absprungpunkt zu ihren Anleitungen:
+
+!raw [stg] @box 15 9 1 0
+!raw [stg] @box 38 9 1 0
+~~~~~~~~~~~~~~(!XLINK [~1stConv~] [1st_conv] [Main])~~~~~~~~~~~~~~(!XLINK [~PC-Conv~] [pc_conv] [Main])
+
+!end_node
+
+
+!begin_node nderungen in diesem Update
+!html_name history_hv
+!index Update-History
+!autoref [off]
+
+!begin_blist [27.11.96]
+!item [2.12.96:]
+!begin_xlist [ST-Guide] !compressed
+!item [ST-Guide:] Iconify noch mal umgestrickt, sollte jetzt unter MagiC und
+           MTOS optimale Ergebnisse liefern
+!item [ST-Guide:] Probleme mit mehreren Bildern in einer Zeile i.Z. mit Fonts
+           kleiner 12 Pixel H”he behoben
+!item [ST-Guide:] neue Variable NOREFBOX schaltet die bei der (!link [REF-Suche] [REF-Suche]) erscheinende Suchbox ab
+!item [ST-Guide:] Probleme mit dem Slider auf sehr langen Seiten behoben
+!item [ST-Guide:] Katalog-Icon erg„nzt
+!item [ST-Guide:] wenn Remarker nicht in der INF-Datei angemeldet ist und von
+           Hand nachgestartet wird, verschwand dessen Icon bei einem
+           Fontwechsel im ST-Guide
+!item [ST-Guide:] TOS-Programme werden jetzt unter MagiC ohne AV Server im
+           Fenster (VT 52) gestartet
+!item [ST-Guide:] "Stack l”schen" ist wieder disabled, wenn der Stack leer ist
+!item [ST-Guide:] nach 'copy' bekommen alle laufenden Programme eine SC_CHANGED
+           Nachricht (im Mtasking)
+!item [ST-Guide:] bei externen Referenzen wird jetzt alles ab dem ersten '/' oder
+           '\\' als Titel angesehen, die Angabe von Pfaden zu den Dateien
+           ist also nicht mehr m”glich (macht ohnehin nur Probleme), dafr
+           aber die Verwendung der Pfadtrenner in Nodenamen
+           (siehe auch Option -k des hcp)
+!item [ST-Guide:] 'Marke setzen' und 'gehe zu Marke' sind zugunsten von 10 frei
+           definierbaren Marken per Funktionstaste entfernt worden; Setzen
+           erfolgt per Shift-Fx, Abrufen per Fx
+!item [ST-Guide:] neue Variable MARKFILE enth„lt Zugriffspfad zu der Datei, in der
+           die gesetzten Marken beim Schlieen des ST-Guide automatisch
+           gespeichert und aus der sie beim ™ffnen des ST-Guide automatisch
+           wieder geladen werden; hiermit ist insbesondere das Anlegen
+           einer Liste der "wichtigsten" Hypertextseiten m”glich
+!item [ST-Guide:] neues Icon neben dem History-Icon ”ffnet ein Popup mit allen
+           gesetzten Marken, Klick ruft sie ab, Shift-Klick setzt sie
+!item [ST-Guide:] Sicherheitsabfragen fr den Fall eingebaut, da der Hypertext
+           defekt ist oder z.B. gel”scht wurde, w„hrend ST-Guide ihn
+           anzeigt
+!item [ST-Guide:] kleinen Bug behoben, der bei Speicherknappheit auftrat
+!item [ST-Guide:] kann Bilder jetzt zentriert darstellen
+!item [ST-Guide:] Fenster kann nicht mehr kleiner als Iconleiste plus drei
+           Textzeilen gemacht werden, um Darstellungsfehler zu vermeiden
+!item [ST-Guide:] Positionierungsfehler bei Grafik-Objekten im Zusammenhang mit
+           Fonts, die schmaler oder breiter als der Systemfont sind,
+           behoben
+!item [ST-Guide:] Probleme mit Case sensitiven Filesystemen im Zusammenhang mit
+           anzuzeigenden Nicht-Hypertexten behoben
+!item [ST-Guide:] in den Dialogen sind jetzt die 3D-Flags gesetzt und ab 16 Farben
+           werden die Dialoge hellgrau unterlegt
+!item [ST-Guide:] Die Tasten PageUp und PageDown werden ausgewertet
+!item [ST-Guide:] neue Variable BACKWIND macht das Fenster im Hintergrund
+           bedienbar, getopped wird es dann mit Rechtsklick
+!item [ST-Guide:] Die Alertboxen 'XY konnte nicht ge”ffnet werden' haben jetzt
+           eine kontextsensitive Hilfe
+!item [ST-Guide:] Bug im Zusammenang mit @tree und Seiten die direkt mit einem
+           Attribut beginnen behoben
+!item [ST-Guide:] Scrolling ist jetzt auch im hintenliegenden Fenster flimmerfrei,
+           wenn der Arbeitsbereich ganz sichtbar ist, das Fenster also nicht
+           verdeckt wird
+!item [ST-Guide:] hoffentlich Workaround fr Probleme beim Dauerscrollen
+           (pl”tzliche Blockmarkierung) gefunden
+!item [ST-Guide:] Probleme des FileFinders mit langen Dateinamen behoben
+!item [ST-Guide:] neue Variable FORMFEED sorgt beim Ausdrucken dafr, da am Ende
+           ein FormFeed ausgegeben wird
+!item [ST-Guide:] zeigt jetzt Bilder mit bis zu 16 Farben an, ich denke das ist
+           ein guter Kompromiss, denn fr einen Hypertext sinnvolle
+           Grafiken lassen sich damit erstellen und solche Bilder halten
+           sich von der Gr”e her in Grenzen, so das die Hypertexte dadurch nicht allzusehr aufgebl„ht werden
+!item [ST-Guide:] in Farbtiefen mit weniger als 16 oder mehr als 256 Farben
+           werden bunte Bilder in S/W angezeigt; ST-Guide dithert die
+           Bilder dazu mit einem speziell fr Snapshots von Dialogen o.„.
+           optimierten Verfahren (Defaultmaske) oder der im .stg zum betreffenden Bild vorgegebenen Maske
+!item [ST-Guide:] neue Variable XFONT, mit der ein 2. Font fr die Fensterdarstellung angegeben werden kann; umgeschaltet wird per CTRL-Z
+!item [ST-Guide:] Fehler beim Scrollen w„hrend des Blockmarkierens in Farbe
+           behoben
+!item [HCP:] Zeilen l„nger als 127 Zeichen (netto) werden jetzt immer umbrochen
+!item [HCP:] Fehler beim Recompilieren von XREF behoben
+!item [HCP:] Warnung bei Benutzung undefinierter Variablen eingebaut
+!item [HCP:] um die Zeichenfolge '@:' in den Text zu bekommen, ist '@@:'
+           zu schreiben
+!item [HCP:] heftigen internen Fehler behoben, der beim šbersetzen von
+           Hypertexten zuweilen zu Abstrzen oder defekten xref's fhrte
+!item [HCP:] Probleme mit SEHR langen Zeilen (>256 Zeichen) jetzt
+           hoffentlich behoben
+!item [HCP:] "verz„hlt" sich nicht mehr beim (!link [Laden] [Laden]) der Bilder, zum Schlu
+           sollte in der Ausgabe jetzt immer 'none' stehen
+!item [HCP:] Probleme mit unpaarigen indexon/indexoff behoben
+!item [HCP:] '-j' funktionierte offenbar nicht als Parameter fr @options,
+           behoben
+!item [HCP:] neue Option -k<value> zum Setzen von Flags
+!item [HCP:] Erweiterung fr Bilder: zentrierte Darstellung durch Angabe
+           von 0 als X-Koordinate
+!item [HCP:] beide '' werden vom Autoreferenzer nicht als Worttrenner
+           benutzt, vorher funktionierte es mit dem einen '' und mit dem
+           anderen nicht
+!item [HCP:] einige Newlines entfernt, damit mehr auf den Bildschirm pat
+           (fr Consolefenster, die nicht zurckscrollen k”nnen)
+!item [HCP:] Fehler bei @if im Zusammenhang mit Zahl-Konstanten behoben
+!item [HCP:] '+q' hebt '-q' jetzt auf, damit z.B. Voreinstellungen in
+           HCP_OPT lokal rckg„ngig gemacht werden k”nnen
+!item [HCP:] per +i1 kann jetzt ein "verteilter" Index erstellt werden, d.h.
+           eine eigene Seite fr jeden Buchstaben
+!item [HCP:] Probleme mit @uses auf REF-Files und Benutzung dortiger @symbols
+           behoben
+!item [HCP:] keine berflssigen Blanks mehr auf den Indexseiten
+!item [HCP:] bei @image & @limage kann jetzt optional eine Dithermaske
+           angegeben werden, die der ST-Guide dann statt der Defaultmaske
+           zum Konvertieren bunter Bilder in S/W verwendet.
+!item [HCP:] kleinen Bug im Zusammenhang mit @uses und pnodes behoben
+!item [HCP:] Probleme bei @uses mit langen Dateinamen entfernt
+!item [HCP:] Headerkennung fr Mac definiert (3), fr Hyperion
+!item [HCP:] schreibt neuen OS-Header in REF-Files fr Hyperion
+!item [HCP:] l„t jetzt ein Leerzeichen am Zeilenende drin, fr Hyperion
+!item [HCP:] neue Kommandos @x, @{... x} und @os fr Hyperion
+!end_xlist
+
+!item [31.07.95:]
+!begin_xlist [ST-Guide] !compressed
+!item [ST-Guide:] Fehler im Zusammenhang mit mehreren Bildern auf einer Seite
+           behoben
+!item [ST-Guide:] Fehler im Zusammenhang mit Bildern & pnodes auf der selben
+           Seite behoben
+!item [ST-Guide:] aktive Untersttzung des Font-Protokolles implementiert
+!item [ST-Guide:] 'Drucken' heit jetzt im Block-Popup auch wieder so...
+!item [ST-Guide:] AutoLocator sollte jetzt immer sichtbar werden, wenn ein
+           Zeichen eingegeben wird
+!item [ST-Guide:] wegen ungekl„rter Probleme i.Z. mit Let 'em Fly wurden die
+           MagiC Shortcuts erstmal wieder ausgebaut; wer also mit
+           Let 'em Fly arbeitet, kommt jetzt wieder in den vollen Genu
+           dieses Tools
+!item [ST-Guide:] die REF-Suche kann jetzt durch Shift-Shift oder CTRL-ALT
+           abgebrochen werden
+!item [ST-Guide:] bei Auswahl von 'Remarker' im Menue bzw. ALT-R ”ffnet sich
+           der Remarker jetzt direkt
+!item [ST-Guide:] Bug bei Shift-Home gefixt
+!item [ST-Guide:] Shift-Klick auf 'Copy' im BlockPopup bewirkt, da der Block
+           ans Clipboard angeh„ngt wird; gleiches gilt fr den entsprechenden Menuepunkt unter Extra, und natrlich bekommt
+           man den gleichen Effekt auch mit Shift-Ctrl-C
+!item [ST-Guide:] Probleme mit Tastendrcken bei iconifiziertem Fenster behoben
+!item [ST-Guide:] Erkennung "AVSERVER" sicherer
+!item [ST-Guide:] Probleme beim Fuller behoben
+!item [ST-Guide:] Fehler i.Z. mit dem "kann nicht ge”ffnet werden" Alert
+           hoffentlich behoben
+!item [ST-Guide:] Der Abstand zwischen der ersten Textzeile und der Trennlinie
+           kann jetzt konfiguriert werden (Variable TXTOFFSET), defaultm„ig betr„gt er 6 Pixel
+!item [ST-Guide:] Probleme mit 'zurck' zu Seiten mit Bildern behoben
+!item [ST-Guide:] Probleme mit Referenzen hinter kursiven Passagen behoben
+!item [ST-Guide:] Icon im iconifizierten Fenster wird jetzt zentriert
+!item [ST-Guide:] auf Icons umgestellt, dadurch mehr Funktionen direkt auf
+           Knopfdruck
+!item [ST-Guide:] Funktionalit„t & Icon fr Querverweislisten implementiert
+!item [ST-Guide:] Seitenweise bl„ttern geht jetzt auch mit CTRL-LF/RT
+!item [ST-Guide:] jetzt toleranter gegen unpassende WINSIZE Angaben
+!item [ST-Guide:] Problem beim Fullen behoben, wenn der Inahlt hor. gescrollt
+           war
+!item [ST-Guide:] neues Icon neben "zurck" zeigt ein Popup mit den letzten
+           12 Seiten, zu denen auf diese Weise direkt zurckgekehrt
+           werden kann
+!item [ST-Guide:] beginnt der bei "system" angegebene Programmname mit einem
+           '$', so wird eine Variable dieses Namens in der ST-GUIDE.INF
+           gesucht, und das dort angegebene Programm ausgefhrt
+!item [ST-Guide:] Iconify jetzt nach der (umst„ndlicheren) MTOS Methode
+           implementiert, die den unangenehmen Nebeneffekt hat, da die
+           iconifizierten Fenster immer nach hinten gelegt werden.
+           ...angeblich funktionierte die bisherige Methode unter MTOS
+           nicht...
+!item [ST-Guide:] der Rechtsklick mu jetzt innerhalb des ST-Guide Fensters
+           ausgefhrt werden, damit bei aktiviertem RIGHTBACK 'zurck'
+           ausgel”st wird
+!item [ST-Guide:] neue Variable PRINTER bewirkt, da bei 'Drucken' die Seite
+           bzw. der Block ins Clipboard geschrieben und das in der Var.
+           angegebene Programm aufgerufen wird, hier kann also ein
+           externes Druckprogramm eingebunden werden
+!item [ST-Guide:] '' sollte jetzt korrekt ausgedruckt werden
+!item [HCP:] neues Kommando @xref fr Querverweislisten implementiert
+!item [HCP:] Probleme mit *sehr* langen REF-Module (>64K) behoben
+!item [HCP:] -w kann jetzt von einer Ziffer gefolgt werden (0/1/2) und
+           ist auch im @options Kommando m”glich
+!item [HCP:] meckert jetzt bei zu langen und unteilbaren Zeilen - extra
+           fr Leute, die Bin„rfiles bersetzen wollen...
+!item [HCP:] -m funktioniert wieder
+!item [HCP:] neue Kommandos @indexon/@indexoff zum Ein/Ausschalten der
+           automatischen šbernahme der Seitennamen in den Index
+!item [HCP:] Default-Zeilenl„nge ist jetzt 75,  weil sich das
+           "eingebrgert" hat
+!item [HCP:] die automatisch erzeugte Index-Seite wird jetzt nicht mehr
+           autoreferenziert
+!item [HCP:] beim Kommando -l kann jetzt eine Filtermaske angegeben werden
+!item [HCP:] Dokumentation berarbeitet
+!item [HCP:] ein paar Sicherheitsabfragen eingebaut, um den Versuch, einen
+           Hypertext erneut zu bersetzen, zu vereiteln...
+!item [STool:] Wird nur eine Index-Seite erzeugt, so erzeugt der hcp nicht
+           mehr auch noch einen, auerdem hat der Hypertext auch wieder
+           ein Subject und der hcp meckert nicht mehr
+!item [STool:] die Kombination +SHRINK, +INDEX fhrt jetzt nicht mehr
+           dazu, da keine STG-Datei erzeugt wird
+!item [STool:] neue Variable UPDATEREF schaltet das automatische
+           Aktualisieren der ALL.REF ein/aus
+!item [STool:] Lesen der CFG-Datei ist jetzt weniger pingelig
+!item [STool:] erzeugt jetzt @$VER: Kommando mit aktuellem Datum
+!item [RefLink:] Probleme mit *sehr* langen REF-Modulen (>64K) behoben
+!item [RefLink:] Namen der tempor„ren Datei ge„ndert - damit's auch unter DOS
+           legal wird...
+!end_xlist
+
+!item [28.04.95:]
+!begin_xlist [ST-Guide] !compressed
+!item [ST-Guide:] Probleme bei 'system' ohne Kommandozeile behoben
+!item [ST-Guide:] Probleme bei 'system' unter SingleTOS behoben
+!item [ST-Guide:] Probleme mit WinX Scrollboxes (hoffentlich) behoben
+!item [ST-Guide:] Dialoge sind unter MagiC jetzt auch ohne Let 'em Fly
+           tastaturbedienbar
+!item [ST-Guide:] Dialoge/Popups werden jetzt unter MagiC auch ohne Let 'em Fly
+           ohne Redraw-Nachricht vom Bildschirm entfernt
+!item [ST-Guide:] der "Dialog" fr die REF-Suche hat jetzt das bliche Design
+           (Hallo Rene ;-)
+!item [ST-Guide:] Iconify eingebaut
+!item [ST-Guide:] wartet jetzt nach dem ™ffnen von pnodes, bis die Maustaste
+           wieder losgelassen wird
+!item [ST-Guide:] Der Remarker-Eintrag wird beim Beenden desselben jetzt nicht
+           mehr disabled, wenn die entsprechende Variable gesetzt ist
+!item [ST-Guide:] Problem mit SEHR langen Hypertexten behoben (Hallo Manfred ;-)
+!end_xlist
+
+!item [19.04.95:]
+!begin_xlist [ST-Guide] !compressed
+!item [ST-Guide:] jetzt wird das Fenster ggfls wieder ge”ffnet, wenn HypFind
+           fertig ist und der erzeugte Text angezeigt werden soll...
+!item [ST-Guide:] beim Starten von Programmen aus Hypertexten heraus sollte
+           der ST-Guide anschlieend nicht mehr versuchen, die Datei
+           HypFind.hyp zu laden
+!item [ST-Guide:] der Aufruf des Fontselektors wird jetzt nicht mehr mit
+           wind_update geklammert (Hallo Dirk ;-)
+!item [ST-Guide:] keine Abstrze mehr bei Auswahl eines neuen Fonts bei leerem
+           ST-Guide Fenster
+!item [ST-Guide:] jetzt sollte sich auch die Hintergrundfarbe des Fensters
+           einstellen lassen (Variable BCKCOLOR)
+!item [ST-Guide:] Font-Protokoll wird untersttzt, daher kann jetzt auch der
+           FONT_SEL von criss zur Auswahl des Fonts im ST-Guide verwendet
+           werden
+!item [ST-Guide:] Autolocator eingebaut; Eingabe: klar, Backspace: letztes Zeichen
+           l”schen, Shift-Backspace: alle Zeichen l”schen,
+           Insert: n„chste Fundstelle;
+!item [ST-Guide:] hoffentlich letzten Darstellungsfehler im Zusammenhang mit
+           leeren Nodes behoben
+!item [ST-Guide:] der Umbruch bei ASCII-Files erfolgt jetzt beim letztm”glichen
+           Leerzeichen, so da in den meisten F„llen keine Zeichen mehr
+           verlorengehen
+!item [ST-Guide:] bei ASCII-Files ohne abschlieendes Newline sollte die letzte
+           Zeile jetzt nicht mehr unterschlagen werden
+!item [ST-Guide:] Nachlaufverhinderung "ges„ubert"
+!item [ST-Guide:] neue Variable RIGHTBACK bewirkt, da Rechtsklicks wie 'zurck'
+           behandelt werden, wenn das ST-Guide Fenster vorne liegt
+!item [ST-Guide:] Zorro's Wille geschehe... Nicht monochrome Bilder werden nicht
+           mehr angezeigt, wenn die Anzahl der Planes des Bildes nicht mit
+           der aktuellen Aufl”sung bereinstimmt; stattdessen wird ein
+           Rahmen an den betreffenden Stellen gezeichnet
+!item [ST-Guide:] Die Endungen externer Dateien werden jetzt in Grobuchstaben
+           umgewandelt, bevor sie in der INF Datei gesucht werden
+!item [ST-Guide:] die externen Viewer werden jetzt unter MagiC wirklich nachgestartet, falls kein AV Server gefunden wird
+!item [ST-Guide:] fr die Berechnung der max. Fensterbreite wird jetzt die
+          tats„chliche Breite des Bildes benutzt, nicht mehr die (oft
+           falsche) Angabe des Hypertextautors
+!item [ST-Guide:] Popup-Nodes haben jetzt automatisch einen oberen und unteren
+           Rand von halber Zeichenh”he
+!item [ST-Guide:] Popupmenue umsortiert, Trennlinien eingefgt und eingedeutscht
+!item [ST-Guide:] neues Shortcut ALT-D l„dt den als DEFHYP angegebenen Hypertext
+!item [ST-Guide:] šberschneidungen von Bildern und Text bei Verwendung kleinerer
+           Fonts geh”ren jetzt der Vergangenheit an
+!item [ST-Guide:] Zusammenarbeit mit dem neuen Tool Remarker eingebaut
+           !begin_itemize !compressed
+           !item neue Variable REMARKER=[!]<path>
+             !begin_itemize !compressed
+             !item beim ™ffnen wird Remarker direkt mitgestartet (ohne '!')
+             !item bei ALT-R wird Remarker nachgestartet
+             !end_itemize
+           !item kleine Box links oben im Fenster zeigt den Zustand:
+             !begin_itemize !compressed
+             !item unsichtbar: Remarker l„uft nicht
+             !item sichtbar: Remarker l„uft, aber zur aktuellen Seite ex. keine
+               Notiz
+             !item sichtbar und schwarz: zur aktuellen seite ex. eine Notiz
+             !end_itemize
+           !item ALT-R bzw. der betreffende Menpunkt ruft Remarker (startet
+             ihn ggfls. nach, falls REMARKER definiert ist)
+           !end_itemize
+!item [ST-Guide:] neue Variable REFONLY bewirkt, da nur Mausklicks auf
+           Referenzen ausgefhrt werden, Klicks auf "normale" Worte
+           werden also ignoriert
+!item [ST-Guide:] auch unter MagiC wird der Server nur noch erkannt, wenn die
+           Environment-Variable AVSERVER gesetzt ist
+!item [HCP:] neues Kommando @limage (line image) als Erweiterung von @image
+           l„t den ST-Guide das Einfgen von Leerzeilen vollautomatisch
+           passend zum verwendeten Font durchfhren
+!item [HCP:] Blanks direkt hinter Variablennamen bleiben jetzt erhalten
+!item [HCP:] @symbol in der ersten Zeile einer pnode ist jetzt erlaubt
+!item [HCP:] beim Updaten der ALL.REF sollten jetzt keine Meldungen wegen
+           realloc Fehlern mehr vom hcp kommen
+!item [HCP:] wartet jetzt bei allen Fehlermeldungen auf einen Tastendruck
+!item [HCP:] "HypTree-Data" wird bei -l nicht mehr ausgegeben
+!item [HCP:] undefinierte Variablen werden von @if als 0 behandelt
+!item [HCP:] fehlende @endnode werden im Pass 2 jetzt wieder korrekt
+           behandelt
+!item [HCP:] @include <name>.h wird jetzt 1:1 gelesen, wenn das Kommando
+           innerhalb einer Node steht
+!item [RefLink:] Probleme beim L”schen von Eintr„gen mit Extender sollten jetzt
+           behoben sein
+!item [RefLink:] Bug bei -m gefixt
+!end_xlist
+
+!end_blist
+
+
+!autoref [on]
+!end_node
+
+!include incompat.ui
+
+!end_appendix
+
+
+!begin_node* Hilfe-Seite zum ST-Guide
+!html_name helppage_hv
+
+Dieser Text stellt die Dokumentation des vorliegenden Hypertext-Sytems
+dar und beschreibt die Funktionsweise und Anwendung aller zu diesem System
+geh”renden Komponenten.
+
+An dieser Stelle sei aus aktuellem Anla noch einmal erw„hnt, da der
+ST-Guide Fairware ist, um Spenden in jeder H”he also ausdrcklich
+gebeten wird, um die Weiterentwicklung dieses Programmes zu
+gew„hrleisten (ich freue mich auch ber kleine Spenden...)
+
+Kritik und Anregungen an
+!begin_preformatted
+            Holger Weets
+            Tangastr. 45
+            26121 Oldenburg
+            E-Mail: Holger Weets @ OL (Mausnet)
+                    Holger_Weets@OL.maus.de (Internet)
+!end_preformatted
+
+!end_node
+
+!begin_node* Oh nein!
+!html_name ohno
+!ifdest [stg]
+!label %Oh nein
+!endif
+
+... so einfach ist das nicht! Wo wollen Sie denn hin? Na gut, (!nolink [zurck]) zum
+(!link [Index] [Index]) drfen Sie noch wieder.
+
+!begin_center
+       Wie bitte?  Ok, also auch zur (!link [Hauptseite] [Main]).
+!end_center
+
+!end_node
+
+!begin_node* Pattern nicht gefunden
+!html_name err1
+!ifdest [stg]
+!label- %e1
+!endif
+Das gesuchte Pattern wurde nicht gefunden.
+
+M”gliche Ursachen:
+!begin_itemize
+!item Sie haben den Begriff als Seite gesucht, und eine solche Seite existiert
+  im aktuellen Hypertext nicht.
+  
+  Abhilfe: versuchen sie es evtl. mit einem „hnlichen Begriff erneut, oder
+  schauen sie im Index nach.
+
+!item Sie haben den Begriff in der aktuellen Seite suchen lassen, und dort
+  kommt er nicht vor.
+  
+  Abhilfe: versuchen sie es evtl. mit einem „hnlichen Begriff erneut, oder
+  suchen sie eine Seite, die thematisch eher zu ihrem Begriff pat.
+
+!item die REF-Datei des Hypertextes, der den gesuchten Begriff n„her erkl„rt,
+  wurde nicht in die durchsuchte REF-Datei aufgenommen.
+  
+  Abhilfe: Benutzen sie RefLink oder RefCheck, um die betreffende REF-
+  Datei zu erg„nzen.
+
+!item Sie haben keinen Hypertext auf ihrer Platte, der den gesuchten Begriff
+  n„her erkl„rt.
+  
+  Abhilfe: vielleicht hat einer ihrer Bekannten einen passenden Hypertext
+  fr sie?
+!end_itemize
+
+!end_node
+
+
+!begin_node* Datei nicht gefunden
+!html_name err3
+!ifdest [stg]
+!label- %e3
+!endif
+
+Der Hypertext, in dem der gesuchte Begriff n„her erkl„rt wird, wurde
+nicht gefunden, obwohl seine REF-Datei noch existiert.
+
+M”gliche Ursachen:
+!begin_itemize
+!item Sie haben den Hypertext einmal besessen, ihn dann aber gel”scht und die
+  REF-Datei dabei nicht aktualisiert.
+  
+  Abhilfe: benutzen sie RefLink oder RefCheck, um die "REF-Leiche" zu
+  entfernen.
+
+!item Sie besitzen den Hypertext immer noch, aber ST-Guide kann ihn nicht
+  finden, weil er sich in einem Verzeichnis befindet, das nicht durchsucht
+  wurde.
+  
+  Abhilfe: kopieren sie den Hypertext in ihr Guides-Verzeichnis bzw. in
+  eines der Verzeichnisse, die sie in der (!file [ST-Guide.inf]) Datei in der
+  "PATHS=" Zeile angegeben haben, oder erweitern sie diese Zeile um das
+  Verzeichnis, in dem sich der Hypertext befindet.
+!end_itemize
+
+!end_node
+
+!begin_node* REF-Datei nicht gefunden
+!html_name err4
+!ifdest [stg]
+!label- %e4
+!endif
+
+Die REF-Datei wurde nicht gefunden.
+
+M”gliche Ursachen:
+!begin_itemize
+!item Sie haben keine REF-Datei anlegen lassen.
+
+  Abhilfe: benutzen sie RefLink oder RefCheck, um dies nachzuholen.
+
+!item Sie haben zwar eine REF-Datei, diese jedoch nicht oder nicht korrekt
+  in der ST-Guide.inf Datei angegeben.
+  
+  Abhilfe: tragen sie in ihrer (!file [ST-Guide.inf]) Datei in der "REF=" Zeile
+  den richtigen Pfad und Namen der Datei ein, oder kopieren sie ihre
+  REF-Datei in das bei "REF=" angegebene Verzeichnis.
+!end_itemize
+
+!end_node
+
+!begin_node* Programm nicht gefunden
+!html_name err5
+!ifdest [stg]
+!label- %e5
+!endif
+
+Ein Programm sollte aus dem Hypertext heraus gestartet werden, dessen
+Pfad in der ST-Guide.inf angegeben sein sollte, es aber nicht war.
+
+M”gliche Ursachen:
+!begin_itemize
+!item Der Autor des Hypertextes hat vergessen Ihnen mitzuteilen, da sie Ihre
+  (!file [ST-Guide.inf]) Datei anpassen mssen.
+  
+  Abhilfe: fragen sie den Autor des betreffenden Hypertextes, was hier
+  zu tun ist.
+
+!item Sie haben vergessen, die n”tigen Erweiterungen in der ST-Guide.inf Datei
+  vorzunehmen
+  
+  Abhilfe: holen sie das Vers„umte umgehend nach.
+!end_itemize
+
+!end_node
+
+!begin_node* Datei nicht erzeugbar
+!html_name err6
+!ifdest [stg]
+!label- %e6
+!endif
+Eine Datei konnte nicht angelegt werden.
+
+M”gliche Ursachen:
+!begin_itemize
+!item Der Datentr„ger ist randvoll.
+
+  Abhilfe: L”schen sie einige Dateien oder schaffen sie sich einen
+  gr”eren Datentr„ger an.
+
+!item im entsprechenden Verzeichnis existiert eine schreibgeschtzte Datei
+  gleichen Namens.
+  
+  Abhilfe: L”schen sie das 'nur lesen' Attribut der Datei, indem sie
+  sie im Desktop selektieren und den Menuepunkt 'zeige Info' ausw„hlen.
+!end_itemize
+
+!end_node
+
+!begin_node* HYP-Datei nicht gefunden
+!html_name err7
+!ifdest [stg]
+!label- %e7
+!endif
+
+Die gewnschte Datei wurde nicht gefunden, kann also auch nicht angezeigt
+werden.
+
+M”gliche Ursachen:
+!begin_itemize
+!item Sie besitzen diese Datei nicht.
+
+  Abhilfe: fragen sie den Autor des Hypertextes bzw. den Autor des
+  Programmes, der/das den ST-Guide mit der Anzeige dieser Datei 
+  beauftragt hat, woher sie das Dokument bekommen k”nnen.
+
+!item Sie besitzen diese Datei zwar, haben sie aber in einem Archiv oder in
+  einem Verzeichnis versteckt, in dem ST-Guide sie nicht sucht.
+  
+  Abhilfe: kopieren sie die Datei in ihr Guides-Verzeichnis bzw. in
+  eines der Verzeichnisse, die sie in der (!file [ST-Guide.inf]) Datei in der
+  "PATHS=" Zeile angegeben haben, oder erweitern sie diese Zeile um das
+  Verzeichnis, in dem sich die Datei befindet.
+
+!item Sie haben die Datei umbenannt.
+
+  Abhilfe: geben sie der Datei wieder den ursprnglichen Namen.
+!end_itemize
+
+!end_node
+
+!end_document

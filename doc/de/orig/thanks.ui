@@ -1,0 +1,35 @@
+!begin_node Danksagung
+
+An dieser Stelle m”chte ich mich bei ein paar Leuten bedanken:
+
+!begin_blist !compressed
+!item [Volker Burggr„f]
+  fr die Arbeit, die er durch den Support des Paketes in der Maus OL
+  hatte, und fr seine kreativen und benutzernahen Anregungen. Auerdem
+  ist ihm die Neuauflage dieser Dokumentation zu verdanken.
+!item [Christoph Zwerschke]
+  fr seine besonders ausgiebigen Tests aller Komponenten und seine
+  ntzlichen Tips
+!item [Peter Nagel],
+!item [Dirk Theisen],
+!item [J”rg Westheide],
+!item [Frank Rger],
+!item [Ralf Zimmermann],
+!item [Gregor Duchalski] und
+!item [Christian Grunenberg]
+  fr ihre Bugreports und ihre Werbung sowie die Verbreitung des Systems
+!item [Peter West]
+  fr die šbersetzung der Dokumentation ins englische
+!item [Joe Connor]
+  fr die šberarbeitung/Korrektur der englischen Dokumentation sowie den
+  Support in England
+!item [Christoph Spengler],
+!item [Frank Rger],
+!item [Dirk Hagedorn]
+  fr ihre Zusatz-Tools, die das Paket noch leistungsf„higer machen
+!item []
+und natrlich allen Leuten, die mich sonst noch durch nette Post
+  motiviert haben
+!end_blist
+
+!end_node

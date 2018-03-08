@@ -1,0 +1,50 @@
+!begin_node Format a REF-file
+!alias REF-format
+!index REF-format
+
+!begin_blist
+!item [File I.D.]
+!begin_xlist [n bytes] !compressed
+  !item [4 bytes:] Magic ('HREF')
+!end_xlist
+
+!item [Module-header]
+!begin_xlist [n bytes] !compressed
+  !item [4 bytes:] Length of the module without the header
+  !item [4 bytes:] Number of entries in the current module
+!end_xlist
+
+!item [Module-data]
+!begin_xlist [n bytes] !compressed
+  !item [1 byte:]  I.d. of entry
+        !begin_xlist [0:]
+           !item [0:] File name (e.g. 'ST-GUIDE') (!nl)
+              Always  without  a  path  (entering  a  path  is  however
+              permitted) and  mostly also  without an  extension  (.HYP
+              will be used as an extension if none is specified)
+           !item [1:] Node name (!nl)
+              Page name from the hypertext for the last file-entry
+           !item [2:] Alias name (!nl)
+              Alias name  from the  hypertext for  the last  node-entry
+              (will only be entered here optionally by the @{"HCP" LINK "HCP.HYP/Main"}
+           !item [3:] Label name (!nl)
+              Label name  from the  hypertext for  the last  node-entry
+              (will only be entered here optionally by the @{"HCP" LINK "HCP.HYP/Main"})
+           !item [4:] database name (!nl)
+              Database-argument for the last file-entry
+           !item [5:] Operating system I.D. (!nl)
+              ('0': unknown, '1': AMIGA, '2': ATARI, '3': Macintosh)
+        !end_xlist
+        
+  !item [1 byte:]  Length of the entry
+  !item [n bytes:] Entry as a NULL-terminated string (!nl)
+           for Type 3 the string is followed by 2 bytes line number
+!end_xlist
+
+Any number of further module-headers followed by module-data.
+
+!item [8 bytes NULLS] as end-I.d.
+
+!end_blist
+
+!end_node

@@ -1,0 +1,173 @@
+Escape codes
+
+\@    Escape code for @
+\\    Escape code for \
+
+Global tags and commands
+
+
+@$VER: base
+    The version information for the AmigaDOS version command. Example: @$VER: safalra.guide 1.0 (18/12/2003) 
+@(c) base
+    The copyright information. This information is not currently used by Amigaguide. Example: @(c) 2003 Safalra (Stephen Morley) 
+@author base
+    The name of the author or authors. This information is not currently used by Amigaguide. Example: @author Safalra (Stephen Morley) 
+@database base
+    Identifies the file as an Amigaguide document (this allows Multiview to display it using the Amigaguide datatype). This must be the first line of the file. Example: @database 
+@dnode base
+    Indicates a dynamic node. This was never implemented and should not be used. 
+@endnode base
+    The end of a node. Example: @endnode 
+@font base
+    Specifies the font to use, specified by name and size. Example: @font safalra.font 12 
+@height base
+    Specifies the height (in rows) of the largest node. This information is not currently used by Amigaguide. Example: @height 42 
+@help base
+    Specifies the node to be displayed when the user clicks the \u2018Help\u2019 button. Example: @help "A helpful node" 
+@index base
+    Specifies the node to be displayed when the user clicks the \u2018Index\u2019 button. Example: @index "The index node" 
+@master base
+    The name of the master copy of this amigaguide document. This information is not currently used by Amigaguide. Example: @master "Documents:Amigaguide/safalra.guide" 
+@node base
+    The start of a node, followed by a name and title. The title is displayed in Amigaguide\u2019s title bar, and the name is used to identify the node. Example: @node "Node name" "Node title" 
+@rem base
+    A comment that is not displayed. Example: @rem Amigaguide won't display this 
+@remark base
+    A comment that is not displayed. Example: @remark Amigaguide won't display this 
+@width base
+    Specifies the width (in columns) of the largest node. This information is not currently used by Amigaguide. Example: @width 78 
+@wordwrap v39
+    Wraps paragraphs without linefeeds. Example: @wordwrap 
+@xref v39
+    Specifies other amigaguide documents to refer to. Example: @xref "Documents:Amigaguide/safalra.guide" 
+@macro v40
+    Defines a macro. A macro consists of a name, and a string to
+    substitute for it in the document. This string may contain arguments,
+    refered to as $1, $2 and so on. A macro can override the built-in
+    tags and commands. Example: @macro bulletlink @{" " link $2} $1 
+@onclose v40
+    Specifies an ARexx script to execute when the document is closed.
+    The return value of the script is ignored. Example: @onclose "script.rexx" 
+@onopen v40
+    Specifies an ARexx script to execute when the document is opened.
+    If the script returns an error code, the document is not opened.
+    Example: @onopen "script.rexx" 
+@smartwrap v40
+    Wraps text in the same way as HTML. Paragraphs are separated by two linefeeds, or using the @{par} tag. Example: @smartwrap 
+@tab v40
+    Specifies the number of spaces in a tab. The default value is 8. Example: @tab 3 
+
+
+Node-level tags and commands
+
+@font base
+    The same as the global font command, but only effects this node. Example: @font safalra.font 12 
+@help base
+    The same as the global help command, but only effects this node. Example: @help "A helpful node" 
+@index base
+    The same as the global index command, but only effects this node. Example: @index "The index node" 
+@keywords base
+    The keywords for this node. This information is not currently used by Amigaguide. Example: @keywords Torquay "English Riviera" Devon "Fawlty Towers" 
+@next base
+    The next node, displayed when the user clicks the \u2018Browser >\u2019 button. This defaults to the next node in the document source. Example: @next "The next node" 
+@prev base
+    The previous node, displayed when the user clicks the \u2018< Browser\u2019 button. This defaults to the previous node in the document source. Example: @prev "The previous node" 
+@title base
+    Specifies the title of this node. This overrides the title specified in the @node tag. Example: @title "Node title" 
+@toc base
+    The contents page, displayed when the user clicks the \u2018Contents\u2019 button. This defaults to the main node. Example: @toc "A contents node" 
+@embed v39
+    Embeds a text document withing this node. Example: @embed "Documents:Text/speech.txt" 
+@proportional v39
+    Specifies that a proportional font is used for this node. Example: @proportional 
+@wordwrap v39
+    The same as the global @wordwrap command, but only effects this node. Example: @wordwrap 
+@macro v40
+    The same as the global @macro command, but only effects this node. Example: @macro bulletlink @{" " link $2} $1 
+@onclose v40
+    The same as the global @onclose command, but only effects this node. Example: @onclose "script.rexx" 
+@onopen v40
+    The same as the global @onopen command, but only effects this node. Example: @onopen "script.rexx" 
+@smartwrap v40
+    The same as the global @smartwrap command, but only effects this node. Example: @smartwrap 
+@tab v40
+    The same as the global @tab command, but only effects this node. Example: @tab 3 
+
+Local tags and commands
+
+@{alink} base
+    Specifies a hypertext link to open in a new window. Non-local links are specifed using the path to the amigaguide file, followed by / and the node name. A line number can also be specified. Example: @{"Link text" alink "local node" 7} 
+@{bg} base
+    Specifies the background colour to use from the next
+    character onwards. Valid values are \u2018back\u2019,
+    \u2018background\u2019, \u2018fill\u2019, \u2018filltext\u2019,
+    \u2018highlight\u2019, \u2018shadow\u2019, \u2018shine\u2019 and
+    \u2018text\u2019. Example: @{bg background} 
+@{close} base
+    Closes this window. This is used in combination with @{alink}. Example: @{"Back to previous node" close} 
+@{fg} base
+    Specifies the text colour to use from the next character
+    onwards. Valid values are \u2018back\u2019,
+    \u2018background\u2019, \u2018fill\u2019, \u2018filltext\u2019,
+    \u2018highlight\u2019, \u2018shadow\u2019, \u2018shine\u2019
+    and \u2018text\u2019. Example: @{fg text} 
+@{link} base
+    Specifies a hypertext link to another node. Non-local links are specifed using the path to the amigaguide file, followed by / and the node name. A line number can also be specified. Example: @{"Link text" link "Documents:Amigaguide/safalra.guide/non local node name" 12} 
+@{rx} base
+    Specifies a hypertext link that executes an ARexx script. Example: @{"Execute a script" rx "script.rexx"} 
+@{rxs} base
+    Specifies a hypertext link that executes an ARexx string. Example: @{"Execute a string" rxs "Say 'hello'"} 
+@{system} base
+    Specifies a hypertext link that executes an AmigaDOS command. Example: @{"Format DF0: now" system "Format DF0:"} 
+@{quit} base
+    Specifies a hypertext link that closes Amigaguide. Example: @{"Close Amigaguide" quit} 
+@{beep} v39
+    Specifies a hypertext link that makes a \u2018beep\u2019 sound when clicked. Example: @{"Click me to beep" beep} 
+@{guide} v39
+    Specifies a hypertext link to another amigaguide document. Example: @{"Another amigaguide document" guide "Document:Amigaguides/safalra.guide"} 
+@{b} v39
+    Turns on bold text. Example: @{b} 
+@{i} v39
+    Turns on italic text. Example: @{i} 
+@{u} v39
+    Turns on underlined text. Example: @{u} 
+@{ub} v39
+    Turns off bold text. Example: @{ub} 
+@{ui} v39
+    Turns off italic text. Example: @{ui} 
+@{uu} v39
+    Turns off underlined text. Example: @{uu} 
+@{amigaguide} v40
+    Displays \u201cAmigaguide(R)\u201d in bold. Authors of other amigaguide viewers should change this to display their own information. Example: @{amigaguide} 
+@{apen} v40
+    Sets the pen number used for the text colour. The default value is 1. Example: @{apen 2} 
+@{body} v40
+    Use default formatting from the next character onwards. Example: @{body} 
+@{bpen} v40
+    Sets the pen number used for the background colour. The default value is 0. Example: @{bpen 3}
+@{cleartabs} v40
+    Use the default tab stops from the next character onwards. Example: @{cleartabs} 
+@{code} v40
+    Turns off wordwrapping. Only linefeeds will cause new lines. Example: @{code} 
+@{jcenter} v40
+    Turns on centered text. Example: @{jcenter} 
+@{jleft} v40
+    Turns on left-aligned text. Example: @{jleft} 
+@{jright} v40
+    Turns on right-aligned text. Example: @{jright} 
+@{lindent} v40
+    Sets the indent, in spaces, to be used for lines of text. The default value is 0. Example: @{lindent 3} 
+@{line} v40
+    A linefeed that does not start a new paragraph. Example: @{line} 
+@{par} v40
+    Starts a new paragraph (equivalent to two linefeeds). Example: @{par} 
+@{pard} v40
+    Use default paragraph settings. Example: @{pard} 
+@{pari} v40
+    Sets the indent, in spaces, to be used for the first line of a paragraph. Example: @{pari 3} 
+@{plain} v40
+    Turns off bold, italics and underlining. Example: @{plain} 
+@{settabs} v40
+    Sets the tab stops, in characters. Example: @{settabs 4 8 12} 
+@{tab} v40
+    Inserts a tab character. Example: @{tab} 

@@ -1,0 +1,152 @@
+# ----------------------------------------------------------
+# Settings for csTeX (MultiTeX), GEM images with 100dpi
+# ----------------------------------------------------------
+!ifset [csTeX]
+!tex_strunk
+!tex_dpi 100
+!endif
+
+# ------------------------------------------------------
+# Settings for Lindner-TeX, GEM images with 100dpi
+# ------------------------------------------------------
+!ifset [lindnerTeX]
+!tex_strunk
+!tex_dpi 100
+!endif
+
+# -------------------------------------------------------
+# Settings for teTeX, LateX2e, EPS-Graphics, 300dpi
+# -------------------------------------------------------
+!ifset [teTeX]
+!tex_tetex
+!tex_dpi 300
+!endif
+
+# -------------------------------------------------------
+# Settings for mikTeX, LateX2e, EPS-Graphics, 300dpi
+# -------------------------------------------------------
+!ifset [mikTeX]
+!tex_miktex
+!tex_dpi 300
+!endif
+
+# -------------------------------------------------------
+# Settings for emTeX, LateX2e, MSP images, 300dpi
+# use symbol emTeX2e or emTeX2.09 to enable them
+# -------------------------------------------------------
+!ifset [emTeX2e]
+!tex_2e
+!tex_emtex
+!tex_dpi 300
+!no_verbatim_umlaute [tex]
+!no_images [tex]
+!endif
+
+!ifset [emTeX2.09]
+!tex_emtex
+!tex_dpi 300
+!no_verbatim_umlaute [tex]
+!no_images [tex]
+!endif
+
+!raw [tex] \parskip 5pt
+!raw [tex] \parindent 0pt
+!raw [tex] \global\let\underline\relax
+
+# ----------------------------------------------------------------
+# Settings for RTF
+# ----------------------------------------------------------------
+#!rtf_monofont Courier New
+#!rtf_propfont Times New Roman
+!win_propfont_size 12
+!win_monofont_size 12
+!wh4_propfont_size 12
+!wh4_monofont_size 12
+
+# ----------------------------------------------------------------
+# Settings for HTML and HTML-Help
+# ----------------------------------------------------------------
+!html_favicon_name    favicon.ico
+#!html_navigation      [line]
+#!html_transparent_buttons
+#!html_merge_nodes
+#!html_use_xlist
+#!no_images [html]
+
+# ----------------------------------------------------------------
+# ST Guide commands
+# ----------------------------------------------------------------
+#!raw [stg] @indexon
+#!raw [stg] @width 75
+!ifdest [stg,amg]
+!parwidth 75
+!endif
+## set input enc unless UDO knows about the new commands
+!raw [stg] @if VERSION >= 6
+!raw [stg] @os atari
+!raw [stg] @charset atarist
+!raw [stg] @inputenc atarist
+!raw [stg] @endif
+
+# ----------------------------------------------------------------
+# ASCII commands
+# ----------------------------------------------------------------
+!ifdest [asc]
+!parwidth 80
+!code_target [cp1252]
+!endif
+
+# ------------------------------------------------------
+# Set the type of the manual page
+# ------------------------------------------------------
+!man_type 1
+!nroff_type 1
+
+# ----------------------------------------------------------------
+# General switches
+# ----------------------------------------------------------------
+!use_justification      [asc]
+!use_about_udo          [all]
+
+!use_nodes_inside_index [stg,amg,win,wh4,html,pch,asc,ipf,hh,info,hah]
+!use_label_inside_index [stg,amg,win,wh4,html,pch,asc,ipf,hh,info,hah]
+!use_alias_inside_index [stg,amg,win,wh4,html,pch,asc,ipf,hh,info,hah]
+!use_auto_toptocs       [stg,amg,win,wh4,html,pch,ipf,hh,info,hah]
+
+#!use_compressed_envs    [all]
+#!use_compressed_tocs    [stg,amg,win,wh4,html,pch,ipf,hh,hah]
+#!no_toc_subsubnodes     [stg,amg,win,wh4,html,pch,ipf,hh,hah]
+
+#!use_auto_subtocs       [stg,amg,win,wh4,html,pch,ipf,hh,info,hah]
+#!use_auto_subsubtocs    [stg,amg,win,wh4,html,pch,ipf,hh,info,hah]
+#!use_auto_subsubsubtocs [stg,amg,win,wh4,html,pch,ipf,hh,info,hah]
+!sloppy
+
+#!no_toc_subsubnodes     [stg,amg,win,wh4,pch,info,asc,ipf,hh,html,hah]
+!no_effects             [asc]
+!no_numbers             [html,hah,info]
+!no_umlaute             [info]
+
+!use_style_book         [tex,asc,rtf,win,aqv,lyx]
+!sort_hyphen_file       [asc,stg,amg,pch]
+
+#!table_alignment        [left]
+
+# ------------------------------------------------------
+# Special switches
+# ------------------------------------------------------
+!win_inline_bitmaps
+!win_high_compression
+!wh4_high_compression
+!pdf_high_compression
+#!html_merge_subsubnodes
+#!html_modern_layout
+#!html_switch_language german ../de/index.html
+!no_links [asc]
+
+# ----------------------------------------------------------------
+# General Infos
+# ----------------------------------------------------------------
+#!docinfo [domain_name] www.somewhere.org
+#!docinfo [domain_link] http://www.somewhere.org/
+#!docinfo [programimage] (!IMAGES)ahcc

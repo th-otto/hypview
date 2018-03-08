@@ -1,0 +1,431 @@
+USR.HLP wurde bersetzt am 23.April 1992.
+
+(c) 1990 Borland International, Inc.Index der verfgbaren Schlsselw”rter:
+
+     EA..F       EB..F       EC..F      ED..F
+
+     EE..F       EF..F       EG..F      EH..F
+
+     EI..F       EJ..F       EK..F      EL..F
+
+     EM..F       EN..F       EO..F      EP..F
+
+     EQ..F       ER..F       ES..F      ET..F
+
+     EU..F       EV..F       EW..F      EX..F
+
+     EY..F       EZ..F
+
+     ESonstigesFPAMSNET GEMDOS-Treiber Referenz
+--------------------------------------------------------------------------------
+
+Aufruf
+
+Diese Netzwerktreiber-Schnittstelle wird ber erweiterte EGEMDOSF-
+Funktionen angesprochen (Trap-Vektor #1). Die Funktionsnummern sind auch
+in einer zentralen Header-Datei ("pamsnet.h") vereinbart.
+
+Anpassung von Datenbank-Applikationen
+
+Zun„chst muss der Ablauf des Datei-™ffnens abge„ndert werden. Damit das
+automatische File-Locking nicht ein zweites ™ffne der selben Datei zum
+selben Zeitpunkt von einem zweiten Arbeitsplatz aus verhindert, wird
+das Locking nur fr die betroffenen Dateien manuell mit der Hilfe der
+Funktion "ENunlockF()" aufgehoben. Nun liegt die Verpflichtung eines
+geeigneten Schutz-Verfahrens auf der Seite der Datenbank- "Low-Level"-
+Routinen. Hier mssen entsprechende Aufrufe an den Netzwerktreiber
+eingefgt werden, die z.B. Teilbereiche der Datei als sog. Records
+schtzen (Funktion "ENrecordF()"). Eine weitere M”glichkeit besteht
+darin, da sich parallel ablaufende Applikationen ber das integrierte
+Message-System mitteilen, welche Datens„tze sie z.Zt. in Benutzung
+haben.
+
+
+Funktionen:
+
+    127 ENactiveF     Versionsnummer ermitteln
+    126 ENnodeidF     Arbeitsplatznummer ermitteln
+    125 ENloggedF     Arbeitsplatz prfen
+    124 ENlockF       Datei komplett sperren
+    123 ENunlockF     File-Locking fr Datei aufheben
+    122 ENlockedF     Auf Netzwerk-Fehler prfen
+    121 ENprinterF    Netzwerk-Drucker definieren
+    120 ENresetF      System-Reset ausl”sen
+    119 ENrecordF     Satz sperren/freigeben
+    118 ENmsgF        Nachricht verschicken/empfangen
+    117 ENremoteF     Datenkanal ”ffnen
+    116 ENdisableF    Netzwerk-Treiber abschalten
+    115 ENenableF     Netzwerk-Treiber erneut installieren
+    114 ENnameF       Name des Benutzers ermitteln
+
+
+
+Querverweis     Netzwerk-Standard   EGEMDOSF
+Name            ¯network active® - Prfen ob Netzwerk-Treiber
+                installiert ist 
+
+Gemdosnummer    127
+
+Definition      int Nactive( void );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Diese Funktion gibt als Wert die Versionsnummer zurck.
+                Somit ist der PAMSNET-Ger„tetreiber ordnungsgem„ss
+                installiert. Andernfalls gibt das normale Gemdos-System
+                den Wert -32: unbekannte Funktionsnummer zurck.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ENversionF
+Name            ¯network node id® - Arbeitsplatznummer ermitteln
+
+Gemdosnummer    126
+
+Definition      int Nnodeid ( void );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Diese Funktion gibt die Arbeitsplatz-Nummer des eigenen
+                Rechners in Ihrem Netzwerk zurck. Diese sog. Node-ID
+                liegt im Bereich 1-127 und wird beispielsweise zur
+                Addressierung von Mitteilungen benutzt. In sp„teren
+                Treiber-Versionen wird diese Funktion auch die
+                Netzwerk-ID (z.Zt. immer Null) im oberen Byte zurckgeben.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ENversionF   ENmsgF   ENloggedF
+Name            ¯network logged® - Prfen ob Arbeitsplatz am Netz ist
+
+Gemdosnummer    125
+
+Definition      int Nlogged ( int n );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Hiermit kann ermittelt werden, ob der Arbeitsplatz mit
+                der Node-ID n am Netzwerk teilnimmt, d.h. sich in
+                "eingeloggtem" Zustand befindet, oder nicht. Ausserdem
+                kann geprft werden, ob der Drucker an diesem
+                Arbeitsplatz bereit ist.
+
+Ergebnis        Die Funktion liefert als Ergebnis einen Return-Wert von
+                    
+                    0 fr Arbeitsplatz ausgeschaltet
+                    1 fr eingeschaltet und Drucker nicht bereit
+                    2 fr eingeschaltet und Drucker bereit
+
+Querverweis     EPamsNetF   ENnodeidF
+Name            ¯network file lock® - Datei sperren
+
+Gemdosnummer    124
+
+Definition      int Nlock ( const char *f );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Die angegebene Datei mit dem Namen f (auch inkl.
+                komplettem Pfad wird, „hnlich dem ™ffnen zum Schreiben,
+                in den Locking-Status gesetzt. Wird die Datei bereits
+                beschrieben oder gelesen, so wird der Fehler -36:
+                Netzwerk-Fehler zurckgegeben.
+                Achtung: durch diese Funktion wird die ganze Datei
+                "gelockt". H„ufig ist ein teilweises Schtzen mit der
+                Funktion "ENrecordF()" gnstiger.
+
+Ergebnis        Die Funktion liefert als Ergebnis einen Return-Wert von
+                -36: Netzwerk-Fehler, wenn die Datei nicht gelockt
+                werden konnte.
+
+Querverweis     EPamsNetF   ENunlockF   ENrecordF
+Name            ¯network file unlock® - Datei entsperren
+
+Gemdosnummer    123
+
+Definition      int Nunlock ( const char *f );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Fr die Datei mit dem Namen f wird das gesamte
+                File-Locking aufgehoben. Vor der Benutzung der Funktion
+                "ENrecordF()" mu "Nunlock()" auf die betroffene Datei
+                unbedingt angewendet werden. Wurde die Datei von einem
+                anderen Rechner "gelockt", so wird bei "Nunlock()" diese
+                nicht wieder geschlossen.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ENlockF   ENrecordF
+Name            ¯network file lock error® - auf Netzwerk-Fehler prfen
+
+Gemdosnummer    122
+
+Definition      int Nlocked ( void );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Mit Hilfe dieser Funktion ist es m”glich festzustellen,
+                ob die letzte Gemdos-Fehlermeldung durch eine
+                Locking-Sperre verursacht wurde. In diesem Fall wird der
+                Fehlerstatus -36:Netzwerk-Fehler zurckgegeben. Es wurde
+                aus Portabilit„tsgrnden auf eine neue Fehlernummer fr
+                alle Dateioperationen verzichtet. Daher sollte zur
+                genauen Fehlerdiagnose in Multiuser-Programmen diese
+                Funktion herangezogen werden.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ENlockF   ENrecordF
+Name            ¯network printer® - Netzwerk-Drucker definieren
+
+Gemdosnummer    121
+
+Definition      int Nprinter ( int n, int kopf, ind d);
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Es wird der Drucker, der am Rechner mit der Node-ID n
+                (s.o.) angeschlossen ist, als neues "PRN:" bzw.
+                "AUX:"-Ausgabeger„t angemeldet. Auerdem ist es mit
+                diesem Aufruf m”glich, ein lokales Laufwerk fr den
+                lokalen Drucker-Spooler festzulegen (d:=0 fr "A:" etc.)
+                und einen Listenkopf (Banner) einzuschalten (default
+                kopf=1).
+                šbergibt man fr alle drei Parameter den Wert -1, so
+                erh„lt man die aktuell konfigurierte Ziel-Knotennummer
+                zurck. Mit dem 1. Bit des zweiten Parameters "kopf"
+                wird bei dieser zus„tzlichen Funktion die Ausgabe- bzw.
+                Emulations-Schnittstelle des Druckers angew„hlt (0 steht
+                fr Centronics und 1 fr serieller Port). Die
+                entsprechende Angabe bei der Xbios-Funktion "ESetprtF()"
+                findet hierzu keine Beachtung, da sie sich
+                ausschliesslich auf Hardcopies bezieht. Allerding muss
+                die Einstellung "RTS/CTS" fr die serielle Schnittstelle
+                mit Hilfe der Funktion "ERsconfF()" vorgenommen werden.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ERsconfF   ESetprtF
+Name            ¯network reset® - System-Reset ausl”sen
+
+Gemdosnummer    120
+
+Definition      int Nreset ( void );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Ein System-Reset wird ausgel”st. Dies ist eine der
+                M”glichkeiten, einen sogenannten "Logout" durchzufhren.
+                Nach dem neuen Hochfahren des Betriebssystems mu sich
+                ein neuer User mit seinem Passwort "einloggen".
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF
+Name            ¯network record lock® - Datensatz sperren/freigeben
+
+Gemdosnummer    119
+
+Definition      int Nrecord ( int handle, int m, long offset, long length );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Mit dieser Funktion wird das Record-Locking-System
+                verwaltet. Vor der ersten Benutzung dieses Aufrufes an
+                einer neu ge”ffneten Datei mu zuerst "ENunlockF()"
+                (s.o.) aufgerufen werden. Der Parameter m beschreibt den
+                Modus: 0 steht fr Unlock, 1 fr Lock. Der umgang mit
+                dieser Funktion ist „hnlich der Fseek()-Funktion des
+                normalen Gemdos, wobei hier aber auch fiktive
+                Datensatz-Offsets angegeben werden k”nnen. Falls der
+                ausgew„hlte Dateibereich oder Teile davon beim Schtzen
+                schon geschtzt waren, wird die Fehlermeldung -36:
+                Netzwerk-Fehler zurckgegeben.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   EFrlockF   EFrunlockF   EFseekF
+Name            ¯network messages® - Nachrichten verschicken/empfangen
+
+Gemdosnummer    118
+
+Definition      int Nmsg ( int rw, void *buf, char *id, int node, int length);
+
+Prototyp in     pamsnet.h
+
+Beschreibung
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis
+Name            ¯network remote access® - Einloggen ber Netzwerk
+
+Gemdosnummer    117
+
+Definition      int Nremote ( int n );
+
+Prototyp in     pamsnet.h
+
+Beschreibung
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis
+Name            ¯network disable® - Netzwerk vorbergehend abschalten
+
+Gemdosnummer    116
+
+Definition      int Ndisable ( void );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Der Netzwerk-Treiber wird vorbergehend abgeschaltet.
+                Somit wird auch der DMA-Interrupt nicht mehr belegt. Die
+                Deaktivierung des Netzwerk-Treibers wird z.B. bei der
+                Benutzung eines Tape-Streamers, der ber die
+                DMA-Schnittstelle angeschlossen wird, n”tig, um einen
+                einwandfreien Betrieb dieses Ger„tes und seiner
+                Treibersoftware zu gew„hrleisten.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ENenableF
+Name            ¯network enable® - Netzwerk erneut installieren
+
+Gemdosnummer    115
+
+Definition      int Nenable ( void );
+
+Prototyp in     pamsnet.h
+
+Beschreibung    Der Netzwerktreiber wird nach vorbergehendem
+                ausgeschalteten Zustand (s.o.) erneut installiert. Dies
+                ist die "default"-Einstellung.
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis     EPamsNetF   ENdisableF
+Name            ¯network name® - Name des eingeloggten Benutzers ermitteln
+
+Gemdosnummer    114
+
+Definition      int Nname ( char *benutzer, int *user_level, int spool,
+                    int maxcputime);
+
+Prototyp in     pamsnet.h
+
+Beschreibung
+
+Ergebnis        Die Funktion liefert bei fehlerfreier Ausfhrung den
+                Wert 0, ansonsten eine negative Fehlernummer zurck.
+
+Querverweis
+Thist chapter describes the termcap database: its capabilities and
+entries. There are several functions that allow manipulation of the
+termcap database. These are included in termcap.lib. The operation and
+usage of the termcap library functions are also explained in this chapter.
+
+The Termcap File Format
+
+Name            ¯termcap get entry® - termcap-Eintrag lesen
+
+Definition      int tgetent( char *bufptr, const char *name );
+
+Prototyp in     termcap.h
+
+Beschreibung    
+
+Ergebnis        Wenn die termcap-Datei nicht ge”ffnet werden konnte, ist
+                der Rckgabewert -1. Wenn der Eintrag nicht gefunden
+                wurde, wird 0 zurckgegeben. 1 wird zurckgegeben und
+                die Daten in den Puffer geschrieben, wenn der Name
+                gefunden wurde.
+
+Gruppe          ETermcap-LibraryF
+
+Querverweis     EtgetflagF   EtgetnumF   EtgetstrF   EtgotoF   EtputsF
+                ECurses-LibraryF
+Name            ¯termcap get flag® - termcap-Flag prfen
+
+Definition      int tgetflag( const char *id );
+
+Prototyp in     termcap.h
+
+Beschreibung    
+
+Ergebnis        
+
+Gruppe          ETermcap-LibraryF
+
+Querverweis     EtgetentF   EtgetnumF   EtgetstrF   EtgotoF   EtputsF
+                ECurses-LibraryF
+Name            ¯termcap get number® - termcap-Zahl lesen
+
+Definition      int tgetnum( const char *id );
+
+Prototyp in     termcap.h
+
+Beschreibung    
+
+Ergebnis        
+
+Gruppe          ETermcap-LibraryF
+
+Querverweis     EtgetentF   EtgetflagF   EtgetstrF   EtgotoF   EtputsF
+                ECurses-LibraryF
+Name            ¯termcap get string® - termcap-String lesen
+
+Definition      char *tgetstr( const char *id, char **strptr );
+
+Prototyp in     termcap.h
+
+Beschreibung    
+
+Ergebnis        
+
+Gruppe          ETermcap-LibraryF
+
+Querverweis     EtgetentF   EtgetflagF   EtgetnumF   EtgotoF   EtputsF
+                ECurses-LibraryF
+Name            ¯termcap goto-handling® - termcap-String lesen
+
+Definition      char *tgoto( const char *motion_string, int column, int line );
+
+Prototyp in     termcap.h
+
+Beschreibung    
+
+Ergebnis        
+
+Gruppe          ETermcap-LibraryF
+
+Querverweis     EtgetentF   EtgetflagF   EtgetnumF   EtgetstrF   EtputsF
+                ECurses-LibraryF
+Name            ¯termcap put string® - termcap-String ausgeben
+
+Definition      void tputs( const char *str, int lines_affected,
+                    void (*outfunc)(int) );
+
+Prototyp in     termcap.h
+
+Beschreibung    
+
+Ergebnis        
+
+Gruppe          ETermcap-LibraryF
+
+Querverweis     EtgetentF   EtgetflagF   EtgetnumF   EtgetstrF   EtgotoF
+                ECurses-LibraryF
+

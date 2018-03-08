@@ -1,0 +1,197 @@
+# Please edit this ST-Guide INF file to your requirements
+# ========================================================================
+#
+# Read this!
+# This file can be edited in any ASCII text editor (eg Everest)
+# If you experience any problems with ST-Guide try removing 
+# ST-GUIDE.INF altogether. ST-Guide then uses its internal defaults.
+# If the problem goes away you'll know something is wrong with your 
+# ST-GUIDE.INF file.
+# This file is configured by default to run from Drive C: but anyone
+# running a floppy based system can simply change each occurence of 
+# C: to A:
+# By default ST-Guide looks in the root directory of your boot drive
+# for a 'GUIDES' folder which can be used to store all your 'HYP and 
+# 'REF' files.
+#
+# Lines preceded with a '#' symbol (like this one) are comments and 
+# ignored by ST-Guide.
+#
+#
+# Important access paths
+#=========================================================================
+# Default search path, where ST-Guide looks for 'HYP' hypertexts:
+PATHS=C:\GUIDES;C:\GEMSYS\GUIDES
+
+# This is the default directory that will be show when opening
+# Hypertext in ST-GUIDE.
+# It it also used by HCP to write compiled hypertexts when
+# no output file is explicitly specified.
+HYPFOLD=C:\GUIDES
+
+#
+# HCP is used to compile STG files into HYP files. STool and KatMaker
+# use this entry to find HCP and compile:
+HCP=C:\ST-GUIDE\HCP.TTP
+#
+# Hypfind is called by ST-Guide to search for search masks in all pages
+# in the current hypertext.
+HYPFIND=C:\ST-GUIDE\HYPFIND.TTP
+#
+# The file used to find references:
+REF=C:\GUIDES\ALL.REF
+#
+# Path for Remarker:
+# Without '!' preceding the path Remarker is automatically started on
+# opening ST-Guide.
+# With '!' preceding the path Remarker is started using [Alternate]+R
+REMARKER=!C:\REMARKER\REMARKER.PRG
+#
+# An external viewer, which must be memory resident can be used to 
+# display unknown file types:
+#EXTVIEW
+#
+# Default path/filename of hypertext automatically loaded by ST-Guide
+# if called without parameters (typically ST-GUIDE.HYP or HCP.HYP:
+DEFHYP=C:\GUIDES\ST-GUIDE.HYP
+#
+# The hypertext file to be loaded via the ST-Guide 'Catalog' option or 
+# when ST-Guide is started without parameters:
+HYPTOP=C:\GUIDES\CATALOG.HYP
+#
+# Whenever 'Print' is selected output is sent to the Clipboard and
+# Re-directed to this listed application for output:
+#PRINTER=C:\ILIST.ACC
+#
+# Default file to save mark files to:
+MARKFILE=C:\GUIDES\MARKS.DAT
+
+#
+# $STOOL is used to recompile the Katalog file
+$STOOL=C:\ST-GUIDE\STOOL.TOS
+
+#
+# Colour display options
+#=========================================================================
+# The following three variables are only relevant in colour resolutions
+# and are ignored in monochrome resolutions.
+# TXTCOLOR Displays text in the specified colour.
+# REFCOLOR Displays references in the specified colour using the
+#          normal typestyle (NOT bold and underlined).
+# BCK3D    Displays the background in light grey if active, otherwise 
+#          it's displayed as white.
+#
+# Default colours (Note! Your system may change these values!):
+#  0=White        1=Black        2=Red           3=Green
+#  4=Blue         5=Cyan         6=Yellow        7=Magenta
+#  8=Grey         9=Dark grey   10=Dark red     11=Dark green
+# 12=Dark blue   13=Dark cyan   14=Dark yellow  15=Dark magenta
+TXTCOLOR=1
+REFCOLOR=4
+#
+# Wether to draw the window background in grey
+#BCK3D=0
+BCKCOLOR=0
+#
+# ST-Guide window display
+#=========================================================================
+# ST-Guide can use GDOS screen fonts if loaded, the code determines the
+# font used. Contains the font and point size to be used in the 
+# following format: FONT,SIZE
+FONT=1,10
+# A second font can be defined and swapped between using the 
+# [Control]+Z key combination - useful for swapping between 
+# proportional and non-proportional fonts.
+#XFONT=185,10
+#
+# The first two values set the top left corner of the window. The
+# next two values set the bottom right corner for the ST-Guide window:
+#WINSIZE=100,100,400,200
+#
+# Sets the vertical separation in pixels of the window contents from
+# the dividing line below the icons. The default value of 6 pixels is 
+# applied if this variable is not specified:
+#TXTOFFSET=6
+#
+# The number of spaces a tab will be expanded to is set here:
+#TABSIZE=4
+#
+# Mouse behaviour
+#=========================================================================
+# The RIGHTBACK variable, if set, means a right mouse click is 
+# interpreted as a click on the Back icon:
+#RIGHTBACK
+#
+# If this variable is active, clicking on 'normal' text does not cause
+# ST-Guide to search for references.
+#REFONLY
+#
+# The BACKWIND variable, if set, means a right click will top a 
+# background ST-Guide window:
+#BACKWIND
+#
+# Miscellaneous
+#=========================================================================
+# These options are used automatically when HCP is called:
+#HCP_OPT=
+#
+# This variable is provided to install ARROWPATCH. This patch corrects a 
+# bug in the AES which prevents the scroll bars in windowed accessories
+# from working correctly with certain TOS versions.
+# If you exerience this behaviour activate this patch ON (by removing
+# the preceding #).
+# This patch is not needed if you are running WINX, MagiC, MTOS or 
+# already have the ARROWPATCH installed globally.
+#ARROWPATCH
+#
+# This variable prevents the Find box with a word in a REF-file, from 
+# being displayed:
+#NOREFBOX
+#
+# Special HypTree options
+#=========================================================================
+# These options are used automatically when Hyptree is called:
+#HYPTREE_OPT=
+#
+# Here the default size of the HypTree window can be displayed.
+# If these variables are not defined, the size and position of the last
+# window will be used, if available.
+HT_WINSIZE=40,40,100,200
+#
+# Using this switch you can decide whether all pages included in the 
+# HypTree structure are visible (0 = No, 1 = Yes)
+HT_OPENALL=1
+#
+# This variable sets the position of the triangle in the window
+# 0 = next to the text, 1 = On the left hand margin of the window.
+HT_MACLIKE=0
+#
+# The following command line is sent to HypTree from ST-Guide (via
+# VA_START) after the user double clicks on the menu bar title in any
+# hypertext page. The following strings are replaced with the actual 
+# values when called:
+# %p  Pathname of the hypertext file
+# %n  Name of the hypertext file (without path)
+# %s  The internal name of the hypertext page
+HT_CALLSTG=-s1 %p %s
+#
+# The following command line is sent to ST-Guide from HypTree as soon 
+# as the current hypertext is closed:
+HT_STOPSTG=-s0
+#
+HT_DEBUG=0
+HT_USEQUOTES=1
+
+# Special KatMaker options
+#=========================================================================
+#
+# Write filenames without extensions
+KM_SHORT
+# Convert filenames to lowercase
+KM_SMALL
+
+# Special RefCheck options
+#=========================================================================
+
+# These options are used automatically when RefCheck is called:
+REFCHECK-OPT=ads

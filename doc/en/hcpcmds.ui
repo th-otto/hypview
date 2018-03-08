@@ -1,0 +1,1987 @@
+!begin_node Commands in a hypertext
+!alias commands
+!alias Commands
+!index Commands
+!html_name commands_hcp
+
+All commands begin with a '@' and most of them must start in the first
+column of a line. The case (caps/lowercase) of a command is irrelevant,
+any way of writing it is allowed.
+
+
+1. Structuring commands (!nl)
+~~~(!link [@default] [Command @default])~~~(!link [@endnode] [Command @endnode])~~~(!link [@help] [Command @help])~~~~~~~~~(!link [@label] [Commands @label/@alabel])~~~~~~~(!link [@next] [Command @next]) (!nl)
+~~~(!link [@node] [Command @node])~~~~~~(!link [@pnode] [Command @pnode])~~~~~(!link [@prev] [Command @prev])~~~~~~~~~(!link [@toc] [Command @toc])~~~~~~~~~(!link [@width] [Command @width]) (!nl)
+~~~(!link [@if] [Commands @if/@else/@endif])~~~~~~~~(!link [@else] [Commands @if/@else/@endif])~~~~~~(!link [@endif] [Commands @if/@else/@endif])~~~~~~~~(!link [@xref] [Command @xref]) (!nl)
+
+2. Commands for controlling automatic referencing (!nl)
+~~~(!link [@alabel] [Commands @label/@alabel])~~~~(!link [@alias] [Command @alias])~~~~~(!link [@autorefoff] [Command @autorefoff])~~~(!link [@autorefon] [Command @autorefon])~~~(!link [@extern] [Command @extern]) (!nl)
+~~~(!link [@noref] [Command @noref])~~~~~(!link [@uses] [Command @uses])~~~~~~(!link [@symbol] [Command @symbol])~~~~~~~(!link [@indexon] [Command @indexon])~~~~~(!link [@indexoff] [Command @indexoff]) (!nl)
+
+3. Graphic commands (!nl)
+~~~(!link [@box] [Command @box])~~~~~~~(!link [@image] [Command @image])~~~~~(!link [@limage] [Command @limage])~~~~~~~(!link [@line] [Command @line])~~~~~~~~(!link [@rbox] [Command @rbox])  (!nl)
+
+4. Comment and documentation commands (!nl)
+~~~(!link [@database] [Command @database])~~(!link [@author] [Command @author])~~~~(!link [@remark] [Commands @remark & ##])~~~~~~~(!link [@subject] [Command @subject])~~~~~(!link [##] [Commands @remark & ##]) (!nl)
+~~~(!link[@$VER:] [Command @$VER:]) (!nl)
+
+5. Other commands (!nl)
+~~~(!link [@include] [Command @include])~~~(!link [@index] [Command @index])~~~~~(!link [@title] [Command @title])~~~~~~~~(!link [@{ ... }] [Command @{...}])~~~~~(!link [@options] [Command @options]) (!nl)
+~~~(!link [@hostname] [Command @hostname])~~(!link [@tabsize] [Command @tabsize])~~~(!link [@tree] [Commands @tree/@endtree])~~~~~~~~~(!link [@endtree] [Commands @tree/@endtree])~~~~~(!link [@define] [Command @define]) (!nl)
+
+6. Commands for compatibility (!nl)
+~~~(!link [@(c!)] [AmigaGuide - compatible])~~~~~~~(!link [@dnode] [AmigaGuide - compatible])~~~~~(!link [@font] [AmigaGuide - compatible])~~~~~~~~~(!link [@height] [AmigaGuide - compatible])~~~~~~(!link [@keywords] [Command @keywords]) (!nl)
+~~~(!link [@master] [AmigaGuide - compatible])~~~~(!link [@wordwrap] [AmigaGuide - compatible]) (!nl)
+
+# -----------------------------------------------------------------------------
+
+!begin_node AmigaGuide - compatible
+!alias+ @(c)
+!alias+ @dnode
+!alias+ @font
+!alias+ @height
+!alias+ @master
+!alias+ @wordwrap
+!alias+ @macro
+!alias+ @onclose
+!alias+ @onopen
+!alias+ @smartwrap
+!alias+ @embed
+!alias+ @proportional
+!html_name amguide_hcp
+
+This  command  has  been   implemented  solely  for  compatibility   to
+AmigaGuide and will be ignored by the compiler.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node* <name> <title> <text>
+!alias <name>
+!alias <title>
+!alias <text>
+!html_name params_hcp
+
+A parameter written in this manner in a syntax description represents a
+character string that is to be  enclosed by inverted commas [or  double
+quotes] (") if it contains spaces;
+
+otherwise all characters are allowed in such a parameter.
+
+(!U)Examples(!u):
+
+!begin_quote
+    -Test- (!nl)
+    ... (!nl)
+    )Bla( (!nl)
+    Pointer-> (!nl)
+    C:\FOLDER\FILE
+!end_quote
+But:
+!begin_quote
+    "Two words" (!nl)
+    "\"special\" text"
+!end_quote
+
+So if a name itself is to contain inverted commas then (as in C)  these
+have to masked  with a backslash.  Logically the same  applies for  the
+backslash itself.  A  path in  quotes  must therefore  be  written  as:
+'"C:\\BIN\\"' (or,  simpler:  'C:\BIN\' -  in  both cases  (!I)without(!i)  the
+single quotes!).  The  masking is  only  necessary when  the  character
+string is  the  argument of  a  command;  inside the  actual  text  all
+characters will be adopted 1:1.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node* <line>
+!html_name param_line_hcp
+
+A parameter written in this manner in a syntax description represents a
+decimal numerical constant or a (!link [label] [Commands @label/@alabel]) name (see (!link [@label] [Commands @label/@alabel])).
+
+(!U)Examples(!u):
+
+!begin_quote
+    12 (!nl)
+    199 (!nl)
+    Mark (if somewhere in the text there is a '@label mark').
+!end_quote
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Commands @if/@else/@endif
+!alias+ Command @if
+!alias+ Command @else
+!alias+ Command @endif
+!alias @if
+!alias @else
+!alias @endif
+!index if
+!index else
+!index endif
+!html_name command_if_hcp
+
+Syntax: @if <symbol> [op <string|number>] (!nl)
+~~~~~~~~.... (!nl)
+~~~~~~~~[@else] (!nl)
+~~~~~~~~.... (!nl)
+~~~~~~~~@endif
+
+For (!B)symbol(!b) the following is allowed:
+!begin_xlist [MAINFILE] !compressed
+    !item [ATARI]       Returns 'ATARI', if translation is made with the  Atari
+                version of the HCP
+    !item [AMIGA]       Returns 'AMIGA', if translation is made with the  Amiga
+                version of the HCP
+    !item [HCP]         Returns 'HCP'
+    !item [VERSION]     Returns the version of HCP  used (currently 3); can  be
+                used, for instance, to  prevent old HCP versions  being
+                misled into reporting errors due to new features
+    !item [MAINFILE]    Returns the name (without path)  of the Main file;  can
+                be used, for instance, to establish in an (!link [include] [Command @include])  file
+                which part of the text is to be discarded
+    !item [NODE]        Returns the name  of the current  page; can equally  be
+                useful in connection with (!link [@include] [Command @include])
+    !item [0]           Returns undefined (FALSE), so  the 'if 0'  construction
+                known from C becomes possible
+    !item [<val>]       Returns the value of the ST-GUIDE.INF-variable <val>
+!end_xlist
+
+For (!B)op(!b) the following character strings are allowed:
+!begin_xlist [==] !compressed
+    !item [==]  Test for equality
+    !item [!=]  Test for inequality
+    !item [>=]  Test for larger or equal
+    !item [<=]  Test for smaller or equal
+    !item [<]   Test for smaller
+    !item [>]   Test for larger
+!end_xlist
+
+    Here one should note that  the operands are ALWAYS interpreted  and
+    compared as character strings, so
+!begin_quote
+            @if 0 == 00
+!end_quote
+    will return FALSE!
+
+@if <symbol> returns TRUE when <symbol> is defined and FALSE otherwise.
+
+If the  condition for  @if returns  TRUE, then  the associated  @else
+branch will not be executed and the translation will be continued after
+the associated @endif; if the condition returns FALSE then the  result
+will be just the opposite.
+
+(!U)Example(!u):
+!begin_quote
+  @if ATARI
+!begin_quote
+      The operating system TOS with its GEM permits...
+!end_quote
+  @else
+!begin_quote
+      The operating system AmigaDos with its Intuition interface (!nl)
+      ...
+!end_quote
+  @endif
+!end_quote
+
+This construction ensures that the  above text translated on the  Atari
+will result in  the line  about TOS  being included  in the  hypertext,
+whereas the same text translated on the Amiga will contain a line about
+AmigaDos.
+
+Keep in mind however that:
+!begin_itemize
+!item There is (currently) no application known to display *.hyp files
+for the Amiga.
+!item The AmigaGuide-Viewer uses the text files (*.guide) as input
+!item The AmigaGuide-Viewer does not know about these commands
+!end_itemize
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @subject
+!alias @subject
+!index subject
+!html_name command_subject_hcp
+
+This command serves to  assign the text to  a subject class; it  should
+not be confused with (!link [@database] [Command @database]) which states the theme of the text.
+
+(!U)Example(!u):
+The hypertext for ASCII editor XYZ will give...
+
+!begin_quote
+    (!link [@database] [Command @database]) "The ASCII editor XYZ"
+!end_quote
+
+as theme and
+
+!begin_quote
+    @subject "Documentation/Editors"
+!end_quote
+
+as subject classification.
+
+The @subject command is currently used only by STool, as a sorting aid
+for the creation of a hypertext tree.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Commands @tree/@endtree
+!alias+ Command @tree
+!alias+ Command @endtree
+!alias @tree
+!alias @endtree
+!index tree
+!index endtree
+!raw [stg] @xref "Command @include"
+!html_name command_tree_hcp
+
+With the pair of commands @tree/@endtree one can (!link [define] [Command @define]) cross-reference
+tables for dialog boxes:
+!begin_quote
+    @tree <name or number of the dialog> 
+        <name or number of an object> <name of the cross-reference>
+        ...
+    @endtree
+!end_quote
+
+If in addition  the header-file (usually  <rscname>.H) associated  with
+the (!link [RSC-file] [RSC-Files]) is read in via  (!link [@include] [Command @include]), then the names assigned to  the
+objects can also be used when writing the hypertext. If the header file
+is not available, you can specify a number everywhere instead (that  of
+the tree or that of an object). The numbers can be established with any
+decent resource editor (e.g. RED, (!XLINK [ORCS] [orcsen] [Main]), INTERFACE).
+
+(!U)Example(!u):
+
+!begin_quote
+    (!link [@include] [Command @include]) test.h                             (!link [[1!]] [%t1]) (!nl)
+    ... (!nl)
+    (!link [@node] [Command @node]) "Options-dialog"                      (!link [[2!]] [%t2]) (!nl)
+    @tree OPTIONS                               (!link [[3!]] [%t3]) (!nl)
+!begin_quote
+      OKBUTTON  "The OK-button"                 (!link [[4!]] [%t4]) (!nl)
+      CANCELBUT "The Cancel-button" (!nl)
+      0         "The frame of the dialog"       (!link [[5!]] [%t5]) (!nl)
+      ... (!nl)
+!end_quote
+    @endtree (!nl)
+    ... (!nl)
+    @{"Show dialog" link test.rsc/OPTIONS}      (!link [[6!]] [%t6]) (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode]) (!nl)
+    ... (!nl)
+    (!link [@pnode] [Command @pnode]) "The OK-button"                      (!link [[7!]] [%t7]) (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode])
+!end_quote
+
+!begin_pnode %t7
+!html_name pnode7_hcp
+The pages referred to above must of course also be
+defined   somewhere.   However   this   does   not
+necessarily involve  node/pnode  cross-references;
+alias/symbol/alabel  will  also  work.  Pnode  was
+chosen here as  an example, since  using this  the
+dialog remains on the screen.
+!end_node
+
+!begin_pnode %t6
+!html_name pnode6_hcp
+The instruction  that will  later  bring
+the desired  dialog onto  the screen  is
+placed here.
+!end_node
+
+!begin_pnode %t5
+!html_name pnode5_hcp
+This is  an  example of  using  numbers.
+Both possibilities  can be  used  mixed.
+Furthermore this example shows that  not
+only selectable  objects  (buttons  etc)
+can be assigned cross-references.
+!end_node
+
+!begin_pnode %t4
+!html_name pnode4_hcp
+Here one  defines that  a click  on  the
+object with  the  name  OKBUTTON  is  to
+display the page 'The OK-button'.
+!end_node
+
+!begin_pnode %t3
+!html_name pnode3_hcp
+The definition  for the  dialog  OPTIONS
+starts here.  All statements  up to  the
+next @endtree refer to this dialog.
+!end_node
+
+!begin_pnode %t2
+!html_name pnode2_hcp
+Tree definitions are always local to one node  and
+must therefore lie within one of these. That  also
+means that  for a  dialog (here  OPTIONS) one  can
+also define different  tables in different  nodes,
+say  in   order   to   illustrates   the   objects
+differently under different aspects.
+!end_node
+
+!begin_pnode %t1
+!html_name pnode1_hcp
+So  that  trees   and  objects  can   be
+referred  to  by   name,  we  read   the
+header-file in here.
+!end_node
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @define
+!alias @define
+!index define
+!html_name command_define_hcp
+
+Syntax: @define <name> <value>
+
+Using this command, variables with any contents may be defined. All the
+variables must be defined before they  are used for the first time;  if
+this rule isn't observed then the  behaviour of the compiler is  likely
+to suffer errors when substitution  of commands or their parameters  is
+undertaken!
+
+This command can be used anywhere in the text, which makes it  possible
+to replace the commands or their parameters with variables.
+
+During translation,  the  text of  called  variables found  by  HCP  is
+replaced by their value. This substitution is not recursive, so that if
+the content  of  a variable includes  other variables,  these  will  be
+ignored.
+
+Variables are called using the sequence '@:'
+
+(!U)Examples(!u):
+!begin_quote
+    @define hello Hallo (!nl)
+    .... (!nl)
+    In German, in place of the English 'hello' one (!link [uses] [Command @uses]) '@:hello'  for (!nl)
+    greeting (!nl)
+    ...
+!end_quote
+    will result in:
+!begin_quote
+    In German, in  place of the  English 'hello' one  uses 'Hallo'  for (!nl)
+    greeting (!nl)
+    ...
+!end_quote
+
+    Variables may  also (!link [include] [Command @include])  space characters  by surrounding  them
+    with quote marks ("):
+!begin_quote
+    @define "Hello world" "Hallo Welt" (!nl)
+    ... (!nl)
+    Traditionally everyone's  first  C  program  was  named  '@:"Hello (!nl)
+    world"'
+!end_quote
+    will result in:
+!begin_quote
+    Traditionally everyone's first C program was named 'Hallo Welt'  (!nl)
+    ...
+!end_quote
+
+    This can be extended, or course, so:
+!begin_quote
+    @define X test (!nl)
+    .... (!nl)
+    'A nuclear @:X explosion'
+!end_quote
+    displays:
+!begin_quote
+    'A nuclear test explosion'
+!end_quote
+
+!index __DATE__
+Currently only the __DATE__ variable is pre-defined!
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @help
+!alias @help
+!index help
+!raw [stg] @xref "st-guide.hyp/Extra -> Hilfe" "...im ST-Guide"
+!html_name command_help_hcp
+
+Syntax: @help <name>
+
+With this  command one  can determine  which page  the ST-Guide  should
+display when the  (!key [Help])   key is pressed.  As a default  this will be  a
+page with the name 'Help', but with  @help one can use any other  page
+for this purpose.
+
+(!U)Example(!u):
+!begin_quote
+    @help Help-text (!nl)
+    .... (!nl)
+    (!link [@node] [Command @node]) Help-text (!nl)
+     This text was written by ... and deals with ... (!nl)
+     ... (!nl)
+    (!link [@endnode] [Command @endnode]) (!nl)
+!end_quote
+
+will display the page 'Help-text' when the menu entry 'Help' or the key
+[Help] is activated.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @tabsize
+!alias @tabsize
+!index tabsize
+!raw [stg] @xref "Option t"
+!html_name command_tabsize_hcp
+
+Syntax: @tabsize <value>
+
+This command is used  to set the  tab-width to be  used in the  current
+text. The value set will always apply starting from the line  following
+the command. However it  is recommended that a  text should be  written
+using a uniform tab size.
+
+<value> can lie between 1 and 9.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @$VER:
+!alias @$VER:
+!index $VER:
+!html_name command_ver_hcp
+
+With  this  command  one  can  assign  a  version  description  to  the
+hypertext. The compiler  will (!link [include] [Command @include]) the  complete line starting  from
+the '$' into the hypertext and it will appear in the 'Info'-box of  the
+ST-Guide. 
+
+The AmigaGuide uses a version string constructed as follows:
+((!U)Example(!u)):
+!begin_quote
+    @$VER: hcp.hyp 1.00 (14/02/94)
+!end_quote
+ i.e. filename, version number and date  of creation. As far as I  know
+this format  is  also  used  under UNIX,  so  we  recommend  that  this
+construction be adopted if possible.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @author
+!alias @author
+!index author
+!html_name command_author_hcp
+
+Syntax: @author <name>
+
+With this command  one can  state the name  of the  author, which  then
+appears in the Info-box of ST-Guide.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @hostname
+!alias @hostname
+!index hostname
+!raw [stg] @xref "@{ rx }"
+!raw [stg] @xref "@{ rxs }"
+!html_name command_hostname_hcp
+
+Syntax: @hostname <app-name1> [<app-name2> ...]
+
+<app-nameN> is  here  the  name  of a  PRG/ACC  without  extension,  in
+capitals and  if necessary  padded out  with spaces  to a  length of  8
+characters, i.e.  in exactly  the format  needed for  the AES  function
+'appl_find()'.
+
+The compiler creates this format automatically:
+!begin_quote
+        @hostname pacshell.prg
+!end_quote
+would therefore be transformed to:
+!begin_quote
+        @hostname PACSHELL
+!end_quote
+
+If an 'rx' cross-reference is clicked on, ST-Guide attempts to find the
+required application  and,  if  successful, passes  to  it  the  string
+assigned to  'rx' as  a parameter.  For this,  all host-names  will  be
+searched for in the specified sequence and the first one found will  be
+passed the message. At present up to 10 host-names are permitted.
+
+This feature can be used in particular to execute certain functions  of
+a program directly from  within its documentation.  An example of  this
+would be to  open relevant  dialogs in a  program (Options,  Parameters
+etc) from an 'Installation'  page of a hypertext  so that the user  can
+make the  required  settings while  he  is looking  at  the  associated
+description.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @default
+!alias @default
+!index default
+!raw [stg] @xref "st-guide.hyp/AV-Protokoll" "AV-Protokoll"
+!html_name command_default_hcp
+
+Syntax: @default <name>
+
+With this command you can  specify the name of the  page that is to  be
+displayed if the cross-reference passed  by an AV-routine has not  been
+found.
+
+So  if  parameters  'file  reference'   are  passed  to ST-Guide   and
+<reference> is  not  found  in  <file>, then  the  page  specified  via
+@default will be  displayed instead  or, if no  @default command  has
+been used, the first page of the hypertext.
+
+Naturally the compiler checks whether  the page specified in  @default
+exists in the current text.
+
+(!U)Example(!u):
+!begin_quote
+    @default Unknown (!nl)
+    ... (!nl)
+    (!link [@node] [Command @node]) Unknown (!nl)
+     Currently there is no description for this function. (!nl)
+    (!link [@endnode] [Command @endnode])
+!end_quote
+
+This displays  a meaningful  message if  the desired  reference is  not
+found, which is often better than just displaying the table of contents
+(which is generally the first page of a text).
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @options
+!alias @options
+!index options
+!raw [stg] @xref "Options overview"
+!html_name command_options_hcp
+
+With this  command it  is  possible to  specify  most of  the  compiler
+options directly in the source text, rather than via the command line.
+
+This has  the  advantage, in  particular,  that  the HCP  can  be  just
+registered as the installed application for *.STG in the desktop.
+
+The following options can (!I)not(!i) be specified in the source text:
+!begin_itemize
+    !item Buffer size
+    !item Error file
+    !item Output file
+!end_itemize
+These parameters are needed before starting the compiler, so they  have
+to be determined already when @options is encountered.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @keywords
+!alias @keywords
+!index keywords
+!html_name command_keywords_hcp
+
+Syntax: @keywords <name> [<name2> ...]
+
+This command corresponds to:
+    (!link [@symbol] [Command @symbol]) r <name> [<name2] ...]
+and has been implemented for compatibility to AmigaGuide.
+
+(!U)Example(!u):
+!begin_quote
+    (!link [@node] [Command @node]) "Set parameters" (!nl)
+    @keywords "Parameters" "Settings" (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode])
+!end_quote
+
+will, when  searching  via  a  REF-file  (PureC-procedure  or  dialog),
+display  the  page  'Set   parameters'  when  either  'Parameters'   or
+'Settings' is used as a search reference.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @pnode
+!alias+ @pnode
+!index pnode
+!raw [stg] @xref "Command @node"
+!html_name command_node_hcp
+
+With this command one  can generate special  pages which, when  called,
+are displayed (!U)not(!u) in the window but in a small popup menu. This can  be
+useful particularly for  short descriptions, as  the text appears  very
+quickly and disappears equally quickly.
+
+When such  a  'Popup-node' is  displayed  it  can be  closed  again  by
+activating a mouse button or key.
+
+Popup-nodes may be up to 12 lines long, each with up to 60  characters.
+No images or cross-references are permitted within them.
+
+At present,  if  such  nodes  are  called  'externally',  i.e.  from  a
+different hypertext  or by  a  message, they  will  be displayed  in  a
+window.
+
+(!U)Example(!u):
+!begin_quote
+     ... by the use of (!link [-X] [%pnodesub]) the ...        (!I)Click on '-X' (!i)
+!end_quote
+
+!begin_pnode %pnodesub
+!html_name pnodesub_hcp
+Here we have a text that 
+is displayed in a (!B)dialog 
+instead of a window(!b).
+'-X' would normally be 
+explained here.
+!end_node
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @box
+!alias @box
+!index box
+!index Rectangles
+!raw [stg] @xref "Command @rbox"
+!raw [stg] @xref "Command @line"
+!raw [stg] @xref "Command @image"
+!raw [stg] @xref "Command @limage"
+!html_name command_box_hcp
+
+Syntax: @box <X-Offset> <width> <height> [<pattern>]
+
+With this command you can draw ((!link [filled] [Fill-patterns])) rectangles in the text.
+
+The individual parameters have the following significance:
+!begin_xlist [<X-Offset>]
+!item [<X-Offset>]    Sets the distance of the  left upper corner of the  box
+                from the  start  of  the line,  measured  in  character
+                widths. A value of 10 means therefore that the  drawing
+                of the box is to start 10 characters in from the left.
+!item [<width>]      Sets the width of the box in characters. A value of 10
+                therefore means a  box into which  10 characters  would
+                fit horizontally.
+!item [<height>]        Sets the height  of the  box in  (!link [lines] [Command @line]). A  value of  10
+                therefore means a box into which 10 lines of text would
+                fit.
+!item [<pattern>]     Sets the fill-pattern type.
+!end_xlist
+
+The  line  in  which  the  command   is  positioned  is  used  as   the
+Y-coordinate. Naturally lines containing only commands are not counted,
+so that one can also draw several graphic objects (!link [next] [Command @next]) to each other.
+
+All objects in the window, including the text, will be drawn in the  OR
+mode so that  they are  transparent and therefore  can overlap  without
+hiding one another.
+
+(!U)Example(!u):
+!begin_verbatim
+@box 32 16 3 1
+                                Text in a box
+!end_verbatim
+
+!raw [stg] @box 32 16 3 1
+produces the following graphic: (!nl)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Text in a box
+
+
+Rectangle objects are  meant mainly  to lie  under text,  so giving  it
+special emphasis.
+
+As with text-attributes,  the use of  rectangles shouldn't be  overdone
+since this leads to a messy appearance and tends to obscure rather than
+clarify.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @rbox
+!alias @rbox
+!index rbox
+!raw [stg] @xref "Command @box"
+!raw [stg] @xref "Command @line"
+!raw [stg] @xref "Command @image"
+!raw [stg] @xref "Command @limage"
+!html_name command_rbox_hcp
+
+Syntax: @rbox <X-Offset> <width> <height> [<pattern>]
+
+With this command you can draw ((!link [filled] [Fill-patterns])) rectangles with rounded corners
+in the text. For more complete information see (!link [@box] [Command @box]).
+
+(!U)Example(!u):
+
+    @rbox 32 10 5 1
+!raw [stg] @rbox 32 10 5 1
+produces the following graphic:
+
+
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node* Fill-patterns
+!raw [stg] @xref "Command @box"
+!raw [stg] @xref "Command @rbox"
+!html_name patterns_hcp
+
+The following fill-patterns are available:
+
+!raw [stg] @box 2 5 2 0
+!raw [stg] @box 8 5 2 1
+!raw [stg] @box 14 5 2 2
+!raw [stg] @box 20 5 2 3
+!raw [stg] @box 26 5 2 4
+!raw [stg] @box 32 5 2 5
+!raw [stg] @box 38 5 2 6
+!raw [stg] @box 44 5 2 7
+!raw [stg] @box 50 5 2 8
+ (!nl)
+ (!nl)
+~~~0~~~~~1~~~~~2~~~~~3~~~~~4~~~~~5~~~~~6~~~~~7~~~~~8
+
+These patterns may be used with the commands @box and @rbox.
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @line
+!alias @line
+!index line
+!raw [stg] @xref "Command @box"
+!raw [stg] @xref "Command @rbox"
+!raw [stg] @xref "Command @image"
+!raw [stg] @xref "Command @limage"
+!html_name command_line_hcp
+
+Syntax: @line <x-offset = Start-column> <x-length = Number of columns>
+              <y-length = Number of lines> [<attribute> [<style>]]
+
+This command is used for drawing lines in hypertexts. It is particuarly
+effective as a stylish alternative to the usual ASCII underlining
+and also for linking rectangles with one another and/or drawing  arrows
+between texts, images and rectangles.
+
+Here's how the parameters work in action:
+
+~~~~~~~~~~<----x-length----->
+!raw [stg] @line 11 19 5 0 1
+!raw [stg] @line 11 19 0 2 1
+!raw [stg] @line 30 0 5 2 1
+<x-offset> (!nl)
+(!nl)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<y-length> (!nl)
+(!nl)
+(!nl)
+
+All values are entered as character-width/line coordinates. The  number
+of columns may be entered as a negative number between -127 and 126  if
+a line from upper  right to lower  left is drawn.  The number of  lines
+must always be positive in the range 0 to 254.
+
+So:
+!begin_xlist [X-offset:] !compressed
+!item [X-offset:]   1..255
+!item [X-length:]    -127..126
+!item [Y-length:]    0..254
+!end_xlist
+
+<attribute>: This parameter controls whether lines (!link [include] [Command @include]) arrowheads:
+
+!label arrows
+The meanings are:
+!begin_xlist [3:] !compressed
+!raw [stg] @line 40 10 0 0 1
+    !item [0:] No arrowheads
+!raw [stg] @line 40 10 0 1 1
+    !item [1:] Arrowhead at start of line
+!raw [stg] @line 40 10 0 2 1
+    !item [2:] Arrowhead at end of line
+!raw [stg] @line 40 10 0 3 1
+    !item [3:] Arrowheads at both ends of the line
+!end_xlist
+
+!label Line style
+<style>: Use this parameter to set the line pattern (or line style).
+You have a choice of:
+!begin_xlist [7:] !compressed
+!raw [stg] @line 40 10 0 0 1
+    !item [1:] Continuous
+!raw [stg] @line 40 10 0 0 2
+    !item [2:] Long dash
+!raw [stg] @line 40 10 0 0 3
+    !item [3:] Dotted
+!raw [stg] @line 40 10 0 0 4
+    !item [4:] Dash-dotted
+!raw [stg] @line 40 10 0 0 5
+    !item [5:] Short dash
+!raw [stg] @line 40 10 0 0 6
+    !item [6:] Dash, dot, dot
+!raw [stg] @line 40 10 0 0 7
+    !item [7:] Fine dots
+!end_xlist
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @autorefon
+!alias @autorefon
+!index autorefon
+!raw [stg] @xref "Command @autorefoff"
+!raw [stg] @xref "ignore"
+!raw [stg] @xref "Option a"
+!html_name command_autorefon_hcp
+
+With   this   command   one   switches   on   automatic   creation   of
+cross-references, starting from the line following this directive.
+
+The commands  @autorefon and  (!link [@autorefoff] [Command @autorefoff]) can  be stacked  in  pairs,
+meaning that after  several (!link [@autorefoff] [Command @autorefoff])  commands an  equal number  of
+@autorefon commands  must  follow in  order  to switch  the  automatic
+creation of cross-references on again.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @autorefoff
+!alias @autorefoff
+!index autorefoff
+!raw [stg] @xref "Command @autorefon"
+!raw [stg] @xref "ignore"
+!raw [stg] @xref "Option a"
+!html_name command_autorefoff_hcp
+
+With  this   command   one   switches   off   automatic   creation   of
+cross-references, starting from the line following this directive.
+
+The commands  (!link [@autorefon] [Command @autorefon]) and  @autorefoff can  be stacked  in  pairs,
+meaning that after  several @autorefoff  commands an  equal number  of
+(!link [@autorefon] [Command @autorefon]) commands  must  follow in  order  to switch  the  automatic
+creation of cross-references on again.
+
+This command can  be used when  a word or  phrase, though connected  by
+syntax to  another page,  does  not match  it semantically.  HCP  would
+convert such  a  word/phrase  to a  cross-reference,  even  though  the
+information shown there does not fit the context in which it was used.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @indexon
+!alias @indexon
+!index indexon
+!raw [stg] @xref "Command @indexoff"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Option i"
+!raw [stg] @xref "Option n"
+!html_name command_indexon_hcp
+
+Syntax: @indexon
+
+This command switches on  the automatic inclusion of  the (!link [node] [Command @node]) name  in
+the (!link [index] [Command @index]), starting with the line following this command. This  feature
+is already switched on as a  default, and can be influenced  externally
+with -n.
+
+Commands @indexon and (!link [@indexoff] [Command @indexoff]) can be stacked in pairs, meaning that
+for two @indexoffs  one also  needs two  @indexons to  switch on  the
+inclusion of the (!link [next] [Command @next]) node again.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @indexoff
+!alias @indexoff
+!index indexoff
+!raw [stg] @xref "Command @indexon"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Option i"
+!raw [stg] @xref "Option n"
+!html_name command_indexoff_hcp
+
+Syntax: @indexoff
+
+This is the counterpart of  (!link [@indexon] [Command @indexon]). This command therefore  switches
+off the automatic  inclusion of the  (!link [node] [Command @node]) name in  the (!link [index] [Command @index])  (starting
+from the line following the command).
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @index
+!alias @index
+!index index
+!raw [stg] @xref "Command @symbol"
+!raw [stg] @xref "Option i"
+!html_name command_index_hcp
+
+Syntax: @index <name> [<name2> ...]
+
+This command serves for the  completion of the otherwise  automatically
+created catchword index. The HCP generates a page with the name 'Index'
+that incorporates all page  names except those  whose name starts  with
+'%', as long as this has not been switched off via (!link [@indexoff] [Command @indexoff]) or -n.
+
+Since this is generally insufficient,  one can use the @index  command
+to incorporate further catchwords in the table. These appear emphasised
+in the index-table, and selecting them leads to display of the page  in
+which they  were defined,  beginning with  the line  where @index  was
+placed.
+ 
+The line number in which the command is placed will also be taken  into
+consideration and  displayed  as  the  first line  when  the  entry  is
+selected in the index.
+
+(!U)Example(!u):
+!begin_quote
+    ... (!nl)
+    (!link [@node] [Command @node]) Computer (!nl)
+    ... (!nl)
+    @index processor (!nl)
+    The processor of a computer ... (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode])
+!end_quote
+
+incorporates the catchword 'processor' into the index, and when this is
+selected displays  the  page  'Computer'  starting  at  the  line  'The
+processor of a computer...'
+
+The @index command may be used as often as desired, and the  parameter
+(here: 'processor')  may be  specified  more than  once; it  will  then
+likewise appear repeatedly in the index-table.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @noref
+!alias @noref
+!index noref
+!raw [stg] @xref "Command @autorefon"
+!raw [stg] @xref "Command @autorefoff"
+!raw [stg] @xref "ignore"
+!raw [stg] @xref "Option a"
+!html_name command_noref_hcp
+
+Syntax: @noref
+
+This command ensures that the page in which it is specified will not be
+referenced automatically;  thus the  compiler will  not make  automatic
+hypertext links to this page.
+
+(!U)Example(!u):
+
+!begin_quote
+    (!link [@node] [Command @node]) Test (!nl)
+    @noref (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode]) (!nl)
+    ... (!nl)
+    (!link [@node] [Command @node]) Page (!nl)
+    ... (!nl)
+    ... Test ... (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode])
+!end_quote
+
+Here the  word 'Test'  in  the node  'Page' will  not  be marked  as  a
+cross-reference to the corresponding node, since this has been  blocked
+by @noref in the node 'Test'.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @extern
+!alias @extern
+!index extern
+!raw [stg] @xref "Command @uses"
+!raw [stg] @xref "Command @alias"
+!raw [stg] @xref "@{ link }"
+!html_name command_extern_hcp
+
+Syntax: @extern <text> file/<name> [line number]
+
+This command serves to automate the setting of references in the  text.
+References within a text are found and referenced by the HCP itself. In
+order to extend this simplification to external references, that is  to
+other files as well, one can use the @extern command.
+
+The parameter 'text' defines the character string that has to be  found
+in the text and then made into a reference.
+
+The parameter 'file' defines the file  to which such references are  to
+be set. This can be either a hypertext file or an ASCII file.
+
+The parameter 'name' defines the name  of the page to be displayed.  If
+the file is an ASCII text then 'Main' should be specified for the name.
+
+The parameter 'line number' defines the number of the first line to  be
+displayed from the page. This parameter is optional.
+
+(!U)Example(!u):
+!begin_quote
+    @extern "AV Protocol" "PROTO.HYP/AV Protocol" (!nl)
+    @extern "IMG-format" PICTURE.HYP/IMG (!nl)
+    ... (!nl)
+    ... the IMG-format is used for this. (!nl)
+    ...
+!end_quote
+will  mark  the  character  string  'IMG-format'  automatically  as   a
+cross-reference to the page 'IMG' in the file PICTURE.HYP. At the least
+this improves  the  readability  of  the ASCII  text.  If  an  external
+reference is  used  frequently then  this  command also  makes  writing
+easier.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Commands @label/@alabel
+!alias+ Command @label
+!alias+ Command @alabel
+!alias @label
+!alias @alabel
+!index label
+!index alabel
+!raw [stg] @xref "Command @symbol"
+!html_name command_label_hcp
+
+Syntax: @label <name> [<name2> ...] (!nl)
+~~~~~~~~@alabel <name> [<name2 ...]
+
+These commands set  a marker within  a page. This  serves the  purpose,
+first that with link instructions (using 'label') there is no need  for
+line numbers having  to be calculated/adapted,  and second that  (using
+'alabel') cross-references  to a  position within  a page  can also  be
+generated automatically by the auto-referencer of the HCP.
+
+(!U)Examples(!u):
+
+!begin_quote
+    (!link [@node] [Command @node]) Test (!nl)
+    ... (!nl)
+    @alabel 'trial' (!nl)
+    Under trial one understands... (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode]) (!nl)
+    ... (!nl)
+    See also under 'trial'. (!nl)
+    ...
+!end_quote
+
+automatically generates a cross-reference for  the word 'trial' to  the
+page 'Test' directly to the line 'Under trial one understands...'.
+
+!begin_quote
+    @{try link Test trial}
+!end_quote
+
+would, in the above example, emphasise the word 'try', and when this is
+clicked on display the page 'Test'  starting from the line 'trial'.  In
+fact the 'link' command is not even necessary here, since 'alabel'  was
+used and the HCP can set the corresponding reference automatically.
+
+Labels are global for a text, i.e. each name may only be used once.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @uses
+!alias @uses
+!index uses
+!raw [stg] @xref "Option u"
+!raw [stg] @xref "Command @extern"
+!raw [stg] @xref "@{ link }"
+!html_name command_uses_hcp
+
+Syntax: @uses <file> [<file>...]
+
+With this command  it's also possible  to generate cross-references  to
+other hypertexts automatically. The  HCP loads the  (!link [index] [Command @index]) pages of  the
+specified files and marks all occurrences of page names in the text  to
+be translated as external references.
+
+Permitted files  are hypertexts  (*.HYP) and  reference files  (*.REF);
+both of these are also created by the compiler.
+
+(!U)Example(!u):
+!begin_quote
+    @uses aes.hyp (!nl)
+    ... (!nl)
+    Here objc_draw() is used among others ...
+!end_quote
+
+will mark the word  'objc_draw()' automatically as  a reference to  the
+file AES.HYP, if a page of that name exists in it.
+
+The @uses command may only be used before the definition of the  first
+page.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @symbol
+!alias @symbol
+!raw [stg] @xref "Command @symbol"
+!raw [stg] @xref "Command @alias"
+!raw [stg] @xref "Command @alabel"
+!raw [stg] @xref "Command @keywords"
+!index symbol
+!html_name command_symbol_hcp
+
+Syntax: @symbol [air] <name> [<name2 ...]
+
+With this command we are dealing with a generalisation of the  commands
+(!link [@index] [Command @index]), (!link [@keywords] [Command @keywords]), (!link [@alabel] [Commands @label/@alabel]) and (!link [@alias] [Command @alias]), i.e. the named commands  can
+be be replaced completely by @symbol:
+!begin_itemize !compressed
+    !item (!link [@alias] [Command @alias])     corresponds to  @symbol ar (at the start of a page)
+    !item (!link [@alabel] [Commands @label/@alabel])    corresponds to  @symbol ar
+    !item (!link [@keywords] [Command @keywords])  corresponds to  @symbol r
+    !item (!link [@index] [Command @index])     corresponds to  @symbol i
+!end_itemize
+
+As is already clear from the  comparison, one can specify for  @symbol
+exactly which purposes the specified name is to be used for:
+!begin_xlist ['a'] !compressed
+    !item ['a'] The name should be used by the auto-referencer
+    !item ['i'] The name should be included in the index-table
+    !item ['r'] The name should be written to the reference-file.
+!end_xlist
+
+If none of the named (!link [options] [Command @options]) is specified then HCP will assume 'air'.
+
+If several names are given then the options portion (!I)must(!i) be specified.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @alias
+!alias @alias
+!index alias
+!raw [stg] @xref "Command @symbol"
+!html_name command_alias_hcp
+
+Syntax: @alias <name> [<name2> ...]
+
+With this directive further names can be assigned to a page. If the HCP
+finds the alias-name in the text of another page, then at that position
+of that text the  auto-referencer (as long as  it is switched on)  will
+also set a link to this page.
+
+(!U)Example(!u):
+!begin_quote
+    (!link [@node] [Command @node]) "Option -X" (!nl)
+    @alias "-X" (!nl)
+    ... (!nl)
+    (!link [@endnode] [Command @endnode]) (!nl)
+    ... (!nl)
+    ... -X ...
+!end_quote
+
+Marks the word '-X' and when this is selected the page 'Option -X' will
+be displayed.
+
+@alias is accordingly a simplification, since the same result could be
+achieved with @{-X link "Option -X"} also. This direct possibility has
+the disadvantage, however, that it requires more writing effort since a
+link command has to be inserted on each occasion.
+
+If the automatic  setting of references  is switched off  with (!link [-a] [Option a])  then
+@alias has no effect.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @xref
+!alias @xref
+!index xref
+!html_name command_xref_hcp
+
+Syntax: @xref <name> [<title>]
+
+With this command one  can specify up to  12 cross-references for  each
+page which ST-Guide will (!link [include] [Command @include]) in the (!XLINK [See also] [st-guide] [See also]) popup, from where they
+can be selected quickly and conveniently.
+
+!begin_xlist [@title]
+!item [<name>]  here is the  name of an  internal or external  page in the  same
+       format as used for the link command
+!item [<title>] is the  text that  is  to appear  in the  popup;  if it  is  not
+       specified, then the page name will be incorporated.
+!end_xlist
+
+@xref may only be placed within nodes.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @database
+!alias @database
+!index database
+!html_name command_database_hcp
+
+Syntax: @database <name>
+
+This directive is meant to make the  REF files easier to read. It  will
+be incorporated in  them by the  compiler if the  occasion arises,  and
+displayed by RefLink when run with commands '(!link [-l] [Option l])' and '(!link [-v] [Option v])'.
+A well considered  string used as  an argument for  'database' is  much
+more informative than any file name...
+
+The name  specified here  will also  be displayed  by ST-Guide  in  the
+'Info' dialog,  used  in  the  list of  matches  during  searches,  and
+incorporated by STool in the catalogue it produces.
+
+During reconstruction  of  a  hypertext  back to  an  *.STG  file,  the
+database name will be recreated.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Commands @remark & ##
+!alias+ Command @remark
+!alias+ @remark
+!alias ##
+!index remark
+!html_name command_remark_hcp
+
+Theses directives can be used for providing source texts with comments.
+They may only be placed at the start of a line, and make the HCP ignore
+the whole line so it is not incorporated in the hypertext.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @width
+!alias @width
+!index width
+!raw [stg] @xref "Option s"
+!html_name command_width_hcp
+
+Syntax: @width number
+
+The 'width' statement sets the maximum  width of a line in  characters.
+Normally HCP only wraps lines with a length greater than 75 characters,
+so that parts of lines are  not obscured on small screens and/or  small
+windows.
+
+If, however,  a different  line  width is  desired,  then this  can  be
+specified with this command. This can be done several times in a  text,
+so that  it  is possible  to  format  every page  with  different  line
+lengths. But it's always better to write  the text from the start in  a
+format  that  can  be  displayed  at  the  usual  resolutions   without
+horizontal scrolling in a window.
+
+The line width is also important for creation of the index-table. There
+as many entries will be packed into a line as the line length  permits,
+with a minimum of one. If one wishes to specify a separate line  length
+for the index-table, then the @width  command for this must be  placed
+at the end of the text.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @include
+!alias @include
+!index include
+!raw [stg] @xref "Commands @tree/@endtree"
+!raw [stg] @xref "@{ link }"
+!html_name command_include_hcp
+
+Syntax: @include <name>
+
+With @include, as  in several 'proper'  programming languages, one  can
+insert files into others.
+
+(!U)Example(!u): (!nl)
+    File TEST1.TXT contains
+!begin_quote
+        (!link [@node] [Command @node]) Test1 (!nl)
+        This is a test-page (!nl)
+        (!link [@endnode] [Command @endnode])
+!end_quote
+    and file TEST2.TXT contains
+!begin_quote
+        (!link [@node] [Command @node]) Main (!nl)
+        This is the Main page, but there is also Test1. (!nl)
+        (!link [@endnode] [Command @endnode]) (!nl)
+        @include TEST1.TXT
+!end_quote
+
+    When TEST2.TXT is now translated and the HCP reads the '@include',
+    it will produce:
+!begin_quote
+        @node Main (!nl)
+        This is the Main page, but there is also Test1. (!nl)
+        @endnode (!nl)
+        (!link [@node] [Command @node]) Test1 (!nl)
+        This is a test-page (!nl)
+        (!link [@endnode] [Command @endnode]) (!nl)
+!end_quote
+
+The @include statement may only be placed  at the start of a line  and
+will be  executed in  both  Pass 1  and Pass  2,  so that  it  slightly
+increases the time taken for  translation. Nevertheless it is  sensible
+to use it, for instance when one wishes to retain a clear overview of a
+hypertext source, which  might consist of  several files, each  holding
+one chapter.
+
+Special case in connection with RSC files:
+
+If the file to be  included has an '.H'  extension, i.e. is a  C-header
+file, and the command  is not placed within  a (!link [node] [Command @node]), then the  compiler
+will read the  file in, but  only in  order to collect  all the  (!link [define] [Command @define])
+statements so that they can be used for:
+    (!link [@tree] [Commands @tree/@endtree])/(!link [endtree] [Commands @tree/@endtree]) and
+    @{... link ...}
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @prev
+!alias @prev
+!index prev
+!raw [stg] @xref "Command @next"
+!raw [stg] @xref "Command @toc"
+!html_name command_prev_hcp
+
+Syntax: @prev <name>
+
+This directive  influences  the behaviour  of  the  'Page <'   button  in  the
+ST-Guide window. If @prev is not  specified for a page, then  'Page <'   will
+show the physically preceding  page, i.e. the one  that was defined  in
+the source  text just  before the  current one.  With @prev  the  page
+specified by the parameter <name> will be displayed instead. For  this,
+<name> must be the name  of a page in  the current text, otherwise  the
+HCP will break off the translation process and issue an error message.
+
+The parameter of  @prev may also  be the name  of the current  page,in
+which case the  'Page <'  button is greyed out and so cannot be selected. That
+page then has no  predecessor, which is always  the case for the  first
+page if no @prev command has been specified for it.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @next
+!alias @next
+!index next
+!raw [stg] @xref "Command @prev"
+!raw [stg] @xref "Command @toc"
+!html_name command_next_hcp
+
+Syntax: @next <name>
+
+This directive  influences  the behaviour  of  the  'Page >'   button  in  the
+ST-Guide window. If @next is not  specified for a page, then  'Page >'   will
+show the physically following  page, i.e. the one  that was defined  in
+the source  text just  after  the current  one.  With @next  the  page
+specified by the parameter <name> will be displayed instead. For  this,
+<name> must be the name  of a page in  the current text, otherwise  the
+HCP will break off the translation process and issue an error  message.
+
+The parameter for @next may also be  the name of the current page,  in
+which case the  'Page >'  button is greyed out and so cannot be selected. That
+page then has no successor, which is always the case for the last  page
+when no @next command has been specified for it.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @toc
+!alias @toc
+!index toc
+!raw [stg] @xref "Command @next"
+!raw [stg] @xref "Command @prev"
+!html_name command_toc_hcp
+
+Syntax: @toc <name>
+
+This directive influences the behaviour of the  'Contents' button in
+the ST-Guide window. If @toc is  not specified for a page, then  'toc'
+will display the physically first page of the text. With @toc the page
+specified with  the parameter  <name> will  be displayed  instead.  For
+this, <name> must be the name of a page in the current text,  otherwise
+the HCP  will break  off the  translation process  and issue  an  error
+message.
+
+If the @toc  command is  not inside a  (!link [node] [Command @node]), then  the name  specified
+there will be used for all  following nodes without their own  explicit
+@toc entry. Using  this method it's  easy to create  a group of  nodes
+with a single entry in the Contents popup.
+
+It's therefore  possible to  use this  directive to  create and  manage
+several tables of contents for a given text.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @{...}
+!alias+ @{...}
+!index link
+!index alink
+!index system
+!index quit
+!index rx
+!index rxs
+!index ignore
+!html_name command_inline_hcp
+
+The following commands of this class are currently implemented:
+!begin_itemize !compressed
+    !item @{ <text> (!link [link] [@{ link }]) <name> [<line>]}
+    !item @{ <text> (!link [alink] [@{ alink }]) <name> [<line>]}
+    !item @{ <text> (!link [system] [@{ system }]) <text>}
+    !item @{ <text> (!link [rx] [@{ rx }]) <text>}
+    !item @{ <text> (!link [rxs] [@{ rxs }]) <text>}
+    !item @{ <text> (!link [quit] [@{ quit }])}
+    !item @{ <text> (!link [ignore] [@{ ignore }])}
+    !item @{ (!link [<Attributes>] [Set text attributes]) }
+!end_itemize
+
+These commands can  be placed at  any desired position  in a line.  The
+case of the characters (caps/l.c.) is immaterial for the directives.
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ quit }
+!index quit
+!html_name command_quit_hcp
+
+Syntax: @{ <text> quit}
+
+This command  can be  used  to close  the  current window  of  ST-Guide
+without having to click on the 'Closer' icon of the window. This  could
+be an advantage especially  for unskilled users,  since the given  text
+will always be more  meaningful than the small symbol at the top  left
+corner of the window.
+
+(!U)Example(!u):
+
+!begin_quote
+    @{"Close window" quit}
+!end_quote
+
+would appear in the text as follows:
+!begin_quote
+    (!raw [stg,amg] [@{"Close window" QUIT}])
+!end_quote
+
+On clicking on  this text  the window  will be  closed without  further
+query.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ rxs }
+!index rxs
+!raw [stg] @xref "@{ rx }"
+!raw [stg] @xref "@{ system }"
+!html_name command_rxs_hcp
+
+Syntax: @{ <text> rxs <text>}
+
+This  command  serves  in  the  Amiga  version  for  the  execution  of
+REXX-scripts. Since there isn't  such a system (yet)  for the ST,  this
+command actually does nothing when clicked on.
+
+(!U)Example(!u):
+!begin_quote
+    @{compiling rxs compile.rexx}
+!end_quote
+appears in the text as follows:
+!begin_quote
+    (!raw [stg,amg] [@{"compiling" RXS "compile.rexx"}])
+!end_quote
+
+and will pass the specified  file name (compile.rexx) to AREXX, so  that
+the commands contained in it will be executed.
+
+For the ST-version, it is planned to possibly send such commands to the
+running application,  with the  hope that  this can  do something  with
+them. Perhaps provisions  will also be  made in the  procedure that  an
+application can register itself as  supporting REXX, in which case  the
+parameters will then be passed to this application.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ rx }
+!index rx
+!raw [stg] @xref "@{ rxs }"
+!raw [stg] @xref "@{ system }"
+!html_name command_rx_hcp
+
+Syntax: @{ <text> rx <text>}
+
+This  command  serves  in  the  Amiga  version  for  the  execution  of
+REXX-commands. Since there isn't  such a system (yet)  for the ST,  the
+meaning of these commands has been changed as follows:
+
+If a  special  application  has  been specified  for  a  hypertext  via
+(!link [@hostname] [Command @hostname]) <app-name>, then, when an 'rx' cross-reference is  selected,
+ST-Guide tries to find this application  and passes to it the  argument
+specified for 'rx'.
+
+At present the specified string will be sent via a VA_START message  to
+the relevant application.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ system }
+!index system
+!raw [stg] @xref "@{ rx }"
+!raw [stg] @xref "@{ rxs }"
+!html_name command_system_hcp
+
+Syntax: @{ <text> system <text>}
+
+This command is intended  to let commands,  batch-files or programs  be
+executed by a parallel running command line interpreter.
+
+Since desk accessories may/should not  start any programs and I  didn't
+want to  build  in a  CLI,  the 'system'  argument  is passed  via  the
+AV-procedure to the  running AV-server (main  application) so that  (at
+least under GEMINI) programs and  batch files may be executed  directly
+from within a  hypertext. If the  argument is not  an executable  file,
+then the named desktops will look out a suitable program for it,  which
+will then be started.
+
+An absolute requirement  to be  noted here is  that all  files must  be
+specified  with  their  complete  access  path,  or  be  locatable  via
+shel_find().
+
+Since the paths to the files are likely to be different with  different
+computers, the parameter  following 'system'  may also  be a  variable,
+which ST-Guide will then look for in the ST-GUIDE.INF file.
+
+(!U)An example will then look as follows(!u):
+
+!begin_quote
+    @{"Start STool" system $STOOL}
+!end_quote
+
+One should note the '$' character before the name, from which  ST-Guide
+recognises that this is a varaible.
+
+For this to work, ST-GUIDE.INF then  has to contain something like  the
+following:
+
+!begin_quote
+    ... (!nl)
+    $STOOL=C:\ST-GUIDE\STOOL.TOS (!nl)
+    ...
+!end_quote
+
+One should note  that here too  the '$'  must be included  in order  to
+prevent confusion with already assigned variable names.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ alink }
+!alias+ @alink
+!index alink
+!raw [stg] @xref "@{ link }"
+!html_name command_alink_hcp
+
+Syntax: @{ <text> alink <name> <line>}
+
+This command is identical to 'link'  except for the display of the  new
+page a new window will also be opened.
+
+Since ST-Guide  only works  with one  window, 'alink'  is identical  to
+'link'.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ ignore }
+!alias+ @ignore
+!index ignore
+!raw [stg] @xref "Command @autorefoff"
+!raw [stg] @xref "Command @autorefon"
+!raw [stg] @xref "Option a"
+!html_name command_ignore_hcp
+
+Syntax: @{ <text> ignore}
+
+With this command any portion of a line can be protected from the auto-
+referencer. Any text between the curly brackets will not be  referenced
+automatically.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node @{ link }
+!alias+ @link
+!index link
+!raw [stg] @xref "Commands @label/@alabel"
+!raw [stg] @xref "Command @symbol"
+!html_name command_link_hcp
+
+Syntax: @{ <text> link <name> [<line>]}
+
+This command serves for setting references explicitly. The HCP can  set
+most of the cross-references itself by comparing names, but at times it
+may be  necessary, or  sensible,  to make  a  character string  into  a
+cross-reference which does not correspond to  the name of a page, or  a
+name defined by (!link [@alias] [Command @alias]), (!link [@uses] [Command @uses]) or (!link [@extern] [Command @extern]).
+
+(!U)Example(!u):
+
+!begin_quote
+    This is a @{reference link Cross-reference} to another page.
+!end_quote
+
+will emphasise the  text 'reference'  with underlining  and bold  type;
+when  clicked   on   this  will   display   a  page   with   the   name
+'Cross-reference'.
+
+!begin_quote
+    Another @{reference link Cross-reference 12} to a special 
+    paragraph.
+!end_quote
+
+will behave as in the first example, with the difference that the  page
+named 'Cross-reference' will not be  displayed from the beginning,  but
+starting from line 12. The authors however advise against using  'real'
+line numbers  in  this connection  and  have implemented  the  commands
+(!link [@label] [Commands @label/@alabel]) and (!link [@alabel] [Commands @label/@alabel]), which are to be preferred.
+
+!label RSC-Files
+The 'link' command can however also be used for incorporating RSC files
+in a hypertext:
+!begin_quote
+        @{"Display Options dialog" link pacshell.rsc/5}
+!end_quote
+will load the RSC-file  'pacshell.rsc' after a  click on the  reference
+and display the 5th dialog from it.
+
+In conjunction with  (!link [@include] [Command @include]), (!link [@tree] [Commands @tree/@endtree]) and  (!link [@endtree] [Commands @tree/@endtree]), this offers  the
+opportunity to (!link [define] [Command @define]) a  Help page for any  desired objects in any  RSC
+files you choose.
+
+(!U)Example(!u):
+!begin_quote
+    ... (!nl)
+    (!link [##] [Commands @remark & ##]) So that we can call dialogs and objects by their names (!nl)
+    (!link [@include] [Command @include]) pacshell.h (!nl)
+    ... (!nl)
+    ## Definition of the Object/Page table for the OPTIONS dialog (!nl)
+    (!link [@tree] [Commands @tree/@endtree]) OPTIONS (!nl)
+    ## for a click on the object named OBJ_1 the ST-Guide should (!nl)
+    ## display the page <Page_1> (!nl)
+!begin_quote !compressed
+        OBJ_1   Page_1 (!nl)
+        OBJ_2   Page_2 (!nl)
+        OBJ_3   Page_3 (!nl)
+        OBJ_4   Page_4 (!nl)
+!end_quote
+    ## End of table. (!nl)
+    (!link [@endtree] [Commands @tree/@endtree]) (!nl)
+    ... (!nl)
+    (!link [##] [Commands @remark & ##]) Load the RSC Files and display the OPTIONS dialog (!nl)
+    @{"Options dialog" link pacshell.rsc/OPTIONS}
+!end_quote
+
+A  further   possibility   is  to   use   this  command   for   setting
+cross-references to pages  in other  hypertext files or  even to  ASCII
+texts (see under External cross-references).
+
+!end_node
+
+!begin_node Set text attributes
+!alias+ <Attributes>
+!html_name command_attr_hcp
+
+Syntax: @{<Attr>[<Attr>...]}
+
+With this construct  one can  set text attributes  (which can  continue
+over more than  one line).  Each of them  is specified  by one  letter,
+where a capital letter signifies that  the attribute is to be  switched
+on and a lower case letter switches it off again.
+
+The following characters can be used:
+!begin_xlist [U/u] !compressed
+    !item [U/u] '(!U)underlined(!u)' characters         Switch  ON/OFF
+    !item [B/b] '(!B)bold(!b)'       characters               Switch  ON/OFF
+    !item [G/g] '(!G)ghosted(!g)'     or 'grey' characters  Switch  ON/OFF
+    !item [I/i] '(!I)italic(!i)'     characters             Switch  ON/OFF
+    !item [O/o] '(!O)outlined(!o)'   characters           Switch  ON/OFF
+    !item [S/s] '(!S)shadowed(!s)'   characters           Switch  ON/OFF
+    !item [0] (zero)                all attributes          Switch     OFF
+!end_xlist
+
+(!U)Example(!u):
+
+!begin_quote
+    This is @{U}underlined and @{G}grey@{g} text.@{0}
+!end_quote
+Produces the following line:
+!begin_quote
+    This is (!U)underlined and (!G)grey(!g) text.(!u)
+!end_quote
+
+Here underlining is switched on (@{U}), then the ghosted/grey  display
+is added (@{G}), next the grey attribute is switched off again (@{g})
+and and finally all the attributes are switched off (@{0}).
+
+To  prevent  confusion,  one  cannot  select  bold  and  underlined  in
+combination as it's  used already by  ST-Guide to emphasise  selectable
+cross-references.
+
+Naturally one can also make  several attribute assignments in one  pair
+of curly brackets:
+
+    @{UbG} switches underlining (U) and ghosted/grey (G) on
+            as well as bold (b) off.
+
+At the end of a page all attributes will be switched off automatically,
+but within a page all attributes  remain valid until they are  switched
+off again with a command by the author of the text.
+
+The authors of this program strongly advise you to avoid excessive  use
+of attributes (true to the motto: Less is often more)!
+
+Used sparingly  and  with consideration,  text  attributes can  form  a
+useful supplement to the hypertext  philosophy, though this should  not
+serve as  an  incitement to  make  these  texts look  like  some  BASIC
+programs...
+
+!end_node
+
+!end_node # @{...}
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @image
+!alias @image
+!index image
+!index Bilder
+!raw [stg] @xref "Command @limage"
+!raw [stg] @xref "Command @box"
+!raw [stg] @xref "Command @rbox"
+!raw [stg] @xref "Command @line"
+!html_name command_image_hcp
+
+Syntax: @image <file> <X-Offset> [(!link [%<dither-mask>] [%dither-mask])]
+
+The parameter <file> specifies the access path for the file  containing
+the desired image. The picture formats IMG (Image), ICN (Icon) and  IFF
+are are  supported  for  this.  Images in  other  formats  have  to  be
+transformed with a suitable converter  or graphics program into one  of
+these formats.
+
+The parameter <x-offset> specifies the position of the image within the
+line; the value given will be  interpreted as an offset in  characters.
+If you set this offset to 0; ST-Guide will centre the picture based  on
+the used line length ((!link [@width] [Command @width]))
+
+(!U)Example(!u):
+!begin_quote
+    @image logo.icn 34
+!end_quote
+!stg_limage [off]
+!begin_center
+!image (!IMAGES)hcp_logo.img
+!end_center
+!stg_limage [on]
+shows an image in this line: (!nl)
+(!nl)
+(!nl)
+...and this line is placed under the image.
+
+!begin_node %dither-mask
+!html_name dithermask_hcp
+
+The optional  parameter  '%<dither-mask>'  only  means  something  when
+considering which  colours  become  black  and  white  when  converting
+coloured images to B/W.
+
+By default ST-Guide changes white and light grey to white and all other
+colours to  black, this  nearly always  provides optimal  results  with
+snapshots of dialogues.
+
+The mask is as follows:
+!begin_itemize
+!item I.D. (to prevent mistakes with earlier parameters) preceded by a  '%'
+  for the time being.
+!item after this you can  specify up to a maximum  of 16 '1's and '0's,  to
+  coicide with the individual colours of the colour (!link [index] [Command @index]). '1' sets the
+  colour to black, whilst '0' sets it to white.
+!end_itemize
+
+(!U)Example(!u):
+  Bright Red has the index 2 and should  be set to white in B/W, so  the
+ parameters will look like this:
+!begin_quote
+        %010...
+!end_quote
+  (here will be white(0)->white, black(1)->black and red(2)->white)
+!end_node
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @limage
+!alias @limage
+!index limage
+!index Bilder
+!raw [stg] @xref "Command @image"
+!raw [stg] @xref "Command @box"
+!raw [stg] @xref "Command @rbox"
+!raw [stg] @xref "Command @line"
+!html_name command_limage_hcp
+
+Syntax: @limage <file> <X-Offset> [(!link [%<dither-mask>] [%dither-mask])]
+
+This  command  is  essentially  identical  to  (!link [@image] [Command @image]).  The   relevant
+difference is that images incorporated in  this way will be treated  by
+ST-Guide as lines (limage == line  image), meaning that text cannot  be
+placed to either the left or the  right of them and it isn't  necessary
+to insert blank lines below  the image, as ST-Guide will  automatically
+move the following text down by  a distance depending on the height  of
+the image and the current font.
+
+It is possible that  images incorporated  in   this   way  may   in   the  future   be   used   for
+cross-referencing.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @node
+!alias @node
+!index node
+!raw [stg] @xref "Command @endnode"
+!raw [stg] @xref "Command @pnode"
+!raw [stg] @xref "Command @title"
+!html_name command_node_hcp
+
+Syntax: @node <name> [<title>]
+
+New pages are introduced with  this command. Everything placed  between
+the @node and the @endnode commands belongs to this page.
+
+The parameter <name> gives the  page its name. If automatic  references
+are being created then all other  pages will be searched for this  name
+and a reference to this page will be inserted in them.
+
+The parameter <title> is optional and determines the text that will  be
+written in the title line of the  window. The window title can also  be
+set with the command @title. If no window title is specified then  the
+name of the page will be displayed there.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @endnode
+!alias @endnode
+!index endnode
+!raw [stg] @xref "Command @node"
+!html_name command_endnode_hcp
+
+Syntax: @endnode
+
+This command sets the end of a page.
+
+(!U)Example(!u):
+!begin_quote
+    @node Contents (!nl)
+    .... text .... (!nl)
+    @endnode
+!end_quote
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!begin_node Command @title
+!alias @title
+!index title
+!raw [stg] @xref "Command @node"
+!html_name command_title_hcp
+
+Syntax: @title <name>
+
+With this command you can determine the window title that will be shown
+when the page in which this command is placed is displayed.
+
+This command  may only  be positioned  within a  page, i.e.  between  a
+@node and an @endnode command.
+
+The window title  can however  also be specified  previously using  the
+@node command.
+
+!end_node
+
+# -----------------------------------------------------------------------------
+
+!end_node # Commands

@@ -1,0 +1,795 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] The hypertext of
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] The Windows help of
+!else
+!ifdest [rtf]
+!docinfo [title] The book of
+!else
+!docinfo [title] The guide of
+!endif
+!endif
+!endif
+!docinfo [program] STool
+!docinfo [author] Thorsten Otto
+!docinfo [programimage] (!IMAGES)stool
+
+!macro PROGRAM STool
+!raw [stg] @extern "included configuration file" "catalog.cfg/Main"
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!ifdest [stg,amg]
+!begin_raw
+@subject "Documentation/ST-Guide"
+@options "+z -t4 +i"
+@extern HypView "hypview.hyp/Main"
+@extern HCP "hcp.hyp/Main"
+@extern RefLink "reflink.hyp/Main"
+@extern STool "stool.hyp/Main"
+@extern "ST-Guide" "st-guide.hyp/Main"
+@extern MAN2STG "man2stg.hyp/Main"
+@extern Remarker "Remarker.hyp/Main"
+@extern STG-FAQ "stg-faq.hyp/Main"
+!end_raw
+!endif
+!docinfo [stgdatabase] Documentation for STOOL
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+!html_keywords RefCheck
+!html_keywords STooL
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!tableofcontents !depth 1
+!toc_title The STool program
+
+!raw [stg] @xref "hypview.hyp/Main" "HypView documentation"
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide documentation"
+!raw [stg] @xref "hcp.hyp/Main" "HCP documentation"
+!raw [stg] @xref "reflink.hyp/Main" "Reflink documentation"
+
+!begin_node The idea behind this program
+!alias+ The Idea
+!index The Idea
+!html_name stool_idea
+
+If one want to classify texts in  some way, then this is done  best
+in a 'tree and branch'  format. This corresponds to a  hierarchical
+structure with  classification by  theme, sub-theme,  sub-sub-theme
+etc.
+The (!link [leaves] [Leaf]) of the tree finally are the hypertext themselves. Such a
+tree could look like this, for example:
+ 
+!alias+ Example tree
+!index Example tree
+!begin_preformatted
+               ----------------Root----------------
+               |                |                 |
+          Documentation     Programming      Entertainment
+                             |  |     |
+                      |-------  |     -------|
+                   Pascal      Basic     Assembler
+                                             |
+                                        MC68000.HYP
+!end_preformatted
+
+
+One ought to therefore always have a hypertext that represents such
+a tree. Since one is likely to install new texts from time to time,
+or delete old ones, managing a 'catalogue' of hypertexts would soon
+become  tedious  unless  one  could  find  a  way  of  creating  it
+automatically.
+
+That is exactly the idea that  lies behind this program. The  HCP
+compiler includes the (!XLINK [@subject] [hcp] [command @subject]) command  which is used to  classify
+each of your hypertexts. In the  example tree shown above, for  the
+MC68000.HYP file one would have the subject line:
+
+!begin_quote
+    @subject "Programming/Assembler"
+!end_quote
+
+This information will be  stored in the hypertext  and can then  be
+read by the STool program to classify  the text in a tree. You  can
+also incorporate ASCII texts, and texts  that you may not have  yet
+in your 'master' catalogue file.
+
+STool generates a hypertext  called CATALOG.HYP (or KATALOG.HYP  if
+you're using the German  version) and this can  be viewed like  any
+other hypertext; it will be displayed  at once if no other  default
+hypertext was specified in  ST-GUIDE.INF. There's a 'Catalog'  Menu
+option in ST-Guide (or  press (!key [Alternate + K])) which will call the
+catalogue directly.
+
+To keep STool as  simple as possible to  use, no options have  been
+provided. All the important information  can be configured via  the
+configuration file, which means you only  have to set up the  para-
+meters once, and subsequently you can start the program just with a
+double-click to update your catalogue as painlessly as possible.
+
+!begin_pnode Leaf
+!html_name stool_leaf
+ A leaf  is  a  page  of  this
+ hypertext   only   containing
+ texts. It's  not possible  to
+ mix  theme   cross-references
+ and texts on one page.
+!end_node
+
+!end_node
+
+!begin_node Starting the STool program
+!alias+ Program start
+!index Program start
+!html_name stool_start
+
+One can start the  STool program simply  by double-clicking on  its
+program icon or filename from the desktop in the usual GEM way. The
+program has no  command-line options. All  required information  is
+obtained from the environmental  variables, the configuration  file
+and the catalogue file.
+
+!end_node
+
+!begin_node What STool does
+!alias+ Program operation
+!index Program operation
+!html_name stool_operation
+
+When STool is executed the following sequence takes place:
+
+!begin_enumerate
+!item The  paths  specified by  the  environmental variable PATHS  in
+    (!file [ST-GUIDE.INF]) are searched for hypertext files.
+
+!item The file (!file [CATALOG.TXT]) is read and updated with the details of any
+    hypertexts  not  currently  included.   This  means  that   any
+    hypertexts not yet in the list  will be included in it,  and/or
+    any information missing in the list will be supplemented.
+
+!item The configuration file is loaded and a new tree constructed.
+
+!item If the CREATE option is switched on in the configuration file or
+    if the  configuration file  could  not be  found, the  tree  is
+    supplemented by the themes indicated by the (!XLINK [@subject] [hcp] [command @subject]) lines  in
+    each hypertext header, where provided.
+
+!item If the  SHRINK option is  switched on, empty  pages are  removed
+    from the tree. If the PULLUP  option is also switched on  pages
+    with only one selection possibility will be removed as well.
+
+!item The .STG source file is generated from the tree so created.
+
+!item If the  COMPILE option is  switched on, HCP  will be called  and
+    automatically compiles CATALOG.STG  into CATALOG.HYP, and  then
+    deletes CATALOG.STG.
+!end_enumerate
+
+!end_node
+
+!begin_node The configuration file
+!alias+ Configuration file
+!index Configuration file
+!html_name stool_config
+
+The configuration file  that STool reads  should always reside  in
+ the same folder as the  hypertext to be created (see  environment-variable
+ HYPTOP and use  a .CFG file extender  with the same  file
+ name as the intended catalogue.
+
+ Here's an example: If the HYPTOP variable in ST-GUIDE.INF is
+
+!begin_quote
+ HYPTOP=C:\GUIDES\CONTENTS.HYP
+!end_quote
+
+ STool looks for (!file [CONTENTS.CFG])  in the path (!file [C:\GUIDES\]).
+ If (!file [CONTENTS.CFG]) cannot  be found  in this  directory, the  current
+ directory is searched instead.
+
+ The configuration file includes some important information:
+
+!begin_enumerate
+ !item The program's options: Lines starting with a '+' or '-' will  be
+    interpreted as options.
+    A '+' at the  start of the line  means the following option  is
+    switched on and '-' means the option is switched off.
+    The available  options  are:  CREATE,  SHRINK,  PULLUP,  (!link [INDEX] [INDEX]),
+    COMPILE, EXONLY and UPDATEREF.
+
+ !item The help-page to be  integrated into the created hypertext:  The
+    help text is defined starting  with a line containing  '>HELP',
+    and the following text until the next line starting with a  '>'
+    character is automatically integrated  into the hypertext as  a
+    help-page.
+
+ !item A listing of  themes to be included  in the hypertext using  the
+    following format:
+
+    .NAME.HYP (!nl)
+    Theme/sub-theme/sub-sub-theme...
+
+    These entries will be replaced  in the hypertexts, so that  one
+    can classify the texts in a  different way to that intended  by
+    the author with his (!XLINK [@subject] [hcp] [command @subject]) command theme classifications.
+
+Read (!link [Changing themes] [Changing themes]) now!
+
+ !item All character strings  written to the  created hypertext can  be
+    re-defined in the hypertext  file. As an  example, this may  be
+    the title of the first page  of the created hypertext. All  the
+    lines following  the '>STRINGS'  command before  the next  line
+    starting with a '>' character are interpreted in this way.
+
+ !item The most important  is perhaps the  theme-tree, whose layout  is
+    defined here. That is achieved by writing each partial path  of
+    the tree as a line starting with the '>' character; below  this
+    any number of lines of explanatory text may follow, e.g.:
+
+!begin_sourcecode
+>Documentation
+How to use a program.
+>Programming
+Programming reference texts.
+>Programming/Assembler
+Assembly language programming texts.
+!end_sourcecode
+
+    The last branch  point of each  level is especially  important.
+    All texts whose  theme-path ends  at this level  will be  filed
+    here and  also (depending  on the  option chosen)  those  whose
+    theme-path specification does not exist here.
+
+!item The (!link [translation table] [Translation table]) for subjects in other languages.
+
+!end_enumerate
+
+Refer to (!link [Paths of the example] [Paths of the example tree]) for more details.
+
+!subtoc [all] !depth 1
+
+!begin_node The option SHRINK
+!alias SHRINK
+!index SHRINK
+!html_name stool_shrink
+
+If this option  is switched on,  then after the insertion  of the
+text the tree will be shrunk again, so to speak.  That means that
+empty pages will be removed. In this way one gets a text in which
+each cross-reference  finally leads  to a page  that contains  at
+least  one text.  Empty pages  arise  each time there is  no text
+available for a given theme.
+
+This option is switched off as a default.
+
+!end_node # SHRINK
+
+!begin_node The option CREATE
+!alias CREATE
+!index CREATE
+!html_name stool_create
+
+If this option is  switched on, then the  tree will be created  not
+just from  the configuration  file, but  also supplemented  by  the
+themes specified with the (!XLINK [@subject] [hcp] [command @subject]) command from the hypertexts.  It
+may after all happen that a text has specified a theme that is  not
+present in one's personal tree. Normally such texts would wander to
+the last knot of each page. If one would prefer for these paths  to
+be supplemented, however, then one has to switch this option on. If
+this leads to the entry being the first on a page then an  'Others'
+branch will always be created there  at the same time. This is  for
+texts whose theme declarations end here.
+
+This option is switched off as a default.
+
+!end_node # CREATE
+
+!begin_node The option INDEX
+!alias INDEX
+!index INDEX
+!html_name stool_index
+
+If one only has very few  texts, or simply because one prefers  it,
+it may make sense to create a  page that just lists all the  texts.
+With the INDEX option it is possible  to do that. The option is  so
+named because the appearance of the created page is similar to that
+of the index  page produced by  the HCP compiler.  It differs  will
+lead directly to the text.
+
+This option is (naturally) switched off as a default.
+
+!end_node # INDEX
+
+!begin_node The option PULLUP
+!alias PULLUP
+!index PULLUP
+!html_name stool_pullup
+
+This option  is  only  effective in  combination  with  the  SHRINK
+option. If  it is  switched on,  then pages  with only  one  cross-
+reference will also be removed and the page below will be pulled up
+one level. This is best made clear with an example:
+
+!begin_preformatted
+          --------Root-------
+          |                 |
+    Documentation      Entertainment
+                            |
+                        Fantasy----------
+                            |           |
+                        Hobbits.hyp   Dwarfs.hyp
+!end_preformatted
+
+As one can see  the topic 'Entertainment'  only contains the  topic
+'Fantasy' which in turn contains  the texts. This would  correspond
+to a page where, apart from  'Fantasy', one has no further  choices
+available. There is  therefore no  reason why  the topic  'Fantasy'
+should not be dissolved  and the texts moved  up a level. The  tree
+would then appear as follows:
+
+!begin_preformatted
+          --------Root-------
+          |                 |
+    Documenation       Entertainment-------
+                            |             |
+                        Hobbits.hyp   Dwarfs.hyp
+!end_preformatted
+
+This option is switched off as a default.
+
+!end_node # PULLUP
+
+!begin_node The option COMPILE
+!alias COMPILE
+!index COMPILE
+!html_name stool_compile
+
+If this  option is  switched  on, then  STool, after  creating  the
+source-text, immediately also calls HCP  in order to translate  it.
+For this it is important that  HCP should be in the same  directory
+as STool, so that it can be found.
+
+This option is switched on as a default.
+
+!end_node # COMPILE
+
+!begin_node The option EXONLY
+!alias EXONLY
+!index EXONLY
+!html_name stool_exonly
+
+When this option is  switched on, the catalogue  file will only  be
+used to allow comments to be added to texts that actually exist. In
+that case files that one does  not possess will not be included  in
+the overview hypertext.
+
+This option only applies for  hypertexts with the extension  '.HYP'
+however, and other  texts will always  be included irrespective  of
+the state of this option.
+
+This option is switched off as a default.
+
+!end_node
+
+!begin_node The option UPDATEREF
+!alias UPDATEREF
+!index UPDATEREF
+!html_name stool_updateref
+
+If this option is  switched on and a  global reference file  exists
+(usually called  ALL.REF)  then  any references  to  the  hypertext
+created by STool will be included in it.
+
+This option was  added on 15.8.1995.  Previous versions always  did
+this. Therefore this option  is switched on as  a default, so  that
+the program will perform as  before unless one switches the  option
+off in the configuration file.
+
+!end_node
+
+!begin_node Paths of the example tree
+!html_name stool_example
+
+The example tree would appear like this in the configuration file:
+
+!begin_sourcecode
+>Documentation
+>Programming
+>Programming/Pascal
+>Programming/Basic
+>Programming/Assembler
+>Entertainment
+!end_sourcecode
+
+Other hypertexts  could provide  further listings  of themes  which
+aren't listed here.
+
+As it  stands, the  example  tree could  lead to  some  undesirable
+classifications. A hypertext  with the theme  'Programming/Prolog',
+for example, would be  classified under 'Programming/Assembler'  as
+'Programming/Prolog' doesn't exist. To overcome this we could add:
+
+!begin_sourcecode
+>Others
+>Programming/Others.
+!end_sourcecode
+
+Now the hypertext  theme 'Programming/Prolog'  would be  classified
+under 'Programming/Others',  which  would be  fine.  Alternatively,
+this problem can be solved  using the configuration option  CREATE,
+which would  automatically  add 'Prolog'  under  the  'Programming'
+level.
+
+This still  doesn't solve  every problem,  as hypertexts  specified
+just as 'Programming'  would still be  classified as  'Programming/
+Assembler', as each page can only contain theme classifications  or
+hypertexts but not both.
+
+If, during text classification,  a leaf has  not yet been  reached,
+then the last branch is gone through until one is reached.
+
+(!B)Important:(!b) Always create an 'Others' entry!
+
+View an (!link [Overview of all hypertexts] [Root]) now!
+
+!end_node
+
+!begin_node The Translation table
+!alias+ Translation table
+!index Translation table
+!html_name stool_translation
+
+The translation table serves to translate theme classifications for
+hypertexts in other languages, and takes the following form:
+
+!begin_sourcecode
+>TRANS
+String1=Substitute-string1
+String2=Substitute-string2
+String3=Substitute-string3
+!end_sourcecode
+
+(!B)Warning:(!b) There may not be any spaces  before or after the
+         'equals' sign!!!
+
+Example:
+!begin_sourcecode
+>TRANS
+Dokumentation=Documentation
+Textverarbeitung=Wordprocessors
+Spiele=Games
+Nachschlagewerke/Unterhaltung=Reference-works/Entertainment
+!end_sourcecode
+
+As one can  see from  the example, one  can specify  any length  of
+partial path combinations, allowing  use of different  translations
+of a word in other paths if desired.
+
+The translations here would be, for instance:
+
+Dokumentation/Textverarbeitung   ==>  Documentation/Wordprocessors (!nl)
+Dokumentation/Spiele             ==>  Documentation/Games (!nl)
+Nachschlagewerke/Unterhaltung    ==>  Reference-works/Entertainment
+
+!end_node
+
+
+!end_node # Configuration file
+
+!begin_node The catalogue file
+!alias+ Catalog file
+!index Catalog file
+!html_name stool_catalog
+
+The catalogue file contains a  list of (hyper)texts that STool  has
+classified. ST-Guide no longer has  to search the disk for  details
+as information for each hypertext will be taken from this file.  As
+a further  feature, STool  can  also be  used  to fill  in  missing
+details for hypertexts and supplement them from this file.
+
+Each hypertext listed  in the  catalogue file  contains five  lines
+starting with a '>' character which  are used by STool to  generate
+CATALOG.HYP. This can  be followed  optionally by  a line  starting
+with an exclamation mark ('!'). This line (without the '!') will be
+used for a (!XLINK [@keywords] [hcp] [Command @keywords]) command that will be written before the  whole
+entry. In  other words:  This string  can be  searched for  in  the
+REFerence file, and when found there, one can jump to this position
+in the catalogue text.
+After this any number of descriptive text lines may follow:
+
+>Filename (with or without path)
+>Name of the author (for @author)
+>Theme (for (!XLINK [@subject] [hcp] [command @subject]))
+>Title (for (!XLINK [@database] [hcp] [Command @database]))
+>Version (for (!XLINK [$VER:] [hcp] [Command @$VER:]))
+Descriptive text here...
+
+Although you can leave out some of these entries and still create a
+working hypertext it's  better to fill  them in so  that STool  and
+ST-Guide can manage  your hypertexts effectively.  This takes on  a
+special importance if you intend  to distribute your hypertexts  to
+other users!
+
+A link is set for each file so  that it can be accessed even if  it
+is addded at a  later stage, as  long as this  is in the  specified
+path, or one of the search paths defined in ST-GUIDE.INF.
+
+The filename for  the catalogue  is fixed; the  English version  is
+called CATALOG.HYP (the German  version is called KATALOG.HYP).  If
+you obtain a catalogue with the  wrong filename, it can be  renamed
+using the GEM desktop's 'Show Info' option, or another utility.
+
+ST-Guide first searches for the catalogue in the folder defined  in
+ST-GUIDE.INF for generating the hypertext  in, then in the  current
+directory.
+
+(!U)New in versions from 8.11.94 onwards:(!u)
+In the descriptive text, lines whose first character is a '@'  and
+whose second character is  neither a '@' nor  a '{' are no  longer
+indented, so one can also write additional commands into this text.
+
+!end_node # The catalogue file
+
+!begin_node The predefined themes
+!alias+ Predefined themes 
+!index Predefined themes 
+!html_name stool_themes
+
+If you'd like  to read more  about the themes  we have  predefined,
+please examine the included configuration file. It would be  quite
+pointless to repeat everything  here, and anyway  that list may  be
+extended at any time and would then have to be updated here too.
+
+But one hopes that after some  time a comprehensive tree will  have
+evolved that  will only  need minor  changes. Should  you have  any
+suggestions about themes that ought  to be included, please get  in
+touch with us!
+
+!end_node # The predefined themes
+
+!begin_node Including ASCII texts
+!alias ASCII texts
+!index ASCII texts
+!html_name stool_ascii
+
+One can also include plain  ASCII texts in the hypertext  catalogue
+file, since ST-Guide can after all  load ASCII texts (if you  press
+ Shift when loading, the  file selector will come  up with a  '*.*'
+mask in place of the usual '*.HYP'). So those wanting to access any
+documentation that's still in ASCII format this way can do so as no
+test is made in  the catalogue file whether  one is dealing with  a
+hypertext or  not.  So if  an  ASCII file  is  present it  will  be
+incorporated and a link to it  generated. But be sure to enter  the
+filename with  a full  path to  the text  if the  ASCII file  isn't
+stored in a folder ST-Guide normally searches.
+
+!end_node # Including ASCII texts
+
+!begin_node Changing or supplementing themes
+!alias Changing themes
+!index Changing themes
+!index subject supplement
+!html_name stool_suppl
+
+As the (!XLINK [@subject] [hcp] [command @subject])  command was  not included originally  in HCP,  and
+also if an author  has not specified a  theme for some reason,  one
+should be able to  add a theme to  a hypertext later somehow.  This
+isn't easy to do  in the author's hypertext  itself since it  would
+mean reconstructing and  editing it, so  a facility to  do this  is
+offered in the configuration file.
+
+Such an entry  for a  hypertext consists  of two  lines, where  the
+first line starts with a  full stop, immediately followed (with  @{I}no@{i}
+space) by the  filename (without specifying  the path). The  second
+line contains the theme.
+
+(!U)Here's a couple of examples:(!u)
+
+!begin_sourcecode
+.XYZ.HYP
+Learning/Spelling
+.BIER.HYP
+Specialist text/Drinks
+!end_sourcecode
+
+A theme assigned in  the configuration file  has a higher  priority
+than a theme specifed  in a hypertext, which  makes it easy to  re-
+classify hypertexts according to your own requirements.
+
+!end_node # Changing or supplementing themes
+
+!begin_node Environmental variables
+!html_name stool_env
+
+STool uses  some  environmental  variables  from  ST-GUIDE.INF.  In
+detail these are:
+
+!begin_blist [HYPTOP]
+!label HYPTOP
+!item [HYPTOP] (!nl)
+This variable (!I)must(!i) contain the  filename and path of the  hypertext
+to be created, for example:
+
+!begin_quote
+HYPTOP=C:\GUIDES\CONTENTS.HYP
+!end_quote
+
+STool also uses the path of this  file to look for other files.  In
+this case these would be  the file '(!file [C:\GUIDES\CONTENTS.CFG])' as  the
+configuration file  and  the file  '(!file [C:\GUIDES\CATALOG.TXT])'  as  the
+catalogue file. If the HYPTOP variable  does not exist then a  file
+(!file [CATALOG.STG]) is created  in the  current directory  as an  emergency
+measure. Then a search would be made for the files (!file [CATALOG.CFG])  and
+(!file [CATALOG.TXT]) in the same directory.
+
+!label PATHS
+!item [PATHS] (!nl)
+All the paths specified  using this variable  will be searched  for
+hypertexts (*.HYP) and included in the catalogue.
+If no PATHS have been specified, only the current directory will be
+searched.
+
+!end_blist
+
+!end_node # Environmental variables
+
+!begin_node Navigation in the created hypertext
+!alias+ Navigation
+!index Navigation
+!html_name stool_nav
+
+Once more the example tree:
+
+!begin_preformatted
+                    ----------------Root----------------
+                    |                 |                 |
+1st level      Documentation      Programming      Entertainment
+                                   |  |    |
+                           |-------   |    -------|
+2nd level              Pascal       Basic     Assembler
+                                                  |
+3rd level                                     MC68000.HYP
+!end_preformatted
+
+By clicking on the icon-bar and emphasised cross-references one can
+move through the created hypertext in the following manner:
+
+!begin_xlist [Select cross-reference:]
+!item [Select cross-reference:]
+With this one reaches the selected sub-level. If, for instance, one
+selects 'Programming' on the  first page one will  reach a page  in
+which one  can  branch to  the  'Pascal', 'Basic'  and  'Assembler'
+pages. Matters are different when the selected cross-reference is a
+text reference. In that case,  provided the text is installed,  one
+will land in that text.
+
+!item ["" icon:]
+When one selects this button one moves one plane higher. Here,  for
+instance,  from   the  page   containing  'Pascal',   'Basic'   and
+'Assembler' (2nd  level) to  the page  containing  'Documentation',
+'Programming' and 'Entertainment' (1st level).
+
+!item ["" icon:]
+With this one moves to the sub-tree of the right-hand neighbour  on
+the next higher  level. If,  for example,  one is  in the  sub-tree
+'Programming' (the  one with  'Pascal', 'Basic'  and  'Assembler'),
+then one lands in the sub-tree 'Entertainment' (empty here).
+
+!item ["" icon:]
+With this one moves to the  sub-tree of the left-hand neighbour  on
+the next higher  level. If,  for example,  one is  in the  sub-tree
+'Programming' (the  one with  'Pascal', 'Basic'  and  'Assembler'),
+then one lands in the sub-tree 'Documentation' (empty here).
+
+!item ["A-Z" icon:]
+With this one moves into the  index page, which is also created  by
+STool. Selecting  a  cross-reference here  moves  one to  the  page
+containing a description of this text.
+!end_xlist
+
+To try it out: (!link [Go to example text] [Root])
+
+!begin_node Overview of all hypertexts
+!alias Root
+!html_name stool_ex_root
+
+(!link [Documentation] [Documentation])
+
+(!link [Programming] [Programming])
+
+(!link [Entertainment] [Entertainment])
+
+(!link [Others] [Others])
+
+!begin_node Documentation
+!html_name stool_ex_doc
+!ignore_index
+((!I)No texts present for this category(!i))
+!end_node
+
+!begin_node Programming
+!html_name stool_ex_prog
+!ignore_index
+
+(!link [Pascal] [Programming/Pascal])
+
+(!link [Basic] [Programming/Basic])
+
+(!link [Assembler] [Programming/Assembler])
+
+!begin_node Programming/Pascal
+!html_name stool_ex_prog_pas
+!ignore_index
+((!I)No texts present for this category(!i))
+!end_node
+
+!begin_node Programming/Basic
+!html_name stool_ex_prog_bas
+!ignore_index
+((!I)No texts present for this category(!i))
+!end_node
+
+!begin_node Programming/Assembler
+!html_name stool_ex_prog_ass
+!ignore_index
+!begin_quote
+(!XLINK [Programming the MC68000] [MC68030] [Main]) (!nl)
+Author: Erich Mustermann (!nl)
+Version 68000er.hyp 1.00 (1/1/90) (!nl)
+File: C:\guides\68000er.hyp
+!end_quote
+!end_node
+
+!end_node # Programming
+
+!begin_node Entertainment
+!html_name stool_ex_enter
+!ignore_index
+((!I)No texts present for this category(!i))
+!end_node
+
+!begin_node Others
+!html_name stool_ex_misc
+!ignore_index
+((!I)No texts present for this category(!i))
+!end_node
+
+!end_node # Overview of all hypertexts
+
+!end_node # Navigation
+
+!end_document

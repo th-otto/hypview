@@ -1,0 +1,717 @@
+@inputenc atarist
+
+>ddudenn2.hyp
+>Ulf Dunkel @ CLP
+>Nachschlagewerke/Lexika
+>DunkelDudenn II
+>ddudenn2.hyp 2.02 (04/07/95)
+DunkelDudenn II - der ganz allt„gliche Wahnsinn geht weiter ...
+Das beste Nachschlagewerk fr alles Unm”gliche und
+den gut gepflegten H”heren Bl”dsinn par excellence.
+
+>rai.hyp
+>Sacha Moufarrege @ DO2
+>Computer/Netze
+>Ratgeber Atari - Internet
+ST-Guide-Hypertext mit Infos fr Atari-User im Netz (oder solche die es
+werden wollen). Inhalt:  Schnellstart,  preiswerte Netzanbindung, Soft-
+ware,  Bezugsquellen,  ftp-Liste,  TCP/IP,  SLIP,  PPP,  Atari im  Web,
+Internet-Dienste, Email-only-User usw.
+
+>catpmsta.hyp
+>Andreas Schley @ HB2
+>Dokumentation/Df
+>Anleitung zu CATPMSTA von Volker Keck @ BL
+Ein Programm zu CAT, das eine šbersicht zu den PM's erstellt.
+
+>stg_faq.hyp
+>Michael Wurm @ PB
+>Dokumentation/ST-Guide
+>FAQ zum ST-Guide
+User fragen, Fachleute antworten zum ST-GUIDE
+
+>hyp_list.hyp
+>Michael Wurm @ PB
+>Dokumentation/ST-Guide
+>Hypertextliste
+Liste "aller" Hypertexte (wird st„ndig aktualisiert)
+
+>easy_pgp.hyp
+>Manfred Ssykor @ AC3
+>Dokumentation/Shells/Easy_PGP
+>Easy_PGP - Online-Hilfe
+Easy_PGP ist eine Shell fr PGP, *dem* Verschlsselungsprogramm. Voll in
+GEM eingebunden, voll Tastaurbedienbar. PUBRING wird von der Shell gelesen.
+Ein leichtes ausw„hlen einer User-ID is also gew„hleistet. Keymanagement,
+ver- entschlsselung, erstellen/prfen von SIGnatures (*.SIG)... Alles ist
+m”glich.
+
+>makenews.hyp
+>Manfred Ssykor @ AC3
+>Dokumentation/Utilities/MakeNews
+>Der Atari.News Mail generator
+MakeNews, *das* Programm zum Erstellen der Atari.News-Mail. Fr die
+Atari Infopages (AIP) kann auch gleich eine PM an Manfred Ssykor
+erstellt werden. Ebenso noch an fnf weitere Gruppen bzw.
+Empf„nger. Mal sehen, vielleicht bekommen wir in Atari.News ja
+mal einen Standard hin ;-) Viel Spass damit.
+
+>Sysinfo.hyp
+>Andreas Schley @ HB2
+>Dokumentation/Utilities
+>Anleitung zu SysInfo V3.0
+SysInfo ist gibt Einblicke in die Hard- und Softwarefunktionen
+des Atari und bietet eine Menge Zusatzfunktionen fr Programmierer
+und Interessierte. Anleitung fr das Programm von Thorsten Bergner @ B
+
+>M1_TOOLS.HYP
+>J.MELKIS HH
+>Dokumentation/Musik
+>Infos zur Workstation M1
+Die Helps des M1_TOOLS/M1_SERVE von R.Engelhardt
+Handbucherg„nzungen aus P.Geores:Arbeiten mit...
+ST-GUIDE/1STGUIDE Format
+
+>HW.HYP
+>J.Melkis HH
+>Hardware/Andere Hardware
+>Elektronische Bauteile & PC-Zubeh”r Katalog
+ST-GUIDE/1STGUIDE Format
+
+>hamburg.hyp
+>Jrgen Melkis  HH
+>Sachtexte/Post
+>Straen & Postleitzahlen Hamburg
+Alle Hamburger Postleitzahlen alphabetisch Sortiert.
+Rufnummernzuordnung nach Plz und Stadtbezirk.
+Seitenweise Suchen mit der ST-GUIDE Suchfunktion m”glich.
+ST-GUIDE/1STGUIDE Format
+
+>ocr.hyp
+>Alexander Clauss
+>Dokumentation/Grafik
+>OCR Dokumentation
+Onlinehilfe zur Texterkennungs-Software OCR, erh„ltlich fr 1stGuide
+und ST-Guide.
+
+>dfu_lex.hyp
+>Rainer Wiesenfeller
+>Dokumentation/Df
+>Alles rund um DFš
+Erl„uterung von Abkrzungen & Fachbegriffen.
+
+>taudok.hyp
+>Uwe Ohse
+>Dokumentation/Df
+>Dokumentation des Maustauches
+Allerlei technisches fr Neugierige.
+
+>katzklo.hyp
+>Thomas Neumann/Rainer Wiesenfeller
+>Dokumentation/Df
+>Dokumentaion zu Katzenklo
+Die Doku zum Laberfilter.
+
+>grafform.hyp
+>Georg Schwarz
+>Dokumentation/Grafik
+>GrafForm.hyp 0.80 (10.04.95)
+Informationen ber diverse Grafikformate
+zum Einbinden in eigene Hypertexte
+aktuelle Version immer in der Maus HH oder D-Box HH
+--Mitmachware--
+
+>pc_shell.hyp
+>Manfred Rosenboom @ M4
+>Dokumentation/Shells/PC-Shell
+>PC-Shell - Online-Hilfe
+Online-Hilfe zur PC-Shell (ab V2.24) von Frank Schramm @ HH2
+PC_SHELL.HYP wird voll von der PC-Shell untersttzt, soda eine
+kontextabh„ngige Hilfe zur Verfgung steht.
+
+>autokenn.hyp
+>Carsten Friehe @ H2
+>Nachschlagewerke
+>Autokennzeichen
+>autokenn.hyp 0.10 (30.01.1995)
+Das Nachschlagewerk fr Autokennzeichen.
+(Bis jetzt sind D, CH und F und die
+ Nationalit„tenkennzeichen enthalten)
+
+>autok__d.hyp
+>Carsten Friehe @ H2
+>Nachschlagewerke
+>Autokennzeichen
+>autok__d.hyp 0.10 (30.01.1995)
+Das Nachschlagewerk fr Autokennzeichen.
+Die Daten fr Deutschland
+
+>autok_ch.hyp
+>Carsten Friehe @ H2
+>Nachschlagewerke
+>Autokennzeichen
+>autok_ch.hyp 0.10 (30.01.1995)
+Das Nachschlagewerk fr Autokennzeichen.
+Die Daten fr die Schweiz
+
+>autok__f.hyp
+>Carsten Friehe @ H2
+>Nachschlagewerke
+>Autokennzeichen
+>autok__f.hyp 0.10 (30.01.1995)
+Das Nachschlagewerk fr Autokennzeichen.
+Die Daten fr Frankreich
+
+>autok_in.hyp
+>Carsten Friehe @ H2
+>Nachschlagewerke
+>Autokennzeichen
+>autok_in.hyp 0.10 (30.01.1995)
+Das Nachschlagewerk fr Autokennzeichen.
+Die Daten fr die Nationalit„tenkennzeichen
+
+>dtp-faq.hyp
+>Ulli Hahndorf @ HB2 / Thorsten Liebold @ MS2
+>Nachschlagewerke
+>FAQ zur Maus-Gruppe ATARI.DTP
+Das Maus-Forum ATARI.DTP bietet viele Tips und
+Hilfestellungen bzgl. DTP auf den ATARI-Plattformen.
+Hier sind die H„ufigsten und Wichtigsten zusammengefat.
+
+>tricky.hyp
+>Dirk Hagedorn @ PB
+>Dokumentation/Spiele
+>Die Dokumentation zu Tricky
+Die Anleitung zu Tricky. Tricky (engl. u.a. fr kniffelig) ist
+eine GEM-Version des bekannten Wrfelspiels Kniffel.
+
+>menuinfo.hyp
+>Dirk Hagedorn @ PB
+>Dokumentation/Utilities
+>Die Dokumentation zu MenuInfo
+MenuInfo ist ein Multifunktions-Menzeilen-Informations-Utility
+mit frei konfigurierbarer Anzeige, Mini-Bidschirmschoner, uvm.
+
+>aip.hyp
+>Manfred Ssykor @ AC3
+>Nachschlagewerke/Atari Infopages
+>AIP: Vorwort
+Die Atari Infopages sind eine zusammenstellung vieler eMailadressen
+von Autoren und Anbietern. Wenn vorhanden, dann sind auch die
+Sackpost Informationen zu erfahren. Ebenso ist eine Auflistung mit
+den wichtigsten Informationen der Programme der Autoren vorhanden.
+
+>setkey_d.hyp
+>Andr‚ Leistner @ B
+>Dokumentation/Utilities
+>Anleitung fr SetKey¿
+Dieser Text enth„lt eine deutsche Anleitung fr das Programm
+SetKey¿ von Holger Schmidt. Es handelt sich hierbei um ein Tool
+fr CKBD.
+
+>setkey_e.hyp
+>Andr‚ Leistner @ B
+>Dokumentation/Utilities
+>Documentation for SetKey¿
+This text contains an english documentation, for SetKey¿, a
+program by Holger Schmidt. SetKey¿ is a tool for
+CKBD.
+
+>wincom.hyp
+>Sven Kopacz @ S / Ulli Hahndorf @ HB2
+>Dokumentation/Sonstiges
+>Dokumentation zu WinCom 1.4
+WinCom ist der Fenster-H„uptling (Window-Commander) fr MagiC und bietet
+viele Fensterfunktionen ber Hotkeys an. Zudem stehen einige Echtzeit-
+Funktionen zur Verfgung, wie sie von WINX bekannt sein drften.
+
+>harddisk.hyp
+>Bernd Falkenstein @ M
+>Hardware/Laufwerke
+>Technische Daten von Platten
+Die technischen Daten (soweit vorhanden) von ca. 1600
+Festplatten (Hypertext in englisch). Wird auch von
+STORAGE.HYP aufgerufen.
+
+>storage.hyp
+>Bernd Falkenstein @ M
+>Hardware/Laufwerke
+>Technologie externer Speichermedien
+Eine Einfhrung in die Technologien von Harddisks, CD-ROMs,
+Tape Drives (in englisch). Ruft den Hypertext HARDDISK.HYP
+auf.
+
+>chinese.hyp
+>unbekannt
+>Sachtexte
+>Chinesische Gerichte
+>chinese.hyp
+[Beschreibung noch nicht erhalten]
+
+>com.hyp
+>unbekannt
+>Sachtexte
+>Urteile berComputer
+>com.hyp
+[Beschreibung noch nicht erhalten]
+
+>porto.hyp
+>Harald Placke @ OS
+>Sachtexte
+>Portobersicht
+Dieser Text enth„lt eine kleine šbersicht der  aktuellen Porto-
+gebhren von Postkarte bis Paket in das In- und Ausland. Ebenso
+damit zusammenh„ngende  zus„tzliche Serviceleistungen der Deut-
+schen Bundespost POSTDIENST.
+
+>fanlex.hyp
+>Ben-Jamin Wilke @ PE
+>Nachschlagewerke
+>Fantasy Lexikon
+Ein Lexikon, da sich mit Fantasy besch„ftigt. Das heit Bcher, Filme,
+Rollenspiele und ein paar Erkl„rungen von Begriffen aus diesem Bereich.
+
+>pgp.hyp
+>Klaus Arnold @ ME
+>Dokumentation
+>Anleitung fr die Benutzung von PGP
+Die Befehle des Cryptografieprogramms PGP als ST-Guide Hypertext.
+
+>zebrafnk.hyp
+>Unbekannter Autor
+>Sachtexte/Biologie/Tiere/V”gel/Zebrafinken
+Umfangreiche Informationen ber und um Zebrafinken.
+
+>united.hyp
+>Dirk Allard @ WI2
+>Unterhaltung
+>Regeln zu United 3
+Regelfassung fr das PlayByMail-Spiel United. N„here Infos dazu gibt's
+beim Autor dieses Hypertextes. Dieser Text entspricht gr”tenteils den
+Oberfoul-Regeln, mit ein paar kleinen nderungen.
+
+>zm_dev.hyp
+>Dirk Allard @ WI2
+>Dokumentation/Utilities
+>Entwicklerdoku zu Zeig's mir 0.28
+Die Entwicklerdoku zu Zeig's mir. Enth„lt die Spezifikationen der Modul-
+schnittstelle und Anleitungen zum Modulbau. Kann aus zeigsmir.hyp auf-
+gerufen werden.
+
+>zm_modul.hyp
+>Dirk Allard @ WI2
+>Dokumentation/Utilites
+>Moduldokumentation zu Zeig's mir 0.28
+Hier sind die in der alten Hypertextversion noch im Haupttext untergebrachten
+Dokus zu den Zeig's mir-Modulen enthalten. Dieser Text wird normalerweise
+von zeigsmir.hyp aus aufgerufen. Als Einzeltext ist bei der schnellen Er-
+scheinungsweise neuer Module aber das Updaten leichter.
+
+>player.hyp
+>Dirk Allard @ WI2
+>Unterhaltung
+>Ergebnisse der United 3-Liga
+In der augenblicklichen Version (Stand Ende der 1. Saison) alle
+Ergebnisse aus der 1. Saison und die Spielpl„ne der 2. Saison. Die
+Version, die via ftp und in WI2 erh„ltlich ist, ist _nicht_ die
+aktuellste! Wenn mir jemand einen Tip geben k”nnte, wie ich Updates
+in Umlauf bringen kann, her damit!
+
+>tcache63.hyp
+>Dirk Allard @ WI2
+>Dokumentation/Utilities
+>Doku zum Turbo Cache 6.3
+>in Arbeit
+Die Dokumentation fr Turbo Cache ist im Augenblick noch in Arbeit.
+Mit einer endgltigen Version der Hilfe ist aber in Krze zu rechnen.
+
+>xedit.hyp
+>Dirk Allard @ WI2
+>Dokumentation/Editoren
+>Dokumentation zu xEDIT 2.10
+Dokumentation zu xEDIT v2.10 dem Universal-Editor im ST-Guide Format.
+
+>egale.hyp
+>Dirk Allard @ WI2
+>Dokumentation/Utilities
+>Egale Dokumentation
+gale - das universelle Dateivergleichstool - Version 1.5
+Mit diesem Programm kann man schnell und einfach Dateien vergleichen
+und „ndern. gale vergleicht zeilenweise, kann aber auch Bin„rdateien
+laden und „ndern. Einfgungen werden automatisch gefunden. Viele
+Darstellungsoptionen und Suchfunktionen.
+
+>qtausch2.hyp
+>Peter Grobner @A2W/Simone Naldi @RO
+>Dokumentation/Df
+>QTAUSCH-Hilfe zur Version 2.00p
+Dokumentation zum Terminalprogramm QTAUSCH fr den Maustausch.
+Tausch (auch zwei User in der gleichen Maus), Down-/Upload,
+Filelisten, usw.
+
+>mydials.hyp
+>Olaf Meisiek @ FL
+>Dokumentation/Programmieren
+>MyDials Dokumentation
+Die Anleitung zu den MyDials von Olaf Meisiek @ FL als ST-Guide Hypertext
+und Pure C Hilfe.
+
+>info2stg.hyp
+>Martin Osieka @ OF2
+>Dokumentation/ST-Guide
+>GNU-Info -> ST-Guide Konverter
+Dieses Programm konvertiert Hypertextdateien aus dem GNU-Info- in
+das ST-Guide-Format. Der Konverter bildet die Verkettung der
+einzelnen Hypertextseiten nach und wandelt alle Verweise
+entsprechend um. Include-Verweise werden aufgel”st. Der Konverter
+wurde nach der Beschreibung des Info-Formats im Hypertext info.info
+implementiert.
+
+>astro.hyp
+>J. Lankenau @ OL
+>Nachschlagewerke
+>Daten der Astronomie
+Astronomische Daten und Fakten, reichbebilderter Fhrer durch
+Sternbilder, Fachbegriffe und Geschichte.
+
+>esscode.hyp
+>Michael Forget
+>Dokumentation/Shells
+>ESS-Code 6.0 Manual
+ESS-Code ist eine GEM-Oberfl„che mit eingebautem UUE/UUD, ATOB/BTOA,
+SHIP/UNSHIP, MIME/UNMIME sowie Datei-Splitter.
+
+>proglist.hyp
+>Holger Weets @ OL
+>Dokumentation/Df
+>ProgList Dokumentation
+ProgList ist ein Tool zur Verwaltung von MAUS Filelisten. Es kann
+Nachrichten an Schnulli und James schreiben, also Files beim Maus-
+Tausch mitschicken lassen, Files l”schen und deren Beschreibung
+„ndern, auerdem kann in den Listen nach bestimmten Files suchen
+u.v.a.m.
+
+>unit.hyp
+>Florian Erhard @ M4
+>Nachschlagewerke
+>Mae und Einheiten
+Dieser Text ist ein Lexikon ber Gr”en und Einheiten in den
+Naturwissenschaften.
+Er bietet einen šberblick ber die Entwicklung des Mewesens, eine
+Orientierungshilfe in der Vielfalt der Einheiten der vorigen
+Jahrhunderte und eine Dokumentation bzw. Definition der heute
+gebr„uchlichen und gesetzlichen Einheiten, physikalischen
+Konstanten und anderer Vereinbarungen.
+
+>chagall.hyp
+>Kai Neahnung
+>Dokumentation/Grafik
+>Chagall Onlinehilfe
+Chagall ist ein kommerzielles Grafikprogramm (L”hnware), die Online-
+hilfe dazu gibt es im 1stGuide- und im ST-Guide Format.
+
+>gszrz.hyp
+>Michael Ziegler @ M
+>Dokumentation/Df
+>GSZRZ Dokumentation
+X/Y/Z Modem Protokoll einsetzbar mit nahezu jedem Terminal-
+programm
+
+>compdict.hyp
+>Bruce Tonkin
+>Computer/Allgemein
+>Tonkin's First Computer Dictionary
+Witzige Erkl„rungen zu diversen Computerbegriffen im ST-Guide
+Format. Umgesetzt von Christoph Zwerschke.
+
+>twoinone.hyp
+>Gregor Duchalski @ DO
+>Dokumentation/Shells
+>Dokumentation zu Two-in-One
+Kontextsensitive ST-Guide-Onlinehilfe und Dokumentation zu
+Two-in-One, DER anderen Packer-Shell fr den ATARI.
+
+>red.hyp
+>Holger Weets @ OL
+>Dokumentation/Editoren
+>RED Dokumentation
+RED ist ein ResourceEditor, kurz, schnell und sicher, er
+bietet einige Features, die es bei sonst keinem Programm dieser Art
+gibt (Optimierung, šbersetzen etc.)
+
+>sys_mon.hyp
+>Karsten Isakovic @ B
+>Dokumentation/Atari
+>SysMon Dokumentation
+SysMon ist ein Speichermonitor und Tracer fr Systemaufrufe. Seit
+M„rz '94 gibt es hierfr eine Dokumentation im ST-Guide Format.
+
+>windoze.hyp
+>Dirk Haun @ WI2
+>Programmieren/C
+>Dokumentation Windoze (C-Lib)
+Windoze ist eine einfache Fensterbibliothek fr Pure C. Untersttzt
+Iconify mit und ohne ICFS sowie nach der MultiTOS-Methode.
+
+>history.hyp
+>Volker Burggr„f @ OL
+>Sachtexte
+>Meilensteine der Weltgeschichte
+Geschichtlicher šberblick von der Steinzeit bis heute im ST-Guide
+Format.
+
+>musiker1.hyp
+>Volker Burggr„f @ OL
+>Sachtexte
+>Meilensteine der Weltgeschichte
+Portraits groer Musiker u. Komponisten, Teil 1, geh”rt zu History
+
+>musiker2.hyp
+>Volker Burggr„f @ OL
+>Sachtexte
+>Meilensteine der Weltgeschichte
+Portraits groer Musiker u. Komponisten, Teil 2, gerh”rt zu History
+
+>politik.hyp
+>Volker Burggr„f @ OL
+>Sachtexte
+>Meilensteine der Weltgeschichte
+Portraits von Politikern und Herrschern, geh”rt zu History
+
+>entdeck.hyp
+>Volker Burggr„f @ OL
+>Sachtexte
+>Meilensteine der Weltgeschichte
+Portraits groer Forscher und Entdecker
+
+>se_fakt.hyp
+>Carsten Setje-Eilers @ KI
+>Dokumentation/Utilities
+>SE-Fakt Doku
+>1.5 (01.05.1994)
+Dokumentation des Fakturierungs- und Kassenprogrammes im ST-Guide
+Format.
+
+>adresse.hyp
+>Carsten Setje-Eilers @ KI
+>Dokumentation/Utilities
+>'Adresse'-Doku
+>1.5 (01.05.1994)
+Dokumentation der Shareware-Adressverwaltung 'Adresse'.
+
+>cmos_ic.hyp
+>Rolf Meurer @ DU
+>Hardware/ICs
+>Sammlung von CMOS Schaltkreisen
+>0.1 (29.10.93)
+Enth„lt viele (etwas klein geratene) Schaltbilder und liegt ur-
+sprnglich im 1stGuide Format vor.
+
+>smileys.hyp
+>Volker Burggr„f @ OL
+>Computer/Netze
+>Smiley-Sammlung
+Sammlung gebr„uchlicher Smileys im ST-Guide Format
+
+>chatwin.hyp
+>Dirk Haun @ WI2
+>Dokumentation/Shells
+>Chatwin Dokumentation
+Chatwin  ist  eine  universelle  Entwicklungsumgebung  fr nahezu alle
+Compilersprachen und „hnliche Systeme (z.B. TeX).
+Den Hypertext gibt's fr ST-Guide & 1stGuide
+
+>zeigsmir.hyp
+>Dirk Allard @ WI2
+>Dokumentation/Utilities
+>Dokumentation zum Dateiviewer Zeigsmir
+Dokumentation des universellen Dateiviewer Zeigsmir von Reiner
+Rosin@@WI2. Vor allem durch seine Modulschnittstellen interessant.
+
+>gnuplot.hyp
+>GNU, Christoph Zwerschke @KA
+>Dokumentation
+>GNU-Plot Dokumentation
+Dokumentation zu GNU-Plot, ursprnglich im GNU-Plot Format,  kon-
+vertiert ins ST-Guide Format.
+
+>newdesk.hyp
+>Dirk Hagedorn @ PB
+>Dokumentation/Shells
+>NEWDESK.INF-Dokumentation
+>1.00 (09.06.1994)
+Ausfhrliche Dokumentation der NEWDESK.INF im Hypertextformat fr
+den ST-Guide.
+
+>lang_o2.hyp
+>Dirk Theisen@SU.maus.de (no mails >16k, please)
+>Programmieren/Oberon
+>DOK: Programmiersprache Oberon-2
+>0.9
+Dokumentation zur programmiersprache Oberon-2 im ST-Guide Format.
+Erh„ltlich in der Maus SU, 02226/12326, Gruppenprogrammteil OBERON
+
+>myrezept.hyp
+>Dirk Allard @ WI2
+>Sachtexte/Kochen
+>Eine Rezeptsammlung
+>in Arbeit (V0.3)
+Rezepte fr Cocktails und Mampf ST-Guide Format. Der Text w„chst
+langsam aber unaufh”rlich... Immer wenn ich mal wieder Zeit hab,
+h„ng ich wieder 100kB dran :-)
+
+>catguide.hyp
+>Rdiger Merklein @ M4
+>Dokumentation/Df
+>Dokumentation zu CAT
+1stGuide Format, gibt's in kurzer und langer Ausfhrung
+
+>saugutil.hyp
+>Frank Rger @ OS
+>Dokumentation/Df
+>Dokumentation zu Saug-Utility
+Verwaltung von Maus-Filelisten. Kontextsensitive ST-Guide-Onlinehilfe
+fr Fenster und Mens.
+
+>db_guide.hyp
+>Michael Heng @ HH
+>Dokumentation/Df
+>Dokumentation zu D-Box
+D-Box Tauschpaket (iclusive DB_POINT)
+ST-Guide- und 1stGuide Format
+
+>rezept.hyp
+>Andreas Kohout @ M4
+>Sachtexte/Kochen
+>Eine Rezeptsammlung
+>rezept.hyp V1.10
+Haufenweise Rezepte aus allen Bereichen, im ST-Guide Format.
+
+>ufp-info.hyp
+>Marko Radke, Thomas Schmidt
+>Unterhaltung/Science-Fiction
+>Information rund um Star Trek
+Im 1stGuide Format, Shareware(?)
+
+>pacshell.hyp
+>Holger Weets @ OL
+>Dokumentation/Shells
+>Dokumentation zur Pacshell
+Kontext sensitive Onlinehilfe und Dokumentation zu PacShell,  DER
+Packer-Shell fr den Atari. Im ST-Guide Format.
+
+>st-guide.hyp
+>Christian Wempe, Holger Weets @ OL
+>Dokumentation/ST-Guide
+>Dokumentation zum ST-Guide
+Die Dokumentation zum ST-Guide selber und natrlich im ST-Guide
+Format.
+
+>hcp.hyp
+>Christian Wempe, Holger Weets @ OL
+>Dokumentation/ST-Guide
+>Dokumentation zum HCP
+Dokumentation im ST-Guide Format zum Hypertext-Compiler hcp.
+
+>1st_conv.hyp
+>Holger Weets @ OL
+>Dokumentation/ST-Guide
+>1stConv Dokumentation
+Dokumentation zum Konverter 1stGuide --> ST-Guide im ST-Guide Format
+
+>pc_conv.hyp
+>Holger Weets @ OL
+>Dokumentation/ST-Guide
+>PC-Conv Dokumentation
+Dokumentation zum Konverter PureC --> ST-Guide im ST-Guide Format
+
+>reflink.hyp
+>C. Wempe, H. Weets @ OL
+>Dokumentation/ST-Guide
+>RefLink Dokumentation
+Dokumentation zum Referenz-Datei Linker fr den ST-Guide im
+ST-Guide Format
+
+>man2stg.hyp
+>Holger Weets @ OL
+>Dokumentation/ST-Guide
+>MAN2STG Dokumentation
+Dokumentation zum Manual-Page Konvertierer im ST-Guide Format
+
+>c_rsc.hyp
+>Holger Weets @ OL
+>Dokumentation/Utilities
+>Dokumentation zu C_RSC
+Kontext sensitive Onlinehilfe und Dokumentation im ST-Guide Format
+zu C-RSC, dem RSC -> C Konverter.
+
+>xdlibs.hyp
+>Joachim Wiechmann @ OL2
+>Programmieren/C
+>Version: xdlibs.hyp 1.00 (10/03/94)
+Dokumentation zur PD-C Bibliothek DLIBS von Dale Schumacher im ST-GUIDE-Format.
+
+>gator.hyp
+>Joachim Wiechmann @ OL2
+>Dokumentation/Df
+>Gateway Infos
+>1.00
+Im ST-Guide Format
+
+>gdosfont.hyp
+>Holger Weets @ OL
+>Dokumentation/Utilities
+>Dokumentation zum GDOS-Font Utility
+Im ST-Guide Format
+
+>jcnshell.hyp
+>Holger Weets @ OL
+>Dokumentation/Utilities
+>Dokumentation zur JCN-Shell
+Kontext sensitive Onlinehilfe und Dokumentation im  ST-Guide  Format
+zur Shell fr den Bootselektor JCN-Boot
+
+>7up.hyp
+>Michael Thaenitz @ BI
+>Dokumentation/Editoren
+>Dokumentation zum Shareware-Editor 7UP 2.2/3
+Onlinehilfe und Dokumentation im ST-GUIDE Format.
+Ein Umfangreiches mit Screenshots bebildertes Guide.
+Umsetzung von J.Melkis HH
+
+>gemini.hyp
+>Henning Schreiber @ DO
+>Dokumentation/Shells
+>Dokumentation des Desktop GEMINI v1.2
+Im 1stGuide Format
+
+>ttl_ic.hyp
+>Ralf Zimmermann @ OF2
+>Hardware/ICs
+>Sammlung von TTL Schaltkreisen
+Die Datei enth„lt Informationen ber TTL-ICs aus der
+74er-Reihe. Vor allem findet man die Pin-Belegungen
+als Bild. Wer selbst viel bastelt findet diese Datei
+vielleicht ganz ntzlich zum Nachschlagen.
+
+>eng2ger.hyp
+>Ralf Zimmermann @ OF2
+>Lexika
+>W”rterbuch Englisch->Deutsch
+Dies ist ein W”rterbuch  Englisch --> Deutsch.
+Sicherlich kann dies kein echtes W”rterbuch ersetzen,
+aber hin und wieder ist sowas doch ganz hilfreich.
+
+>latex_k.hyp
+>Oliver Stenzel @ KI
+>Computer/TeX
+>LaTeX-Onlinehilfe
+Umfangreiche Befehlsreferenz fr LaTeX, kurze Version, im ST-Guide Format.
+
+>lathlp.hyp
+>Oliver Stenzel @ KI
+>Computer/TeX
+>LaTeX-Onlinehilfe
+Sehr umfangreiche Onlinehilfe fr LaTeX, im ST-Guide Format.
+
+

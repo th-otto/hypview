@@ -1,0 +1,288 @@
+!begin_node Technisches
+FÅr alle, die es interessiert, im folgenden eine Beschreibung der
+Dateiformate.
+
+Der Aufbau einer Hypertext Datei (*.HYP):
+!begin_enumerate !compressed
+!item (!link [Header] [Header einer Hypertext Datei])
+!item (!link [Indextabelle] [Indexbereich einer Hypertext Datei])
+!item (!link [Erweiterte Header] [Erweiterte Header])
+!item (!link [Daten] [Datenbereich eines Hypertextes])
+!end_enumerate
+
+(!xlink [Der Aufbau einer Hypertext Referenz (*.REF!)] [reflink.hyp/REF-Format])
+
+!begin_node Header einer Hypertext Datei
+Der Header einer Hypertext Datei ist wie folgt aufgebaut:
+!begin_xlist [4] !compressed
+  !item [4] Bytes Magic ('HDOC')
+  !item [4] Bytes LÑnge der Indextabelle
+    (Seiten, Bilder, ext. Referenzen, system, rexx)
+  !item [2] Bytes Anzahl der EintrÑge in dieser Tabelle
+  !item [1] Byte Kennung, mit welcher Version des Compilers Åbersetzt wurde
+    (aktuell 3)
+  !item [1] Byte Kennung, unter welchem Betriebsystem Åbersetzt wurde
+    (0: unbekannt, 1: AMIGA, 2: ATARI, 3: Macintosh)
+!end_xlist
+!end_node
+
+!begin_node Indexbereich einer Hypertext Datei
+!begin_xlist [4] !compressed
+    !item [1] Byte LÑnge dieses Eintrages
+    !item [1] Byte Typ dieses Eintrages
+        !begin_xlist [7:] !compressed
+        !item [0:] interne Seite        ((!link [@node] [Kommando @node]))
+        !item [1:] Popup-Node           ((!link [@pnode] [Kommando @pnode])
+        !item [2:] externe Referenz     ((!link [@{... link FILE [LINE!]}] [@{ link }]))
+        !item [3:] Bild                 ((!link [@image] [Kommando @image]))
+        !item [4:] SYSTEM-Argument      ((!link [@{... system ARG}] [@{ system }]))
+        !item [5:] REXX-Script          ((!link [@{... rxs FILE}] [@{ rxs }]))
+        !item [6:] REXX-Kommando        ((!link [@{... rx ARG}] [@{ rx }]))
+        !item [7:] QUIT Dummy-Eintrag   ((!link [@{... quit}] [@{ quit }]))
+        !end_xlist
+    !item [4] Bytes Seek Offset in die Datei
+    !item [2] Bytes Differenz entpackte/gepackte LÑnge des Objektes
+    !item [2] Bytes Index des Nachfolgers
+    !item [2] Bytes Index des VorgÑngers
+    !item [2] Bytes Index des Inhaltsverzeichnisses fÅr dieses Objekt
+    !item [x] Bytes Name des Objektes, nullterminiert
+    !item [ ] evtl. ein weiteres Nullbyte, damit der nÑchste Eintrag wieder
+        auf einer geraden Adresse liegt
+    !end_xlist
+    
+    Von diesen Strukturen finden sich so viele in der Datei, wie der
+    entsprechende Wert im Header angibt.
+
+    Die LÑnge einer Seite berechnet sich aus der Differenz der
+    Seek-Offsets dieser Seite und der des Nachfolger-Objektes.
+
+ Da Bilder grîûer als 65KB sein koennen, die Angabe Åber die LÑnge der
+ entkomprimierten Daten aber auf 2 Bytes (=bis zu 65536 Bytes an Daten)
+ beschrÑnkt ist, wird zur Berechnung der waren Grîûe der Index-Eintrag
+ "next" zu hilfe gezogen:
+!begin_quote
+   entkomp. Groesse = komp. Groesse + (index->next<<16)+index->comp_diff
+!end_quote
+!end_node
+
+!begin_node Erweiterte Header
+
+Erweiterte Header dienen i.w. dem Zweck, alle Daten auch bei Erweiterungen
+des Systems kompatibel zu Ñlteren Versionen zu halten.
+
+Der Aufbau eines solchen Headers ist wie folgt:
+!begin_xlist [2] !compressed
+!item [2] Bytes Kennung
+!item [2] Bytes LÑnge
+!item [n] Bytes Daten
+!end_xlist
+
+Aktuell existieren folgende Header:
+!begin_xlist [11] !compressed
+!item [0]   Ende-Kennung, es folgen keine weiteren Header mehr
+!item [1]   Database Name, es folgen LÑnge und C-String
+    ((!link [@database] [Kommando @database]))
+!item [2]   Name der Default-Node, es folgen LÑnge und C-String
+    ((!link [@default] [Kommando @default]))
+!item [3]   Name der Host-Applikation(en), es folgen LÑnge und C-String(s)
+    ((!link [@hostname] [Kommando @hostname]))
+!item [4]   Optionen, die von den Default-Einstellungen abweichen, es
+    folgen LÑnge und C-String
+    ((!link [@options] [Kommando @options]), Kommandozeile)
+!item [5]  Name des/der Autoren, es folgen LÑnge und C-String
+    ((!link [@author] [Kommando @author]))
+!item [6] Versions-Information, es folgen LÑnge und C-String
+    ((!link [@$VER:] [Kommando @$VER:]))
+!item [7]   Name der Hilfe Seite, es folgen LÑnge und C-String
+    ((!link [@help] [Kommando @help]))
+!item [8]   Beschreibung der Gebiete, in die der Text einzuordnen
+    ist, es folgen LÑnge und C-String
+    ((!link [@subject] [Kommando @subject]))
+!item [9]   HypTree-Header; Aufbau: (!nl)
+    4 Bytes Summe der LÑngen aller expliziten Titel (!nl)
+    Array von Wortbreiten Bitvektoren: (!nl)
+    ~1. Wort: Bit n == 1 -> Seite n hat einen expliziten Titel (!nl)
+    ~2. Wort: Bit n == 1 -> Seite 16+n hat einen expiziten Titel (!nl)
+    ~usw.
+!item [10]  Flags fÅr den ST-Guide
+!item [11]  verwendete ZeilenlÑnge ((!link [@width] [Kommando @width]))
+!end_xlist
+
+Ein Lesealgorithmus fÅr diese Header muû alle ihm nicht bekannten Header
+ohne Warnung oder Fehlermeldung Åberlesen.
+
+!end_node
+
+!begin_node Datenbereich eines Hypertextes
+
+    Alle Seiten, Popup's und Bilder, die im Hypertext definiert wurden.
+    Meist liegen die Daten in gepackter Form vor, so daû sie nicht ohne
+    weiteres verwendet werden kînnen. Der verwendete Pack-Algorithmus
+    entspricht dem LH5 Verfahren des LHarc, ist somit sehr effizient und
+    zumindest beim Auspacken auch schnell genug.
+    
+    Die Reihenfolge der Daten-Objekte entspricht der der Indextabelle,
+    externe Referenzen, system- und rexx-EintrÑge besitzen keine Daten
+    in diesem Bereich, die Daten gehîren folglich immer zu einer
+    !begin_itemize
+    !item (!link [Textseite] [Format eines Text Objektes]) oder zu einem
+    !item (!link [Bild] [Format eines Bild-Objektes])
+    !end_itemize
+
+!begin_node Format eines Text Objektes
+Gehîren die Daten zu einer Textseite ((!link [@node] [Kommando @node]), (!link [@pnode] [Kommando @pnode])), so haben die
+(entpackten) Daten folgendes Format:
+
+!begin_xlist [f)]
+    !item [a)] optionaler Grafikbereich (nur (!link [@node] [Kommando @node]))
+        Hier werden alle grafischen Objekte dieser Seite  wie
+        folgt beschrieben:
+        !begin_xlist [1] !compressed
+        !item [1] Byte Kennung (27, ESCAPE)
+        !item [1] Byte Typ
+            !begin_xlist [53:]
+            !item [50:] Bild                    ((!link [@image] [Kommando @image]))
+            !item [51:] Linie                   ((!link [@line] [Kommando @line]))
+            !item [52:] Box                     ((!link [@box] [Kommando @box]))
+            !item [53:] Box mit runden Ecken    ((!link [@rbox] [Kommando @rbox]))
+            !end_xlist
+        !item [2] Bytes Index, falls Bild (!nl)
+            damit keine 0-Bytes entstehen, liegt dieser Wert zur Basis
+            255 vor und zu beiden Bytes wurde der Wert 1 addiert
+        !item [1] Byte X-Offset in Zeichen (!nl)
+           (X == 0 fÅr zentrierte Bilder)
+        !item [2] Bytes Y-Offset in Zeichen (!nl)
+            damit keine 0-Bytes entstehen, liegt dieser Wert zur Basis
+            255 vor und zu beiden Bytes wurde der Wert 1 addiert
+        !item [1] Byte Breite des Objektes in Zeichen (!nl)
+          (Breite == 1 fÅr (!link [@limage] [Kommando @limage]))
+        !item [1] Byte Hîhe des Objektes in Zeichen
+        !item [1] Byte Data, falls kein Bild (!nl)
+            Bevor folgende Aufschluesselung angewendet werden kann muss
+            zuerst "Data" um eins verkleinert werden!
+            !begin_xlist [Linie:] !compressed
+            !item [Linie:] Bit 0 == 1: Pfeilspitze am Anfang
+            !item [      ] Bit 1 == 1: Pfeilspitze am Ende
+            !item [      ] Bit 2: unbenutzt
+            !item [      ] restliche Bits: Linienstil
+            !item [Box:]
+            !item [RBox:]  FÅllmuster
+            !end_xlist
+        !end_xlist
+        Bei Bildern werden Breite und Hîhe ignoriert, bei Linien bilden
+        sie das umgrenzende Rechteck.
+
+    !item [b)] optional bis zu 12 Querverweis-Datenblîcke
+        !begin_xlist [1] !compressed
+        !item [1] Byte Kennung (27, ESCAPE)
+        !item [1] Byte Typ (48)
+        !item [1] Byte LÑnge (Åber alles)
+        !item [2] Bytes Indexnummer der Zielnode (zur Basis 255)
+        !item [ ] Text fÅr das Popup, Nullterminiert
+        !end_xlist
+        
+    !item [c)] optional weitere Datenblîcke
+        !begin_xlist [1] !compressed
+        !item [1] Byte Kennung (27, ESCAPE)
+        !item [1] Byte Typ (40-47)
+        !item [1] Byte LÑnge (Åber alles)
+        !item [ ] Daten
+        !end_xlist
+        
+    !item [d)] optional Fenstertitel ((!link [@node] [Kommando @node]), (!link [@title] [Kommando @title]))
+        !begin_xlist [1] !compressed
+        !item [1] Byte Kennung (27, ESCAPE)
+        !item [1] Byte Typ (35)
+        !item [ ] Fenstertitel, Nullterminiert
+        !item [ ] evtl. FÅllbyte, damit der Text auf einer geraden Adr.
+        beginnt
+        !end_xlist
+
+    !item [e)] optional Tabelle mit Objekten & Seiten ((!link [@tree] [Kommandos @tree/@endtree]))
+        !begin_xlist [1] !compressed
+        !item [1] Byte Kennung (27, ESCAPE)
+        !item [1] Byte Typ     (49, ObjTable)
+        !item [2] Bytes Zeilennummer in der Zielseite
+        !item [2] Bytes Nummer des Baumes
+        !item [2] Bytes Objekt in diesem Baum
+        !item [2] Bytes Index der Seite
+        !end_xlist
+       Damit keine 0-Bytes entstehen, liegen alle 2 Byte Werte zur
+       Basis 255 vor und zu beiden Bytes wurde der Wert 1 addiert;
+
+    !item [f)] optional Text mit Attributen (!nl)
+        Die einzelnen Zeilen sind durch ein 0-Byte abgeschlossen und
+        kînnen beliebig viele nicht auszugebende Zusatz-Information
+        enthalten.
+
+        Diese Informations-Sequenzen werden jeweils durch das Zeichen
+        ESCAPE (27) eingeleitet, ihm folgt ein weiteres ESCAPE oder
+        ein Typ, im ersten Fall ist das Zeichen ESCAPE auszugeben und
+        im zweiten Fall bestimmt der Typ das weitere Vorgehen:
+        !begin_xlist [>= 100:] !compressed
+            !item [36:] Referenz auf andere Seite (!nl)
+                    @{... link NODE}
+            !item [37:] wie 36, aber mit Zeilennummer (!nl)
+                    @{... link NODE LINE}
+            !item [38:] wie 36 nur durch 'alink' erzeugt (!nl)
+                    @{... alink NODE}
+            !item [39:] wie 38, aber mit Zeilennummer (!nl)
+                    @{... alink NODE LINE}
+            !item [>= 100:] Vektor fÅr Textattribute:
+                nach Abzug von 100 ergibt sich folgender
+                Bitvektor:
+                !begin_xlist [32:] !compressed
+                !item [ 1:] Fettschrift
+                !item [ 2:] helle Schrift
+                !item [ 4:] Kursivschrift
+                !item [ 8:] unterstrichen
+                !item [16:] 'Outlined'
+                !item [32:] schattierte Schrift
+                !end_xlist
+            !end_xlist
+            
+            Bei Typ 37 und 39 folgen 2 Bytes Zeilennummer; damit keine
+            0-Bytes entstehen, liegt dieser Wert zur Basis 255 vor und
+            zu beiden Bytes wurde der Wert 1 addiert
+
+            Bei Typ 36-39 folgen nun
+            !begin_xlist [1] !compressed
+            !item [2] Bytes Index in die Tabelle aus dem Indexbereich;
+                  damit keine 0-Bytes entstehen, liegt dieser Wert zur
+                  Basis 255 vor und zu beiden Bytes wurde der Wert 1
+                  addiert
+            !item [1] Byte LÑnge des betreffenden Strings + 32.
+                  Ist die LÑnge gleich 32, so ist hier direkt der Name
+                  des indizierten Objektes auszugeben, ansonsten so
+                  viele Zeichen, wie die LÑnge angibt, minus 32 aus
+                  der nachfolgenden Zeichenkette
+            !end_xlist
+    !end_xlist
+!end_node
+
+!begin_node Format eines Bild-Objektes
+
+    Gehîren die Daten zu einem Bild, so liegt (nach dem Entpacken)
+    folgendes Format vor:
+    !begin_xlist [a)]
+    !item [a)] Header
+            !begin_xlist [2] !compressed
+            !item [2] Bytes Breite des Bildes in Pixeln (wird ignoriert)
+            !item [2] Bytes Hîhe des Bildes in Pixeln (wird ignoriert)
+            !item [1] Byte Anzahl der Planes (1..8)
+            !item [1] Byte 'Planepic': Bit n == 1 --> Daten fÅr Plane n
+              vorhanden
+            !item [1] Byte 'PlaneOnOff': Bit n == 1 --> Plane ganz ausgefÅllt
+            !item [1] Byte Filler, damit das Bild auf gerader Adr. liegt
+            !end_xlist
+    !item [b)] 1. Plane
+    !item [  ] optional 2. Plane
+    !item [  ]  ...
+    !item [  ] optional 8. Plane
+    !end_xlist
+!end_node
+
+!end_node # Datenbereich eines Hypertextes
+
+!end_node # Technisches
+

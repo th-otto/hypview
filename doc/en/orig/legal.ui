@@ -1,0 +1,113 @@
+!begin_node Legal
+!alias Fairware
+!index Fairware
+
+This hypertext system is Fairware, which means it can be used by anyone
+without cost and  copies may be  passed on so  long as distribution  is
+free of charge.
+ 
+(!B)Regular users are expected to make  a donation to ensure the  continued
+development of the system.(!b)
+
+UK users may register locally with Joe Connor. Refer to (!file [SUPPORT.TXT]) for
+more details.
+
+ST-Guide may be included  free of charge  with ANY software  (including
+commercial and  Shareware software)  which  offers an  ST-Guide  format
+hypertext (.HYP). However  I would appreciate  some recognition for  my
+efforts and propose the following suggestions to software authors:
+
+!begin_itemize
+!item A reference to the Fairware status of ST-Guide along with my  contact
+  details should be included in your documentation.
+!item You send  me a  copy of your  software along  with the  corresponding
+  hypertext, as a sort of author's copy.
+!end_itemize
+
+In return  for your  support  we'll continue  to develop  ST-Guide  and
+provide regular updates.
+
+Since the primary use for  ST-Guide is writing documentation for  other
+software, it may be distributed in two forms:
+
+!begin_itemize
+!item The complete ST-Guide  distribution including all the  associated
+      files. Naturally this is my preferred method, even if ST-Guide is
+      included with other software.
+
+!item The  ST-Guide  'Lite'  version may  be  distributed,  which  only
+      includes the viewer  and hypertext for  ST-Guide. This method  is
+      ONLY allowed if it is included in other program packages (!B)and(!b)  the
+      documentation for this program is in ST-Guide format.
+!end_itemize
+
+If the distribution is an  addition to any kind  of program, or via  PD
+suppliers, we would appreciate a short note about this so that we can:
+!begin_itemize !compressed
+    !item estimate how widely the package is distributed, and
+    !item possibly be able to provide information about updates.
+!end_itemize
+
+Naturally we  are also  very interested  in seeing  which programs  use
+ST-Guide. So if possible, please send us a copy of your program.
+
+!index Contributions
+(!B)Contributions:(!b) ST-Guide is  the result  of  a great  deal of  time  and
+               effort and the decision to publish ST-Guide as  Fairware
+               was taken to encourage  widespread availability and  use
+               by software authors. But it  would be only fair for  you
+               to send us  a small contribution  for our efforts.  Your
+               donation is vital  to ensure the  continued support  and
+               development of ST-Guide, so  please register your  copy.
+               As fellow authors,  I'm sure you  realise how  important
+               feedback and support is.
+
+               UK users may register locally with Joe Connor. Refer  to
+               the file (!file [SUPPORT.TXT]) for more details.
+
+No program is really completely free of errors, so we cannot and do not
+wish to give any guarantees for  the correct operation of this  program
+package or its suitability for  any purpose, and in particular  neither
+the author nor any  of his appointed agents  will accept any  liability
+for any damages resulting from the use or misuse of any of the programs
+in the ST-Guide package.
+
+Whilst I  will try  to  resolve any  problems  you may  experience,  my
+liability,  and  that  of  any  agents  I  appoint,  for  any  loss  or
+consequential loss you  may suffer  due to the  use or  non-use of  any
+program/s in the ST-Guide package is strictly limited to refunding  any
+contribution you may have made.
+
+!begin_itemize !compressed
+!item All trademarks used are recognised and acknowledged.
+!item All trademarks  mentioned in the  documentation are acknowledged  and
+  recognised.
+!end_itemize
+
+!label* Address
+!index Address
+!index Holgers Address
+For praise, criticism,  suggestions or  donations you can  reach me  as
+follows:
+!begin_preformatted
+                Holger Weets
+                Tangastrasse 45
+                D-26121 Oldenburg
+
+                E-Mail: Holger Weets @ OL (Mausnet)
+                        holger_weets@ol.maus.de (Internet)
+
+                Bank details:
+                KTO (Account No.): 1776764
+                BLZ (Sort code): 380 707 24
+                Bank 24
+!end_preformatted
+
+Anyone who would like to receive a new version directly from me, please
+send a  self-addressed envelope  with  either suitable  return  postage
+(!I)(German stamps!)(!i) or 2 International Reply  Coupons and 10 DM.- to  this
+address. The  small sum  (equiv. to  œ4.50)  will serve  as a  kind  of
+recompense for the expenditure of my time, for after all I have  better
+things to do than copy disks.
+
+!end_node

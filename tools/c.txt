@@ -1,0 +1,1071 @@
+C.HLP wurde Åbersetzt am 3.Februar 1992.
+
+(c) 1990 Borland International, Inc.Index der verfÅgbaren SchlÅsselwîrter:
+
+     EA..F       EB..F       EC..F      ED..F
+
+     EE..F       EF..F       EG..F      EH..F
+
+     EI..F       EJ..F       EK..F      EL..F
+
+     EM..F       EN..F       EO..F      EP..F
+
+     EQ..F       ER..F       ES..F      ET..F
+
+     EU..F       EV..F       EW..F      EX..F
+
+     EY..F       EZ..F
+
+     ESonstigesFC Language
+----------------------------------------------------------------------
+
+Pure C betrachtet 33 Zeichenfolgen als SchlÅsselwîrter:
+
+EautoF        EdefaultF     EforF        EreturnF       EtypedefF
+EbreakF       EdoF          EgotoF       EshortF        EunionF
+EcaseF        EdoubleF      EifF         EsignedF       EunsignedF
+EcdeclF       EelseF        EintF        EsizeofF       EvoidF
+EcharF        EenumF        ElongF       EstaticF       EvolatileF
+EconstF       EexternF      EpascalF     EstructF       EwhileF
+EcontinueF    EfloatF       EregisterF   EswitchF
+
+Querverweis    EmainF
+               EPrÑprozessorF
+               EEscapesequenzenF
+               ERangfolge der OperatorenF
+               EPrototypenF
+               EParameterÅbergabeF
+               EASCII-TabelleF[auto] <Datendefinition> ;
+
+Legt fest, daû die entsprechende lokale Variable auf dem Stack
+gespeichert wird und beim Verlassen der Funktion verlorengeht.
+Weil dieser Speichermechanismus der Standardvorgabe von C entspricht,
+wird auto relativ selten explizit angegeben.
+
+Beispiel:
+
+  int main(int argc, const char *argv[])
+
+  {
+     auto int i = 5;
+
+     return i;
+  }
+
+Querverweis    EC LanguageFbreak
+
+VerlÑût die momentane Ebene von EwhileF, EdoF, EforF oder EswitchF
+und entspricht einem GOTO zum direkt auf das Konstrukt folgenden
+Befehl.
+Beispiel:
+
+ for (x = 0; x < 10; x++)
+  {
+       if (z == 0) break;
+       ...
+  }    /*  <-- hierher springt break */
+
+Querverweis    EC LanguageF<Datentyp> cdecl <Funktionsname> ;
+
+Der Modifizierer cdecl
+ist Pure-C-spezifisch und wird verwendet, um bei einer Compilierung
+eine ParameterÅbergabe Åber den Stack zu erzwingen.
+
+Pure C Åbergibt (ohne cdecl) Parameter Åber die Register d0-d2 und
+a0-a1, wenn diese nicht ausreichen werden alle anderen Parameter auf
+dem Stack Åbergeben.
+Dabei erfolgt die Zuteilung von Parametern auf Register getrennt nach
+Adress- und Daten-Parametern entsprechend folgender Konvention:
+
+- Der erste Adress-Parameter (Zeiger) wird in a0 Åbergeben, der zweite
+  in a1, alle anderen auf dem Stack
+- Der erste Daten-Parameter (Integer und Longs) wird in d0 Åbergeben,
+  der zweite in d1, der dritte in d2, und alle anderen auf dem Stack.
+
+Alle Gleitkomma-Operanden vom Typ EfloatF und EdoubleF werden auf dem
+Stack Åbergeben.
+FÅr die RÅckgabe von EdoubleFs Åbergibt das aufrufende Programm
+die Adresse des Speicherplatzes fÅr das Resultat als letzten
+Stackparameter.
+d3-d7 und a2-a6 mÅssen von allen Routinen gerettet werden.
+
+Querverweis    EC LanguageF   EParameterÅbergabeFDer Datentyp char
+
+Variablen dieses Typs belegen 1 Byte Speicherplatz. Mîgliche
+Wertebereiche sind 0..255 (unsigned char) bzw. -128..127
+(signed char).
+
+Querverweis    EC LanguageFconst <Variablenname> [ = <Wert> ] ;
+    ODER
+<Funktionsname> (const <Typ> *<Variablenname>;)
+
+In der ersten Form vereinbart der Zusatz const eine Variable, deren
+Wert wÑhrend der AusfÅhrung des Programms konstant ist.
+Nach einer Deklaration wie ->  const my_age = 29;
+weist der Compiler jede Zuweisung an my_age als Fehler aus.
+Achtung:
+Eine const-Variable kann Åber einen Zeiger verÑndert werden, ohne daû
+es der Compiler merkt:   ->  *(int *)&my_age = 35;
+
+In der zweiten Form zeigt der Zusatz const dem Compiler an, daû eine
+Funktion ein Åber Zeiger Åbergebenes Argument nicht verÑndert.
+Der Parameter format der Funktion printf ist beispielsweise auf diese
+Art deklariert:
+
+int printf (const char *format, ...);
+
+Querverweis    EC LanguageFcontinue
+
+Erzwingt die sofortige Wiederholung einer mit EwhileF, EdoF oder
+EforF aufgebauten Schleife.
+
+Beispiel:
+ for (i = 0; i < 20; i++)
+  {
+      if (array[i] == 0)      /* sofort */
+          continue;           /* nÑchster Durchlauf */
+      array[i] = 1/array[i];
+  }
+
+Querverweis    EC LanguageFdo
+
+do <Block> while ( <Ausdruck> ) ;
+
+do..while ist eines von drei Schleifenkonstrukten in C: <Befehl> wird
+solange wiederholt, bis die Auswertung von <Ausdruck> FALSE ergibt
+(d.h. den Wert 0). Die PrÅfung von <Ausdruck> findet jeweils *nach*
+der AusfÅhrung von <Block> (d.h. nach dem Durchlaufen des
+Schleifenrumpfes) statt.
+Beispiel:
+
+ i = 1; n = 1; factorial = 10;
+ do
+ {
+     n *= i;
+     i++;
+ }   while (i <= factorial);
+
+
+Querverweis    EC LanguageFDatentypen float, double, long double
+
+Pure C hÑlt sich an den IEEE-Standard. Darin sind drei Flieûkomma-
+formate definiert:
+
+    nach IEEE   | Pure C Syntax   | Wertebereich von bis | Genauigkeit
+----------------+-----------------+----------------------+------------
+single real     | float           |   10E-38 ..   10E+38 | 32 Bit
+double real     | double (TC 1.0) | 1.7E-308 .. 1.7E+308 | 64 Bit
+double extended | [long] double   | 10E-4932 .. 10E+4932 | 80 Bit
+
+Intern wird immer mit 80 Bit Genauigkeit gerechnet. Das etwas weniger
+genaue Format double real hat in Turbo C ab Version 1.1 keine Ent-
+sprechung mehr. Um Dateien dieses Formats, das in Version 1.0 und auch
+von vielen anderen Compilern verwendet wird umwandeln zu kînnen,
+stehen die Funktionen EdxcnvF und ExdcnvF zur VerfÅgung.
+
+Querverweis    EC LanguageF   EParameterÅbergabeFParameterÅbergabe Pure C
+----------------------------------------------------------------------
+
+Generell gilt:
+
+Parameter werden  in der Reihenfolge  von rechts nach  links
+Åbergeben    (Ausnahme:    Bei   als   EpascalF   deklarierten
+Funktionen erfolgt die öbergabe in der Reihenfolge von links
+nach rechts).
+
+Die  SchlÅsselworte    EcdeclF   und  EpascalF   erzwingen  eine
+öbergabe ALLER Parameter einer Prozedur Åber den Stack.
+
+Variablen   vom   Typ   EcharF,   EintF,  ElongF,  werden  in  den
+Registern ED0F, ED1F, ED2F Åbergeben.
+
+Adressparameter (Pointer) werden in  den Registern EA0F und EA1F
+Åbergeben.
+
+öbergabe von EfloatF und EdoubleF Parametern
+----------------------------------------
+
+Variablen vom Typ "float"  und "double" werden grundsÑtzlich
+auf dem Stack Åbergeben.
+
+Jede Funktion die eine  andere Funktion mit RÅckgabewert vom
+Typ  "double" oder  "float" aufruft,  reserviert als  Erstes
+eine lokale  "double"-Variable (d.h. 10 Byte)  auf dem Stack
+zur Aufnahme  des RÅckgabewertes.
+
+Der  RÅckgabewert  hat intern  immer den  Typ "double", auch 
+wenn er  als "float" deklariert wurde.  In diesem  Fall wird
+er nach der RÅckkehr in einen "float" konvertiert.
+
+Obiges gilt  sinngemÑû auch fÅr Funktionen,  die  Strukturen
+zurÅckliefern,  nur  werden  nicht  10  Bytes auf dem  Stack 
+reserviert, sondern genÅgend Speicher, um die ganze Struktur 
+aufzunehmem.
+
+In  C  rÑumt  die  aufrufende  Funktion  nach dem Aufruf die
+Parameter selbst  vom Stack (z.B.  mit  EADDQF.W #8,A7",  nach
+einem Aufruf mit zwei  Adressparametern). Dies erÅbrigt sich
+natÅrlich,  wenn  alle   Parameter  in  Registern  Åbergeben
+wurden.
+
+Eine als  EpascalF  deklarierte  Funktion rÑumt Ihre Parameter
+vor der RÅckkehr selbst vom Stack. Funktionsresultate werden
+auf dem Stack Åbergeben.
+
+Querverweis    EcdeclFenum [ <id1> ] { <id2> [ = <Konst.> ] , ... };
+
+Legt eine Folge von Konstanten fest, der optional ein Typ-Bezeichner
+(<id1>) vorangestellt werden kann. <id2> ist der Name der ersten
+definierten Konstanten, die normalerweise den Wert 0 zugewiesen
+bekommt; folgende Bezeichner erhalten jeweils den Wert ihres
+VorgÑngers +1 (d.h. 1, 2, 3...). öber die Angabe einer Konstanten
+kann einem Bezeichner ein Wert direkt zugewiesen werden.
+
+Beispiel: enum modes {LASTMODE=-1, BW40,
+                      C40, BW80, C80, MONO=7};
+
+Querverweis    EC LanguageFextern <Datendefinition> ;
+            ODER
+extern <Funktions-Prototyp> ;
+
+Teilt dem Compiler mit, daû der Speicherplatz fÅr eine Variable (und
+ein eventueller Startwert) in einem anderen Modul definiert ist.
+FÅr Funktions-EPrototypenF ist das SchlÅsselwort extern optional.
+Beispiele:
+
+  extern int _fmode;
+  extern void Factorial(int n);
+
+Querverweis    EC LanguageFfor ( [<expr1>] ; [<expr2>] ; [<expr3>] )
+  <Befehl>
+
+for ist eines von drei Schleifenkonstrukten in C: <Befehl> wird
+solange wiederholt ausgefÅhrt, bis die Auswertung von <expr2> FALSE
+ergibt (d.h. den Wert 0). <expr1> wird vor dem ersten Durchlauf
+ausgewertet und initialisiert normalerweise eine Laufvariable, die im
+Test mit <expr2> verwendet wird. <expr3> wird nach jedem Durchlauf
+ausgewertet und normalerweise zur VerÑnderung der Laufvariablen
+verwendet.
+Alle drei AusdrÅcke sind optional. FÅr ein nicht definiertes <expr2>
+wird 1 angenommen.
+
+Beispiele:
+  for (i=0; i<100; i++)
+      sum += x[i];
+
+  for (i=0, t=string; i < 40 && *t; i++, t++)
+      putch(*t);
+  putch('\n');
+
+Querverweis    EC LanguageFgoto <Bezeichner> ;
+
+"Unbedingter" Sprung (d.h. unabhÑngig von PrÅfungen irgendwelcher Art)
+- das Programm wird mit dem (lokalen) Label fortgesetzt, das als Ziel
+des Sprungs angegeben wurde.
+Beispiel:
+
+   if (x > 4) goto Step2;
+    ....
+   Step2: ....  /* Fortsetzung */
+
+Querverweis    EC LanguageFif ( <Ausdruck> )                   if ( <Ausdruck> )
+    <Block1>                            <Block1>
+                         ODER       else
+                                        <Block2>
+
+Bedingte Verzweigung: Wenn der Wert von <Ausdruck> != 0 ergibt, wird
+<Block1> ausgefÅhrt; ansonsten wird dieser Befehl Åbersprungen.
+
+if..else: Wenn <Ausdruck> != 0 ergibt, wird <Block1> ausgefÅhrt und
+<Block2> Åbersprungen; wenn <Ausdruck> == 0 ergibt, wird <Block1>
+Åbersprungen und <Block2> ausgefÅhrt.
+
+Beispiele:    if (count < 50) count++;    |     if (x < y)
+                                          |         z = x;
+                                          |     else
+                                          |         z = y;
+
+Querverweis    EC LanguageFDatentyp int
+
+Variablen dieses Typs belegen 2 Bytes Speicherplatz. Mîgliche
+Wertebereiche sind 0..65535 (unsigned int) bzw. -32768..32767
+(signed int).
+
+Querverweis    EC LanguageFDatentyp long
+
+Variablen dieses Typs belegen 4 Bytes Speicherplatz. Mîgliche
+Wertebereiche sind 0..4294967295 (unsigned long) bzw. -2147483648..
+2147483647 (signed long).
+
+Querverweis    EC LanguageFpascal <Datendefinition> ;
+          ODER
+pascal <Funktionsdefinition> ;
+
+Legt fest, daû die Deklaration im Pascal-Stil erfolgt (keine
+Unterscheidung von Groû-/Kleinbuchstaben, kein vorangestellter
+Unterstrich).
+FÅr Funktionsdefinitionen wird zusÑtzlich festgelegt, daû Parameter
+in der Reihenfolge ihrer Angabe (d.h. von links nach rechts) auf den
+Stack gelegt und von der *aufgerufenen* Funktion entfernt werden.
+
+Beispiel:  int pascal FileCount;
+               pascal HisFunc(int x, char *s);
+
+Querverweis    EC LanguageFregister <Datendefinition> ;
+
+Teilt dem Compiler mit, daû die entsprechende Variable in einem
+Prozessor-Register gespeichert werden soll (soweit mîglich), um eine
+mîglichst hohe Zugriffsgeschwindigkeit zu erreichen. Nur auf
+Integertypen anwendbar.
+
+Beispiel:  register int i;
+
+Querverweis    EC LanguageFreturn [ <Ausdruck> ] ;
+
+Beendet die AusfÅhrung der momentan aktiven Funktion und kehrt zur
+aufrufenden Funktion zurÅck. Optional kann dabei ein Wert
+zurÅckgeliefert werden.
+
+Beispiel:
+  double sqr(double x)
+  {
+      return (x*x);
+  }
+
+Querverweis    EC LanguageFDatentyp short
+
+short hat in Pure C die gleiche Bedeutung wie EintF.
+
+Querverweis    EC LanguageFsigned  EintF
+        EshortF
+        EcharF
+oder    ElongF
+
+Da int, short und long per Default auf signed eingestellt sind
+brauchen sie nicht mit signed deklariert werden.
+
+char-Variable kînnen explizit als vorzeichenbehaftet deklariert
+werden auch wenn die Standardvorgabe bei der Compilierung auf
+EunsignedF gestetzt ist ( ECompileroptionenF ).
+
+ signed int x;    /* int mit Vorzeichen */
+ unsigned x;      /* vorzeichenloser int */
+ signed short x;  /* Integer */
+ unsigned long x; /* vorzeichenloser long */
+
+Querverweis    EC LanguageFsizeof <Ausdruck>
+  ODER
+sizeof ( <Typ> )
+
+Liefert den Speicherplatzbedarf des angegebenen Variablentyps bzw. des
+Ergebnistyps von <Ausdruck> in Bytes als vorzeichenlosen Long-Wert.
+
+Beispiele:
+  memset(buff, 0, sizeof(buff));
+  nitems = sizeof(table) / sizeof(table[0]);
+
+Querverweis:  ERangfolge der OperatorenF, EC LanguageFstatic <Datendefinition> ;
+           ODER
+static <Funktionsdefinition> ;
+
+Legt fest, daû der entsprechende Bezeichner lokal zum momentanen
+Modul (d.h. nicht global innerhalb des gesamten Programms) verfÅgbar
+ist.  Mit dem Zusatz static deklarierte lokale Variablen werden im
+Datensegment gespeichert und behalten ihre Werte zwischen zwei
+Funktionsaufrufen.
+
+Beispiele:  static int i;
+            static void printnewline ( void ) { }
+
+Querverweis    EC LanguageFstruct [<Strukturtyp-Name>]
+ {
+     [<Typ> <Feldname(n)>] ;
+     ...
+ } [<struct-Variable(n)>] ;
+
+Eine struct-Definition faût mehrere Felder unterschiedlichen Typs
+unter einem gemeinsamen Typ-Bezeichner zusammen und kann (bei Angabe
+eines Strukturtyp-Namens) als Typdefinition oder als aktuelle
+Variablendeklaration erfolgen. Ein einmal definierter Strukturtyp lÑût
+sich (wie char, int usw.) fÅr beliebige Variablendeklarationen
+verwenden.
+
+Querverweis   EunionF   EBitfelderF
+
+Die Definition eines Feldes besteht aus einem Typ-Bezeichner, gefolgt
+von einem oder mehreren Feldnamen, die durch Kommas voneinander
+getrennt sind. Felder verschiedener Typen werden durch Semikolons
+voneinander getrennt:
+
+struct  my_struct                /*  <-- Strukturtyp */
+ {
+      char name[80], phone_number[80];
+      int  age, height;
+ } my_friend, your_friend;       /* <- Variablen */
+
+Hier werden sowohl ein Strukturtyp (my_struct) als auch zwei Variablen
+dieses Typs (my_friend und your_friend) vereinbart. Jede dieser beiden
+Variablen enthÑlt vier Felder.
+Der Zugriff auf ein Feld einer struct-Variablen erfolgt Åber
+<struct-Name>.<Feldname>:
+
+   strcpy(my_friend.name,"Franz Josef");
+
+Nach der Vereinbarung eines Strukturtyp-Namens kînnen mit diesem Namen
+weitere Variablen desselben Typs deklariert werden:
+
+   struct my_struct my_friends[100];
+
+Dieses Beispiel deklariert ein Array mit 100 Elementen des Typs
+my_struct.
+
+Querverweis    EC LanguageFswitch ( <Ausdruck> )
+ {
+     case <Konstante>: <Befehl>  [break;]
+     case <Konstante>: <Befehl>  [break;]
+     ...
+     default: <Befehl>;
+ }
+Mehrweg-Verzweigung: <Ausdruck> wird berechnet und muû einen
+Integerwert ergeben, danach folgt ein Vergleich mit <Konstante> jedes
+case-Zweiges. Bei öbereinstimmung wird der <Befehl> dieses Zweiges
+ausgefÅhrt. Jeder Konstanten-Wert darf in der case-Liste nur einmal
+erscheinen.
+Die optionale EbreakF-Anweisung hinter <Befehl> fÅhrt einen Sprung
+zum Ende von switch aus, d.h. zum nÑchsten auf das switch-Konstrukt
+folgenden Befehl. Der (optionale) default-Zweig wird nur dann
+ausgefÅhrt, wenn alle vorherigen Vergleiche fehlschlagen.
+Beispiel:
+  switch (operand)   /* <- Typ int */
+   { case MULTIPLY:   x *= y; break;
+     case DIVIDE:     x /= y; break;
+     case ADD:        x += y; break;
+     case SUBTRACT:   x -= y; break;
+     case INCREMENT2: x++;
+     case INCREMENT1: x++;    break;
+     case EXPONENT:
+     case ROOT:
+     case MOD:       printf("Not done\n");
+                     break;
+     default:        printf("Bug!\n");
+                     exit(1);
+   }
+Querverweis    EC LanguageFtypedef <Typdefinition> <Bezeichner> ;
+
+Vereinbart <Bezeichner> als Bezeichner fÅr die Definition eines
+neuen Daten- oder Funktionstyps.
+
+Beispiele:
+  typedef unsigned char byte;
+  typedef char str40[41];
+  typedef struct {double re, im;} complex;
+
+Querverweis    EC LanguageFunion [<Uniontyp-Name>]
+ {
+     <Typ> <Feldname(n)> ;
+     ...
+ } [<union-Variable(n)>] ;
+
+Eine union-Definition (Union = Variante) vereinbart einen gemeinsamen
+Bezeichner fÅr mehrere Variablen unterschiedlichen Typs.
+Der Unterschied zu einer EstructF-Deklaration besteht darin, daû fÅr
+sÑmtliche Felder nur *einmal* Speicherplatz reserviert wird - in einer
+Variablen, die als
+
+union int_or_long
+ {
+     int i; long l;
+ } a_number;
+
+deklariert ist, lÑût sich also entweder ein long oder ein int
+speichern - niemals beides zur selben Zeit.
+Die Felder einer Varianten werden auf dieselbe Weise wie die einer
+Struktur angesprochen - in unserem Beispiel also als
+
+  a_number.i    /* int */
+  a_number.l    /* long */
+
+Querverweis EBitfelderF, EC LanguageFvoid-Deklarationen
+
+Als Ergebnistyp einer Funktion zeigt *void* an, daû die Funktion
+"nichts" zurÅckliefert.
+Ein Beispiel:            void hello ( char *name )
+                         {
+                             printf ( "Hello, %s.", name );
+                         }
+Die Angabe void in der Parameterliste einer Funktion zeigt an, daû die
+Funktion keine Parameter erwartet:
+                                         int init ( void )
+                                         {
+                                             return 1;
+                                         }
+Zeigervariablen kînnen ebenfalls als void deklariert werden. Ein void-
+Zeiger ist zu jedem anderen Zeigertyp kompatibel, lÑût sich aber ohne
+eine explizite Typ-Umwandlung nicht fÅr Variablenzugriffe verwenden,
+weil dem Compiler hier die Information fehlt, auf was (d.h. wieviele
+aufeinanderfolgende Bytes welcher Struktur) zugegriffen werden soll.
+
+int x;
+float r;
+void *p = &x;             /* p -> x */
+
+void main ( void )
+{
+    *(int *) p = 2;
+    p = &r;               /* p -> r */
+    *(float *)p = 1.1;
+}
+
+Querverweis    EC LanguageFvolatile <Datendefinition> ;
+
+Teilt dem Compiler mit, daû die entsprechende Variable auûerhalb der
+Kontrolle des Programms (z.B. Åber Interrupts) verÑndert werden kann.
+Jeder Zugriff auf diese Variable erfolgt deshalb durch direktes Lesen
+des Speichers - eventuell noch vorhandene Registerinhalte werden
+ignoriert.
+
+Querverweis    EC LanguageFwhile ( <Ausdruck> ) <Block>
+
+Eines von drei Schleifenkonstrukten in C:
+
+<Block> wird so oft wiederholt, bis die Auswertung von <Ausdruck>
+den Wert FALSE (0) ergibt. Die PrÅfung von <Ausdruck> findet jeweils
+*vor* der AusfÅhrung von <Block> statt, d.h. zu Anfang jedes
+Schleifendurchlaufs.
+
+Beispiel:  while (*p == ' ') p++;
+
+Querverweis    EC LanguageFBitfelder
+----------------------------------------------------------------------
+
+Ein "Bitfeld" ist ein Element einer Struktur, das nicht byte-,
+sondern bitweise organisiert ist. Bitfelder kînnen zwischen einem und
+16 Bits einnehmen und werden vom Compiler auch Åber Bytegrenzen hinweg
+gepackt.
+Ein Beispiel:
+
+struct  bit_field
+  {     int bit_1        : 1;
+        int bits_2_to_5  : 4;
+        int bit_6        : 1;
+        int bits_7_to_16 : 10;
+  } bit_var;
+
+Querverweis EstructF, EunionF, EC LanguageFRangfolge der Operatoren
+----------------------------------------------------------------------
+
+Operator                       Auswertung von
+
+()  []  .  ->                  links -> rechts
+! ~ - ++ -- & * (type) sizeof  rechts -> links
+*  /  %                        links -> rechts
++  -                           links -> rechts
+<<  >>                         links -> rechts
+<  <=  >  >=                   links -> rechts
+==  !=                         links -> rechts
+&                              links -> rechts
+^                              links -> rechts
+|                              links -> rechts
+&&                             links -> rechts
+||                             links -> rechts
+?:                             links -> rechts
+=  +=  -=  etc.                rechts -> links
+,                              links -> rechtsEscapesequenzen (Steuerzeichen)
+----------------------------------------------------------------------
+
+beginnen in C Syntax immer mit einem Backslash '\':
+
+---------------------------------------------------------------------
+Sequenz   Wert   Zeichen   Wirkung
+---------------------------------------------------------------------
+
+\'        0x27   '         Hochkomma (Apostroph)
+\"        0x22   "         AnfÅhrungszeichen
+\?        0x3F   ?         Fragezeichen
+\\        0x5C   \         Backslash (umgek. SchrÑgstrich)
+\a        0x07   BEL       Bell (Systemglocke)
+\b        0x08   BS        Backspace
+\f        0x0C   FF        Formfeed (Seitenvorschub)
+\n        0x0A   LF        Linefeed (Newline)
+\r        0x0D   CR        Carriage return (WagenrÅcklauf)
+\t        0x09   HT        Tabulator (horizontal)
+\v        0x0B   VT        Tabulator (vertikal)
+\DDD      oktal            DDD = 1 bis 3 Oktalziffen
+\xHH      hexadezimal      HH = 1 bis n Hexadezimalziffern (Diese
+                            Konstante wird aber in einem Byte abgelegt,
+                            was dazu fÅhren kann, daû signifakante Stellen
+                            verloren gehen.Die Funktion main
+----------------------------------------------------------------------
+
+... muû in jedem C-Programm genau einmal definiert sein. Ihre Position
+im Quelltext spielt keine Rolle.
+main ist die Ausgangsfunktion jedes C-Programms - von ihr aus werden
+alle anderen Funktionen aufgerufen.
+
+Solange ein Programm nicht mit EexitF oder EabortF abgebrochen wird,
+liefert main ihr Funktionsergebnis als Exit-Code zurÅck - main hat
+also implizit den Ergebnistyp int und kann mit einem Aufruf von
+EreturnF beendet werden. Die Funktion main sollte im Programm auch
+als EintF-Funktion deklariert werden.
+Beim Abbruch des Programms mit EabortF wird der Exit-Code 3 als
+Ergebnis gesetzt; ein Programmende mit EexitF setzt den zusammen mit
+EexitF angegebenen Wert.
+
+Der Funktion main kînnen auch Parameter Åbergeben werden.
+
+Deklaration: main ( [int EargcF, const char *EargvF[], [const char *EenvpF[]] )Der Parameter argc (Øargument countÆ) hat den Datentyp EintF und
+gibt die Anzahl der Elemente von EargvF an.
+
+argc wird grundsÑtzlich vom Startcode an die Funktion EmainF
+Åbergeben. Wenn main den Parameter deklariert, ist argc als lokale
+Variable verfÅgbar.Der Parameter argv (Øargument vektorÆ) ist ein Array aus
+Stringzeigern.
+argv[0] enthÑlt normalerweise den Namen des Programms. Da TOS diesen
+  Eintrag nicht bereitstellt, erhÑlt man lediglich einen Zeiger auf
+  einen leeren String.
+argv[1] enthÑlt den ersten Kommandozeilen-Parameter. Bei einem
+  Programm namens TEST, das durch die Eingabe von
+      TEST DATEI1
+  gestartet wurde, zeigt argv[1] also auf den String DATEI1.
+argv[2]...argv[argc-1] enthalten weitere Kommandozeilen-Parameter.
+argv[EargcF] ist immer ENULLF und kennzeichnet so das Ende der
+  Parameterliste.
+
+argv wird grundsÑtzlich vom Startcode an die Funktion EmainF
+Åbergeben. Wenn main den Parameter deklariert, ist argv als lokale
+Variable verfÅgbar.Der Parameter envp (ØenvironmentÆ) ist ein Array aus Stringzeigern.
+Jedes Element enthÑlt einen Eintrag der Betriebsystem-Tabelle
+Environment, der die folgende Form hat:
+
+NAME = <Zeichenfolge>
+
+envp wird grundsÑtzlich vom Startcode an die Funktion EmainF
+Åbergeben. Wenn main den Parameter deklariert, ist envp als lokale
+Variable verfÅgbar.
+
+Querverweis    EgetenvFPrototypen...
+----------------------------------------------------------------------
+
+... dienen dazu Funktionsaufrufe auf die Richtigkeit ihrer Parameter
+zu öberprÅfen. BerÅcksichtigt werden sowohl die Anzahl der Argumente
+als auch die Korrektheit der Argumenttypen.
+Der Prototyp muû am Anfang des Programms stehen, also vor dem ersten
+Aufruf der entsprechenden Funktion. SÑmtliche E#includeF-Dateien von
+Pure C enthalten Prototypen - die E#includeF-Direktive(n) am Anfang
+eines Programms sorgen dafÅr, daû der Compiler diese Deklarationen als
+erstes registriert und Typverletzungen automatisch meldet.
+Der Aufbau eines Prototyps:
+
+char * cdecl sub ( unsigned int anzahl, char *zeiger, float variable );
+
+Hier wird eine Funktion deklariert, die einen char-Zeiger zurÅck-
+liefert. Ihr erstes Argument ist als unsigned int beschrieben, es
+folgt ein char-Zeiger und ein float-Wert. Die Namen der Argumente
+mÅssen nicht mit denen der Funktionsdefinition Åbereinstimmen.
+Durch EcdeclF wird festgelegt, daû die Parameter auf dem Stack
+Åbergeben werden sollen.
+
+Mit speziellen Prototypen kînnen auch Opcodes von Assemblerinstruk-
+tionen im Quelltext eingefÅgt werden. Dadurch kînnen Assemblerbe-
+fehle, die nicht grîûer als 2 Byte sind, im Programm eingearbeitet
+werden. Gegebenenfalls werden auch EöbergaberegisterF verwendet.
+
+Beispiel:    long swap( long value ) 0x4840;
+                                  /* 0x4840 ist Opcode von SWAP.L D0 */
+             ...
+             erg = swap( 100 );
+
+Der Aufruf dieser "Funktion" wird vom Compiler zu
+
+             move.l  #100, D0
+             swap.l  D0
+             move.l  D0, erg
+
+Åbersetzt.Das EKonstanten-MakroF NULL ist in STDDEF.H deklariert:
+
+E#defineF   NULL   ( (void*) 0L )Der PrÑprozessor
+
+... stellt die erste Phase der Compilierung dar. WÑhrend dieser Phase
+werden alle EPrÑprozessor-AnweisungenF im Programm-Text ausgefÅhrt.
+
+Das Ø#Æ-Zeichen muû nach Leerzeichen und Tabulatoren das erste Zeichen
+in der Zeile sein. Das Zeichen Ø#Æ kann von der eigentlichen
+PrÑprozessor-Anweisung durch Leerzeichen getrennt sein.PrÑprozessor-Anweisungen
+
+Befehl    Bedeutung
+
+E#defineF   Makros oder Makro-Konstanten definieren.
+E#elifF     else...if-Zweig einer #if...-Anweisung.
+E#elseF     else-Zweig einer #if...-Anweisung.
+E#endifF    Abschluû einer #if-Anweisung.
+E#errorF    Fehlermeldung ausgeben.
+E#ifF       Bedingte Compilierung, wenn Bedingung zutrifft.
+E#ifdefF    Bedingte Compilierung, wenn ein Makro definiert ist.
+E#ifndefF   Bedingte Compilierung, wenn ein Makro nicht definiert ist.
+E#includeF  ZusÑtzliche Quelltexte, wie z.B. Declarationsdateien, an
+          dieser Stelle in die Datei aufnehmen.
+E#lineF     Zeilennummer des Compilers Ñndern.
+E#pragmaF   Implementationsspezifische Anweisung fÅr den Compiler.
+E#undefF    Makro-Definition entfernen.
+
+                EPrÑprozessorFQuelltexte einfÅgen - #include
+
+Damit kînnen Quelltexte in einer Datei eingefÅgt werden.
+Die allgemeine Syntax lautet:
+
+  #include "Dateiname"     oder     #include <Dateiname>
+
+Im ersten Fall wird die Datei im aktuellen Verzeichnis gesucht und
+anschlieûend im Suchpfad, der in den ECompileroptionenF als Suchpfad
+fÅr die Standard-Include-Dateien angegeben wurde. Im anderen Fall 
+werden die Dateien in umgekehrter Reihenfolge in den Verzeichnissen
+gesucht.
+Die Anweisung #include wird vor allem bei der Bereitstellung von
+EPrototypenF verwendet. Diese Dateien heiûen im Englischen
+Øheader filesÆ. Daher tragen diese Dateien meist die Erweiterung Ø.hÆ:
+     #include <stdio.h>
+     #include <string.h>
+Damit sind alle String- und Ein-/Ausgabe-Funktionen korrekt deklariert.
+Die #include-Anweisungen kînnen auch verschachtelt werden. Das
+bedeutet, daû innerhalb von #include-Dateien weitere #include-
+Anweisungen auftauchen kînnen.
+
+                        EPrÑprozessorFKonstanten und Makros - #define
+
+#define ist das wichtigste Hilfsmittel zum Portieren und éndern von
+Programmen. Wir unterscheiden hier zwischen EKonstanten-MakrosF und
+EFunktionen-MakrosF.
+
+Die allgemeine Syntax fÅr diesen Befehl lautet:
+
+              #define Bezeichner Text
+oder
+              #define Bezeichner(Parameter-Liste) Text
+
+Ein Makro muû darÅberhinaus immer in einer einzigen Zeile Platz
+finden. Eine Textzeile kann in C mit Hilfe des Zeichens Backslash Ø,
+der direkt vor dem newline-Zeichen steht, beliebig oft verlÑngert
+werden.
+
+Querverweis    EPrÑprozessorFKonstanten-Makros
+
+... dienen als Platzhalter fÅr einen bestimmten Zahlenwert oder eine
+lÑngere Formulierung.
+Mit der #define-Anweisung kann man alle systemspezifischen
+Zahlenangaben und BeschrÑnkungen als Konstanten-Makro definieren und
+muû sie nicht als feste Zahlen in den Programm-Code einfÅgen, wo sie
+nur mit groûem Aufwand geÑndert werden kînnen.
+Beispiel:
+            #define MAXVEKTOR 2000
+
+Der Compiler ersetzt nun intern jedes ØMAXVEKTORÆ durch Ø2000Æ
+und beginnt erst dann mit der eigentlichen Compilierung.
+
+Ein weiterer wichtiger Gesichtspunkt von Konstanten-Makros ist das
+VerkÅrzen des Schreibaufwands.
+
+         EVordefinierte MakrosF  E#defineFFunktionen-Makros
+
+... erscheinen im Programm-Text wie Funktionen.
+Da ein Funktionsaufruf in der Regel immer eine Menge Zeit in Anspruch
+nimmt, sind manche Funktionen der Standard-Bibliothek als Makros
+definiert, so zum Beispiel die Funktion EgetcharF. Man muû natÅrlich
+beachten, daû komplizierte Makros die LÑnge des Codes durchaus
+beeinflussen kînnen.
+Beispiel:
+           #define SQR(x)          ((x)*(x))
+           #define BETRAG(x,y,z)   (sqrt(SQR(x)+SQR(y)+SQR(z))
+
+Wenn das Makro BETRAG in einem Programm hÑufig expandiert wird,
+schwillt der Code eines Programms im Vergleich zu einem
+Funktionsaufruf natÅrlich an.
+
+Die Verwendung dieses Makros sieht im Programm-Text genauso aus wie
+eine Funktion. Ein Makro hat jedoch Åberhaupt nichts mit einer
+Funktion gemein. Es findet lediglich eine Textersetzung statt.
+
+                           E#defineFIn Pure C sind einige EKonstanten-MakrosF bereits vordefiniert.
+
+Im ANSI-Standard definierte Makros:
+
+__FILE__            Der aktuelle Dateiname als Stringkonstante.
+__LINE__            Die aktuelle Zeilennummer.
+__DATE__            Das aktuelle Datum am Anfang der öbersetzung als 
+                    Stringkonstante.
+__TIME__            Die aktuelle Uhrzeit am Anfang der öbersetzung als 
+                    Stringkonstante.
+__STDC__            Ist nur definiert, falls bei den ECompileroptionenF
+                    der Schalter -A gesetzt ist.
+
+Pure C eigene Makros:
+
+__TOS__             Ist immer definiert.
+__TURBOC__
+__PUREC__           Liefern die Versionsnummer des Compilers zurÅck.
+__68881__           Ist nur definiert, falls bei den ECompileroptionenF
+                    der Schalter -8 gesetzt ist.Die #undef-Anweisung
+
+Wenn man sehr viele Makros definiert, kann es vorkommen, daû der
+Speicherplatz nicht reicht. Dann kann man Makros, die man nicht
+mehr benîtigt, mit Hilfe der #undef-Anweisung wieder entfernen.
+Die allgemeine Syntax fÅr diesen Befehl lautet wie folgt:
+
+#undef Bezeichner
+
+Diese Anweisung kann man auch dann sehr gut einsetzen, wenn man ein
+vom Compiler bereits vorbesetztes Makro entfernen will.
+
+Querverweis    EFunktionen-MakrosF,     EKonstanten-MakrosF
+               EVordefinierte MakrosF,  EPrÑprozessorF"Ausdruck" im Sinne des PrÑprozessors hat entweder den Wert TRUE
+fÅr wahr oder FALSE fÅr falsch.
+
+Im Ausdruck wird das SchlÅsselwort defined sowie die Operatoren
+&& (UND), || (ODER) und ! (NICHT) erkannt.
+
+defined( MACRO ) ist TRUE, wenn das Makro "MACRO" definiert ist, 
+andernfalls ist es FALSE.
+
+Beispiel:
+#if defined( __STDC__ ) && !defined( __TOS__ )Bedingte Compilierung - #if, #else, #endif
+
+Mit Hilfe der #if-Anweisung kann man Bedingungen testen, so daû
+bestimmte Programmteile nur dann compiliert werden, wenn die
+Bedingungen zutreffen.
+Das allgemeine Format fÅr diese Anweisung lautet:
+
+         #if EAusdruckF
+         Programmteil1
+         [#else
+         Programmteil2]
+         #endif
+
+Programmteil1 wird nur dann Åbersetzt, wenn Ausdruck den Wert true
+liefert. Der im optionalen else-Zweig folgende Programmteil2 wird nur
+dann Åbersetzt, wenn Ausdruck den Wert false liefert.
+
+Die bedingte Compilierung ist ein sehr praktisches Hilfsmittel zum
+Testen von Programmen und Verwalten mehrerer Versionen.
+
+                   EPrÑprozessorFMit der #elif-Anweisung
+
+kann man an eine E#ifF-Anweisung eine ØE#elseF ifÆ-Anweisung
+anhÑngen.
+                      EPrÑprozessorFDie #ifdef-Anweisung:
+
+Das allgemeine Format dieser Anweisung lautet:
+
+     #ifdef makro
+       Programmteil1
+     [E#elseF
+       Programmteil2]
+     E#endifF
+
+#ifdef teilt dem Compiler mit, nachfolgenden Programmteil zu
+compilieren wenn das Makro im Programmtext vorher schon definiert
+wurde.
+
+                        EPrÑprozessorFDei #ifndef-Anweisung:
+
+Das allgemeine Format dieser Anweisung lautet:
+
+      #ifndef makro
+        Programmteil1
+      [E#elseF
+        Programmteil2]
+      E#endifF
+
+#ifndef teilt dem Compiler mit, nachfolgenden Programmteil zu
+compilieren wenn das Makro im Programmteil vorher noch nicht
+definiert wurde.
+
+                         EPrÑprozessorFDie #line-Direktive
+
+Syntax:  #line Zeilennummer [Dateiname]
+
+Der Compiler Åbernimmt an dieser Stelle die angegebene Zeilennummer
+und ggf. den angegebenen Dateinamen
+
+                         EPrÑprozessorFDie Direktive #pragma
+
+Der Zweck dieser Direktive liegt in der Definitionsmîglichkeit
+implementations-spezifischer PrÑprozessor-Befehle, die
+folgende Form haben:
+
+#pragma <Direktiven-Name>
+
+öber diese Mîglichkeit kann Pure C beliebige eigene Direktiven
+definieren, ohne daû sich dabei Probleme mit anderen Compilern
+ergeben wÅrden, die #pragma ebenfalls unterstÅtzen.
+Wenn ein Compiler die nach #pragma genannte Direktive nicht kennt,
+ignoriert er sie einfach, d.h. mit #pragma eingeleitete Direktiven
+werden nur dann bearbeitet, wenn sie bekannt sind.
+
+E#pragma warnF ist die einzige Direktive die Pure C bietet.
+
+                    EPrÑprozessorFDie #pragma warn-Direktive
+
+Mit #pragma warn kînnen Kommandozeilen-parameter der Form -wxxx auûer 
+Kraft gesetzt werden. Damit kînnen EWarnungenF einzeln an- bzw. ab-
+geschaltet werden.
+
+Ein Quelltext mit den Direktiven:
+
+#pragma warn +xxx
+#pragma warn -yyy
+#pragma warn .zzz
+
+aktiviert die Warnung xxx, schaltet die Warnung yyy ab und setzt
+den Schalter fÅr Warnung zzz auf den Zustand zurÅck, der zu Beginn der
+Compilierung gesetzt war ( macht also eine vorausgegangene
+Aktivierung oder UnterdrÅckung durch #pragma warn wieder rÅckgÑngig).
+
+                   E#pragmaFDie Direktive #error ( Erzeugung von Fehlermeldungen ).
+
+Das Format von #error ist:
+
+#error "Fehlermeldung"  /* Kommentar  */
+
+Verwendet wird diese Direktive ausschlieûlich zusammen mit bedingter
+Compilierung - wenn sich #error in einem Programmteil befindet, das
+nicht von der Compilierung ausgeschlossen ist, bricht der PrÑprozessor
+die Arbeit augenblicklich ab und meldet sich mit:
+
+Fatal: <Dateiname> line # Error directive: <Fehlermeldung>
+
+Der PrÑprozessor entfernt automatisch eventuelle Kommentare, der Text
+der Fehlermeldung selber wird nicht nach Makros abgesucht.
+
+                    EPrÑprozessorF                            ASCII - TABELLE
+                           =================
+
+ Dez  Hex   Oct   Bin      ASCII  | Dez  Hex   Oct   Bin      ASCII
+----------------------------------|---------------------------------
+   0    0     0   00000000        | 128   80   200   10000000   Ä
+   1    1     1   00000001       | 129   81   201   10000001   Å
+   2    2     2   00000010       | 130   82   202   10000010   Ç
+   3    3     3   00000011       | 131   83   203   10000011   É
+   4    4     4   00000100       | 132   84   204   10000100   Ñ
+   5    5     5   00000101       | 133   85   205   10000101   Ö
+   6    6     6   00000110       | 134   86   206   10000110   Ü
+   7    7     7   00000111       | 135   87   207   10000111   á
+   8    8    10   00001000       | 136   88   210   10001000   à
+   9    9    11   00001001 <TAB>  | 137   89   211   10001001   â
+  10    A    12   00001010   
+    | 138   8A   212   10001010   ä
+  11    B    13   00001011       | 139   8B   213   10001011   ã
+  12    C    14   00001100       | 140   8C   214   10001100   å
+  13    D    15   00001101  <CR>  | 141   8D   215   10001101   ç
+  14    E    16   00001110       | 142   8E   216   10001110   é
+  15    F    17   00001111       | 143   8F   217   10001111   è
+  16   10    20   00010000       | 144   90   220   10010000   ê
+  17   11    21   00010001       | 145   91   221   10010001   ë
+  18   12    22   00010010       | 146   92   222   10010010   í
+  19   13    23   00010011       | 147   93   223   10010011   ì
+  20   14    24   00010100       | 148   94   224   10010100   î
+  21   15    25   00010101       | 149   95   225   10010101   ï
+  22   16    26   00010110       | 150   96   226   10010110   ñ
+  23   17    27   00010111       | 151   97   227   10010111   ó
+  24   18    30   00011000       | 152   98   230   10011000   ò
+  25   19    31   00011001       | 153   99   231   10011001   ô
+  26   1A    32   00011010       | 154   9A   232   10011010   ö
+  27   1B    33   00011011       | 155   9B   233   10011011   õ
+  28   1C    34   00011100       | 156   9C   234   10011100   ú
+  29   1D    35   00011101        | 157   9D   235   10011101   ù
+  30   1E    36   00011110       | 158   9E   236   10011110   û
+  31   1F    37   00011111       | 159   9F   237   10011111   ü
+  32   20    40   00100000        | 160   A0   240   10100000   †
+  33   21    41   00100001   !    | 161   A1   241   10100001   °
+  34   22    42   00100010   "    | 162   A2   242   10100010   ¢
+  35   23    43   00100011   #    | 163   A3   243   10100011   £
+  36   24    44   00100100   $    | 164   A4   244   10100100   §
+  37   25    45   00100101   %    | 165   A5   245   10100101   •
+  38   26    46   00100110   &    | 166   A6   246   10100110   ¶
+  39   27    47   00100111   '    | 167   A7   247   10100111   ß
+  40   28    50   00101000   (    | 168   A8   250   10101000   ®
+  41   29    51   00101001   )    | 169   A9   251   10101001   ©
+  42   2A    52   00101010   *    | 170   AA   252   10101010   ™
+  43   2B    53   00101011   +    | 171   AB   253   10101011   ´
+  44   2C    54   00101100   ,    | 172   AC   254   10101100   ¨
+  45   2D    55   00101101   -    | 173   AD   255   10101101   ≠
+  46   2E    56   00101110   .    | 174   AE   256   10101110   Æ
+  47   2F    57   00101111   /    | 175   AF   257   10101111   Ø
+  48   30    60   00110000   0    | 176   B0   260   10110000   ∞
+  49   31    61   00110001   1    | 177   B1   261   10110001   ±
+  50   32    62   00110010   2    | 178   B2   262   10110010   ≤
+  51   33    63   00110011   3    | 179   B3   263   10110011   ≥
+  52   34    64   00110100   4    | 180   B4   264   10110100   ¥
+  53   35    65   00110101   5    | 181   B5   265   10110101   µ
+  54   36    66   00110110   6    | 182   B6   266   10110110   ∂
+  55   37    67   00110111   7    | 183   B7   267   10110111   ∑
+  56   38    70   00111000   8    | 184   B8   270   10111000   ∏
+  57   39    71   00111001   9    | 185   B9   271   10111001   π
+  58   3A    72   00111010   :    | 186   BA   272   10111010   ∫
+  59   3B    73   00111011   ;    | 187   BB   273   10111011   ª
+  60   3C    74   00111100   <    | 188   BC   274   10111100   º
+  61   3D    75   00111101   =    | 189   BD   275   10111101   Ω
+  62   3E    76   00111110   >    | 190   BE   276   10111110   æ
+  63   3F    77   00111111   ?    | 191   BF   277   10111111   ø
+  64   40   100   01000000   @    | 192   C0   300   11000000   ¿
+  65   41   101   01000001   A    | 193   C1   301   11000001   ¡
+  66   42   102   01000010   B    | 194   C2   302   11000010   ¬
+  67   43   103   01000011   C    | 195   C3   303   11000011   √
+  68   44   104   01000100   D    | 196   C4   304   11000100   ƒ
+  69   45   105   01000101   E    | 197   C5   305   11000101   ≈
+  70   46   106   01000110   F    | 198   C6   306   11000110   ∆
+  71   47   107   01000111   G    | 199   C7   307   11000111   «
+  72   48   110   01001000   H    | 200   C8   310   11001000   »
+  73   49   111   01001001   I    | 201   C9   311   11001001   …
+  74   4A   112   01001010   J    | 202   CA   312   11001010    
+  75   4B   113   01001011   K    | 203   CB   313   11001011   À
+  76   4C   114   01001100   L    | 204   CC   314   11001100   Ã
+  77   4D   115   01001101   M    | 205   CD   315   11001101   Õ
+  78   4E   116   01001110   N    | 206   CE   316   11001110   Œ
+  79   4F   117   01001111   O    | 207   CF   317   11001111   œ
+  80   50   120   01010000   P    | 208   D0   320   11010000   –
+  81   51   121   01010001   Q    | 209   D1   321   11010001   —
+  82   52   122   01010010   R    | 210   D2   322   11010010   “
+  83   53   123   01010011   S    | 211   D3   323   11010011   ”
+  84   54   124   01010100   T    | 212   D4   324   11010100   ‘
+  85   55   125   01010101   U    | 213   D5   325   11010101   ’
+  86   56   126   01010110   V    | 214   D6   326   11010110   ÷
+  87   57   127   01010111   W    | 215   D7   327   11010111   ◊
+  88   58   130   01011000   X    | 216   D8   330   11011000   ÿ
+  89   59   131   01011001   Y    | 217   D9   331   11011001   Ÿ
+  90   5A   132   01011010   Z    | 218   DA   332   11011010   ⁄
+  91   5B   133   01011011   [    | 219   DB   333   11011011   €
+  92   5C   134   01011100   \    | 220   DC   334   11011100   ‹
+  93   5D   135   01011101   ]    | 221   DD   335   11011101   ›
+  94   5E   136   01011110   ^    | 222   DE   336   11011110   ﬁ
+  95   5F   137   01011111   _    | 223   DF   337   11011111   ﬂ
+  96   60   140   01100000   `    | 224   E0   340   11100000   ‡
+  97   61   141   01100001   a    | 225   E1   341   11100001   ·
+  98   62   142   01100010   b    | 226   E2   342   11100010   ‚
+  99   63   143   01100011   c    | 227   E3   343   11100011   „
+ 100   64   144   01100100   d    | 228   E4   344   11100100   ‰
+ 101   65   145   01100101   e    | 229   E5   345   11100101   Â
+ 102   66   146   01100110   f    | 230   E6   346   11100110   Ê
+ 103   67   147   01100111   g    | 231   E7   347   11100111   Á
+ 104   68   150   01101000   h    | 232   E8   350   11101000   Ë
+ 105   69   151   01101001   i    | 233   E9   351   11101001   È
+ 106   6A   152   01101010   j    | 234   EA   352   11101010   Í
+ 107   6B   153   01101011   k    | 235   EB   353   11101011   Î
+ 108   6C   154   01101100   l    | 236   EC   354   11101100   Ï
+ 109   6D   155   01101101   m    | 237   ED   355   11101101   Ì
+ 110   6E   156   01101110   n    | 238   EE   356   11101110   Ó
+ 111   6F   157   01101111   o    | 239   EF   357   11101111   Ô
+ 112   70   160   01110000   p    | 240   F0   360   11110000   
+ 113   71   161   01110001   q    | 241   F1   361   11110001   Ò
+ 114   72   162   01110010   r    | 242   F2   362   11110010   Ú
+ 115   73   163   01110011   s    | 243   F3   363   11110011   Û
+ 116   74   164   01110100   t    | 244   F4   364   11110100   Ù
+ 117   75   165   01110101   u    | 245   F5   365   11110101   ı
+ 118   76   166   01110110   v    | 246   F6   366   11110110   ˆ
+ 119   77   167   01110111   w    | 247   F7   367   11110111   ˜
+ 120   78   170   01111000   x    | 248   F8   370   11111000   ¯
+ 121   79   171   01111001   y    | 249   F9   371   11111001   ˘
+ 122   7A   172   01111010   z    | 250   FA   372   11111010   ˙
+ 123   7B   173   01111011   {    | 251   FB   373   11111011   ˚
+ 124   7C   174   01111100   |    | 252   FC   374   11111100   ¸
+ 125   7D   175   01111101   }    | 253   FD   375   11111101   ˝
+ 126   7E   176   01111110   ~    | 254   FE   376   11111110   ˛
+ 127   7F   177   01111111       | 255   FF   377   11111111   ˇ

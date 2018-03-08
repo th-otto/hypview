@@ -1,0 +1,196 @@
+!code_source [tos]
+
+# language independent macros
+!include ../macros.ui
+# version numbers (generated)
+!include version.ui
+# switches
+!include header.ui
+# language macros
+!include lang.ui
+# hyphenation patterns
+!include hyphen.ui
+
+!raw [stg] @help Hilfsseite
+
+# ---------------------------------------------
+# The title of this documentation depends on
+# the destination format
+# ---------------------------------------------
+!ifdest [stg,amg]
+!docinfo [title] Der Hypertext zu
+!else
+!ifdest [win,wh4,hh,hah]
+!docinfo [title] Die Windows-Hilfe zu
+!else
+!ifdest [rtf]
+!docinfo [title] Das Handbuch zu
+!else
+!docinfo [title] Die Anleitung zu
+!endif
+!endif
+!endif
+!docinfo [program] (!REFLINK)
+!docinfo [author] Thorsten Otto
+!docinfo [programimage] (!IMAGES)reflink
+
+!macro PROGRAM (!REFLINK)
+
+!table_alignment left
+
+# ------------------------------------------------------
+# Set the subject for the ST-Guide
+# ------------------------------------------------------
+!raw [stg] @subject "Dokumentation/ST-Guide"
+!raw [stg] @options "+z -t4 +i"
+!docinfo [stgdatabase] RefLink Dokumentation
+
+# ------------------------------------------------------------------------------
+# the Document structure
+# ------------------------------------------------------------------------------
+
+!begin_document
+
+!html_keywords HypView
+!html_keywords ST-Guide
+!html_keywords Atari
+!html_keywords TOS
+!html_keywords RefLink
+
+!raw [tex] \sloppy
+
+# create title page + table of contents
+!maketitle
+!tableofcontents !depth 2
+!toc_title Der Referenz-File Linker RefLink
+
+!raw [stg] @xref "ST-Guide.HYP/Main" "ST-Guide Dokumentation"
+!raw [stg] @xref "HCP.HYP/Main" "HCP Dokumentation"
+!raw [stg] @xref "stool.hyp/Main" "STool Dokumentation"
+
+!begin_node Allgemeines
+!html_name reflink_general
+Dieses kleine Programm dient hauptsÑchlich dem Zweck, mehrere vom
+(!XLINK [HCP] [hcp] [Main]) erzeugten REF-Dateien zu 
+einer  Art  Bibliothek  zusammenzulinken.
+
+Diese Bibliothek dient dem (!XLINK [ST-Guide] [ST-Guide] [Main]) 
+zum  Auffinden  von  Stichworten, welche in anderen als der aktuell
+dargestellten Hypertext Dateien definiert wurden.
+
+Als Bibliothek wird hierbei defaultmÑûig die in der 
+Environment-Variablen 'REF' angegebene Datei verwendet. Falls diese  Variable
+nicht existiert, und in der Kommandozeile auch keine Bibliotheks-
+Datei angegeben wurde, so wird eine  Datei  Namens  (!file ['ALL.REF'])  im
+aktuellen Verzeichnis verwendet.
+
+!end_node
+
+!begin_node Aufruf des RefLink
+!html_name reflink_usage
+Die Aufrufsyntax ist folgende:
+
+    (!REFLINK) [(!link [-a] [Kommando -a])] [Bibliothek] Modul                 oder (!nl)
+    (!REFLINK) (!link [-m] [Kommando -m]) [Bibliothek] Modul                   oder (!nl)
+    (!REFLINK) (!link [-d] [Kommando -d]) [Bibliothek] Modul1 [Modul2 ...]     oder (!nl)
+    (!REFLINK) (!link [-e] [Kommando -e]) [Bibliothek] Modul1 [Modul2 ...]     oder (!nl)
+    (!REFLINK) (!link [-f] [Kommando -f]) [Bibliothek ...]                     oder (!nl)
+    (!REFLINK) (!link [-l] [Kommando -l]) [Bibliothek ...]
+
+!begin_node Kommando -a
+!index -a
+!html_name reflink_a
+(!REFLINK) -a [Bibliothek] Modul
+
+Das Modul wird in die Bibliothek aufgenommen. Falls es  bereits
+existiert, so wird die  alte  Version  gelîscht  und  die  neue
+Åbernommen. Das Modul  kann  dabei  ebenfalls  eine  Bibliothek
+sein.
+Falls das Modul keine REF-Datei ist, so wird zunÑchst versucht,
+die zur  angegebenen  Datei  gehîrige  REF-Datei  ausfindig  zu
+machen:
+beim Parameter (!file [HCP.HYP]) wird eine Datei Namens  (!file [HCP.REF])  gesucht
+und diese verwendet, falls sie existiert.
+Somit ist es mîglich, HYP-Dateien direkt an  RefLink  zu  Åber-
+geben.
+Falls das Modul keine REF-Datei ist und auch  keine  zugehîrige
+gefunden  werden  kann,  so  wird  das  der  angegebenen  Datei
+folgendermaûen eine erzeugt:
+aus test.c wird test.ref mit
+  Dateiname test.c
+  Node Name test.c
+Die so generierte Datei wird  anschlieûend  in  die  Bibliothek
+aufgenommen.
+
+Wie  aus  der  Syntaxangabe  ersichtlich  ist,  wird  das   ADD
+Kommando defaultmÑûig verwendet, falls keines angegeben  wurde.
+Dies bedeutet insbesondere, daû der RefLink  als  Anwendung  zu
+*.REF angemeldet werden kann und im folgenden dann REF  Dateien
+einfach per Doppelklick auf diese in die Bibliothek  Åbernommen
+werden kînnen.
+!end_node
+
+!begin_node Kommando -m
+!index -m
+!html_name reflink_m
+(!REFLINK) -m [Bibliothek] Modul
+
+Wie (!link [-a] [Kommando -a]), nur daû das Modul nach der Aufnahme in  die  Bibliothek
+gelîscht wird.
+
+!end_node
+
+!begin_node Kommando -d
+!index -d
+!html_name reflink_d
+(!REFLINK) -d [Bibliothek] Modul1 [Modul2 ...]
+
+Die angegebenen Module werden  aus  der  Bibliothek  entfernt.
+!end_node
+
+!begin_node Kommando -e
+!index -e
+!html_name reflink_e
+(!REFLINK) -e [Bibliothek] Modul1 [Modul2 ...]
+
+Die angegebenen Module werden aus  der  Bibliothek  extrahiert,
+d.h. es wird fÅr jedes Modul eine REF Datei erzeugt. Die Module
+bleiben in der Bibliothek erhalten.
+!end_node
+
+!begin_node Kommando -f
+!index -f
+!html_name reflink_f
+(!REFLINK) -f [Bibliothek ...]
+
+Zeigt die Namen aller in den angegebenen  Bibliotheken  enthaltenen Module.
+!end_node
+
+!begin_node Kommando -l
+!index -l
+!html_name reflink_l
+
+(!REFLINK) -l [Bibliothek ...]
+
+Zeigt die Inhalte aller in den  angegebenen  Bibliotheken  enthaltenen Module.
+!end_node
+
+!end_node
+
+!include ref.ui
+
+!begin_node* Hilfsseite
+!html_name reflink_helppage
+Dieser Text beschreibt die Funktionsweise und Anwendung  des
+Referenz Datei Utilities RefLink.
+
+Kritik und Anregungen an
+!begin_preformatted
+            Holger Weets
+            Tangastr. 45
+            26121 Oldenburg
+!end_preformatted
+
+!end_node
+
+!end_document

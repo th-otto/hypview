@@ -1,0 +1,72 @@
+!begin_node File types
+!raw [stg] @xref "reflink.hyp/Main" "RefLink"
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide"
+!raw [stg] @xref "1stconv.hyp/Main" "1stConv"
+!html_name filetypes
+
+The following  file types  are used  in connection  with the  hypertext
+system:
+
+!begin_xlist [*.HLP, *.TXT, *]
+!index STG
+!item [*.STG]
+    Files of this type  contain the source text  for a hypertext,  i.e.
+    they serve as input files for the HCP; they belong to the group  of
+    ASCII files.
+
+!index HYP
+!item  [*.HYP]
+    Files of this type contain a hypertext; they are created by the HCP
+    and read by ST-Guide.
+
+!index REF
+!item [*.REF]
+    Files of  this  type  contain  reference  tables  to  one  or  more
+    hypertexts; these files are also  produced by the HCP, but RefLink
+    can also create them (by extraction). Optionally, with '+z' the HCP
+    will  create  such  a  file  for  every  hypertext,  which   (again
+    optionally,'+zz') will  also  be  included in  the  main  reference
+    (usually (!file [ALL.REF])).
+
+    The inclusion of such files in the main reference can however  also
+    be be undertaken by RefLink/RefCheck.
+ 
+    These files can be read by  the RefLink, the HCP and in  particular
+    by  the  ST-Guide:  this  uses the  reference-files  for   finding
+    references which  were  passed  by a  PureC-routine  and  also  for
+    searching in the REF file 'manually' via a search dialog.
+
+!index SCR
+!index TXT
+!item [*.SCR, *.TXT]
+    If files  using  one  of  these extensions  were  produced  by  the
+    programs HELP_RC or HELPDISK then they contain a source text for  a
+    hypertext in  PureC  format. Files  produced  in this  way  can  be
+    converted with PC-Conv into  an *.STG  file with  a  corresponding
+    format, so that the HCP can translate them afterwards.
+
+!index HLP
+!index TXT
+!item [*.HLP, *.TXT, *]
+    If files  with  this extension  belong  to a  'hypertext'  for  the
+    1stGuide program, then they  contain a portion  of the source  text
+    for a 1stGuide hypertext. These files can be converted with 1stConv
+    to an  *.STG file  in  corresponding format  so  that the  HCP  can
+    translate them afterwards.
+
+!item [*.H]
+    Files with  this  extension contain  C  source-text. If  they  were
+    created by a resource editor, then they can be read and interpreted
+    by the HCP via @include so that  they can be used easily to  create
+    documentation for the use of dialog boxes.
+
+!index RSC
+!item [*.RSC]
+    Files with this extension contain menus, dialogs, alert boxes etc. 
+    and are created by  resource editors. Though  such files cannot  be
+    displayed directly  by  ST-Guide,  they can  be  incorporated  into
+    hypertexts with  the  link command  and  displayed and  edited  'as
+    dialogs'.
+!end_xlist
+
+!end_node

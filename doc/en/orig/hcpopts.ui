@@ -1,0 +1,688 @@
+!begin_node Options overview
+
+!raw [stg] @xref "Calling HCP" "Command line"
+!raw [stg] @xref "Command @options"
+
+!begin_table [ll]
+ (!link [-l[F!]] [Option l: Contents of a hypertext])   !! Show table of contents
+ (!link [-r] [Option r: Reconstruct])                   !! Reconstruct
+ (!link [-v] [Option v: ASCII Output])                  !! Reconstruct as ASCII
+ (!link [+-q[qq!]] [Option q: Switch off output])          !! Output -off
+ (!link [-pVAL] [Option p: Type of reconstructed images])  !! Image format on reconstruction
+ (!link [+-s] [Option s: Line-breaks])                !! line-wrap -Off
+ (!link [-bSIZ] [Option b: Output buffer size for pages])                !! Output buffer size
+ (!link [-tN] [Option t: Tab size])               !! Tabulator width
+ (!link [-dN] [Option d: Minimum distance between cross-references])        !! Minimum cross-reference distance
+ (!link [+-z[z!]] [Option z: REFerence files])          !! REF +Create [Update]
+ (!link [+-n] [Option n: Nodes in the index])           !! Page name -Not in index page
+ (!link [+-i] [Option i: Create index automatically])   !! Index page -Off
+ (!link [+-g] [Option g: Alabels in the index page])         !! Alabels +In index page
+ (!link [+-f] [Option f: Aliases in the index page])          !! Aliases +In index page
+ (!link [-wVAL] [Option w: Wait for keypress])          !! Wait for keypress at end
+ (!link [+-c] [Option c: Compression])                !! Compression -Off
+ (!link [+-a] [Option a: Auto-referencer])             !! Auto-referencer -Off
+ (!link [+-m] [Option m: Replace images by frames]) !! -Don't read Images
+ (!link [+-x] [Option x: Title in place of node name in the index]) !! +Title instead of name in index
+ (!link [+-y] [Option y: 1. Char insensitive])        !! 1st char -Case sensitive
+ (!link [-kVAL] [Option k: Compatibility flags])        !! Compatibility-Flags
+ (!link [-jN] [Option j: Column widths for index])      !! Min. column width for index page
+ (!link [-uHYPFILE] [Option u: References to other hypertexts]) !! Name of '@uses' file
+ (!link [-eERRFILE] [Option e: Error file])            !! Name of error file
+ (!link [-oOUTFILE] [Option o: Output file])           !! Name of output file
+!end_table
+
+!begin_node Option r: Reconstruct
+!raw [stg] @xref "Option v: ASCII Output"
+!alias Option r
+!index -r
+
+The command '-r' reconstructs a specified hypertext file to source code
+in ASCII format, with any images it contains output to separate  files.
+All the  ST-Guide commands  are incorporated  in the  source text  once
+more, which makes  it an  ideal way for  beginners to  learn how  other
+people put together hypertexts. The  source can be edited and  compiled
+afresh after making any desired (or no) changes to the source text.
+
+If no output file has  been specified with (!link [-o] [Option o]),  then output will be  to
+the screen.
+
+(!U)Examples(!u):
+
+!begin_quote
+    HCP -r TEST.HYP
+!end_quote
+
+    displays all the pages  from the file TEST.HYP  on the screen  with
+    all the commands it contains.
+
+!begin_quote
+    HCP -r -oOUTPUT.TXT TEST.HYP
+!end_quote
+
+    writes all  the pages  from the  file  TEST.HYP in  the form  of  a
+    hypertext source text into the file OUTPUT.TXT.
+
+!end_node
+
+!begin_node Option l: Contents of a hypertext
+!alias Option l
+!index -l[F]
+
+The '-l' command produces a kind of table of contents of the  hypertext
+specified as the input file,  i.e. all page names, external  references
+and other information, such as that contained in the header, are output
+to the screen (or to an output file specified with (!link [-o] [Option o]).
+
+In addition, the packed and unpacked length of each page and (!link [image] [Command @image]) will
+be listed. Note that the output file is laid out for a tab-width of  8,
+so that  if it  is to  be  viewed with  ST-GUIDE, TABSIZE=8  should  be
+specified in ST-GUIDE.INF or the columns will not line up properly. The
+same tab-width should be set in any editors etc.
+
+One can optionally also specify <F> to (!link [define] [Command @define]) a filter mask; with  this
+one can  selectively choose  which  parts of  the  contents are  to  be
+output.
+
+<F> is a bit-mask, which is made up of:
+!begin_xlist [128:] !compressed
+        !item [1:] Nodes
+        !item [2:] Pnodes
+        !item [4:] External nodes
+        !item [8:] Images
+        !item [16:] System commands
+        !item [32:] rx commands
+        !item [64:] rxs commands
+        !item [128:] Quit commands
+!end_xlist
+
+To construct a  mask one simply  sums the values  for the portions  one
+wishes to be output. If <F> is not specified then the complete contents
+will be output.
+
+If the specified file is a 'REF' file then its contents will be  output
+and <F> will be ignored.
+
+!end_node
+
+!begin_node Option v: ASCII Output
+!alias Option v
+!raw [stg] @xref "Option r: Reconstruct"
+!index -v
+
+The '-v' command displays all  pages (or if specified certain  pages) in
+the form of  an ASCII text  from the hypertext  specified as the  input
+file, or writes it into an output file specified with (!link [-o] [Option o]), perhaps to be
+able to print it out subsequently.
+
+Unlike (!link [-r] [Option r]), all the ST-Guide commands will be excluded.
+
+(!U)Examples(!u):
+
+!begin_quote
+    HCP -v TEST.HYP Main Hallo Index
+!end_quote
+
+    displays the  pages  'Main',  'Hello' and  'Index'  from  the  file
+    TEST.HYP in the form of an ASCII text on the screen.
+
+!begin_quote
+    HCP -v TEST.HYP
+!end_quote
+
+    displays all the pages of the file TEST.HYP in the form of an ASCII
+    text on the screen.
+
+!begin_quote
+    HCP -v -oOUTPUT.TXT TEST.HYP
+!end_quote
+
+    writes all pages  from the file  TEST.HYP in the  form of an  ASCII
+    text into the file OUTPUT.TXT.
+!end_node
+
+!begin_node Option a: Auto-referencer
+!alias Option a
+!index +-a
+!index AutoReferenzer
+!raw [stg] @xref "Command @autorefon"
+!raw [stg] @xref "Command @autorefoff"
+!raw [stg] @xref "@{ ignore }" "ignore"
+
+One of the fundamental features of  this system is that the  'chaining'
+of the pages via references is largely automatic, so that the (!link [author] [Command @author]) of
+the hypertext  only needs  to  look after  the  essentials and  is  not
+distracted by  organisational matters.  If, at  times, such  'automatic
+chaining' is not required, then it can be switched off with '-a'.
+
+During reconstruction (rebuilding an *.STG file from a *.HYP file)  and
+display   of   hypertexts   with   the   compiler,   -a'   causes   all
+cross-references to  be  created by  inserting  link statements;  as  a
+default, link statements  are only produced  where the  auto-referencer
+would not create these links automatically.
+ 
+Default value:  Switched on
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option b: Output buffer size for pages
+!alias Option b
+!index -bSIZ
+!index Page size
+!alias Buffer size
+!index Buffer size
+!raw [stg] @xref "Option c"
+
+For operational reasons, a text page to be compressed has to be  stored
+in memory in  one piece (contiguous).  As a  default HCP uses  an 8  KB
+buffer  for  this.  With  very  long   pages  this  may  at  times   be
+insufficient, so the size of the buffer  used may be set with the  '-b'
+option.
+
+If no compression is to take place, then the individual pages can be of
+any length, since  in this  case the text  may be  written 'portion  by
+portion' to the output file.
+
+(!U)Example(!u):
+
+!begin_quote
+    HCP -b16 TEST.TXT
+!end_quote
+
+    translates the file TEST.TXT  to TEST.HYP and (!link [uses] [Command @uses])  a 16 KB  buffer
+    for packing the pages.
+
+If the pre-set or  specified buffer size is  too small for a  page,then
+HCP will  itself attempt  to increase  the size  of the  buffer.  This,
+however, requires  temporarily  more  than  twice  as  much  memory  as
+specified. For that reason the process  can fail if memory is  somewhat
+tight, even though there  is actually enough memory  free to store  the
+text.
+ 
+Default value:  8 KB
+Setable with:   HCP_OPT, Command line
+
+!end_node
+
+!begin_node Option c: Compression
+!alias Option c
+!index +-c
+!index Compression
+!raw [stg] @xref "Option m: Replace images by frames"
+
+So that even very  long hypertexts do not  occupy unnecessary space  on
+the data  carrier, the  individual  pages are  compressed with  a  very
+efficient packing  process.  Due to  this  the translation  of  a  text
+naturally takes a little longer. If the document is still being  worked
+on and is just  to be translated  quickly now and then  in order to  be
+able to see the  provisional result in  ST-Guide, then the  compression
+may be switched off with '-c'.
+ 
+Default value:  Switched on
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option d: Minimum distance between cross-references
+!alias Option d
+!index -dN
+
+With this option you can determine the minimum line separation  between
+two equal, automatically  set, cross-references. As  a default this  is
+1,i.e. the  same concept  will become  a cross-reference  automatically
+once per line at most. 
+
+(!U)Example(!u):
+
+!begin_quote
+'If a fly can fly behind a fly, a fly can fly in front of a fly'
+!end_quote
+
+If, in this same text, there is a page named 'fly', then only the (!U)first(!u)
+occurrence of this word  in the above line  will be emphasised. If,  on
+the other  hand '-d0'  has  been specified,  HCP will  emphasise  (!U)every(!u)
+occurrence of the word as a cross-reference in the above line.
+
+The real purpose of  this option is however  to prevent pages  becoming
+over  filled  with  references,  since  this  way  'surplus'   multiple
+references can be avoided.
+
+Default value:  1, so 1 marking per line
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option e: Error file
+!alias Option e
+!index -eERRFILE
+!index Error file
+!raw [stg] @xref "Option q"
+
+This option determines the name and path of the file to which any error
+messages or warnings  from the HCP  should be written.  If no file  has
+been specified, then the error messages and warnings will be output  to
+the screen.
+
+(!U)Example(!u):
+
+!begin_quote
+    HCP -eERRORS.TXT test.txt
+!end_quote
+
+    translates the file  TEST.TXT to TEST.HYP  and writes all  messages
+    into the file ERRORS.TXT so that  these messages can later be  read
+    in an editor, allowing corrections to be made to the source text.
+
+The error file specification must be placed in the Command line  (!I)BEFORE(!i)
+the name of the input file! 
+ 
+Default value:  Turned off, so all reports are to the screen
+Setable with:   HCP_OPT, Command line
+
+!end_node
+
+!begin_node Option f: Aliases in the index page
+!alias Option f
+!index +-f
+!raw [stg] @xref "Command @alias"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Option i"
+
+This option allows you to determine  whether the (!link [alias] [Command @alias]) names that  have
+been defined with the  (!link [@alias] [Command @alias]) command should also  be included in  the
+index page
+ 
+Default value: Aliases do not appear in the index
+Setable with:  HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option g: Alabels in the index page
+!alias Option g
+!index +-g
+!raw [stg] @xref "Commands @label/@alabel"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Option i"
+
+This option  allows  you to  determine  whether names  that  have  been
+defined with the (!link [@alabel] [Commands @label/@alabel]) command should also be included in the  index
+table.
+ 
+Default value:  Alabels do not appear in the index
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option i: Create index automatically
+!alias Option i
+!index +-i
+!raw [stg] @xref "Command @width"
+!raw [stg] @xref "Option j"
+
+This option allows switching on (+)  or off (-) the automatic  creation
+of an index table. It  is switched on as a  default and an index  table
+will be created unless  a page named 'Index'  already exists. The  page
+with this name will be displayed in the ST-Guide window when the  [A-Z]
+button is selected.
+
+By switching  off the  automatic  index creation,  one can  also  write
+hypertexts without an index. One can also construct an index 'manually'
+by assigning the  name 'Index' to  a page containing  one's own  index.
+This will  give the  greatest flexibility,  but also  involve the  most
+work.
+
+If this page is created  automatically, then the compiler will  arrange
+the (!link [index] [Command @index])  in  columns whose  number  is calculated  depending  on  the
+longest word, the selected line-width ((!link [@width] [Command @width])) and the minimum  column
+width ((!link [-jN] [Option j])).
+ 
+Default value:  Generate index
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option j: Column widths for index
+!alias Option j
+!index -jN
+!raw [stg] @xref "Option i: Create index automatically"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Command @symbol"
+!raw [stg] @xref "Command @width"
+
+With this option you can set  the minimum column widths for  formatting
+the index page. As a default this  is set to 0 characters, which  means
+that the column width will be  determined by the length of the  longest
+entry. If 'N' is  not 0 the  compiler checks the  page width value  and
+(!link [uses] [Command @uses]) this so long as the value is larger than the longest entry.
+ 
+Default value:  0, A suitable column width will be calculated
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option k: Compatibility flags
+!alias Option k
+!index -kVAL
+
+With this option the behaviour of ST-Guide can be influenced. VAL is
+laid out as a Bitvector:
+
+!begin_xlist [Bit 0:]
+ !item [Bit 0:] External reference paths can be used
+        From Release  15  ST-Guide can  permit  (!link [node] [Command @node]) names  up  to  and
+        including the first (back)slash using external references, this
+        has the  advantage of  allowing (back)slashes  inside the  node
+        name; those who don't need this feature, but require paths with
+        external references instead, can do so by using the -k1 option.
+        Example:
+        !begin_itemize
+        !item 'sub.hyp/I/O  functions'  will  only  be  handled  correctly 
+           without the -k1 option
+        !item 'folder/sub.hyp/testpage' will only be handled correctly with 
+           the -k1 option
+        !end_itemize
+!end_xlist
+
+Default value:  -k0
+Setable with:   HCP_OPT, Command line, @options
+!end_node
+
+!begin_node Option m: Replace images by frames
+!alias Option m
+!index +-m
+!raw [stg] @xref "Command @image"
+!raw [stg] @xref "Command @limage"
+!raw [stg] @xref "Option c: Compression"
+
+With this option  you can switch  on (+)  or off (-)  the inclusion  of
+images. The  point  of this  is  that  compiling images  is  very  time
+consuming, so that it is desirable to  be able to save this time  while
+developing a hypertext, i.e. during the test phase.
+
+If the inclusion of  images is switched off,  then the HCP will  create
+for every (!link [@image] [Command @image])-command  a (!link [@box] [Command @box]) of  the same size,  so that the  later
+position of the images will be visible already in the test mode.
+
+Default value:  Switched on (pictures are read)
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option n: Nodes in the index
+!alias Option n
+!index +-n
+!raw [stg] @xref "Command @indexon"
+!raw [stg] @xref "Command @indexoff"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Command @symbol"
+!raw [stg] @xref "Option i"
+!raw [stg] @xref "Option g"
+!raw [stg] @xref "Option f"
+
+With this option you can select whether  the names of the pages are  to
+be automatically incorporated in  the index page or  not. At the  start
+this option is switched on and the  page names will be included in  it.
+If one wants to decide for oneself  just what is to be included in  the
+index table by using the (!link [@index] [Command @index]) command, for instance, then one has to
+be able to switch this automation off.
+ 
+Default value:  Switched on, page names are included in the index
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option o: Output file
+!alias Option o
+!index -oOUTFILE
+!index Output file
+
+This option determines the name and path of the output file to be used.
+This parameter is  optional because: 
+!begin_itemize
+!item  During  translation   the  output   file  can   also  be   created
+     automatically, having the same name as the input file but with the
+     extension altered to  '.HYP'. For example  an input file  TEST.STG
+     without '-o'  generates  file  TEST.HYP in  the  path  defined  by
+     HYPFOLD. If the tilde  character '~' is used  as the name for  the
+     output filename, i.e. if  '-o~' is entered, then  a file with  the
+     same name  as  the  input  file will  be  created  in  the  folder
+     containing that input file.
+!item With (!link [-v] [Option v]) (view), (!link [-r] [Option r]) (reconstruct) and
+     (!link [-l] [Option l]) (list), if no file is specified then the output will be to  the
+     screen in each case.
+!end_itemize
+
+(!U)Examples(!u):
+
+!begin_quote
+    HCP -oOUTPUT.HYP TEST.TXT
+!end_quote
+
+    translates the  file TEST.TXT  and writes  the result  as the  file
+    OUTPUT.HYP;
+
+!begin_quote
+    HCP TEST.TXT
+!end_quote
+
+    translates the  file TEST.TXT  and writes  the result  as the  file
+    TEST.HYP.
+
+The output file specification must be placed in the Command line (!I)before(!i)
+the name of the input file!
+ 
+Default value:  The Input filename  with the  extension .HYP  in the  folder
+                defined by HYPFOLD
+ 
+Setable with:   HCP_OPT, Command line
+
+!end_node
+
+!begin_node Option p: Type of reconstructed images
+!alias Option p
+!index -pVAL
+!raw [stg] @xref "Command @image"
+!raw [stg] @xref "Command @limage"
+
+This option can set explicitly the  type of images to be re-created  in
+the reconstructed  source  file.  As  a  default  all  images  will  be
+re-created in the format in which they were input. This option contains
+a parameter that can specify the desired format. The choices are:
+
+!begin_xlist [3:] !compressed
+    !item [0:] Recreate as in original input
+    !item [1:]          in IFF-format
+    !item [2:]          in ICN-format
+    !item [3:]          in IMG-format
+!end_xlist
+
+Default value:  0
+Setable with:   HCP_OPT, Command line
+
+!end_node
+
+!begin_node Option q: Switch off output
+!alias Option q
+!index +-q[qq]
+
+By specifying the (possibly repeated) '-q' option, one can control  the
+output that HCP makes to the screen while it is working.
+
+Normally the names  of the pages  being translated at  that moment  are
+output during Pass 1 as well as Pass 2. Furthermore some statistics are
+displayed at the end of Pass 2.
+
+!begin_xlist [-qqq] !compressed
+!item [-q]    switches off the output of Pass 1
+!item [-qq]   switches off output of the page names during both passes
+!item [-qqq]  switches off all screen output, as long as this does not refer to
+      errors or  warning  messages.  These  outputs  can,  however,  be
+      written to  a file  with  '(!link [-e] [Option e])'. The  corresponding number  of  +q
+      cancels the -q set.
+!end_xlist
+ 
+Default value:  0, all outputs
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option s: Line-breaks
+!alias Option s
+!index +-s
+
+Normally HCP will wrap (break and carry over) all (!link [lines] [Command @line]) that are longer
+than specified with  (!link [@width] [Command @width]). If, at  times, this is  not desired,  then
+this feature can be switched off  with the '-s' option. In cases  where
+several files  have  been specified,  it  may be  necessary  to  handle
+line-wrapping in  different  ways  for some  files,  so  the  automatic
+line-wrap may be restored again with '+s'.
+
+(!U)Example(!u):
+
+!begin_quote
+    HCP -s file1.txt +s file2.txt
+!end_quote
+
+    will translate the  file FILE1.TXT without  and the file  FILE2.TXT
+    with automatic line-wrapping.
+ 
+Default value:  Switched on
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option t: Tab size
+!alias Option t
+!index -tN
+!raw [stg] @xref "Command @tabsize"
+
+If a text to be translated includes Tab (ASCII-9) characters, then  the
+HCP will expand  these to spaces  in the hypertext.  As a default,  the
+tab-width is assumed to be 8 characters; as most editors, however, also
+permit other values to be used, one can use the '-t' option to set  the
+tab-width to match that actually used in the source text.
+
+(!U)Example(!u):
+
+!begin_quote
+    HCP -t4 TEST.TXT
+!end_quote
+
+    translates the file  TEST.TXT to TEST.HYP  and during this  expands
+    all the Tab characters to 4 spaces.
+ 
+Default value:  8
+Setable with:   HCP_OPT, Command line, @options
+!end_node
+
+!begin_node Option u: References to other hypertexts
+!alias Option u
+!index -uHYPFILE
+!raw [stg] @xref "Command @uses"
+!raw [stg] @xref "Command @extern"
+
+This option allows you to select  external files from the Command  line
+for which automatic  cross-references are  to be generated  in the  new
+hypertext.
+
+The option '-u' has the same effect as the Command @uses.
+ 
+Default value:  No action
+Setable with:   HCP_OPT, Command line
+
+!end_node
+
+!begin_node Option w: Wait for keypress
+!alias Option w
+!index -wVAL
+
+With this option one can choose when the compiler is to pause for a key
+press before  it terminates.  This  is particularly  useful if  it  was
+started from the desktop since otherwise it may not be possible to read
+all of the output messages on the screen. The (!link [options] [Command @options]) available are:
+
+Summary:
+
+!begin_xlist [-w2:] !compressed
+!item [-w0:] Never wait for a keypress, even if errors have arisen
+!item [-w1:] Wait for a keypress if an error arises (default)
+!item [-w2:] Always  wait  for a  keypress.  For reasons  of  compatibility  to
+     earlier versions,  this  mode will  also  be used  if  '-w'  (i.e.
+     without a number) is input.
+!end_xlist
+
+If the compiler  is called without  any entry on  the Command line,  or
+with an incorrect  one, then  a Help page  will be  displayed, with  an
+automatic wait for a keypress.
+ 
+Default value:  0
+Setable with:   HCP_OPT, Command line
+
+!end_node
+
+!begin_node Option x: Title in place of node name in the index
+!alias Option x
+!index +-x
+!raw [stg] @xref "Option n: Nodes in the index"
+!raw [stg] @xref "Command @indexon"
+!raw [stg] @xref "Command @index"
+!raw [stg] @xref "Command @symbol"
+
+Switching this option on  (+) ensures that in  place of the node  names
+their titles (if given) are included in the index page.
+ 
+Default value:  Turned off
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option y: 1. Char insensitive
+!alias Option y
+!index +-y
+
+Switching this option  on (+) ensures  that the auto-referencer  checks
+the first character of each (!link [node] [Command @node]) name to see if it is a capital letter,
+and if it  is then it  automatically generates an  (!link [alias] [Command @alias]) in which  this
+letter is in  lower case. z  Thus 'node Test'  will automatically  also
+generate '(!link [@alias] [Command @alias]) test' so that all words 'Test' and 'test' in the  text
+will be marked as cross-references  to this page. This is  particularly
+useful for English language text, where it's well known that even nouns
+in a sentence are not capitalised (unlike in German).
+ 
+Default value:  Turned off
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!begin_node Option z: REFerence files
+!alias Option z
+!index +-z[z]
+!raw [stg] @xref "reflink.hyp/Main" "RefLink"
+!raw [stg] @xref "st-guide.hyp/Extra -> Find" "Find in ST-Guide"
+!raw [stg] @xref "st-guide.hyp/AV-protocol" "AV protocol"
+!raw [stg] @xref "st-guide.hyp/PureC-protocol" "PureC protocol"
+
+This option determines whether the compiler should generate a reference
+file or not. As a default, such a file is not generated; this has to be
+switched on with '+z'.
+
+If '+zz' is specified then the  compiler besides creating the REF  file
+will also combine it with the default REF file.
+
+The reference-file serves to allow ST-Guide to find quickly and  surely
+certain external references, string  patterns passed as parameters  and
+also cross-references to be jumped to  without first having to read  in
+all the existing hypertext files first. For this reason all the various
+REF files created  should combined by  the use of  the RefLink  program
+into a global 'dictionary' that ST-Guide can find easily.
+
+This makes it necessary, or at least desirable, always to distribute  a
+HYP file together with the associated REF file, so that all  recipients
+may extend or update their personal 'dictionary'.
+ 
+Default value:  0
+Setable with:   HCP_OPT, Command line, @options
+
+!end_node
+
+!end_node

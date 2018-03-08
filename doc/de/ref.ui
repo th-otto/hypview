@@ -1,0 +1,55 @@
+!begin_node Format einer REF-Datei
+!alias+ REF-Format
+!index REF-Format
+!html_name reffmt
+
+!begin_blist
+
+!item [Datei-Kennung]
+!begin_xlist [n Bytes] !compressed
+  !item [4 Bytes] Magic ('HREF')
+!end_xlist
+
+!item [Modul-Header]
+!begin_xlist [n Bytes] !compressed
+  !item [4 Bytes] LÑnge des Moduls ohne Header
+  !item [4 Bytes] Anzahl der EintrÑge im aktuellen Modul
+!end_xlist
+
+!item [Modul-Daten]
+!begin_xlist [n Bytes] !compressed
+  !item [1 Byte]  Kennung des Eintrages
+  !begin_xlist [0:]
+          !item [0:] Dateiname (z.B. 'ST-GUIDE') (!nl)
+             immer ohne Pfad
+             (eintragen eines Pfades ist jedoch erlaubt)
+             und meist auch ohne Endung
+             (als Endung wird .HYP verwendet, falls keine angegeben)
+          !item [1:] Node Name (!nl)
+             Seitenname aus dem Hypertext zum letzten Datei-Eintrag
+          !item [2:] Alias Name (!nl)
+             Aliasname aus dem Hypertext zum letzten Node-Eintrag
+             (wird vom hcp nur optional hier eingetragen)
+          !item [3:] Label Name (!nl)
+             Labelname aus dem Hypertext zum letzten Node-Eintrag
+             (wird vom hcp nur optional hier eingetragen)
+          !item [4:] database Name (!nl)
+             Database-Argument zum letzten Dateieintrag
+          !item [5:] Kennung des Betriebsystemes, unter dem der Hypertext
+             Åbersetzt wurde (!nl)
+             ('0': unbekannt, '1': AMIGA, '2': ATARI, '3': Macintosh)
+   !end_xlist
+
+  !item [1 Byte]  LÑnge des Eintrages
+  !item [n Bytes] Eintrag als Nullterminierter String (!nl)
+          bei Typ 3 folgen dem String noch 2 Bytes Zeilennummer
+!end_xlist
+
+Beliebig viele weitere Modul-Header gefolgt von Modul-Daten.
+
+!item [8 Bytes Nullen]
+als Ende-Kennung
+
+!end_blist
+
+!end_node

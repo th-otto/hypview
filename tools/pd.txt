@@ -1,0 +1,1053 @@
+PD.HLP wurde Åbersetzt am 3.Februar 1992.
+
+(c) 1990 Borland International, Inc.Index der verfÅgbaren SchlÅsselwîrter:
+
+     EA..F       EB..F       EC..F      ED..F
+
+     EE..F       EF..F       EG..F      EH..F
+
+     EI..F       EJ..F       EK..F      EL..F
+
+     EM..F       EN..F       EO..F      EP..F
+
+     EQ..F       ER..F       ES..F      ET..F
+
+     EU..F       EV..F       EW..F      EX..F
+
+     EY..F       EZ..F
+
+     ESonstigesFDie MenÅleiste
+----------------------------------------------------------------------
+
+EDebuggerF EFileF EViewF EActionF ERunF EOptionsF EHelpFDer MenÅtitel 'Debugger'
+----------------------------------------------------------------------
+
+Hier gelangt man zum  Eintrag Åber das Copyright, in dem sich die
+Versionsnummer Ihres Debuggers befindet.Der MenÅtitel 'File'
+----------------------------------------------------------------------
+
+    ELoad...F            Programm laden
+    EInfo...F            Informationen Åber das Programm ausgeben
+
+    EClose WindowF       Aktuelles Fenster schlie·en
+    ECycle WindowsF      Zum nÑchsten Fenster springen
+
+    EQuitF               Pure Debugger beendenDer MenÅtitel 'View'
+----------------------------------------------------------------------
+
+    EFunction...F        Zur angegebenen Funktion springen
+    EBreakpointsF        Breakpoint-Fenster îffnen
+    EVariablesF          Variablen-Fenster îffnen
+    EWatchesF            Watches-Fenster îffnen
+    EModulesF            Auswahlliste fÅr Module
+    EStackF              Stack-Fenster îffnen
+
+    EAssembly...F        Assembly-Fenster aktivieren
+    EDump...F            Dump-Fenster aktivieren
+    ECPUF                CPU-Fenster îffnen
+
+    EFile...F            File-Fenster îffnen
+    ELogF                Log-Fenster îffnen
+    EUser ScreenF        Ausgabebildschirm zeigenDer MenÅtitel 'Action'
+----------------------------------------------------------------------
+
+    EFind...F            Ausdruck suchen
+    EFind SameF          Suche wiederholen
+    EGoto Line...F       GewÅnschte Zeile anspringen
+
+    EBreakpoint...F      Breakpoint-Formular aktivieren
+    EInspect...F         Datenobjekt ins Inspect-Fenster aufnehmen
+    EWatch...F           Ausdruck im Watches-Fenster eintragen
+    ELog...F             Ausdruck auswerten und protokollieren
+
+    EChange...F          Werte Ñndern
+    EEdit...F            Aufruf eines externen Editors
+    EBlock...F           Formular zur Manipulation von Speicherblîcken
+    EDeleteF             Eintrag lîschen
+    EDelete allF         Fensterinhalt lîschenDer MenÅtitel 'Run'
+----------------------------------------------------------------------
+
+    ERunF                Programm starten
+    ETrace intoF         Einzelne Zeilen oder Befehle ausfÅhren
+    EStep overF          Einzelne Zeilen oder Befehle ausfÅhren,
+                       Unterprogramme Åberspringen
+    EUntil returnF       Programm laufen lassen bis die Funktion
+                       beendet ist
+    EAnimateF            Programm automatisch Schritt fÅr Schritt
+                       langsam abarbeiten
+    EProgram resetF      Programm erneut ladenDer MenÅtitel 'Options'
+----------------------------------------------------------------------
+
+    EEnvironmentF        VerÑndern der Standardkonfiguration
+    EDirectoriesF        Verzeichnis fÅr die Suche der Quelltextdateien
+    EArgumentsF          Dialogbox zum Setzen von Kommandozeilenargumenten
+
+    ELoadF               Konfigurationsdatei laden
+    ESaveF               Konfigurationsdatei speichernDer MenÅtitel 'Help'
+----------------------------------------------------------------------
+
+Nach Auswahl der gewÅnschten Hilfestellung erscheint ein Fenster mit
+informativem Text, wobei einige Stichwîrter in Fettschrift und unter-
+strichen dargestellt sind. Wenn man diese mit der Maus doppelt oder
+einfach anklickt bzw. den Cursor darauf positioniert und die 'Help'-
+Taste drÅckt, erscheint ein neues Fenster, das noch detailliertere
+Informationen zum jeweiligen Stichwort enthÑlt. Mit der 'Undo'-Taste
+gelangen Sie zum vohergehenden Stichwort zurÅck. Beenden lÑût sich die
+Help-Funktion entweder durch Anklicken des Schlieûfeldes oben links im
+Fenster oder durch DrÅcken der Tastenkombination ECONTROLF-U.
+
+    EMenuF         enthÑlt MenÅ-Struktur von Pure Debugger.
+    EDebuggerF     enthÑlt eine öbersicht der Funtionen von
+                 Pure Debugger.
+    EC LanguageF   enthÑlt Informationen Åber die Syntax
+                 der Programmiersprache C.
+    ELibrariesF    enthÑlt ausfÅhrliche ErlÑuterungen Åber alle
+                 verfÅgbaren Funktionen der Pure-C-Bibliotheken.
+    EAssemblerF    liefert Informationen zum Assembler.
+    EIndexF        enthÑlt ein Verzeichnis der Åber Help
+                 verfÅgbaren Informationen.EFileF/Load                                                    ECONTROLF-O
+----------------------------------------------------------------------
+
+Mit Hilfe des Befehls EFileF/Load... kînnen Sie ein anderes Programm
+zum Debuggen laden. Es erscheint eine EDateiauswahlboxF, in der Sie
+das gewÅnschte Programm selektieren mÅssen.
+
+WÑhlen Sie mit der Maus die Datei aus, die Sie laden wollen, und
+drÅcken Sie RETURN oder verwenden Sie den Maus-Doppelklick.EFileF/Info                                                    ECONTROLF-I
+----------------------------------------------------------------------
+
+Mit dem Befehl EFileF/Info... erhalten Sie einen öberblick Åber die
+Speicherbereiche, die von Pure Debugger und von Ihrem Programm
+belegt werden, sowie die Startadresse und LÑnge der Text-, Data-
+und Bss-Segmente. Die Angaben erfolgen in hexadezimaler Darstellung.
+Desweiteren wird Ihnen der Name des Programms, das Sie gerade
+debuggen, angegeben. Diese Informationen erscheinen in einer
+Dialogbox, die man mit RETURN verlassen kann.EFileF/Close Window                                            ECONTROLF-U
+----------------------------------------------------------------------
+
+Geîffnete Fenster kînnen Sie mit dem Befehl EFileF/Close Window
+wieder schlie·en.EFileF/Cycle Window                                            ECONTROLF-W
+----------------------------------------------------------------------
+
+Falls Sie mehrere Fenster geîffnet haben, kînnen Sie diese mit dem
+Befehl EFileF/Cycle Window zyklisch durchblÑttern.EFileF/Quit                                                    ECONTROLF-Q
+----------------------------------------------------------------------
+
+Wenn Sie Pure Debugger mit dem Befehl EFileF/Quit verlassen, wird
+die Fenstereinstellung mit abgespeichert und beim nÑchsten Aufruf von
+Pure Debugger erscheinen Ihre Fenster in derselben Anordnung. Verlassen
+Sie Pure Debugger mit dem Befehl SHIFT-ECONTROLF-Q wird Ihre
+Konfigurierung nicht mit abgespeichert.
+
+Querverweis:   EKonfigurationsdateiFEViewF/Function...                                             ECONTROLF-S
+----------------------------------------------------------------------
+
+Wen Sie den MenÅpunkt 'Function...' aufrufen, erscheint eine Dialogbox,
+in die Sie den Namen der Funktion eintragen  kînnen, die Sie gerne
+betrachten wollen. Pure Debugger springt dann an den Anfang der
+angegebenen Funktion. Dieser Befehl wird Åbergreifend fÅr das gesamte
+Programm ausgefÅhrt, unabhÑngig in welchem EModulF Sie sich
+befinden.EViewF/Breakpoints                                             ECONTROLF-B
+----------------------------------------------------------------------
+
+Das Breakpoint-Fenster enthÑlt die von Ihnen gesetzten EBreakpointsF.
+Ein Breakpoint bezeichnet eine Stelle in Ihrem Programm, an  der es
+unterbrochen werden soll, damit Sie dessen Zustand ÅberprÅfen kînnen.
+Im Breakpoint-Fenster kînnen Sie ebenfalls sehen, welche
+EAbhÑngigkeitenF und EGeltungsbereicheF die von Ihnen gesetzten
+Breakpoints haben.EViewF/Variables                                               ECONTROLF-V
+----------------------------------------------------------------------
+
+Sie kînnen sich globale und lokale Variablen, Funktionen und Variablen,
+die nur in dem Modul bekannt sind, in dem der EProgram CounterF steht,
+anzeigen lassen. Am unteren linken Fensterrand finden Sie die Buchstaben
+G, L, F, S und A. Sie stehen jeweils fÅr global, lokal, funktions- und
+modulbezogen (sprich statisch), sowie fÅr Assembler-Symbole. Sie kînnen
+sich zum Beispiel nur globale Variablen anzeigen lassen oder nur
+Funktionen, evtl. noch zusÑtzlich die Assembler-Symbole. Sie kînnen
+aber alle Anzeigearten beliebig kombinieren. Die EintrÑge sind inner-
+halb des Fensters alphabetisch geordnet.
+
+Wird bei Verwendung des Schalters A gleichzeitig auch der Schalter F
+selektiert, werden alle Assembler-Symbole im Textsegment angezeigt.
+Ist F deselektiert, sind die restlichen Symbole zu sehen. Nach jedem
+Symbol steht als Wert die Adresse, die durch das Symbol reprÑsentiert
+wird. Wenn man einen Doppelklick auf ein Textsymbol macht, wird  die
+zugehîrige Stelle im Quelltext gezeigt, sofern Debug-Informationen
+hierfÅr vorhanden sind. Ansonsten wird das Assembly-Fenster geîffnet,
+und der Code ab der entsprechenden Stelle disassembliert.
+Bei Doppelclick auf ein anderes Symbol wird ein Dump-Fenster  geîffnet
+und ein Speicherauszug ab der Symboladresse ausgegeben.
+
+Sie kînnen mit einem Mausklick eine Variable oder Funktion selektieren.
+FÅhren Sie einen Doppelklick auf eine Variable aus, so îffnet sich
+ein Inspect-Fenster. Dieses lÑ·t sich ebenfalls aktivieren, wenn
+Sie die RETURN-Taste drÅcken. Wenn Sie einen Doppelklick auf eine
+Funktion ausfÅhren oder die RETURN-Taste drÅcken, wird die zur
+Funktion gehîrende Quelltextposition dargestellt, die Sie sich auch
+mit dem Befehl EViewF/EFunction...F zeigen lassen kînnen.
+
+Sobald Sie einmal einen Eintrag mit der Maus selektiert haben, kînnen
+Sie diesen 'Selektor' auch mit den Cursor-Tasten  und  auf und
+ab bewegen.EViewF/Watches                                                 ECONTROLF-E
+----------------------------------------------------------------------
+
+Das Watches-Fenster zeigt Variablen und AusdrÅcke, sowie deren
+sich verÑndernde Werte wÑhrend des Programmablaufs. Es werden
+auch Variablen angezeigt, die momentan nicht definiert sind,
+sie erhalten dann den Zusatz 'undefined Symbol(s)'.
+
+Sie kînnen eine Variable oder einen EAusdruckF in dieses Fenster
+mittels EActionF/EWatch...F aufnehmen.
+
+Wenn Sie das Watches-Fenster schlieûen, bleiben alle darin enthaltenen
+EintrÑge erhalten.EViewF/Modules                                                 ECONTROLF-M
+----------------------------------------------------------------------
+
+Das Modules-Fenster enthÑlt eine Liste aller zum Programm gehîrender
+Quelltexte. In diesem Fenster kînnen Sie mit einem Doppelklick oder
+RETURN das von Ihnen gewÅnschte Modul in einem EQuelltextF-Fenster
+darstellen.EViewF/Stack                                                   ECONTROLF-T
+----------------------------------------------------------------------
+
+Das Stack-Fenster zeigt die Aufrufreihenfolge der Funktionen.EViewF/Assembly...                                             ECONTROLF-A
+----------------------------------------------------------------------
+
+Wenn Sie den Unterpunkt Assembly... des EViewF-MenÅs anklicken
+erscheint eine Dialogbox. In diese geben Sie dann die Adresse ein,
+von der ab Sie das Programm dissambliert ansehen wollen. Im Assembly-
+Fenster steht dann fÅr jede Quelltext-Zeile der entsprechende
+Assembler-Code.EViewF/Dump                                                    ECONTROLF-D
+----------------------------------------------------------------------
+
+Das Dump-Fenster zeigt den Inhalt eines Speicherbereiches an. Sie
+tragen in die Dialogbox die Adresse ein, ab der Sie den Speicherinhalt
+in hexadezimal Schreibweise ansehen wollen.
+
+Sie kînnen von hexadezimaler Darstellung auf ASCII-Schreibweise
+umschalten, indem Sie am linken unteren Rand das A anklicken.
+
+Wenn Sie den Buchstaben B links unten anklicken, werden die Einheiten
+byteweise angeordnet, mit W erhalten Sie sie wortweise und mit L lang-
+wortweise gruppiert. Mit den Pfeilensymbolen (ebenfalls links unten)
+kînnen Sie die Start-Adresse des ersten Elements im Dump-Fenster
+um eine Anzeigeeinheit erniedrigen oder erhîhen.
+
+In der Ñuûersten linken Spalte des Dump-Fensters finden Sie die
+absolute Adresse des ersten angezeigten Elements der jeweiligen
+Zeile.EViewF/CPU                                                     ECONTROLF-C
+----------------------------------------------------------------------
+
+Das CPU-Fenster gibt den aktuellen Zustand der CPU wieder. Dieses
+Fenster enthÑlt beim MC68000-Prozessor die Datenregister ED0F bis
+ED7F, die Adressregister EA0F bis EA7F, den Program Counter
+(EPCF), den Supervisor Stack Pointer (ESSPF) und das Status
+Register (ESRF).
+
+Bei den Prozessoren MC68020 und MC68030 werden zusÑtzlich noch das
+Vector Base Register EVBRF, das Source Function Code Register ESFCF,
+das Destination Function Code Register EDFCF, das Cache Address
+Register ECAARF und das Cache Control Register ECACRF, sowie
+Master- oder Interrupt Stackpointer (EMSPF und EISPF) aufgefÅhrt.
+
+Wenn Sie einen Coprozessor MC68881 oder MC68882 verwenden, werden
+auch die Flieûkomma-Datenregister EFP0F - EFP7F, das Flieûkomma-
+Kontrollregister EFPCRF, das Flieûkomma-Statusregister EFPSRF und
+das Flieûkomma-Befehlsadressregister EFPIARF angezeigt.
+EViewF/File                                                    ECONTROLF-H
+----------------------------------------------------------------------
+
+Das File-Fenster zeigt den Inhalt einer Datei, die Sie mittels der
+EDateiauswahlboxF ausgewÑhlen kînnen. Die Datei kann entweder
+hexadezimal oder als ASCII-Text dargestellt werden.
+
+Diese Option ist nÅtzlich, wenn Sie ein Programm debuggen, das Dateien
+bearbeitet. Sie kînnen beispielsweise eine Datei, die vom Programm
+erzeugt wurde, untersuchen, um nachzuprÅfen, ob deren Inhalt korrekt
+ist.EViewF/Log                                                     ECONTROLF-J
+----------------------------------------------------------------------
+
+Das Log-Fenster enthÑlt ein Protokoll der folgenden von Pure Debugger
+erzeugten Meldungen:
+
+            ˘ AusfÅhrung der Befehle
+                      ELoad...F
+                      ERunF
+                      EStep overF
+                      ETrace intoF
+                      EUntil returnF
+                      EProgram resetF
+
+            ˘ 'Fehlermeldungen' (z.B. Bus Error)
+
+            ˘ Programmabruch durch
+                      einen EBreakpointF
+                      EALTERNATE-HelpF
+                      Programmende
+
+DarÅberhinaus kînnen Sie auch selber EEintragungenF in das Log-Fenster
+vornehmen.
+
+Der in der unteren linken Fensterecke stehende L besagt, falls er
+selektiert ist, da· die Protokollfunktion aktiv ist. Wenn Sie das
+L durch Anklicken mit der Maus deselektieren, werden alle Ausgaben
+in das Log-Fenster unterdrÅckt.
+Das neben dem L befindliche F soll andeuten, da· der Fensterinhalt
+in eine Datei gespeichert werden soll. Wird das F invertiert
+dargestellt, so wird nach jeder Ausgabe in das Log-Fenster, diese
+unmittelbar auch in die Log-Datei geschrieben. Sie kînnen das
+kontinuierliche Aktuallisieren der Log-Datei verhindern, indem Sie
+das F mit der Maus anklicken, um es zu deselektieren. Nun erfolgen
+die Ausgaben ausschlie·lich in das Log-Fenster.
+
+Den Namen, unter dem der Inhalt des Log-Fensters abgespeichert werden
+soll, kînnen Sie unter EOptionsF/EEnvironmentF festlegen.EViewF/User Screen                                                   ESC
+----------------------------------------------------------------------
+
+... schaltet von der Pure Debugger BenutzeroberflÑche auf den
+Ausgabebildschirm des gerade debuggten Programms um. Mit dem
+nÑchsten Tastendruck kehrt man wieder zu Pure Debugger zurÅck.
+Damit lassen sich Bildschirmausgaben von Programmen kontrollieren.EActionF/Find                                                  ECONTROLF-F
+----------------------------------------------------------------------
+
+Mit diesem Befehl kann man Strings unter BerÅcksichtigung von Groû-
+und Kleinschreibung, vorwÑrts und rÅckwÑrts und der Bedingung, da·
+der String als ganzes Wort vorliegen mu·, im ELog-FensterF, in
+EQuelltextmodulenF und im EDatei-FensterF (bei ASCII-Darstellung)
+suchen. Im EDatei-FensterF (bei Hex-Darstellung) und EDump-FensterF erfolgt
+die Suche nach einer EBytelisteF.
+
+In der nach dem Aufruf erscheinenden Dialogbox kînnen Sie die
+gegebenenfalls die Suchoptionen per Mausklick selektieren. In
+das Editierfeld tragen Sie den Suchbegriff ein.EActionF/Find Same                                             ECONTROLF-G
+----------------------------------------------------------------------
+
+Mit diesem Befehl kann man die Suche nach einem String, wie
+sie in EActionF/EFind...F vorgenommen wurde, wiederholen.EActionF/Goto Line                                             ECONTROLF-L
+----------------------------------------------------------------------
+
+Mit EActionF/Goto line kann man zu einer bestimmten Zeile im EQuelltextF
+springen. Nach dem Aufruf dieses Befehls erscheint eine Dialogbox,
+in der als Zeilennummer die aktuelle Position eingegeben ist.
+Diese kann durch die Zeilennummer der neuen Position ersetzt werden.
+Wenn Sie lediglich die aktuelle Position ermitteln wollen, verlassen
+Sie die Dialogbox ohne eine énderung vorzunehmen. Falls Sie eine
+nicht existierende Zeilennummer angegeben haben, wird der Cursor auf das
+Textende positioniert.EActionF/Breakpoint...                                       EALTERNATEF-B
+----------------------------------------------------------------------
+
+Mit dem Befehl EActionF/Breakpoint... kînnen Sie einen Breakpoint
+setzen.
+
+Zur genauen Beschreibung des Breakpoints stehen Ihnen fÅnf Optionen
+zur VerfÅgung:
+
+            EBreakpoint atF
+            EVariable changedF
+            EMemory changed atF
+            EExpression trueF
+            EPass countF
+
+Sie selektieren eine dieser fÅnf Optionen, indem Sie das Viereck vor
+der zugehîrigen Zeile anklicken. Diese wird daraufhin mit einem
+HÑkchen gekennzeichnet.
+
+Sie haben auch die Mîglichkeit Breakpoints kurzfristig zu EdeaktivierenF
+bzw. wieder zu EaktivierenF.
+
+Mittels der Optionen kînnen Sie folgende Typen von Breakpoints
+definieren:
+
+            ˘ EEinfacher BreakpointF
+
+            ˘ EGlobaler BreakpointF
+
+            ˘ EKomplexer BreakpointFBreakpoint at
+----------------------------------------------------------------------
+
+Sie kînnen Eeinfache BreakpointsF im Breakpoint-Formular in der
+Zeile 'Breakpoint at' (engl. Unterbrechung bei) definieren. Geben
+Sie dazu in das zugehîrige Editierfeld die absolute Adresse, einen
+Funktions- bzw. Labelnamen oder eine EQuelltextF-Position ein.
+Als Standardvorgabe steht hier die Quelltextposition des
+EProgram CounterF.
+
+Querverweis:   EBreakpoint-FormularFVariable changed
+----------------------------------------------------------------------
+
+Mit 'Variable changed' (engl. Variable verÑndert) wird Åberwacht,
+ob sich der Inhalt einer Variablen Ñndert. Falls dieses der Fall
+sein sollte, wird das Programm unterbrochen, und der Program Counter
+zeigt auf die der VerÑnderung folgende Zeile. Den Namen der zu
+beobachtenden Variablen tragen Sie in das Editierfeld neben
+'Variable changed' ein.
+
+Beachten Sie, da· Ihr Programm nun deutlich langsamer ablÑuft als
+normalerweise. Das rÅhrt daher, da· Pure Debugger nun nach jedem
+ausgefÅhrten Befehl Ihres Programms den Inhalt der betreffenden
+Variable testen mu·, also das Programm im Einzelschrittmodus ausfÅhrt.
+
+Querverweis:   EBreakpoint-FormularFMemory changed at
+----------------------------------------------------------------------
+
+Wenn die Option 'Memory changed at' (engl. Speicherbereich verÑndert
+ab) ausgewÑhlt wurde, dann  wird ein Speicherbereich bestimmter
+LÑnge beobachtet.
+éndert sich der betreffende Speicherausschnitt, wird ein Breakpoint
+ausgelîst. Sie mÅssen einen Ausdruck eingeben, der die Adresse des
+zu beobachtenden Objekts spezifiziert und zudem die Anzahl der Byte
+bestimmen, die Åberwacht werden sollen. Die Gesamtzahl der Byte
+im Speicherbereich ergibt sich aus der Grî·e des Objekts, multipliziert
+mit der Anzahl der Objekte.
+
+Wenn Sie zum Beispiel die ersten vier Elemente des Feldes
+
+   long a[23];
+
+beobachten wollen, dann wÑre der Speicherbereich, der Åberwacht
+werden soll, 16 Byte lang, da ein long 4 Byte umfa·t und Sie vier
+Objekte haben. Sie mÅ·ten als in das Editierfeld Memory changed at
+a eintragen und in das Feld Length 16.
+
+Beachten Sie, da· Ihr Programm nun deutlich langsamer ablÑuft als
+normalerweise. Das rÅhrt daher, da· Pure Debugger nun nach jedem
+ausgefÅhrten Befehl Ihres Programms den Inhalt des betreffenden
+Speicherbereichs testen mu·, also das Programm im Einzelschrittmodus
+ausfÅhrt.
+
+Querverweis:   EBreakpoint-FormularFExpression true
+----------------------------------------------------------------------
+
+Mit der gesetzten Option 'Expression true' (engl. Ausdruck trifft zu)
+wird ein Breakpoint dann ausgelîst, wenn ein Ausdruck den logischen
+Wert wahr ergibt, also zutrifft. Den zu erfÅllenden Ausdruck kînnen
+Sie in das Editierfeld hinter 'Expression true' eingeben.
+
+Querverweis:   EBreakpoint-FormularFPass count
+----------------------------------------------------------------------
+
+Die Angabe von 'Pass count' (engl. DurchlaufzÑhler) legt die Anzahl
+der DurchlÑufe fest, in denen eine Breakpoint-Bedingung zutreffen
+mu·, bevor der Breakpoint ausgelîst wird. Die im Editierfeld hinter
+'Pass count' angegebene Zahl wird nur dann heruntergezÑhlt, wenn
+die Bedingungen, die an einen bestimmten Breakpoint gestellt werden,
+zutreffen. Das bedeutet, da· der Breakpoint im Falle einer Zusatz-
+bedingung nur dann ausgelîst wird, wenn die Bedingungen so oft wie
+angegeben zutrafen.
+
+Querverweis:   EBreakpoint-FormularFEnable/Disable
+----------------------------------------------------------------------
+
+Die Einstellung 'Enable/Disable' (engl. aktivieren/deaktivieren)
+aktiviert einen Breakpoint oder schaltet ihn vorÅbergehend aus.
+Ein ausgeschalteter Breakpoint wird als leeres Achteck darge-
+stellt.
+
+Dieser Befehl ist sehr praktisch, wenn man einen sehr komplizierten
+Breakpoint definiert hat, den man im Moment nicht braucht, der aber
+spÑter vielleicht wieder verwendet werden soll. Er erspart es Ihnen,
+den Breakpoint zu lîschen und dann alle Bedingungen wieder neu
+einzugeben.
+
+Querverweis:   EBreakpoint-FormularFEinfacher Breakpoint
+----------------------------------------------------------------------
+
+Ein einfacher Breakpoint stoppt ein Programm, wenn der EProgram CounterF
+die Stelle im Progeramm erreicht, an der der Breakpoint gesetzt
+wurde.
+
+Sie setzen eine einfachen Breakpoint im EBreakpoint-FormularF durch
+Anklicken der Option 'EBreakpoint atF'. Noch schneller geht es, wenn
+Sie einen Doppelklick auf der linken vertikalen Randleiste in einem
+EQuelltextF- oder dem EAssemblyF-Fenster ausfÅhren.Globaler Breakpoint
+----------------------------------------------------------------------
+
+Ein globaler Breakpoint (auch Watchpoint genannt) hÑlt ein Programm
+an, wenn sich der Wert oder Inhalt einer Variablen oder eines
+Speicherbereichs Ñndert. Auf diese Weise kînnen Sie der allseits
+gefÅrchteten ESeiteneffektenF Herr werden.
+
+Sie definieren einen globalen Breakpoint im EBreakpoint-FormularF
+durch Wahl einer der Optionen EVariable changedF oder
+EMemory changed atF. Beachten Sie, daû Sie nur eine dieser beiden
+Optionen auswÑhlen kînnen.Komplexer Breakpoint
+----------------------------------------------------------------------
+
+Einen komplexen Breakpoint erzeugen Sie, indem Sie einen EeinfachenF
+mit einem Eglobalen BreakpointF kombinieren.
+FÅr das EBreakpoint-FormularF bedeutet das, da· Sie sowohl die Option
+EBreakpoint atF als auch eine der Optionen fÅr einen globalen Breakpoint
+(EVariableF oder EMemory changed atF) anklicken.
+
+Die Angabe eines komplexen Breakpoints verlangsamt die AusfÅhrung
+Ihres Programms nicht im geringsten, da die Variable bzw. der
+Speicherbereich nur dann ÅberprÅft wird, wenn der einfache Breakpoint
+erreicht wird.EActionF/Inspect...                                          EALTERNATEF-I
+----------------------------------------------------------------------
+
+Beim Aufruf des Befehls EActionF/Inspect... erscheint eine Dialogbox,
+in die Sie den Namen der Variablen oder den Ausdruck, den Sie
+untersuchen wollen, eintragen kînnen. Daraufhin wird automatisch
+ein Inspect-Fenster geîffnet, das den Inhalt der Variable oder
+des Ausdruckes anzeigt.FÅr den Aufruf von Inspect kînnen Sie
+sich auch der Maus bedienen, markieren Sie die gewÅnschte Variable
+und rufen den Befehl Inspect... auf, die Dialogbox enthÑlt daraufhin
+bereits den von Ihnen selektierten Begriff, den Sie nun noch editieren
+kînnen.
+
+Das Inspect-Fenster ist besonders dann interessant, wenn es um
+komplizierte Datenstrukturen geht, zum Beispiel um Arrays oder eine
+verkettete Liste. Durch einen Doppelklick auf eine Komponente in
+einem Inspect-Fenster (oder durch drÅcken von RETURN), wird ein
+weiteres Inspect-Fenster mit detailierten Informationen zu dieser
+Komponente geîffnet. Somit kînnen Sie sich durch verkette Listen
+durchhangeln. Falls wÑhrend des Doppelklicks die SHIFT-Taste gedrÅckt
+halten, so Sie wird fÅr die neuen Informationen kein weiteres
+Fenster geîffnet, sondern die alten EintrÑge Åberschrieben.EActionF/Watch...                                            EALTERNATEF-W
+----------------------------------------------------------------------
+
+Wie beim EInspect...F-Befehl kînnen Sie auch mittels Watch Variablen und
+AusdrÅcke untersuchen. Die Darstellung im Watches-Fenster ist aber
+wesentlich kompakter als in den Inspect-Fenstern.
+Zwar nimmt jeder auszuwertende Ausdruck nur eine Zeile ein, dafÅr
+lassen sich aber mehrere AusdrÅcke im Watches-Fenster auflisten.
+
+Geîffnet wird das Watches-Fenster mittels EViewF/EWatchesF. Neue
+EintrÑge werden mittels EActionF/Watch... aufgenommen. Es îffnet
+sich dann eine Dialogbox, in die Sie den zu beobachtenden Ausdruck
+eingeben. Falls Sie zuvor eine Variable oder einen Ausdruck im
+EQuelltextF selektiert hatten, wird dieser im Editfeld vorgegeben.EActionF/Log...                                              EALTERNATEF-L
+----------------------------------------------------------------------
+
+Wenn Sie Variableninhalte protokollieren wollen, rufen Sie EActionF/
+Log... auf und tragen in die daraufhin erscheinende Dialogbox den Namen
+der betreffenden Variablen ein. Nach dem Quittieren der Dialogbox
+wird der Wert der Variablen in das ELog-FensterF eingetragen.
+
+Ein Geheimtip: Sie kînnen den EActionF/Log...-Befehl auch als einfachen
+Taschenrechner mi·brauchen. Schreiben Sie in die Dialogbox statt
+dem Variablennamen einfach den Term, den Sie ausrechnen wollen und
+Pure Debugger prÑsentiert sich als ØTurbo TaschenrechnerÆ.
+
+Schlie·lich kînnen Sie noch Kommentare in das ELog-FensterF schreiben.
+Auch hierzu rufen Sie wieder EActionF/Log... auf und schreiben Ihre
+Bemerkung als C-Kommentar, beispielsweise
+
+/* Dies ist ein Kommentar. */.EActionF/Change                                              EALTERNATEF-C
+----------------------------------------------------------------------
+
+Sie kînnen im ECPUF-, EVariablesF-, EWatchesF- und EInspect-FensterF Werte
+verÑndern, indem Sie in die Dialogbox, die mittels EActionF/Change...
+aufgerufen wird, in die Zeile 'New values:' einen neuen Wert eintragen.
+Den zu modifizierenden Wert mÅssen Sie vor der AusfÅhrung dieses Befehls
+markieren.
+
+Falls Sie den 'Change...'-Befehl im EFileF- und im EDumpF-Fenster
+einsetzen, zeigt die Dialogbox die Abfrage 'Byte list:'.
+Sie mÅssen dann eine EBytelisteF eingeben, welche die Byte ab der
+Markierung ersetzt.EActionF/Edit...                                             EALTERNATEF-E
+----------------------------------------------------------------------
+
+Mit dem Befehl EActionF/Edit... kînnen Sie den Editor aufrufen, den
+Sie vorher im MenÅ EOptionsF/EEnvironmentF eingetragen haben.EActionF/Block...                                            EALTERNATEF-K
+----------------------------------------------------------------------
+
+Mit dem Befehl EActionF/Block... kînnen Sie Speicherbereiche kopieren
+(copy) oder lîschen (clear), mit verschiedenen Mustern fÅllen (fill),
+von DatentrÑgern lesen (read) oder auf diese schreiben (write).
+
+            ESource addressF
+            EDestination addressF
+            ELengthF
+            EFill patternF
+            EFile nameFSource address
+----------------------------------------------------------------------
+
+In diesem Feld geben Sie die Startadresse des Speicherblocks ein.
+
+Querverweis:   EBlock...FDestination address
+----------------------------------------------------------------------
+
+FÅr den Copy-Befehl mÅssen Sie hier die Zieladresse eintragen, an die
+der Speicherblock kopiert werden soll.
+
+Querverweis:   EBlock...FLength
+----------------------------------------------------------------------
+
+Im Feld 'Length' mÅssen Sie die LÑnge des Speicherblocks angeben.
+
+Querverweis:   EBlock...FFill pattern
+----------------------------------------------------------------------
+
+Hier kînnen Sie die EBytelisteF fÅr ein FÅllmuster eintragen.
+
+Querverweis:   EBlock...FFile name
+----------------------------------------------------------------------
+
+Im Feld 'File name' kînnen Sie den Namen einer Datei angeben, in die
+Sie den Block abspeichern bzw. aus der Sie ihn lesen wollen.
+
+Querverweis:   EBlock...FEActionF/Delete                                                   DELETE
+----------------------------------------------------------------------
+
+Mit dem Befehl EActionF/Delete kînnen Sie im EBreakpointF-
+und EWatchesF-Fenster Zeilen lîschen. Sie mÅssen dafÅr den zu
+lîschenden Begriff auswÑhlen, indem Sie ihn selektieren und dann
+entweder Åber den MenÅpunkt 'Delete' lîschen.EActionF/Delete all
+----------------------------------------------------------------------
+
+Wenn Sie den gesamten Fensterinhalt des ELogF-, EBreakpointF-
+oder EWatchesF-Fenster lîschen wollen, kînnen Sie das mit dem Befehl
+EActionF/Delete all in einem Schwung machen.ERunF/Run                                                    EALTERNATEF-R
+----------------------------------------------------------------------
+
+Durch den Befehl ERunF/Run wird das Programm mit der vollen Ablauf-
+geschwindigkeit ausgefÅhrt. Pure Debugger erhÑlt erst dann wieder
+die Kontrolle, wenn eines der folgenden Ereignisse eintritt:
+
+            ˘ das Programm wird beendet;
+
+            ˘ das Programm 'stÅrzt' ab;
+
+            ˘ ein Breakpoint wird erreicht;
+
+            ˘ Sie unterbrechen das Programm mit EALTERNATE-HelpF.
+
+Dieser Befehl lÑût sich auch durch anklicken von R in der linken
+unteren Ecke in einem EQuelltextF-oder dem EAssemblyF-Fenster
+auslîsen.ERunF/Trace Into                                             EALTERNATEF-T
+----------------------------------------------------------------------
+
+Eine einzelne Quelltextzeile oder einen Maschinensprachebefehl kann
+man mit dem Befehl ERunF/Trace into ausfÅhren. Wenn die aktuelle Zeile
+einen Funktionsaufruf enthÑlt, dann geht Pure Debugger in diese
+Routine. Falls Sie im EAssemblyF-Fenster sind, dann wird nur ein
+einziger Assemblerbefehl ausgefÅhrt.
+
+In einem EQuelltextF- oder dem EAssemblyF-Fenster kann der Befehl
+auch durch Anklicken des Buchstaben T in der linkeren unteren
+Fensterecke gestartet werden.ERunF/Step Over                                              EALTERNATEF-S
+----------------------------------------------------------------------
+
+Der Befehl ERunF/Step over fÅhrt eine einzelne Quelltextzeile oder einen
+Maschinensprachebefehl aus, Åbergeht jedoch alle Funktionsaufrufe.
+Wenn Sie im EAssemblyF-Fenster sind, dann wird nur ein einzelner
+Maschinensprachebefehl ausgefÅhrt.
+
+Wenn Sie mittels 'Step over' eine Quelltextzeile ausfÅhren, die einen
+Funktionsaufruf enthÑlt, so wird die betreffende Funktion in einem
+Schritt ausgefÅhrt. Sie gelangen also direkt zur nÑchsten Zeile in
+der aktuellen Routine oder in die Funktion, die diese Routine
+aufgerufen hat.
+
+Dieser Befehl lÑût sich auch durch anklicken von S in der linken
+unteren Ecke in einem EQuelltextF- oder dem EAssemblyF-Fenster
+auslîsen.ERunF/Until Return                                           EALTERNATEF-U
+----------------------------------------------------------------------
+
+Nach der Eingabe des Befehls ERunF/Until return wird das Programm
+solange ausgefÅhrt, bis die aktuelle Funktion zur aufrufenden Funktion
+zurÅckkehrt. Das ist vor allem dann sehr praktisch, wenn Sie mit ERunF/
+ETrace intoF aus Versehen in eine Funktion hineingegangen sind, die
+Sie eigentlich gar nicht interessiert, oder wenn Sie festgestellt
+haben, da· die aktuelle Funktion zu Ihrer Zufriedenheit funktioniert
+und Sie den Rest gar nicht mehr ÅberprÅfen wollen.ERunF/Animate                                                EALTERNATEF-A
+----------------------------------------------------------------------
+
+Mit dem Befehl ERunF/Animate wird das Programm verlangsamt Schritt fÅr
+Schritt ausgefÅhrt, Sie erhalten somit einen kontinuierlichen
+Einzelschrittlauf. Die Inhalte aller geîffneten Fenster und des
+User Screens werden dabei stÑndig aktualisiert. Damit kann man die
+Position des EProgram CountersF und die Variablenwerte verfolgen.
+
+Dieser Befehl wird mit einem beliebigen Tastendruck abgebrochen.ERunF/Program Reset                                          EALTERNATEF-Z
+----------------------------------------------------------------------
+
+Der Befehl ERunF/Program reset lÑdt das Programm, das Sie debuggen,
+erneut und reinitialisiert Pure Debugger. Verwenden Sie diesen
+Befehl, wenn Sie mit der AusfÅhrung des Programms Øzu weitÆ gegangen
+sind (d.h., wenn Sie die Fehlerstelle Åbersprungen haben).EOptionsF/Environment                                        EALTERNATEF-N
+----------------------------------------------------------------------
+
+Der Befehl EOptionsF/Environment zeigt eine Dialogbox, die Ihnen
+mehrere Mîglichkeiten bietet, die Darstellung der Ausgaben von Pure
+Debugger zu beeinflussen:
+
+            EDisplay swappingF
+            EDisplay swapping viaF
+            EUse VDI graphicsF
+            EDefault tab sizeF
+            EEditor file nameF
+            ELog file nameF
+            EAnimate time stepFDisplay swapping via
+----------------------------------------------------------------------
+
+Diese Option bestimmt die Art der Bildschirmumschaltung zwischen
+EUser ScreenF und der OberflÑche von Pure Debugger. Dazu stehen
+drei verschiedene Methoden zur VerfÅgung, die je nach Hardware
+angewendet werden kînnen:
+
+                           EAddressF
+                           EMemcopyF
+                           EVdicopyFDisplay swapping via Address
+----------------------------------------------------------------------
+
+Auf diese Art kînnen alle Rechner, die mit einem Standard-Monitor,
+d.h. ohne Zusatzhardware ausgestattet sind, zwischen User Screen
+und BenutzeroberflÑche umschalten.
+
+Falls Sie Schwierigkeiten mit der Bildschirmumschaltung auf den
+User Screen haben, versuchen Sie
+
+                  EDisplay swapping via MemcopyF
+                  EDisplay swapping via VdicopyFDisplay swapping via Memcopy
+----------------------------------------------------------------------
+
+Dieser Modus eignet sich fÅr Rechner, die Åber eine Grafikkarte
+eigenem Video-Memory verfÅgt.
+
+Falls Sie auch hier Schwierigkeiten mit der Bildschirmumschaltung
+auf den User Screen haben, versuchen Sie
+
+                  EDisplay swapping via VdicopyFDisplay swapping via Vdicopy
+----------------------------------------------------------------------
+
+Dieser Form der Bildschirmumschaltung zwischen User Screen und
+BenutzeroberflÑche lÑuft auf allen Rechner mit jeglicher Grafik-
+ausstattung. Sie ist jedoch langsamer als die anderen beiden
+Methoden.Use VDI graphics
+----------------------------------------------------------------------
+
+Pure Debugger kennt zwei Arten seine eigene OberflÑche zu zeichnen.
+Er kann direkt in den Bildschirmspeicher schreiben. Diese Form der
+Ausgabe ist sehr schnell, hat jedoch den Nachteil, daû sie nur
+auf monochromen Standard-Bildschirmen funktioniert.
+Bei einigen Grafikkarten und fÅr Farbbildschirme kann die Grafik
+Åber das VDI ausgegeben werden. Dazu mÅssen Sie den Schalter
+Use VDI Graphics selektieren.EOptionsF/Directories                                        EALTERNATEF-D
+----------------------------------------------------------------------
+
+Der BefehlEOptionsF/Directories bestimmt die Verzeichnisse, in denen
+Pure Debugger nach Ihren Quelltextdateien sucht. Sie kînnen
+drei Directories angeben, zunÑchst sucht Pure Debugger jedoch
+immer in dem Verzeichnis, in dem sich auch das zu debuggende
+Programm befindet.EOptionsF/Arguments                                          EALTERNATEF-P
+----------------------------------------------------------------------
+
+Mit Hilfe des Befehls EOptionsF/Arguments kînnen Sie neue Kommando-
+zeilenargumente fÅr Ihr Programm festlegen. Diese werden dann bei
+jedem Neustart an Ihr Programm Åbergeben.EOptionsF/Load                                               EALTERNATEF-J
+----------------------------------------------------------------------
+
+Damit kînnen Sie abgespeicherte Einstellungen aus einer Konfigurations-
+datei lesen. Sie mÅssen dabei eine Datei angeben, die mit dem Befehl
+EOptionsF/ESaveF gespeichert wurde.
+
+Eine neue Konfigurationsdatei legen Sie an, indem Sie in der
+EDateiauswahlboxF den Eintrag 'New' anklicken.EOptionsF/Save                                              EALTERNATEF-H
+----------------------------------------------------------------------
+
+Dieser Befehl speichert die Optionen, die Sie eingestellt haben, in
+einer Konfigurationsdatei auf dem aktuellen Laufwerk. Dazu zÑhlen
+
+            ˘ die aktuelle Fensteraufteilung,
+
+            ˘ alle Einstellungen, die im MenÅ EOptionsF vorgenommen
+              worden sind.
+
+Diese Einstellungen werden automatisch in der aktuellen Konfigurations-
+datei beim Verlassen von Pure Debugger mittels EFileF/EQuitF bzw.
+ECONTROLF-Q (nicht bei SHIFT-CONTROL-Q !) abgespeichert.Display swapping
+----------------------------------------------------------------------
+
+Mit der Option 'Display swapping' stehen Ihnen drei Einstellungs-
+mîglichkeiten zur VerfÅgung, wann und wie zwischen dem EUser ScreenF
+und der BenutzeroberflÑche von Pure Debugger hin- und hergeschaltet
+werden soll. Die drei Einstellungen sind:
+
+            EAlwaysF
+            ESmartF
+            ENeverF
+
+Querverweis:   EEnvironmentFAlways
+----------------------------------------------------------------------
+
+Es wird nach jedem ausgefÅhrten Befehl auf den EUser ScreenF
+umgeschaltet. BenÅtzen Sie diese Option, wenn die Option ESmartF
+nicht auf alle Bildschirmausgaben Ihres Programms reagiert.
+
+Querverweis:   EDisplay swappingFSmart
+----------------------------------------------------------------------
+
+Es wird nur dann auf den Benutzerbildschirm umgeschaltet, wenn Pure
+Debugger glaubt,daû Ihr Programm etwas auf den Bildschirm ausgibt.
+Pure Debugger wechselt die Bildschirme, sobald Sie eine Routine
+Åberspringen, oder wenn Sie einen Befehl oder eine Zeile ausfÅhren,
+die unter UmstÑnden aus dem Bildschirmspeicher liest oder dort
+hineinschreibt. Dies ist die Standardeinstellung.
+
+Querverweis:   EDisplay swappingFNever
+----------------------------------------------------------------------
+
+Es wird nicht zwischen den beiden Bildschirmen hin- und hergeschaltet.
+BenÅtzen Sie diese Option, wenn Sie ein Programm debuggen, das
+keine Bildschirmausgaben macht.
+
+Querverweis:   EDisplay swappingFDefault tab size - Tabulatorgrîûe
+----------------------------------------------------------------------
+
+Mit der Option 'Default tab size' kînnen Sie einstellen, mit welcher
+LÑnge ein Tabulatorzeichen expandiert werden soll.
+
+Sie haben sie Wahl zwischen einer Tabulatorgrîûe von 0 bis 9 Leer-
+zeichen, wobei die Grundeinstellung 4 ist. Wenn Sie unter EOptionsF/
+EEnvironmentF die 'Default tab size' Ñndern und diese dann in einer
+Konfigurationsdatei sichern, werden fortan Tabulatoren standardmÑûig
+mit der von Ihnen eingestellten Grîûe expandiert.
+
+Beachten Sie, daû énderungen der 'Tab Size' in den EQuelltextfensternF
+auschlieûlich temporÑr und lokal, d.h. fÅr dieses Fenster, wirken.
+
+Querverweis:   EEnvironmentFEditor file name
+----------------------------------------------------------------------
+
+Wenn Sie aus Pure Debugger heraus einen Editor aufrufen wollen, so
+kînnen Sie dies mittels EActionF/EEdit...F tun.
+Sie mÅssen dazu den Namen und den Suchpfad des Editor angeben.
+
+Querverweis:   EEnvironmentFLog file name
+----------------------------------------------------------------------
+
+Hier geben Sie den Namen an, unter dem die ELog-DateiF gespeichert
+werden soll. StandardmÑ·ig ist der Name PDLOG.LOG vorgegeben.
+
+Querverweis:   EEnvironmentFAnimate time step
+----------------------------------------------------------------------
+
+Mit der Option 'Animate time step' kînnen Sie einstellen wie kurz
+oder wie lange die Pausen, die zwischen zwei Einzelschritten
+eingelegt werden, sein sollen, wenn Sie Ihr Programm mit ERunF/EAnimateF
+durchlaufen. Mit anderen Worten, Sie kînnen die Zeit einstellen,
+wie schnell sich das schrittweise ØanimierenÆ vollziehen soll,
+ob Sie zwischen je zwei Schritten eine lÑngere oder eine kÅrzere
+Pause haben mîchten.
+
+Die Grundeinstellung dieser Option ist 1 Sekunde.
+
+Querverweis:   EDisplay swappingFHotkeys
+----------------------------------------------------------------------
+
+Durch Tastenkombinationen mit der EALTERNATEF, bzw. der ECONTROLF-
+Taste kînnen die verschiedenen MenÅ-EintrÑge von Pure Debugger
+direkt aufgerufen werden. Folgende Tasten/Tastenkombinationen
+stehen zur VerfÅgung:
+
+   ESC       Umschalten auf den Ausgabebildschirm (EUser ScreenF)
+
+   HELP      Aufruf des EHilfesystemsF
+
+   UNDO      Im Hilfe-System RÅckkehr zum vorhergehenden Stichwort
+
+   Tasten zu ECursorF-Steuerung
+
+Kombination der EALTERNATEF- oder ECONTROLF-Taste mit einer
+anderen um die Funktionen in der MenÅ-Leiste aufzurufen.Pure Debugger fÅr den ATARI ST/TT
+----------------------------------------------------------------------
+
+Mit Hilfe von Pure Debugger ist es mîglich, Fehler in Programmen
+auf Quelltext-Ebene zu suchen und schrittweise den Programmablauf
+zu beobachten. Dazu stellt Ihnen Pure Debugger Åber das EMenuF
+verschiedene Hilfsmittel zur VerfÅgung. Im ERun-MenÅF finden Sie
+Funktionen zur schrittweisen ausfÅhrung des Programms, im EViewF-MenÅ
+kînnen Sie Informations-Fenster îffen, die Ihnen Variablen-Inhalte,
+Assembler-Code, Datei-Inhalte usw. anzeigen. öber das EActionF-MenÅ
+kînnen Sie gezielt den Inhalt von Variablen oder Strukturen abfragen,
+Breakpoints setzen oder z.B. Zeichenfolgen in Ihrem Sourcecode suchen.
+Mehr Informationen zu den einzelnen Funktionen erhalten Sie durch das
+integrierte EHelpF-System.'Alternate Codes' in Pure Debugger
+----------------------------------------------------------------------
+
+  Taste(n)      Funktion
+----------------------------------------------------------------------
+  ALTERNATE-A   kontinuierlicher Einzelschrittablauf (EAnimateF)
+  ALTERNATE-B   Breakpoints setzen/lîschen (EBreakpoint...F)
+  ALTERNATE-C   Wert Ñndern (EChange...F)
+  ALTERNATE-D   Quelltext Directories einstellen(EDirectoriesF)
+  ALTERNATE-E   Editor aufrufen (EEdit...F)
+  ALTERNATE-H   Konfiguration-Datei speichern (ESaveF)
+  ALTERNATE-I   Ausdruck im Inspect-Fenster ansehen (EInspect...F)
+  ALTERNATE-J   Konfigurations-Datei einlesen (ELoadF)
+  ALTERNATE-K   Speicherbereiche bearbeiten (EBlock...F)
+  ALTERNATE-L   Eintrag in Protokoll-Fenster (ELog...F)
+  ALTERNATE-N   Environment Dialog (EEnvironmentF)
+  ALTERNATE-P   Kommandozeile eingeben (EArgumentsF)
+  ALTERNATE-R   Programm starten (ERunF)
+  ALTERNATE-S   Eine Zeile ausfÅhren und Funktionen Åberspringen
+                (EStep overF)
+  ALTERNATE-T   Eine Zeile ausfÅhren (ETrace intoF)
+  ALTERNATE-U   Programm ausfÅhren bis zur RÅckkehr zur aufrufenden
+                Funktion (EUntil returnF)
+  ALTERNATE-W   Ausdruck im Watch-Fenster ansehen (EWatch...F)
+  ALTERNATE-Z   Programm in den Ausgangszustand setzen (EProgram resetF)
+
+  ALTERNATE-Help   Programmlauf unterbrechen (EALTERNATE-HelpF)
+
+Querverweis:   ECONTROLF, EHotkeysF'Control Codes' in Pure Debugger
+----------------------------------------------------------------------
+
+  Taste(n)      Funktion
+----------------------------------------------------------------------
+  CONTROL-A     Assembly-Fenster îffnen (EAssembly...F)
+  CONTROL-B     Liste der Breakpoints (EBreakpointsF)
+  CONTROL-C     CPU-Register anzeigen (ECPUF)
+  CONTROL-D     Speicherbreich anzeigen (EDump...F)
+  CONTROL-E     Watch-Fenster aufrufen (EWatchesF)
+  CONTROL-F     String suchen (EFind...F)
+  CONTROL-G     Suche wiederholen (EFind SameF)
+  CONTROL-H     Datei in HEX oder ASCII anzeigen (EFile...F)
+  CONTROL-I     Informationen Åber geladenes Programm (EInfo...F)
+  CONTROL-J     Protokoll-Fenster aufrufen (ELogF)
+  CONTROL-L     Zeilennummer im Quelltext anspringen (EGoto Line...F)
+  CONTROL-M     Liste der Module (EModulesF)
+  CONTROL-O     Programm zum Debuggen laden (ELoad...F)
+  CONTROL-Q     Pure Debugger verlassen (EQuitF)
+  CONTROL-S     Funktion ansehen (EFunction...F)
+  CONTROL-T     Stack-Fenster aufrufen (EStackF)
+  CONTROL-U     Fenster schlieûen (EClose WindowF)
+  CONTROL-V     Liste der Variablen (EVariablesF)
+  CONTROL-W     zyklisch durch Fenster blÑttern (ECycle WindowsF)
+
+Querverweis:   EALTERNATEF, EHotkeysFAusdrÅcke
+----------------------------------------------------------------------
+
+AusdrÅcke kînnen eine Kombination aus Variablenbezeichnungen, Adreû-
+beschreibung, Konstanten und Operatoren der Programmiersprache C
+sein. Pure Debugger wertet AusdrÅcke aus und teilt Ihnen das
+Ergebnis mit. Sie kînnen einen Ausdruck bei allen Eingaben ver-
+wenden, in denen Sie einen Wert oder eine Speicheradresse angeben
+sollen.Byteliste
+----------------------------------------------------------------------
+
+Eine Byteliste kann eine beliebige, durch Kommata getrennte Mischung
+aus skalaren Zahlen (keine Flieûkommazahlen), Zeichenkonstanten und
+Strings sein.
+
+Die Skalare bewegen sich maximal im Bereich von -2147483648 bis
+4294967295, wobei die erste Zahl den kleinsten vorzeichenbehafteten
+und letztere Zahl den grîûtmoglichen vorzeichenlosen Long-Wert
+darstellt. Bei Long-Werten muû an deren Ende ein l oder L stehen,
+bei vorzeichenlosen Werten ein u oder U. Zeichenkonstanten werden
+wie in C in Hochkommata eingeschlossen. Es kînnen bis zu vier Zeichen
+angegeben werden. Bei einem Zeichen wird sie als Byte-, bei zwei als
+Wort- und bei vier als Langwortkonstante interpretiert. Sollte Ihre
+Konstante aus drei Zeichen bestehen, so wird sie zu einem Langwort
+erweitert. Werden mehr als vier Zeichen angegeben, so werden nur die
+letzten vier als gÅltig betrachtet. Strings werden wie in C durch
+Doppelte Hochkomma begrenzt, wobei zu beachten ist, daû diese keine
+abschlieûende Null hat.Seiteneffekte
+----------------------------------------------------------------------
+
+Seiteneffekte sind des Programmierers Ñrgste Feinde. Sie verÑndern
+unbeabsichtigt die Inhalte von Variablen und fÅhren somit zu
+unerklÑrlichen Resultaten. Mittels Eglobaler BreakpointsF
+sind sie jedoch leicht aufzuspÅren.Bewegung in den Fenstern mittels Tastatur
+----------------------------------------------------------------------
+
+Die EQuelltextF-, das EAssemblyF-, ELogF-, EFileF- und EHelpF-Fenster besitzen
+einen als senkrechter Strich dargestellten Cursor. Er dient der
+schnelleren Fortbewegung in diesen Fenstern.
+
+Die Cursorposition kann Åber folgende Tasten/Tastenkombinationen
+beeinfluût werden:
+
+  Taste(n)      Funktion
+----------------------------------------------------------------------
+  Home          An den Anfang des Textes (nicht im EAssembly-FensterF)
+  SHIFT-Home    An das Ende des Textes (nicht im EAssembly-FensterF)
+               Eine Zeile nach Oben
+  SHIFT-       Eine Seite nach Oben
+               Eine Zeile nach Unten
+  SHIFT-       Eine Seite nach Unten
+               Ein Zeichen nach Links
+  SHIFT-       An den Zeilen-Anfang (nicht im EAssembly-FensterF)
+               Ein Zeichen nach Rechts
+  SHIFT-       An das Zeilen-Ende (nicht im EAssembly-FensterF)ALTERNATE-Help
+----------------------------------------------------------------------
+
+Mit der Tastenkombination EALTERNATEF-Help kînnen Sie das Programm
+fast immer abgebrechen und zum Debugger zurÅckkehren.
+
+Unter folgenden Bedingungen ist ein Abbruch nicht mîglich:
+
+   ˘ Das Programm steck in einer Schleife in der alle Interrupts
+     ausgeschaltet sind.
+   ˘ Das System hat sich aufgrund eines fehlerhaften Programms
+     aufgehÑngt.Quelltext-Fenster
+----------------------------------------------------------------------
+
+Das Quelltext-Fenster entspricht einem normalen GEM-Fenster, von zwei
+Ausnahmen abgesehen.
+
+Die erste ist der vertikale Balken am linken Fensterrand, in dem der
+EProgram CounterF in Form eines nach rechts deutenden Pfeiles befindet.
+
+Auûerdem werden in diesem Balken auch gesetzte EBreakpointsF angezeigt.
+
+Ganz links unten fallen die Pfeile mit der 4 in der Mitte auf ( 4 ).
+Sie dienen der individuellen Einstellung der Expandierung von Tabula-
+toren durch 0 bis 9 Leerzeichen.
+
+Die Buchstaben R, S, T entsprechen den MenÅ-EintrÑgen 'ERunF',
+'EStep overF' und 'ETrace intoF'.Program Counter
+----------------------------------------------------------------------
+
+Der Program Counter wird im EQuelltextF- oder EAssembly-FensterF als nach
+rechts deutender massiver Pfeil dargestellt. Er zeigt auf den nÑchsten
+abzuarbeitenden Befehl im Programm. Wird er nur umrandet dargestellt,
+befindet er sich in der Abarbeitung der Zeile, auf die er zeigt, z.B.
+in der Abarbeitung einer Quelltextzeile die auf Assembler-Ebene aus
+mehreren Assemblerbefehlen bestehen kann.Besondere Features der Dateiauswahlbox von Pure Debugger
+----------------------------------------------------------------------
+
+'Open'       îffnet eine im Auswahlfenster selektierte Datei.
+             Ein Doppelklick auf den Dateinamen tut dasselbe.
+             Aufruf Åber die Tastatur mit RETURN.
+'New'        legt eine neue Datei an; dabei wird nach dem neuen Namen
+             gefragt.
+             Aufruf Åber die Tastatur mit INSERT.
+'Cancel'     schlieût die Dateiauswahlbox, ohne eine Datei zu îffnen.
+             Aufruf Åber die Tastatur mit CONTROL-U.
+'New Folder' legt einen neuen Ordner an; dabei wird nach dem neuen
+             Namen gefragt.
+'Delete'     lîscht eine im Auswahlfenster selektierte Datei.
+             Aufruf Åber die Tastatur mit DELETE.
+'Touch'      Schreibt Systemzeit und Systemdatum als Dateidatum
+             einer im Auswahlfenster selektierten Datei.
+             (entspricht dem gleichnamigen UNIX-Befehl).
+'Copy'       kopiert die im Auswahlfenster selektierte Datei; dabei
+             wird nach dem neuen Namen gefragt. Mit '..' wird die
+             Datei mit gleichen Namen in den Åbergeordneten Ordner
+             kopiert.
+'Info'       zeigt Name, Grîûe, Datum und Uhrzeit der im Auswahl-
+             fenster selektierten Datei an. Dabei kann der Dateiname
+             ediert werden.
+'*.*'        wechselt zwischen der Anzeige der gewÅnschten Datei-
+             erweiterung und der Anzeige aller Dateierweiterungen.
+             Die Extension des untersten Extensionsbuttons lÑût sich
+             mit einem Doppelklick durch den Benutzer definieren. 
+Hinweis:     Durch DrÅcken eines Buchstabens werden alle Dateien
+             mit nachfolgendem Anfangsbuchstaben angezeigt. Mit den
+             Cursortasten  und  kînnen Sie scrollen. Die Taste
+             UNDO bewirkt dasselbe wie das Schlieûfeld. Mit
+             ALTERNATE-Laufwerksbuchstabe kînnen Sie das Lauf-
+             werk selektieren. Der Aufruf der Standarddatei-
+             erweiterungen erfolgt Åber folgende Tasten:
+             
+                CONTROL-A     *.*
+                CONTROL-C     *.C
+                CONTROL-H     *.H
+                CONTROL-S     *.S
+                CONTROL-P     *.PRJ
+                CONTROL-F     *.CFG
+                CONTROL-R     *.PRG
+                CONTROL-D     *.???
