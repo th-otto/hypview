@@ -22,11 +22,14 @@ testers helped to improve the application. Thanks to the contributions
 of Gerhard Stoll, the project progressed more until 2006 when the
 sources have gone "public" under the initiative of Odd Skancke (which
 ported also the sources to gcc).
+In 2016, Thorsten Otto started to implement the remaining tools dealing
+with hypertext files (most notably the compiler, hcp). He also wrote
+viewers for Unix and Windows platforms.
 Today the project (including its sources) is freely available under 
-the GNU Public License (GPL, provided in COPYING). The latest source
-code is available through the CVS repository of FreeMiNT (in the 
-'freemint/tools/hypview' directory).
-
+the GNU Public License (GPL, provided in COPYING). The former source
+code is available through the GIT repository of FreeMiNT (in the 
+'freemint/tools/hypview' directory). Current source code is available
+at https://github.com/th-otto/hypview.
 
 Disclaimer
 ----------
@@ -37,14 +40,16 @@ Disclaimer
 
 Authors
 -------
-Philipp Donze (PhilippDonze@gmx.ch, http://www.xn--donz-epa.ch)
-Gerhard Stoll (gerhard_stoll@gmx.de)
-Odd Skanke (ozk@atari.org)
-
+Philipp Donze (PhilippDonze .at. gmx.ch, http://www.xn--donz-epa.ch)
+Gerhard Stoll (gerhard_stoll .at. gmx.de)
+Odd Skanke (ozk .at. atari.org)
+Thorsten Otto (admin .at. tho-otto.de)
 
 
 If you have problems using HypView, please contact one of the authors.
 We're also glad to receive comments, ideas and suggestions!
 
-Philipp Donze
-Chavornay, 11th march 2006
+(Philipp Donze
+Chavornay, 11th march 2006)
+Thorsten Otto
+Essen, 8th march 2018)

@@ -477,9 +477,9 @@ case $with_gui in
          AC_MSG_ERROR([win32 gui is only available for windows])
       fi
       ;;
-   mac)
+   cocoa)
       if test $TARGET_OS != mac; then
-         AC_MSG_ERROR([mac gui is only available for macOS])
+         AC_MSG_ERROR([cocoa gui is only available for macOS])
       fi
       ;;
    gem)
@@ -869,6 +869,7 @@ AM_CONDITIONAL(WITH_GUI_GTK2, test "$with_gui" = gtk2)
 AM_CONDITIONAL(WITH_GUI_GTK3, test "$with_gui" = gtk3)
 AM_CONDITIONAL(WITH_GUI_WIN32, test "$with_gui" = win32)
 AM_CONDITIONAL(WITH_GUI_GEM, test "$with_gui" = gem)
+AM_CONDITIONAL(WITH_GUI_COCOA, test "$with_gui" = cocoa)
 AM_CONDITIONAL(HAVE_GTKHTML, test x$have_gtkhtml != xno)
 AM_CONDITIONAL(HAVE_GTKHTML2, test x$have_gtkhtml2 != xno)
 if test "$with_gui" = gtk2 -o "$with_gui" = gtk3; then
