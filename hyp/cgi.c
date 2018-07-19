@@ -569,7 +569,7 @@ int main(void)
 
 	if (cgiAccept && strstr(cgiAccept, "application/xhtml+xml") != NULL)
 		opts->recompile_format = HYP_FT_HTML_XML;
-		
+
 	if (cgiScriptName)
 		cgi_scriptname = cgiScriptName;
 	
