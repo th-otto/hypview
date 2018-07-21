@@ -1,5 +1,5 @@
 !begin_node Format of a REF-file
-!alias+ REF-format
+!alias- REF-format
 !index REF-format
 !html_name reffmt
 

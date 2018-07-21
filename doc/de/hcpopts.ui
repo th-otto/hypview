@@ -164,7 +164,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option b: Seitengr”že
-!alias+ Option b
+!alias- Option b
 !index -bSIZ
 !index Seitengr”že
 !raw [stg] @xref "Option c"
@@ -221,7 +221,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option d: Abstand von Verweisen
-!alias+ Option d
+!alias- Option d
 !index -dN
 !html_name option_d_hcp
 
@@ -250,7 +250,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option e: Fehlerdatei
-!alias+ Option e
+!alias- Option e
 !index -eERRFILE
 !index Fehlerdatei
 !raw [stg] @xref "Option q"
@@ -279,7 +279,7 @@ Setzbar:        HCP_OPT, Kommandozeile
 !end_node
 
 !begin_node Option f: Aliase in den Index
-!alias+ Option f
+!alias- Option f
 !index +-f
 !raw [stg] @xref "Kommando @alias"
 !raw [stg] @xref "Kommando @index"
@@ -296,7 +296,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option g: Alabels in den Index
-!alias+ Option g
+!alias- Option g
 !index +-g
 !raw [stg] @xref "Kommandos @label/@alabel"
 !raw [stg] @xref "Kommando @index"
@@ -313,7 +313,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option i: Index automatisch erzeugen
-!alias+ Option i
+!alias- Option i
 !index +-i
 !raw [stg] @xref "Kommando @width"
 !raw [stg] @xref "Option j"
@@ -359,7 +359,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option k: Kompatibilit„ts-Flags
-!alias+ Option k
+!alias- Option k
 !index -kVAL
 !html_name option_k_hcp
 
@@ -389,7 +389,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option m: Bilder durch Rahmen ersetzen
-!alias+ Option m
+!alias- Option m
 !index +-m
 !raw [stg] @xref "Kommando @image"
 !raw [stg] @xref "Kommando @limage"
@@ -412,7 +412,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option n: Nodes in den Index
-!alias+ Option n
+!alias- Option n
 !index +-n
 !raw [stg] @xref "Kommando @indexon"
 !raw [stg] @xref "Kommando @indexoff"
@@ -436,7 +436,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option o: Ausgabedatei
-!alias+ Option o
+!alias- Option o
 !index -oOUTFILE
 !index Ausgabedatei
 !html_name option_o_hcp
@@ -481,7 +481,7 @@ Setzbar:        HCP_OPT, Kommandozeile
 !end_node
 
 !begin_node Option p: Typ recompilierter Bilder
-!alias+ Option p
+!alias- Option p
 !index -pVAL
 !raw [stg] @xref "Kommando @image"
 !raw [stg] @xref "Kommando @limage"
@@ -503,7 +503,7 @@ Setzbar:        HCP_OPT, Kommandozeile
 !end_node
 
 !begin_node Option q: Gespr„chigkeit
-!alias+ Option q
+!alias- Option q
 !index +-q[qq]
 Mit der (evtl. wiederholt angegebenen) -q Option kann das Ausgabeverhalten
 des HCP gesteuert werden.
@@ -527,7 +527,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option s: Zeilenumbruch
-!alias+ Option s
+!alias- Option s
 !index +-s
 !html_name option_s_hcp
 
@@ -540,7 +540,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option t: Tabulatorweite
-!alias+ Option t
+!alias- Option t
 !index -tN
 !raw [stg] @xref "Kommando @tabsize"
 !html_name option_t_hcp
@@ -565,7 +565,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option u: Einbeziehen anderer Hypertexte
-!alias+ Option u
+!alias- Option u
 !index -uHYPFILE
 !raw [stg] @xref "Kommando @uses"
 !raw [stg] @xref "Kommando @extern"
@@ -581,7 +581,7 @@ Setzbar:        HCP_OPT, Kommandozeile
 !end_node
 
 !begin_node Option w: Warten auf Taste
-!alias+ Option w
+!alias- Option w
 !index -wVAL
 Mit dieser Option kann konfiguriert werden, wann der hcp vor dem Beenden
 auf eine Taste wartet; dies ist insbesondere sinnvoll, wenn er vom Desktop
@@ -602,7 +602,7 @@ Setzbar:        HCP_OPT, Kommandozeile
 !end_node
 
 !begin_node Option x: Titel statt Nodenamen in den Index
-!alias+ Option x
+!alias- Option x
 !index +-x
 !raw [stg] @xref "Option n: Nodes in den Index"
 !raw [stg] @xref "Kommando @indexon"
@@ -619,7 +619,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option y: 1. Zeichen insensitiv
-!alias+ Option y
+!alias- Option y
 !index +-y
 !html_name option_y_hcp
 
@@ -639,7 +639,7 @@ Setzbar:        HCP_OPT, Kommandozeile, @options
 !end_node
 
 !begin_node Option z: REFerenzdateien
-!alias+ Option z
+!alias- Option z
 !index +-z[z]
 !raw [stg] @xref "reflink.hyp/Main" "RefLink"
 !raw [stg] @xref "st-guide.hyp/Extra -> Suchen" "Suchen im ST-Guide"

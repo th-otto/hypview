@@ -36,18 +36,18 @@ any way of writing it is allowed.
 # -----------------------------------------------------------------------------
 
 !begin_node AmigaGuide - compatible
-!alias+ @(c)
-!alias+ @dnode
-!alias+ @font
-!alias+ @height
-!alias+ @master
-!alias+ @wordwrap
-!alias+ @macro
-!alias+ @onclose
-!alias+ @onopen
-!alias+ @smartwrap
-!alias+ @embed
-!alias+ @proportional
+!alias- @(c)
+!alias- @dnode
+!alias- @font
+!alias- @height
+!alias- @master
+!alias- @wordwrap
+!alias- @macro
+!alias- @onclose
+!alias- @onopen
+!alias- @smartwrap
+!alias- @embed
+!alias- @proportional
 !html_name amguide_hcp
 
 This  command  has  been   implemented  solely  for  compatibility   to
@@ -115,9 +115,9 @@ decimal numerical constant or a (!link [label] [Commands @label/@alabel]) name (
 # -----------------------------------------------------------------------------
 
 !begin_node Commands @if/@else/@endif
-!alias+ Command @if
-!alias+ Command @else
-!alias+ Command @endif
+!alias- Command @if
+!alias- Command @else
+!alias- Command @endif
 !alias @if
 !alias @else
 !alias @endif
@@ -238,8 +238,8 @@ for the creation of a hypertext tree.
 # -----------------------------------------------------------------------------
 
 !begin_node Commands @tree/@endtree
-!alias+ Command @tree
-!alias+ Command @endtree
+!alias- Command @tree
+!alias- Command @endtree
 !alias @tree
 !alias @endtree
 !index tree
@@ -634,7 +634,7 @@ display  the  page  'Set   parameters'  when  either  'Parameters'   or
 # -----------------------------------------------------------------------------
 
 !begin_node Command @pnode
-!alias+ @pnode
+!alias- @pnode
 !index pnode
 !raw [stg] @xref "Command @node"
 !html_name command_pnode_hcp
@@ -1081,8 +1081,8 @@ easier.
 # -----------------------------------------------------------------------------
 
 !begin_node Commands @label/@alabel
-!alias+ Command @label
-!alias+ Command @alabel
+!alias- Command @label
+!alias- Command @alabel
 !alias @label
 !alias @alabel
 !index label
@@ -1290,8 +1290,8 @@ database name will be recreated.
 # -----------------------------------------------------------------------------
 
 !begin_node Commands @remark & ##
-!alias+ Command @remark
-!alias+ @remark
+!alias- Command @remark
+!alias- @remark
 !alias ##
 !index remark
 !html_name command_remark_hcp
@@ -1474,7 +1474,7 @@ several tables of contents for a given text.
 # -----------------------------------------------------------------------------
 
 !begin_node Command @{...}
-!alias+ @{...}
+!alias- @{...}
 !index link
 !index alink
 !index system
@@ -1642,7 +1642,7 @@ prevent confusion with already assigned variable names.
 # -----------------------------------------------------------------------------
 
 !begin_node @{ alink }
-!alias+ @alink
+!alias- @alink
 !index alink
 !raw [stg] @xref "@{ link }"
 !html_name command_alink_hcp
@@ -1660,7 +1660,7 @@ Since ST-Guide  only works  with one  window, 'alink'  is identical  to
 # -----------------------------------------------------------------------------
 
 !begin_node @{ ignore }
-!alias+ @ignore
+!alias- @ignore
 !index ignore
 !raw [stg] @xref "Command @autorefoff"
 !raw [stg] @xref "Command @autorefon"
@@ -1678,7 +1678,7 @@ automatically.
 # -----------------------------------------------------------------------------
 
 !begin_node @{ link }
-!alias+ @link
+!alias- @link
 !index link
 !raw [stg] @xref "Commands @label/@alabel"
 !raw [stg] @xref "Command @symbol"
@@ -1756,7 +1756,7 @@ texts (see under External cross-references).
 !end_node
 
 !begin_node Set text attributes
-!alias+ <Attributes>
+!alias- <Attributes>
 !html_name command_attr_hcp
 
 Syntax: @{<Attr>[<Attr>...]}

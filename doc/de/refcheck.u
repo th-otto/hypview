@@ -391,7 +391,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !end_node
 
 !begin_node LINK-Option -D (Delete)
-!alias+ Option -D
+!alias- Option -D
 !alias -D
 !html_name refcheck_dd
 !begin_xlist [-h oder -H]
@@ -402,7 +402,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !end_node
 
 !begin_node LINK-Option -E (Extract)
-!alias+ Option -E
+!alias- Option -E
 !alias -E
 !html_name refcheck_ee
 !begin_xlist [-h oder -H]
@@ -415,7 +415,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !end_node
 
 !begin_node LINK-Option -F (list module names in REF-Files)
-!alias+ Option -F
+!alias- Option -F
 !alias -F
 !html_name refcheck_ff
 !begin_xlist [-h oder -H]
@@ -427,7 +427,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !end_node
 
 !begin_node LINK-Option -L (List contents of REF-files)
-!alias+ Option -L
+!alias- Option -L
 !alias -L
 !html_name refcheck_ll
 !begin_xlist [-h oder -H]

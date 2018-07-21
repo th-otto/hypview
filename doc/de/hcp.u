@@ -69,7 +69,7 @@
 !raw [stg] @xref "reflink.hyp/Main" "Reflink Dokumentation"
 
 !begin_node Aufruf des HCP
-!alias+ HCPCall
+!alias- HCPCall
 !alias Hypertext-Compiler HCP
 !raw [stg] @xref "Optionen-öbersicht"
 !html_name usage_hcp
@@ -188,7 +188,7 @@ wird zur ersten im Fenster sichtbaren.
 !end_node
 
 !begin_node Aufgaben und Eigenschaften des Compilers
-!alias+ Compiler Features
+!alias- Compiler Features
 !html_name tasks_hcp
 
 Der Hypertext-Compiler HCP Åbersetzt einen Hypertext in ein

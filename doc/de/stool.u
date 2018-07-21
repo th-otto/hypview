@@ -134,7 +134,7 @@ starten, um diesen Haupttext zu aktualisieren.
 !end_node
 
 !begin_node Was macht dieses Programm
-!alias+ Programmablauf
+!alias- Programmablauf
 !index Programmablauf
 !html_name stool_operation
 
@@ -445,7 +445,7 @@ Der Beispielbaum wÅrde in der Konfigurationsdatei so ausehen:
 !end_node
 
 !begin_node Die öbersetzungstabelle
-!alias+ öbersetzungstabelle
+!alias- öbersetzungstabelle
 !index öbersetzungstabelle
 !html_name stool_translation
 
@@ -574,7 +574,7 @@ HypView gesucht wird.
 !end_node
 
 !begin_node Das éndern oder ErgÑnzen von Themen
-!alias+ Thema Ñndern
+!alias- Thema Ñndern
 !index Thema Ñndern
 !index Thema ergÑnzen
 !html_name stool_suppl
@@ -637,7 +637,7 @@ Verzeichnis durchsucht.
 !end_node
 
 !begin_node Navigation im erzeugten Hypertext
-!alias+ Navigation
+!alias- Navigation
 !index Navigation
 !html_name stool_nav
 

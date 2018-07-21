@@ -162,7 +162,7 @@ capabilities, such as (!link [graphics] [Lines, arrows and boxes]), for instance
 
 
 !begin_node The Philosophy of ST-Guide
-!alias+ Philosophy
+!alias- Philosophy
 !html_name philosophy
 
 Hypertexts are new. That may not seem to be so when one considers that
@@ -781,7 +781,7 @@ provide information about which $-lines are required.
 !html_name using_hv
 
 !begin_node The icons in the ST-Guide window
-!alias+ Icon bar
+!alias- Icon bar
 !index Icon bar
 !alias Symbol bar
 !index Symbol bar
@@ -1278,7 +1278,7 @@ will be treated as identical patterns.
 This searches the current hypertext's index for the search pattern
 that was input. Wildcards may be used, and the search is
 (!link [case insensitive] [insens]).
-!alias+ Hitlist
+!alias- Hitlist
 If more than one match is found a dialogue appears listing all
 matching index entries. Select the desired entry using the mouse or
 (!link [keyboard] [Keyboard functions]) shortcut. In this dialogue one line is always highlighted,
@@ -1379,7 +1379,7 @@ HypFind manually and use its command line.
 
 !begin_node Extra -> Repeat find
 !raw [stg] @xref "Extra -> Find"
-!alias+ Repeat find
+!alias- Repeat find
 !index Repeat find
 !html_name find_repeat_hv
 
@@ -1424,7 +1424,7 @@ will be appended to the existing one.
 
 !begin_node Extra -> Paste
 !raw [stg] @xref "Extra -> Copy"
-!alias+ Paste
+!alias- Paste
 !index Paste
 !html_name extra_paste_hv
 
@@ -1435,7 +1435,7 @@ it in the window.
 !end_node
 
 !begin_node Extra -> Print page
-!alias+ Print page
+!alias- Print page
 !index Print
 !html_name extra_print_hv
 
@@ -1463,7 +1463,7 @@ program, for instance.
 !end_node
 
 !begin_node Extra -> Font
-!alias+ Font
+!alias- Font
 !html_name extra_font_hv
 
 ST-Guide supports the so-called font-protocol by Christian Grunenberg,
@@ -1563,7 +1563,7 @@ on, and display the corresponding page if the find was successful.
 
 In a few exceptional cases, mouse operation needs something different
 from a simple left-click:
-!alias+ Block popup
+!alias- Block popup
 
 !begin_itemize
 !item Holding down the left mouse button marks the line the cursor is
@@ -1731,7 +1731,7 @@ format is now part of the system and is called (!link [PC-Conv] [Converter]).
 !end_blist
 
 !begin_node The PureC-Help protocol
-!alias+ PureC-protocol
+!alias- PureC-protocol
 !html_name purec_hv
 !index PureC-protocol
 
@@ -1913,7 +1913,7 @@ ACC -> APP: 'I'm here'
 
 !begin_node How do I write a hypertext?
 !raw [stg] @xref "hcp.hyp/Writing a hypertext" "Writing a hypertext"
-!alias+ Hypertext?
+!alias- Hypertext?
 !html_name writing_hv
 
 The corresponding page in the (!XLINK [HCP documentation] [hcp] [Tips for writing a hypertext]) gives some information

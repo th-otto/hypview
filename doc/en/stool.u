@@ -83,7 +83,7 @@
 !raw [stg] @xref "reflink.hyp/Main" "Reflink documentation"
 
 !begin_node The idea behind this program
-!alias+ The Idea
+!alias- The Idea
 !index The Idea
 !html_name stool_idea
 
@@ -94,7 +94,7 @@ etc.
 The (!link [leaves] [Leaf]) of the tree finally are the hypertext themselves. Such a
 tree could look like this, for example:
  
-!alias+ Example tree
+!alias- Example tree
 !index Example tree
 !begin_preformatted
                ----------------Root----------------
@@ -153,7 +153,7 @@ double-click to update your catalogue as painlessly as possible.
 !end_node
 
 !begin_node Starting the STool program
-!alias+ Program start
+!alias- Program start
 !index Program start
 !html_name stool_start
 
@@ -166,7 +166,7 @@ and the catalogue file.
 !end_node
 
 !begin_node What STool does
-!alias+ Program operation
+!alias- Program operation
 !index Program operation
 !html_name stool_operation
 
@@ -202,7 +202,7 @@ When STool is executed the following sequence takes place:
 !end_node
 
 !begin_node The configuration file
-!alias+ Configuration file
+!alias- Configuration file
 !index Configuration file
 !html_name stool_config
 
@@ -469,7 +469,7 @@ View an (!link [Overview of all hypertexts] [Root]) now!
 !end_node
 
 !begin_node The Translation table
-!alias+ Translation table
+!alias- Translation table
 !index Translation table
 !html_name stool_translation
 
@@ -511,7 +511,7 @@ Nachschlagewerke/Unterhaltung    ==>  Reference-works/Entertainment
 !end_node # Configuration file
 
 !begin_node The catalogue file
-!alias+ Catalog file
+!alias- Catalog file
 !index Catalog file
 !html_name stool_catalog
 
@@ -565,7 +565,7 @@ indented, so one can also write additional commands into this text.
 !end_node # The catalogue file
 
 !begin_node The predefined themes
-!alias+ Predefined themes 
+!alias- Predefined themes 
 !index Predefined themes 
 !html_name stool_themes
 
@@ -668,7 +668,7 @@ searched.
 !end_node # Environmental variables
 
 !begin_node Navigation in the created hypertext
-!alias+ Navigation
+!alias- Navigation
 !index Navigation
 !html_name stool_nav
 

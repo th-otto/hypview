@@ -35,18 +35,18 @@ Kommandos spielt keine Rolle, jede Schreibweise ist erlaubt.
 # -----------------------------------------------------------------------------
 
 !begin_node AmigaGuide - Kompatible
-!alias+ @(c)
-!alias+ @dnode
-!alias+ @font
-!alias+ @height
-!alias+ @master
-!alias+ @wordwrap
-!alias+ @macro
-!alias+ @onclose
-!alias+ @onopen
-!alias+ @smartwrap
-!alias+ @embed
-!alias+ @proportional
+!alias- @(c)
+!alias- @dnode
+!alias- @font
+!alias- @height
+!alias- @master
+!alias- @wordwrap
+!alias- @macro
+!alias- @onclose
+!alias- @onopen
+!alias- @smartwrap
+!alias- @embed
+!alias- @proportional
 !html_name amguide_hcp
 
 Dieses Kommando wurde lediglich fÅr die KompatibilitÑt zum AmigaGuide
@@ -114,12 +114,12 @@ dezimale Zahlkonstante oder einen Labelnamen (siehe (!link [@label] [Kommandos @
 # -----------------------------------------------------------------------------
 
 !begin_node Kommandos @if/@else/@endif
-!alias+ Kommando @if
-!alias+ Kommando @else
-!alias+ Kommando @endif
-!alias+ @if
-!alias+ @else
-!alias+ @endif
+!alias- Kommando @if
+!alias- Kommando @else
+!alias- Kommando @endif
+!alias- @if
+!alias- @else
+!alias- @endif
 !index if
 !index else
 !index endif
@@ -200,7 +200,7 @@ andersherum.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @subject
-!alias+ @subject
+!alias- @subject
 !index subject
 !html_name command_subject_hcp
 
@@ -231,10 +231,10 @@ Einordnungshilfe fÅr die Erzeugung des Hypertext-Baumes.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommandos @tree/@endtree
-!alias+ Kommando @tree
-!alias+ Kommando @endtree
-!alias+ @tree
-!alias+ @endtree
+!alias- Kommando @tree
+!alias- Kommando @endtree
+!alias- @tree
+!alias- @endtree
 !index tree
 !index endtree
 !raw [stg] @xref "Kommando @include"
@@ -343,7 +343,7 @@ werden kînnen, lesen wir hier das Header-file ein.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @define
-!alias+ @define
+!alias- @define
 !index define
 !html_name command_define_hcp
 
@@ -398,7 +398,7 @@ Aktuell ist lediglich die Variable __DATE__ vordefiniert.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @help
-!alias+ @help
+!alias- @help
 !index help
 !raw [stg] @xref "st-guide.hyp/Extra -> Hilfe" "...im ST-Guide"
 !html_name command_help_hcp
@@ -428,7 +428,7 @@ wird bei Auswahl des Menuepunktes Hilfe oder bei BetÑtigung der Taste
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @tabsize
-!alias+ @tabsize
+!alias- @tabsize
 !index tabsize
 !raw [stg] @xref "Option t"
 !html_name command_tabsize_hcp
@@ -446,7 +446,7 @@ mit einer einheitlichen Tabulatorweite zu verfassen. <wert> kann zwischen
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @$VER:
-!alias+ @$VER:
+!alias- @$VER:
 !index $VER:
 !html_name command_ver_hcp
 
@@ -468,7 +468,7 @@ Aufbau nach Mîglichkeit zu Åbernehmen.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @author
-!alias+ @author
+!alias- @author
 !index author
 !html_name command_author_hcp
 
@@ -482,7 +482,7 @@ erscheint dann in der Info-Box des St-Guide.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @hostname
-!alias+ @hostname
+!alias- @hostname
 !index hostname
 !raw [stg] @xref "@{ rx }"
 !raw [stg] @xref "@{ rxs }"
@@ -520,7 +520,7 @@ vornehmen kann, wÑhrend er die Dokumentation vor Augen hat.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @default
-!alias+ @default
+!alias- @default
 !index default
 !raw [stg] @xref "st-guide.hyp/AV-Protokoll" "AV-Protokoll"
 !html_name command_default_hcp
@@ -557,7 +557,7 @@ die erste Seite eines Textes) darzustellen.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @options
-!alias+ @options
+!alias- @options
 !index options
 !raw [stg] @xref "Optionen-öbersicht"
 !html_name command_options_hcp
@@ -582,7 +582,7 @@ Auffinden von @options bereits fest.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @keywords
-!alias+ @keywords
+!alias- @keywords
 !index keywords
 !html_name command_keywords_hcp
 
@@ -609,7 +609,7 @@ verwendet wurde (sofern die zugehîrige REF-Datei auch benutzt wird).
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @pnode
-!alias+ @pnode
+!alias- @pnode
 !index pnode
 !raw [stg] @xref "Kommando @node"
 !html_name command_pnode_hcp
@@ -647,7 +647,7 @@ Hier wÅrde '-X' erklÑrt werden.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @box
-!alias+ @box
+!alias- @box
 !index box
 !index Rechtecke
 !raw [stg] @xref "Kommando @rbox"
@@ -706,7 +706,7 @@ fÅhrt.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @rbox
-!alias+ @rbox
+!alias- @rbox
 !index rbox
 !raw [stg] @xref "Kommando @box"
 !raw [stg] @xref "Kommando @line"
@@ -757,7 +757,7 @@ Diese Muster lassen sich fÅr die Kommandos @box und @rbox verwenden.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @line
-!alias+ @line
+!alias- @line
 !index line
 !raw [stg] @xref "Kommando @box"
 !raw [stg] @xref "Kommando @rbox"
@@ -838,7 +838,7 @@ Dabei ist:
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @autorefon
-!alias+ @autorefon
+!alias- @autorefon
 !index autorefon
 !raw [stg] @xref "Kommando @autorefoff"
 !raw [stg] @xref "ignore"
@@ -858,7 +858,7 @@ Referenzen wieder einzuschalten.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @autorefoff
-!alias+ @autorefoff
+!alias- @autorefoff
 !index autorefoff
 !raw [stg] @xref "Kommando @autorefon"
 !raw [stg] @xref "ignore"
@@ -884,7 +884,7 @@ wurde.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @indexon
-!alias+ @indexon
+!alias- @indexon
 !index indexon
 !raw [stg] @xref "Kommando @indexoff"
 !raw [stg] @xref "Kommando @index"
@@ -906,7 +906,7 @@ d.h. fÅr zwei @indexoff werden auch zwei @indexon benîtigt, damit die
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @indexoff
-!alias+ @indexoff
+!alias- @indexoff
 !index indexoff
 !raw [stg] @xref "Kommando @indexon"
 !raw [stg] @xref "Kommando @index"
@@ -925,7 +925,7 @@ Kommando folgenden Zeile).
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @index
-!alias+ @index
+!alias- @index
 !index index
 !raw [stg] @xref "Kommando @symbol"
 !raw [stg] @xref "Option i"
@@ -972,7 +972,7 @@ erscheint er dann ebenfalls mehrfach hintereinander.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @noref
-!alias+ @noref
+!alias- @noref
 !index noref
 !raw [stg] @xref "Kommando @autorefon"
 !raw [stg] @xref "Kommando @autorefoff"
@@ -1010,7 +1010,7 @@ unterbunden wurde.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @extern
-!alias+ @extern
+!alias- @extern
 !index extern
 !raw [stg] @xref "Kommando @uses"
 !raw [stg] @xref "Kommando @alias"
@@ -1058,10 +1058,10 @@ Schreiberleichterung.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommandos @label/@alabel
-!alias+ Kommando @label
-!alias+ Kommando @alabel
-!alias+ @label
-!alias+ @alabel
+!alias- Kommando @label
+!alias- Kommando @alabel
+!alias- @label
+!alias- @alabel
 !index label
 !index alabel
 !raw [stg] @xref "Kommando @symbol"
@@ -1111,7 +1111,7 @@ verwendet werden.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @uses
-!alias+ @uses
+!alias- @uses
 !index uses
 !raw [stg] @xref "Option u"
 !raw [stg] @xref "Kommando @extern"
@@ -1146,7 +1146,7 @@ werden.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @symbol
-!alias+ @symbol
+!alias- @symbol
 !raw [stg] @xref "Kommando @symbol"
 !raw [stg] @xref "Kommando @alias"
 !raw [stg] @xref "Kommando @alabel"
@@ -1186,7 +1186,7 @@ werden.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @alias
-!alias+ @alias
+!alias- @alias
 !index alias
 !raw [stg] @xref "Kommando @symbol"
 !html_name command_alias_hcp
@@ -1224,7 +1224,7 @@ dann hat @alias keine Wirkung.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @xref
-!alias+ @xref
+!alias- @xref
 !index xref
 !html_name command_xref_hcp
 
@@ -1247,7 +1247,7 @@ dort aus bequem ausgewÑhlt werden kînnen.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @database
-!alias+ @database
+!alias- @database
 !index database
 !html_name command_database_hcp
 
@@ -1268,8 +1268,8 @@ Beim Recompilieren eines Hypertextes wird der database-Name wiederhergestellt.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommandos @remark & ##
-!alias+ Kommando @remark
-!alias+ @remark
+!alias- Kommando @remark
+!alias- @remark
 !alias ##
 !index remark
 !html_name command_remark_hcp
@@ -1284,7 +1284,7 @@ Hypertext Åbernommen wird.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @width
-!alias+ @width
+!alias- @width
 !index width
 !raw [stg] @xref "Option s"
 !html_name command_width_hcp
@@ -1314,7 +1314,7 @@ Textende stehen.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @include
-!alias+ @include
+!alias- @include
 !index include
 !raw [stg] @xref "Kommandos @tree/@endtree"
 !raw [stg] @xref "@{ link }"
@@ -1374,7 +1374,7 @@ verwendet werden kînnen.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @prev
-!alias+ @prev
+!alias- @prev
 !index prev
 !raw [stg] @xref "Kommando @next"
 !raw [stg] @xref "Kommando @toc"
@@ -1401,7 +1401,7 @@ Kommando angegeben wird.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @next
-!alias+ @next
+!alias- @next
 !index next
 !raw [stg] @xref "Kommando @prev"
 !raw [stg] @xref "Kommando @toc"
@@ -1428,7 +1428,7 @@ Nachfolger, was bei der letzten Seite immer der Fall ist, wenn dort kein
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @toc
-!alias+ @toc
+!alias- @toc
 !index toc
 !raw [stg] @xref "Kommando @next"
 !raw [stg] @xref "Kommando @prev"
@@ -1456,7 +1456,7 @@ Inhaltsverzeichnisse zu erzeugen und zu verwalten.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @{...}
-!alias+ @{...}
+!alias- @{...}
 !index link
 !index alink
 !index system
@@ -1621,7 +1621,7 @@ mit bereits vergebenen Variablennamen zu vermeiden.
 # -----------------------------------------------------------------------------
 
 !begin_node @{ alink }
-!alias+ @alink
+!alias- @alink
 !index alink
 !raw [stg] @xref "@{ link }"
 !html_name command_alink_hcp
@@ -1637,7 +1637,7 @@ nur mit einem Fenster arbeitet, ist 'alink' identisch zu 'link'.
 # -----------------------------------------------------------------------------
 
 !begin_node @{ ignore }
-!alias+ @ignore
+!alias- @ignore
 !index ignore
 !raw [stg] @xref "Kommando @autorefoff"
 !raw [stg] @xref "Kommando @autorefon"
@@ -1655,7 +1655,7 @@ automatisch zu Referenzen gewandelt.
 # -----------------------------------------------------------------------------
 
 !begin_node @{ link }
-!alias+ @link
+!alias- @link
 !index link
 !raw [stg] @xref "Kommandos @label/@alabel"
 !raw [stg] @xref "Kommando @symbol"
@@ -1735,7 +1735,7 @@ unter Externe Querverweise).
 !end_node
 
 !begin_node Textattribute setzen
-!alias+ <Attribute>
+!alias- <Attribute>
 !html_name command_attr_hcp
 
 Syntax: @{<Attr>[<Attr>...]}
@@ -1800,7 +1800,7 @@ dazu sein, diese Texte wie einige BASIC-Programme aussehen zu lassen...
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @image
-!alias+ @image
+!alias- @image
 !index image
 !index Bilder
 !raw [stg] @xref "Kommando @limage"
@@ -1870,7 +1870,7 @@ Beispiel: (!nl)
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @limage
-!alias+ @limage
+!alias- @limage
 !index limage
 !index Bilder
 !raw [stg] @xref "Kommando @image"
@@ -1896,7 +1896,7 @@ Eventuell werden so eingebundene Bilder mal als Verweise dienen kînnen.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @node
-!alias+ @node
+!alias- @node
 !index node
 !raw [stg] @xref "Kommando @endnode"
 !raw [stg] @xref "Kommando @pnode"
@@ -1922,7 +1922,7 @@ wird der Name der Seite dort angezeigt.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @endnode
-!alias+ @endnode
+!alias- @endnode
 !index endnode
 !raw [stg] @xref "Kommando @node"
 !html_name command_endnode_hcp
@@ -1943,7 +1943,7 @@ Mit diesem Kommando wird das Ende einer Seite festgelegt.
 # -----------------------------------------------------------------------------
 
 !begin_node Kommando @title
-!alias+ @title
+!alias- @title
 !index title
 !raw [stg] @xref "Kommando @node"
 !html_name command_title_hcp

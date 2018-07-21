@@ -34,7 +34,7 @@
 
 !begin_node Option r: Reconstruct
 !raw [stg] @xref "Option v: ASCII Output"
-!alias+ Option r
+!alias- Option r
 !index -r
 !html_name option_r_hcp
 
@@ -67,7 +67,7 @@ the screen.
 !end_node
 
 !begin_node Option l: Contents of a hypertext
-!alias+ Option l
+!alias- Option l
 !index -l[F]
 !html_name option_l_hcp
 
@@ -108,7 +108,7 @@ and <F> will be ignored.
 !end_node
 
 !begin_node Option v: ASCII Output
-!alias+ Option v
+!alias- Option v
 !raw [stg] @xref "Option r: Reconstruct"
 !index -v
 !html_name option_v_hcp
@@ -145,7 +145,7 @@ Unlike (!link [-r] [Option r]), all the ST-Guide commands will be excluded.
 !end_node
 
 !begin_node Option a: Auto-referencer
-!alias+ Option a
+!alias- Option a
 !index +-a
 !index AutoReferenzer
 !raw [stg] @xref "Command @autorefon"
@@ -171,7 +171,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option b: Output buffer size for pages
-!alias+ Option b
+!alias- Option b
 !index -bSIZ
 !index Page size
 !alias Buffer size
@@ -211,7 +211,7 @@ Setable with:   HCP_OPT, Command line
 !end_node
 
 !begin_node Option c: Compression
-!alias+ Option c
+!alias- Option c
 !index +-c
 !index Compression
 !raw [stg] @xref "Option m: Replace images by frames"
@@ -231,7 +231,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option d: Minimum distance between cross-references
-!alias+ Option d
+!alias- Option d
 !index -dN
 !html_name option_d_hcp
 
@@ -261,7 +261,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option e: Error file
-!alias+ Option e
+!alias- Option e
 !index -eERRFILE
 !index Error file
 !raw [stg] @xref "Option q"
@@ -291,7 +291,7 @@ Setable with:   HCP_OPT, Command line
 !end_node
 
 !begin_node Option f: Aliases in the index page
-!alias+ Option f
+!alias- Option f
 !index +-f
 !raw [stg] @xref "Command @alias"
 !raw [stg] @xref "Command @index"
@@ -308,7 +308,7 @@ Setable with:  HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option g: Alabels in the index page
-!alias+ Option g
+!alias- Option g
 !index +-g
 !raw [stg] @xref "Commands @label/@alabel"
 !raw [stg] @xref "Command @index"
@@ -325,7 +325,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option i: Create index automatically
-!alias+ Option i
+!alias- Option i
 !index +-i
 !raw [stg] @xref "Command @width"
 !raw [stg] @xref "Option j"
@@ -354,7 +354,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option j: Column widths for index
-!alias+ Option j
+!alias- Option j
 !index -jN
 !raw [stg] @xref "Option i: Create index automatically"
 !raw [stg] @xref "Command @index"
@@ -374,7 +374,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option k: Compatibility flags
-!alias+ Option k
+!alias- Option k
 !index -kVAL
 !html_name option_k_hcp
 
@@ -402,7 +402,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option m: Replace images by frames
-!alias+ Option m
+!alias- Option m
 !index +-m
 !raw [stg] @xref "Command @image"
 !raw [stg] @xref "Command @limage"
@@ -424,7 +424,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option n: Nodes in the index
-!alias+ Option n
+!alias- Option n
 !index +-n
 !raw [stg] @xref "Command @indexon"
 !raw [stg] @xref "Command @indexoff"
@@ -448,7 +448,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option o: Output file
-!alias+ Option o
+!alias- Option o
 !index -oOUTFILE
 !index Output file
 !html_name option_o_hcp
@@ -496,7 +496,7 @@ Setable with:   HCP_OPT, Command line
 !end_node
 
 !begin_node Option p: Type of reconstructed images
-!alias+ Option p
+!alias- Option p
 !index -pVAL
 !raw [stg] @xref "Command @image"
 !raw [stg] @xref "Command @limage"
@@ -520,7 +520,7 @@ Setable with:   HCP_OPT, Command line
 !end_node
 
 !begin_node Option q: Switch off output
-!alias+ Option q
+!alias- Option q
 !index +-q[qq]
 !html_name option_q_hcp
 
@@ -546,7 +546,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option s: Line-breaks
-!alias+ Option s
+!alias- Option s
 !index +-s
 !html_name option_s_hcp
 
@@ -572,7 +572,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option t: Tab size
-!alias+ Option t
+!alias- Option t
 !index -tN
 !raw [stg] @xref "Command @tabsize"
 !html_name option_t_hcp
@@ -597,7 +597,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option u: References to other hypertexts
-!alias+ Option u
+!alias- Option u
 !index -uHYPFILE
 !raw [stg] @xref "Command @uses"
 !raw [stg] @xref "Command @extern"
@@ -615,7 +615,7 @@ Setable with:   HCP_OPT, Command line
 !end_node
 
 !begin_node Option w: Wait for keypress
-!alias+ Option w
+!alias- Option w
 !index -wVAL
 !html_name option_w_hcp
 
@@ -644,7 +644,7 @@ Setable with:   HCP_OPT, Command line
 !end_node
 
 !begin_node Option x: Title in place of node name in the index
-!alias+ Option x
+!alias- Option x
 !index +-x
 !raw [stg] @xref "Option n: Nodes in the index"
 !raw [stg] @xref "Command @indexon"
@@ -661,7 +661,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option y: 1. Char insensitive
-!alias+ Option y
+!alias- Option y
 !index +-y
 !html_name option_y_hcp
 
@@ -680,7 +680,7 @@ Setable with:   HCP_OPT, Command line, @options
 !end_node
 
 !begin_node Option z: REFerence files
-!alias+ Option z
+!alias- Option z
 !index +-z[z]
 !raw [stg] @xref "reflink.hyp/Main" "RefLink"
 !raw [stg] @xref "st-guide.hyp/Extra -> Find" "Find in ST-Guide"

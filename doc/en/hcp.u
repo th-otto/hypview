@@ -69,8 +69,8 @@
 !raw [stg] @xref "reflink.hyp/Main" "Reflink Documentation"
 
 !begin_node Calling HCP
-!alias+ HCPCall
-!alias+ Hypertext compiler HCP
+!alias- HCPCall
+!alias- Hypertext compiler HCP
 !raw [stg] @xref "Options overview"
 !html_name usage_hcp
 
@@ -191,7 +191,7 @@ the found line will become the first visible in the window.
 !end_node
 
 !begin_node Tasks and properties of the compiler
-!alias+ Compiler features
+!alias- Compiler features
 !html_name tasks_hcp
 
 The  hypertext  compiler  HCP  translates  a  hypertext  file  into   a
