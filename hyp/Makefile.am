@@ -115,6 +115,13 @@ hcp_SOURCES = \
 	outasc.h outstg.h outdump.h outhtml.h htmljs.h \
 	$(UTIL_SRC)
 
+htmljs.h: $(top_srcdir)/www/_hypview.js
+	$(AM_V_GEN)( \
+	  echo 'static char const html_javascript_code[] ='; \
+	  sed -e 's@/\*.*\*/@@' -e '/^[ ]*$$/d' -e 's/"/\\"/g' -e 's/^/\t"/' -e 's/$$/\\n"/' $<; \
+	  echo ';' \
+	) > $@
+
 EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
 MOFILES := $(shell $(EVAL_MOFILES))
 

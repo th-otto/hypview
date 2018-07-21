@@ -985,4 +985,5 @@ AC_OUTPUT([
 	doc/Makefile
 	doc/de/Makefile
 	doc/en/Makefile
+	www/Makefile
 ])

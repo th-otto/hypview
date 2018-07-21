@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = rcintl potools pic icons po hyp gtk win32 tos tools doc
+SUBDIRS = rcintl potools pic icons po hyp gtk win32 tos tools doc www
 
 EXTRA_DIST = \
 	include defaults skins \

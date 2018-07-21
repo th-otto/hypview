@@ -648,6 +648,10 @@ static void addfile(const char *path)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#if __GNUC_PREREQ(8, 1)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+
 static gboolean read_linguas(const char *filename)
 {
 	FILE *fp;
