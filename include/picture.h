@@ -164,6 +164,38 @@ typedef struct {
 } PICTURE;
 
 
+#if defined(__PUREC__)
+static unsigned long ulmul(unsigned short x, unsigned short y) 0xc0c1;
+static long lmul(short x, short y) 0xc1c1;
+#elif defined(__GNUC__) && defined(__mc68000__)
+static __inline unsigned long ulmul(unsigned short x, unsigned short y)
+{
+	unsigned long z;
+
+	__asm__ __volatile(
+		" mulu.w %1,%0"
+	: "=d"(z)
+	: "d"(y), "0"(x)
+	: "cc");
+	return z;
+}
+static __inline long lmul(short x, short y)
+{
+	long z;
+
+	__asm__ __volatile(
+		" muls.w %1,%0"
+	: "=d"(z)
+	: "d"(y), "0"(x)
+	: "cc");
+	return z;
+}
+#else
+#define ulmul(x, y) ((unsigned long)(x) * (unsigned long)(y))
+#define lmul(x, y) ((long)(x) * (long)(y))
+#endif
+
+
 extern PALETTE const std256_palette;
 
 /*** GEM IMG -------------------------------------------------------------- ***/

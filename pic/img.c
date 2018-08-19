@@ -29,20 +29,19 @@ typedef struct ximg_header {
 #define SIZEOF_XIMG_HEADER(planes) (4 + 2 + (1 << (planes)) * 3 * 2)
 
 
-#define Putbyte(c) *outptr++ = ((_UBYTE)(c))
 #define tobyte(pixels) (((pixels) + 7) >> 3)
 #define toword(pixels) ((((pixels) + 15) >> 4) << 1)
 
 #define put_long(l) \
-	*buf++ = (_UBYTE)((l) >> 24); \
-	*buf++ = (_UBYTE)((l) >> 16); \
-	*buf++ = (_UBYTE)((l) >>  8); \
-	*buf++ = (_UBYTE)((l)      )
+	*outptr++ = (_UBYTE)((l) >> 24); \
+	*outptr++ = (_UBYTE)((l) >> 16); \
+	*outptr++ = (_UBYTE)((l) >>  8); \
+	*outptr++ = (_UBYTE)((l)      )
 #define put_word(w) \
-	*buf++ = (_UBYTE)((w) >>  8); \
-	*buf++ = (_UBYTE)((w)      )
+	*outptr++ = (_UBYTE)((w) >>  8); \
+	*outptr++ = (_UBYTE)((w)      )
 #define put_byte(b) \
-	*buf++ = (_UBYTE)(b)
+	*outptr++ = (_UBYTE)(b)
 #define get_long() \
 	(((_ULONG)(buf[0]) << 24) | \
 	 ((_ULONG)(buf[1]) << 16) | \
@@ -516,13 +515,30 @@ LOCAL _WORD do_compress(const _UBYTE *start, const _UBYTE *end)
 
 LOCAL _UBYTE *put_uncompressed(_UBYTE *outptr, const _UBYTE *start, const _UBYTE *end)
 {
-	if (start != end)
+	size_t n = end - start;
+
+	if (n != 0)
 	{
-		Putbyte(0x80);
-		Putbyte(end - start);
+		while (n > 127)
+		{
+			_UBYTE c = 127;
+
+			put_byte(0x80);
+			c = 127;
+			put_byte(c);
+			while (c)
+			{
+				put_byte(*start);
+				start++;
+				c--;
+			}
+			n -= 127;
+		}
+		put_byte(0x80);
+		put_byte(n);
 		while (start != end)
 		{
-			Putbyte(*start);
+			put_byte(*start);
 			start++;
 		}
 	}
@@ -539,16 +555,35 @@ LOCAL _UBYTE *put_compressed(_UBYTE *outptr, const _UBYTE *start, _WORD n)
 	c2 = *start;
 	if (c1 == 0 && c2 == 0)
 	{
-		Putbyte(n);
+		while (n > 127)
+		{
+			put_byte(127);
+			n -= 127;
+		}
+		put_byte(n);
 	} else if (c1 == 0xff && c2 == 0xff)
 	{
-		Putbyte(n + 0x80);
+		while (n > 127)
+		{
+			put_byte(0xff);
+			n -= 127;
+		}
+		put_byte(n + 0x80);
 	} else
 	{
-		Putbyte(0x00);
-		Putbyte(n >> 1);
-		Putbyte(c1);
-		Putbyte(c2);
+		n >>= 1;
+		while (n > 127)
+		{
+			put_byte(0x00);
+			put_byte(127);
+			put_byte(c1);
+			put_byte(c2);
+			n -= 127;
+		}
+		put_byte(0x00);
+		put_byte(n);
+		put_byte(c1);
+		put_byte(c2);
 	}
 	return outptr;
 }
@@ -653,17 +688,17 @@ LOCAL _UBYTE *_packimg(
 		linecount = cmp_lines(buf, rect_height, toword(rect_width) * num_planes, toword(rect_width) * num_planes);
 		if (linecount > 1)
 		{
-			Putbyte(0);
-			Putbyte(0);
-			Putbyte(0xff);
-			Putbyte(linecount);
+			put_byte(0);
+			put_byte(0);
+			put_byte(0xff);
+			put_byte(linecount);
 		}
 		for (i = 0; i < num_planes; i++)
 		{
 			outptr = do_1line(outptr, buf, tobyte(rect_width), num_planes);
 			buf += 2;
 		}
-		buf += toword(rect_width) * num_planes * linecount - (num_planes << 1);
+		buf += toword(rect_width) * ulmul(num_planes, linecount) - (num_planes << 1);
 		rect_height -= linecount;
 	}
 	return outptr;
@@ -687,7 +722,7 @@ _LONG img_header(_UBYTE **dest_p, PICTURE *pic)
 	_WORD height = pic->pi_height;
 	_WORD planes = pic->pi_planes;
 	_LONG size;
-	_UBYTE *buf;
+	_UBYTE *outptr;
 	_WORD headlen;
 
 	headlen = 0;
@@ -704,12 +739,12 @@ _LONG img_header(_UBYTE **dest_p, PICTURE *pic)
 	pic->pi_dataoffset = headlen;
 	size += headlen;
 	if (*dest_p == NULL)
-		buf = g_new(_UBYTE, size);
+		outptr = g_new(_UBYTE, size);
 	else
-		buf = *dest_p;
-	if (buf != NULL)
+		outptr = *dest_p;
+	if (outptr != NULL)
 	{
-		*dest_p = buf;
+		*dest_p = outptr;
 		put_word(1);			/* version */
 		headlen >>= 1;
 		put_word(headlen);
@@ -745,6 +780,6 @@ _LONG img_header(_UBYTE **dest_p, PICTURE *pic)
 	{
 		size = 0;
 	}
-	UNUSED(buf);
+	UNUSED(outptr);
 	return size;
 }
