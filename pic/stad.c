@@ -33,7 +33,7 @@ gboolean pic_type_stad(PICTURE *pic, const _UBYTE *buf, _LONG size)
 {
 	_ULONG magic;
 
-	if (size <= (_LONG)sizeof(STAD_HEADER))
+	if (size <= (_LONG)sizeof(STAD_HEADER) + 3)
 		return FALSE;
 	magic = get_long();
 	if (magic == STAD_MAGIC1)
@@ -67,8 +67,10 @@ gboolean stad_unpack(_UBYTE *dst, const _UBYTE *src, PICTURE *pic)
 	_WORD lines;
 	_WORD count;
 	_UBYTE c, c1;
+	const _UBYTE *srcend;
 
 	start = dst;
+	srcend = src + pic->pi_datasize;
 
 	kennbyte = *src++;
 	packbyte = *src++;
@@ -76,8 +78,10 @@ gboolean stad_unpack(_UBYTE *dst, const _UBYTE *src, PICTURE *pic)
 	if (pic->pi_compressed) /* vertical */
 	{
 		lines = 400;
-		for (;;)
+		while (picsize > 0)
 		{
+			if (src >= srcend)
+				return FALSE;
 			c = *src++;
 			if (c == kennbyte)
 			{
@@ -115,8 +119,10 @@ gboolean stad_unpack(_UBYTE *dst, const _UBYTE *src, PICTURE *pic)
 		}
 	} else
 	{
-		for (;;)
+		while (picsize > 0)
 		{
+			if (src >= srcend)
+				return FALSE;
 			c = *src++;
 			if (c == kennbyte)
 			{
