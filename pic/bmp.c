@@ -1247,14 +1247,12 @@ long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const
 					{
 						src -= k;
 						rp = dest;
-						mp = masksrc;
 						memset(rp, 0, dstrowsize);
 						for (l = 0; l < j; l++)
 						{
-							/* rp[l] = ~mp[l]; */
+							*rp++ = ~src[l];
 						}
 						dest += dstrowsize;
-						masksrc += maskrowsize;
 					}
 				}
 				break;
