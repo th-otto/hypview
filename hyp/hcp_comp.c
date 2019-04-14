@@ -8036,6 +8036,11 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 
 		vars->hyp->file = output_filename;
 		dir = hyp_path_get_dirname(output_filename);
+		if (empty(dir))
+		{
+			g_free(dir);
+			dir = g_strdup(".");
+		}
 		vars->tmpfile = g_build_filename(dir, "hyXXXXXX", NULL);
 		mktemp(vars->tmpfile);
 		g_free(dir);
@@ -8044,7 +8049,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 		{
 			if (vars->opts->verbose >= 0)
 			{
-				hyp_utf8_fprintf(stdout, _("compiling %s to %s (%s)\n"), filename, output_filename, vars->tmpfile);
+				hyp_utf8_fprintf(stdout, _("compiling %s to %s\n"), filename, output_filename);
 			}
 		}
 	}

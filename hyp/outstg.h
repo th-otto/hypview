@@ -142,12 +142,46 @@ static void stg_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const u
 	
 	dst = hyp_conv_charset(hyp->comp_charset, opts->output_charset, str, len, &converror);
 	p = dst;
-	while (*p)
+	if (opts->for_cgi || opts->recompile_format == HYP_FT_XML || opts->recompile_format == HYP_FT_HTML || opts->recompile_format == HYP_FT_HTML_XML)
 	{
-		if (*p == '@')
-			g_string_append_c(out, '@'); /* AmigaGuide uses \@ for quoted '@' */
-		g_string_append_c(out, *p);
-		p++;
+		while (*p)
+		{
+			switch (*p)
+			{
+			case '&':
+				g_string_append(out, "&amp;");
+				break;
+			case '<':
+				g_string_append(out, "&lt;");
+				break;
+			case '>':
+				g_string_append(out, "&gt;");
+				break;
+			case '\'':
+				g_string_append(out, "&apos;");
+				break;
+			case '"':
+				g_string_append(out, "&quot;");
+				break;
+			case '@':
+				g_string_append_c(out, '@');
+				g_string_append_c(out, '@');
+				break;
+			default:
+				g_string_append_c(out, *p);
+				break;
+			}
+			p++;
+		}
+	} else
+	{
+		while (*p)
+		{
+			if (*p == '@')
+				g_string_append_c(out, '@'); /* AmigaGuide uses \@ for quoted '@' */
+			g_string_append_c(out, *p);
+			p++;
+		}
 	}
 	g_free(dst);
 }
