@@ -499,11 +499,11 @@ const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 	last = p;
 	if ((*(const unsigned char *) p & 0xe0) == 0xc0)	/* 110xxxxx */
 	{
-		if (G_UNLIKELY((*(const unsigned char *) p & 0x1e) == 0))
+		if ((*(const unsigned char *) p & 0x1e) == 0)
 			goto error;
 		*ch = (*(const unsigned char *) p & 0x1f) << 6;
 		p++;
-		if (G_UNLIKELY((*(const unsigned char *) p & 0xc0) != 0x80))	/* 10xxxxxx */
+		if ((*(const unsigned char *) p & 0xc0) != 0x80)	/* 10xxxxxx */
 			goto error;
 		*ch |= (*(const unsigned char *) p) & 0x3f;
 	} else
@@ -533,10 +533,10 @@ const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 		p++;
 		CONTINUATION_CHAR;
 
-		if (G_UNLIKELY(val < min))
+		if (val < min)
 			goto error;
 
-		if (G_UNLIKELY(!UNICODE_VALID(val)))
+		if (!UNICODE_VALID(val))
 			goto error;
 		*ch = val;
 	}
@@ -917,10 +917,10 @@ const char *g_utf8_skipchar(const char *p)
 	last = p;
 	if ((*(const unsigned char *) p & 0xe0) == 0xc0)	/* 110xxxxx */
 	{
-		if (G_UNLIKELY((*(const unsigned char *) p & 0x1e) == 0))
+		if ((*(const unsigned char *) p & 0x1e) == 0)
 			goto error;
 		p++;
-		if (G_UNLIKELY((*(const unsigned char *) p & 0xc0) != 0x80))	/* 10xxxxxx */
+		if ((*(const unsigned char *) p & 0xc0) != 0x80)	/* 10xxxxxx */
 			goto error;
 	} else
 	{
@@ -949,10 +949,10 @@ const char *g_utf8_skipchar(const char *p)
 		p++;
 		CONTINUATION_CHAR;
 
-		if (G_UNLIKELY(val < min))
+		if (val < min)
 			goto error;
 
-		if (G_UNLIKELY(!UNICODE_VALID(val)))
+		if (!UNICODE_VALID(val))
 			goto error;
 	}
 
@@ -975,11 +975,11 @@ h_unichar_t hyp_utf8_get_char(const char *_p)
 	}
 	if ((*p & 0xe0) == 0xc0)	/* 110xxxxx */
 	{
-		if (G_UNLIKELY((*p & 0x1e) == 0))
+		if ((*p & 0x1e) == 0)
 			goto error;
 		ch = (*p & 0x1f) << 6;
 		p++;
-		if (G_UNLIKELY((*p & 0xc0) != 0x80))	/* 10xxxxxx */
+		if ((*p & 0xc0) != 0x80)	/* 10xxxxxx */
 			goto error;
 		ch |= (*p) & 0x3f;
 	} else
@@ -1009,10 +1009,10 @@ h_unichar_t hyp_utf8_get_char(const char *_p)
 		p++;
 		CONTINUATION_CHAR;
 
-		if (G_UNLIKELY(val < min))
+		if (val < min)
 			goto error;
 
-		if (G_UNLIKELY(!UNICODE_VALID(val)))
+		if (!UNICODE_VALID(val))
 			goto error;
 		ch = val;
 	}
@@ -1175,7 +1175,7 @@ static char *hyp_conv_to_atari(const char *src, size_t len, gboolean *converror)
 		dstlen++;
 	}
 	dst = g_new(char, dstlen);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	dstlen = 0;
 	p = src;
@@ -1209,7 +1209,7 @@ static char *hyp_conv_to_cp850(const char *src, size_t len, gboolean *converror)
 		dstlen++;
 	}
 	dst = g_new(char, dstlen);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	dstlen = 0;
 	p = src;
@@ -1243,7 +1243,7 @@ static char *hyp_conv_to_macroman(const char *src, size_t len, gboolean *converr
 		dstlen++;
 	}
 	dst = g_new(char, dstlen);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	dstlen = 0;
 	p = src;
@@ -1277,7 +1277,7 @@ static char *hyp_conv_to_cp1252(const char *src, size_t len, gboolean *converror
 		dstlen++;
 	}
 	dst = g_new(char, dstlen);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	dstlen = 0;
 	p = src;
@@ -1311,7 +1311,7 @@ static char *hyp_conv_to_cp1250(const char *src, size_t len, gboolean *converror
 		dstlen++;
 	}
 	dst = g_new(char, dstlen);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	dstlen = 0;
 	p = src;
@@ -1345,7 +1345,7 @@ static char *hyp_conv_to_latin1(const char *src, size_t len, gboolean *converror
 		dstlen++;
 	}
 	dst = g_new(char, dstlen);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	dstlen = 0;
 	p = src;
@@ -1653,7 +1653,7 @@ wchar_t *hyp_utf8_to_wchar(const char *str, size_t len, size_t *lenp)
 		len = strlen(str);
 	wlen = g_utf8_str_len(str, len);
 	dst = g_new(wchar_t, wlen + 1);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	end = str + len;
 	p = dst;
@@ -1855,7 +1855,7 @@ int hyp_utf8_printf(const char *format, ...)
 #ifndef HAVE_GLIB
 
 #define VALIDATE_BYTE(mask, expect)                      \
-    if (G_UNLIKELY((*p & (mask)) != (expect))) \
+    if ((*p & (mask)) != (expect)) \
       goto error
 
 /* see IETF RFC 3629 Section 4 */
@@ -1875,7 +1875,7 @@ static const unsigned char *fast_validate(const unsigned char *str)
 			last = p;
 			if (*p < 0xe0)	/* 110xxxxx */
 			{
-				if (G_UNLIKELY(*p < 0xc2))
+				if (*p < 0xc2)
 					goto error;
 			} else
 			{
@@ -1899,7 +1899,7 @@ static const unsigned char *fast_validate(const unsigned char *str)
 					{
 					case 0:
 						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
-						if (G_UNLIKELY((*p & 0x30) == 0))
+						if ((*p & 0x30) == 0)
 							goto error;
 						break;
 					case 4:
@@ -1945,16 +1945,16 @@ static const unsigned char *fast_validate_len(const unsigned char *str, ssize_t 
 			last = p;
 			if (*p < 0xe0)	/* 110xxxxx */
 			{
-				if (G_UNLIKELY(max_len - (p - str) < 2))
+				if (max_len - (p - str) < 2)
 					goto error;
 
-				if (G_UNLIKELY(*p < 0xc2))
+				if (*p < 0xc2)
 					goto error;
 			} else
 			{
 				if (*p < 0xf0)	/* 1110xxxx */
 				{
-					if (G_UNLIKELY(max_len - (p - str) < 3))
+					if (max_len - (p - str) < 3)
 						goto error;
 
 					switch (*p++ & 0x0f)
@@ -1971,14 +1971,14 @@ static const unsigned char *fast_validate_len(const unsigned char *str, ssize_t 
 					}
 				} else if (*p < 0xf5)	/* 11110xxx excluding out-of-range */
 				{
-					if (G_UNLIKELY(max_len - (p - str) < 4))
+					if (max_len - (p - str) < 4)
 						goto error;
 
 					switch (*p++ & 0x07)
 					{
 					case 0:
 						VALIDATE_BYTE(0xc0, 0x80);	/* 10xxxxxx */
-						if (G_UNLIKELY((*p & 0x30) == 0))
+						if ((*p & 0x30) == 0)
 							goto error;
 						break;
 					case 4:

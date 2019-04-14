@@ -31,16 +31,6 @@
    in gettextP.h.
  */
 
-/* Tell the compiler when a conditional or integer expression is
-   almost always true or almost always false.  */
-#ifndef HAVE_BUILTIN_EXPECT
-# define likely(expr) (expr)
-# define unlikely(expr) (expr)
-#else
-# define likely(expr) __builtin_expect(!!(expr), 1)
-# define unlikely(expr) __builtin_expect(!!(expr), 0)
-#endif
-
 /* Separator in PATH like lists of pathnames.  */
 #if ((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__) || defined __EMX__ || defined __DJGPP__
   /* Win32, OS/2, DOS */

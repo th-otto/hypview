@@ -461,16 +461,16 @@ static gboolean write_ext_header(FILE *outfile, hyp_ext_header type, unsigned sh
 	else
 		short_to_chars(len, info + 2);
 	ret = fwrite(info, 1, sizeof(info), outfile);
-	if (G_UNLIKELY(ret != sizeof(info)))
+	if (ret != sizeof(info))
 		return FALSE;
 	if (len != 0)
 	{
 		ret = fwrite(data, 1, len, outfile);
-		if (G_UNLIKELY(ret != len))
+		if (ret != len)
 			return FALSE;
 		if (len & 1)
 		{
-			if (G_UNLIKELY(fputc('\0', outfile) != 0))
+			if (fputc('\0', outfile) != 0)
 				return FALSE;
 		}
 	}
@@ -489,10 +489,10 @@ static gboolean write_ext_header_string(HYP_DOCUMENT *hyp, FILE *outfile, hyp_ex
 	if (str == NULL)
 		return TRUE;
 	data = hyp_utf8_to_charset(hyp->comp_charset, str, STR0TERM, &converror);
-	if (G_UNLIKELY(data == NULL))
+	if (data == NULL)
 		return FALSE;
 	len = (unsigned short)strlen(data);
-	if (G_UNLIKELY(write_ext_header(outfile, type, len + 1, data) == FALSE))
+	if (write_ext_header(outfile, type, len + 1, data) == FALSE)
 	{
 		g_free(data);
 		return FALSE;
@@ -552,11 +552,11 @@ static gboolean write_index(HYP_DOCUMENT *hyp, FILE *outfile, gboolean update)
 		short_to_chars(entry->previous, rawent + 10);
 		short_to_chars(entry->toc_index, rawent + 12);
 		ret = fwrite(rawent, 1, SIZEOF_INDEX_ENTRY, outfile);
-		if (G_UNLIKELY(ret != SIZEOF_INDEX_ENTRY))
+		if (ret != SIZEOF_INDEX_ENTRY)
 			return FALSE;
 		size = entry->length - SIZEOF_INDEX_ENTRY;
 		ret = fwrite(entry->name, 1, size, outfile);
-		if (G_UNLIKELY(ret != size))
+		if (ret != size)
 			return FALSE;
 	}
 	
@@ -585,14 +585,14 @@ static gboolean write_header(HYP_DOCUMENT *hyp, FILE *outfile)
 	rawhead[10] = head.compiler_vers;
 	rawhead[11] = head.compiler_os;
 	ret = fwrite(rawhead, 1, SIZEOF_HYP_HEADER, outfile);
-	if (G_UNLIKELY(ret != SIZEOF_HYP_HEADER))
+	if (ret != SIZEOF_HYP_HEADER)
 		return FALSE;
 	
 	/*
 	 * write the index table out. Some of the data is
 	 * not yet known and will be updated later
 	 */
-	if (G_UNLIKELY(write_index(hyp, outfile, FALSE) == FALSE))
+	if (write_index(hyp, outfile, FALSE) == FALSE)
 		return FALSE;
 	
 	/*

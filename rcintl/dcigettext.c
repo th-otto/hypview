@@ -328,7 +328,7 @@ const char *DCIGETTEXT(const char *domainname, const char *msgid1, const char *m
 
 					/* Resource problems are not fatal, instead we return no
 					   translation.  */
-					if (unlikely(retval == (const char *) -1))
+					if (retval == (const char *) -1)
 						goto return_untranslated;
 
 					if (retval != NULL)
@@ -342,7 +342,7 @@ const char *DCIGETTEXT(const char *domainname, const char *msgid1, const char *m
 			/* Returning -1 means that some resource problem exists
 			   (likely memory) and that the strings could not be
 			   converted.  Return the original strings.  */
-			if (unlikely(retval == (const char *) -1))
+			if (retval == (const char *) -1)
 				break;
 
 			if (retval != NULL)
@@ -377,7 +377,7 @@ const char *DCIGETTEXT(const char *domainname, const char *msgid1, const char *m
 						/* Insert the entry in the search tree.  */
 						foundp = (struct known_translation_t **) tsearch(newp, &root, transcmp);
 
-						if (unlikely(foundp == NULL || *foundp != newp))
+						if (foundp == NULL || *foundp != newp)
 							/* The insert failed.  */
 							free(newp);
 					}

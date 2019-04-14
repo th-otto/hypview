@@ -409,7 +409,7 @@ static FILELIST *file_listadd(hcp_vars *vars, const char *name, hyp_filetype *ty
 		}
 	len = strlen(name);
 	f = (FILELIST *)g_malloc(sizeof(*f) + len);
-	if (G_UNLIKELY(f == NULL))
+	if (f == NULL)
 	{
 		oom(vars);
 		return NULL;
@@ -780,7 +780,7 @@ static gboolean push_file_stack(hcp_vars *vars, const char *filename, FILE *file
 	hyp_filetype type;
 	
 	inc = g_new(HCP_INCLUDE_FILE, 1);
-	if (G_UNLIKELY(inc == NULL))
+	if (inc == NULL)
 	{
 		oom(vars);
 		return FALSE;
@@ -854,7 +854,7 @@ static gboolean push_if_stack(hcp_vars *vars, gboolean skipping)
 	IF_STACK_ITEM *s;
 	
 	s = g_new(IF_STACK_ITEM, 1);
-	if (G_UNLIKELY(s == NULL))
+	if (s == NULL)
 	{
 		oom(vars);
 		return FALSE;
@@ -920,7 +920,7 @@ static char *readline(hcp_vars *vars, FILE *fp)
 		{
 			vars->linebuf_size += 1020;
 			vars->linebuf = g_renew(char, vars->linebuf, vars->linebuf_size + 1);
-			if (G_UNLIKELY(vars->linebuf == NULL))
+			if (vars->linebuf == NULL)
 			{
 				oom(vars);
 				return NULL;
@@ -932,7 +932,7 @@ static char *readline(hcp_vars *vars, FILE *fp)
 	{
 		vars->linebuf_size += 1020;
 		vars->linebuf = g_renew(char, vars->linebuf, vars->linebuf_size + 1);
-		if (G_UNLIKELY(vars->linebuf == NULL))
+		if (vars->linebuf == NULL)
 		{
 			oom(vars);
 			return NULL;
@@ -972,7 +972,7 @@ static LABEL *add_label(hcp_vars *vars, const char *name, labeltype type)
 	LABEL *lab;
 	size_t len;
 	
-	if (G_UNLIKELY(name == NULL))
+	if (name == NULL)
 		return NULL;
 	if (vars->p1_lab_counter >= vars->p1_lab_alloc)
 	{
@@ -988,7 +988,7 @@ static LABEL *add_label(hcp_vars *vars, const char *name, labeltype type)
 	}
 	len = strlen(name);
 	lab = (LABEL *)g_malloc0(sizeof(LABEL) + len + 1); /* +1 here for aligning the entries (entry already has 1 byte for terminating '\0' */
-	if (G_UNLIKELY(lab == NULL))
+	if (lab == NULL)
 	{
 		oom(vars);
 		return NULL;
@@ -1011,7 +1011,7 @@ static LABEL *add_alias(hcp_vars *vars, const char *name)
 	LABEL *lab;
 
 	lab = add_label(vars, name, l_alias);
-	if (G_UNLIKELY(lab == NULL))
+	if (lab == NULL)
 		return NULL;
 	lab->add_to_autoref = TRUE;
 	lab->add_to_ref = TRUE;
@@ -1056,7 +1056,7 @@ static LABEL *find_node_label(hcp_vars *vars, const char *name, hyp_nodenr node)
 static LABEL *add_index(hcp_vars *vars, const char *name)
 {
 	LABEL *lab = add_label(vars, name, l_index);
-	if (G_UNLIKELY(lab == NULL))
+	if (lab == NULL)
 		return lab;
 	lab->add_to_index = TRUE;
 	return lab;
@@ -1076,7 +1076,7 @@ static NODEITEM *add_node(hcp_vars *vars, const char *name)
 	}
 	
 	lab = add_label(vars, name, l_node);
-	if (G_UNLIKELY(lab == NULL))
+	if (lab == NULL)
 		return NULL;
 	if (vars->p1_node_counter >= vars->p1_node_alloc)
 	{
@@ -1093,7 +1093,7 @@ static NODEITEM *add_node(hcp_vars *vars, const char *name)
 		vars->p1_node_alloc = (hyp_nodenr)new_size;
 	}
 	node = g_new0(NODEITEM, 1);
-	if (G_UNLIKELY(node == NULL))
+	if (node == NULL)
 	{
 		oom(vars);
 		return NULL;
@@ -1120,7 +1120,7 @@ static INDEX_ENTRY *alloc_index(hcp_vars *vars, const char *name)
 
 	len = strlen(name);
 	entry = (INDEX_ENTRY *)g_malloc0(sizeof(INDEX_ENTRY) + len + 1); /* +1 here for aligning the entries (entry already has 1 byte for terminating '\0' */
-	if (G_UNLIKELY(entry == NULL))
+	if (entry == NULL)
 	{
 		oom(vars);
 		return NULL;
@@ -1847,7 +1847,7 @@ static gboolean add_define(hcp_vars *vars, const char *name, predef_type type, c
 	}
 	namelen = strlen(name) + 1;
 	d = (HCP_DEFINE *)g_malloc(sizeof(*d) + namelen + strlen(val) + 1);
-	if (G_UNLIKELY(d == NULL))
+	if (d == NULL)
 	{
 		oom(vars);
 		return FALSE;
@@ -1895,7 +1895,7 @@ static char *replace_define(hcp_vars *vars, HCP_DEFINE *d, char *line, char *end
 		size_t start = line - *linep;
 		
 		*linep = g_renew(char, *linep, strlen(*linep) + 1 + (vallen - namelen));
-		if (G_UNLIKELY(*linep == NULL))
+		if (*linep == NULL)
 		{
 			oom(vars);
 			return end;
@@ -1983,7 +1983,7 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 	if (count == 0)
 		return 0;
 	*pargv = g_new(char *, count + 1);
-	if (G_UNLIKELY(*pargv == NULL))
+	if (*pargv == NULL)
 	{
 		oom(vars);
 		return -1;
@@ -2022,7 +2022,7 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 				}
 			}
 			(*pargv)[i] = s = g_new(char, p - start + 1);
-			if (G_UNLIKELY(s == NULL))
+			if (s == NULL)
 			{
 				oom(vars);
 				break;
@@ -2093,7 +2093,7 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 			while (*p != '\0' && *p != eos && !g_ascii_isspace(*p))
 				p++;
 			(*pargv)[i] = g_strndup(start, p - start);
-			if (G_UNLIKELY((*pargv)[i] == NULL))
+			if ((*pargv)[i] == NULL)
 			{
 				oom(vars);
 				count = i;
@@ -2322,13 +2322,13 @@ static gboolean finish_page(hcp_vars *vars, hyp_nodenr num)
 	gboolean retval = TRUE;
 	
 	new_offset = prev_offset = vars->seek_offset;
-	if (G_LIKELY(!ferror(vars->outfile)))
+	if (!ferror(vars->outfile))
 	{
 		ASSERT(prev_offset == (unsigned long)ftell(vars->outfile));
 		
-		if (G_LIKELY(bytes != 0))
+		if (bytes != 0)
 		{
-			if (G_UNLIKELY(WriteEntryBytes(vars->hyp, num, vars->page_buf, &bytes, vars->outfile, vars->opts->compression) == FALSE))
+			if (WriteEntryBytes(vars->hyp, num, vars->page_buf, &bytes, vars->outfile, vars->opts->compression) == FALSE)
 			{
 				error_outfile(vars);
 				retval = FALSE;
@@ -2339,7 +2339,7 @@ static gboolean finish_page(hcp_vars *vars, hyp_nodenr num)
 		ASSERT(new_offset == (unsigned long)ftell(vars->outfile));
 	}
 	SetCompressedSize(vars->hyp, num, prev_offset, new_offset);
-	if (G_UNLIKELY(SetDataSize(vars->hyp, num, vars->page_used) == FALSE))
+	if (SetDataSize(vars->hyp, num, vars->page_used) == FALSE)
 	{
 		hcp_error(vars, NULL, _("Node too big for compression (size diff > 64KB)!"));
 	}
@@ -2434,7 +2434,7 @@ static gboolean load_uses_from_ref(hcp_vars *vars, REF_FILE *ref)
 	for (mod = ref->modules; mod != NULL; mod = mod->next)
 	{
 		filename = hyp_utf8_strdown(hyp_basename(mod->filename), STR0TERM);
-		if (G_UNLIKELY(filename == NULL))
+		if (filename == NULL)
 			return FALSE;
 		for (num = 0; num < mod->num_entries; num++)
 		{
@@ -2447,7 +2447,7 @@ static gboolean load_uses_from_ref(hcp_vars *vars, REF_FILE *ref)
 			case REF_LABELNAME:
 				str = hyp_conv_to_utf8(mod->charset, mod->entries[num].name.hyp, STR0TERM);
 				lab = add_label(vars, str, l_uses);
-				if (G_UNLIKELY(lab == NULL))
+				if (lab == NULL)
 				{
 					g_free(str);
 					g_free(filename);
@@ -2460,12 +2460,12 @@ static gboolean load_uses_from_ref(hcp_vars *vars, REF_FILE *ref)
 				entry = add_external_node(vars, HYP_NODE_EXTERNAL_REF, name);
 				g_free(name);
 				g_free(str);
-				if (G_UNLIKELY(name == NULL || entry == NULL))
+				if (name == NULL || entry == NULL)
 				{
 					g_free(filename);
 					return FALSE;
 				}
-				if (G_UNLIKELY(lab->labindex >= HYP_NODE_MAX))
+				if (lab->labindex >= HYP_NODE_MAX)
 				{
 					hcp_error(vars, NULL, _("too many labels (max. %lu)"), (unsigned long)HYP_NODE_MAX);
 					g_free(filename);
@@ -2511,7 +2511,7 @@ static gboolean load_uses_from_hyp(hcp_vars *vars, HYP_DOCUMENT *hyp)
 	INDEX_ENTRY *entry;
 	
 	filename = hyp_utf8_strdown(hyp_basename(hyp->file), STR0TERM);
-	if (G_UNLIKELY(filename == NULL))
+	if (filename == NULL)
 		return FALSE;
 	for (num = 0; num < hyp->num_index; num++)
 	{
@@ -2522,7 +2522,7 @@ static gboolean load_uses_from_hyp(hcp_vars *vars, HYP_DOCUMENT *hyp)
 		case HYP_NODE_POPUP:
 			str = hyp_conv_to_utf8(hyp->comp_charset, entry->name, STR0TERM);
 			lab = add_label(vars, str, l_uses);
-			if (G_UNLIKELY(lab == NULL))
+			if (lab == NULL)
 			{
 				g_free(str);
 				g_free(filename);
@@ -2535,12 +2535,12 @@ static gboolean load_uses_from_hyp(hcp_vars *vars, HYP_DOCUMENT *hyp)
 			entry = add_external_node(vars, HYP_NODE_EXTERNAL_REF, name);
 			g_free(name);
 			g_free(str);
-			if (G_UNLIKELY(name == NULL || entry == NULL))
+			if (name == NULL || entry == NULL)
 			{
 				g_free(filename);
 				return FALSE;
 			}
-			if (G_UNLIKELY(lab->labindex >= HYP_NODE_MAX))
+			if (lab->labindex >= HYP_NODE_MAX)
 			{
 				hcp_error(vars, NULL, _("too many labels (max. %lu)"), (unsigned long)HYP_NODE_MAX);
 				g_free(filename);
@@ -2931,7 +2931,7 @@ static void c_do_node(hcp_vars *vars, int argc, char **argv, gboolean is_popup)
 		}
 		/* add new node anyway to keep the counter up-to-date */
 		node = add_node(vars, nodename);
-		if (G_UNLIKELY(node == NULL))
+		if (node == NULL)
 			return;
 		if (argc > 2)
 		{
@@ -2948,7 +2948,7 @@ static void c_do_node(hcp_vars *vars, int argc, char **argv, gboolean is_popup)
 			if (!empty(argv[2]))
 			{
 				node->window_title = g_strdup(argv[2]);
-				if (G_UNLIKELY(node->window_title == NULL))
+				if (node->window_title == NULL)
 				{
 					oom(vars);
 				}
@@ -3173,7 +3173,7 @@ static void c_title(hcp_vars *vars, int argc, char **argv)
 			g_free(node->window_title);
 		}
 		node->window_title = g_strdup(argv[1]);
-		if (G_UNLIKELY(node->window_title == NULL))
+		if (node->window_title == NULL)
 		{
 			oom(vars);
 			return;
@@ -3214,7 +3214,7 @@ static void c_toc(hcp_vars *vars, int argc, char **argv)
 	}
 	g_free(*namep);
 	*namep = g_strdup(argv[1]);
-	if (G_UNLIKELY(*namep == NULL))
+	if (*namep == NULL)
 	{
 		oom(vars);
 		return;
@@ -3248,7 +3248,7 @@ static void c_next(hcp_vars *vars, int argc, char **argv)
 		warn_duplicate_arg(vars, argv[0]);
 	g_free(*namep);
 	*namep = g_strdup(argv[1]);
-	if (G_UNLIKELY(*namep == NULL))
+	if (*namep == NULL)
 	{
 		oom(vars);
 		return;
@@ -3282,7 +3282,7 @@ static void c_prev(hcp_vars *vars, int argc, char **argv)
 		warn_duplicate_arg(vars, argv[0]);
 	g_free(*namep);
 	*namep = g_strdup(argv[1]);
-	if (G_UNLIKELY(*namep == NULL))
+	if (*namep == NULL)
 	{
 		oom(vars);
 		return;
@@ -3487,7 +3487,7 @@ static void c_help(hcp_vars *vars, int argc, char **argv)
 		g_free(vars->hyp->help_name);
 	}
 	vars->hyp->help_name = g_strdup(argv[1]);
-	if (G_UNLIKELY(vars->hyp->help_name == NULL))
+	if (vars->hyp->help_name == NULL)
 	{
 		oom(vars);
 		return;
@@ -3519,7 +3519,7 @@ static void c_subject(hcp_vars *vars, int argc, char **argv)
 		g_free(vars->hyp->subject);
 	}
 	vars->hyp->subject = g_strdup(argv[1]);
-	if (G_UNLIKELY(vars->hyp->subject == NULL))
+	if (vars->hyp->subject == NULL)
 	{
 		oom(vars);
 		return;
@@ -3550,7 +3550,7 @@ static void c_default(hcp_vars *vars, int argc, char **argv)
 		g_free(vars->hyp->default_name);
 	}
 	vars->hyp->default_name = g_strdup(argv[1]);
-	if (G_UNLIKELY(vars->hyp->default_name == NULL))
+	if (vars->hyp->default_name == NULL)
 	{
 		oom(vars);
 		return;
@@ -3582,7 +3582,7 @@ static void c_author(hcp_vars *vars, int argc, char **argv)
 		g_free(vars->hyp->author);
 	}
 	vars->hyp->author = g_strdup(argv[1]);
-	if (G_UNLIKELY(vars->hyp->author == NULL))
+	if (vars->hyp->author == NULL)
 	{
 		oom(vars);
 		return;
@@ -3618,7 +3618,7 @@ static void c_version(hcp_vars *vars, int argc, char **argv)
 	 * This should maybe be fixed one day
 	 */
 	vars->hyp->version = g_strdup(vars->cur_fileline + 1);
-	if (G_UNLIKELY(vars->hyp->version == NULL))
+	if (vars->hyp->version == NULL)
 	{
 		oom(vars);
 		return;
@@ -3675,7 +3675,7 @@ static void c_database(hcp_vars *vars, int argc, char **argv)
 		g_free(vars->hyp->database);
 	}
 	vars->hyp->database = g_strdup(argv[1]);
-	if (G_UNLIKELY(vars->hyp->database == NULL))
+	if (vars->hyp->database == NULL)
 	{
 		oom(vars);
 		return;
@@ -3706,13 +3706,13 @@ static void c_hostname(hcp_vars *vars, int argc, char **argv)
 		} else
 		{
 			h = g_new(HYP_HOSTNAME, 1);
-			if (G_UNLIKELY(h == NULL))
+			if (h == NULL)
 			{
 				oom(vars);
 				return;
 			}
 			h->name = g_strdup(argv[i]);
-			if (G_UNLIKELY(h->name == NULL))
+			if (h->name == NULL)
 			{
 				g_free(h);
 				oom(vars);
@@ -3904,11 +3904,11 @@ static void c_keywords(hcp_vars *vars, int argc, char **argv)
 	{
 		/* labels that are to be added to REF must be unique */
 		node = find_node(vars, argv[i]);
-		if (G_UNLIKELY(node != NULL))
+		if (node != NULL)
 			lab = vars->label_table[node->labindex];
 		else
 			lab = find_label(vars, argv[i], l_label);
-		if (G_UNLIKELY(lab != NULL))
+		if (lab != NULL)
 		{
 			hcp_warning(vars, NULL,
 				lab->type == l_alias ? _("redefined alias %s at %s:%lu (ignored)") :
@@ -3919,7 +3919,7 @@ static void c_keywords(hcp_vars *vars, int argc, char **argv)
 		} else
 		{
 			lab = add_label(vars, argv[i], l_label);
-			if (G_UNLIKELY(lab == NULL))
+			if (lab == NULL)
 				return;
 			lab->add_to_ref = TRUE;
 		}
@@ -3951,7 +3951,7 @@ static void c_label(hcp_vars *vars, int argc, char **argv)
 			} else
 			{
 				lab = find_node_label(vars, argv[i], vars->p1_node_counter);
-				if (G_UNLIKELY(lab != NULL))
+				if (lab != NULL)
 				{
 					hcp_warning(vars, NULL, _("redefined label %s at %s:%lu (ignored)"),
 						lab->name,
@@ -3959,7 +3959,7 @@ static void c_label(hcp_vars *vars, int argc, char **argv)
 				} else
 				{
 					lab = add_label(vars, argv[i], l_label);
-					if (G_UNLIKELY(lab == NULL))
+					if (lab == NULL)
 						return;
 				}
 			}
@@ -3987,7 +3987,7 @@ static void c_alabel(hcp_vars *vars, int argc, char **argv)
 		lab = find_label(vars, argv[i], l_label);
 		if (lab == NULL)
 			lab = find_label(vars, argv[i], l_alias);
-		if (G_UNLIKELY(lab != NULL))
+		if (lab != NULL)
 		{
 			hcp_warning(vars, NULL,
 				lab->type == l_alias ? _("redefined alias %s at %s:%lu (ignored)") : _("redefined label %s at %s:%lu (ignored)"),
@@ -3996,7 +3996,7 @@ static void c_alabel(hcp_vars *vars, int argc, char **argv)
 		} else
 		{
 			lab = add_label(vars, argv[i], l_label);
-			if (G_UNLIKELY(lab == NULL))
+			if (lab == NULL)
 				return;
 			lab->add_to_autoref = TRUE;
 			lab->add_to_index = vars->opts->alabel_to_index;
@@ -4026,7 +4026,7 @@ static void c_alias(hcp_vars *vars, int argc, char **argv)
 	for (i = 1; i < argc; i++)
 	{
 		node = find_node(vars, argv[i]);
-		if (G_UNLIKELY(node != NULL))
+		if (node != NULL)
 		{
 			lab = vars->label_table[node->labindex];
 			hcp_warning(vars, NULL,
@@ -4111,11 +4111,11 @@ static void c_symbol(hcp_vars *vars, int argc, char **argv)
 		{
 			/* labels that are to be added to REF must be unique */
 			node = find_node(vars, argv[i]);
-			if (G_UNLIKELY(node != NULL))
+			if (node != NULL)
 				lab = vars->label_table[node->labindex];
 			else
 				lab = find_label(vars, argv[i], l_label);
-			if (G_UNLIKELY(lab != NULL))
+			if (lab != NULL)
 			{
 				hcp_warning(vars, NULL,
 					lab->type == l_alias ? _("redefined alias %s at %s:%lu (ignored)") :
@@ -4127,7 +4127,7 @@ static void c_symbol(hcp_vars *vars, int argc, char **argv)
 			}
 		}
 		lab = find_node_label(vars, argv[i], vars->p1_node_counter);
-		if (G_UNLIKELY(lab != NULL))
+		if (lab != NULL)
 		{
 			hcp_warning(vars, NULL, _("redefined label %s at %s:%lu (ignored)"),
 				lab->name,
@@ -4135,7 +4135,7 @@ static void c_symbol(hcp_vars *vars, int argc, char **argv)
 		} else
 		{
 			lab = add_label(vars, argv[i], l_label);
-			if (G_UNLIKELY(lab == NULL))
+			if (lab == NULL)
 				return;
 			lab->add_to_autoref = add_to_autoref;
 			lab->add_to_index = add_to_index;
@@ -4219,7 +4219,7 @@ static void c_do_box(hcp_vars *vars, int argc, char **argv, short type)
 		}
 
 		a = g_new(struct hyp_gfx, 1);
-		if (G_UNLIKELY(a == NULL))
+		if (a == NULL)
 		{
 			oom(vars);
 			return;
@@ -4329,7 +4329,7 @@ static void c_line(hcp_vars *vars, int argc, char **argv)
 		adm.attr = (((adm.style - 1) << 3) + adm.begend);
 		
 		a = g_new(struct hyp_gfx, 1);
-		if (G_UNLIKELY(a == NULL))
+		if (a == NULL)
 		{
 			oom(vars);
 			return;
@@ -4575,7 +4575,7 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 			if (exists && vars->opts->read_images)
 			{
 				entry = add_external_node(vars, HYP_NODE_IMAGE, name);
-				if (G_UNLIKELY(entry == NULL))
+				if (entry == NULL)
 					return;
 				entry->pic_file_id = adm.id;
 			} else
@@ -4663,7 +4663,7 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 		}
 		
 		a = g_new(struct hyp_gfx, 1);
-		if (G_UNLIKELY(a == NULL))
+		if (a == NULL)
 		{
 			oom(vars);
 			return;
@@ -4862,7 +4862,7 @@ static void c_extern(hcp_vars *vars, int argc, char **argv)
 	lab = find_label(vars, argv[1], l_extern);
 	if (lab == NULL)
 		lab = find_label(vars, argv[1], l_uses);
-	if (G_UNLIKELY(lab != NULL))
+	if (lab != NULL)
 	{
 		if (vars->hcp_pass == 1 && lab->type == l_extern)
 			hcp_warning(vars, NULL, _("redefined extern name %s at %s:%lu"),
@@ -4875,14 +4875,14 @@ static void c_extern(hcp_vars *vars, int argc, char **argv)
 	} else
 	{
 		lab = add_label(vars, argv[1], l_extern);
-		if (G_UNLIKELY(lab == NULL))
+		if (lab == NULL)
 			return;
 	}
 	lab->extern_index = vars->p1_external_node_counter;
 	entry = add_external_node(vars, HYP_NODE_EXTERNAL_REF, argv[2]);
-	if (G_UNLIKELY(entry == NULL))
+	if (entry == NULL)
 		return;
-	if (G_UNLIKELY(lab->labindex >= HYP_NODE_MAX))
+	if (lab->labindex >= HYP_NODE_MAX)
 	{
 		hcp_error(vars, NULL, _("too many labels (max. %lu)"), (unsigned long)HYP_NODE_MAX);
 		return;
@@ -4957,7 +4957,7 @@ static void c_xref(hcp_vars *vars, int argc, char **argv)
 	{
 		len = strlen(argv[1]);
 		xref = (XREF_ITEM *)g_malloc(sizeof(XREF_ITEM) + len);
-		if (G_UNLIKELY(xref == NULL))
+		if (xref == NULL)
 		{
 			oom(vars);
 			return;
@@ -4973,7 +4973,7 @@ static void c_xref(hcp_vars *vars, int argc, char **argv)
 			if (!empty(title) && namecmp(xref->name, title) != 0)
 			{
 				xref->title = g_strdup(title);
-				if (G_UNLIKELY(xref->title == NULL))
+				if (xref->title == NULL)
 				{
 					g_free(xref);
 					oom(vars);
@@ -4994,7 +4994,7 @@ static void c_xref(hcp_vars *vars, int argc, char **argv)
 			hcp_warning(vars, NULL, _("ST-Guide may not be able to display more than 12 @xref items"));
 		
 		entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XREF, argv[1]);
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return;
 		/*
 		 * temporary use to identify the entry when trying to resolve xrefs
@@ -5128,7 +5128,7 @@ static gboolean build_index_table(hcp_vars *vars)
 	 */
 	vars->hyp->num_index = vars->p1_node_counter;
 	vars->hyp->indextable = g_new0(INDEX_ENTRY *, vars->p2_real_external_node_counter + 1);
-	if (G_UNLIKELY(vars->hyp->indextable == NULL))
+	if (vars->hyp->indextable == NULL)
 	{
 		oom(vars);
 		return FALSE;
@@ -5149,7 +5149,7 @@ static gboolean build_index_table(hcp_vars *vars)
 		if (namelen & 1)
 			namelen++;
 		entry = (INDEX_ENTRY *)g_malloc(sizeof(INDEX_ENTRY) + namelen);
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 		{
 			oom(vars);
 			return FALSE;
@@ -5238,7 +5238,7 @@ static gboolean build_index_table(hcp_vars *vars)
 	 * that tells the seek_offset just beyond the last node
 	 */
 	entry = g_new0(INDEX_ENTRY, 1);
-	if (G_UNLIKELY(entry == NULL))
+	if (entry == NULL)
 	{
 		oom(vars);
 		return FALSE;
@@ -5368,7 +5368,7 @@ static gboolean finish_pass1(hcp_vars *vars)
 	} else if (vars->gen_index)
 	{
 		node = add_node(vars, hyp_default_index_node_name);
-		if (G_UNLIKELY(node == NULL))
+		if (node == NULL)
 			return FALSE;
 		hyp->index_page = vars->p1_node_counter;
 		vars->p1_node_counter++;
@@ -5739,7 +5739,7 @@ static gboolean finish_pass1(hcp_vars *vars)
 	/* if (vars->p2_real_external_node_counter == vars->p1_node_counter) */
 	{
 		entry = add_external_node(vars, HYP_NODE_EOF, "");
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return FALSE;
 		vars->p2_real_external_node_counter++;
 		vars->need_eof_entry = TRUE;
@@ -5967,7 +5967,7 @@ static gboolean autogen_index(hcp_vars *vars)
 				size_t count = 0;
 				
 				labs = g_new(LABEL *, used[c]);
-				if (G_UNLIKELY(labs == NULL))
+				if (labs == NULL)
 				{
 					oom(vars);
 					return FALSE;
@@ -6255,7 +6255,7 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		target = vars->p1_external_node_counter;
 
 		entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XLINK, dest);
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return len;
 		/*
 		 * lineno will be resolved in finish_pass1(),
@@ -6314,11 +6314,11 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		if (!is_resource && argc > 3)
 		{
 			LABEL *lab = add_label(vars, argv[3], l_label);
-			if (G_UNLIKELY(lab == NULL))
+			if (lab == NULL)
 				return len;
 			lab->referenced = TRUE;
 			
-			if (G_UNLIKELY(lab->labindex >= HYP_NODE_MAX))
+			if (lab->labindex >= HYP_NODE_MAX)
 			{
 				hcp_error(vars, NULL, _("too many labels (max. %lu)"), (unsigned long)HYP_NODE_MAX);
 				return len;
@@ -6402,7 +6402,7 @@ static int c_inline_system(hcp_vars *vars, int argc, char **argv)
 	{
 		target = vars->p1_external_node_counter;
 		entry = add_external_node(vars, HYP_NODE_SYSTEM_ARGUMENT, argv[2]);
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return len;
 		entry->extern_nodeindex = HYP_NOINDEX;
 		entry->previous = HYP_NOINDEX;
@@ -6440,7 +6440,7 @@ static int c_inline_quit(hcp_vars *vars, int argc, char **argv)
 	{
 		target = vars->p1_external_node_counter;
 		entry = add_external_node(vars, HYP_NODE_QUIT, "");
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return len;
 		entry->extern_nodeindex = HYP_NOINDEX;
 		entry->previous = HYP_NOINDEX;
@@ -6478,7 +6478,7 @@ static int c_inline_close(hcp_vars *vars, int argc, char **argv)
 	{
 		target = vars->p1_external_node_counter;
 		entry = add_external_node(vars, HYP_NODE_CLOSE, "");
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return len;
 		entry->extern_nodeindex = HYP_NOINDEX;
 		entry->previous = HYP_NOINDEX;
@@ -6519,7 +6519,7 @@ static int c_inline_rexx(hcp_vars *vars, int argc, char **argv, gboolean script)
 	{
 		target = vars->p1_external_node_counter;
 		entry = add_external_node(vars, script ? HYP_NODE_REXX_SCRIPT : HYP_NODE_REXX_COMMAND, argv[2]);
-		if (G_UNLIKELY(entry == NULL))
+		if (entry == NULL)
 			return len;
 		entry->extern_nodeindex = HYP_NOINDEX;
 		entry->previous = HYP_NOINDEX;
@@ -6617,7 +6617,7 @@ static void process_treeline(hcp_vars *vars, const char *line)
 		} else
 		{
 			LABEL *lab = add_label(vars, argv[2], l_label);
-			if (G_UNLIKELY(lab == NULL))
+			if (lab == NULL)
 				return;
 			idx = lab->labindex;
 			lab->node_index = HYP_NOINDEX;
@@ -6625,7 +6625,7 @@ static void process_treeline(hcp_vars *vars, const char *line)
 	}
 	len = strlen(argv[1]);
 	tree = (TREEDEF *)g_malloc(sizeof(TREEDEF) + len);
-	if (G_UNLIKELY(tree == NULL))
+	if (tree == NULL)
 	{
 		g_strfreev(argv);
 		return;
@@ -7110,7 +7110,7 @@ static gboolean pass(hcp_vars *vars, const char *filename)
 			char *end;
 			
 			argc = parse_args(vars, line, '\0', &argv, &end, &first_arg_quoted);
-			if (G_UNLIKELY(argc <= 0))
+			if (argc <= 0)
 			{
 				g_free(line);
 				continue;
@@ -7120,7 +7120,7 @@ static gboolean pass(hcp_vars *vars, const char *filename)
 				if (cmdnamecmp(argv[0] + 1, hcp_commands[i].name) == 0)
 					break;
 			}
-			if (G_UNLIKELY(i >= NUM_HCP_COMMANDS))
+			if (i >= NUM_HCP_COMMANDS)
 			{
 				if (!skipping)
 					hcp_error(vars, NULL, _("illegal command %s"), argv[0]);
@@ -7339,11 +7339,11 @@ static gboolean write_index(HYP_DOCUMENT *hyp, FILE *outfile, gboolean update)
 		short_to_chars(entry->previous, rawent + 10);
 		short_to_chars(entry->toc_index, rawent + 12);
 		ret = fwrite(rawent, 1, SIZEOF_INDEX_ENTRY, outfile);
-		if (G_UNLIKELY(ret != SIZEOF_INDEX_ENTRY))
+		if (ret != SIZEOF_INDEX_ENTRY)
 			return FALSE;
 		size = entry->length - SIZEOF_INDEX_ENTRY;
 		ret = fwrite(entry->name, 1, size, outfile);
-		if (G_UNLIKELY(ret != size))
+		if (ret != size)
 			return FALSE;
 	}
 	
@@ -7364,16 +7364,16 @@ static gboolean write_ext_header(FILE *outfile, hyp_ext_header type, unsigned sh
 	else
 		short_to_chars(len, info + 2);
 	ret = fwrite(info, 1, sizeof(info), outfile);
-	if (G_UNLIKELY(ret != sizeof(info)))
+	if (ret != sizeof(info))
 		return FALSE;
 	if (len != 0)
 	{
 		ret = fwrite(data, 1, len, outfile);
-		if (G_UNLIKELY(ret != len))
+		if (ret != len)
 			return FALSE;
 		if (len & 1)
 		{
-			if (G_UNLIKELY(fputc('\0', outfile) != 0))
+			if (fputc('\0', outfile) != 0)
 				return FALSE;
 		}
 	}
@@ -7391,10 +7391,10 @@ static gboolean write_ext_header_string(hcp_vars *vars, HYP_DOCUMENT *hyp, FILE 
 	if (str == NULL)
 		return TRUE;
 	data = hyp_utf8_to_charset(hyp->comp_charset, str, STR0TERM, &vars->global_converror);
-	if (G_UNLIKELY(data == NULL))
+	if (data == NULL)
 		return FALSE;
 	len = (unsigned short)strlen(data);
-	if (G_UNLIKELY(write_ext_header(outfile, type, len + 1, data) == FALSE))
+	if (write_ext_header(outfile, type, len + 1, data) == FALSE)
 	{
 		g_free(data);
 		return FALSE;
@@ -7440,14 +7440,14 @@ static gboolean write_header(hcp_vars *vars)
 	rawhead[10] = head.compiler_vers;
 	rawhead[11] = head.compiler_os;
 	ret = fwrite(rawhead, 1, SIZEOF_HYP_HEADER, outfile);
-	if (G_UNLIKELY(ret != SIZEOF_HYP_HEADER))
+	if (ret != SIZEOF_HYP_HEADER)
 		return FALSE;
 	
 	/*
 	 * write the index table out. Some of the data is
 	 * not yet known and will be updated later
 	 */
-	if (G_UNLIKELY(write_index(hyp, vars->outfile, FALSE) == FALSE))
+	if (write_index(hyp, vars->outfile, FALSE) == FALSE)
 		return FALSE;
 	
 	/*
@@ -7732,7 +7732,7 @@ static inline void write_str(hcp_vars *vars, unsigned char type, const char *str
 	char *out;
 	
 	out = hyp_utf8_to_charset(vars->hyp->comp_charset, str, STR0TERM, &vars->global_converror);
-	if (G_UNLIKELY(out == NULL))
+	if (out == NULL)
 	{
 		oom(vars);
 		return;
@@ -7763,7 +7763,7 @@ static gboolean write_references(hcp_vars *vars)
 	filename = replace_ext(vars->hyp->file, NULL, HYP_EXT_REF);
 	if (vars->opts->verbose >= 1)
 		hcp_status_pass(vars, _("Writing reference-file"));
-	if (G_UNLIKELY(filename == NULL))
+	if (filename == NULL)
 	{
 		oom(vars);
 		retval = FALSE;
@@ -7911,7 +7911,7 @@ static gboolean add_predefs(hcp_vars *vars)
 	time(&t);
 	localtime_r(&t, &tm);
 	sprintf(datestr, "%02d/%02d/%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
-	if (G_UNLIKELY(add_define(vars, "__DATE__", HCP_DEF_DATE, datestr) == FALSE))
+	if (add_define(vars, "__DATE__", HCP_DEF_DATE, datestr) == FALSE)
 		return FALSE;
 	return TRUE;
 }
@@ -7928,7 +7928,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 	memset(vars, 0, sizeof(*vars));
 
 	vars->hyp = hyp_new();
-	if (G_UNLIKELY(vars->hyp == NULL))
+	if (vars->hyp == NULL)
 	{
 		oom(vars);
 		return FALSE;
@@ -8013,7 +8013,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 		{
 			output_filename = g_strdup(opts->output_filename);
 		}
-		if (G_UNLIKELY(output_filename == NULL))
+		if (output_filename == NULL)
 		{
 			oom(vars);
 			retval = FALSE;
@@ -8023,18 +8023,19 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 			retval = FALSE;
 		}
 
-		if (retval)
-		{
-			if (vars->opts->verbose >= 0)
-			{
-				fprintf(stdout, _("compiling %s to %s\n"), filename, output_filename);
-			}
-		}
 		vars->hyp->file = output_filename;
 		dir = hyp_path_get_dirname(output_filename);
 		vars->tmpfile = g_build_filename(dir, "hyXXXXXX", NULL);
 		mktemp(vars->tmpfile);
 		g_free(dir);
+
+		if (retval)
+		{
+			if (vars->opts->verbose >= 0)
+			{
+				hyp_utf8_fprintf(stdout, _("compiling %s to %s (%s)\n"), filename, output_filename, vars->tmpfile);
+			}
+		}
 	}
 
 	if (retval && !add_predefs(vars))

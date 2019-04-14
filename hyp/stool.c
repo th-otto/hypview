@@ -63,7 +63,7 @@ static struct {
 static char *help_page;
 
 
-#define memassert(p) if (G_UNLIKELY((p) == NULL)) oom()
+#define memassert(p) if ((p) == NULL) oom()
 
 
 /* UTF-8 of \u2713 */

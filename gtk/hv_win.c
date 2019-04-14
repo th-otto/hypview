@@ -420,7 +420,7 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 	{
 		GDBusNodeInfo *info;
 		info = g_dbus_node_info_new_for_xml(org_gtk_hypview_xml, &error);
-		if (G_UNLIKELY(info == NULL))
+		if (info == NULL)
 		{
 			if (error)
 				g_printerr("%s", error->message);
@@ -440,7 +440,7 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 		session_bus = g_application_get_dbus_connection(app);
 		win->object_path = g_strdup_printf("%s/Window/%u", g_application_get_dbus_object_path(app), ++window_id);
 		win->object_id = g_dbus_connection_register_object(session_bus, win->object_path, org_gtk_hypview, &vtable, win, NULL, &error);
-		if (G_UNLIKELY(win->object_id == 0))
+		if (win->object_id == 0)
 		{
 			if (error)
 				g_printerr("%s", error->message);

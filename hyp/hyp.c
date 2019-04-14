@@ -437,7 +437,7 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 {
 	hyp_nodenr node;
 
-	if (G_UNLIKELY(hyp == NULL))
+	if (hyp == NULL)
 		return;
 	ASSERT(hyp->ref_count == 0);
 	ClearCache(hyp);
@@ -489,7 +489,7 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 
 HYP_DOCUMENT *hyp_unref(HYP_DOCUMENT *hyp)
 {
-	if (G_UNLIKELY(hyp == NULL))
+	if (hyp == NULL)
 		return hyp;
 	ASSERT(hyp->ref_count >= 1);
 	if (--hyp->ref_count == 0)
@@ -504,7 +504,7 @@ HYP_DOCUMENT *hyp_unref(HYP_DOCUMENT *hyp)
 
 HYP_DOCUMENT *hyp_ref(HYP_DOCUMENT *hyp)
 {
-	if (G_UNLIKELY(hyp == NULL))
+	if (hyp == NULL)
 		return hyp;
 	++hyp->ref_count;
 	ASSERT(hyp->ref_count >= 2);
@@ -517,7 +517,7 @@ HYP_DOCUMENT *hyp_new(void)
 {
 	HYP_DOCUMENT *hyp = g_new0(HYP_DOCUMENT, 1);
 	
-	if (G_UNLIKELY(hyp == NULL))
+	if (hyp == NULL)
 		return hyp;
 
 	/* default-values for information later read from exteneded headers */

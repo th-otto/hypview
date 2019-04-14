@@ -625,7 +625,7 @@ int main(int argc, char **argv)
 		};
 		
 		info = g_dbus_node_info_new_for_xml(org_gtk_hypview_xml, &error);
-		if (G_UNLIKELY(info == NULL))
+		if (info == NULL)
 		{
 			if (error)
 				g_printerr("%s", error->message);

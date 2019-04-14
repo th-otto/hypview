@@ -71,27 +71,6 @@ void *dbg_realloc(void *p, size_t s, const char *file, long line);
 #  endif /* va_list is a pointer */
 #endif /* !G_VA_COPY */
 
-#ifndef G_LIKELY
-#if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
-#if !defined(_G_BOOLEAN_EXPR)
-#define _G_BOOLEAN_EXPR(expr)                   \
- __extension__ ({                            \
-   int _g_boolean_var_;                         \
-   if (expr)                                    \
-      _g_boolean_var_ = 1;                      \
-   else                                         \
-      _g_boolean_var_ = 0;                      \
-   _g_boolean_var_;                             \
-})
-#endif
-#define G_LIKELY(expr) (__builtin_expect (_G_BOOLEAN_EXPR(expr), 1))
-#define G_UNLIKELY(expr) (__builtin_expect (_G_BOOLEAN_EXPR(expr), 0))
-#else
-#define G_LIKELY(expr) (expr)
-#define G_UNLIKELY(expr) (expr)
-#endif
-#endif
-
 #define g_malloc(n) malloc(n)
 #define g_try_malloc(n) malloc(n)
 #define g_calloc(n, s) calloc(n, s)

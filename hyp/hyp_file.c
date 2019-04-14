@@ -65,7 +65,7 @@ int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 	int fd;
 	
 	str = hyp_utf8_to_charset(hyp_get_filename_charset(), filename, STR0TERM, &converror);
-	if (G_UNLIKELY(str == NULL))
+	if (str == NULL)
 		return -1;
 	fd = open(str, flags, mode);
 	g_free(str);
@@ -102,7 +102,7 @@ FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 	FILE *fp;
 	
 	str = hyp_utf8_to_charset(hyp_get_filename_charset(), filename, STR0TERM, &converror);
-	if (G_UNLIKELY(str == NULL))
+	if (str == NULL)
 		return NULL;
 	fp = fopen(str, mode);
 	g_free(str);
@@ -118,7 +118,7 @@ int hyp_utf8_unlink(const char *name)
 	
 	gboolean converror = FALSE;
 	str = hyp_utf8_to_charset(hyp_get_filename_charset(), name, STR0TERM, &converror);
-	if (G_UNLIKELY(str == NULL))
+	if (str == NULL)
 		return -1;
 	ret = unlink(str);
 	g_free(str);
@@ -135,7 +135,7 @@ int hyp_utf8_rename(const char *oldname, const char *newname)
 	gboolean converror = FALSE;
 	str1 = hyp_utf8_to_charset(hyp_get_filename_charset(), oldname, STR0TERM, &converror);
 	str2 = hyp_utf8_to_charset(hyp_get_filename_charset(), newname, STR0TERM, &converror);
-	if (G_UNLIKELY(str1 == NULL || str2 == NULL))
+	if (str1 == NULL || str2 == NULL)
 	{
 		g_free(str2);
 		g_free(str1);
@@ -164,7 +164,7 @@ DIR *hyp_utf8_opendir(const char *dirname)
 	
 	gboolean converror = FALSE;
 	str = hyp_utf8_to_charset(hyp_get_filename_charset(), dirname, STR0TERM, &converror);
-	if (G_UNLIKELY(str == NULL))
+	if (str == NULL)
 		return NULL;
 	dir = opendir(str);
 	g_free(str);

@@ -100,7 +100,7 @@ static void set_binding_values(const char *domainname, HINSTANCE *dirnamep, cons
 					else
 						result = dirname;
 
-					if (likely(result != NULL))
+					if (result != NULL)
 					{
 						binding->instance = result;
 						modified = 1;
@@ -127,7 +127,7 @@ static void set_binding_values(const char *domainname, HINSTANCE *dirnamep, cons
 				if (result == NULL || strcmp(codeset, result) != 0)
 				{
 					result = strdup(codeset);
-					if (likely(result != NULL))
+					if (result != NULL)
 					{
 						free(binding->codeset.ptr);
 
@@ -152,7 +152,7 @@ static void set_binding_values(const char *domainname, HINSTANCE *dirnamep, cons
 
 		struct binding *new_binding = (struct binding *) malloc(offsetof(struct binding, domainname) + len);
 
-		if (unlikely(new_binding == NULL))
+		if (new_binding == NULL)
 			goto failed;
 
 		memcpy(new_binding->domainname, domainname, len);
@@ -191,7 +191,7 @@ static void set_binding_values(const char *domainname, HINSTANCE *dirnamep, cons
 				char *result;
 
 				result = strdup(codeset);
-				if (unlikely(result == NULL))
+				if (result == NULL)
 					goto failed_codeset;
 				codeset = result;
 			}

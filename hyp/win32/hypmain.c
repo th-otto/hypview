@@ -18,7 +18,7 @@ char *hyp_wchar_to_utf8(const wchar_t *str, size_t wlen)
 		wlen = wcslen(str);
 	len = wlen * HYP_UTF8_CHARMAX + 1;
 	dst = p = g_new(char, len);
-	if (G_UNLIKELY(dst == NULL))
+	if (dst == NULL)
 		return NULL;
 	while (wlen)
 	{

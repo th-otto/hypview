@@ -721,7 +721,7 @@ GString *g_string_insert_len(GString *string, gssize pos, const char *val, gssiz
 	 * since ">=" and "<=" are only valid when val really is a substring.
 	 * In practice, it will work on modern archs.
 	 */
-	if (G_UNLIKELY(val >= string->str && val <= string->str + string->len))
+	if (val >= string->str && val <= string->str + string->len)
 	{
 		gsize offset = val - string->str;
 		gsize precount = 0;

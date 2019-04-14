@@ -220,10 +220,10 @@ HCP_USES *hcp_add_uses(HCP_USES **uses, const char *filename)
 	HCP_USES **last;
 	
 	u = g_new(HCP_USES, 1);
-	if (G_UNLIKELY(u == NULL))
+	if (u == NULL)
 		return NULL;
 	u->filename = g_strdup(filename);
-	if (G_UNLIKELY(u->filename == NULL))
+	if (u->filename == NULL)
 	{
 		g_free(u);
 		return NULL;

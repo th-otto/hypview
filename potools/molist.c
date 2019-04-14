@@ -90,9 +90,9 @@ static struct loaded_l10nfile *loadmo(const char *input_filename)
 	}
 
 	/* We must know about the size of the file.  */
-	if (unlikely(fstat(fd, &st) != 0)
-		|| unlikely(((ssize_t) (size = (size_t) st.st_size)) != st.st_size)
-		|| unlikely(size < sizeof(struct mo_file_header)))
+	if (fstat(fd, &st) != 0
+		|| ((ssize_t) (size = (size_t) st.st_size)) != st.st_size
+		|| size < sizeof(struct mo_file_header))
 		/* Something went wrong.  */
 	{
 		fprintf(stderr, "%s: %s: %s\n", gl_program_name, input_filename, _("cannot determine file size"));
@@ -137,7 +137,7 @@ static struct loaded_l10nfile *loadmo(const char *input_filename)
 
 	/* Using the magic number we can test whether it really is a message
 	   catalog file.  */
-	if (unlikely(data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED))
+	if (data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED)
 	{
 		/* The magic number is wrong: not a message catalog file.  */
 		g_free(data);

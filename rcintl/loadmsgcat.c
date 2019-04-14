@@ -178,15 +178,15 @@ void _rc_load_domain(struct loaded_l10nfile *domain_file, struct binding *domain
 		goto out;
 
 	/* We must know about the size of the file.  */
-	if (unlikely((size = SizeofResource(domain_file->instance, hrsrc)) < sizeof(struct mo_file_header)) ||
-		unlikely((hglbl = LoadResource(domain_file->instance, hrsrc)) == NULL) ||
-		unlikely((data = (struct mo_file_header *)LockResource(hglbl)) == NULL))
+	if ((size = SizeofResource(domain_file->instance, hrsrc)) < sizeof(struct mo_file_header) ||
+		(hglbl = LoadResource(domain_file->instance, hrsrc)) == NULL ||
+		(data = (struct mo_file_header *)LockResource(hglbl)) == NULL)
 		/* Something went wrong.  */
 		goto out;
 
 	/* Using the magic number we can test whether it really is a message
 	   catalog file.  */
-	if (unlikely(data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED))
+	if (data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED)
 	{
 		/* The magic number is wrong: not a message catalog file.  */
 		(void) UnlockResource(hglbl);
@@ -522,7 +522,7 @@ void _rc_load_domain(struct loaded_l10nfile *domain_file, struct binding *domain
 
 	/* Get the header entry and look for a plural specification.  */
 	nullentry = _rc_find_msg(domain_file, domainbinding, "", &nullentrylen);
-	if (unlikely(nullentry == (const char *) -1))
+	if (nullentry == (const char *) -1)
 	{
 		goto invalid;
 	}

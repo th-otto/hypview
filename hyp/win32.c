@@ -158,7 +158,7 @@ int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 	size_t len;
 	
 	wstr = hyp_utf8_to_wchar(filename, STR0TERM, &len);
-	if (G_UNLIKELY(wstr == NULL))
+	if (wstr == NULL)
 		return -1;
 	fd = _wopen(wstr, flags, mode);
 	g_free(wstr);
@@ -174,7 +174,7 @@ int hyp_utf8_unlink(const char *name)
 	size_t len;
 	
 	wstr = hyp_utf8_to_wchar(name, STR0TERM, &len);
-	if (G_UNLIKELY(wstr == NULL))
+	if (wstr == NULL)
 		return -1;
 	ret = _wunlink(wstr);
 	g_free(wstr);
@@ -191,7 +191,7 @@ int hyp_utf8_rename(const char *oldname, const char *newname)
 	
 	wstr1 = hyp_utf8_to_wchar(oldname, STR0TERM, &len);
 	wstr2 = hyp_utf8_to_wchar(newname, STR0TERM, &len);
-	if (G_UNLIKELY(wstr1 == NULL || wstr2 == NULL))
+	if (wstr1 == NULL || wstr2 == NULL)
 	{
 		g_free(wstr2);
 		g_free(wstr1);
@@ -214,7 +214,7 @@ FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 	
 	wmode = hyp_utf8_to_wchar(mode, STR0TERM, &len);
 	wstr = hyp_utf8_to_wchar(filename, STR0TERM, &len);
-	if (G_UNLIKELY(wmode == NULL || wstr == NULL))
+	if (wmode == NULL || wstr == NULL)
 	{
 		g_free(wstr);
 		g_free(wmode);
@@ -235,7 +235,7 @@ DIR *hyp_utf8_opendir(const char *dirname)
 	size_t len;
 
 	wstr = hyp_utf8_to_wchar(dirname, STR0TERM, &len);
-	if (G_UNLIKELY(wstr == NULL))
+	if (wstr == NULL)
 		return NULL;
 	dir = _wopendir(wstr);
 	g_free(wstr);

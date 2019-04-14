@@ -25,18 +25,6 @@ union _strptr {
 
 /* @@ end of prolog @@ */
 
-/* Tell the compiler when a conditional or integer expression is
-   almost always true or almost always false.  */
-#ifndef likely
-#ifndef HAVE_BUILTIN_EXPECT
-# define likely(expr) (expr)
-# define unlikely(expr) (expr)
-#else
-# define likely(expr) __builtin_expect((expr), 1)
-# define unlikely(expr) __builtin_expect((expr), 0)
-#endif
-#endif
-
 #ifndef W
 # define W(flag, data) ((flag) ? SWAP (data) : (data))
 #endif

@@ -314,7 +314,7 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 
 DOCUMENT *hypdoc_unref(DOCUMENT *doc)
 {
-	if (G_UNLIKELY(doc == NULL))
+	if (doc == NULL)
 		return doc;
 	ASSERT(doc->ref_count >= 1);
 	if (doc->data && doc->type == HYP_FT_HYP)
@@ -334,7 +334,7 @@ DOCUMENT *hypdoc_unref(DOCUMENT *doc)
 
 DOCUMENT *hypdoc_ref(DOCUMENT *doc)
 {
-	if (G_UNLIKELY(doc == NULL))
+	if (doc == NULL)
 		return doc;
 	++doc->ref_count;
 	ASSERT(doc->ref_count >= 2);
@@ -353,7 +353,7 @@ DOCUMENT *hypdoc_ref(DOCUMENT *doc)
  */
 void HypCloseFile(DOCUMENT *doc)
 {
-	if (G_UNLIKELY(doc == NULL))
+	if (doc == NULL)
 		return;
 	ASSERT(doc->ref_count == 0);
 	/* type-specific cleanup follows */
