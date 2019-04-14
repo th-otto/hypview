@@ -9,6 +9,11 @@
 #undef ASSERT
 #define ASSERT(expr) ((void)((expr) ? 0 : __my_assert(#expr, __FILE__, __LINE__)))
 
+#if defined(__linux__) || defined(__MINT__)
+extern char *__mktemp(char *__template);
+#define mktemp __mktemp
+#endif
+
 typedef struct _filelist FILELIST;
 struct _filelist {
 	FILELIST *next;
@@ -259,6 +264,7 @@ typedef struct _hcp_vars {
 		unsigned long autorefs;
 	} stats;
 
+	char *tmpfile;
 } hcp_vars;
 
 
@@ -1188,6 +1194,18 @@ static NODEITEM *find_node(hcp_vars *vars, const char *name)
  * -----------------------------------
  */
 
+static void hcp_close_output(hcp_vars *vars)
+{
+	if (vars->outfile != NULL)
+	{
+		fflush(vars->outfile);
+		if (vars->outfile != stdout)
+			hyp_utf8_fclose(vars->outfile);
+		vars->outfile = NULL;
+	}
+}
+
+
 static void hcp_comp_exit(hcp_vars *vars)
 {
 	while (pop_file_stack(vars))
@@ -1337,13 +1355,7 @@ static void hcp_comp_exit(hcp_vars *vars)
 	vars->p2_external_node_counter = 0;
 	vars->external_nodes_alloced = 0;
 	
-	if (vars->outfile != NULL)
-	{
-		fflush(vars->outfile);
-		if (vars->outfile != stdout)
-			fclose(vars->outfile);
-		vars->outfile = NULL;
-	}
+	hcp_close_output(vars);
 	
 	if (vars->page_buf)
 	{
@@ -1354,6 +1366,8 @@ static void hcp_comp_exit(hcp_vars *vars)
 	
 	kwsfree(vars->autorefs);
 	vars->autorefs = NULL;
+
+	g_freep(&vars->tmpfile);
 }
 
 /*****************************************************************************/
@@ -7053,13 +7067,13 @@ static gboolean pass(hcp_vars *vars, const char *filename)
 		if (inc->loc.id == id)
 		{
 			hcp_error(vars, NULL, _("Recursive include detected"));
-			fclose(infile);
+			hyp_utf8_fclose(infile);
 			return FALSE;
 		}
 	}
 	if (push_file_stack(vars, filename, infile) == FALSE)
 	{
-		fclose(infile);
+		hyp_utf8_fclose(infile);
 		return FALSE;
 	}
 	if (vars->include_stack->next == NULL && vars->first_loc.id == 0)
@@ -7859,7 +7873,7 @@ static gboolean write_references(hcp_vars *vars)
 		write_long(num_entries, reffile);
 	}
 	if (reffile)
-		fclose(reffile);
+		hyp_utf8_fclose(reffile);
 	warn_converror(vars, NULL, 0);
 	
 	if (retval && vars->opts->write_references >= 2)
@@ -7980,6 +7994,8 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 
 	if (retval)
 	{
+		char *dir;
+
 		if (opts->output_filename == NULL)
 		{
 			/*
@@ -8015,8 +8031,12 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 			}
 		}
 		vars->hyp->file = output_filename;
+		dir = hyp_path_get_dirname(output_filename);
+		vars->tmpfile = g_build_filename(dir, "hyXXXXXX", NULL);
+		mktemp(vars->tmpfile);
+		g_free(dir);
 	}
-	
+
 	if (retval && !add_predefs(vars))
 		retval = FALSE;
 	
@@ -8035,10 +8055,10 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 	
 	if (retval)
 	{
-		vars->outfile = hyp_utf8_fopen(vars->hyp->file, "wb");
+		vars->outfile = hyp_utf8_fopen(vars->tmpfile, "wb");
 		if (vars->outfile == NULL)
 		{
-			hcp_error(vars, NULL, "%s: %s", vars->hyp->file, hyp_utf8_strerror(errno));
+			hcp_error(vars, NULL, "%s: %s", vars->tmpfile, hyp_utf8_strerror(errno));
 			retval = FALSE;
 		}
 	}
@@ -8119,7 +8139,20 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 	
 	if (vars->error_count != 0)
 		retval = FALSE;
-	
+
+	if (retval)
+	{
+		hcp_close_output(vars);
+		hyp_utf8_unlink(vars->hyp->file);
+		if (hyp_utf8_rename(vars->tmpfile, vars->hyp->file) != 0)
+		{
+			hcp_error(vars, NULL, "%s: %s", vars->hyp->file, hyp_utf8_strerror(errno));
+			retval = FALSE;
+		}
+	}
+	if (retval == FALSE && vars->tmpfile)
+		hyp_utf8_unlink(vars->tmpfile);
+
 	hcp_comp_exit(vars);
 	g_free(output_filename);
 	
