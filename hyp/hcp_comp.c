@@ -2341,7 +2341,18 @@ static gboolean finish_page(hcp_vars *vars, hyp_nodenr num)
 	SetCompressedSize(vars->hyp, num, prev_offset, new_offset);
 	if (SetDataSize(vars->hyp, num, vars->page_used) == FALSE)
 	{
-		hcp_error(vars, NULL, _("Node too big for compression (size diff > 64KB)!"));
+		hcp_warning(vars, NULL, _("Node too big for compression (size diff > 64KB)!"));
+		bytes = vars->page_used;
+		fseek(vars->outfile, prev_offset, SEEK_SET);
+		if ((unsigned long)fwrite(vars->page_buf, 1, bytes, vars->outfile) != bytes)
+		{
+			error_outfile(vars);
+			retval = FALSE;
+		}
+		new_offset = prev_offset + bytes;
+		ASSERT(new_offset == (unsigned long)ftell(vars->outfile));
+		SetCompressedSize(vars->hyp, num, prev_offset, new_offset);
+		SetDataSize(vars->hyp, num, vars->page_used);
 	}
 	vars->stats.comp_diff += vars->page_used - bytes;
 	vars->seek_offset = new_offset;
@@ -8098,7 +8109,7 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 			if (retval == FALSE)
 				error_outfile(vars);
 		}
-		
+
 		if (retval)
 			retval = write_references(vars);
 		
