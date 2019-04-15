@@ -104,3 +104,4 @@ hypview.desktop: $(srcdir)/hypview.desktop.in $(INTLTOOL_MERGE) $(PO_DIR)/.intlt
 EXTRA_DIST = hypview.desktop hypview.desktop.in $(mimeinfo_DATA)
 
 CLEANFILES = hypview.desktop $(PO_DIR)/.intltool-merge-cache
+DISTCLEANFILES = $(build_triplet)-hypview$(EXEEXT)

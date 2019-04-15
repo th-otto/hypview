@@ -50,6 +50,8 @@ INFO_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/info/
 HYPVIEW_DOC=	$(srcdir)/header.ui \
 		$(srcdir)/hyphen.ui \
 		$(srcdir)/lang.ui \
+		$(srcdir)/legal.ui \
+		$(srcdir)/thanks.ui \
 		$(srcdir)/version.ui \
 		$(srcdir)/hypview.u $(srcdir)/incompat.ui \
 		$(srcdir)/hcp.u $(srcdir)/hcpcmds.ui $(srcdir)/hcpopts.ui $(srcdir)/hypfmt.ui \
@@ -596,7 +598,7 @@ clean-local:
 	if test -d "$(HTML_DIR)"; then $(RMDIRHIER) "$(HTML_DIR)"; fi
 	$(RM) hypview.hpj hypview.hpc
 	if test -d "$(WINHELP3_DIR)"; then $(RMDIRHIER) "$(WINHELP3_DIR)"; fi
-	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hlp  $(BIN_DIR)/$(OUTPUT_LANG)/hypview.gid  $(BIN_DIR)/$(OUTPUT_LANG)/hypview.cnt $(BIN_DIR)/$(OUTPUT_LANG)/hypview.fts
+	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hlp $(BIN_DIR)/$(OUTPUT_LANG)/hypview.gid $(BIN_DIR)/$(OUTPUT_LANG)/hypview.cnt $(BIN_DIR)/$(OUTPUT_LANG)/hypview.fts
 	$(RM) hypview.texinfo hypview.texi
 	if test -d "$(INFO_DIR)"; then $(RMDIRHIER) "$(INFO_DIR)"; fi
 	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.tvh
@@ -611,11 +613,13 @@ clean-local:
 	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.drc
 	$(RM) hypview.drc
 	if test -d "$(HTMLHELP_DIR)"; then $(RMDIRHIER) "$(HTMLHELP_DIR)"; fi
-	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.chm
-	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pdf
 	if test -d $(PDF_DIR); then $(RMDIRHIER) $(PDF_DIR); fi
-	chmod -f +w $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.fts $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.FTS 2>/dev/null || true
-	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.hlp $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.gid $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.GID $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.cnt $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.fts $(BIN_DIR)/$(OUTPUT_LANG)/hypview4.FTS
+	for f in 1st_conv hcp hypfind hypview hypview4 pc_conv refcheck reflink stg_faq stool; do \
+		chmod -f +w $(BIN_DIR)/$(OUTPUT_LANG)/$$f.fts $(BIN_DIR)/$(OUTPUT_LANG)/$$f.FTS 2>/dev/null; \
+		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/$$f.hlp $(BIN_DIR)/$(OUTPUT_LANG)/$$f.gid $(BIN_DIR)/$(OUTPUT_LANG)/$$f.GID $(BIN_DIR)/$(OUTPUT_LANG)/$$f.cnt $(BIN_DIR)/$(OUTPUT_LANG)/$$f.fts $(BIN_DIR)/$(OUTPUT_LANG)/$$f.FTS; \
+		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/$$f.chm; \
+		$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/$$f.pdf; \
+	done
 	if test -d "$(WINHELP4_DIR)"; then $(RMDIRHIER) "$(WINHELP4_DIR)"; fi
 	$(RM) $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ps
 	if test -d "$(AMGUIDE_DIR)"; then $(RMDIRHIER) "$(AMGUIDE_DIR)"; fi

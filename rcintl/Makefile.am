@@ -5,7 +5,7 @@ noinst_LIBRARIES = librcintl.a
 endif
 
 librcintl_a_SOURCES = \
-	gettextP.h libintl.h gmo.h loadinfo.h rcsysdep.h \
+	gettextP.h gmo.h loadinfo.h rcsysdep.h \
 	dcigettext.c \
 	gettext.c \
 	dgettext.c \
@@ -13,7 +13,7 @@ librcintl_a_SOURCES = \
 	ngettext.c \
 	hash-string.c hash-string.h \
 	plural-exp.c plural-exp.h eval-plural.h \
-	plural.c plural.h \
+	plural.c \
 	finddomain.c \
 	loadmsgcat.c \
 	explodename.c \

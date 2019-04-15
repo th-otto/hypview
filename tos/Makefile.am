@@ -14,7 +14,10 @@ LIBGEM = -lgem
 AM_CPPFLAGS = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos
 
 hypview_SOURCES = \
-	hypview.c hypview.h hypview.rsh \
+	hypview.c hypview.h \
+	lang/en/hypview.rsh lang/en/hypview.h \
+	lang/de/hypview.rsh lang/de/hypview.h \
+	lang/cs/hypview.rsh lang/cs/hypview.h \
 	hv_defs.h \
 	\
 	hv_asc.c \
@@ -91,8 +94,10 @@ distclean-local:
 	$(RM) *.pdb
 
 EXTRA_DIST = lang utils \
-	hypview.rsc hypview.rso hypview.bgh \
+	lang/en/hypview.rsc lang/en/hypview.rso \
+	lang/de/hypview.rsc lang/de/hypview.rso \
+	lang/cs/hypview.rsc lang/cs/hypview.rso \
 	hypview.prj hcp.prj stool.prj refcheck.prj reflink.prj hypfind.prj \
-	help_rc.prj all.prj dragdrop/libdgdp.prj \
-	bubble/history.txt bubble/libbgh.prj bubble/test.bgh bubble/test.c \
+	help_rc.prj all.prj \
+	bubble/history.txt bubble/test.bgh bubble/test.c \
 	gif2bmp.prj picinfo.prj

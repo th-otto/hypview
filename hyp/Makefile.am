@@ -41,6 +41,7 @@ libhyp_a_SOURCES = \
 	cp_850.h \
 	cp_atari.h \
 	cp_mac.h \
+	cp_binary.h \
 	lh5int.h \
 	sorttab.h \
 	gunichar.h \
@@ -93,7 +94,7 @@ endif
 
 
 libhypdoc_a_SOURCES = \
-	hypdoc.c hypdoc.h \
+	hypdoc.c \
 	block.c \
 	hyp_asc.c \
 	hyp_bin.c
@@ -112,7 +113,7 @@ hcp_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
-	outasc.h outstg.h outdump.h outhtml.h htmljs.h \
+	outasc.h outstg.h outdump.h outhtml.h htmljs.h outcomm.h outxml.h \
 	$(UTIL_SRC)
 
 htmljs.h: $(top_srcdir)/www/_hypview.js
@@ -152,7 +153,7 @@ hypview_cgi_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
-	outasc.h outstg.h outdump.h outhtml.h htmljs.h \
+	outasc.h outstg.h outdump.h outhtml.h htmljs.h outcomm.h outxml.h \
 	cgic.c cgic.h \
 	$(UTIL_SRC)
 
@@ -229,7 +230,7 @@ refcheck_SOURCES = \
 refcheck_DEPENDENCIES = libhyp.a
 refcheck_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
 if OS_WIN32
-refcheck_SOURCES += refcheck.rc
+refcheck_SOURCES += refcheck_rc.rc
 refcheck_DEPENDENCIES += refcheck_rc.res $(LIBRCINTL_DEP)
 refcheck_LDADD += refcheck_rc.res
 refcheck_rc.res: $(srcdir)/refcheck_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
@@ -247,7 +248,7 @@ stool_SOURCES = \
 stool_DEPENDENCIES = libhyp.a
 stool_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
 if OS_WIN32
-stool_SOURCES += stool.rc
+stool_SOURCES += stool_rc.rc
 stool_DEPENDENCIES += stool_rc.res $(LIBRCINTL_DEP)
 stool_LDADD += stool_rc.res
 stool_rc.res: $(srcdir)/stool_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
@@ -271,7 +272,7 @@ hypfind_SOURCES = \
 hypfind_DEPENDENCIES = libhyp.a
 hypfind_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
 if OS_WIN32
-hypfind_SOURCES += hypfind.rc
+hypfind_SOURCES += hypfind_rc.rc
 hypfind_DEPENDENCIES += hypfind_rc.res $(LIBRCINTL_DEP)
 hypfind_LDADD += hypfind_rc.res
 hypfind_rc.res: $(srcdir)/hypfind_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
@@ -374,7 +375,7 @@ EXTTOS = .tos
 endif
 
 CLEANFILES = *.ttp *.tos *.res
-DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT)
+DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT) $(build_triplet)-stool$(EXEEXT) $(build_triplet)-hypfind$(EXEEXT) $(build_triplet)-hypinfo$(EXEEXT)
 
 HYP_VERSION = 1.0.0
 DISTDIR = hcp-$(HYP_VERSION)
