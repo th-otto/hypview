@@ -9,7 +9,7 @@
 #undef ASSERT
 #define ASSERT(expr) ((void)((expr) ? 0 : __my_assert(#expr, __FILE__, __LINE__)))
 
-#if defined(__linux__) || defined(__MINT__)
+#if defined(__linux__)
 extern char *__mktemp(char *__template);
 #define mktemp __mktemp
 #endif
