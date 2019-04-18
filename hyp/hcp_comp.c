@@ -6280,8 +6280,6 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		{
 			char c = *p;
 			*p = '\0';
-			if (is_allupper(dest))
-				hcp_warning(vars, NULL, _("use lowercase filenames for external references"));
 			if (hyp_guess_filetype(dest) == HYP_FT_RSC)
 			{
 				entry->type = HYP_NODE_XLINK_RSC;
@@ -6370,6 +6368,8 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 			target = entry->xlink_target;
 		} else if (entry->type == HYP_NODE_EXTERNAL_REF && entry->extern_labindex != HYP_NOINDEX)
 		{
+			char *p;
+
 			if (entry->extern_nodeindex == HYP_NOINDEX)
 				vars->p2_real_external_node_counter++;
 			target = entry->xlink_target;
@@ -6377,8 +6377,19 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 			 * older compiler versions apparently accepted links to external HYP files
 			 * without a /nodename, warn about this
 			 */
-			if (hyp_guess_filetype(dest) == HYP_FT_HYP && strslash(dest) == NULL)
-				hcp_warning(vars, NULL, _("missing /nodename for external reference"));
+			p = strslash(dest);
+			if (p == NULL)
+			{
+				if (hyp_guess_filetype(dest) == HYP_FT_HYP)
+					hcp_warning(vars, NULL, _("missing /nodename for external reference"));
+			} else
+			{
+				char c = *p;
+				*p = '\0';
+				if (is_allupper(dest))
+					hcp_warning(vars, NULL, _("use lowercase filenames for external references"));
+				*p = c;
+			}
 		} else if (entry->type == HYP_NODE_XLINK_RSC)
 		{
 			/* unresolved link; write text only */
