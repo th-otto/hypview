@@ -411,3 +411,6 @@ if WITH_GUI_GTK
 endif
 	tar cvfj hcp-$(HYP_VERSION)-linux.tar.bz2 $(DISTDIR)
 endif
+if OS_MACOS
+	tar cvfj hcp-$(HYP_VERSION)-macos.tar.bz2 $(DISTDIR)
+endif
