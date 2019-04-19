@@ -5,6 +5,8 @@
 
 DIE=0
 
+unset LC_ALL LC_CTYPE LC_TIME LANG
+
 top_srcdir=`dirname $0`
 
 PROG="hcp"

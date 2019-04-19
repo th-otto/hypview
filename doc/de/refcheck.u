@@ -39,7 +39,7 @@
 # Set the subject for the ST-Guide
 # ------------------------------------------------------
 !raw [stg] @subject "Dokumentation/ST-Guide"
-!raw [stg] @options "+zz -t4 +i -s"
+!raw [stg] @options "+z -t4 +i -s"
 !docinfo [stgdatabase] REFCHECK Dokumentation
 
 # ------------------------------------------------------------------------------

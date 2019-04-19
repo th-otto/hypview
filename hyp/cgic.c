@@ -666,7 +666,7 @@ static cgiParseResultType afterNextBoundary(mpStreamPtr mpp, char **outP, int *b
 		{
 			g_free(out);
 		}
-		*outP = '\0';
+		*outP = 0;
 	}
   error:
 	if (bodyLengthP)

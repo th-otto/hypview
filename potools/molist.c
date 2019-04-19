@@ -669,7 +669,7 @@ static gboolean read_linguas(const char *filename)
 		g_strchug(buf);
 		if (*buf == '\0' || *buf == '#')
 			continue;
-		strncat(buf, CATOBJEXT, sizeof(buf));
+		strncat(buf, CATOBJEXT, sizeof(buf) - 1);
 		addfile(buf);
 	}
 	

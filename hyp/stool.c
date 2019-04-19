@@ -1300,7 +1300,7 @@ static void print_filelist(FILE *outfile, CFG *l)
 		if (hyp_guess_filetype(l->filename) == HYP_FT_HYP)
 			tmp = g_strdup(hyp_basename(l->filename));
 		else
-			tmp = g_strdup_printf(l->filename);
+			tmp = g_strdup(l->filename);
 		hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s: %s%s%s\n", STR_INDENT, strings[STR_FILE].val, l->available ? "" : "@{G}", tmp, l->available ? "" : "@{g}");
 		g_free(tmp);
 		

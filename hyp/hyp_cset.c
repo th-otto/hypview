@@ -554,6 +554,10 @@ const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 
 #if !defined(HAVE_GLIB)
 
+#ifdef HAVE_SETLOCALE
+#include <locale.h>
+#endif
+
 typedef enum
 {
 	LOCALE_NORMAL,

@@ -25,7 +25,7 @@
 !begin_raw
 @help "Wichtige Hinweise"
 @subject "Dokumentation/ST-Guide"
-@options "+i -s +zz -t4"
+@options "+i -s +z -t4"
 @extern HCP "hcp.hyp/Main"
 @extern RefLink "reflink.hyp/Main"
 @extern STool "stool.hyp/Main"

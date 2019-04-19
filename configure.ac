@@ -344,7 +344,7 @@ case $host in
   *-apple-darwin* )
      test "$CC" = "" && CC=gcc
      test "$CXX" = "" && CXX="g++"
-     for arg in -fno-writable-strings -mmacosx-version-min=10.4; do
+     for arg in -fno-writable-strings -mmacosx-version-min=10.6; do
         case $CC in
         *$arg*) ;;
         *) if $CC $arg -E - < /dev/null >/dev/null 2>&1; then
@@ -442,6 +442,7 @@ AM_CONDITIONAL(UDO_INTEGRATED, test "$udo_integrated" = yes)
 AM_CONDITIONAL(OS_WIN32, test "$TARGET_OS" = "win32")
 AM_CONDITIONAL(OS_TOS, test "$TARGET_OS" = "tos")
 AM_CONDITIONAL(OS_UNIX, test "$TARGET_OS" = "unix")
+AM_CONDITIONAL(OS_MACOS, test "$TARGET_OS" = "mac")
 AM_CONDITIONAL(CROSS_COMPILING, test "$cross_compiling" != no)
 
 AC_CHECK_HEADERS([argz.h limits.h locale.h nl_types.h malloc.h string.h strings.h unistd.h process.h sys/param.h endian.h io.h fcntl.h dlfcn.h pwd.h wchar.h])

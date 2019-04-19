@@ -88,6 +88,10 @@ if OS_UNIX
 libhyp_a_SOURCES += unix/spawn.c unix/malloc.c
 endif
 
+if OS_MACOS
+libhyp_a_SOURCES += unix/spawn.c unix/malloc.c
+endif
+
 if OS_WIN32
 libhyp_a_SOURCES += win32.c win32/spawn.c win32/hypmain.c unix/malloc.c
 endif
@@ -119,7 +123,7 @@ hcp_SOURCES = \
 htmljs.h: $(top_srcdir)/www/_hypview.js
 	$(AM_V_GEN)( \
 	  echo 'static char const html_javascript_code[] ='; \
-	  sed -e 's@/\*.*\*/@@' -e '/^[ ]*$$/d' -e 's/"/\\"/g' -e 's/^/\t"/' -e 's/$$/\\n"/' $<; \
+	  sed -e 's@/\*.*\*/@@' -e '/^[ ]*$$/d' -e 's/"/\\"/g' -e 's/^/	"/' -e 's/$$/\\n"/' $<; \
 	  echo ';' \
 	) > $@
 
