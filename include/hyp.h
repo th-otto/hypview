@@ -247,6 +247,8 @@ typedef enum  {
 #define HYP_ESC_TEXTATTR_FIRST	0x64	/* text/font attribute */
 #define HYP_ESC_TEXTATTR_LAST	0xa3
 #define HYP_ESC_UNKNOWN_A4		0xa4	/* found in hyp2gdos.hyp */
+#define HYP_ESC_FG_COLOR		0xa5
+#define HYP_ESC_BG_COLOR		0xa6
 
 #define HYP_TXT_NORMAL       0x0000
 #define HYP_TXT_BOLD         0x0001
@@ -256,6 +258,26 @@ typedef enum  {
 #define HYP_TXT_OUTLINED     0x0010
 #define HYP_TXT_SHADOWED     0x0020
 #define HYP_TXT_MASK         0x003f
+
+#define HYP_COLOR_WHITE			0
+#define HYP_COLOR_BLACK			1
+#define HYP_COLOR_RED			2
+#define HYP_COLOR_GREEN			3
+#define HYP_COLOR_BLUE			4
+#define HYP_COLOR_CYAN			5
+#define HYP_COLOR_YELLOW		6
+#define HYP_COLOR_MAGENTA		7
+#define HYP_COLOR_LGRAY			8
+#define HYP_COLOR_DGRAY			9
+#define HYP_COLOR_DRED			10
+#define HYP_COLOR_DGREEN		11
+#define HYP_COLOR_DBLUE			12
+#define HYP_COLOR_DCYAN			13
+#define HYP_COLOR_DYELLOW		14
+#define HYP_COLOR_DMAGENTA		15
+
+#define HYP_DEFAULT_FG HYP_COLOR_BLACK
+#define HYP_DEFAULT_BG HYP_COLOR_WHITE
 
 #define HYP_ESC_IS_TEXATTR(c) ((c) >= HYP_ESC_TEXTATTR_FIRST && (c) <= HYP_ESC_TEXTATTR_LAST)
 

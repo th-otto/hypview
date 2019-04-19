@@ -188,15 +188,17 @@ static void stg_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const u
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean stg_out_attr(GString *out, unsigned char oldattr, unsigned char newattr)
+static gboolean stg_out_attr(GString *out, struct textattr *attr)
 {
-	if (oldattr != newattr)
+	gboolean retval = FALSE;
+	
+	if (attr->curattr != attr->newattr)
 	{
 		g_string_append_c(out, '@');
 		g_string_append_c(out, '{');
 #define onoff(mask, on, off) \
-		if ((oldattr ^ newattr) & mask) \
-			g_string_append_c(out, newattr & mask ? on : off)
+		if ((attr->curattr ^ attr->newattr) & mask) \
+			g_string_append_c(out, attr->newattr & mask ? on : off)
 		onoff(HYP_TXT_BOLD, 'B', 'b');
 		onoff(HYP_TXT_LIGHT, 'G', 'g');
 		onoff(HYP_TXT_ITALIC, 'I', 'i');
@@ -205,9 +207,20 @@ static gboolean stg_out_attr(GString *out, unsigned char oldattr, unsigned char 
 		onoff(HYP_TXT_SHADOWED, 'S', 's');
 #undef onoff
 		g_string_append_c(out, '}');
-		return TRUE;
+		attr->curattr = attr->newattr;
+		retval = TRUE;
 	}
-	return FALSE;
+	if (attr->curbg != attr->newbg)
+	{
+		attr->curbg = attr->newbg;
+		g_string_append_printf(out, "@{BPEN %u}", attr->curbg);
+	}
+	if (attr->curfg != attr->newfg)
+	{
+		attr->curfg = attr->newfg;
+		g_string_append_printf(out, "@{APEN %u}", attr->curfg);
+	}
+	return retval;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -348,7 +361,7 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	char *str;
 	gboolean at_bol;
 	int in_tree;
-	unsigned char textattr;
+	struct textattr attr;
 	long lineno;
 	gboolean retval = TRUE;
 	hyp_nodenr node = nodeptr->number;
@@ -520,7 +533,9 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	textstart = src;
 	at_bol = TRUE;
 	in_tree = -1;
-	textattr = 0;
+	attr.curattr = attr.newattr = 0;
+	attr.curfg = attr.newfg = HYP_DEFAULT_FG;
+	attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 	lineno = 0;
 	stg_out_labels(hyp, opts, out, entry, lineno, syms);
 	stg_out_graphics(hyp, opts, out, hyp_gfx, lineno);
@@ -786,12 +801,28 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 				break;
 				
 			case HYP_ESC_CASE_TEXTATTR:
-				if (stg_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
+				attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
+				if (stg_out_attr(out, &attr))
 					at_bol = FALSE;
-				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 				src++;
 				break;
 			
+			case HYP_ESC_FG_COLOR:
+				src++;
+				attr.newfg = *src;
+				if (stg_out_attr(out, &attr))
+					at_bol = FALSE;
+				src++;
+				break;
+				
+			case HYP_ESC_BG_COLOR:
+				src++;
+				attr.newbg = *src;
+				if (stg_out_attr(out, &attr))
+					at_bol = FALSE;
+				src++;
+				break;
+				
 			case HYP_ESC_UNKNOWN_A4:
 				if (opts->print_unknown)
 					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
@@ -801,6 +832,7 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 			default:
 				if (opts->print_unknown)
 					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+				src++;
 				break;
 			}
 			textstart = src;
@@ -822,7 +854,10 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		}
 	}
 	DUMPTEXT();
-	if (stg_out_attr(out, textattr, 0))
+	attr.newattr = 0;
+	attr.newfg = HYP_DEFAULT_FG;
+	attr.newbg = HYP_DEFAULT_BG;
+	if (stg_out_attr(out, &attr))
 		at_bol = FALSE;
 	FLUSHLINE();
 	FLUSHTREE();

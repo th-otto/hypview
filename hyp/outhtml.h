@@ -625,15 +625,17 @@ static void html_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const 
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean html_out_attr(GString *out, unsigned char oldattr, unsigned char newattr)
+static gboolean html_out_attr(GString *out, struct textattr *attr)
 {
-	if (oldattr != newattr)
+	gboolean retval = FALSE;
+	
+	if (attr->curattr != attr->newattr)
 	{
 #define on(mask, style) \
-		if (!(oldattr & mask) && (newattr & mask)) \
+		if (!(attr->curattr & mask) && (attr->newattr & mask)) \
 			g_string_append_printf(out, "<span class=\"%s\">", style)
 #define off(mask, str) \
-		if ((oldattr & mask) && !(newattr & mask)) \
+		if ((attr->curattr & mask) && !(attr->newattr & mask)) \
 			g_string_append(out, str)
 		on(HYP_TXT_BOLD, html_attr_bold_style);
 		on(HYP_TXT_LIGHT, html_attr_light_style);
@@ -649,9 +651,21 @@ static gboolean html_out_attr(GString *out, unsigned char oldattr, unsigned char
 		off(HYP_TXT_BOLD, "</span>");
 #undef on
 #undef off
-		return TRUE;
+		attr->curattr = attr->newattr;
+		retval = TRUE;
 	}
-	return FALSE;
+
+	if (attr->curfg != attr->newfg)
+	{
+		attr->curfg = attr->newfg;
+	}
+
+	if (attr->curbg != attr->newbg)
+	{
+		attr->curbg = attr->newbg;
+	}
+
+	return retval;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1297,6 +1311,38 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "  z-index:-1;\n");
 	g_string_append(out, "}\n");
 
+	g_string_append(out, "/* styles for user colors */\n");
+	g_string_append(out, ".fgcolor_white { color: #ffffff; }\n");
+	g_string_append(out, ".fgcolor_black { color: #000000; }\n");
+	g_string_append(out, ".fgcolor_red { color: #ff0000; }\n");
+	g_string_append(out, ".fgcolor_green { color: #00ff00; }\n");
+	g_string_append(out, ".fgcolor_blue { color: #0000ff; }\n");
+	g_string_append(out, ".fgcolor_yellow { color: #ffff00; }\n");
+	g_string_append(out, ".fgcolor_magenta { color: #ff00ff; }\n");
+	g_string_append(out, ".fgcolor_lgray { color: #cccccc; }\n");
+	g_string_append(out, ".fgcolor_dgray { color: #888888; }\n");
+	g_string_append(out, ".fgcolor_dred { color: #880000; }\n");
+	g_string_append(out, ".fgcolor_dgreen { color: #008800; }\n");
+	g_string_append(out, ".fgcolor_dblue { color: #000088; }\n");
+	g_string_append(out, ".fgcolor_dcyan { color: #008888; }\n");
+	g_string_append(out, ".fgcolor_dyellow { color: #888800; }\n");
+	g_string_append(out, ".fgcolor_dmagenta { color: #880088; }\n");
+	g_string_append(out, ".bgcolor_white { background-color: #ffffff; }\n");
+	g_string_append(out, ".bgcolor_black { background-color: #000000; }\n");
+	g_string_append(out, ".bgcolor_red { background-color: #ff0000; }\n");
+	g_string_append(out, ".bgcolor_green { background-color: #00ff00; }\n");
+	g_string_append(out, ".bgcolor_blue { background-color: #0000ff; }\n");
+	g_string_append(out, ".bgcolor_yellow { background-color: #ffff00; }\n");
+	g_string_append(out, ".bgcolor_magenta { background-color: #ff00ff; }\n");
+	g_string_append(out, ".bgcolor_lgray { background-color: #cccccc; }\n");
+	g_string_append(out, ".bgcolor_dgray { background-color: #888888; }\n");
+	g_string_append(out, ".bgcolor_dred { background-color: #880000; }\n");
+	g_string_append(out, ".bgcolor_dgreen { background-color: #008800; }\n");
+	g_string_append(out, ".bgcolor_dblue { background-color: #000088; }\n");
+	g_string_append(out, ".bgcolor_dcyan { background-color: #008888; }\n");
+	g_string_append(out, ".bgcolor_dyellow { background-color: #888800; }\n");
+	g_string_append(out, ".bgcolor_dmagenta { background-color: #880088; }\n");
+
 	if (do_inline)
 	{
 		g_string_append(out, "</style>\n");
@@ -1688,10 +1734,15 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			{
 				char *id;
 				GString *tmp;
+				struct textattr attr;
 				
 				++html_popup_id;
 				id = g_strdup_printf("hypview_popup_%d", html_popup_id);
-				html_out_attr(out, curtextattr, 0);
+				attr.curattr = curtextattr;
+				attr.newattr = 0;
+				attr.curfg = attr.newfg = HYP_DEFAULT_FG;
+				attr.curbg = attr.newbg = HYP_DEFAULT_BG;
+				html_out_attr(out, &attr);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\">", html_dropdown_style);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s id=\"%s_btn\" href=\"javascript:void(0);\" onclick=\"showPopup('%s')\">%s</a>", style, id, id, xref->text);
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<span class=\"%s\" style=\"position:fixed;\" id=\"%s_content\" onclick=\"hidePopup('%s');\">", html_dropdown_pnode_style, id, id);
@@ -1704,7 +1755,8 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				g_string_free(tmp, TRUE);
 				g_string_append(out, "</span></span>");
 				g_free(id);
-				html_out_attr(out, 0, curtextattr);
+				attr.newattr = curtextattr;
+				html_out_attr(out, &attr);
 			} else
 			{
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s\"%s>%s</a>", style, xref->destfilename, target, xref->text);
@@ -2157,12 +2209,41 @@ static void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 
 /* ------------------------------------------------------------------------- */
 
+static void html_out_color(GString *out, unsigned char color, gboolean bg)
+{
+	g_string_append(out, "<span class=\"");
+	g_string_append(out, bg ? "bg" : "fg");
+	switch (color)
+	{
+		case HYP_COLOR_WHITE: g_string_append(out, "color_white"); break;
+		case HYP_COLOR_BLACK: g_string_append(out, "color_black"); break;
+		case HYP_COLOR_RED: g_string_append(out, "color_red"); break;
+		case HYP_COLOR_GREEN: g_string_append(out, "color_green"); break;
+		case HYP_COLOR_BLUE: g_string_append(out, "color_blue"); break;
+		case HYP_COLOR_CYAN: g_string_append(out, "color_cyan"); break;
+		case HYP_COLOR_YELLOW: g_string_append(out, "color_yellow"); break;
+		case HYP_COLOR_MAGENTA: g_string_append(out, "color_magenta"); break;
+		case HYP_COLOR_LGRAY: g_string_append(out, "color_lgray"); break;
+		case HYP_COLOR_DGRAY: g_string_append(out, "color_dgray"); break;
+		case HYP_COLOR_DRED: g_string_append(out, "color_dred"); break;
+		case HYP_COLOR_DGREEN: g_string_append(out, "color_dgreen"); break;
+		case HYP_COLOR_DBLUE: g_string_append(out, "color_dblue"); break;
+		case HYP_COLOR_DCYAN: g_string_append(out, "color_dcyan"); break;
+		case HYP_COLOR_DYELLOW: g_string_append(out, "color_dyellow"); break;
+		case HYP_COLOR_DMAGENTA: g_string_append(out, "color_dmagenta"); break;
+		default: g_string_append(out, "color_unknown"); break;
+	}
+	g_string_append(out, "\">");
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, symtab_entry *syms, gboolean for_inline)
 {
 	char *str;
 	gboolean at_bol;
 	int in_tree;
-	unsigned char textattr;
+	struct textattr attr;
 	long lineno;
 	struct hyp_gfx *hyp_gfx = NULL;
 	HYP_NODE *nodeptr;
@@ -2173,7 +2254,11 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
+		if (attr.curbg != HYP_DEFAULT_BG) html_out_color(out, attr.curbg, TRUE); \
+		if (attr.curfg != HYP_DEFAULT_FG) html_out_color(out, attr.curfg, FALSE); \
 		html_out_str(hyp, opts, out, textstart, src - textstart); \
+		if (attr.curfg != HYP_DEFAULT_FG) g_string_append(out, "</span>"); \
+		if (attr.curbg != HYP_DEFAULT_BG) g_string_append(out, "</span>"); \
 		at_bol = FALSE; \
 	}
 #define FLUSHLINE() \
@@ -2405,7 +2490,9 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 			textstart = src;
 			at_bol = TRUE;
 			in_tree = -1;
-			textattr = 0;
+			attr.curattr = attr.newattr = 0;
+			attr.curfg = attr.newfg = HYP_DEFAULT_FG;
+			attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 			lineno = 0;
 			html_out_labels(hyp, opts, out, entry, lineno, syms);
 			html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
@@ -2511,7 +2598,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 							FLUSHTREE();
 							UNUSED(str_equal);
 							
-							html_generate_href(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, textattr);
+							html_generate_href(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, attr.curattr);
 	
 							g_free(xref.destname);
 							g_free(xref.destfilename);
@@ -2580,11 +2667,25 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 						break;
 						
 					case HYP_ESC_CASE_TEXTATTR:
-						html_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST);
-						textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+						attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
+						html_out_attr(out, &attr);
 						src++;
 						break;
 					
+					case HYP_ESC_FG_COLOR:
+						src++;
+						attr.newfg = *src;
+						html_out_attr(out, &attr);
+						src++;
+						break;
+				
+					case HYP_ESC_BG_COLOR:
+						src++;
+						attr.newbg = *src;
+						html_out_attr(out, &attr);
+						src++;
+						break;
+				
 					case HYP_ESC_UNKNOWN_A4:
 						if (opts->print_unknown)
 							hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
@@ -2594,6 +2695,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					default:
 						if (opts->print_unknown)
 							hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+						src++;
 						break;
 					}
 					textstart = src;
@@ -2615,7 +2717,10 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 				}
 			}
 			DUMPTEXT();
-			if (html_out_attr(out, textattr, 0))
+			attr.newattr = 0;
+			attr.newfg = HYP_DEFAULT_FG;
+			attr.newbg = HYP_DEFAULT_BG;
+			if (html_out_attr(out, &attr))
 				at_bol = FALSE;
 			FLUSHLINE();
 			FLUSHTREE();

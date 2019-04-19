@@ -25,6 +25,15 @@ struct _symtab_entry {
 	symtab_entry *next;
 };
 
+struct textattr {
+	unsigned char curattr;
+	unsigned char curfg;
+	unsigned char curbg;
+	unsigned char newattr;
+	unsigned char newfg;
+	unsigned char newbg;
+};
+
 /*
  * Map from VDI colors to ST standard pixel values, 4 planes.
  * Only used to construct the %dithermask
@@ -289,6 +298,8 @@ static gboolean sym_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr no
 				case HYP_ESC_LINK:
 				case HYP_ESC_ALINK:
 				case HYP_ESC_UNKNOWN_A4:
+				case HYP_ESC_FG_COLOR:
+				case HYP_ESC_BG_COLOR:
 					src = hyp_skip_esc(src - 1);
 					break;
 				

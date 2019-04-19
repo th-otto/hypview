@@ -205,6 +205,8 @@ typedef struct _hcp_vars {
 
 	/* current active text attributes */
 	unsigned char textattr;
+	unsigned char fgcolor;
+	unsigned char bgcolor;
 
 	/* (uncompressed) number of bytes in output page */
 	size_t page_used;
@@ -2873,6 +2875,16 @@ static void check_endnode(hcp_vars *vars, gboolean endnode)
 				addbyte(vars, HYP_ESC);
 				addbyte(vars, HYP_ESC_TEXTATTR_FIRST + vars->textattr);
 			}
+			if (vars->fgcolor != HYP_DEFAULT_FG)
+			{
+				hcp_warning(vars, NULL, _("foreground color still active: %d"), vars->fgcolor);
+			}
+			if (vars->bgcolor != HYP_DEFAULT_BG)
+			{
+				hcp_warning(vars, NULL, _("background color still active: %d"), vars->bgcolor);
+			}
+			vars->fgcolor = HYP_DEFAULT_FG;
+			vars->bgcolor = HYP_DEFAULT_BG;
 			vars->node_table[vars->p1_node_counter]->page_lines = vars->node_lineno;
 			vars->p1_node_counter++;
 		} else
@@ -2887,6 +2899,8 @@ static void check_endnode(hcp_vars *vars, gboolean endnode)
 	vars->node_lineno = 1;
 	vars->page_used = 0;
 	vars->textattr = 0;
+	vars->fgcolor = HYP_DEFAULT_FG;
+	vars->bgcolor = HYP_DEFAULT_BG;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -6209,6 +6223,82 @@ static int c_inline_attr_onoff(hcp_vars *vars, unsigned char attr, unsigned char
 
 /* ------------------------------------------------------------------------- */
 
+/*
+ * @{ apen <color> }
+ * @{ fg <colorname> }
+ */
+
+static int c_inline_fgcolor(hcp_vars *vars, int argc, char **argv)
+{
+	unsigned long val;
+	unsigned char color;
+
+	if (argc < 2)
+	{
+		error_missing_args(vars);
+		return 0;
+	}
+	/* TODO: handle symbolic color names: back, background, fill, filltext, highlight, shadow, shine and text */
+	if (!expect_unumber(vars, argv[1], &val))
+	{
+		return 0;
+	}
+	if (val > 255)
+	{
+		hcp_error(vars, NULL, _("bad color"));
+		return 0;
+	}
+	color = (unsigned char)val;
+	if (color != vars->fgcolor)
+	{
+		addbyte(vars, HYP_ESC);
+		addbyte(vars, HYP_ESC_FG_COLOR);
+		addbyte(vars, color);
+		vars->fgcolor = color;
+	}
+	return 0;
+}
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * @{ bpen <color> }
+ * @{ bg <colorname> }
+ */
+
+static int c_inline_bgcolor(hcp_vars *vars, int argc, char **argv)
+{
+	unsigned long val;
+	unsigned char color;
+
+	if (argc < 2)
+	{
+		error_missing_args(vars);
+		return 0;
+	}
+	/* TODO: handle symbolic color names: back, background, fill, filltext, highlight, shadow, shine and text */
+	if (!expect_unumber(vars, argv[1], &val))
+	{
+		return 0;
+	}
+	if (val > 255)
+	{
+		hcp_error(vars, NULL, _("bad color"));
+		return 0;
+	}
+	color = (unsigned char)val;
+	if (color != vars->bgcolor)
+	{
+		addbyte(vars, HYP_ESC);
+		addbyte(vars, HYP_ESC_BG_COLOR);
+		addbyte(vars, color);
+		vars->bgcolor = color;
+	}
+	return 0;
+}
+
+/* ------------------------------------------------------------------------- */
+
 #if 0
 static gboolean is_external_link(const char *link)
 {
@@ -6941,13 +7031,21 @@ static void process_text(hcp_vars *vars, char **linep)
 						column += c_inline_close(vars, argc, argv);
 					else if (cmdnamecmp(argv[1], "ignore") == 0)
 						column += c_inline_ignore(vars, argc, argv);
+					else if (cmdnamecmp(argv[0], "apen") == 0)
+						column += c_inline_fgcolor(vars, argc, argv);
+					else if (cmdnamecmp(argv[0], "fg") == 0)
+						column += c_inline_fgcolor(vars, argc, argv);
+					else if (cmdnamecmp(argv[0], "bpen") == 0)
+						column += c_inline_bgcolor(vars, argc, argv);
+					else if (cmdnamecmp(argv[0], "bg") == 0)
+						column += c_inline_bgcolor(vars, argc, argv);
 					else if (vars->for_amguide && is_unhandled_amguide(argv[0]))
 					{
 						if (vars->hcp_pass == 1)
 							hcp_warning(vars, NULL, _("@{%s} not implemented"), argv[0]);
 					} else
 					{
-						hcp_error(vars, NULL, _("unknown command '%s'"), argv[1]);
+						hcp_error(vars, NULL, _("unknown command '%s'"), vars->for_amguide ? argv[0] : argv[1]);
 					}
 					break;
 				}
@@ -7928,7 +8026,7 @@ static gboolean add_predefs(hcp_vars *vars)
 {
 	struct tm tm;
 	time_t t;
-	char datestr[2 + 1 + 2 + 1 + 4 + 1];
+	char datestr[2 + 1 + 2 + 1 + 4 + 1 + 20];
 	
 	time(&t);
 	localtime_r(&t, &tm);
@@ -7993,6 +8091,9 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 	vars->autorefs = NULL;
 	vars->uses_xref = FALSE;
 	vars->uses_limage = FALSE;
+	vars->textattr = 0;
+	vars->fgcolor = HYP_DEFAULT_FG;
+	vars->bgcolor = HYP_DEFAULT_BG;
 	
 	vars->for_amguide = hyp_guess_filetype(filename) == HYP_FT_GUIDE;
 	

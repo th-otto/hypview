@@ -294,6 +294,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	WP_UNIT x, sx, sy;
 	const unsigned char *src, *end, *textstart;
 	unsigned char textattr;
+	unsigned char fgcolor;
+	unsigned char bgcolor;
 	char *str;
 	HDC hdc = win->draw_hdc;
 	HFONT oldfont;
@@ -338,6 +340,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	src = node->start;
 	textstart = src;
 	textattr = 0;
+	fgcolor = HYP_DEFAULT_FG;
+	bgcolor = HYP_DEFAULT_BG;
 	lineno = 0;
 	x = sx;
 	sy = draw_graphics(win, node->gfx, lineno, sx, sy);
@@ -443,7 +447,10 @@ void HypDisplayPage(WINDOW_DATA *win)
 					TEXTOUT(str);
 					g_free(str);
 
-					SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? viewer_colors.ghosted : viewer_colors.text);
+					if (fgcolor == HYP_DEFAULT_FG && bgcolor == HYP_DEFAULT_BG)
+						SetTextColor(hdc, textattr & HYP_TXT_LIGHT ? viewer_colors.ghosted : viewer_colors.text);
+					else
+						SetTextColor(hdc, hyp_colors[fgcolor]);
 					SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);
 					textstart = src;
 				}
@@ -457,6 +464,30 @@ void HypDisplayPage(WINDOW_DATA *win)
 				textstart = src;
 				break;
 			
+			case HYP_ESC_FG_COLOR:
+				src++;
+				fgcolor = *src;
+				SetTextColor(hdc, hyp_colors[fgcolor]);
+				src++;
+				textstart = src;
+				if (fgcolor == HYP_DEFAULT_FG && bgcolor == HYP_DEFAULT_BG)
+					SetBkMode(hdc, TRANSPARENT);
+				else
+					SetBkMode(hdc, OPAQUE);
+				break;
+
+			case HYP_ESC_BG_COLOR:
+				src++;
+				bgcolor = *src;
+				SetBkColor(hdc, hyp_colors[bgcolor]);
+				src++;
+				textstart = src;
+				if (fgcolor == HYP_DEFAULT_FG && bgcolor == HYP_DEFAULT_BG)
+					SetBkMode(hdc, TRANSPARENT);
+				else
+					SetBkMode(hdc, OPAQUE);
+				break;
+
 			case HYP_ESC_WINDOWTITLE:
 			case HYP_ESC_CASE_DATA:
 			case HYP_ESC_EXTERNAL_REFS:
@@ -657,6 +688,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
 			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_FG_COLOR:
+			case HYP_ESC_BG_COLOR:
 			default:
 				src = hyp_skip_esc(--src);
 				textstart = src;

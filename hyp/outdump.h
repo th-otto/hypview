@@ -231,6 +231,18 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 					src++;
 					break;
 				
+				case HYP_ESC_FG_COLOR:
+					src++;
+					hyp_utf8_fprintf(outfile, _("FG color: %u\n"), *src);
+					src++;
+					break;
+				
+				case HYP_ESC_BG_COLOR:
+					src++;
+					hyp_utf8_fprintf(outfile, _("BG color: %u\n"), *src);
+					src++;
+					break;
+				
 				case HYP_ESC_UNKNOWN_A4:
 					hyp_utf8_fprintf(outfile, _("<unknown hex esc $%02x>\n"), *src);
 					src++;
@@ -238,6 +250,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 				
 				default:
 					hyp_utf8_fprintf(outfile, _("<unknown hex esc $%02x>\n"), *src);
+					src++;
 					break;
 				}
 				textstart = src;

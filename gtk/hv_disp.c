@@ -23,6 +23,8 @@ struct prep_info {
 	WP_UNIT x_raster;
 	GtkTextIter iter;
 	unsigned char textattr;
+	unsigned char fgcolor;
+	unsigned char bgcolor;
 };
 
 static double const long_dashes[] = { 12, 4 };
@@ -880,7 +882,7 @@ static GtkTextTag *insert_str(struct prep_info *info, const char *str, const cha
 		info->target_link_id++;
 		g_free(target_name);
 	}
-	
+
 	if (info->textattr)
 	{
 		GtkTextIter tagstart_iter, tagend_iter;
@@ -900,7 +902,61 @@ static GtkTextTag *insert_str(struct prep_info *info, const char *str, const cha
 		if (info->textattr & HYP_TXT_OUTLINED)
 			gtk_text_buffer_apply_tag_by_name(info->text_buffer, "outlined", &tagstart_iter, &tagend_iter);
 	}
-	
+
+	if (info->fgcolor != HYP_DEFAULT_FG)
+	{
+		GtkTextIter tagstart_iter, tagend_iter;
+		
+		gtk_text_buffer_get_iter_at_mark(info->text_buffer, &tagstart_iter, info->attrstart);
+		tagend_iter = info->iter;
+		switch (info->fgcolor)
+		{
+			case HYP_COLOR_WHITE: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_white", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_BLACK: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_black", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_RED: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_red", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_GREEN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_green", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_BLUE: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_blue", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_CYAN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_cyan", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_YELLOW: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_yellow", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_MAGENTA: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_magenta", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_LGRAY: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_lgray", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DGRAY: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dgray", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DRED: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dred", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DGREEN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dgreen", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DBLUE: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dblue", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DCYAN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dcyan", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DYELLOW: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dyellow", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DMAGENTA: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "fgcolor_dmagenta", &tagstart_iter, &tagend_iter); break;
+		}
+	}
+
+	if (info->bgcolor != HYP_DEFAULT_BG)
+	{
+		GtkTextIter tagstart_iter, tagend_iter;
+		
+		gtk_text_buffer_get_iter_at_mark(info->text_buffer, &tagstart_iter, info->attrstart);
+		tagend_iter = info->iter;
+		switch (info->bgcolor)
+		{
+			case HYP_COLOR_WHITE: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_white", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_BLACK: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_black", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_RED: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_red", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_GREEN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_green", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_BLUE: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_blue", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_CYAN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_cyan", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_YELLOW: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_yellow", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_MAGENTA: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_magenta", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_LGRAY: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_lgray", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DGRAY: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dgray", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DRED: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dred", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DGREEN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dgreen", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DBLUE: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dblue", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DCYAN: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dcyan", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DYELLOW: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dyellow", &tagstart_iter, &tagend_iter); break;
+			case HYP_COLOR_DMAGENTA: gtk_text_buffer_apply_tag_by_name(info->text_buffer, "bgcolor_dmagenta", &tagstart_iter, &tagend_iter); break;
+		}
+	}
+
 	return target_tag;
 }
 
@@ -1038,6 +1094,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	info.target_link_id = 0;
 	info.indent_id = 0;
 	info.textattr = 0;
+	info.fgcolor = HYP_DEFAULT_FG;
+	info.bgcolor = HYP_DEFAULT_BG;
 	info.lineno = 0;
 	info.x = info.maxx = sx = sy = 0;
 	
@@ -1190,6 +1248,20 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 				
 			case HYP_ESC_CASE_TEXTATTR:
 				info.textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+				src++;
+				textstart = src;
+				break;
+			
+			case HYP_ESC_FG_COLOR:
+				src++;
+				info.fgcolor = *src;
+				src++;
+				textstart = src;
+				break;
+			
+			case HYP_ESC_BG_COLOR:
+				src++;
+				info.bgcolor = *src;
 				src++;
 				textstart = src;
 				break;

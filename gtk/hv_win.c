@@ -2021,6 +2021,40 @@ static GtkTextTagTable *create_tags(void)
 	create_link_tag(table, "quit", gl_profile.colors.quit);
 	create_link_tag(table, "close", gl_profile.colors.close);
 
+	gtk_text_table_create_tag(table, "fgcolor_white", "foreground", "#ffffff", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_black", "foreground", "#000000", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_red", "foreground", "#ff0000", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_green", "foreground", "#00ff00", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_blue", "foreground", "#0000ff", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_cyan", "foreground", "#00ffff", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_yellow", "foreground", "#ffff00", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_magenta", "foreground", "#ff00ff", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_lgray", "foreground", "#cccccc", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dgray", "foreground", "#888888", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dred", "foreground", "#880000", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dgreen", "foreground", "#008800", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dblue", "foreground", "#000088", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dcyan", "foreground", "#008888", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dyellow", "foreground", "#888800", NULL);
+	gtk_text_table_create_tag(table, "fgcolor_dmagenta", "foreground", "#880088", NULL);
+
+	gtk_text_table_create_tag(table, "bgcolor_white", "background", "#ffffff", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_black", "background", "#000000", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_red", "background", "#ff0000", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_green", "background", "#00ff00", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_blue", "background", "#0000ff", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_cyan", "background", "#00ffff", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_yellow", "background", "#ffff00", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_magenta", "background", "#ff00ff", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_lgray", "background", "#cccccc", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dgray", "background", "#888888", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dred", "background", "#880000", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dgreen", "background", "#008800", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dblue", "background", "#000088", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dcyan", "background", "#008888", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dyellow", "background", "#888800", NULL);
+	gtk_text_table_create_tag(table, "bgcolor_dmagenta", "background", "#880088", NULL);
+
 	return table;
 }
 

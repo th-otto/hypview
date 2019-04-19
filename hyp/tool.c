@@ -112,6 +112,10 @@ const unsigned char *hyp_skip_esc(const unsigned char *pos)
 	case HYP_ESC_UNKNOWN_A4:			/* ?? from hyp2gdos.hyp */
 		pos++;
 		break;
+	case HYP_ESC_FG_COLOR:				/* foreground color */
+	case HYP_ESC_BG_COLOR:				/* background color */
+		pos += 2;
+		break;
 	default:
 		HYP_DBG(("unknown Tag: %u", *pos));
 		break;

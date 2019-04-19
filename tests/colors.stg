@@ -1,0 +1,25 @@
+@os Atari
+@charset atarist
+@options "-i -s"
+@subject "Documentation"
+@width 75
+
+@node "Main"
+hello @{apen 0}@{bpen 1}white world@{bpen 0}@{apen 1}
+hello @{apen 1}@{bpen 0}black world@{bpen 0}@{apen 1}
+hello @{apen 2}red world@{apen 1}
+hello @{apen 3}green world@{apen 1}
+hello @{apen 4}blue world@{apen 1}
+hello @{apen 5}cyan world@{apen 1}
+hello @{apen 6}yellow world@{apen 1}
+hello @{apen 7}magenta world@{apen 1}
+hello @{apen 8}light gray world@{apen 1}
+hello @{apen 9}dark gray world@{apen 1}
+hello @{apen 10}dark red world@{apen 1}
+hello @{apen 11}dark green world@{apen 1}
+hello @{apen 12}dark blue world@{apen 1}
+hello @{apen 13}dark cyan world@{apen 1}
+hello @{apen 14}dark yellow world@{apen 1}
+hello @{apen 15}dark magenta world@{apen 1}
+
+@endnode

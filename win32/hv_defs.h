@@ -245,6 +245,7 @@ _WORD GetNumPlanes(void);
  * hv_init.c
  */
 extern struct _viewer_colors viewer_colors;
+extern COLORREF const hyp_colors[256];
 
 void hv_init(void);
 void hv_exit(void);

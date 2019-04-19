@@ -57,10 +57,10 @@ static FILE *scrfile = NULL;			/* Screen output-file  */
 static FILE *logfile = NULL;			/* Log-file            */
 
 static char filename[80];
-static char hlpname[80];				/* Name of help-file      */
-static char txtname[80];				/* Name of text-file      */
-static char scrname[80];				/* Name of screen-file    */
-static char logname[80];				/* Name of log-file       */
+static char hlpname[80+4];				/* Name of help-file      */
+static char txtname[80+4];				/* Name of text-file      */
+static char scrname[80+4];				/* Name of screen-file    */
+static char logname[80+4];				/* Name of log-file       */
 
 static char *options;					/* Passed options       */
 static HLPHDR hlphdr;					/* Header of help-file   */

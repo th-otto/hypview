@@ -279,7 +279,7 @@ const char *gem_message_name(_UWORD id)
 }
 
 
-char *appl_xname(_WORD id, char *name)
+static char *appl_xname(_WORD id, char *name)
 {
 	_WORD fid;
 	_WORD type;
@@ -307,7 +307,7 @@ void gem_print_message(const _WORD *msg)
 {
 	char name[20];
 	
-#define str(w) printnull(*((const char **)&msg[w]))
+#define str(w) printnull(*((const char *const*)&msg[w]))
 #define lng(w) (*((const unsigned long *)&msg[w]))
 
 	nf_debugprintf("%s(from %s): %s(",

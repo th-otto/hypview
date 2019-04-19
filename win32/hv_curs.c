@@ -175,6 +175,8 @@ void HypGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)
 				break;
 			
 			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_FG_COLOR:
+			case HYP_ESC_BG_COLOR:
 			default:
 				src = hyp_skip_esc(src - 1);
 				textstart = src;

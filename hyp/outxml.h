@@ -143,11 +143,22 @@ static void xml_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const u
  * @{B}bold text @{I}bold and italic{b} italic@{i}
  * <b>bold text <em>bold and italic</em></b><em> italic</em>
  */
-static void xml_out_attr(GString *out, unsigned char oldattr, unsigned char newattr)
+static void xml_out_attr(GString *out, struct textattr *attr)
 {
-	if (oldattr != newattr)
+	if (attr->curattr != attr->newattr)
 	{
-		g_string_append_printf(out, "    <textattr>%u</textattr>\n", newattr);
+		attr->curattr = attr->newattr;
+		g_string_append_printf(out, "    <textattr>%u</textattr>\n", attr->curattr);
+	}
+	if (attr->curfg != attr->newfg)
+	{
+		attr->curfg = attr->newfg;
+		g_string_append_printf(out, "    <fgcolor>%u</fgcolor>\n", attr->curfg);
+	}
+	if (attr->curbg != attr->newbg)
+	{
+		attr->curbg = attr->newbg;
+		g_string_append_printf(out, "    <bgcolor>%u</bgcolor>\n", attr->curbg);
 	}
 }
 
@@ -421,7 +432,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 {
 	char *str;
 	int in_tree;
-	unsigned char textattr;
+	struct textattr attr;
 	long lineno;
 	struct hyp_gfx *hyp_gfx = NULL;
 	HYP_NODE *nodeptr;
@@ -570,7 +581,9 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		src = nodeptr->start;
 		textstart = src;
 		in_tree = -1;
-		textattr = 0;
+		attr.curattr = attr.newattr = 0;
+		attr.curfg = attr.newfg = HYP_DEFAULT_FG;
+		attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 		lineno = 0;
 		xml_out_labels(hyp, opts, out, entry, lineno, syms);
 		xml_out_graphics(hyp, opts, out, hyp_gfx, lineno);
@@ -718,8 +731,22 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 					break;
 					
 				case HYP_ESC_CASE_TEXTATTR:
-					xml_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST);
-					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+					attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
+					xml_out_attr(out, &attr);
+					src++;
+					break;
+				
+				case HYP_ESC_FG_COLOR:
+					src++;
+					attr.newfg = *src;
+					xml_out_attr(out, &attr);
+					src++;
+					break;
+				
+				case HYP_ESC_BG_COLOR:
+					src++;
+					attr.newbg = *src;
+					xml_out_attr(out, &attr);
 					src++;
 					break;
 				
@@ -732,6 +759,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 				default:
 					if (opts->print_unknown)
 						hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+					src++;
 					break;
 				}
 				textstart = src;
@@ -752,7 +780,10 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 			}
 		}
 		DUMPTEXT();
-		xml_out_attr(out, textattr, 0);
+		attr.newattr = 0;
+		attr.newfg = HYP_DEFAULT_FG;
+		attr.newbg = HYP_DEFAULT_BG;
+		xml_out_attr(out, &attr);
 		FLUSHTREE();
 		++lineno;
 		xml_out_labels(hyp, opts, out, entry, lineno, syms);

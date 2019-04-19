@@ -334,6 +334,23 @@ static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void fill_bg(_WORD x, _WORD y, _WORD w, _WORD h, _WORD bgcolor)
+{
+	_WORD pxy[8];
+	
+	pxy[0] = x;
+	pxy[1] = y;
+	pxy[2] = x + w - 1;
+	pxy[3] = y + h - 1;
+	vswr_mode(vdi_handle, MD_REPLACE);
+	vsf_color(vdi_handle, bgcolor);
+	vr_recfl(vdi_handle, pxy);
+	vswr_mode(vdi_handle, MD_TRANS);
+	vsf_color(vdi_handle, viewer_colors.background);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void HypDisplayPage(WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
@@ -343,6 +360,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	WP_UNIT x, sx, sy;
 	const unsigned char *src, *end, *textstart;
 	unsigned char textattr;
+	unsigned char fgcolor;
+	unsigned char bgcolor;
 	char *str;
 	
 	if (node == NULL)					/* stop if no page loaded */
@@ -362,12 +381,15 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 #define TEXTOUT(str) \
 	{ \
-	_WORD ext[8], w; \
-	vqt_extent(vdi_handle, str, ext); \
-	w = (ext[2] + ext[4]) >> 1; \
-	if (x < win->scroll.g_w && (x + w) > 0 && sy < win->scroll.g_h && (sy + win->y_raster) > 0) \
-		v_gtext(vdi_handle, (_WORD) (x + win->scroll.g_x), (_WORD)(sy + win->scroll.g_y), str); \
-	x += w; \
+		_WORD ext[8], w; \
+		vqt_extent(vdi_handle, str, ext); \
+		w = (ext[2] + ext[4]) >> 1; \
+		if (x < win->scroll.g_w && (x + w) > 0 && sy < win->scroll.g_h && (sy + win->y_raster) > 0) \
+		{ \
+			if (bgcolor != HYP_DEFAULT_BG) fill_bg((_WORD) (x + win->scroll.g_x), (_WORD)(sy + win->scroll.g_y), w, win->y_raster, bgcolor); \
+			v_gtext(vdi_handle, (_WORD) (x + win->scroll.g_x), (_WORD)(sy + win->scroll.g_y), str); \
+		} \
+		x += w; \
 	}
 
 #define DUMPTEXT() \
@@ -384,6 +406,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	src = node->start;
 	textstart = src;
 	textattr = 0;
+	fgcolor = HYP_DEFAULT_FG;
+	bgcolor = HYP_DEFAULT_BG;
 	lineno = 0;
 	x = sx;
 	sy = draw_graphics(win, node->gfx, lineno, sx, sy);
@@ -489,8 +513,15 @@ void HypDisplayPage(WINDOW_DATA *win)
 					TEXTOUT(str);
 					g_free(str);
 
-					vst_color(vdi_handle, viewer_colors.text);
-					vsl_color(vdi_handle, viewer_colors.text);
+					if (fgcolor == HYP_DEFAULT_FG && bgcolor == HYP_DEFAULT_BG)
+					{
+						vst_color(vdi_handle, viewer_colors.text);
+						vsl_color(vdi_handle, viewer_colors.text);
+					} else
+					{
+						vst_color(vdi_handle, fgcolor);
+						vsl_color(vdi_handle, fgcolor);
+					}
 					vst_effects(vdi_handle, textattr);
 					textstart = src;
 				}
@@ -499,6 +530,22 @@ void HypDisplayPage(WINDOW_DATA *win)
 			case HYP_ESC_CASE_TEXTATTR:
 				textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 				vst_effects(vdi_handle, textattr);
+				src++;
+				textstart = src;
+				break;
+
+			case HYP_ESC_FG_COLOR:
+				src++;
+				fgcolor = *src;
+				src++;
+				textstart = src;
+				vst_color(vdi_handle, fgcolor);
+				vsl_color(vdi_handle, fgcolor);
+				break;
+
+			case HYP_ESC_BG_COLOR:
+				src++;
+				bgcolor = *src;
 				src++;
 				textstart = src;
 				break;
@@ -693,6 +740,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
 			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_FG_COLOR:
+			case HYP_ESC_BG_COLOR:
 			default:
 				src = hyp_skip_esc(--src);
 				textstart = src;

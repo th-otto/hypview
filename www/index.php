@@ -469,6 +469,15 @@ A file with all kinds of supported text attributes
 
 <tr>
 <td>
+<li><a href="javascript: submitUrl(hyptestdir + &quot;colors.hyp&quot;);">colors.hyp</a></li>
+</td>
+<td>
+A file with text colors
+</td>
+</tr>
+
+<tr>
+<td>
 <li><a href="javascript: submitUrl(hyptestdir + &quot;patterns.hyp&quot;);">patterns.hyp</a></li>
 </td>
 <td>

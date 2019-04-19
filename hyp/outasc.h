@@ -51,14 +51,19 @@ static void ascii_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean ascii_out_attr(GString *out, unsigned char oldattr, unsigned char newattr)
+static gboolean ascii_out_attr(GString *out, struct textattr *attr)
 {
+	gboolean retval = FALSE;
+	
 	UNUSED(out);
-	if (oldattr != newattr)
+	if (attr->curattr != attr->newattr || attr->curfg != attr->newfg || attr->curbg != attr->newbg)
 	{
-		return TRUE;
+		attr->curattr = attr->newattr;
+		attr->curfg = attr->newfg;
+		attr->curbg = attr->newbg;
+		retval = TRUE;
 	}
-	return FALSE;
+	return retval;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -68,7 +73,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 	char *str;
 	gboolean at_bol;
 	int in_tree;
-	unsigned char textattr;
+	struct textattr attr;
 	unsigned char linkattr;
 	long lineno;
 	gboolean manlike;
@@ -78,7 +83,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 #define DUMPTEXT() \
 	if (src > textstart) \
 	{ \
-		ascii_out_str(hyp, opts, out, textstart, src - textstart, manlike ? textattr : 0); \
+		ascii_out_str(hyp, opts, out, textstart, src - textstart, manlike ? attr.curattr : 0); \
 		at_bol = FALSE; \
 	}
 #define FLUSHLINE() \
@@ -176,7 +181,9 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 		textstart = src;
 		at_bol = TRUE;
 		in_tree = -1;
-		textattr = 0;
+		attr.curattr = attr.newattr = 0;
+		attr.curfg = attr.newfg = HYP_DEFAULT_FG;
+		attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 		lineno = 0;
 		
 		while (src < end)
@@ -309,9 +316,25 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					break;
 					
 				case HYP_ESC_CASE_TEXTATTR:
-					if (ascii_out_attr(out, textattr, *src - HYP_ESC_TEXTATTR_FIRST))
+					attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
+					if (ascii_out_attr(out, &attr))
 						at_bol = FALSE;
-					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
+					src++;
+					break;
+				
+				case HYP_ESC_FG_COLOR:
+					src++;
+					attr.newfg = *src;
+					if (ascii_out_attr(out, &attr))
+						at_bol = FALSE;
+					src++;
+					break;
+			
+				case HYP_ESC_BG_COLOR:
+					src++;
+					attr.newbg = *src;
+					if (ascii_out_attr(out, &attr))
+						at_bol = FALSE;
 					src++;
 					break;
 				
@@ -324,6 +347,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				default:
 					if (opts->print_unknown)
 						hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+					src++;
 					break;
 				}
 				textstart = src;
@@ -343,7 +367,10 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			}
 		}
 		DUMPTEXT();
-		if (ascii_out_attr(out, textattr, 0))
+		attr.newattr = 0;
+		attr.newfg = HYP_DEFAULT_FG;
+		attr.newbg = HYP_DEFAULT_BG;
+		if (ascii_out_attr(out, &attr))
 			at_bol = FALSE;
 		FLUSHLINE();
 		FLUSHTREE();
