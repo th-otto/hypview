@@ -316,6 +316,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					break;
 					
 				case HYP_ESC_CASE_TEXTATTR:
+					FLUSHTREE();
 					attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
 					if (ascii_out_attr(out, &attr))
 						at_bol = FALSE;
@@ -323,6 +324,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					break;
 				
 				case HYP_ESC_FG_COLOR:
+					FLUSHTREE();
 					src++;
 					attr.newfg = *src;
 					if (ascii_out_attr(out, &attr))
@@ -331,6 +333,7 @@ static gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					break;
 			
 				case HYP_ESC_BG_COLOR:
+					FLUSHTREE();
 					src++;
 					attr.newbg = *src;
 					if (ascii_out_attr(out, &attr))

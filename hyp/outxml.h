@@ -731,12 +731,14 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 					break;
 					
 				case HYP_ESC_CASE_TEXTATTR:
+					FLUSHTREE();
 					attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
 					xml_out_attr(out, &attr);
 					src++;
 					break;
 				
 				case HYP_ESC_FG_COLOR:
+					FLUSHTREE();
 					src++;
 					attr.newfg = *src;
 					xml_out_attr(out, &attr);
@@ -744,6 +746,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 					break;
 				
 				case HYP_ESC_BG_COLOR:
+					FLUSHTREE();
 					src++;
 					attr.newbg = *src;
 					xml_out_attr(out, &attr);

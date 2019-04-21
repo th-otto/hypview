@@ -1661,7 +1661,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			if (ft == HYP_FT_RSC)
 			{
 				quoted = html_quote_name(xref->destname, QUOTE_CONVSLASH | QUOTE_SPACE | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s&file=%s&tree=%u\">%s></a>", style, html_view_rsc_href, quoted, xref->line, xref->text);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s&amp;file=%s&amp;tree=%u\">%s</a>", style, html_view_rsc_href, quoted, xref->line, xref->text);
 				g_free(quoted);
 			} else if (ft == HYP_FT_HYP)
 			{
@@ -2667,12 +2667,14 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 						break;
 						
 					case HYP_ESC_CASE_TEXTATTR:
+						FLUSHTREE();
 						attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
 						html_out_attr(out, &attr);
 						src++;
 						break;
 					
 					case HYP_ESC_FG_COLOR:
+						FLUSHTREE();
 						src++;
 						attr.newfg = *src;
 						html_out_attr(out, &attr);
@@ -2680,6 +2682,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 						break;
 				
 					case HYP_ESC_BG_COLOR:
+						FLUSHTREE();
 						src++;
 						attr.newbg = *src;
 						html_out_attr(out, &attr);
