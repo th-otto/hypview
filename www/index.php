@@ -494,6 +494,15 @@ Atari character code table
 </td>
 </tr>
 
+<tr>
+<td>
+<li><a href="javascript: submitUrl(hyptestdir + &quot;testlp.hyp&quot;);">testlp.hyp</a></li>
+</td>
+<td>
+Some more tests.
+</td>
+</tr>
+
 </table>
 </ul>
 
