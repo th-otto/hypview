@@ -235,7 +235,7 @@ hyp_filetype AsciiCalcLines(DOCUMENT *doc, FMT_ASCII *ascii)
 {
 	unsigned char *start = ascii->start;
 	unsigned char *end = start + ascii->length;
-	unsigned char *ptr;
+	unsigned char *ptr = 0;
 	unsigned char val;
 	long columns = 0;
 	long wordend_columns = 0;

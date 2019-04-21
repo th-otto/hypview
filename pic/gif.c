@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 
 #define get_long() \
 	(((_ULONG)(buf[3]) << 24) | \

@@ -1790,8 +1790,8 @@ static gboolean read_c_include(hcp_vars *vars, const char *filename)
 	buf = g_new(unsigned char, in.filesize);
 	if (buf == NULL)
 	{
-		oom(vars);
 		hyp_utf8_fclose(infile);
+		oom(vars);
 		return FALSE;
 	}
 	ret = fread(buf, 1, in.filesize, infile);
@@ -2097,8 +2097,8 @@ static int parse_args(hcp_vars *vars, const char *line, char eos, char ***pargv,
 			(*pargv)[i] = g_strndup(start, p - start);
 			if ((*pargv)[i] == NULL)
 			{
-				oom(vars);
 				count = i;
+				oom(vars);
 				break;
 			}
 		}

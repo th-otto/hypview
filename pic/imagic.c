@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 
 #define IMAGIC_MAGIC 0x494d4443l
 

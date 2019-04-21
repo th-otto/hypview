@@ -5,7 +5,7 @@ pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = hypview.png
 
 EXTRA_DIST = \
-	hypview.h  hypview.ico \
+	hypview.h  hypview.ico  hypview.xpm \
 	back.h     back.ico \
 	help.h     help.ico \
 	home.h     home.ico \

@@ -420,7 +420,7 @@ static gboolean is_big_endian(void)
  */
 static gboolean flat_indexentry(void)
 {
-	return offsetof(INDEX_ENTRY, length) == 0 &&
+	return offsetof(INDEX_ENTRY, length) == /* DISABLES CODE */ (0) &&
 	       offsetof(INDEX_ENTRY, type) == 1 &&
 	       offsetof(INDEX_ENTRY, seek_offset) == 2 &&
 	       offsetof(INDEX_ENTRY, comp_diff) == 6 &&

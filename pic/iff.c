@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 
 typedef struct {                /* Header fuer IFF-Bilder */
     _UBYTE kennung[4];          /* "FORM" */

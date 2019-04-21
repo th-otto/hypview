@@ -45,8 +45,9 @@ typedef struct {
 } GRECT;
 #endif
 
-#ifndef __MFDB
+#if !defined(__MFDB) && !defined(__MFDB__)
 #define __MFDB
+#define __MFDB__
 typedef struct mfdb
 {
    void *fd_addr;                /* pointer to data */

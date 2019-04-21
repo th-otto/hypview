@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 
 typedef struct {                /* Header fuer GEM-Bilder */
     _UBYTE version[2];          /* Versionsnummer */

@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 
 #define STAD_MAGIC1 0x704d3835l
 #define STAD_MAGIC2 0x704d3836l
@@ -163,7 +163,7 @@ _UBYTE *stad_pack(const _UBYTE *_src, _UBYTE *horbuf, _UBYTE *verbuf, PICTURE *p
 	_UBYTE *buf;
 	const _UBYTE *start;
 	_UBYTE c;
-	_WORD min;
+	_WORD min = 0;
 	_UBYTE kennbyte;
 	_UBYTE packbyte;
 	_UBYTE specialbyte;

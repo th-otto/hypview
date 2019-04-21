@@ -1,0 +1,41 @@
+/* XPM */
+static char *hypview_xor[] = {
+/* width height ncolors chars_per_pixel */
+"32 32 2 1",
+/* colors */
+"x c yellow",
+"  c None",
+/* pixels */
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"          xxxxxxxxxxx           ",
+"         xxxxxxxxxxxxx          ",
+"         xxxxxxxxxxxxx          ",
+"         xxx       xxx          ",
+"         xxx       xxx          ",
+"                   xxx          ",
+"              xxxxxxxx          ",
+"              xxxxxxxx          ",
+"              xxxxxxx           ",
+"              xxx               ",
+"              xxx               ",
+"              xxx               ",
+"                                ",
+"              xxx               ",
+"              xxx               ",
+"              xxx               ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                "
+};

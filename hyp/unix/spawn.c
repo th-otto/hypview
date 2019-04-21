@@ -61,7 +61,7 @@ int hyp_utf8_spawnvp(int mode, int argc, const char *const *argv)
 	if (pipefds[1] >= 0)
 	{
 		close(pipefds[1]);
-		while ((count = read(pipefds[0], &err, sizeof(errno))) == -1)
+		while ((count = (int)read(pipefds[0], &err, sizeof(errno))) == -1)
 			if (errno != EAGAIN && errno != EINTR)
 				break;
 		close(pipefds[0]);

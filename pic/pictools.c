@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 #include <math.h>
 
 /*** ---------------------------------------------------------------------- ***/

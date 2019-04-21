@@ -19,7 +19,7 @@
 /* Mac OS X code written by Bruno Haible <bruno@clisp.org>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+# include "config.h"
 #endif
 #include "windows_.h"
 

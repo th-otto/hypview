@@ -6,7 +6,7 @@
 #include "config.h"
 #endif
 
-#include <picture.h>
+#include "picture.h"
 
 #define tobyte(pixels) (((pixels) + 7) >> 3)
 #define toword(pixels) (((pixels) + 15) >> 4)
