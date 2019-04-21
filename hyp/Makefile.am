@@ -13,6 +13,7 @@ noinst_SCRIPTS =
 
 if HAVE_CURL
 noinst_PROGRAMS += hypview.cgi
+noinst_PROGRAMS += rscview.cgi
 endif
 SRVDIR = /srv/www/htdocs/hypview
 
@@ -173,15 +174,39 @@ if WITH_GUI_GTK
 hypview_cgi_LDFLAGS += -Wl,-rpath,$(GTK_LIBDIR)
 endif
 hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA_hypview_cgi_DEPENDENCIES) 
-	@rm -f hypview.cgi$(EXEEXT)
+	@rm -f $@
 	$(AM_V_CCLD)$(hypview_cgi_LINK) $(hypview_cgi_OBJECTS) $(hypview_cgi_LDADD) $(LIBS)
 if !CROSS_COMPILING
 	$(AM_V_at)if test -d "$(SRVDIR)"; then \
 	   echo "installing $@ in $(SRVDIR)"; \
-	   cp $@ "$(SRVDIR)/hypview.cgi"; \
+	   cp $@ "$(SRVDIR)/$@"; \
 	fi
 endif
-	
+
+rscview_cgi_SOURCES = \
+	rsccgi.c \
+	hcp_opts.c \
+	cgic.c cgic.h \
+	$(UTIL_SRC)
+
+rscview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
+rscview_cgi_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
+if OS_WIN32
+rscview_cgi_SOURCES += hcp_rc.rc
+rscview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
+rscview_cgi_LDADD += hcp_rc.res
+endif
+rscview_cgi_LDFLAGS = -Wl,-rpath,$(CURL_LIBDIR)
+rscview.cgi$(EXEEXT): $(rscview_cgi_OBJECTS) $(rscview_cgi_DEPENDENCIES) $(EXTRA_rscview_cgi_DEPENDENCIES) 
+	@rm -f $@
+	$(AM_V_CCLD)$(rscview_cgi_LINK) $(rscview_cgi_OBJECTS) $(rscview_cgi_LDADD) $(LIBS)
+if !CROSS_COMPILING
+	$(AM_V_at)if test -d "$(SRVDIR)"; then \
+	   echo "installing $@ in $(SRVDIR)"; \
+	   cp $@ "$(SRVDIR)/$@"; \
+	fi
+endif
+
 hypinfo_SOURCES = \
 	hypinfo.c \
 	hcp_opts.c \
