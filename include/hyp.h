@@ -71,10 +71,10 @@ typedef enum {
 	HYP_OS_UNKNOWN = 0,
 	HYP_OS_AMIGA = 1,
 	HYP_OS_ATARI = 2,
-	HYP_OS_MAC = 3,
+	HYP_OS_MAC = 3, /* until System 9, not MacOSX */
 	HYP_OS_WIN32 = 4,
 	HYP_OS_UNIX = 5,
-	HYP_OS_RES1 = 6,
+	HYP_OS_MACOS = 6, /* MacOSX/macOS */
 	HYP_OS_RES2 = 7,
 	HYP_OS_RES3 = 8,
 	HYP_OS_RES4 = 9

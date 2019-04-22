@@ -135,7 +135,8 @@ const char *ref_osname(HYP_OS os)
 		return "4";
 	case HYP_OS_UNIX:
 		return "5";
-	case HYP_OS_RES1:
+	case HYP_OS_MACOS:
+		return "6";
 	case HYP_OS_RES2:
 	case HYP_OS_RES3:
 	case HYP_OS_RES4:
@@ -292,22 +293,24 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 					if (verbose)
 						hyp_utf8_fprintf(stderr, _("unknown OS specified in REF module %s of %s\n"), printnull(module->filename), ref->filename);
 					break;
-				case '1':
+				case '0' + (int)HYP_OS_AMIGA:
 					module->os = HYP_OS_AMIGA;
 					break;
-				case '2':
+				case '0' + (int)HYP_OS_ATARI:
 					module->os = HYP_OS_ATARI;
 					break;
-				case '3':
+				case '0' + (int)HYP_OS_MAC:
 					module->os = HYP_OS_MAC;
 					break;
-				case '4':
+				case '0' + (int)HYP_OS_WIN32:
 					module->os = HYP_OS_WIN32;
 					break;
-				case '5':
+				case '0' + (int)HYP_OS_UNIX:
 					module->os = HYP_OS_UNIX;
 					break;
-				case '6':
+				case '0' + (int)HYP_OS_MACOS:
+					module->os = HYP_OS_MACOS;
+					break;
 				case '7':
 				case '8':
 				case '9':

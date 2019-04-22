@@ -24,7 +24,8 @@ Der Header einer Hypertext Datei ist wie folgt aufgebaut:
   !item [1] Byte Kennung, mit welcher Version des Compilers Åbersetzt wurde
     (aktuell 5)
   !item [1] Byte Kennung, unter welchem Betriebsystem Åbersetzt wurde
-    (0: unbekannt, 1: AMIGA, 2: ATARI, 3: Macintosh)
+    (0: unbekannt, 1: Amiga, 2: Atari, 3: Macintosh, 4: Windows, 5: Unix,
+     6: macOS)
 !end_xlist
 !end_node
 

@@ -122,8 +122,8 @@ HYP_CHARSET hyp_default_charset(HYP_OS os)
 	case HYP_OS_WIN32:
 		return HYP_CHARSET_CP1252;
 	case HYP_OS_UNIX:
+	case HYP_OS_MACOS:
 		return HYP_CHARSET_UTF8;
-	case HYP_OS_RES1:
 	case HYP_OS_RES2:
 	case HYP_OS_RES3:
 	case HYP_OS_RES4:

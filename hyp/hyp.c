@@ -167,7 +167,8 @@ const char *hyp_osname(HYP_OS os)
 		return "Windows";
 	case HYP_OS_UNIX:
 		return "Unix";
-	case HYP_OS_RES1:
+	case HYP_OS_MACOS:
+		return "macOS";
 	case HYP_OS_RES2:
 	case HYP_OS_RES3:
 	case HYP_OS_RES4:
@@ -188,6 +189,9 @@ HYP_OS hyp_os_from_name(const char *name)
 		return HYP_OS_ATARI;
 	if (g_ascii_strcasecmp(name, "macintosh") == 0)
 		return HYP_OS_MAC;
+	if (g_ascii_strcasecmp(name, "macos") == 0 ||
+		g_ascii_strcasecmp(name, "macosx") == 0)
+		return HYP_OS_MACOS;
 	if (g_ascii_strcasecmp(name, "windows") == 0)
 		return HYP_OS_WIN32;
 	if (g_ascii_strcasecmp(name, "unix") == 0)
@@ -197,9 +201,9 @@ HYP_OS hyp_os_from_name(const char *name)
 	if (g_ascii_strcasecmp(name, "TOS") == 0)
 		return HYP_OS_ATARI;
 	if (g_ascii_strcasecmp(name, "Mac OS X") == 0)
-		return HYP_OS_MAC;
+		return HYP_OS_MACOS;
 	if (g_ascii_strcasecmp(name, "Mac OS") == 0)
-		return HYP_OS_MAC;
+		return HYP_OS_MACOS;
 	if (g_ascii_strcasecmp(name, "Win32") == 0)
 		return HYP_OS_WIN32;
 	if (g_ascii_strcasecmp(name, "Linux") == 0)
@@ -280,8 +284,10 @@ HYP_OS hyp_get_current_os(void)
 	return HYP_OS_ATARI;
 #elif defined(__AMIGA__) || defined(__amiga__)
 	return HYP_OS_AMIGA;
-#elif defined(__APPLE__) || defined(__MACH__)
+#elif defined(macintosh) || defined(Macintosh)
 	return HYP_OS_MAC;
+#elif defined(__APPLE__) || defined(__MACH__)
+	return HYP_OS_MACOS;
 #elif defined(__WIN32__)
 	return HYP_OS_WIN32;
 #elif defined(__unix__) || defined(__unix) || defined(unix) || defined(__hpux__) || defined(__irix__)
