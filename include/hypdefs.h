@@ -41,6 +41,7 @@
 #include "time_.h"
 #include "stat_.h"
 #include "portab.h"
+#include "hypdebug.h"
 #include "hypmem.h"
 #include "hypintl.h"
 #if defined(HAVE_WCHAR_H)
