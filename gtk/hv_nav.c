@@ -161,9 +161,11 @@ void HistoryPopup(WINDOW_DATA *win, int button, guint32 event_time)
 
 static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 {
-	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
 
+	doc = win->data;
+	hyp = (HYP_DOCUMENT *)doc->data;
 	if (hypnode_valid(hyp, page) &&
 		(win->displayed_node == NULL ||
 		 page != win->displayed_node->number))
@@ -177,8 +179,17 @@ static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
 
 void GotoHelp(WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+
+	if (win == NULL)
+		return;
+	doc = win->data;
+	if (doc == NULL)
+		return;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hyp == NULL)
+		return;
 	GotoDocPage(win, hyp->help_page);
 }
 
@@ -186,8 +197,17 @@ void GotoHelp(WINDOW_DATA *win)
 
 void GotoIndex(WINDOW_DATA *win)
 {
-	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+
+	if (win == NULL)
+		return;
+	doc = win->data;
+	if (doc == NULL)
+		return;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hyp == NULL)
+		return;
 	GotoDocPage(win, hyp->index_page);
 }
 
@@ -213,12 +233,21 @@ void GotoDefaultFile(WINDOW_DATA *win)
 
 void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 {
-	DOCUMENT *doc = win->data;
-	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
 	hyp_nodenr new_node = HYP_NOINDEX;
-	hyp_nodenr current_node = doc->getNodeProc(win);
+	hyp_nodenr current_node;
 	gboolean add_to_hist = FALSE;
 	
+	if (win == NULL)
+		return;
+	doc = win->data;
+	if (doc == NULL)
+		return;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hyp == NULL)
+		return;
+	current_node = doc->getNodeProc(win);
 	switch (obj)
 	{
 	case TO_NEXT:
