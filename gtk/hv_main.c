@@ -210,6 +210,42 @@ static void hypview_application_before_emit(GApplication *application, GVariant 
 
 /*** ---------------------------------------------------------------------- ***/
 
+static gboolean hypview_local_command_line(GApplication *app, char ***argv, int *exit_status)
+{
+	int argc = argv && *argv ? g_strv_length(*argv) : 0;
+	gboolean ret;
+
+	if (argc > 1)
+	{
+		char *path = (*argv)[1];
+		int exists;
+		struct stat st;
+		char *resolved;
+
+		exists = hyp_utf8_stat(path, &st) == 0;
+		resolved = path;
+		if (exists)
+		{
+			resolved = realpath(path, NULL);
+		}
+		(*argv)[1] = resolved;
+		ret = G_APPLICATION_CLASS(hypview_application_parent_class)->local_command_line(app, argv, exit_status);
+#if 0
+		if (path != resolved)
+		{
+			(free)(resolved);
+			(*argv)[1] = path;
+		}
+#endif
+	} else
+	{
+		ret = G_APPLICATION_CLASS(hypview_application_parent_class)->local_command_line(app, argv, exit_status);
+	}
+	return ret;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static gint hypview_command_line(GApplication *app, GApplicationCommandLine *command_line)
 {
 	GVariantDict *dict = g_application_command_line_get_options_dict(command_line);
@@ -298,8 +334,11 @@ static gint hypview_command_line(GApplication *app, GApplicationCommandLine *com
 		} else
 		{
 			char *path = argv[0];
+			int exists;
+			struct stat st;
 			
-			if (argc == 1 && hyp_guess_filetype(path) != HYP_FT_HYP)
+			exists = hyp_utf8_stat(path, &st) == 0;
+			if (argc == 1 && !exists && hyp_guess_filetype(path) != HYP_FT_HYP)
 			{
 				win = search_allref(win, path, FALSE);
 			} else
@@ -484,13 +523,14 @@ static GVariant *g_application_impl_get_property(
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void hypview_application_class_init(GApplicationClass *klass)
+static void hypview_application_class_init(HypviewApplicationClass *klass)
 {
 	klass->before_emit = hypview_application_before_emit;
 	klass->startup = hypview_application_startup;
 	klass->activate = hypview_application_activate;
 	klass->open = hypview_application_open;
 	klass->command_line = hypview_command_line;
+	klass->local_command_line = hypview_local_command_line;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -503,9 +543,9 @@ static int gtk_application_run(GApplication *application, int argc, char **argv)
 	{
 		gint i;
 
-		arguments = g_new (gchar *, argc + 1);
+		arguments = g_new(gchar *, argc + 1);
 		for (i = 0; i < argc; i++)
-			arguments[i] = g_strdup (argv[i]);
+			arguments[i] = g_strdup(argv[i]);
 		arguments[i] = NULL;
 	}
 
