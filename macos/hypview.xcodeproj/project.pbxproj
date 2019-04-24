@@ -105,7 +105,82 @@
 		8CFB719A226BFC7800116947 /* hcp_opts.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB7125226B922000116947 /* hcp_opts.c */; };
 		8CFB719B226BFC8500116947 /* utl_ngui.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB7136226B926700116947 /* utl_ngui.c */; };
 		8CFB719C226BFC8900116947 /* utl_err.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB7135226B926700116947 /* utl_err.c */; };
+		8CFB71A4226CBACB00116947 /* hcp_opts.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71A1226CBACB00116947 /* hcp_opts.m */; };
+		8CFB71A5226CBACB00116947 /* hv_help.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71A3226CBACB00116947 /* hv_help.m */; };
+		8CFB71A7226CBEDF00116947 /* hv_error.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71A6226CBEDF00116947 /* hv_error.m */; };
+		8CFB71A9226CC72900116947 /* hv_init.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71A8226CC72900116947 /* hv_init.m */; };
+		8CFB71AB226CC86500116947 /* hv_mark.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71AA226CC86500116947 /* hv_mark.m */; };
+		8CFB71AD226CC92600116947 /* hv_misc.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71AC226CC92600116947 /* hv_misc.m */; };
+		8CFB71AF226D12EA00116947 /* hv_nav.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71AE226D12EA00116947 /* hv_nav.m */; };
+		8CFB71B1226D188900116947 /* hv_asc.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71B0226D188900116947 /* hv_asc.m */; };
+		8CFB71B3226D192A00116947 /* hv_bin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71B2226D192A00116947 /* hv_bin.m */; };
+		8CFB71B6226D1A1C00116947 /* hv_tbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71B5226D1A1C00116947 /* hv_tbar.m */; };
+		8CFB71B8226D1ACB00116947 /* hv_hist.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71B7226D1ACB00116947 /* hv_hist.m */; };
+		8CFB71BA226D595E00116947 /* hv_gfx.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71B9226D595E00116947 /* hv_gfx.m */; };
+		8CFB71BC226D69A600116947 /* hv_block.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71BB226D69A600116947 /* hv_block.m */; };
+		8CFB71BE226D753F00116947 /* hv_selec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71BD226D753F00116947 /* hv_selec.m */; };
+		8CFB71C0226DA34000116947 /* hv_fsel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71BF226DA34000116947 /* hv_fsel.m */; };
+		8CFB71C2226DF58E00116947 /* hv_font.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71C1226DF58E00116947 /* hv_font.m */; };
+		8CFB71C4226E114C00116947 /* hv_win.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71C3226E114C00116947 /* hv_win.m */; };
+		8CFB71C6226E2A8B00116947 /* hv_file.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71C5226E2A8B00116947 /* hv_file.m */; };
+		8CFB71C8226E2D7E00116947 /* hv_autol.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71C7226E2D7E00116947 /* hv_autol.m */; };
+		8CFB71CA226E2E0100116947 /* autoloc.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71C9226E2E0100116947 /* autoloc.m */; };
+		8CFB71CC226E30A100116947 /* hv_disp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71CB226E30A100116947 /* hv_disp.m */; };
+		8CFB71CE226E35CA00116947 /* hv_curs.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71CD226E35CA00116947 /* hv_curs.m */; };
+		8CFB71D0226E645700116947 /* hv_hfind.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71CF226E645700116947 /* hv_hfind.m */; };
+		8CFB71D2226E895000116947 /* hv_eref.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71D1226E895000116947 /* hv_eref.m */; };
+		8CFB71D4226E8C8E00116947 /* hv_srch.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71D3226E8C8E00116947 /* hv_srch.m */; };
+		8CFB71D6226E8CCB00116947 /* hv_popup.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71D5226E8CCB00116947 /* hv_popup.m */; };
+		8CFB71DA226EE31F00116947 /* hv_about.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71D9226EE31F00116947 /* hv_about.m */; };
+		8CFB71DC226EE4AD00116947 /* hv_info.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71DB226EE4AD00116947 /* hv_info.m */; };
+		8CFB71DE226EF8F500116947 /* hv_prefs.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71DD226EF8F500116947 /* hv_prefs.m */; };
+		8CFB71E0226EF9F900116947 /* hv_recomp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71DF226EF9F900116947 /* hv_recomp.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8CFB71E12270AA1400116947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CFB7059226AE93900116947 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CFB711A226B910900116947;
+			remoteInfo = hcp;
+		};
+		8CFB71E32270AA1900116947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CFB7059226AE93900116947 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CFB715D226BF95900116947;
+			remoteInfo = reflink;
+		};
+		8CFB71E52270AA1D00116947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CFB7059226AE93900116947 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CFB716E226BFAF800116947;
+			remoteInfo = refcheck;
+		};
+		8CFB71E72270AA2100116947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CFB7059226AE93900116947 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CFB713E226B95AB00116947;
+			remoteInfo = hypinfo;
+		};
+		8CFB71E92270AA2600116947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CFB7059226AE93900116947 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CFB717F226BFB8100116947;
+			remoteInfo = stool;
+		};
+		8CFB71EB2270AA2B00116947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CFB7059226AE93900116947 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CFB718F226BFC1800116947;
+			remoteInfo = hypfind;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8CFB7119226B910900116947 /* CopyFiles */ = {
@@ -165,7 +240,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8CFB7063226AEA3F00116947 /* hypview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hypview.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CFB7063226AEA3F00116947 /* HypView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HypView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CFB707A226AEC0600116947 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8CFB7080226AF12400116947 /* hv_main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_main.m; sourceTree = "<group>"; };
 		8CFB7086226B7E3700116947 /* liblibhyp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibhyp.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -259,6 +334,39 @@
 		8CFB7190226BFC1800116947 /* hypfind */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hypfind; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CFB7198226BFC5F00116947 /* hypfind.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hypfind.c; path = ../hyp/hypfind.c; sourceTree = SOURCE_ROOT; };
 		8CFB719D226BFCCF00116947 /* sorttab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sorttab.h; path = ../hyp/sorttab.h; sourceTree = SOURCE_ROOT; };
+		8CFB719F226CAA3200116947 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8CFB71A1226CBACB00116947 /* hcp_opts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hcp_opts.m; sourceTree = "<group>"; };
+		8CFB71A2226CBACB00116947 /* hv_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hv_defs.h; sourceTree = "<group>"; };
+		8CFB71A3226CBACB00116947 /* hv_help.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_help.m; sourceTree = "<group>"; };
+		8CFB71A6226CBEDF00116947 /* hv_error.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_error.m; sourceTree = "<group>"; };
+		8CFB71A8226CC72900116947 /* hv_init.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_init.m; sourceTree = "<group>"; };
+		8CFB71AA226CC86500116947 /* hv_mark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_mark.m; sourceTree = "<group>"; };
+		8CFB71AC226CC92600116947 /* hv_misc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_misc.m; sourceTree = "<group>"; };
+		8CFB71AE226D12EA00116947 /* hv_nav.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_nav.m; sourceTree = "<group>"; };
+		8CFB71B0226D188900116947 /* hv_asc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_asc.m; sourceTree = "<group>"; };
+		8CFB71B2226D192A00116947 /* hv_bin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_bin.m; sourceTree = "<group>"; };
+		8CFB71B4226D1A1400116947 /* w_draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w_draw.h; sourceTree = "<group>"; };
+		8CFB71B5226D1A1C00116947 /* hv_tbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_tbar.m; sourceTree = "<group>"; };
+		8CFB71B7226D1ACB00116947 /* hv_hist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_hist.m; sourceTree = "<group>"; };
+		8CFB71B9226D595E00116947 /* hv_gfx.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_gfx.m; sourceTree = "<group>"; };
+		8CFB71BB226D69A600116947 /* hv_block.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_block.m; sourceTree = "<group>"; };
+		8CFB71BD226D753F00116947 /* hv_selec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_selec.m; sourceTree = "<group>"; };
+		8CFB71BF226DA34000116947 /* hv_fsel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_fsel.m; sourceTree = "<group>"; };
+		8CFB71C1226DF58E00116947 /* hv_font.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_font.m; sourceTree = "<group>"; };
+		8CFB71C3226E114C00116947 /* hv_win.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_win.m; sourceTree = "<group>"; };
+		8CFB71C5226E2A8B00116947 /* hv_file.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_file.m; sourceTree = "<group>"; };
+		8CFB71C7226E2D7E00116947 /* hv_autol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_autol.m; sourceTree = "<group>"; };
+		8CFB71C9226E2E0100116947 /* autoloc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = autoloc.m; sourceTree = "<group>"; };
+		8CFB71CB226E30A100116947 /* hv_disp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_disp.m; sourceTree = "<group>"; };
+		8CFB71CD226E35CA00116947 /* hv_curs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_curs.m; sourceTree = "<group>"; };
+		8CFB71CF226E645700116947 /* hv_hfind.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_hfind.m; sourceTree = "<group>"; };
+		8CFB71D1226E895000116947 /* hv_eref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_eref.m; sourceTree = "<group>"; };
+		8CFB71D3226E8C8E00116947 /* hv_srch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_srch.m; sourceTree = "<group>"; };
+		8CFB71D5226E8CCB00116947 /* hv_popup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_popup.m; sourceTree = "<group>"; };
+		8CFB71D9226EE31F00116947 /* hv_about.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_about.m; sourceTree = "<group>"; };
+		8CFB71DB226EE4AD00116947 /* hv_info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_info.m; sourceTree = "<group>"; };
+		8CFB71DD226EF8F500116947 /* hv_prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_prefs.m; sourceTree = "<group>"; };
+		8CFB71DF226EF9F900116947 /* hv_recomp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_recomp.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -368,7 +476,7 @@
 		8CFB7064226AEA3F00116947 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8CFB7063226AEA3F00116947 /* hypview.app */,
+				8CFB7063226AEA3F00116947 /* HypView.app */,
 				8CFB7086226B7E3700116947 /* liblibhyp.a */,
 				8CFB70DD226B859B00116947 /* liblibhypdoc.a */,
 				8CFB70F3226B8E6D00116947 /* liblibpic.a */,
@@ -385,7 +493,40 @@
 		8CFB7078226AEB8000116947 /* HypView Sources */ = {
 			isa = PBXGroup;
 			children = (
+				8CFB71DF226EF9F900116947 /* hv_recomp.m */,
+				8CFB71DD226EF8F500116947 /* hv_prefs.m */,
+				8CFB71DB226EE4AD00116947 /* hv_info.m */,
+				8CFB71D9226EE31F00116947 /* hv_about.m */,
+				8CFB71D5226E8CCB00116947 /* hv_popup.m */,
+				8CFB71D3226E8C8E00116947 /* hv_srch.m */,
+				8CFB71D1226E895000116947 /* hv_eref.m */,
+				8CFB71CF226E645700116947 /* hv_hfind.m */,
+				8CFB71CD226E35CA00116947 /* hv_curs.m */,
+				8CFB71CB226E30A100116947 /* hv_disp.m */,
+				8CFB71C9226E2E0100116947 /* autoloc.m */,
+				8CFB71C7226E2D7E00116947 /* hv_autol.m */,
+				8CFB71C5226E2A8B00116947 /* hv_file.m */,
+				8CFB71C3226E114C00116947 /* hv_win.m */,
+				8CFB71C1226DF58E00116947 /* hv_font.m */,
+				8CFB71BF226DA34000116947 /* hv_fsel.m */,
+				8CFB71BD226D753F00116947 /* hv_selec.m */,
+				8CFB71BB226D69A600116947 /* hv_block.m */,
+				8CFB71B9226D595E00116947 /* hv_gfx.m */,
+				8CFB71B7226D1ACB00116947 /* hv_hist.m */,
+				8CFB71B5226D1A1C00116947 /* hv_tbar.m */,
+				8CFB71B4226D1A1400116947 /* w_draw.h */,
+				8CFB71B2226D192A00116947 /* hv_bin.m */,
+				8CFB71B0226D188900116947 /* hv_asc.m */,
+				8CFB71AE226D12EA00116947 /* hv_nav.m */,
+				8CFB71AC226CC92600116947 /* hv_misc.m */,
+				8CFB71AA226CC86500116947 /* hv_mark.m */,
+				8CFB71A8226CC72900116947 /* hv_init.m */,
+				8CFB71A6226CBEDF00116947 /* hv_error.m */,
+				8CFB719F226CAA3200116947 /* Info.plist */,
 				8CFB7080226AF12400116947 /* hv_main.m */,
+				8CFB71A1226CBACB00116947 /* hcp_opts.m */,
+				8CFB71A2226CBACB00116947 /* hv_defs.h */,
+				8CFB71A3226CBACB00116947 /* hv_help.m */,
 			);
 			name = "HypView Sources";
 			sourceTree = "<group>";
@@ -599,10 +740,16 @@
 			buildRules = (
 			);
 			dependencies = (
+				8CFB71EC2270AA2B00116947 /* PBXTargetDependency */,
+				8CFB71EA2270AA2600116947 /* PBXTargetDependency */,
+				8CFB71E82270AA2100116947 /* PBXTargetDependency */,
+				8CFB71E62270AA1D00116947 /* PBXTargetDependency */,
+				8CFB71E42270AA1900116947 /* PBXTargetDependency */,
+				8CFB71E22270AA1400116947 /* PBXTargetDependency */,
 			);
 			name = hypview;
 			productName = hypview;
-			productReference = 8CFB7063226AEA3F00116947 /* hypview.app */;
+			productReference = 8CFB7063226AEA3F00116947 /* HypView.app */;
 			productType = "com.apple.product-type.application";
 		};
 		8CFB7085226B7E3700116947 /* libhyp */ = {
@@ -850,7 +997,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CFB71D2226E895000116947 /* hv_eref.m in Sources */,
+				8CFB71D6226E8CCB00116947 /* hv_popup.m in Sources */,
+				8CFB71B6226D1A1C00116947 /* hv_tbar.m in Sources */,
+				8CFB71B8226D1ACB00116947 /* hv_hist.m in Sources */,
+				8CFB71C4226E114C00116947 /* hv_win.m in Sources */,
+				8CFB71A7226CBEDF00116947 /* hv_error.m in Sources */,
 				8CFB7081226AF12400116947 /* hv_main.m in Sources */,
+				8CFB71BE226D753F00116947 /* hv_selec.m in Sources */,
+				8CFB71A9226CC72900116947 /* hv_init.m in Sources */,
+				8CFB71A5226CBACB00116947 /* hv_help.m in Sources */,
+				8CFB71D4226E8C8E00116947 /* hv_srch.m in Sources */,
+				8CFB71AD226CC92600116947 /* hv_misc.m in Sources */,
+				8CFB71CC226E30A100116947 /* hv_disp.m in Sources */,
+				8CFB71BA226D595E00116947 /* hv_gfx.m in Sources */,
+				8CFB71E0226EF9F900116947 /* hv_recomp.m in Sources */,
+				8CFB71DC226EE4AD00116947 /* hv_info.m in Sources */,
+				8CFB71CA226E2E0100116947 /* autoloc.m in Sources */,
+				8CFB71B3226D192A00116947 /* hv_bin.m in Sources */,
+				8CFB71BC226D69A600116947 /* hv_block.m in Sources */,
+				8CFB71C2226DF58E00116947 /* hv_font.m in Sources */,
+				8CFB71C0226DA34000116947 /* hv_fsel.m in Sources */,
+				8CFB71AF226D12EA00116947 /* hv_nav.m in Sources */,
+				8CFB71AB226CC86500116947 /* hv_mark.m in Sources */,
+				8CFB71C6226E2A8B00116947 /* hv_file.m in Sources */,
+				8CFB71D0226E645700116947 /* hv_hfind.m in Sources */,
+				8CFB71DE226EF8F500116947 /* hv_prefs.m in Sources */,
+				8CFB71CE226E35CA00116947 /* hv_curs.m in Sources */,
+				8CFB71A4226CBACB00116947 /* hcp_opts.m in Sources */,
+				8CFB71DA226EE31F00116947 /* hv_about.m in Sources */,
+				8CFB71B1226D188900116947 /* hv_asc.m in Sources */,
+				8CFB71C8226E2D7E00116947 /* hv_autol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -994,6 +1171,39 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		8CFB71E22270AA1400116947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CFB711A226B910900116947 /* hcp */;
+			targetProxy = 8CFB71E12270AA1400116947 /* PBXContainerItemProxy */;
+		};
+		8CFB71E42270AA1900116947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CFB715D226BF95900116947 /* reflink */;
+			targetProxy = 8CFB71E32270AA1900116947 /* PBXContainerItemProxy */;
+		};
+		8CFB71E62270AA1D00116947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CFB716E226BFAF800116947 /* refcheck */;
+			targetProxy = 8CFB71E52270AA1D00116947 /* PBXContainerItemProxy */;
+		};
+		8CFB71E82270AA2100116947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CFB713E226B95AB00116947 /* hypinfo */;
+			targetProxy = 8CFB71E72270AA2100116947 /* PBXContainerItemProxy */;
+		};
+		8CFB71EA2270AA2600116947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CFB717F226BFB8100116947 /* stool */;
+			targetProxy = 8CFB71E92270AA2600116947 /* PBXContainerItemProxy */;
+		};
+		8CFB71EC2270AA2B00116947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CFB718F226BFC1800116947 /* hypfind */;
+			targetProxy = 8CFB71EB2270AA2B00116947 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		8CFB705D226AE93900116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1020,7 +1230,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1060,7 +1270,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.th-otto.hypview";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = HypView;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1074,7 +1284,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1107,7 +1317,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.th-otto.hypview";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = HypView;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1121,7 +1331,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1154,7 +1364,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1171,7 +1381,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1198,7 +1408,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1214,7 +1424,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1247,7 +1457,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1264,7 +1474,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1291,7 +1501,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1307,7 +1517,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1340,7 +1550,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1357,7 +1567,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1384,7 +1594,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1400,7 +1610,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1432,7 +1642,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1449,7 +1659,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1475,7 +1685,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1491,7 +1701,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1523,7 +1733,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1540,7 +1750,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1566,7 +1776,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1582,7 +1792,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1614,7 +1824,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1631,7 +1841,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1657,7 +1867,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1673,7 +1883,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1705,7 +1915,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1722,7 +1932,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1748,7 +1958,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1764,7 +1974,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1796,7 +2006,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1813,7 +2023,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1839,7 +2049,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1855,7 +2065,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1887,7 +2097,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1904,7 +2114,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -1930,7 +2140,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2010,6 +2220,7 @@
 				8CFB7164226BF95900116947 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8CFB7173226BFAF800116947 /* Build configuration list for PBXNativeTarget "refcheck" */ = {
 			isa = XCConfigurationList;
@@ -2018,6 +2229,7 @@
 				8CFB7175226BFAF800116947 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8CFB7184226BFB8100116947 /* Build configuration list for PBXNativeTarget "stool" */ = {
 			isa = XCConfigurationList;
@@ -2026,6 +2238,7 @@
 				8CFB7186226BFB8100116947 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8CFB7194226BFC1900116947 /* Build configuration list for PBXNativeTarget "hypfind" */ = {
 			isa = XCConfigurationList;
@@ -2034,6 +2247,7 @@
 				8CFB7196226BFC1900116947 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

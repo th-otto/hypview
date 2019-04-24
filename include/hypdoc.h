@@ -5,7 +5,9 @@
 
 /* Anonymous document type specific functions */
 typedef struct _document_ DOCUMENT;
+#ifndef WINDOW_DATA
 typedef struct _window_data_ WINDOW_DATA;
+#endif
 
 typedef struct {
 	long line;              /* Line number */

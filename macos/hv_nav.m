@@ -1,0 +1,333 @@
+#include "hv_defs.h"
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+void GotoPage(WINDOW_DATA *win, hyp_nodenr num, long line, gboolean calc)
+{
+	DOCUMENT *doc = win->data;
+
+	if (doc->gotoNodeProc(win, NULL, num))
+	{
+		if (calc)
+		{
+		}
+		doc->start_line = line;
+	}
+	ReInitWindow(win, FALSE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GoBack(WINDOW_DATA *win)
+{
+	DOCUMENT *old_doc = win->data;
+	DOCUMENT *new_doc;
+	hyp_nodenr page;
+	long line;
+
+	if ((new_doc = RemoveHistoryEntry(win, &page, &line)) != NULL)
+	{
+		/* changing file? */
+		{
+			int ret;
+
+			/* if old document is not used anymore... */
+			hypdoc_unref(old_doc);		/* ...close document */
+			win->data = new_doc;
+			
+			/* load new file */
+			if (new_doc->data == NULL)
+			{
+				ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+				if (ret >= 0)
+				{
+					LoadFile(new_doc, ret, FALSE);
+					hyp_utf8_close(ret);
+				} else
+				{
+					FileErrorErrno(hyp_basename(new_doc->path));
+				}
+			}
+		}
+
+		if (new_doc->type >= 0)			/* known filetype? */
+			GotoPage(win, page, line, FALSE);	/* switch to requested page */
+		else
+			FileError(hyp_basename(new_doc->path), _("format not recognized"));
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+#if 0
+static void history_selected(WINDOW_DATA *win, int sel)
+{
+	DOCUMENT *old_doc = win->data;
+	int i;
+
+	if (sel >= 0)
+	{
+		DOCUMENT *new_doc;
+		hyp_nodenr page;
+		long line;
+
+		/* Find selected entry */
+		i = 0;
+		while ((new_doc = RemoveHistoryEntry(win, &page, &line)) != NULL)
+		{
+			hypdoc_unref(old_doc);
+			win->data = old_doc = new_doc;
+			if (sel == i)
+				break;
+			i++;
+		}
+
+		new_doc = win->data;
+		if (!new_doc->data)
+		{
+			int ret;
+
+			/* open new document */
+			ret = hyp_utf8_open(new_doc->path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+			if (ret >= 0)
+			{
+				LoadFile(new_doc, ret, FALSE);
+				hyp_utf8_close(ret);
+			} else
+			{
+				FileErrorErrno(hyp_basename(new_doc->path));
+			}
+		}
+
+		if (new_doc->type >= 0)			/* known file type ? */
+			GotoPage(win, page, line, FALSE);	/* jump to page */
+		else
+			FileError(hyp_basename(new_doc->path), _("format not recognized"));
+	}
+}
+#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
+void HistoryPopup(WINDOW_DATA *win, enum toolbutton obj, int button)
+{
+#if 0 /* TODO */
+	int i;
+	HMENU menu;
+	struct popup_pos popup_pos;
+	HISTORY *entry = win->history;
+	int x, y;
+	UINT flags = TPM_LEFTALIGN | TPM_TOPALIGN | (button == 1 ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON) | TPM_NOANIMATION | TPM_RETURNCMD | TPM_NONOTIFY;
+	int sel;
+	
+	if (!(win->m_buttons[TO_HISTORY] & WS_VISIBLE))
+		return;
+	if ((win->m_buttons[TO_HISTORY] & WS_DISABLED))
+		return;
+	
+	menu = CreatePopupMenu();
+	
+	i = 0;
+	while (entry)
+	{
+		wchar_t *str = hyp_utf8_to_wchar(entry->title, STR0TERM, NULL);
+		AppendMenuW(menu, MF_STRING, i + 1, str);
+		g_free(str);
+		i++;
+		entry = entry->next;
+	}
+	
+	if (i == 0)
+	{
+		/*
+		 * no history entries found? we should not get here,
+		 * the toolbar entry should not have been selectable
+		 */
+		DestroyMenu(menu);
+		return;
+	}
+	
+	popup_pos.window = win;
+	popup_pos.obj = obj;
+	if (position_popup(menu, &popup_pos, &x, &y) == FALSE)
+	{
+		DestroyMenu(menu);
+		return;
+	}
+	SetForegroundWindow(win);
+	sel = TrackPopupMenu(menu, flags, x, y, 0, win, NULL);
+	DestroyMenu(menu);
+	history_selected(win, sel - 1);
+#endif
+}
+
+
+/******************************************************************************/
+/*** ---------------------------------------------------------------------- ***/
+/******************************************************************************/
+
+
+/****** Module dependend	****/
+
+static void GotoDocPage(WINDOW_DATA *win, hyp_nodenr page)
+{
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+	
+	doc = win->data;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hypnode_valid(hyp, page) &&
+		(win->displayed_node == NULL ||
+		 page != win->displayed_node->number))
+	{
+		AddHistoryEntry(win, doc);
+		GotoPage(win, page, 0, FALSE);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GotoHelp(WINDOW_DATA *win)
+{
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+	
+	if (win == NULL)
+		return;
+	doc = win->data;
+	if (doc == NULL)
+		return;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hyp == NULL)
+		return;
+	GotoDocPage(win, hyp->help_page);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GotoIndex(WINDOW_DATA *win)
+{
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+	
+	if (win == NULL)
+		return;
+	doc = win->data;
+	if (doc == NULL)
+		return;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hyp == NULL)
+		return;
+	GotoDocPage(win, hyp->index_page);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GotoCatalog(WINDOW_DATA *win)
+{
+	char *filename = path_subst(gl_profile.viewer.catalog_file);
+	OpenFileInWindow(win, filename, NULL, HYP_NOINDEX, FALSE, FALSE, FALSE);
+	g_free(filename);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GotoDefaultFile(WINDOW_DATA *win)
+{
+	char *filename = path_subst(gl_profile.viewer.default_file);
+	OpenFileInWindow(win, filename, hyp_default_main_node_name, HYP_NOINDEX, TRUE, FALSE, FALSE);
+	g_free(filename);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
+{
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+	hyp_nodenr new_node = HYP_NOINDEX;
+	hyp_nodenr current_node;
+	gboolean add_to_hist = FALSE;
+	
+	if (win == NULL)
+		return;
+	doc = win->data;
+	if (doc == NULL)
+		return;
+	hyp = (HYP_DOCUMENT *)doc->data;
+	if (hyp == NULL)
+		return;
+	current_node = doc->getNodeProc(win);
+	switch (obj)
+	{
+	case TO_NEXT:
+		new_node = hyp->indextable[current_node]->next;
+		break;
+	case TO_NEXT_PHYS:
+		new_node = current_node + 1;
+		while (hypnode_valid(hyp, new_node) && !(HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type)))
+			new_node++;
+		break;
+	case TO_PREV:
+		new_node = hyp->indextable[current_node]->previous;
+		break;
+	case TO_PREV_PHYS:
+		new_node = current_node - 1;
+		while (hypnode_valid(hyp, new_node) && !(HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type)))
+			new_node--;
+		break;
+	case TO_LAST:
+		new_node = hyp->last_text_page;
+		break;
+	case TO_FIRST:
+		new_node = hyp->first_text_page;
+		break;
+	case TO_HOME:
+		add_to_hist = TRUE;
+		new_node = hyp->indextable[current_node]->toc_index;
+		break;
+	case TO_BACK:
+		GoBack(win);
+		break;
+	case TO_CATALOG:
+		GotoCatalog(win);
+		break;
+	case TO_INDEX:
+		GotoIndex(win);
+		break;
+	case TO_HELP:
+		GotoHelp(win);
+		break;
+	case TO_REMARKER:
+		StartRemarker(win, remarker_top, FALSE);
+		ToolbarUpdate(win, FALSE);
+		break;
+	case TO_HISTORY:
+	case TO_BOOKMARKS:
+	case TO_REFERENCES:
+	case TO_INFO:
+	case TO_LOAD:
+	case TO_SAVE:
+	case TO_MAX:
+	default:
+		new_node = HYP_NOINDEX;
+		break;
+	}
+	
+	if (!hypnode_valid(hyp, new_node))
+		return;
+	
+	/* already displaying this page? */
+	if (new_node == current_node)
+		return;
+
+	/* is node a text page? */
+	if (!HYP_NODE_IS_TEXT(hyp->indextable[new_node]->type))
+		return;
+
+	if (add_to_hist)
+		AddHistoryEntry(win, doc);
+	GotoPage(win, new_node, 0, FALSE);
+}
