@@ -176,6 +176,7 @@ void show_message(GtkWidget *parent, const char *title, const char *text, gboole
 		parent = top_window();
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
 	gtk_widget_show_all(dialog);
+	gtk_window_present(GTK_WINDOW(dialog));
 	gtk_dialog_run(GTK_DIALOG(dialog));
 }
 
