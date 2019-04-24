@@ -335,6 +335,8 @@ void RecentUpdate(WINDOW_DATA *win)
 	int i;
 	GSList *l;
 	
+	if (win == NULL)
+		return;
 	menu = win->recent_menu;
 	for (i = 0; i < MAX_RECENT; i++)
 		RemoveMenu(menu, i + IDM_FILE_RECENT_1, MF_BYCOMMAND);

@@ -149,9 +149,12 @@ void on_bookmark_selected(GtkAction *action, WINDOW_DATA *win)
 void MarkerUpdate(WINDOW_DATA *win)
 {
 	int i;
-	GtkWidget *menu = win->bookmarks_menu;
+	GtkWidget *menu;
 	GList *children, *child;
 	
+	if (win == NULL)
+		return;
+	menu = win->bookmarks_menu;
 	children = gtk_container_get_children(GTK_CONTAINER(menu));
 	for (child = children, i = 0; child; child = child->next)
 	{
@@ -207,7 +210,7 @@ void MarkerSaveToDisk(gboolean ask)
 				return;
 		}
 		filename = path_subst(gl_profile.viewer.marker_path);
-		ret = open(filename, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0644);
+		ret = hyp_utf8_open(filename, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0644);
 		if (ret >= 0)
 		{
 			write(ret, marken, sizeof(MARKEN) * MAX_MARKEN);
@@ -215,7 +218,7 @@ void MarkerSaveToDisk(gboolean ask)
 			marken_change = FALSE;
 		} else
 		{
-			HYP_DBG(("Error %ld: saving %s", ret, printnull(filename)));
+			HYP_DBG(("Error %d: saving %s", ret, printnull(filename)));
 		}
 		g_free(filename);
 	}

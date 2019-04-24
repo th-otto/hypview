@@ -251,7 +251,7 @@ void MarkerSaveToDisk(gboolean ask)
 			marken_change = FALSE;
 		} else
 		{
-			HYP_DBG(("Error %ld: saving %s", ret, printnull(filename)));
+			HYP_DBG(("Error %d: saving %s", ret, printnull(filename)));
 		}
 		g_free(filename);
 	}

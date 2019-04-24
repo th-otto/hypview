@@ -149,6 +149,8 @@ void MarkerUpdate(WINDOW_DATA *win)
 	int i;
 	MENUITEMINFOW info;
 	
+	if (win == NULL)
+		return;
 	menu = win->bookmarks_menu;
 	memset(&info, 0, sizeof(info));
 	info.cbSize = sizeof(info);
@@ -209,7 +211,7 @@ void MarkerSaveToDisk(gboolean ask)
 				return;
 		}
 		filename = path_subst(gl_profile.viewer.marker_path);
-		ret = open(filename, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0644);
+		ret = hyp_utf8_open(filename, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0644);
 		if (ret >= 0)
 		{
 			write(ret, marken, sizeof(MARKEN) * MAX_MARKEN);
@@ -217,7 +219,7 @@ void MarkerSaveToDisk(gboolean ask)
 			marken_change = FALSE;
 		} else
 		{
-			HYP_DBG(("Error %ld: saving %s", ret, printnull(filename)));
+			HYP_DBG(("Error %d: saving %s", ret, printnull(filename)));
 		}
 		g_free(filename);
 	}

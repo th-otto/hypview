@@ -128,10 +128,13 @@ void g_object_list_properties(const char *name, void *_obj)
 
 void RecentUpdate(WINDOW_DATA *win)
 {
-	GtkWidget *menu = win->recent_menu;
+	GtkWidget *menu;
 	GList *children, *child;
 	GSList *l;
 	
+	if (win == NULL)
+		return;
+	menu = win->recent_menu;
 	children = gtk_container_get_children(GTK_CONTAINER(menu));
 	l = recent_list;
 	for (child = children; child; child = child->next)
