@@ -4,9 +4,9 @@
 #pragma align 4 (index_icon_data)
 #endif
 #ifdef __GNUC__
-__extension__ static const guint8 index_icon_data[] __attribute__ ((__aligned__ (4))) = 
+__extension__ static const unsigned char index_icon_data[] __attribute__ ((__aligned__ (4))) = 
 #else
-static const guint8 index_icon_data[] = 
+static const unsigned char index_icon_data[] = 
 #endif
 { 
   /* Pixbuf magic (0x47646b50) */

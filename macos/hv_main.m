@@ -14,10 +14,55 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include "pixdata.h"
+
+#include "../icons/back.h"
+#include "../icons/home.h"
+#include "../icons/index.h"
+#include "../icons/info.h"
+#include "../icons/help.h"
+#include "../icons/catalog.h"
+#include "../icons/load.h"
+#include "../icons/bookmark.h"
+#include "../icons/menu.h"
+#include "../icons/history.h"
+#include "../icons/next.h"
+#include "../icons/nextphys.h"
+#include "../icons/previous.h"
+#include "../icons/prevphys.h"
+#include "../icons/first.h"
+#include "../icons/last.h"
+#include "../icons/referenc.h"
+#include "../icons/save.h"
+#include "../icons/remarker.h"
+#include "../icons/gtk/about.h"
+#include "../icons/gtk/close.h"
+#include "../icons/gtk/color.h"
+#include "../icons/gtk/copy.h"
+#include "../icons/gtk/cut.h"
+#include "../icons/gtk/find.h"
+#include "../icons/gtk/font.h"
+#include "../icons/gtk/help.h"
+#include "../icons/gtk/index.h"
+#include "../icons/gtk/print.h"
+#include "../icons/gtk/paste.h"
+#include "../icons/gtk/prefs.h"
+#include "../icons/gtk/quit.h"
+#include "../icons/gtk/selall.h"
 
 #if 1
 #undef dprintf
 #define dprintf(x) hyp_debug  x
+#endif
+
+#undef _
+#undef N_
+#ifdef ENABLE_NLS
+#define _(String) todo
+#define N_(String) @String
+#else
+#define _(String) @String
+#define N_(String) @String
 #endif
 
 #define autorelease self
@@ -671,7 +716,9 @@ static NSImage *make_icon(void)
 {
 	WINDOW_DATA *win = top_window();
 	UNUSED(sender);
+	dprintf(("toggleAltfont: %d", gl_profile.viewer.use_xfont));
 	gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont;
+	HypProfile_SetChanged();
 	SwitchFont(win, FALSE);
 	[self updateAppMenu];
 }
@@ -681,7 +728,9 @@ static NSImage *make_icon(void)
 {
 	WINDOW_DATA *win = top_window();
 	UNUSED(sender);
+	dprintf(("toggleExpandSpaces: %d", gl_profile.viewer.expand_spaces));
 	gl_profile.viewer.expand_spaces = !gl_profile.viewer.expand_spaces;
+	HypProfile_SetChanged();
 	if (win)
 	{
 		DOCUMENT *doc = win->data;
@@ -852,10 +901,15 @@ static NSImage *make_icon(void)
 {
 	WINDOW_DATA *win = top_window();
 	dprintf(("NSApplication::showHelp"));
-	if (_isPackaged)
-		[super showHelp:sender];
-	else
-		Help_Contents(win);
+	Help_Contents(win);
+}
+
+
+- (void)showHelpIndex:(id)sender
+{
+	WINDOW_DATA *win = top_window();
+	dprintf(("NSApplication::showHelpIndex"));
+	Help_Index(win);
 }
 
 
@@ -1197,17 +1251,6 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	return [super validateUserInterfaceItem:item];
 }
 
-/*
-		{
-			HMENU submenu = (HMENU)wParam;
-			
-			if (submenu == win->bookmarks_menu)
-				MarkerUpdate(win);
-			else if (submenu == win->recent_menu)
-				RecentUpdate(win);
-		}
-*/
-
 @end
 
 @implementation HypViewApplication (NSMenuValidation)
@@ -1228,6 +1271,107 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 @interface NSMenu (NiblessAdditions)
 - (void) _setMenuName:(id)arg1;
 @end
+
+static NSImage *load_image_from_data(const unsigned char *data)
+{
+	GdkPixbuf *pixbuf;
+	int x, y, w, h;
+	CGImageRef icon;
+	CGDataProviderRef prov;
+	NSRect imageRect;
+	CGRect cgRect;
+	CGContextRef imageContext;
+	NSImage *newImage;
+	CGColorSpaceRef colorspace;
+	const uint32_t *src;
+	unsigned int src_rowstride;
+	unsigned int dst_rowstride;
+	uint32_t *icon_data;
+	Pixel pixel;
+
+	pixbuf = mygdk_pixbuf_new_from_inline(-1, data, FALSE);
+	if (!gdk_pixbuf_get_has_alpha(pixbuf))
+	{
+		uint8_t const *src_pixel = gdk_pixbuf_get_pixels(pixbuf);
+		/*
+		 * use color of first pixel for transparent.
+		 * This is what LR_LOADTRANSPARENT from the win32 version also does
+		 */
+		GdkPixbuf *icon = mygdk_pixbuf_add_alpha(pixbuf, TRUE, src_pixel[0], src_pixel[1], src_pixel[2]);
+		gdk_pixbuf_unref(pixbuf);
+		pixbuf = icon;
+	}
+
+	w = gdk_pixbuf_get_width(pixbuf);
+	h = gdk_pixbuf_get_height(pixbuf);
+	src = (const uint32_t *)gdk_pixbuf_get_pixels(pixbuf);
+	src_rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+	dst_rowstride = w;
+	icon_data = (uint32_t *)malloc(h * dst_rowstride * 4);
+	for (y = 0; y < h; y++)
+	{
+		for (x = 0; x < w; x++)
+		{
+			pixel = src[x];
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+			/* ABGR -> ARGB */
+			pixel = (pixel & 0xff000000) | ((pixel & 0x000000ff) << 16) | ((pixel & 0x0000ff00)) | ((pixel & 0x00ff0000) >> 16);
+#endif
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+			/* RGBA -> ARGB */
+			pixel = (pixel << 24) | (pixel >> 8);
+#endif
+			icon_data[y * dst_rowstride + x] = pixel;
+		}
+		
+		src = (const uint32_t *)((const uint8_t *)src + src_rowstride);
+	}
+		
+	prov = CGDataProviderCreateWithData(NULL, icon_data, 4 * h * dst_rowstride, NULL);
+	colorspace = CGColorSpaceCreateDeviceRGB();
+
+	icon = CGImageCreate(w, h, /* width, height */
+						 8,      /* bitsPerCompenent */
+						 32,     /* bitsPerPixel */
+						 4 * w,  /* bytesPerRow */
+						 colorspace,
+						 /* Host-ordered, since we're using the
+						    address of an int as the color data.
+						  */
+						 (kCGImageAlphaFirst | 
+						 kCGBitmapByteOrder32Host),
+						 prov, 
+						 NULL,  /* decode[] */
+						 NO, /* interpolate */
+						 kCGRenderingIntentDefault);
+	CGDataProviderRelease(prov);
+	CFRelease(colorspace);
+	
+	/*  Create a new image to receive the Quartz image data. */
+	imageRect.origin.x = 0;
+	imageRect.origin.y = 0;
+	imageRect.size.height = CGImageGetHeight(icon);
+	imageRect.size.width = CGImageGetWidth(icon);
+	
+	newImage = [[[NSImage alloc] initWithSize:imageRect.size] retain];
+	[newImage lockFocus];
+
+	/* Get the Quartz context and draw. */
+	imageContext = [[NSGraphicsContext currentContext] graphicsPort];
+	cgRect.origin.x = imageRect.origin.x;
+	cgRect.origin.y = imageRect.origin.y;
+	cgRect.size.width = imageRect.size.width;
+	cgRect.size.height = imageRect.size.height;
+	CGContextDrawImage(imageContext, cgRect, icon);
+	[newImage unlockFocus];
+	CGImageRelease(icon);
+	[newImage setName:@"NSApplicationIcon"];
+	
+	free(icon_data);
+	
+	gdk_pixbuf_unref(pixbuf);
+	return newImage;
+}
 
 @implementation HypViewMenuPopulator
 
@@ -1252,38 +1396,38 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"File" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"File", nil)] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:_("File")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateFileMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Edit" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Edit", nil)] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:_("Edit")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateEditMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Navigate" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Navigate", nil)] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:_("Navigate")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateNavigationMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Window" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Window", nil)] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:_("Window")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateWindowMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	[NSApp setWindowsMenu:submenu];
 	
 	item = [mainMenu addItemWithTitle:@"Options" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Options", nil)] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:_("Options")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateOptionsMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Help" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Help", nil)] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:_("Help")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateHelpMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
@@ -1300,19 +1444,21 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	NSMutableString *title;
 	NSMenu *servicesMenu;
 	
-	title = [NSLocalizedString(@"About <X>", nil) mutableCopy];
+	title = [_("About <X>") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(about:)                        keyEquivalent:@""];
 	[item setTarget:NSApp];
 	[title release];
+	item.image = load_image_from_data(about_icon_data);
 	
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Preferences...", nil)     action:@selector(openPreferences:)              keyEquivalent:@","];
+	item = [menu addItemWithTitle:_("Preferences...")     action:@selector(openPreferences:)              keyEquivalent:@","];
 	[item setTarget:NSApp];
+	item.image = load_image_from_data(prefs_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
 	
-	item = [menu addItemWithTitle:NSLocalizedString(@"Services", nil)           action:NULL                                     keyEquivalent:@""];
+	item = [menu addItemWithTitle:_("Services")           action:NULL                                     keyEquivalent:@""];
 	servicesMenu = [[[NSMenu alloc] initWithTitle:@"Services"] autorelease];
 	[servicesMenu setAutoenablesItems:YES];
 	[menu setSubmenu:servicesMenu forItem:item];
@@ -1320,26 +1466,27 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 	
-	title = [NSLocalizedString(@"Hide <X>", nil) mutableCopy];
+	title = [_("Hide <X>") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(hide:)                         keyEquivalent:@"h"];
 	[item setTarget:NSApp];
 	[title release];
 	
-	item = [menu addItemWithTitle:NSLocalizedString(@"Hide Others", nil)        action:@selector(hideOtherApplications:)        keyEquivalent:@"h"];
+	item = [menu addItemWithTitle:_("Hide Others")        action:@selector(hideOtherApplications:)        keyEquivalent:@"h"];
 	[item setKeyEquivalentModifierMask:NSCommandKeyMask | NSAlternateKeyMask];
 	[item setTarget:NSApp];
 	
-	item = [menu addItemWithTitle:NSLocalizedString(@"Show All", nil)           action:@selector(unhideAllApplications:)        keyEquivalent:@""];
+	item = [menu addItemWithTitle:_("Show All")           action:@selector(unhideAllApplications:)        keyEquivalent:@""];
 	[item setTarget:NSApp];
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 	
-	title = [NSLocalizedString(@"Quit <X>", nil) mutableCopy];
+	title = [_("Quit <X>") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(terminate:)                    keyEquivalent:@"q"];
 	[item setTarget:NSApp];
 	[title release];
+	item.image = load_image_from_data(quit_icon_data);
 }
 
 +(void) populateFileMenu:(NSMenu *)menu
@@ -1348,9 +1495,11 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	NSString *title;
 	NSMenu *recent_menu;
 
-	item = [menu addItemWithTitle:NSLocalizedString(@"Open...", nil)            action:@selector(openDocument:)                 keyEquivalent:@"o"];
+	item = [menu addItemWithTitle:_("Open...")            action:@selector(openDocument:)                 keyEquivalent:@"o"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Open Recent", nil)        action:nil                                      keyEquivalent:@""];
+	item.toolTip = _("Load a file");
+	item.image = load_image_from_data(load_icon_data);
+	item = [menu addItemWithTitle:_("Open Recent")        action:nil                                      keyEquivalent:@""];
 	[item setTarget:NSApp];
 	recent_menu = [[[NSMenu alloc] initWithTitle:@"Open Recent"] autorelease];
 	[recent_menu setAutoenablesItems:YES];
@@ -1359,60 +1508,80 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	m_recent_menu = recent_menu;
 	[recent_menu setDelegate:NSApp];
 
-	title = NSLocalizedString(@"Clear Menu", nil);
+	title = _("Clear Menu");
 	item = [recent_menu addItemWithTitle:title                                  action:@selector(clearRecentDocuments:)         keyEquivalent:@""];
 	[item setTarget:NSApp];
 	
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Close", nil)              action:@selector(performClose:)                 keyEquivalent:@"w"];
+	item = [menu addItemWithTitle:_("Close")              action:@selector(performClose:)                 keyEquivalent:@"w"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Save As...", nil)         action:@selector(saveDocumentAs:)               keyEquivalent:@"s"];
+	item.image = load_image_from_data(close_icon_data);
+	item = [menu addItemWithTitle:_("Save As...")         action:@selector(saveDocumentAs:)               keyEquivalent:@"s"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Recompile...", nil)       action:@selector(recompile:)                    keyEquivalent:@"r"];
+	item.toolTip = _("Save page to file");
+	item.image = load_image_from_data(save_icon_data);
+	item = [menu addItemWithTitle:_("Recompile...")       action:@selector(recompile:)                    keyEquivalent:@"r"];
 	[item setTarget:NSApp];
+	item.toolTip = _("Recompile to ST-Guide format");
+	item.image = load_image_from_data(save_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Catalog", nil)            action:@selector(navigateCatalog:)              keyEquivalent:@"k"];
+	item = [menu addItemWithTitle:_("Catalog")            action:@selector(navigateCatalog:)              keyEquivalent:@"k"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Default file", nil)       action:@selector(navigateDefaultFile:)          keyEquivalent:@"d"];
+	item.toolTip = _("Show catalog of hypertexts");
+	item.image = load_image_from_data(catalog_icon_data);
+	item = [menu addItemWithTitle:_("Default file")       action:@selector(navigateDefaultFile:)          keyEquivalent:@"d"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Run Remarker", nil)       action:@selector(startRemarker:)                keyEquivalent:@"r"];
+	item.toolTip = _("Show default file");
+	item = [menu addItemWithTitle:_("Run Remarker")       action:@selector(startRemarker:)                keyEquivalent:@"r"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
+	item.toolTip = _("Start Remarker");
+	item.image = load_image_from_data(remarker_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"File info...", nil)       action:@selector(documentInfo:)                 keyEquivalent:@"i"];
+	item = [menu addItemWithTitle:_("File info...")       action:@selector(documentInfo:)                 keyEquivalent:@"i"];
+	[item setTarget:NSApp];
+	item.toolTip = _("Show info about hypertext");
+	item.image = load_image_from_data(info_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Page Setup...", nil)      action:@selector(runPageLayout:)                keyEquivalent:@"P"];
+	item = [menu addItemWithTitle:_("Page Setup...")      action:@selector(runPageLayout:)                keyEquivalent:@"P"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Print...", nil)           action:@selector(print:)                        keyEquivalent:@"p"];
+	item = [menu addItemWithTitle:_("Print...")           action:@selector(print:)                        keyEquivalent:@"p"];
 	[item setTarget:NSApp];
+	item.image = load_image_from_data(print_icon_data);
 }
 
 +(void) populateEditMenu:(NSMenu *)menu
 {
 	NSMenuItem *item;
 	
-	item = [menu addItemWithTitle:NSLocalizedString(@"Copy", nil)               action:@selector(copy:)                         keyEquivalent:@"c"];
+	item = [menu addItemWithTitle:_("Copy")               action:@selector(copy:)                         keyEquivalent:@"c"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Paste", nil)              action:@selector(paste:)                        keyEquivalent:@"v"];
+	item.image = load_image_from_data(copy_icon_data);
+	item = [menu addItemWithTitle:_("Paste")              action:@selector(paste:)                        keyEquivalent:@"v"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Select All", nil)         action:@selector(selectAll:)                    keyEquivalent:@"a"];
+	item.image = load_image_from_data(paste_icon_data);
+	item = [menu addItemWithTitle:_("Select All")         action:@selector(selectAll:)                    keyEquivalent:@"a"];
 	[item setTarget:NSApp];
-	
+	item.image = load_image_from_data(paste_icon_data);
+
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Find...", nil)            action:@selector(performFindPanelAction:)       keyEquivalent:@"f"];
+	item = [menu addItemWithTitle:_("Find...")            action:@selector(performFindPanelAction:)       keyEquivalent:@"f"];
 	[item setTarget:NSApp];
+	item.image = load_image_from_data(find_icon_data);
 	[item setTag:NSFindPanelActionShowFindPanel];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Find Next", nil)          action:@selector(performFindPanelAction:)       keyEquivalent:@"g"];
+	item = [menu addItemWithTitle:_("Find Next")          action:@selector(performFindPanelAction:)       keyEquivalent:@"g"];
 	[item setTarget:NSApp];
 	[item setTag:NSFindPanelActionNext];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Find Previous", nil)      action:@selector(performFindPanelAction:)       keyEquivalent:@"G"];
+	item.image = load_image_from_data(find_icon_data);
+	item = [menu addItemWithTitle:_("Find Previous")      action:@selector(performFindPanelAction:)       keyEquivalent:@"G"];
 	[item setTarget:NSApp];
 	[item setTag:NSFindPanelActionPrevious];
+	item.image = load_image_from_data(find_icon_data);
 }
 
 +(void) populateNavigationMenu:(NSMenu *)menu
@@ -1420,39 +1589,59 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	NSMenuItem *item;
 	NSMenu *bookmarks_menu;
 
-	item = [menu addItemWithTitle:NSLocalizedString(@"Previous logical page", nil)  action:@selector(navigatePrev:)              keyEquivalent:@"\xef\x9c\x82"];
+	item = [menu addItemWithTitle:_("Previous logical page")  action:@selector(navigatePrev:)              keyEquivalent:@"\xef\x9c\x82"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Next logical page", nil)      action:@selector(navigateNext:)              keyEquivalent:@"\xef\x9c\x83"];
+	item.toolTip = _("Goto previous page");
+	item.image = load_image_from_data(previous_icon_data);
+	item = [menu addItemWithTitle:_("Next logical page")      action:@selector(navigateNext:)              keyEquivalent:@"\xef\x9c\x83"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
+	item.toolTip = _("Goto next page");
+	item.image = load_image_from_data(next_icon_data);
 	
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Previous physical page", nil) action:@selector(navigatePrevPhys:)          keyEquivalent:@""];
+	item = [menu addItemWithTitle:_("Previous physical page") action:@selector(navigatePrevPhys:)          keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Next logical page", nil)      action:@selector(navigateNextPhys:)          keyEquivalent:@""];
+	item.toolTip = _("Goto previous physical page");
+	item.image = load_image_from_data(prevphys_icon_data);
+	item = [menu addItemWithTitle:_("Next logical page")      action:@selector(navigateNextPhys:)          keyEquivalent:@""];
 	[item setTarget:NSApp];
+	item.toolTip = _("Goto next physical page");
+	item.image = load_image_from_data(nextphys_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"First page", nil)             action:@selector(navigateFirst:)            keyEquivalent:@""];
+	item = [menu addItemWithTitle:_("First page")             action:@selector(navigateFirst:)            keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Last page", nil)              action:@selector(navigateLast:)             keyEquivalent:@""];
+	item.toolTip = _("Goto first page");
+	item.image = load_image_from_data(first_icon_data);
+	item = [menu addItemWithTitle:_("Last page")              action:@selector(navigateLast:)             keyEquivalent:@""];
 	[item setTarget:NSApp];
+	item.toolTip = _("Goto last page");
+	item.image = load_image_from_data(last_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Contents", nil)               action:@selector(navigateToc:)              keyEquivalent:@"t"];
+	item = [menu addItemWithTitle:_("Contents")               action:@selector(navigateToc:)              keyEquivalent:@"t"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Index", nil)                  action:@selector(navigateIndex:)            keyEquivalent:@"x"];
+	item.toolTip = _("Go up one page");
+	item.image = load_image_from_data(home_icon_data);
+	item = [menu addItemWithTitle:_("Index")                  action:@selector(navigateIndex:)            keyEquivalent:@"x"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Show help page", nil)         action:@selector(navigateHelp:)             keyEquivalent:@"h"];
+	item.toolTip = _("Goto index page");
+	item.image = load_image_from_data(index_icon_data);
+	item = [menu addItemWithTitle:_("Show help page")         action:@selector(navigateHelp:)             keyEquivalent:@"h"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
+	item.toolTip = _("Show help page");
+	item.image = load_image_from_data(help_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Bookmarks", nil)              action:nil                                  keyEquivalent:@""];
+	item = [menu addItemWithTitle:_("Bookmarks")              action:nil                                  keyEquivalent:@""];
 	[item setTarget:NSApp];
+	item.toolTip = _("Show list of bookmarks");
+	item.image = load_image_from_data(bookmark_icon_data);
 	bookmarks_menu = [[[NSMenu alloc] initWithTitle:@"Bookmarks"] autorelease];
 	[bookmarks_menu setAutoenablesItems:YES];
 	[menu setSubmenu:bookmarks_menu forItem:item];
@@ -1460,52 +1649,58 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	[bookmarks_menu setDelegate:NSApp];
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Back one page", nil)          action:@selector(navigateBack:)             keyEquivalent:@"\x0008"];
+	item = [menu addItemWithTitle:_("Back one page")          action:@selector(navigateBack:)             keyEquivalent:@"\x0008"];
 	[item setKeyEquivalentModifierMask: 0];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Clear stack", nil)            action:@selector(navigateClearstack:)       keyEquivalent:@"e"];
+	item.toolTip = _("Back one page");
+	item.image = load_image_from_data(back_icon_data);
+	item = [menu addItemWithTitle:_("Clear stack")            action:@selector(navigateClearstack:)       keyEquivalent:@"e"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
+	item.toolTip = _("Clear stack");
 }
 
 +(void) populateWindowMenu:(NSMenu *)menu
 {
-	[menu addItemWithTitle:NSLocalizedString(@"Minimize", nil)                  action:@selector(performMiniaturize:)           keyEquivalent:@"m"];
-	[menu addItemWithTitle:NSLocalizedString(@"Zoom", nil)                      action:@selector(performZoom:)                  keyEquivalent:@""];
+	[menu addItemWithTitle:_("Minimize")                  action:@selector(performMiniaturize:)           keyEquivalent:@"m"];
+	[menu addItemWithTitle:_("Zoom")                      action:@selector(performZoom:)                  keyEquivalent:@""];
 	[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItemWithTitle:NSLocalizedString(@"Bring All to Front", nil)        action:@selector(arrangeInFront:)               keyEquivalent:@""];
+	[menu addItemWithTitle:_("Bring All to Front")        action:@selector(arrangeInFront:)               keyEquivalent:@""];
 }
 
 +(void) populateOptionsMenu:(NSMenu *)menu
 {
 	NSMenuItem *item;
 
-	item = [menu addItemWithTitle:NSLocalizedString(@"Font...", nil)            action:@selector(selectFont:)                   keyEquivalent:@"z"];
+	item = [menu addItemWithTitle:_("Font...")            action:@selector(selectFont:)                   keyEquivalent:@"z"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Colors...", nil)          action:@selector(selectColor:)                  keyEquivalent:@"c"];
+	item.image = load_image_from_data(font_icon_data);
+	item = [menu addItemWithTitle:_("Colors...")          action:@selector(selectColor:)                  keyEquivalent:@"c"];
+	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
+	[item setTarget:NSApp];
+	item.image = load_image_from_data(color_icon_data);
+
+	[menu addItem:[NSMenuItem separatorItem]];
+	item = [menu addItemWithTitle:_("Output...")          action:@selector(configOutput:)                 keyEquivalent:@"o"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Output...", nil)          action:@selector(configOutput:)                 keyEquivalent:@"o"];
-	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
-	[item setTarget:NSApp];
-
-	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Alternative font...", nil) action:@selector(toggleAltfont:)               keyEquivalent:@"z"];
+	item = [menu addItemWithTitle:_("Alternative font...") action:@selector(toggleAltfont:)               keyEquivalent:@"z"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->useAltFontMenuItem = item;
-	item = [menu addItemWithTitle:NSLocalizedString(@"Expand multiple spaces...", nil) action:@selector(toggleExpandSpaces:)    keyEquivalent:@"l"];
+	item = [menu addItemWithTitle:_("Expand multiple spaces...") action:@selector(toggleExpandSpaces:)    keyEquivalent:@"l"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->expandSpacesMenuItem = item;
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:NSLocalizedString(@"Settings...", nil)        action:@selector(openPreferences:)              keyEquivalent:@"s"];
+	item = [menu addItemWithTitle:_("Settings...")        action:@selector(openPreferences:)              keyEquivalent:@"s"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
+	item.image = load_image_from_data(prefs_icon_data);
 }
 
 +(void) populateHelpMenu:(NSMenu *)menu
@@ -1514,11 +1709,15 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 	NSMenuItem *item;
 	NSMutableString *title;
 	
-	title = [NSLocalizedString(@"<X> Help", nil) mutableCopy];
+	title = [_("<X> Help") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(showHelp:)                     keyEquivalent:@"?"];
 	[item setTarget:NSApp];
 	[title release];
+	item.image = load_image_from_data(helptoc_icon_data);
+	item = [menu addItemWithTitle:_("Help Index...")                            action:@selector(showHelpIndex:)                keyEquivalent:@""];
+	[item setTarget:NSApp];
+	item.image = load_image_from_data(helpindex_icon_data);
 }
 
 @end
@@ -1722,11 +1921,7 @@ static gboolean NOINLINE ParseCommandLine(int *argc, const char ***pargv)
 
 	if (bShowHelp)
 	{
-		char *msg = g_strdup_printf(_("\
-HypView macOS Version %s\n\
-ST-Guide Hypertext File Viewer\n\
-\n\
-usage: %s [FILE [CHAPTER]]"), gl_program_version, gl_program_name);
+		char *msg = usage_msg();
 		write_console(msg, FALSE, FALSE, TRUE);
 		g_free(msg);
 	}
@@ -1747,21 +1942,9 @@ usage: %s [FILE [CHAPTER]]"), gl_program_version, gl_program_name);
 
 static void show_version(void)
 {
-	char *url = g_strdup_printf(_("%s is Open Source (see %s for further information).\n"), gl_program_name, HYP_URL);
-	char *hyp_version = hyp_lib_version();
-	char *msg = g_strdup_printf(
-		"HypView macOS Version %s\n"
-		"HCP %s\n"
-		"%s\n"
-		"%s",
-		gl_program_version,
-		hyp_version,
-		HYP_COPYRIGHT,
-		url);
+	char *msg = version_msg();
 	write_console(msg, FALSE, FALSE, FALSE);
 	g_free(msg);
-	g_free(hyp_version);
-	g_free(url);
 }
 
 /*** ---------------------------------------------------------------------- ***/

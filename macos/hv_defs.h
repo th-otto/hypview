@@ -343,6 +343,8 @@ void RecentInit(void);
 void RecentExit(void);
 void RecentSaveToDisk(void);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
+char *usage_msg(void);
+char *version_msg(void);
 
 
 /*

@@ -755,10 +755,12 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			break;
 		case IDM_OPT_ALTFONT:
 			gl_profile.viewer.use_xfont = !gl_profile.viewer.use_xfont;
+			HypProfile_SetChanged();
 			SwitchFont(win, FALSE);
 			break;
 		case IDM_OPT_EXPANDSPACES:
 			gl_profile.viewer.expand_spaces = !gl_profile.viewer.expand_spaces;
+			HypProfile_SetChanged();
 			hv_update_winmenu(win);
 			{
 				DOCUMENT *doc = win->data;

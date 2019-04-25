@@ -846,6 +846,9 @@ fi
 if test "$with_gui" = "auto" -a "$TARGET_OS" = tos; then
 	with_gui=gem
 fi
+if test "$with_gui" = "auto" -a "$TARGET_OS" = mac; then
+	with_gui=cocoa
+fi
 if test "$have_gtk2" = no -a "$with_gui" = gtk2; then
 	AC_MSG_ERROR([*** GTK2 was requested, but was not found ***])
 fi
@@ -881,6 +884,9 @@ if test "$with_gui" = win32; then
 fi
 if test "$with_gui" = gem; then
   AC_DEFINE([WITH_GUI_GEM], 1, [define if GEM GUI should be used])
+fi
+if test "$with_gui" = cocoa; then
+  AC_DEFINE([WITH_GUI_COCOA], 1, [define if Cocoa GUI should be used])
 fi
 
 AC_DEFINE_UNQUOTED([ATK_VERSION_FROM_CONFIGURE], "$ac_atk_version", [The version of ATK])

@@ -6,7 +6,7 @@
 #ifdef __GNUC__
 __extension__ static const unsigned char color_icon_data[] __attribute__ ((__aligned__ (4))) = 
 #else
-static const guint8 color_icon_data[] = 
+static const unsigned char color_icon_data[] = 
 #endif
 { 
   /* Pixbuf magic (0x47646b50) */

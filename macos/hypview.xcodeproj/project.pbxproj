@@ -135,6 +135,8 @@
 		8CFB71DC226EE4AD00116947 /* hv_info.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71DB226EE4AD00116947 /* hv_info.m */; };
 		8CFB71DE226EF8F500116947 /* hv_prefs.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71DD226EF8F500116947 /* hv_prefs.m */; };
 		8CFB71E0226EF9F900116947 /* hv_recomp.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71DF226EF9F900116947 /* hv_recomp.m */; };
+		8CFB71F12271D9BB00116947 /* pixbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71ED2271D9BB00116947 /* pixbuf.c */; };
+		8CFB71F22271D9BB00116947 /* pixdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB71EF2271D9BB00116947 /* pixdata.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -367,6 +369,10 @@
 		8CFB71DB226EE4AD00116947 /* hv_info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_info.m; sourceTree = "<group>"; };
 		8CFB71DD226EF8F500116947 /* hv_prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_prefs.m; sourceTree = "<group>"; };
 		8CFB71DF226EF9F900116947 /* hv_recomp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_recomp.m; sourceTree = "<group>"; };
+		8CFB71ED2271D9BB00116947 /* pixbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pixbuf.c; sourceTree = "<group>"; };
+		8CFB71EE2271D9BB00116947 /* pixbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pixbuf.h; sourceTree = "<group>"; };
+		8CFB71EF2271D9BB00116947 /* pixdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pixdata.c; sourceTree = "<group>"; };
+		8CFB71F02271D9BB00116947 /* pixdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pixdata.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -493,6 +499,10 @@
 		8CFB7078226AEB8000116947 /* HypView Sources */ = {
 			isa = PBXGroup;
 			children = (
+				8CFB71ED2271D9BB00116947 /* pixbuf.c */,
+				8CFB71EE2271D9BB00116947 /* pixbuf.h */,
+				8CFB71EF2271D9BB00116947 /* pixdata.c */,
+				8CFB71F02271D9BB00116947 /* pixdata.h */,
 				8CFB71DF226EF9F900116947 /* hv_recomp.m */,
 				8CFB71DD226EF8F500116947 /* hv_prefs.m */,
 				8CFB71DB226EE4AD00116947 /* hv_info.m */,
@@ -1004,12 +1014,14 @@
 				8CFB71C4226E114C00116947 /* hv_win.m in Sources */,
 				8CFB71A7226CBEDF00116947 /* hv_error.m in Sources */,
 				8CFB7081226AF12400116947 /* hv_main.m in Sources */,
+				8CFB71F12271D9BB00116947 /* pixbuf.c in Sources */,
 				8CFB71BE226D753F00116947 /* hv_selec.m in Sources */,
 				8CFB71A9226CC72900116947 /* hv_init.m in Sources */,
 				8CFB71A5226CBACB00116947 /* hv_help.m in Sources */,
 				8CFB71D4226E8C8E00116947 /* hv_srch.m in Sources */,
 				8CFB71AD226CC92600116947 /* hv_misc.m in Sources */,
 				8CFB71CC226E30A100116947 /* hv_disp.m in Sources */,
+				8CFB71F22271D9BB00116947 /* pixdata.c in Sources */,
 				8CFB71BA226D595E00116947 /* hv_gfx.m in Sources */,
 				8CFB71E0226EF9F900116947 /* hv_recomp.m in Sources */,
 				8CFB71DC226EE4AD00116947 /* hv_info.m in Sources */,

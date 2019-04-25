@@ -339,6 +339,12 @@ void HypProfile_Load(gboolean save_if_new)
 	if (!Profile_ReadString(profile, "HypView", "XFONT", &gl_profile.viewer.xfont_name))
 		setdefault(gl_profile.viewer.xfont_name = g_strdup("Courier New,,120"));
 #endif
+#ifdef WITH_GUI_COCOA
+	if (!Profile_ReadString(profile, "HypView", "FONT", &gl_profile.viewer.font_name))
+		setdefault(gl_profile.viewer.font_name = g_strdup("Sans Serif 12"));
+	if (!Profile_ReadString(profile, "HypView", "XFONT", &gl_profile.viewer.xfont_name))
+		setdefault(gl_profile.viewer.xfont_name = g_strdup("Courier New 12"));
+#endif
 	if (!Profile_ReadBool(profile, "HypView", "USE_XFONT", &gl_profile.viewer.use_xfont))
 		setdefault(gl_profile.viewer.use_xfont = FALSE);
 
