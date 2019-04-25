@@ -42,6 +42,7 @@ typedef struct
 #define TB_MOVE_ACTIVATE  1
 #define TB_MOVE_MOUSEMOVE 2
 	int x_off, y_off;
+	WINDOW_DATA *win;
 } CLICKINFO;
 
 typedef struct
@@ -633,8 +634,8 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 
 			GetClientRect(hwnd, &r);
 			RectToGrect(&gr, &r);
-			if (td->toolbar_mouse_move(td, &gr, x, y))
-				td->toolbar_mouse_down(td, FALSE, &gr, x, y);
+			if (td->toolbar_mouse_move(win, td, &gr, x, y))
+				td->toolbar_mouse_down(win, td, FALSE, &gr, x, y);
 		}
 		break;
 
@@ -649,7 +650,7 @@ static LRESULT CALLBACK toolbarWndProc(HWND hwnd, unsigned int message, WPARAM w
 			GetClientRect(hwnd, &r);
 			RectToGrect(&gr, &r);
 			if (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN)
-				td->toolbar_mouse_down(td, TRUE, &gr, LOWORD(lParam), HIWORD(lParam));
+				td->toolbar_mouse_down(win, td, TRUE, &gr, LOWORD(lParam), HIWORD(lParam));
 			if (captured == 0)
 			{
 				SetCapture(hwnd);
@@ -774,34 +775,37 @@ static void toolbar_click(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te,
 		button.g_h = BUTTONHEIGHT;
 		if (rc_inside(di->xPos, di->yPos, &button))
 		{
-			if (di->domove == TB_MOVE_MOUSEMOVE)
+			if (di->win->m_buttons[td->entries[entry_idx].config_id] & WS_VISIBLE)
 			{
-				if (td->toolbar_help_settext != FUNK_NULL)
+				if (di->domove == TB_MOVE_MOUSEMOVE)
 				{
-					const char *comment;
-					
-					comment = _(te[entry_idx].comment);
-					if (comment != NULL)
+					if (td->toolbar_help_settext != FUNK_NULL)
 					{
-						td->toolbar_help_settext(td, comment, xs, ys);
+						const char *comment;
+						
+						comment = _(te[entry_idx].comment);
+						if (comment != NULL)
+						{
+							td->toolbar_help_settext(td, comment, xs, ys);
+						}
 					}
-				}
-			} else
-			{
-				td->buttondown = def_idx;
-
-				td->buttonxs = button.g_x;
-				td->buttonys = button.g_y;
-				if (di->domove == TB_MOVE_ACTIVATE)
-				{
-					if (td->buttonsave != def_idx)
-						if (td->toolbar_refresh != FUNK_NULL)
-							td->toolbar_refresh(td, &button);
 				} else
 				{
-					/* TB_MOVE_CHECK */
-					if (td->toolbar_refresh != FUNK_NULL)
-						td->toolbar_refresh(td, &button);
+					td->buttondown = def_idx;
+	
+					td->buttonxs = button.g_x;
+					td->buttonys = button.g_y;
+					if (di->domove == TB_MOVE_ACTIVATE)
+					{
+						if (td->buttonsave != def_idx)
+							if (td->toolbar_refresh != FUNK_NULL)
+								td->toolbar_refresh(td, &button);
+					} else
+					{
+						/* TB_MOVE_CHECK */
+						if (td->toolbar_refresh != FUNK_NULL)
+							td->toolbar_refresh(td, &button);
+					}
 				}
 			}
 		} else
@@ -823,7 +827,7 @@ static void toolbar_click(TOOL_DATA *td, int entry_idx, const TOOLBAR_ENTRY *te,
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean toolbar_mouse_move(TOOL_DATA *td, const GRECT *gr, int mousex, int mousey)
+static gboolean toolbar_mouse_move(WINDOW_DATA *win, TOOL_DATA *td, const GRECT *gr, int mousex, int mousey)
 {
 	if (td->buttonpress == FALSE)
 	{
@@ -834,6 +838,7 @@ static gboolean toolbar_mouse_move(TOOL_DATA *td, const GRECT *gr, int mousex, i
 		ci.domove = TB_MOVE_MOUSEMOVE;
 		ci.x_off = gr->g_x;
 		ci.y_off = gr->g_y;
+		ci.win = win;
 		toolbar_enum(td, td->definitions, td->num_definitions, gr->g_w, toolbar_click, &ci);
 		return FALSE;
 	}
@@ -843,7 +848,7 @@ static gboolean toolbar_mouse_move(TOOL_DATA *td, const GRECT *gr, int mousex, i
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void toolbar_mouse_down(TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey)
+static void toolbar_mouse_down(WINDOW_DATA *win, TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey)
 {
 	CLICKINFO ci;
 
@@ -855,6 +860,7 @@ static void toolbar_mouse_down(TOOL_DATA *td, gboolean buttondown, const GRECT *
 		ci.domove = TB_MOVE_CHECK;
 	ci.x_off = gr->g_x;
 	ci.y_off = gr->g_y;
+	ci.win = win;
 	td->buttondown = -1;
 	td->buttonpress = TRUE;
 	toolbar_enum(td, td->definitions, td->num_definitions, gr->g_w, toolbar_click, &ci);

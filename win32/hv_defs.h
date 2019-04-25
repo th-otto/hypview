@@ -92,8 +92,8 @@ struct _tool_data {
 	
 	void	(*toolbar_paint)(HDC hdc, WINDOW_DATA *win, const GRECT *gr);
 	int		(*toolbar_size)(TOOL_DATA *td, GRECT *r);
-	gboolean (*toolbar_mouse_move)(TOOL_DATA *td, const GRECT *gr, int mousex, int mousey);
-	void	(*toolbar_mouse_down)(TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey);
+	gboolean (*toolbar_mouse_move)(WINDOW_DATA *win, TOOL_DATA *td, const GRECT *gr, int mousex, int mousey);
+	void	(*toolbar_mouse_down)(WINDOW_DATA *win, TOOL_DATA *td, gboolean buttondown, const GRECT *gr, int mousex, int mousey);
 	void	(*toolbar_button_up)(WINDOW_DATA *win, int button);
 	void	(*toolbar_exit)(WINDOW_DATA *win);
 	
