@@ -1,4 +1,4 @@
-# Auto-generated: Do 12. Mai 01:19:53 CEST 2016
+# Auto-generated: Do 25. Apr 19:56:13 CEST 2019
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -39,6 +39,7 @@ hyp/hypgfx.c
 hyp/hypinfo.c
 hyp/icn2ico.c
 hyp/icn2img.c
+hyp/ico2icn.c
 hyp/img2bmp.c
 hyp/outasc.h
 hyp/outcomm.h
@@ -52,10 +53,28 @@ hyp/ref.c
 hyp/refcheck.c
 hyp/refcmds.c
 hyp/reflink.c
+hyp/rsccgi.c
 hyp/stool.c
-hyp/tool.c
 hyp/win32.c
 hyp/xgetopt.c
+macos/hcp_opts.m
+macos/hv_block.m
+macos/hv_eref.m
+macos/hv_error.m
+macos/hv_file.m
+macos/hv_fsel.m
+macos/hv_help.m
+macos/hv_hfind.m
+macos/hv_info.m
+macos/hv_main.m
+macos/hv_mark.m
+macos/hv_nav.m
+macos/hv_prefs.m
+macos/hv_recomp.m
+macos/hv_srch.m
+macos/hv_win.m
+macos/pixdata.c
+pic/piccolor.c
 tools/1st_conv/1st_conv.c
 tools/help_rc/help_rc.c
 tools/pc_conv/pc_conv.c
@@ -77,6 +96,7 @@ win32/hv_font.c
 win32/hv_fsel.c
 win32/hv_help.c
 win32/hv_hfind.c
+win32/hv_info.c
 win32/hv_main.c
 win32/hv_mark.c
 win32/hv_nav.c

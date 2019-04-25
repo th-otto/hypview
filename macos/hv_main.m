@@ -1687,11 +1687,11 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	[item setTarget:NSApp];
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Alternative font...") action:@selector(toggleAltfont:)               keyEquivalent:@"z"];
+	item = [menu addItemWithTitle:_("Alternative font")   action:@selector(toggleAltfont:)                keyEquivalent:@"z"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->useAltFontMenuItem = item;
-	item = [menu addItemWithTitle:_("Expand multiple spaces...") action:@selector(toggleExpandSpaces:)    keyEquivalent:@"l"];
+	item = [menu addItemWithTitle:_("Expand multiple spaces") action:@selector(toggleExpandSpaces:)       keyEquivalent:@"l"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->expandSpacesMenuItem = item;
