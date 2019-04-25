@@ -1163,6 +1163,9 @@ void hv_set_font(WINDOW_DATA *win)
 	} else
 	{
 		hyp_debug("GetTextMetrics: %s\n", win32_errstring(GetLastError()));
+		/* to avoid divisions by zero */
+		win->x_raster = HYP_PIC_FONTW;
+		win->y_raster = HYP_PIC_FONTH;
 	}
 	SelectObject(hdc, (HGDIOBJ)oldfont);
 	ReleaseDC(win->textwin, hdc);

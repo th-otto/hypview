@@ -511,6 +511,9 @@ void hv_set_font(WINDOW_DATA *win)
 {
 	const char *name = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name;
 	(void) name; /* TODO */
+		/* to avoid divisions by zero */
+		win->x_raster = HYP_PIC_FONTW;
+		win->y_raster = HYP_PIC_FONTH;
 }
 
 /*------------------------------------------------------------------*/
@@ -1367,7 +1370,8 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 	NSUInteger windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask;
 	NSBackingStoreType bufferingType = NSBackingStoreBuffered;
 	NSSize resize;
-	
+	int i;
+
 	_view = [[HypViewView alloc] initWithFrame: contentRect];
 	if (_view == nil)
 		return nil;
@@ -1378,6 +1382,21 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 	}
 	[_view retain];
 	self->textview = _view;
+	self->x_raster = HYP_PIC_FONTW;
+	self->y_raster = HYP_PIC_FONTH;
+	self->data = NULL;
+	self->is_popup = FALSE;
+	self->title = NULL;
+	self->popup = NULL;
+	self->history = NULL;
+	self->displayed_node = NULL;
+	for (i = 0; i < TO_MAX; i++)
+	{
+		self->m_button_disabled[i] = FALSE;
+		self->m_button_hidden[i] = FALSE;
+	}
+	self->parentwin = NULL;
+
 	[self setReleasedWhenClosed: NO];
 	get_context(self);
 	[self setContentView: _view];
@@ -1537,11 +1556,11 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	WINDOW_DATA *win = [notification object];
+	WINDOW_DATA *win = notification ? [notification object] : NULL;
 	
 	if (!win)
 		return;
-	dprintf(("NSWindowDelegate::windowWillClose"));
+	dprintf(("NSWindowDelegate::windowWillClose: %s", [[notification description] UTF8String]));
 	macos_destroy_window(win);
 }
 

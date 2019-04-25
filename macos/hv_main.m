@@ -959,7 +959,7 @@ static NSImage *make_icon(void)
 - (void)openBookmarks:(id)sender
 {
 	WINDOW_DATA *win = top_window();
-	dprintf(("openBookmarks"));
+	dprintf(("openBookmarks:"));
 	MarkerUpdate(win);
 	MarkerPopup(win, 1);
 }
@@ -968,7 +968,7 @@ static NSImage *make_icon(void)
 - (void)openHistory:(id)sender
 {
 	WINDOW_DATA *win = top_window();
-	dprintf(("openHistory"));
+	dprintf(("openHistory:"));
 	HistoryPopup(win, TO_HISTORY, 1);
 }
 
@@ -1687,11 +1687,11 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	[item setTarget:NSApp];
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Alternative font")   action:@selector(toggleAltfont:)                keyEquivalent:@"z"];
+	item = [menu addItemWithTitle:_("Alternative font...") action:@selector(toggleAltfont:)               keyEquivalent:@"z"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->useAltFontMenuItem = item;
-	item = [menu addItemWithTitle:_("Expand multiple spaces") action:@selector(toggleExpandSpaces:)       keyEquivalent:@"l"];
+	item = [menu addItemWithTitle:_("Expand multiple spaces...") action:@selector(toggleExpandSpaces:)    keyEquivalent:@"l"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->expandSpacesMenuItem = item;
@@ -2052,8 +2052,13 @@ int main(int argc, const char **argv)
 			}
 		}
 		if (win == NULL)
+		{
+#if 0
+			/* does not seem to work yet; we cannot open selector until app has finished launching */
 			win = SelectFileLoad(NULL);						/* use file selector */
-		
+#endif
+		}
+
 		if (win == NULL)
 		{
 			exit_status = EXIT_FAILURE;

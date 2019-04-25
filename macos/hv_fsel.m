@@ -62,10 +62,103 @@ static wchar_t *hv_file_selector_add_filter(const char *filter)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void file_select_done(NSOpenPanel *panel, NSInteger result, char **name, enum choose_file_mode mode, int *presult)
+{
+	NSArray *filenames;
+	NSEnumerator *enumerator;
+	id url;
+	BOOL didOutput;
+	int done = FALSE;
+	
+	if (result == NSFileHandlingPanelOKButton)
+	{
+		if (![panel allowsMultipleSelection])
+		{
+			url = [panel URL];
+			if (url)
+				filenames = [NSArray arrayWithObject: url];
+			else
+				filenames = nil;
+		} else
+		{
+			filenames = [panel URLs];
+		}
+			
+		enumerator = [filenames objectEnumerator];
+		didOutput = FALSE;
+		while ((url = [enumerator nextObject]) != nil)
+		{
+			const char *str = [[url path] UTF8String];
+			if (str && *str)
+			{
+				g_free(*name);
+				*name = g_strdup(str);
+				didOutput = TRUE;
+			}
+		}
+	
+		if (didOutput)
+		{
+			done = TRUE;
+		}
+	}
+	*presult = done;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 gboolean choose_file(WINDOW_DATA *parent, char **name, enum choose_file_mode mode, const char *title, const char *filter)
 {
-	/* TODO */
-	return FALSE;
+	char *dir;
+	char *freeme = NULL;
+	NSOpenPanel *panel;
+	int presult;
+	NSInteger result;
+	int fd2;
+
+	/* filter not implemented */	
+	UNUSED(filter);
+
+	fd2 = dup(2);
+#if 0
+	close(2);
+	open("/dev/null", O_RDWR);
+#endif
+	
+	if (mode == file_dirsel)
+	{
+		dir = *name;
+	} else
+	{
+		dir = freeme = hyp_path_get_dirname(*name);
+	}
+
+	if (mode == file_save)
+		panel = (NSOpenPanel *)([NSSavePanel savePanel]);
+	else
+		panel = [NSOpenPanel openPanel];
+		
+	[panel setTitle: [[[NSString alloc] initWithCString: title encoding: NSUTF8StringEncoding] autorelease]];
+	[panel setAllowsOtherFileTypes:YES];
+	[panel setCanChooseDirectories:mode == file_dirsel];
+	[panel setCanChooseFiles:mode != file_dirsel];
+	[panel setAllowsMultipleSelection:mode == file_open];
+	[panel setDirectoryURL: [NSURL fileURLWithPath: [[[NSString alloc] initWithCString: dir encoding: NSUTF8StringEncoding] autorelease]]];
+	[panel setExtensionHidden:NO];
+	[panel setTreatsFilePackagesAsDirectories:YES];
+	
+	presult = -1;
+	/* [panel beginWithCompletionHandler: ^(NSInteger result) { file_select_done(panel, result, name, mode, &presult); }]; */
+	
+	[panel makeKeyAndOrderFront: panel];
+	result = [panel runModal];
+	file_select_done(panel, result, name, mode, &presult);
+	
+	close(2);
+	dup2(2, fd2);
+	close(fd2);
+	
+	return presult;
 }
 
 /*** ---------------------------------------------------------------------- ***/

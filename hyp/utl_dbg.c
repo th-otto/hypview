@@ -17,6 +17,7 @@ void hyp_debug(const char *fmt, ...)
 	{
 		vfprintf(stderr, fmt, args);
 		fputs("\n", stderr);
+		fflush(stderr);
 	}
 	va_end(args);
 }
