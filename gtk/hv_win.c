@@ -23,6 +23,7 @@
 #include "../icons/referenc.h"
 #include "../icons/save.h"
 #include "../icons/remarker.h"
+#include "../icons/gtk/color.h"
 
 GSList *all_list;
 
@@ -1912,6 +1913,7 @@ static void register_stock_icons(void)
 	register_icon(factory, "hv-load", load_icon_data);
 	register_icon(factory, "hv-save", save_icon_data);
 	register_icon(factory, "hv-remarker", remarker_icon_data);
+	register_icon(factory, "gtk-color", color_icon_data);
 	
 	g_object_unref(factory);
 
@@ -2219,7 +2221,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "recent-10",          NULL,                    NULL,                                  "<Ctrl>0",     NULL,                                                G_CALLBACK(on_recent_selected) },
 
 	{ "selectfont",         "gtk-font",              N_("_Font..."),                        "<Alt>Z",      NULL,                                                G_CALLBACK(on_font_select) },
-	{ "selectcolors",       NULL,                    N_("_Colors..."),                      "<Alt>C",      NULL,                                                G_CALLBACK(on_color_select) },
+	{ "selectcolors",       "gtk-color",             N_("_Colors..."),                      "<Alt>C",      NULL,                                                G_CALLBACK(on_color_select) },
 	{ "outputconfig",       NULL,                    N_("_Output..."),                      "<Alt>O",      NULL,                                                G_CALLBACK(on_output_settings) },
 	{ "preferences",        "gtk-preferences",       N_("_Settings..."),                    "<Alt>S",      NULL,                                                G_CALLBACK(on_preferences) },
 

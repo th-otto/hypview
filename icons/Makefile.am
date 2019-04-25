@@ -25,6 +25,7 @@ EXTRA_DIST = \
 	referenc.h referenc.ico \
 	save.h     save.ico \
 	remarker.h remarker.ico \
+	gtk/color.h gtk/color.png \
 	$(pixmap_DATA) \
 	$(empty)
 
