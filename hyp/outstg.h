@@ -167,6 +167,98 @@ static void stg_out_str(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const u
 				g_string_append_c(out, '@');
 				g_string_append_c(out, '@');
 				break;
+			case 0x01:
+				g_string_append(out, "&0x2401;"); /* maybe uparrow? 0x21e7 */
+				break;
+			case 0x02:
+				g_string_append(out, "&0x2402;"); /* maybe downarrow? 0x21e9 */
+				break;
+			case 0x03:
+				g_string_append(out, "&0x2403;"); /* maybe rightarrow? 0x21e8 */
+				break;
+			case 0x04:
+				g_string_append(out, "&0x2404;"); /* maybe leftarrow? 0x21e6 */
+				break;
+			case 0x05:
+				g_string_append(out, "&0x2405;");
+				break;
+			case 0x06:
+				g_string_append(out, "&0x2406;");
+				break;
+			case 0x07:
+				g_string_append(out, "&0x2407;");
+				break;
+			case 0x08:
+				g_string_append(out, "&0x2408;"); /* maybe checkmark? 0x2713 */
+				break;
+			case 0x09:
+				g_string_append(out, "&0x2409;");
+				break;
+			case 0x0b:
+				g_string_append(out, "&0x240b;");
+				break;
+			case 0x0c:
+				g_string_append(out, "&0x240c;");
+				break;
+			case 0x0e:
+				g_string_append(out, "&0x240e;");
+				break;
+			case 0x0f:
+				g_string_append(out, "&0x240f;");
+				break;
+			case 0x10:
+				g_string_append(out, "&0x2410;");
+				break;
+			case 0x11:
+				g_string_append(out, "&0x2411;");
+				break;
+			case 0x12:
+				g_string_append(out, "&0x2412;");
+				break;
+			case 0x13:
+				g_string_append(out, "&0x2413;");
+				break;
+			case 0x14:
+				g_string_append(out, "&0x2414;");
+				break;
+			case 0x15:
+				g_string_append(out, "&0x2415;");
+				break;
+			case 0x16:
+				g_string_append(out, "&0x2416;");
+				break;
+			case 0x17:
+				g_string_append(out, "&0x2417;");
+				break;
+			case 0x18:
+				g_string_append(out, "&0x2418;");
+				break;
+			case 0x19:
+				g_string_append(out, "&0x2419;");
+				break;
+			case 0x1a:
+				g_string_append(out, "&0x241a;");
+				break;
+			case 0x1b:
+				g_string_append(out, "&0x241b;");
+				break;
+			case 0x1c:
+				g_string_append(out, "&0x241c;");
+				break;
+			case 0x1d:
+				g_string_append(out, "&0x241d;");
+				break;
+			case 0x1e:
+				g_string_append(out, "&0x241e;");
+				break;
+			case 0x1f:
+				g_string_append(out, "&0x241f;");
+				break;
+			case 0x7f:
+				g_string_append(out, "&0x2421;");
+				break;
+			case 0x0a:
+			case 0x0d:
 			default:
 				g_string_append_c(out, *p);
 				break;
