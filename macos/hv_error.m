@@ -24,13 +24,10 @@ int toplevels_open_except(WINDOW_DATA *top)
 
 void check_toplevels(WINDOW_DATA *toplevel)
 {
-	int num_open;
-	
-	if ((num_open = toplevels_open_except(toplevel)) == 0)
+	if (toplevels_open_except(toplevel) == 0)
 	{
-#if 0 /* TODO */
-		PostQuitMessage(0);
-#endif
+		/* maybe fixme: this will directly call exit() instead of terminating the runLoop */
+		[NSApp terminate:nil];
 	}
 }
 
@@ -104,6 +101,18 @@ void write_console(const char *s, gboolean use_gui, gboolean to_stderr, gboolean
 	{
 		show_message(NULL, to_stderr ? _("Error") : _("Warning"), s, big);
 	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+gboolean profile_write_error(void)
+{
+	gboolean ret;
+
+	char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(gl_profile.profile), hyp_utf8_strerror(errno));
+	ret = ask_yesno(top_window(), msg);
+	g_free(msg);
+	return ret;
 }
 
 /******************************************************************************/

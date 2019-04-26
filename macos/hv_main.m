@@ -58,11 +58,11 @@
 #undef _
 #undef N_
 #ifdef ENABLE_NLS
-#define _(String) todo
-#define N_(String) @String
+#define _(String) [NSString initWithUTF8String: xs_dgettext(GETTEXT_PACKAGE, String)]
+#define N_(String) String
 #else
 #define _(String) @String
-#define N_(String) @String
+#define N_(String) String
 #endif
 
 #define autorelease self
@@ -424,6 +424,9 @@ static void nonib_init(void)
 /*------------------------------------------------------------------*/
 /********************************************************************/
 
+#define APP_ICON_W 32
+#define APP_ICON_H 32
+
 /* XPM */
 static const char *const hypview_icon[] = {
 /* width height ncolors chars_per_pixel
@@ -471,7 +474,7 @@ static NSImage *make_icon(void)
 	Pixel colors[2];
 	CGImageRef icon;
 	const char *s;
-	Pixel icon_data[32][32];
+	Pixel icon_data[APP_ICON_H][APP_ICON_W];
 	CGDataProviderRef prov;
 	NSRect imageRect;
 	CGRect cgRect;
@@ -481,10 +484,10 @@ static NSImage *make_icon(void)
 	
 	colors[0] = 0;
 	colors[1] = 0xffffff00;
-	for (y = 0; y < 32; y++)
+	for (y = 0; y < APP_ICON_H; y++)
 	{
 		s = hypview_icon[y];
-		for (x = 0; x < 32; x++)
+		for (x = 0; x < APP_ICON_W; x++)
 		{
 			if (s[x] != ' ')
 			{
@@ -497,10 +500,10 @@ static NSImage *make_icon(void)
 	}
 	prov = CGDataProviderCreateWithData(NULL, icon_data, sizeof(icon_data), NULL);
 	colorspace = CGColorSpaceCreateDeviceRGB();
-	icon = CGImageCreate(32, 32, /* width, height */
+	icon = CGImageCreate(APP_ICON_W, APP_ICON_H, /* width, height */
 						 8,      /* bitsPerCompenent */
 						 32,     /* bitsPerPixel */
-						 4 * 32, /* bytesPerRow */
+						 4 * APP_ICON_W, /* bytesPerRow */
 						 colorspace,
 						 /* Host-ordered, since we're using the
 						    address of an int as the color data.
@@ -539,6 +542,21 @@ static NSImage *make_icon(void)
 /********************************************************************/
 /*------------------------------------------------------------------*/
 /********************************************************************/
+
+static gboolean NOINLINE WriteProfile(void)
+{
+	gboolean ret;
+	
+	ret = HypProfile_Save(TRUE);
+	
+	if (ret == FALSE)
+	{
+		ret = profile_write_error();
+	}
+	return ret;
+}
+
+/*** ---------------------------------------------------------------------- ***/
 
 @implementation HypViewApplication
 
@@ -1149,6 +1167,9 @@ static NSImage *make_icon(void)
 {
 	UNUSED(sender);
 	dprintf(("NSApplicationDelegate::applicationShouldTerminate: %s", [[sender description] UTF8String]));
+	RecentSaveToDisk();
+	if (!WriteProfile())
+		return NSTerminateCancel;
 	return NSTerminateNow;
 }
 
@@ -1962,7 +1983,7 @@ int main(int argc, const char **argv)
 	
 	argv0 = [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] fileSystemRepresentation];
 	real = realpath(argv0, NULL);
-	m_executablePath = [[NSString stringWithCString:real encoding:NSUTF8StringEncoding] stringByStandardizingPath];
+	m_executablePath = [[NSString stringWithUTF8String:real] stringByStandardizingPath];
 	free(real);
 	dprintf(("executableName: %s -> %s", argv0, [m_executablePath UTF8String]));
 
@@ -2083,5 +2104,6 @@ int main(int argc, const char **argv)
 
 	x_free_resources();
 
+	dprintf(("exit %d", exit_status));
 	return exit_status;
 }

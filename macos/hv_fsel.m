@@ -114,17 +114,18 @@ gboolean choose_file(WINDOW_DATA *parent, char **name, enum choose_file_mode mod
 	NSOpenPanel *panel;
 	int presult;
 	NSInteger result;
+
+#if 0
 	int fd2;
 
-	/* filter not implemented */	
-	UNUSED(filter);
-
 	fd2 = dup(2);
-#if 0
 	close(2);
 	open("/dev/null", O_RDWR);
 #endif
 	
+	/* filter not implemented */	
+	UNUSED(filter);
+
 	if (mode == file_dirsel)
 	{
 		dir = *name;
@@ -154,9 +155,11 @@ gboolean choose_file(WINDOW_DATA *parent, char **name, enum choose_file_mode mod
 	result = [panel runModal];
 	file_select_done(panel, result, name, mode, &presult);
 	
+#if 0
 	close(2);
 	dup2(2, fd2);
 	close(fd2);
+#endif
 	
 	return presult;
 }

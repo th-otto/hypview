@@ -40,10 +40,8 @@ void WindowCalcScroll(WINDOW_DATA *win)
 
 void macos_destroy_window(WINDOW_DATA *win)
 {
-	if (win!= NO_WINDOW)
+	if (win != NO_WINDOW)
 	{
-		if (!win->is_popup)
-			[NSApp removeWindowsItem: win];
 		[win close];
 		[win release];
 	}
@@ -53,7 +51,6 @@ void macos_destroy_window(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-#if 0
 static void macos_hypview_window_finalize(WINDOW_DATA *win)
 {
 	DOCUMENT *doc;
@@ -69,54 +66,15 @@ static void macos_hypview_window_finalize(WINDOW_DATA *win)
 		if (win->parentwin)
 			win->parentwin->popup = NULL;
 		hypdoc_unref(doc);
+		win->data = NULL;
 		if (!win->is_popup)
 		{
 			RemoveAllHistoryEntries(win);
 			all_list = g_slist_remove(all_list, win);
 		}
 		g_freep(&win->title);
-		[win release];
-		check_toplevels(NULL);
 	}
 }
-#endif
-
-/*** ---------------------------------------------------------------------- ***/
-
-#if 0
-static void on_quit(WINDOW_DATA *win)
-{
-	GSList *l;
-	
-	for (l = all_list; l; l = l->next)
-	{
-		win = (WINDOW_DATA *)l->data;
-		SendCloseWindow(win);
-	}
-}
-#endif
-
-/*** ---------------------------------------------------------------------- ***/
-
-#if 0
-static gboolean NOINLINE WriteProfile(WINDOW_DATA *win)
-{
-	gboolean ret;
-	Profile *inifile;
-	
-	inifile = gl_profile.profile;
-	
-	ret = HypProfile_Save(TRUE);
-	
-	if (ret == FALSE)
-	{
-		char *msg = g_strdup_printf(_("Can't write Settings:\n%s\n%s\nQuit anyway?"), Profile_GetFilename(inifile), hyp_utf8_strerror(errno));
-		ret = ask_yesno(win, msg);
-		g_free(msg);
-	}
-	return ret;
-}
-#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -587,11 +545,6 @@ WINDOW_DATA *macos_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	{
 	}
 
-	win->y_margin_top = gl_profile.viewer.text_yoffset;
-	win->y_margin_bottom = gl_profile.viewer.text_yoffset;
-	win->x_margin_left = gl_profile.viewer.text_xoffset;
-	win->x_margin_right = gl_profile.viewer.text_xoffset;
-	
 	hv_set_font(win);
 	hv_set_title(win, win->title);
 
@@ -1101,7 +1054,6 @@ static BOOL cocoa_key(WINDOW_DATA *win, NSEvent *theEvent)
 	if ((self = [super initWithFrame:frame]) == NULL)
 		return 0;
 	[self setAutoresizingMask: (NSViewHeightSizable | NSViewWidthSizable)];
-	[self allocateGState];
 	
 	return self;
 }
@@ -1109,7 +1061,6 @@ static BOOL cocoa_key(WINDOW_DATA *win, NSEvent *theEvent)
 
 - (void)dealloc
 {
-	[self releaseGState];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewGlobalFrameDidChangeNotification object:self];
 	[super dealloc];
 }
@@ -1321,7 +1272,7 @@ static BOOL cocoa_key(WINDOW_DATA *win, NSEvent *theEvent)
 
 - (BOOL)canDraw
 {
-	dprintf(("NSView::canDraw"));
+	/* dprintf(("NSView::canDraw")); */
 	return YES;
 }
 
@@ -1364,6 +1315,22 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 
 @implementation HypViewWindow
 
+- (void)finalize
+{
+	dprintf(("finalize: %s", [[self description] UTF8String]));
+	macos_hypview_window_finalize(self);
+	[super finalize];
+}
+
+
+- (void)dealloc
+{
+	dprintf(("dealloc: %s", [[self description] UTF8String]));
+	macos_hypview_window_finalize(self);
+	[super dealloc];
+}
+
+
 - (id)initWithContentRect:(NSRect)contentRect
 {
 	HypViewView *_view;
@@ -1372,6 +1339,7 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 	NSSize resize;
 	int i;
 
+	dprintf(("NSWindow:initWithContentRect: %d %d %d %d", (int)contentRect.origin.x, (int)contentRect.origin.y, (int)contentRect.size.width, (int)contentRect.size.height));
 	_view = [[HypViewView alloc] initWithFrame: contentRect];
 	if (_view == nil)
 		return nil;
@@ -1396,6 +1364,17 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 		self->m_button_hidden[i] = FALSE;
 	}
 	self->parentwin = NULL;
+	self->scrollvpos = 0;
+	self->scrollhpos = 0;
+	self->scrollvsize = -1;
+	self->scrollhsize = -1;
+	self->y_margin_top = gl_profile.viewer.text_yoffset;
+	self->y_margin_bottom = gl_profile.viewer.text_yoffset;
+	self->x_margin_left = gl_profile.viewer.text_xoffset;
+	self->x_margin_right = gl_profile.viewer.text_xoffset;
+	self->hovering_over_link = FALSE;
+	self->selection.valid = FALSE;
+	self->docsize.x = self->docsize.y = self->docsize.w = self->docsize.h = 0;
 
 	[self setReleasedWhenClosed: NO];
 	get_context(self);
@@ -1420,6 +1399,28 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 	[self setBackgroundColor: nscolor_from_pixel(viewer_colors.background)];
 	
 	return self;
+}
+
+
+- (void)close
+{
+	dprintf(("NSWindow: close"));
+	if (!self->is_popup)
+	{
+		[NSApp removeWindowsItem: self];
+		if (self.visible)
+		{
+			get_window_size(self);
+			if (self->data && self->data->path)
+			{
+				g_free(gl_profile.viewer.last_file);
+				gl_profile.viewer.last_file = g_strdup(self->data->path);
+			}
+			HypProfile_SetChanged();
+		}
+	}
+	[super close];
+	check_toplevels(self);
 }
 
 
@@ -1465,6 +1466,8 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 - (void)becomeKeyWindow
 {
 	dprintf(("NSWindow::becomeKeyWindow"));
+	all_list = g_slist_remove(all_list, self);
+	all_list = g_slist_prepend(all_list, self);
 	[HypViewApp updateAppMenu];
 	[super becomeKeyWindow];
 }
@@ -1561,7 +1564,6 @@ static NSColor *nscolor_from_pixel(Pixel rgb)
 	if (!win)
 		return;
 	dprintf(("NSWindowDelegate::windowWillClose: %s", [[notification description] UTF8String]));
-	macos_destroy_window(win);
 }
 
 @end

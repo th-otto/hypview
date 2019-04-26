@@ -86,8 +86,16 @@ void AsciiPrep(WINDOW_DATA *win, HYP_NODE *node)
 	UNUSED(node);
 	win->docsize.w = ascii->columns * win->x_raster;
 	win->docsize.h = ascii->lines * win->y_raster;
+	/*
+	 * clear buffer
+	 */
+	hv_win_reset_text(win);
+	/*
+	 * use only basename as title, since it also
+	 * appears in the window menu
+	 */
 	g_free(win->title);
-	win->title = g_strdup(doc->path);
+	win->title = hyp_path_get_basename(doc->path);
 	hv_set_title(win, win->title);
 }
 

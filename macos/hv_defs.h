@@ -15,7 +15,7 @@
 #include <locale.h>
 #endif
 
-@interface HypViewView : NSView
+@interface HypViewView : NSTextView
 {
 @private
 	CGDirectDisplayID w_display;
@@ -72,7 +72,6 @@ enum toolbutton {
 @interface HypViewWindow : NSWindow <NSWindowDelegate>
 {
 @public
-	GRECT last;
 	char *title;						/* Window title, in utf8 encoding */
 	int x_raster;
 	int y_raster;
@@ -105,6 +104,7 @@ enum toolbutton {
 }
 
 - (id)initWithContentRect:(NSRect)contentRect;
+- (void)close;
 
 @end
 
@@ -179,6 +179,7 @@ void check_toplevels(WINDOW_DATA *toplevel);
 void show_message(WINDOW_DATA *parent, const char *title, const char *text, gboolean big);
 gboolean ask_yesno(WINDOW_DATA *parent, const char *text);
 WINDOW_DATA *top_window(void);
+gboolean profile_write_error(void);
 
 
 /*
@@ -237,6 +238,7 @@ void hv_win_reset_text(WINDOW_DATA *win);
 void WindowCalcScroll(WINDOW_DATA *win);
 void SetWindowSlider(WINDOW_DATA *win);
 gboolean hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount);
+void hv_win_reset_text(WINDOW_DATA *win);
 
 
 /*

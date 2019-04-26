@@ -565,6 +565,12 @@ HYP_NODE *hypwin_node(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void hv_win_reset_text(WINDOW_DATA *win)
+{
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 {
 	DOCUMENT *doc = win->data;

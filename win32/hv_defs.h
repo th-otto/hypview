@@ -141,7 +141,6 @@ struct _status_data {
 struct _window_data_
 {
 	HWND hwnd;
-	GRECT last;
 	char *title;						/* Window title, in utf8 encoding */
 	int x_raster;
 	int y_raster;

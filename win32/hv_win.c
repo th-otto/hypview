@@ -218,6 +218,7 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 			win->parentwin->popup = NULL;
 		toolbar_status_exit(win);
 		hypdoc_unref(doc);
+		win->data = NULL;
 		if (!win->is_popup)
 		{
 			RemoveAllHistoryEntries(win);

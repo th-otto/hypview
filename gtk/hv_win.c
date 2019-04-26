@@ -156,6 +156,7 @@ static void gtk_hypview_window_finalize(GObject *object)
 			gtk_widget_destroy(GTK_WIDGET(pop));
 		}
 		hypdoc_unref(doc);
+		win->data = NULL;
 		if (!win->is_popup)
 		{
 			RemoveAllHistoryEntries(win);
