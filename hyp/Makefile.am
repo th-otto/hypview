@@ -8,7 +8,7 @@ include ../Makefile.common
 noinst_LIBRARIES = libhyp.a libhypdoc.a
 bin_PROGRAMS = reflink refcheck hcp stool hypfind hypinfo
 
-noinst_PROGRAMS = 
+noinst_PROGRAMS = pdfid
 noinst_SCRIPTS = 
 
 if HAVE_CURL
@@ -380,6 +380,9 @@ endif
 
 dumpicon_SOURCES = \
 	dumpicon.c
+
+
+pdfid_SOURCES = pdfid.c
 
 
 liblangid.o sparseset.o: liblangid.h model.h sparseset.h
