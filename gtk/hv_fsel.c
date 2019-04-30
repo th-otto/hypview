@@ -9,9 +9,9 @@
  * If a display string is not defined, the extension list is used.
  * An extension list may specify several wildcard specifications separated by spaces.
  */
-char const hypertext_file_filter[] = N_("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n");
-char const text_file_filter[] = N_("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n");
-char const stg_file_filter[] = N_("*.stg|ST-Guide files (*.stg)\n*.*|All files (*.*)\n");
+char const hypertext_file_filter[] = N_("*.hyp *.HYP|Hypertext files (*.hyp)\n*.*|All files (*.*)\n");
+char const text_file_filter[] = N_("*.txt *.TXT|Text files (*.txt)\n*.*|All files (*.*)\n");
+char const stg_file_filter[] = N_("*.stg *.STG|ST-Guide files (*.stg)\n*.*|All files (*.*)\n");
 
 
 /******************************************************************************/
