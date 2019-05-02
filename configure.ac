@@ -979,6 +979,7 @@ AC_OUTPUT([
 	potools/Makefile
 	pic/Makefile
 	icons/Makefile
+	zlib/Makefile
 	hyp/Makefile
 	gtk/Makefile
 	win32/Makefile
