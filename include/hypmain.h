@@ -51,7 +51,6 @@ int main(int argc, const char **argv)
 {
 	int i;
 	int ret;
-	gboolean converror = FALSE;
 	
 	static DTA mydta;
 	Fsetdta(&mydta);
@@ -70,7 +69,7 @@ int main(int argc, const char **argv)
 	__argc = argc;
 	__argv = g_new(char *, argc + 1);
 	for (i = 0; i < argc; i++)
-		__argv[i] = hyp_conv_charset(HYP_CHARSET_ATARI, HYP_CHARSET_UTF8, argv[i], STR0TERM, &converror);
+		__argv[i] = hyp_conv_to_utf8(HYP_CHARSET_ATARI, argv[i], STR0TERM);
 	__argv[i] = NULL;
 #undef main
 #define main utf8_main

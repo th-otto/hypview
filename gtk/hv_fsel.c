@@ -256,6 +256,7 @@ char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 	case HYP_FT_HTML:
 	case HYP_FT_XML:
 	case HYP_FT_HTML_XML:
+	case HYP_FT_PDF:
 	default:
 		unreachable();
 		return NULL;

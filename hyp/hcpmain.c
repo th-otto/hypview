@@ -104,6 +104,7 @@ static void print_usage(FILE *out)
 #include "outstg.h"
 #include "outhtml.h"
 #include "outxml.h"
+#include "pdf.h"
 #include "outdump.h"
 
 /*****************************************************************************/
@@ -781,6 +782,19 @@ int main(int argc, const char **argv)
 						g_string_truncate(out, 0);
 					}
 					g_string_free(out, TRUE);
+				}
+			} else if (opts->recompile_format == HYP_FT_PDF)
+			{
+				const char *filename = argv[c++];
+				
+				/* force utf-8 output for PDF */
+				opts->output_charset = HYP_CHARSET_UTF8;
+				/*
+				 * args beyond filename are node names to display
+				 */
+				if (recompile(filename, opts, recompile_pdf, argc - c, &argv[c], HYP_EXT_PDF) == FALSE)
+				{
+					retval = EXIT_FAILURE;
 				}
 			} else if (opts->recompile_format == HYP_FT_BINARY)
 			{

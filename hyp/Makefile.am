@@ -118,6 +118,7 @@ hcp_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
+	pdf.c pdf.h \
 	outasc.h outstg.h outdump.h outhtml.h htmljs.h outcomm.h outxml.h \
 	$(UTIL_SRC)
 
@@ -158,6 +159,7 @@ hypview_cgi_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
+	pdf.c pdf.h \
 	outasc.h outstg.h outdump.h outhtml.h htmljs.h outcomm.h outxml.h \
 	cgic.c cgic.h \
 	$(UTIL_SRC)

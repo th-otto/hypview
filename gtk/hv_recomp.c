@@ -10,6 +10,7 @@
 #include "../hyp/outstg.h"
 #include "../hyp/outhtml.h"
 #include "../hyp/outxml.h"
+#include "../hyp/pdf.c"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -128,6 +129,9 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 			break;
 		case HYP_FT_XML:
 			retval = recompile(hyp, opts, recompile_xml);
+			break;
+		case HYP_FT_PDF:
+			retval = recompile(hyp, opts, recompile_pdf);
 			break;
 		case HYP_FT_NONE:
 		case HYP_FT_UNKNOWN:

@@ -251,6 +251,8 @@ hyp_filetype hyp_guess_filetype(const char *name)
 		return HYP_FT_HTML;
 	if (g_ascii_strcasecmp(p, HYP_EXT_XML) == 0)
 		return HYP_FT_XML;
+	if (g_ascii_strcasecmp(p, HYP_EXT_PDF) == 0)
+		return HYP_FT_PDF;
 	if (g_ascii_strcasecmp(p, ".h") == 0)
 		return HYP_FT_CHEADER;
 	if (g_ascii_strcasecmp(p, ".rsh") == 0)

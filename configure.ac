@@ -910,6 +910,40 @@ AM_CONDITIONAL(HAVE_CURL, test "$no_curl" = "")
 
 ###############################################################################
 #
+#       PDF support
+#
+###############################################################################
+
+AH_TEMPLATE([WITH_PDF], [include PDF output support])
+AH_TEMPLATE([LIBHPDF_HAVE_NOZLIB], [zlib is not available])
+AH_TEMPLATE([LIBHPDF_HAVE_NOPNGLIB], [libpng is not available])
+AC_ARG_WITH(pdf,
+  [AS_HELP_STRING([--with-pdf],[include PDF output support])
+  ],
+  [ ],
+  [with_pdf=yes]
+)
+AM_CONDITIONAL(WITH_PDF, test "$with_pdf" = "yes")
+if test "$with_pdf" = "yes"; then
+AC_DEFINE([WITH_PDF])
+AC_ARG_WITH(png,
+  [AS_HELP_STRING([--with-png],[include PNG support for PDF])
+  ],
+  [ ],
+  [with_png=yes]
+)
+if test "$with_png" != "no"; then
+  AC_CHECK_LIB([png], [png_init_io], [], [
+    AC_MSG_ERROR([png_init_io() is missing, check config.log for more details])
+  ])
+fi
+fi
+if test "$with_png" = "no"; then
+  AC_DEFINE([LIBHPDF_HAVE_NOPNGLIB])
+fi
+
+###############################################################################
+#
 #       Gettext support
 #
 ###############################################################################
@@ -983,6 +1017,9 @@ AC_OUTPUT([
 	hyp/Makefile
 	gtk/Makefile
 	win32/Makefile
+	hpdf/Makefile
+	hpdf/include/Makefile
+	hpdf/src/Makefile
 	tos/Makefile
 	tos/utils/call-acc/Makefile
 	tools/Makefile

@@ -80,6 +80,7 @@ enum hcp_option {
 	OPT_DUMP = 1024,
 	OPT_RECOMPILE_HTML,
 	OPT_RECOMPILE_XML,
+	OPT_RECOMPILE_PDF,
 	OPT_PRINT_UNKNOWN,
 	OPT_CHARSET,
 	OPT_LONG_FILENAMES,
@@ -120,6 +121,7 @@ static struct option const long_options[] = {
 	{ "view", no_argument, NULL, OPT_VIEW },
 	{ "html", no_argument, NULL, OPT_RECOMPILE_HTML },
 	{ "xml", no_argument, NULL, OPT_RECOMPILE_XML },
+	{ "pdf", no_argument, NULL, OPT_RECOMPILE_PDF },
 	{ "wait", optional_argument, NULL, OPT_WAIT },
 	{ "title-in-index", no_argument, NULL, OPT_TITLE_IN_INDEX },
 	{ "no-title-in-index", no_argument, NULL, OPT_NO_TITLE_IN_INDEX },
@@ -591,6 +593,17 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				if (opts->recompile_format == HYP_FT_STG)
 					opts->showstg = TRUE;
 				opts->recompile_format = HYP_FT_XML;
+			}
+			break;
+		case OPT_RECOMPILE_PDF:
+			if (origin == OPTS_FROM_SOURCE || origin == OPTS_FROM_CONFIG)
+			{
+				retval = not_here(origin, "--pdf");
+			} else
+			{
+				if (opts->recompile_format == HYP_FT_STG)
+					opts->showstg = TRUE;
+				opts->recompile_format = HYP_FT_PDF;
 			}
 			break;
 		case OPT_WAIT:
