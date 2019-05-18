@@ -35,6 +35,14 @@ static const char *html_name_attr = "id";
 
 #include "htmljs.h"
 
+#define USE_ENTITIES 0
+
+#if USE_ENTITIES
+#define ENTITY(ent, code) ent
+#else
+#define ENTITY(ent, code) code
+#endif
+
 /*
  * style names used
  */
@@ -203,7 +211,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%01");
 				} else
 				{
-					STR("&soh;");
+					STR(ENTITY("&soh;", "&#9217;"));
 				}
 				break;
 			case 0x02:
@@ -212,7 +220,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%02");
 				} else
 				{
-					STR("&stx;");
+					STR(ENTITY("&stx;", "&#9218;"));
 				}
 				break;
 			case 0x03:
@@ -221,7 +229,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%03");
 				} else
 				{
-					STR("&etx;");
+					STR(ENTITY("&etx;", "&#9219;"));
 				}
 				break;
 			case 0x04:
@@ -230,7 +238,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%04");
 				} else
 				{
-					STR("&eot;");
+					STR(ENTITY("&eot;", "&#9220;"));
 				}
 				break;
 			case 0x05:
@@ -239,7 +247,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%05");
 				} else
 				{
-					STR("&enq;");
+					STR(ENTITY("&enq;", "&#9221;"));
 				}
 				break;
 			case 0x06:
@@ -248,7 +256,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%06");
 				} else
 				{
-					STR("&ack;");
+					STR(ENTITY("&ack;", "&#9222;"));
 				}
 				break;
 			case 0x07:
@@ -257,7 +265,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%07");
 				} else
 				{
-					STR("&bel;");
+					STR(ENTITY("&bel;", "&#9223;"));
 				}
 				break;
 			case 0x08:
@@ -266,7 +274,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%08");
 				} else
 				{
-					STR("&bs;");
+					STR(ENTITY("&bs;", "&#9224;"));
 				}
 				break;
 			case 0x09:
@@ -275,7 +283,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%09");
 				} else
 				{
-					STR("&ht;");
+					STR(ENTITY("&ht;", "&#9225;"));
 				}
 				break;
 			case 0x0a:
@@ -284,7 +292,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%0A");
 				} else
 				{
-					STR("&lf;");
+					STR(ENTITY("&lf;", "&#9226;"));
 				}
 				break;
 			case 0x0b:
@@ -293,7 +301,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%0B");
 				} else
 				{
-					STR("&vt;");
+					STR(ENTITY("&vt;", "&#9227;"));
 				}
 				break;
 			case 0x0c:
@@ -302,7 +310,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%0C");
 				} else
 				{
-					STR("&ff;");
+					STR(ENTITY("&ff;", "&#9228;"));
 				}
 				break;
 			case 0x0d:
@@ -311,7 +319,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%0D");
 				} else
 				{
-					STR("&cr;");
+					STR(ENTITY("&cr;", "&#9229;"));
 				}
 				break;
 			case 0x0e:
@@ -320,7 +328,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%0E");
 				} else
 				{
-					STR("&so;");
+					STR(ENTITY("&so;", "&#9230;"));
 				}
 				break;
 			case 0x0f:
@@ -329,7 +337,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%0F");
 				} else
 				{
-					STR("&si;");
+					STR(ENTITY("&si;", "&#9231;"));
 				}
 				break;
 			case 0x10:
@@ -338,7 +346,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%10");
 				} else
 				{
-					STR("&dle;");
+					STR(ENTITY("&dle;", "&#9232;"));
 				}
 				break;
 			case 0x11:
@@ -347,7 +355,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%11");
 				} else
 				{
-					STR("&dc1;");
+					STR(ENTITY("&dc1;", "&#9233;"));
 				}
 				break;
 			case 0x12:
@@ -356,7 +364,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%12");
 				} else
 				{
-					STR("&dc2;");
+					STR(ENTITY("&dc2;", "&#9234;"));
 				}
 				break;
 			case 0x13:
@@ -365,7 +373,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%13");
 				} else
 				{
-					STR("&dc3;");
+					STR(ENTITY("&dc3;", "&#9235;"));
 				}
 				break;
 			case 0x14:
@@ -374,7 +382,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%14");
 				} else
 				{
-					STR("&dc4;");
+					STR(ENTITY("&dc4;", "&#9236;"));
 				}
 				break;
 			case 0x15:
@@ -383,7 +391,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%15");
 				} else
 				{
-					STR("&nak;");
+					STR(ENTITY("&nak;", "&#9237;"));
 				}
 				break;
 			case 0x16:
@@ -392,7 +400,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%16");
 				} else
 				{
-					STR("&syn;");
+					STR(ENTITY("&syn;", "&#9238;"));
 				}
 				break;
 			case 0x17:
@@ -401,7 +409,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%17");
 				} else
 				{
-					STR("&etb;");
+					STR(ENTITY("&etb;", "&#9239;"));
 				}
 				break;
 			case 0x18:
@@ -410,7 +418,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%18");
 				} else
 				{
-					STR("&can;");
+					STR(ENTITY("&can;", "&#9240;"));
 				}
 				break;
 			case 0x19:
@@ -419,7 +427,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%19");
 				} else
 				{
-					STR("&em;");
+					STR(ENTITY("&em;", "&#9241;"));
 				}
 				break;
 			case 0x1a:
@@ -428,7 +436,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%1A");
 				} else
 				{
-					STR("&sub;");
+					STR(ENTITY("&sub;", "&#9242;"));
 				}
 				break;
 			case 0x1b:
@@ -437,7 +445,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%1B");
 				} else
 				{
-					STR("&esc;");
+					STR(ENTITY("&esc;", "&#9243;"));
 				}
 				break;
 			case 0x1c:
@@ -446,7 +454,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%1C");
 				} else
 				{
-					STR("&fs;");
+					STR(ENTITY("&fs;", "&#9244;"));
 				}
 				break;
 			case 0x1D:
@@ -455,7 +463,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%1D");
 				} else
 				{
-					STR("&gs;");
+					STR(ENTITY("&gs;", "&#9245;"));
 				}
 				break;
 			case 0x1E:
@@ -464,7 +472,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%1E");
 				} else
 				{
-					STR("&rs;");
+					STR(ENTITY("&rs;", "&#9246;"));
 				}
 				break;
 			case 0x1F:
@@ -473,7 +481,7 @@ static char *html_quote_name(const char *name, unsigned int flags)
 					STR("%1F");
 				} else
 				{
-					STR("&us;");
+					STR(ENTITY("&us;", "&#9247;"));
 				}
 				break;
 			default:
@@ -1803,6 +1811,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 
 static void html_out_entities(GString *out)
 {
+#if USE_ENTITIES
 	g_string_append(out, " [\n");
 	g_string_append(out, "<!ENTITY uparrow \"&#8679;\">          <!-- 0x01 U+21E7 -->\n");
 	g_string_append(out, "<!ENTITY downarrow \"&#8681;\">        <!-- 0x02 U+21E9 -->\n");
@@ -1870,6 +1879,9 @@ static void html_out_entities(GString *out)
 
 	g_string_append(out, "<!ENTITY nbsp \"&#32;\">\n");
 	g_string_append(out, "]");
+#else
+	UNUSED(out);
+#endif
 }
 
 /* ------------------------------------------------------------------------- */
@@ -2507,7 +2519,7 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 					{
 					case HYP_ESC_ESC:
 						FLUSHTREE();
-						g_string_append(out, "&#x241b;");
+						g_string_append(out, ENTITY("&esc;", "&#x241b;"));
 						at_bol = FALSE;
 						src++;
 						break;
