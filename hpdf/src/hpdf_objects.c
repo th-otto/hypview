@@ -66,6 +66,7 @@ void HPDF_Obj_ForceFree(HPDF_MMgr mmgr, void *obj)
 		break;
 	default:
 		HPDF_FreeMem(mmgr, obj);
+		break;
 	}
 }
 
@@ -143,6 +144,7 @@ HPDF_STATUS HPDF_Obj_WriteValue(void *obj, HPDF_Stream stream, HPDF_Encrypt e)
 		break;
 	default:
 		ret = HPDF_ERR_UNKNOWN_CLASS;
+		break;
 	}
 
 	return ret;

@@ -156,6 +156,7 @@ static HPDF_UNICODE UTF8_Encoder_ToUnicode_Func(HPDF_Encoder encoder, HPDF_UINT1
 		break;
 	default:
 		val = 32;						/* Unknown character */
+		break;
 	}
 
 	if (val > 65535)					/* Convert everything outside UCS-2 to space */

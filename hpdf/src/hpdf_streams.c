@@ -749,6 +749,7 @@ static HPDF_STATUS HPDF_FileReader_SeekFunc(HPDF_Stream stream, HPDF_INT pos, HP
 		break;
 	default:
 		whence = SEEK_SET;
+		break;
 	}
 
 	if (HPDF_FSEEK(fp, pos, whence) != 0)

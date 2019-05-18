@@ -2210,6 +2210,7 @@ HPDF_Encoder HPDF_BasicEncoder_New(HPDF_MMgr mmgr, const char *encoding_name)
 	default:
 		HPDF_StrCpy(encoder_attr->base_encoding, HPDF_ENCODING_FONT_SPECIFIC, eptr);
 		HPDF_BasicEncoder_CopyMap(encoder, HPDF_UNICODE_MAP_FONT_SPECIFIC);
+		break;
 	}
 
 	if (data->ovewrride_map)

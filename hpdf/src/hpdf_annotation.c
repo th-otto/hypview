@@ -400,6 +400,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, 
 		/* default value */
 		HPDF_Dict_RemoveElement(annot, "H");
 		ret = HPDF_OK;
+		break;
 	}
 
 	if (ret != HPDF_OK)

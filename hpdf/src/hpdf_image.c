@@ -363,7 +363,8 @@ HPDF_Image HPDF_Image_LoadRawImageFromMem(
 		size *= 4;
 		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_CMYK);
 		break;
-	default:;
+	default:
+		break;
 	}
 
 	if (ret != HPDF_OK)
