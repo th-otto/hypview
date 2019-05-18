@@ -56,7 +56,7 @@ HPDF_BOOL HPDF_HasDoc(HPDF_Doc pdf);
 void HPDF_FreeDocAll(HPDF_Doc pdf);
 
 
-HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf);
+HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf, HPDF_Stream *stream);
 
 HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size);
 

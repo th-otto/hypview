@@ -1,23 +1,20 @@
-typedef struct _pdf_obj {
-	struct _pdf_obj *next;
-	GString *out;
-	GString *stream;
-	int num;
-	size_t fileoffset;
-	size_t len;
-} PDF_OBJ;
+#ifndef __HYPPDF_H__
+#define __HYPPDF_H__ 1
 
+#include <setjmp.h>
+#include "hpdf.h"
 
 typedef struct _pdf {
-	GString *out;
-	PDF_OBJ *objects;
-	PDF_OBJ **last_obj;
-	int obj_num;
+	HPDF_Doc hpdf;
+	hcp_opts *opts;
+	jmp_buf error_env;
+	HPDF_Font font;
 } PDF;
 
-PDF *pdf_new(void);
+PDF *pdf_new(hcp_opts *opts);
 void pdf_delete(PDF *pdf);
-PDF_OBJ *pdf_obj_new(PDF *pdf);
 
-void pdf_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, PDF *pdf);
+void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf);
 gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv);
+
+#endif /* __HYPPDF_H__ */

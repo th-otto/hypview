@@ -15,6 +15,9 @@ AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir) -I$(top_srcdir)/rcintl
+if WITH_PDF
+AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
+endif
 
 applicationdir = $(datadir)/applications
 
@@ -73,7 +76,12 @@ hypview_SOURCES = \
 	$(empty)
 
 hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
-hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(INTLLIBS)
+hypview_LDADD =
+if WITH_PDF
+hypview_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
+hypview_LDADD += $(LIBHPDF) $(LIBZ)
+endif
+hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(INTLLIBS)
 hypview_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 if OS_WIN32
 hypview_DEPENDENCIES += $(LIBRCINTL_DEP)

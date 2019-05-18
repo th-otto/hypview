@@ -80,16 +80,21 @@ static void print_usage(FILE *out)
 	hyp_utf8_fprintf(out, _("  -o, --output [FILE]           set output file name\n"));
 	hyp_utf8_fprintf(out, _("  -p, --pic-format [VAL]        image type for recompiling\n"));
 	hyp_utf8_fprintf(out, _("  -q[qq], --quiet               set quiet mode\n"));
-	hyp_utf8_fprintf(out, _("  -r, --recompile               recompile a hypertext file\n"));
 	hyp_utf8_fprintf(out, _("  +-s, --[no-]split             -don't split long lines\n"));
 	hyp_utf8_fprintf(out, _("  -t, --tabwidth [VAL]          set tabulator width\n"));
 	hyp_utf8_fprintf(out, _("  -u, --uses [FILE]             add a '@uses' file\n"));
-	hyp_utf8_fprintf(out, _("  -v, --view                    view listed nodes as ASCII\n"));
 	hyp_utf8_fprintf(out, _("  -w, --wait {VAL}              wait for keypress for exiting\n"));
 	hyp_utf8_fprintf(out, _("  +-x, --[no]-title-in-index    use +title instead of name for index\n"));
 	hyp_utf8_fprintf(out, _("  +-y, --caseinsensitive-first  first char is case insensitive\n"));
 	hyp_utf8_fprintf(out, _("  -z[z], --references           write reference file\n"));
 	hyp_utf8_fprintf(out, _("                                zz also updates default-reference-file\n"));
+	hyp_utf8_fprintf(out, "\n");
+	hyp_utf8_fprintf(out, _("  -r, --recompile               recompile a hypertext file\n"));
+	hyp_utf8_fprintf(out, _("  -v, --view                    view listed nodes as ASCII\n"));
+	hyp_utf8_fprintf(out, _("      --html                    generate html output\n"));
+	hyp_utf8_fprintf(out, _("      --xml                     generate xml output\n"));
+	hyp_utf8_fprintf(out, _("      --pdf                     generate pdf output\n"));
+	hyp_utf8_fprintf(out, "\n");
 	hyp_utf8_fprintf(out, _("  -h, --help                    print help and exit\n"));
 	hyp_utf8_fprintf(out, _("  -V, --version                 print version and exit\n"));
 }

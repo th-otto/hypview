@@ -1227,7 +1227,7 @@ static HPDF_STATUS InternalSaveToStream(HPDF_Doc pdf, HPDF_Stream stream)
 }
 
 
-HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf)
+HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf, HPDF_Stream *stream)
 {
 	HPDF_PTRACE((" HPDF_SaveToStream\n"));
 
@@ -1245,10 +1245,14 @@ HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf)
 	if (InternalSaveToStream(pdf, pdf->stream) != HPDF_OK)
 		return HPDF_CheckError(&pdf->error);
 
+	if (stream)
+		*stream = pdf->stream;
+
 	return HPDF_OK;
 }
 
-HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
+
+HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 {
 	HPDF_Stream stream;
 	HPDF_UINT isize = *size;
@@ -1282,6 +1286,7 @@ HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
 	return ret;
 }
 
+
 HPDF_UINT32 HPDF_GetStreamSize(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_GetStreamSize\n"));
@@ -1296,7 +1301,7 @@ HPDF_UINT32 HPDF_GetStreamSize(HPDF_Doc pdf)
 }
 
 
-HPDF_STATUS HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
+HPDF_STATUS HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 {
 	HPDF_UINT isize = *size;
 	HPDF_STATUS ret;
@@ -1752,7 +1757,7 @@ static const char *LoadType1FontFromStream(HPDF_Doc pdf, HPDF_Stream afmdata, HP
 }
 
 
-const char * HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *afm_file_name, const char *data_file_name)
+const char *HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *afm_file_name, const char *data_file_name)
 {
 	HPDF_Stream afm;
 	HPDF_Stream pfm = NULL;
@@ -2073,7 +2078,7 @@ HPDF_Image HPDF_LoadJpegImageFromFile(HPDF_Doc pdf, const char *filename)
 }
 
 
-HPDF_Image HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE * buffer, HPDF_UINT size)
+HPDF_Image HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_UINT size)
 {
 	HPDF_Image image;
 

@@ -31,6 +31,9 @@ noinst_PROGRAMS += img2bmp bmp2img icn2img picinfo bmp2gif gif2bmp icn2ico ico2i
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)
+if WITH_PDF
+AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
+endif
 
 LANGID_MODEL = $(srcdir)/ldpy.model
 
@@ -133,7 +136,12 @@ EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../p
 MOFILES := $(shell $(EVAL_MOFILES))
 
 hcp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-hcp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+hcp_LDADD =
+if WITH_PDF
+hcp_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
+hcp_LDADD += $(LIBHPDF) $(LIBZ)
+endif
+hcp_LDADD += $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
 if OS_WIN32
 hcp_SOURCES += hcp_rc.rc
 hcp_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
@@ -165,7 +173,12 @@ hypview_cgi_SOURCES = \
 	$(UTIL_SRC)
 
 hypview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-hypview_cgi_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
+hypview_cgi_LDADD =
+if WITH_PDF
+hypview_cgi_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
+hypview_cgi_LDADD += $(LIBHPDF) $(LIBZ)
+endif
+hypview_cgi_LDADD += $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
 if OS_WIN32
 hypview_cgi_SOURCES += hcp_rc.rc
 hypview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)

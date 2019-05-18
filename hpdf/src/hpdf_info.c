@@ -51,8 +51,10 @@ HPDF_STATUS HPDF_Info_SetInfoAttr(HPDF_Dict info, HPDF_InfoType type, const char
 
 	HPDF_PTRACE((" HPDF_Info_SetInfoAttr\n"));
 
+#if 0
 	if (type <= HPDF_INFO_MOD_DATE)
 		return HPDF_SetError(info->error, HPDF_INVALID_PARAMETER, 0);
+#endif
 
 	if (type == HPDF_INFO_TRAPPED)
 		return HPDF_Dict_AddName(info, name, value);

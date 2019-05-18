@@ -2122,7 +2122,7 @@ HPDF_STATUS HPDF_Page_DrawImage(HPDF_Page page, HPDF_Image image, HPDF_REAL x, H
  * Absolute values are passed in xAbs and yAbs, relative values are returned
  * to xRel and yRel. The latter two must not be NULL.
  */
-static void TextPos_AbsToRel(HPDF_TransMatrix text_matrix, HPDF_REAL xAbs, HPDF_REAL yAbs, HPDF_REAL * xRel, HPDF_REAL * yRel)
+static void TextPos_AbsToRel(HPDF_TransMatrix text_matrix, HPDF_REAL xAbs, HPDF_REAL yAbs, HPDF_REAL *xRel, HPDF_REAL *yRel)
 {
 	if (text_matrix.a == 0)
 	{

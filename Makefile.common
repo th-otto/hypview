@@ -26,6 +26,18 @@ LIBPIC = $(LIBPIC_DEP)
 $(LIBPIC_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/pic libpic.a; fi
 
+LIBZ_DEP = $(hyp_builddir)/zlib/libz.a
+LIBZ = $(LIBZ_DEP)
+
+$(LIBZ_DEP)::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/zlib libz.a; fi
+
+LIBHPDF_DEP = $(hyp_builddir)/hpdf/src/libhpdf.a
+LIBHPDF = $(LIBHPDF_DEP)
+
+$(LIBHPDF_DEP)::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/hpdf/src libhpdf.a; fi
+
 LIBRCINTL_DEP = $(top_builddir)/rcintl/librcintl.a
 LIBRCINTL = $(LIBRCINTL_DEP)
 

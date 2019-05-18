@@ -9,6 +9,9 @@ endif
 AM_CPPFLAGS =	-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
+if WITH_PDF
+AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
+endif
 
 	
 hypview_SOURCES = \
@@ -53,7 +56,12 @@ hypview_SOURCES = \
 	$(empty)
 
 hypview_DEPENDENCIES = resource.res $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)
-hypview_LDADD = resource.res $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(INTLLIBS) -lshell32 -lgdi32 -lcomdlg32
+hypview_LDADD = resource.res
+if WITH_PDF
+hypview_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
+hypview_LDADD += $(LIBHPDF) $(LIBZ)
+endif
+hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(INTLLIBS) -lshell32 -lgdi32 -lcomdlg32
 hypview_LDFLAGS = -mconsole
 
 EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
