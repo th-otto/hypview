@@ -15996,7 +15996,7 @@ static HPDF_STATUS EUC_V_Init(HPDF_Encoder encoder)
 
 /*--------------------------------------------------------------------------*/
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseJPEncodings(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseJPEncodings(HPDF_Doc pdf)
 {
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;

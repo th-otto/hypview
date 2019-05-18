@@ -1448,7 +1448,7 @@ static HPDF_STATUS Batang_BoldItalic_Init(HPDF_FontDef fontdef)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseKRFonts(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseKRFonts(HPDF_Doc pdf)
 {
 	HPDF_FontDef fontdef;
 	HPDF_STATUS ret;

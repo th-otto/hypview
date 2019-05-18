@@ -148,7 +148,7 @@ HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotTy
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Annotation_SetBorderStyle(HPDF_Annotation annot,
+HPDF_STATUS HPDF_Annotation_SetBorderStyle(HPDF_Annotation annot,
 	HPDF_BSSubtype subtype,
 	HPDF_REAL width,
 	HPDF_UINT16 dash_on,
@@ -300,7 +300,7 @@ static HPDF_BOOL CheckSubType(HPDF_Annotation annot, HPDF_AnnotType type)
 	return HPDF_TRUE;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_LinkAnnot_SetJavaScript(HPDF_Annotation annot, HPDF_JavaScript javascript)
+HPDF_STATUS HPDF_LinkAnnot_SetJavaScript(HPDF_Annotation annot, HPDF_JavaScript javascript)
 {
 	HPDF_Dict action;
 	HPDF_STATUS ret;
@@ -328,7 +328,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_LinkAnnot_SetJavaScript(HPDF_Annotation annot, HPD
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_STATUS
 HPDF_LinkAnnot_SetBorderStyle(HPDF_Annotation annot, HPDF_REAL width, HPDF_UINT16 dash_on, HPDF_UINT16 dash_off)
 {
 	HPDF_Array array;
@@ -376,7 +376,7 @@ HPDF_LinkAnnot_SetBorderStyle(HPDF_Annotation annot, HPDF_REAL width, HPDF_UINT1
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHighlightMode mode)
+HPDF_STATUS HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHighlightMode mode)
 {
 	HPDF_STATUS ret;
 
@@ -536,7 +536,7 @@ HPDF_Annotation HPDF_MarkupAnnot_New(HPDF_MMgr mmgr,
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)
+HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -558,7 +558,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBC
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)
+HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -581,7 +581,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, HPDF_CMY
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetGrayColor(HPDF_Annotation annot, HPDF_REAL color)
+HPDF_STATUS HPDF_Annot_SetGrayColor(HPDF_Annotation annot, HPDF_REAL color)
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -601,7 +601,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetGrayColor(HPDF_Annotation annot, HPDF_REA
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetNoColor(HPDF_Annotation annot)
+HPDF_STATUS HPDF_Annot_SetNoColor(HPDF_Annotation annot)
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -617,7 +617,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Annot_SetNoColor(HPDF_Annotation annot)
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_TextAnnot_SetIcon(HPDF_Annotation annot, HPDF_AnnotIcon icon)
+HPDF_STATUS HPDF_TextAnnot_SetIcon(HPDF_Annotation annot, HPDF_AnnotIcon icon)
 {
 	HPDF_PTRACE((" HPDF_TextAnnot_SetIcon\n"));
 
@@ -634,7 +634,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_TextAnnot_SetIcon(HPDF_Annotation annot, HPDF_Anno
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
+HPDF_STATUS HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 {
 	HPDF_Boolean b;
 
@@ -650,7 +650,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BO
 	return HPDF_Dict_Add(annot, "Open", b);
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_PopupAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
+HPDF_STATUS HPDF_PopupAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 {
 	HPDF_Boolean b;
 
@@ -666,35 +666,35 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_PopupAnnot_SetOpened(HPDF_Annotation annot, HPDF_B
 	return HPDF_Dict_Add(annot, "Open", b);
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetTitle(HPDF_Annotation annot, const char *name)
+HPDF_STATUS HPDF_MarkupAnnot_SetTitle(HPDF_Annotation annot, const char *name)
 {
 	HPDF_PTRACE((" HPDF_MarkupAnnot_SetTitle\n"));
 
 	return HPDF_Dict_Add(annot, "T", HPDF_String_New(annot->mmgr, name, NULL));
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetSubject(HPDF_Annotation annot, const char *name)
+HPDF_STATUS HPDF_MarkupAnnot_SetSubject(HPDF_Annotation annot, const char *name)
 {
 	HPDF_PTRACE((" HPDF_MarkupAnnot_SetSubject\n"));
 
 	return HPDF_Dict_Add(annot, "Subj", HPDF_String_New(annot->mmgr, name, NULL));
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, HPDF_Date value)
+HPDF_STATUS HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, HPDF_Date value)
 {
 	HPDF_PTRACE((" HPDF_MarkupAnnot_SetCreationDate\n"));
 
 	return HPDF_Info_SetInfoDateAttr(annot, HPDF_INFO_CREATION_DATE, value);
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetTransparency(HPDF_Annotation annot, HPDF_REAL value)
+HPDF_STATUS HPDF_MarkupAnnot_SetTransparency(HPDF_Annotation annot, HPDF_REAL value)
 {
 	HPDF_PTRACE((" HPDF_MarkupAnnot_SetTransparency\n"));
 
 	return HPDF_Dict_AddReal(annot, "CA", value);
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetIntent(HPDF_Annotation annot, HPDF_AnnotIntent intent)
+HPDF_STATUS HPDF_MarkupAnnot_SetIntent(HPDF_Annotation annot, HPDF_AnnotIntent intent)
 {
 	HPDF_PTRACE((" HPDF_MarkupAnnot_SetIntent\n"));
 
@@ -704,14 +704,14 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetIntent(HPDF_Annotation annot, HPDF_
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetPopup(HPDF_Annotation annot, HPDF_Annotation popup)
+HPDF_STATUS HPDF_MarkupAnnot_SetPopup(HPDF_Annotation annot, HPDF_Annotation popup)
 {
 	HPDF_PTRACE((" HPDF_MarkupAnnot_SetPopup\n"));
 
 	return HPDF_Dict_Add(annot, "Popup", popup);
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)	/* IC with RGB entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)	/* IC with RGB entry */
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -733,7 +733,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation an
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)	/* IC with CMYK entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)	/* IC with CMYK entry */
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -756,7 +756,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation a
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorGrayColor(HPDF_Annotation annot, HPDF_REAL color)	/* IC with Gray entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorGrayColor(HPDF_Annotation annot, HPDF_REAL color)	/* IC with Gray entry */
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -776,7 +776,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorGrayColor(HPDF_Annotation a
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetInteriorTransparent(HPDF_Annotation annot)	/* IC with No Color entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorTransparent(HPDF_Annotation annot)	/* IC with No Color entry */
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -805,8 +805,7 @@ HPDF_BOOL HPDF_Annotation_Validate(HPDF_Annotation annot)
 	return HPDF_TRUE;
 }
 
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Annot_Set3DView(HPDF_MMgr mmgr, HPDF_Annotation annot, HPDF_Annotation annot3d, HPDF_Dict view3d)
+HPDF_STATUS HPDF_Annot_Set3DView(HPDF_MMgr mmgr, HPDF_Annotation annot, HPDF_Annotation annot3d, HPDF_Dict view3d)
 {
 	HPDF_Proxy proxyView3d;
 	HPDF_Dict exData = HPDF_Dict_New(mmgr);
@@ -893,7 +892,7 @@ HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Re
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_TextMarkupAnnot_SetQuadPoints(HPDF_Annotation annot, HPDF_Point lb, HPDF_Point rb, HPDF_Point lt, HPDF_Point rt)	/* l-left, r-right, b-bottom, t-top positions */
+HPDF_STATUS HPDF_TextMarkupAnnot_SetQuadPoints(HPDF_Annotation annot, HPDF_Point lb, HPDF_Point rb, HPDF_Point lt, HPDF_Point rt)	/* l-left, r-right, b-bottom, t-top positions */
 {
 	HPDF_Array quadPoints;
 	HPDF_STATUS ret = HPDF_OK;
@@ -923,7 +922,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_TextMarkupAnnot_SetQuadPoints(HPDF_Annotation anno
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_SetLineEndingStyle(
+HPDF_STATUS HPDF_FreeTextAnnot_SetLineEndingStyle(
 	HPDF_Annotation annot,
 	HPDF_LineAnnotEndingStyle startStyle,
 	HPDF_LineAnnotEndingStyle endStyle)
@@ -951,7 +950,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_SetLineEndingStyle(
 
 
 /* RD entry : this is the difference between Rect and the text annotation rectangle */
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPDF_Rect rect)
+HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPDF_Rect rect)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
@@ -985,7 +984,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPD
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_SetDefaultStyle(HPDF_Annotation annot, const char *style)
+HPDF_STATUS HPDF_FreeTextAnnot_SetDefaultStyle(HPDF_Annotation annot, const char *style)
 {
 	HPDF_String s;
 	HPDF_STATUS ret = HPDF_OK;
@@ -1002,7 +1001,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_SetDefaultStyle(HPDF_Annotation anno
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_Set3PointCalloutLine(HPDF_Annotation annot, HPDF_Point startPoint, HPDF_Point kneePoint, HPDF_Point endPoint)	/* Callout line will be in default user space */
+HPDF_STATUS HPDF_FreeTextAnnot_Set3PointCalloutLine(HPDF_Annotation annot, HPDF_Point startPoint, HPDF_Point kneePoint, HPDF_Point endPoint)	/* Callout line will be in default user space */
 {
 	HPDF_Array clPoints;
 	HPDF_STATUS ret = HPDF_OK;
@@ -1030,7 +1029,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_Set3PointCalloutLine(HPDF_Annotation
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_Set2PointCalloutLine(HPDF_Annotation annot, HPDF_Point startPoint, HPDF_Point endPoint)	/* Callout line will be in default user space */
+HPDF_STATUS HPDF_FreeTextAnnot_Set2PointCalloutLine(HPDF_Annotation annot, HPDF_Point startPoint, HPDF_Point endPoint)	/* Callout line will be in default user space */
 {
 	HPDF_Array clPoints;
 	HPDF_STATUS ret = HPDF_OK;
@@ -1056,7 +1055,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_FreeTextAnnot_Set2PointCalloutLine(HPDF_Annotation
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, HPDF_INT cloudIntensity)	/* BE entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, HPDF_INT cloudIntensity)	/* BE entry */
 {
 	HPDF_Dict borderEffect;
 	HPDF_STATUS ret = HPDF_OK;
@@ -1078,7 +1077,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, 
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_LineAnnot_SetPosition(
+HPDF_STATUS HPDF_LineAnnot_SetPosition(
 	HPDF_Annotation annot,
 	HPDF_Point startPoint,
 	HPDF_LineAnnotEndingStyle startStyle,
@@ -1123,7 +1122,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_LineAnnot_SetPosition(
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_LineAnnot_SetLeader(
+HPDF_STATUS HPDF_LineAnnot_SetLeader(
 	HPDF_Annotation annot,
 	HPDF_INT leaderLen,
 	HPDF_INT leaderExtLen,
@@ -1144,7 +1143,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_LineAnnot_SetLeader(
 }
 
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_STATUS
 HPDF_LineAnnot_SetCaption(HPDF_Annotation annot, HPDF_BOOL showCaption, HPDF_LineAnnotCapPosition position,
 						  HPDF_INT horzOffset, HPDF_INT vertOffset)
 {
@@ -1177,7 +1176,7 @@ HPDF_LineAnnot_SetCaption(HPDF_Annotation annot, HPDF_BOOL showCaption, HPDF_Lin
 
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata)
+HPDF_STATUS HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata)
 {
 	HPDF_STATUS ret = HPDF_OK;
 

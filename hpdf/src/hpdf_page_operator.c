@@ -28,7 +28,7 @@ static const HPDF_DashMode INIT_MODE = { {0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 };
 /*--- General graphics state ---------------------------------------------*/
 
 /* w */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetLineWidth(HPDF_Page page, HPDF_REAL line_width)
+HPDF_STATUS HPDF_Page_SetLineWidth(HPDF_Page page, HPDF_REAL line_width)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -55,7 +55,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetLineWidth(HPDF_Page page, HPDF_REAL line_w
 }
 
 /* J */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
+HPDF_STATUS HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -82,7 +82,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_
 }
 
 /* j */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
+HPDF_STATUS HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -109,7 +109,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin lin
 }
 
 /* M */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter_limit)
+HPDF_STATUS HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter_limit)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -137,7 +137,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter
 
 
 /* d */
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_STATUS
 HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 * dash_ptn, HPDF_UINT num_param, HPDF_UINT phase)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -204,7 +204,7 @@ HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 * dash_ptn, HPDF_UINT num_pa
 /* ri --not implemented yet */
 
 /* i */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetFlat(HPDF_Page page, HPDF_REAL flatness)
+HPDF_STATUS HPDF_Page_SetFlat(HPDF_Page page, HPDF_REAL flatness)
 {
 	HPDF_PageAttr attr;
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -232,7 +232,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetFlat(HPDF_Page page, HPDF_REAL flatness)
 
 
 /* gs */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetExtGState(HPDF_Page page, HPDF_ExtGState ext_gstate)
+HPDF_STATUS HPDF_Page_SetExtGState(HPDF_Page page, HPDF_ExtGState ext_gstate)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
 	HPDF_PageAttr attr;
@@ -271,7 +271,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetExtGState(HPDF_Page page, HPDF_ExtGState e
 /*--- Special graphic state operator --------------------------------------*/
 
 /* q */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_GSave(HPDF_Page page)
+HPDF_STATUS HPDF_Page_GSave(HPDF_Page page)
 {
 	HPDF_GState new_gstate;
 	HPDF_PageAttr attr;
@@ -297,7 +297,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_GSave(HPDF_Page page)
 }
 
 /* Q */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_GRestore(HPDF_Page page)
+HPDF_STATUS HPDF_Page_GRestore(HPDF_Page page)
 {
 	HPDF_GState new_gstate;
 	HPDF_PageAttr attr;
@@ -324,8 +324,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_GRestore(HPDF_Page page)
 }
 
 /* cm */
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_Concat(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
+HPDF_STATUS HPDF_Page_Concat(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -374,7 +373,7 @@ HPDF_Page_Concat(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REA
 /*--- Path construction operator ------------------------------------------*/
 
 /* m */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
+HPDF_STATUS HPDF_Page_MoveTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -408,7 +407,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL
 }
 
 /* l */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
+HPDF_STATUS HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -440,8 +439,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL
 }
 
 /* c */
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
+HPDF_STATUS HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -481,7 +479,7 @@ HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x2, HPDF
 }
 
 /* v */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
+HPDF_STATUS HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -517,7 +515,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_R
 }
 
 /* y */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x3, HPDF_REAL y3)
+HPDF_STATUS HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x3, HPDF_REAL y3)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -553,7 +551,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_R
 }
 
 /* h */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePath(HPDF_Page page)
+HPDF_STATUS HPDF_Page_ClosePath(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	HPDF_PageAttr attr;
@@ -574,8 +572,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePath(HPDF_Page page)
 }
 
 /* re */
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_Rectangle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height)
+HPDF_STATUS HPDF_Page_Rectangle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -616,7 +613,7 @@ HPDF_Page_Rectangle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, H
 /*--- Path painting operator ---------------------------------------------*/
 
 /* S */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Stroke(HPDF_Page page)
+HPDF_STATUS HPDF_Page_Stroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -638,7 +635,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Stroke(HPDF_Page page)
 }
 
 /* s */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePathStroke(HPDF_Page page)
+HPDF_STATUS HPDF_Page_ClosePathStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -660,7 +657,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePathStroke(HPDF_Page page)
 }
 
 /* f */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Fill(HPDF_Page page)
+HPDF_STATUS HPDF_Page_Fill(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -682,7 +679,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Fill(HPDF_Page page)
 }
 
 /* f* */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Eofill(HPDF_Page page)
+HPDF_STATUS HPDF_Page_Eofill(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -704,7 +701,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Eofill(HPDF_Page page)
 }
 
 /* B */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_FillStroke(HPDF_Page page)
+HPDF_STATUS HPDF_Page_FillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -726,7 +723,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_FillStroke(HPDF_Page page)
 }
 
 /* B* */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_EofillStroke(HPDF_Page page)
+HPDF_STATUS HPDF_Page_EofillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -747,7 +744,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_EofillStroke(HPDF_Page page)
 }
 
 /* b */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePathFillStroke(HPDF_Page page)
+HPDF_STATUS HPDF_Page_ClosePathFillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -769,7 +766,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePathFillStroke(HPDF_Page page)
 }
 
 /* b* */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
+HPDF_STATUS HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -791,7 +788,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
 }
 
 /* n */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_EndPath(HPDF_Page page)
+HPDF_STATUS HPDF_Page_EndPath(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
 	HPDF_PageAttr attr;
@@ -816,7 +813,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_EndPath(HPDF_Page page)
 /*--- Clipping paths operator --------------------------------------------*/
 
 /* W */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Clip(HPDF_Page page)
+HPDF_STATUS HPDF_Page_Clip(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	HPDF_PageAttr attr;
@@ -837,7 +834,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Clip(HPDF_Page page)
 }
 
 /* W* */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Eoclip(HPDF_Page page)
+HPDF_STATUS HPDF_Page_Eoclip(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
 	HPDF_PageAttr attr;
@@ -861,7 +858,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Eoclip(HPDF_Page page)
 /*--- Text object operator -----------------------------------------------*/
 
 /* BT */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_BeginText(HPDF_Page page)
+HPDF_STATUS HPDF_Page_BeginText(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
 	HPDF_PageAttr attr;
@@ -885,7 +882,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_BeginText(HPDF_Page page)
 }
 
 /* ET */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_EndText(HPDF_Page page)
+HPDF_STATUS HPDF_Page_EndText(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -909,7 +906,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_EndText(HPDF_Page page)
 /*--- Text state ---------------------------------------------------------*/
 
 /* Tc */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -936,7 +933,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value)
 }
 
 /* Tw */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -963,7 +960,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 }
 
 /* Tz */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -990,7 +987,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_RE
 }
 
 /* TL */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1015,7 +1012,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL valu
 
 /* Tf */
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font, HPDF_REAL size)
+HPDF_STATUS HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font, HPDF_REAL size)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1063,7 +1060,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font
 }
 
 /* Tr */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMode mode)
+HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMode mode)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1090,13 +1087,13 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_Tex
 }
 
 /* Ts */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextRaise(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetTextRaise(HPDF_Page page, HPDF_REAL value)
 {
 	return HPDF_Page_SetTextRise(page, value);
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1123,7 +1120,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
 
 /* Td */
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
+HPDF_STATUS HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1157,7 +1154,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF
 }
 
 /* TD */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveTextPos2(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
+HPDF_STATUS HPDF_Page_MoveTextPos2(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1191,9 +1188,9 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveTextPos2(HPDF_Page page, HPDF_REAL x, HPD
 	return ret;
 }
 
+
 /* Tm */
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_SetTextMatrix(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
+HPDF_STATUS HPDF_Page_SetTextMatrix(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1243,7 +1240,7 @@ HPDF_Page_SetTextMatrix(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, H
 
 
 /* T* */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_MoveToNextLine(HPDF_Page page)
+HPDF_STATUS HPDF_Page_MoveToNextLine(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1315,7 +1312,7 @@ static HPDF_STATUS InternalWriteText(HPDF_PageAttr attr, const char *text)
 
 
 /* Tj */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ShowText(HPDF_Page page, const char *text)
+HPDF_STATUS HPDF_Page_ShowText(HPDF_Page page, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1358,7 +1355,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ShowText(HPDF_Page page, const char *text)
 
 /* TJ */
 /* ' */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
+HPDF_STATUS HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1407,8 +1404,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *
 }
 
 /* " */
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, HPDF_REAL char_space, const char *text)
+HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, HPDF_REAL char_space, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1489,7 +1485,7 @@ HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, HPDF_REAL cha
 
 /* g */
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
+HPDF_STATUS HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1517,7 +1513,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
 }
 
 /* G */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
+HPDF_STATUS HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -1545,7 +1541,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
 }
 
 /* rg */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
+HPDF_STATUS HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1584,7 +1580,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_
 }
 
 /* RG */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
+HPDF_STATUS HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1623,7 +1619,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPD
 }
 
 /* k */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
+HPDF_STATUS HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1665,7 +1661,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF
 }
 
 /* K */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetCMYKStroke(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
+HPDF_STATUS HPDF_Page_SetCMYKStroke(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1719,7 +1715,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_SetCMYKStroke(HPDF_Page page, HPDF_REAL c, HP
 /*--- XObjects -----------------------------------------------------------*/
 
 /* Do */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_ExecuteXObject(HPDF_Page page, HPDF_XObject obj)
+HPDF_STATUS HPDF_Page_ExecuteXObject(HPDF_Page page, HPDF_XObject obj)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
 	HPDF_PageAttr attr;
@@ -1833,7 +1829,7 @@ static char *QuarterCircleD(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HP
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Circle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray)
+HPDF_STATUS HPDF_Page_Circle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ * 2];
@@ -1937,7 +1933,7 @@ static char *QuarterEllipseD(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Ellipse(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL xray, HPDF_REAL yray)
+HPDF_STATUS HPDF_Page_Ellipse(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL xray, HPDF_REAL yray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -2060,7 +2056,7 @@ static HPDF_STATUS InternalArc(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_RE
  * from http://www.tinaja.com/glib/bezarc1.pdf coming from
  * http://www.whizkidtech.redprince.net/bezier/circle/
  */
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Arc(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray, HPDF_REAL ang1, HPDF_REAL ang2)
+HPDF_STATUS HPDF_Page_Arc(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray, HPDF_REAL ang1, HPDF_REAL ang2)
 {
 	HPDF_BOOL cont_flg = HPDF_FALSE;
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
@@ -2104,7 +2100,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Arc(HPDF_Page page, HPDF_REAL x, HPDF_REAL y,
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_DrawImage(HPDF_Page page, HPDF_Image image, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height)
+HPDF_STATUS HPDF_Page_DrawImage(HPDF_Page page, HPDF_Image image, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height)
 {
 	HPDF_STATUS ret;
 
@@ -2142,7 +2138,7 @@ static void TextPos_AbsToRel(HPDF_TransMatrix text_matrix, HPDF_REAL xAbs, HPDF_
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_TextOut(HPDF_Page page, HPDF_REAL xpos, HPDF_REAL ypos, const char *text)
+HPDF_STATUS HPDF_Page_TextOut(HPDF_Page page, HPDF_REAL xpos, HPDF_REAL ypos, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
 	HPDF_REAL x;
@@ -2230,7 +2226,7 @@ static HPDF_STATUS InternalShowTextNextLine(HPDF_Page page, const char *text, HP
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_TextRect(
+HPDF_STATUS HPDF_Page_TextRect(
 	HPDF_Page page,
 	HPDF_REAL left,
 	HPDF_REAL top,
@@ -2431,8 +2427,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_TextRect(
 /*
  *  This function is contributed by Adrian Nelson (adenelson).
  */
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HPDF_REAL disp_time, HPDF_REAL trans_time)
+HPDF_STATUS HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HPDF_REAL disp_time, HPDF_REAL trans_time)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict dict;
@@ -2557,7 +2552,7 @@ HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HPDF_REAL disp
  *  This function is contributed by Finn Arildsen.
  */
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict * new_stream)
+HPDF_STATUS HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict * new_stream)
 {
 	/* Call this function to start a new content stream on a page. The
 	   handle is returned to new_stream.
@@ -2611,7 +2606,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict 
  *  This function is contributed by Finn Arildsen.
  */
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Page_Insert_Shared_Content_Stream(HPDF_Page page, HPDF_Dict shared_stream)
+HPDF_STATUS HPDF_Page_Insert_Shared_Content_Stream(HPDF_Page page, HPDF_Dict shared_stream)
 {
 	/* Call this function to insert a previously (with HPDF_New_Content_Stream) created content stream
 	   as a shared content stream on this page */

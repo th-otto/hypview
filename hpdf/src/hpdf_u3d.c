@@ -134,7 +134,7 @@ static HPDF_U3D HPDF_U3D_LoadU3D(HPDF_MMgr mmgr, HPDF_Stream u3d_data, HPDF_Xref
 }
 
 
-HPDF_EXPORT(HPDF_Image) HPDF_LoadU3DFromFile(HPDF_Doc pdf, const char *filename)
+HPDF_Image HPDF_LoadU3DFromFile(HPDF_Doc pdf, const char *filename)
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;
@@ -170,7 +170,8 @@ HPDF_EXPORT(HPDF_Image) HPDF_LoadU3DFromFile(HPDF_Doc pdf, const char *filename)
 	return image;
 }
 
-HPDF_EXPORT(HPDF_Image) HPDF_LoadU3DFromMem(HPDF_Doc pdf, const HPDF_BYTE * buffer, HPDF_UINT size)
+
+HPDF_Image HPDF_LoadU3DFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_UINT size)
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;
@@ -215,7 +216,7 @@ HPDF_EXPORT(HPDF_Image) HPDF_LoadU3DFromMem(HPDF_Doc pdf, const HPDF_BYTE * buff
 	return image;
 }
 
-HPDF_EXPORT(HPDF_Dict) HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
+HPDF_Dict HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict view;
@@ -257,7 +258,7 @@ HPDF_EXPORT(HPDF_Dict) HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
 	return view;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
+HPDF_STATUS HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
 {
 	HPDF_Array views = NULL;
 	HPDF_STATUS ret = HPDF_OK;
@@ -298,7 +299,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_AddOnInstanciate(HPDF_U3D u3d, HPDF_JavaScript javascript)
+HPDF_STATUS HPDF_U3D_AddOnInstanciate(HPDF_U3D u3d, HPDF_JavaScript javascript)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
@@ -315,7 +316,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_AddOnInstanciate(HPDF_U3D u3d, HPDF_JavaScript
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name)
+HPDF_STATUS HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
@@ -330,7 +331,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *nam
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_AddNode(HPDF_Dict view, HPDF_Dict node)
+HPDF_STATUS HPDF_3DView_AddNode(HPDF_Dict view, HPDF_Dict node)
 {
 	HPDF_Array nodes = NULL;
 	HPDF_STATUS ret = HPDF_OK;
@@ -369,7 +370,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_AddNode(HPDF_Dict view, HPDF_Dict node)
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_Dict) HPDF_3DView_CreateNode(HPDF_Dict view, const char *name)
+HPDF_Dict HPDF_3DView_CreateNode(HPDF_Dict view, const char *name)
 {
 	HPDF_Dict node;
 	HPDF_STATUS ret = HPDF_OK;
@@ -399,7 +400,7 @@ HPDF_EXPORT(HPDF_Dict) HPDF_3DView_CreateNode(HPDF_Dict view, const char *name)
 	return node;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL opacity)
+HPDF_STATUS HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL opacity)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
@@ -414,7 +415,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL op
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DViewNode_SetVisibility(HPDF_Dict node, HPDF_BOOL visible)
+HPDF_STATUS HPDF_3DViewNode_SetVisibility(HPDF_Dict node, HPDF_BOOL visible)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
@@ -429,7 +430,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DViewNode_SetVisibility(HPDF_Dict node, HPDF_BOOL
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DViewNode_SetMatrix(HPDF_Dict node, HPDF_3DMatrix Mat3D)
+HPDF_STATUS HPDF_3DViewNode_SetMatrix(HPDF_Dict node, HPDF_3DMatrix Mat3D)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array array_m;
@@ -470,7 +471,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DViewNode_SetMatrix(HPDF_Dict node, HPDF_3DMatrix
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetLighting(HPDF_Dict view, const char *scheme)
+HPDF_STATUS HPDF_3DView_SetLighting(HPDF_Dict view, const char *scheme)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict lighting;
@@ -527,7 +528,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetLighting(HPDF_Dict view, const char *sch
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
+HPDF_STATUS HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
 	HPDF_Array color;
 	HPDF_STATUS ret = HPDF_OK;
@@ -604,7 +605,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REA
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HPDF_REAL fov)
+HPDF_STATUS HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HPDF_REAL fov)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict projection;
@@ -652,7 +653,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HP
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPDF_REAL mag)
+HPDF_STATUS HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPDF_REAL mag)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict projection;
@@ -711,7 +712,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPD
 /* #7 orbital radius (roo)*/
 /* #8 camera roll (roll)*/
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCamera(
+HPDF_STATUS HPDF_3DView_SetCamera(
 	HPDF_Dict view,
 	HPDF_REAL coox,
 	HPDF_REAL cooy,
@@ -891,7 +892,8 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCamera(
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCameraByMatrix(HPDF_Dict view, HPDF_3DMatrix Mat3D, HPDF_REAL co)
+
+HPDF_STATUS HPDF_3DView_SetCameraByMatrix(HPDF_Dict view, HPDF_3DMatrix Mat3D, HPDF_REAL co)
 {
 	HPDF_Array matrix;
 	HPDF_STATUS ret = HPDF_OK;
@@ -980,7 +982,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCameraByMatrix(HPDF_Dict view, HPDF_3DMa
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCrossSectionOn(
+HPDF_STATUS HPDF_3DView_SetCrossSectionOn(
 	HPDF_Dict view,
 	HPDF_Point3D center,
 	HPDF_REAL Roll,
@@ -1089,7 +1091,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCrossSectionOn(
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCrossSectionOff(HPDF_Dict view)
+HPDF_STATUS HPDF_3DView_SetCrossSectionOff(HPDF_Dict view)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array array_sa;
@@ -1168,7 +1170,7 @@ HPDF_Dict HPDF_3DView_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_U3D u3d, const ch
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_Add3DC3DMeasure(HPDF_Dict view, HPDF_3DMeasure measure)
+HPDF_STATUS HPDF_3DView_Add3DC3DMeasure(HPDF_Dict view, HPDF_3DMeasure measure)
 {
 
 	HPDF_STATUS ret = HPDF_OK;
@@ -1196,7 +1198,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_Add3DC3DMeasure(HPDF_Dict view, HPDF_3DMeas
 }
 
 
-HPDF_EXPORT(HPDF_JavaScript) HPDF_CreateJavaScript(HPDF_Doc pdf, const char *code)
+HPDF_JavaScript HPDF_CreateJavaScript(HPDF_Doc pdf, const char *code)
 {
 	HPDF_JavaScript javaScript;
 	HPDF_UINT len;
@@ -1221,7 +1223,8 @@ HPDF_EXPORT(HPDF_JavaScript) HPDF_CreateJavaScript(HPDF_Doc pdf, const char *cod
 	return javaScript;
 }
 
-HPDF_EXPORT(HPDF_JavaScript) HPDF_LoadJSFromFile(HPDF_Doc pdf, const char *filename)
+
+HPDF_JavaScript HPDF_LoadJSFromFile(HPDF_Doc pdf, const char *filename)
 {
 	HPDF_Stream js_data;
 	HPDF_JavaScript js = NULL;

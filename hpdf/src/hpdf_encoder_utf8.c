@@ -242,7 +242,7 @@ static HPDF_STATUS UTF8_Init(HPDF_Encoder encoder)
 
 /*--------------------------------------------------------------------------*/
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseUTF8Encodings(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseUTF8Encodings(HPDF_Doc pdf)
 {
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;

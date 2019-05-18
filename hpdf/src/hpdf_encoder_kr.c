@@ -27848,7 +27848,7 @@ static HPDF_STATUS KSC_EUC_V_Init(HPDF_Encoder encoder)
 
 /*--------------------------------------------------------------------------*/
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseKREncodings(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseKREncodings(HPDF_Doc pdf)
 {
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;

@@ -63,7 +63,7 @@ HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS de
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_CheckError(HPDF_Error error)
+HPDF_STATUS HPDF_CheckError(HPDF_Error error)
 {
 	HPDF_PTRACE((" HPDF_CheckError: error_no=0x%04X detail_no=0x%04X\n",
 				 (unsigned int) error->error_no, (unsigned int) error->detail_no));

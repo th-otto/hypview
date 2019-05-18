@@ -246,7 +246,8 @@ HPDF_BOOL HPDF_Outline_Validate(HPDF_Outline outline)
 	return HPDF_TRUE;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Outline_SetDestination(HPDF_Outline outline, HPDF_Destination dst)
+
+HPDF_STATUS HPDF_Outline_SetDestination(HPDF_Outline outline, HPDF_Destination dst)
 {
 	HPDF_PTRACE((" HPDF_Outline_SetDestination\n"));
 
@@ -266,7 +267,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Outline_SetDestination(HPDF_Outline outline, HPDF_
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Outline_SetOpened(HPDF_Outline outline, HPDF_BOOL opened)
+HPDF_STATUS HPDF_Outline_SetOpened(HPDF_Outline outline, HPDF_BOOL opened)
 {
 	HPDF_Number n;
 

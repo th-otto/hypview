@@ -15242,7 +15242,7 @@ static HPDF_STATUS ETen_B5_V_Init(HPDF_Encoder encoder)
 
 /*--------------------------------------------------------------------------*/
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseCNTEncodings(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseCNTEncodings(HPDF_Doc pdf)
 {
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;

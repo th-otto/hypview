@@ -20,7 +20,7 @@
 #include "hpdf.h"
 
 
-HPDF_EXPORT(HPDF_TextWidth) HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len)
+HPDF_TextWidth HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len)
 {
 	HPDF_TextWidth tw = { 0, 0, 0, 0 };
 	HPDF_FontAttr attr;
@@ -50,7 +50,7 @@ HPDF_EXPORT(HPDF_TextWidth) HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE 
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_Font_MeasureText(
+HPDF_UINT HPDF_Font_MeasureText(
 	HPDF_Font font,
 	const HPDF_BYTE * text,
 	HPDF_UINT len,
@@ -86,7 +86,7 @@ HPDF_EXPORT(HPDF_UINT) HPDF_Font_MeasureText(
 }
 
 
-HPDF_EXPORT(const char *) HPDF_Font_GetFontName(HPDF_Font font)
+const char *HPDF_Font_GetFontName(HPDF_Font font)
 {
 	HPDF_FontAttr attr;
 
@@ -101,7 +101,7 @@ HPDF_EXPORT(const char *) HPDF_Font_GetFontName(HPDF_Font font)
 }
 
 
-HPDF_EXPORT(const char *) HPDF_Font_GetEncodingName(HPDF_Font font)
+const char *HPDF_Font_GetEncodingName(HPDF_Font font)
 {
 	HPDF_FontAttr attr;
 
@@ -116,7 +116,7 @@ HPDF_EXPORT(const char *) HPDF_Font_GetEncodingName(HPDF_Font font)
 }
 
 
-HPDF_EXPORT(HPDF_INT) HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code)
+HPDF_INT HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code)
 {
 	HPDF_FontAttr attr;
 	HPDF_FontDef fontdef;
@@ -161,7 +161,7 @@ HPDF_EXPORT(HPDF_INT) HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE cod
 }
 
 
-HPDF_EXPORT(HPDF_Box) HPDF_Font_GetBBox(HPDF_Font font)
+HPDF_Box HPDF_Font_GetBBox(HPDF_Font font)
 {
 	HPDF_Box bbox = { 0, 0, 0, 0 };
 
@@ -173,7 +173,7 @@ HPDF_EXPORT(HPDF_Box) HPDF_Font_GetBBox(HPDF_Font font)
 }
 
 
-HPDF_EXPORT(HPDF_INT) HPDF_Font_GetAscent(HPDF_Font font)
+HPDF_INT HPDF_Font_GetAscent(HPDF_Font font)
 {
 	HPDF_PTRACE((" HPDF_Font_GetAscent\n"));
 
@@ -184,7 +184,7 @@ HPDF_EXPORT(HPDF_INT) HPDF_Font_GetAscent(HPDF_Font font)
 }
 
 
-HPDF_EXPORT(HPDF_INT) HPDF_Font_GetDescent(HPDF_Font font)
+HPDF_INT HPDF_Font_GetDescent(HPDF_Font font)
 {
 	HPDF_PTRACE((" HPDF_Font_GetDescent\n"));
 
@@ -195,7 +195,7 @@ HPDF_EXPORT(HPDF_INT) HPDF_Font_GetDescent(HPDF_Font font)
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_Font_GetXHeight(HPDF_Font font)
+HPDF_UINT HPDF_Font_GetXHeight(HPDF_Font font)
 {
 	HPDF_PTRACE((" HPDF_Font_GetXHeight\n"));
 
@@ -206,7 +206,7 @@ HPDF_EXPORT(HPDF_UINT) HPDF_Font_GetXHeight(HPDF_Font font)
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_Font_GetCapHeight(HPDF_Font font)
+HPDF_UINT HPDF_Font_GetCapHeight(HPDF_Font font)
 {
 	HPDF_PTRACE((" HPDF_Font_GetCapHeight\n"));
 

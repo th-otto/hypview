@@ -2768,7 +2768,7 @@ HPDF_BOOL HPDF_Encoder_CheckJWWLineHead(HPDF_Encoder encoder, const HPDF_UINT16 
 
 
 
-HPDF_EXPORT(HPDF_UNICODE) HPDF_Encoder_GetUnicode(HPDF_Encoder encoder, HPDF_UINT16 code)
+HPDF_UNICODE HPDF_Encoder_GetUnicode(HPDF_Encoder encoder, HPDF_UINT16 code)
 {
 	HPDF_PTRACE((" HPDF_Encoder_GetUnicode\n"));
 
@@ -2779,7 +2779,7 @@ HPDF_EXPORT(HPDF_UNICODE) HPDF_Encoder_GetUnicode(HPDF_Encoder encoder, HPDF_UIN
 }
 
 
-HPDF_EXPORT(HPDF_ByteType) HPDF_Encoder_GetByteType(HPDF_Encoder encoder, const char *text, HPDF_UINT index)
+HPDF_ByteType HPDF_Encoder_GetByteType(HPDF_Encoder encoder, const char *text, HPDF_UINT index)
 {
 	HPDF_ParseText_Rec parse_state;
 	HPDF_ByteType btype;
@@ -2811,7 +2811,7 @@ HPDF_EXPORT(HPDF_ByteType) HPDF_Encoder_GetByteType(HPDF_Encoder encoder, const 
 }
 
 
-HPDF_EXPORT(HPDF_EncoderType) HPDF_Encoder_GetType(HPDF_Encoder encoder)
+HPDF_EncoderType HPDF_Encoder_GetType(HPDF_Encoder encoder)
 {
 	HPDF_PTRACE((" HPDF_Encoder_GetType\n"));
 
@@ -2822,7 +2822,7 @@ HPDF_EXPORT(HPDF_EncoderType) HPDF_Encoder_GetType(HPDF_Encoder encoder)
 }
 
 
-HPDF_EXPORT(HPDF_WritingMode) HPDF_Encoder_GetWritingMode(HPDF_Encoder encoder)
+HPDF_WritingMode HPDF_Encoder_GetWritingMode(HPDF_Encoder encoder)
 {
 	HPDF_PTRACE((" HPDF_Encoder_GetWritingMode\n"));
 

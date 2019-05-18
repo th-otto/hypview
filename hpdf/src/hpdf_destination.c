@@ -91,7 +91,7 @@ HPDF_BOOL HPDF_Destination_Validate(HPDF_Destination dst)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetXYZ(HPDF_Destination dst, HPDF_REAL left, HPDF_REAL top, HPDF_REAL zoom)
+HPDF_STATUS HPDF_Destination_SetXYZ(HPDF_Destination dst, HPDF_REAL left, HPDF_REAL top, HPDF_REAL zoom)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -125,7 +125,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetXYZ(HPDF_Destination dst, HPDF_REAL
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFit(HPDF_Destination dst)
+HPDF_STATUS HPDF_Destination_SetFit(HPDF_Destination dst)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -152,7 +152,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFit(HPDF_Destination dst)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REAL top)
+HPDF_STATUS HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -179,7 +179,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REA
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitV(HPDF_Destination dst, HPDF_REAL left)
+HPDF_STATUS HPDF_Destination_SetFitV(HPDF_Destination dst, HPDF_REAL left)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -207,7 +207,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitV(HPDF_Destination dst, HPDF_REA
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitR(HPDF_Destination dst, HPDF_REAL left, HPDF_REAL bottom, HPDF_REAL right, HPDF_REAL top)
+HPDF_STATUS HPDF_Destination_SetFitR(HPDF_Destination dst, HPDF_REAL left, HPDF_REAL bottom, HPDF_REAL right, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -238,7 +238,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitR(HPDF_Destination dst, HPDF_REA
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitB(HPDF_Destination dst)
+HPDF_STATUS HPDF_Destination_SetFitB(HPDF_Destination dst)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -265,7 +265,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitB(HPDF_Destination dst)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitBH(HPDF_Destination dst, HPDF_REAL top)
+HPDF_STATUS HPDF_Destination_SetFitBH(HPDF_Destination dst, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
@@ -293,7 +293,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitBH(HPDF_Destination dst, HPDF_RE
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Destination_SetFitBV(HPDF_Destination dst, HPDF_REAL left)
+HPDF_STATUS HPDF_Destination_SetFitBV(HPDF_Destination dst, HPDF_REAL left)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;

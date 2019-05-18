@@ -92,7 +92,7 @@ HPDF_STATUS HPDF_Doc_RegisterEncoder(HPDF_Doc pdf, HPDF_Encoder encoder)
 }
 
 
-HPDF_EXPORT(HPDF_Encoder) HPDF_GetEncoder(HPDF_Doc pdf, const char *encoding_name)
+HPDF_Encoder HPDF_GetEncoder(HPDF_Doc pdf, const char *encoding_name)
 {
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;
@@ -126,7 +126,7 @@ HPDF_EXPORT(HPDF_Encoder) HPDF_GetEncoder(HPDF_Doc pdf, const char *encoding_nam
 }
 
 
-HPDF_EXPORT(HPDF_Encoder) HPDF_GetCurrentEncoder(HPDF_Doc pdf)
+HPDF_Encoder HPDF_GetCurrentEncoder(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
 		return NULL;
@@ -135,7 +135,7 @@ HPDF_EXPORT(HPDF_Encoder) HPDF_GetCurrentEncoder(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetCurrentEncoder(HPDF_Doc pdf, const char *encoding_name)
+HPDF_STATUS HPDF_SetCurrentEncoder(HPDF_Doc pdf, const char *encoding_name)
 {
 	HPDF_Encoder encoder;
 
@@ -314,7 +314,7 @@ static HPDF_Dict GetInfo(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, const char *value)
+HPDF_STATUS HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, const char *value)
 {
 	HPDF_STATUS ret;
 	HPDF_Dict info = GetInfo(pdf);
@@ -332,7 +332,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, cons
 }
 
 
-HPDF_EXPORT(const char *) HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type)
+const char *HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type)
 {
 	const char *ret = NULL;
 	HPDF_Dict info = GetInfo(pdf);
@@ -348,7 +348,7 @@ HPDF_EXPORT(const char *) HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, HPDF_Date value)
+HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, HPDF_Date value)
 {
 	HPDF_STATUS ret;
 	HPDF_Dict info = GetInfo(pdf);
@@ -366,7 +366,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, 
 }
 
 
-HPDF_EXPORT(HPDF_Outline) HPDF_CreateOutline(HPDF_Doc pdf, HPDF_Outline parent, const char *title, HPDF_Encoder encoder)
+HPDF_Outline HPDF_CreateOutline(HPDF_Doc pdf, HPDF_Outline parent, const char *title, HPDF_Encoder encoder)
 {
 	HPDF_Outline outline;
 
@@ -416,7 +416,7 @@ HPDF_EXPORT(HPDF_Outline) HPDF_CreateOutline(HPDF_Doc pdf, HPDF_Outline parent, 
 }
 
 
-HPDF_EXPORT(HPDF_ExtGState) HPDF_CreateExtGState(HPDF_Doc pdf)
+HPDF_ExtGState HPDF_CreateExtGState(HPDF_Doc pdf)
 {
 	HPDF_ExtGState ext_gstate;
 
@@ -433,7 +433,7 @@ HPDF_EXPORT(HPDF_ExtGState) HPDF_CreateExtGState(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetCompressionMode(HPDF_Doc pdf, HPDF_UINT mode)
+HPDF_STATUS HPDF_SetCompressionMode(HPDF_Doc pdf, HPDF_UINT mode)
 {
 	if (!HPDF_Doc_Validate(pdf))
 		return HPDF_INVALID_DOCUMENT;
@@ -454,7 +454,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetCompressionMode(HPDF_Doc pdf, HPDF_UINT mode)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_GetError(HPDF_Doc pdf)
+HPDF_STATUS HPDF_GetError(HPDF_Doc pdf)
 {
 	if (!HPDF_Doc_Validate(pdf))
 		return HPDF_INVALID_DOCUMENT;
@@ -463,7 +463,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_GetError(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_GetErrorDetail(HPDF_Doc pdf)
+HPDF_STATUS HPDF_GetErrorDetail(HPDF_Doc pdf)
 {
 	if (!HPDF_Doc_Validate(pdf))
 		return HPDF_INVALID_DOCUMENT;
@@ -472,7 +472,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_GetErrorDetail(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(void) HPDF_ResetError(HPDF_Doc pdf)
+void HPDF_ResetError(HPDF_Doc pdf)
 {
 	if (!HPDF_Doc_Validate(pdf))
 		return;
@@ -484,7 +484,7 @@ HPDF_EXPORT(void) HPDF_ResetError(HPDF_Doc pdf)
 /*
  * create an intententry
  */
-HPDF_EXPORT(HPDF_OutputIntent) HPDF_OutputIntent_New(
+HPDF_OutputIntent HPDF_OutputIntent_New(
 	HPDF_Doc pdf,
 	const char *identifier,
 	const char *condition,
@@ -536,7 +536,7 @@ HPDF_EXPORT(HPDF_OutputIntent) HPDF_OutputIntent_New(
 	return intent;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_AddIntent(HPDF_Doc pdf, HPDF_OutputIntent intent)
+HPDF_STATUS HPDF_AddIntent(HPDF_Doc pdf, HPDF_OutputIntent intent)
 {
 	HPDF_Array intents;
 
@@ -564,7 +564,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_AddIntent(HPDF_Doc pdf, HPDF_OutputIntent intent)
 
 
 /* "Perceptual", "RelativeColorimetric", "Saturation", "AbsoluteColorimetric" */
-HPDF_EXPORT(HPDF_OutputIntent) HPDF_ICC_LoadIccFromMem(
+HPDF_OutputIntent HPDF_ICC_LoadIccFromMem(
 	HPDF_Doc pdf,
 	HPDF_MMgr mmgr,
 	HPDF_Stream iccdata,
@@ -637,7 +637,7 @@ HPDF_EXPORT(HPDF_OutputIntent) HPDF_ICC_LoadIccFromMem(
 }
 
 
-HPDF_EXPORT(HPDF_Array) HPDF_AddColorspaceFromProfile(HPDF_Doc pdf, HPDF_Dict icc)
+HPDF_Array HPDF_AddColorspaceFromProfile(HPDF_Doc pdf, HPDF_Dict icc)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array iccentry;
@@ -667,7 +667,7 @@ HPDF_EXPORT(HPDF_Array) HPDF_AddColorspaceFromProfile(HPDF_Doc pdf, HPDF_Dict ic
 }
 
 
-HPDF_EXPORT(HPDF_OutputIntent) HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const char *icc_file_name, int numcomponent)
+HPDF_OutputIntent HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const char *icc_file_name, int numcomponent)
 {
 	HPDF_Stream iccdata;
 	HPDF_OutputIntent iccentry;
@@ -698,7 +698,7 @@ HPDF_EXPORT(HPDF_OutputIntent) HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const c
 
 /*---------------------------------------------------------------------------*/
 
-HPDF_EXPORT(const char *) HPDF_GetVersion(void)
+const char *HPDF_GetVersion(void)
 {
 	return HPDF_VERSION_TEXT;
 }
@@ -715,7 +715,7 @@ HPDF_BOOL HPDF_Doc_Validate(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_BOOL) HPDF_HasDoc(HPDF_Doc pdf)
+HPDF_BOOL HPDF_HasDoc(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_HasDoc\n"));
 
@@ -731,7 +731,7 @@ HPDF_EXPORT(HPDF_BOOL) HPDF_HasDoc(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_Doc) HPDF_New(HPDF_Error_Handler user_error_fn, void *user_data)
+HPDF_Doc HPDF_New(HPDF_Error_Handler user_error_fn, void *user_data)
 {
 	HPDF_PTRACE((" HPDF_New\n"));
 
@@ -739,7 +739,7 @@ HPDF_EXPORT(HPDF_Doc) HPDF_New(HPDF_Error_Handler user_error_fn, void *user_data
 }
 
 
-HPDF_EXPORT(HPDF_Doc) HPDF_NewEx(
+HPDF_Doc HPDF_NewEx(
 	HPDF_Error_Handler user_error_fn,
 	HPDF_Alloc_Func user_alloc_fn,
 	HPDF_Free_Func user_free_fn,
@@ -798,7 +798,7 @@ HPDF_EXPORT(HPDF_Doc) HPDF_NewEx(
 }
 
 
-HPDF_EXPORT(void) HPDF_Free(HPDF_Doc pdf)
+void HPDF_Free(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_Free\n"));
 
@@ -816,7 +816,7 @@ HPDF_EXPORT(void) HPDF_Free(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_NewDoc(HPDF_Doc pdf)
+HPDF_STATUS HPDF_NewDoc(HPDF_Doc pdf)
 {
 	char buf[HPDF_TMP_BUF_SIZ];
 	char *ptr = buf;
@@ -879,7 +879,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_NewDoc(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(void) HPDF_FreeDoc(HPDF_Doc pdf)
+void HPDF_FreeDoc(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_FreeDoc\n"));
 
@@ -934,7 +934,7 @@ HPDF_EXPORT(void) HPDF_FreeDoc(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(void) HPDF_FreeDocAll(HPDF_Doc pdf)
+void HPDF_FreeDocAll(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_FreeDocAll\n"));
 
@@ -955,7 +955,7 @@ HPDF_EXPORT(void) HPDF_FreeDocAll(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetPagesConfiguration(HPDF_Doc pdf, HPDF_UINT page_per_pages)
+HPDF_STATUS HPDF_SetPagesConfiguration(HPDF_Doc pdf, HPDF_UINT page_per_pages)
 {
 	HPDF_PTRACE((" HPDF_SetPagesConfiguration\n"));
 
@@ -1032,7 +1032,7 @@ HPDF_STATUS HPDF_Doc_SetEncryptOn(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetPassword(HPDF_Doc pdf, const char *owner_passwd, const char *user_passwd)
+HPDF_STATUS HPDF_SetPassword(HPDF_Doc pdf, const char *owner_passwd, const char *user_passwd)
 {
 	HPDF_PTRACE((" HPDF_SetPassword\n"));
 
@@ -1054,7 +1054,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetPassword(HPDF_Doc pdf, const char *owner_passwd
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetPermission(HPDF_Doc pdf, HPDF_UINT permission)
+HPDF_STATUS HPDF_SetPermission(HPDF_Doc pdf, HPDF_UINT permission)
 {
 	HPDF_Encrypt e;
 
@@ -1074,7 +1074,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetPermission(HPDF_Doc pdf, HPDF_UINT permission)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetEncryptionMode(HPDF_Doc pdf, HPDF_EncryptMode mode, HPDF_UINT key_len)
+HPDF_STATUS HPDF_SetEncryptionMode(HPDF_Doc pdf, HPDF_EncryptMode mode, HPDF_UINT key_len)
 {
 	HPDF_Encrypt e;
 
@@ -1227,7 +1227,7 @@ static HPDF_STATUS InternalSaveToStream(HPDF_Doc pdf, HPDF_Stream stream)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SaveToStream(HPDF_Doc pdf)
+HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_SaveToStream\n"));
 
@@ -1248,7 +1248,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SaveToStream(HPDF_Doc pdf)
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
+HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
 {
 	HPDF_Stream stream;
 	HPDF_UINT isize = *size;
@@ -1282,7 +1282,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UI
 	return ret;
 }
 
-HPDF_EXPORT(HPDF_UINT32) HPDF_GetStreamSize(HPDF_Doc pdf)
+HPDF_UINT32 HPDF_GetStreamSize(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_GetStreamSize\n"));
 
@@ -1296,7 +1296,7 @@ HPDF_EXPORT(HPDF_UINT32) HPDF_GetStreamSize(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
+HPDF_STATUS HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF_UINT32 * size)
 {
 	HPDF_UINT isize = *size;
 	HPDF_STATUS ret;
@@ -1321,7 +1321,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE * buf, HPDF
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_ResetStream(HPDF_Doc pdf)
+HPDF_STATUS HPDF_ResetStream(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
 		return HPDF_INVALID_DOCUMENT;
@@ -1333,7 +1333,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_ResetStream(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SaveToFile(HPDF_Doc pdf, const char *file_name)
+HPDF_STATUS HPDF_SaveToFile(HPDF_Doc pdf, const char *file_name)
 {
 	HPDF_Stream stream;
 
@@ -1354,7 +1354,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SaveToFile(HPDF_Doc pdf, const char *file_name)
 }
 
 
-HPDF_EXPORT(HPDF_Page) HPDF_GetCurrentPage(HPDF_Doc pdf)
+HPDF_Page HPDF_GetCurrentPage(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_GetCurrentPage\n"));
 
@@ -1365,7 +1365,7 @@ HPDF_EXPORT(HPDF_Page) HPDF_GetCurrentPage(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_Page) HPDF_GetPageByIndex(HPDF_Doc pdf, HPDF_UINT index)
+HPDF_Page HPDF_GetPageByIndex(HPDF_Doc pdf, HPDF_UINT index)
 {
 	HPDF_Page ret;
 
@@ -1436,7 +1436,7 @@ HPDF_STATUS HPDF_Doc_SetCurrentPage(HPDF_Doc pdf, HPDF_Page page)
 }
 
 
-HPDF_EXPORT(HPDF_Page) HPDF_AddPage(HPDF_Doc pdf)
+HPDF_Page HPDF_AddPage(HPDF_Doc pdf)
 {
 	HPDF_Page page;
 	HPDF_STATUS ret;
@@ -1520,7 +1520,7 @@ HPDF_Pages HPDF_Doc_AddPagesTo(HPDF_Doc pdf, HPDF_Pages parent)
 }
 
 
-HPDF_EXPORT(HPDF_Page) HPDF_InsertPage(HPDF_Doc pdf, HPDF_Page target)
+HPDF_Page HPDF_InsertPage(HPDF_Doc pdf, HPDF_Page target)
 {
 	HPDF_Page page;
 	HPDF_STATUS ret;
@@ -1569,7 +1569,7 @@ HPDF_EXPORT(HPDF_Page) HPDF_InsertPage(HPDF_Doc pdf, HPDF_Page target)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetErrorHandler(HPDF_Doc pdf, HPDF_Error_Handler user_error_fn)
+HPDF_STATUS HPDF_SetErrorHandler(HPDF_Doc pdf, HPDF_Error_Handler user_error_fn)
 {
 	if (!HPDF_Doc_Validate(pdf))
 		return HPDF_INVALID_DOCUMENT;
@@ -1605,7 +1605,7 @@ HPDF_Font HPDF_Doc_FindFont(HPDF_Doc pdf, const char *font_name, const char *enc
 }
 
 
-HPDF_EXPORT(HPDF_Font) HPDF_GetFont(HPDF_Doc pdf, const char *font_name, const char *encoding_name)
+HPDF_Font HPDF_GetFont(HPDF_Doc pdf, const char *font_name, const char *encoding_name)
 {
 	HPDF_FontDef fontdef = NULL;
 	HPDF_Encoder encoder = NULL;
@@ -1752,7 +1752,7 @@ static const char *LoadType1FontFromStream(HPDF_Doc pdf, HPDF_Stream afmdata, HP
 }
 
 
-HPDF_EXPORT(const char *) HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *afm_file_name, const char *data_file_name)
+const char * HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *afm_file_name, const char *data_file_name)
 {
 	HPDF_Stream afm;
 	HPDF_Stream pfm = NULL;
@@ -1790,7 +1790,7 @@ HPDF_EXPORT(const char *) HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *a
 }
 
 
-HPDF_EXPORT(HPDF_FontDef) HPDF_GetTTFontDefFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding)
+HPDF_FontDef HPDF_GetTTFontDefFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding)
 {
 	HPDF_Stream font_data;
 	HPDF_FontDef def;
@@ -1922,7 +1922,7 @@ static const char *LoadTTFontFromStream2(HPDF_Doc pdf,
 }
 
 
-HPDF_EXPORT(const char *) HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding)
+const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding)
 {
 	HPDF_Stream font_data;
 	const char *ret;
@@ -1948,7 +1948,7 @@ HPDF_EXPORT(const char *) HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file
 }
 
 
-HPDF_EXPORT(const char *) HPDF_LoadTTFontFromFile2(HPDF_Doc pdf, const char *file_name, HPDF_UINT index, HPDF_BOOL embedding)
+const char *HPDF_LoadTTFontFromFile2(HPDF_Doc pdf, const char *file_name, HPDF_UINT index, HPDF_BOOL embedding)
 {
 	HPDF_Stream font_data;
 	const char *ret;
@@ -1974,7 +1974,7 @@ HPDF_EXPORT(const char *) HPDF_LoadTTFontFromFile2(HPDF_Doc pdf, const char *fil
 }
 
 
-HPDF_EXPORT(HPDF_Image) HPDF_LoadRawImageFromFile(
+HPDF_Image HPDF_LoadRawImageFromFile(
 	HPDF_Doc pdf,
 	const char *filename,
 	HPDF_UINT width,
@@ -2010,7 +2010,7 @@ HPDF_EXPORT(HPDF_Image) HPDF_LoadRawImageFromFile(
 }
 
 
-HPDF_EXPORT(HPDF_Image) HPDF_LoadRawImageFromMem(
+HPDF_Image HPDF_LoadRawImageFromMem(
 	HPDF_Doc pdf,
 	const HPDF_BYTE *buf,
 	HPDF_UINT width,
@@ -2045,7 +2045,7 @@ HPDF_EXPORT(HPDF_Image) HPDF_LoadRawImageFromMem(
 }
 
 
-HPDF_EXPORT(HPDF_Image) HPDF_LoadJpegImageFromFile(HPDF_Doc pdf, const char *filename)
+HPDF_Image HPDF_LoadJpegImageFromFile(HPDF_Doc pdf, const char *filename)
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;
@@ -2073,7 +2073,7 @@ HPDF_EXPORT(HPDF_Image) HPDF_LoadJpegImageFromFile(HPDF_Doc pdf, const char *fil
 }
 
 
-HPDF_EXPORT(HPDF_Image) HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE * buffer, HPDF_UINT size)
+HPDF_Image HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE * buffer, HPDF_UINT size)
 {
 	HPDF_Image image;
 
@@ -2096,7 +2096,7 @@ HPDF_EXPORT(HPDF_Image) HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE 
 
 /*----- Catalog ------------------------------------------------------------*/
 
-HPDF_EXPORT(HPDF_PageLayout) HPDF_GetPageLayout(HPDF_Doc pdf)
+HPDF_PageLayout HPDF_GetPageLayout(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_GetPageLayout\n"));
 
@@ -2107,7 +2107,7 @@ HPDF_EXPORT(HPDF_PageLayout) HPDF_GetPageLayout(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetPageLayout(HPDF_Doc pdf, HPDF_PageLayout layout)
+HPDF_STATUS HPDF_SetPageLayout(HPDF_Doc pdf, HPDF_PageLayout layout)
 {
 	HPDF_STATUS ret;
 
@@ -2131,7 +2131,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetPageLayout(HPDF_Doc pdf, HPDF_PageLayout layout
 }
 
 
-HPDF_EXPORT(HPDF_PageMode) HPDF_GetPageMode(HPDF_Doc pdf)
+HPDF_PageMode HPDF_GetPageMode(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_GetPageMode\n"));
 
@@ -2142,7 +2142,7 @@ HPDF_EXPORT(HPDF_PageMode) HPDF_GetPageMode(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetPageMode(HPDF_Doc pdf, HPDF_PageMode mode)
+HPDF_STATUS HPDF_SetPageMode(HPDF_Doc pdf, HPDF_PageMode mode)
 {
 	HPDF_STATUS ret;
 
@@ -2162,7 +2162,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetPageMode(HPDF_Doc pdf, HPDF_PageMode mode)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetOpenAction(HPDF_Doc pdf, HPDF_Destination open_action)
+HPDF_STATUS HPDF_SetOpenAction(HPDF_Doc pdf, HPDF_Destination open_action)
 {
 	HPDF_STATUS ret;
 
@@ -2182,7 +2182,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetOpenAction(HPDF_Doc pdf, HPDF_Destination open_
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_GetViewerPreference(HPDF_Doc pdf)
+HPDF_UINT HPDF_GetViewerPreference(HPDF_Doc pdf)
 {
 	HPDF_PTRACE((" HPDF_Catalog_GetViewerPreference\n"));
 
@@ -2193,7 +2193,7 @@ HPDF_EXPORT(HPDF_UINT) HPDF_GetViewerPreference(HPDF_Doc pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_SetViewerPreference(HPDF_Doc pdf, HPDF_UINT value)
+HPDF_STATUS HPDF_SetViewerPreference(HPDF_Doc pdf, HPDF_UINT value)
 {
 	HPDF_STATUS ret;
 
@@ -2212,7 +2212,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_SetViewerPreference(HPDF_Doc pdf, HPDF_UINT value)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPDF_PageNumStyle style, HPDF_UINT first_page, const char *prefix)
+HPDF_STATUS HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPDF_PageNumStyle style, HPDF_UINT first_page, const char *prefix)
 {
 	HPDF_Dict page_label;
 	HPDF_STATUS ret;
@@ -2238,7 +2238,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPD
 }
 
 
-HPDF_EXPORT(HPDF_EmbeddedFile) HPDF_AttachFile(HPDF_Doc pdf, const char *file)
+HPDF_EmbeddedFile HPDF_AttachFile(HPDF_Doc pdf, const char *file)
 {
 	HPDF_NameDict names;
 	HPDF_NameTree ntree;

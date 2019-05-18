@@ -52,7 +52,7 @@ HPDF_ExData HPDF_3DAnnotExData_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, HPDF_3DMeasure measure)
+HPDF_STATUS HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, HPDF_3DMeasure measure)
 {
 	HPDF_STATUS ret = HPDF_OK;
 

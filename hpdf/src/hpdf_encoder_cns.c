@@ -36246,7 +36246,7 @@ static HPDF_STATUS GB_EUC_V_Init(HPDF_Encoder encoder)
 
 /*--------------------------------------------------------------------------*/
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseCNSEncodings(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseCNSEncodings(HPDF_Doc pdf)
 {
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;

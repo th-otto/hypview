@@ -27,17 +27,13 @@ extern "C" {
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_Destination -----------------------------------------------------*/
 
-HPDF_Destination
-HPDF_Destination_New  (HPDF_MMgr   mmgr,
-                       HPDF_Page   target,
-                       HPDF_Xref   xref);
+HPDF_Destination HPDF_Destination_New(HPDF_MMgr mmgr, HPDF_Page target, HPDF_Xref xref);
 
 
-HPDF_BOOL
-HPDF_Destination_Validate (HPDF_Destination  dst);
+HPDF_BOOL HPDF_Destination_Validate(HPDF_Destination dst);
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 
 #endif /* _HPDF_DESTINATION_H */

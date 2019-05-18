@@ -151,13 +151,14 @@ extern "C" {
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Error ----------------------------------------------------------*/
 
-typedef struct  _HPDF_Error_Rec  *HPDF_Error;
+typedef struct _HPDF_Error_Rec *HPDF_Error;
 
-typedef struct  _HPDF_Error_Rec {
-    HPDF_STATUS             error_no;
-    HPDF_STATUS             detail_no;
-    HPDF_Error_Handler      error_fn;
-    void                    *user_data;
+typedef struct _HPDF_Error_Rec
+{
+	HPDF_STATUS error_no;
+	HPDF_STATUS detail_no;
+	HPDF_Error_Handler error_fn;
+	void *user_data;
 } HPDF_Error_Rec;
 
 
@@ -167,41 +168,28 @@ typedef struct  _HPDF_Error_Rec {
  *  user_data is used to identify the object which threw an error.
  *
  */
-void
-HPDF_Error_Init  (HPDF_Error    error,
-                  void         *user_data);
+void HPDF_Error_Init(HPDF_Error error, void *user_data);
 
 
-void
-HPDF_Error_Reset  (HPDF_Error  error);
+void HPDF_Error_Reset(HPDF_Error error);
 
 
-HPDF_STATUS
-HPDF_Error_GetCode  (HPDF_Error  error);
+HPDF_STATUS HPDF_Error_GetCode(HPDF_Error error);
 
 
-HPDF_STATUS
-HPDF_Error_GetDetailCode  (HPDF_Error  error);
+HPDF_STATUS HPDF_Error_GetDetailCode(HPDF_Error error);
 
 
-HPDF_STATUS
-HPDF_SetError  (HPDF_Error   error,
-                HPDF_STATUS  error_no,
-                HPDF_STATUS  detail_no);
+HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS detail_no);
 
 
-HPDF_STATUS
-HPDF_RaiseError  (HPDF_Error   error,
-                  HPDF_STATUS  error_no,
-                  HPDF_STATUS  detail_no);
+HPDF_STATUS HPDF_RaiseError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS detail_no);
 
-void
-HPDF_CopyError  (HPDF_Error  dst,
-                 HPDF_Error  src);
+void HPDF_CopyError(HPDF_Error dst, HPDF_Error src);
 
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 
 #endif /* _HPDF_ERROR_H */

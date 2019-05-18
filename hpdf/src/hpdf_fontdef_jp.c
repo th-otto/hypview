@@ -1780,7 +1780,7 @@ static HPDF_STATUS MS_PMincho_BoldItalic_Init(HPDF_FontDef fontdef)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_UseJPFonts(HPDF_Doc pdf)
+HPDF_STATUS HPDF_UseJPFonts(HPDF_Doc pdf)
 {
 	HPDF_FontDef fontdef;
 	HPDF_STATUS ret;

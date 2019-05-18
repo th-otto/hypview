@@ -20,12 +20,12 @@
 #include "hpdf_mmgr.h"
 #include "hpdf_utils.h"
 
-static void *HPDF_STDCALL InternalGetMem(HPDF_UINT size)
+static void *InternalGetMem(HPDF_UINT size)
 {
 	return HPDF_MALLOC(size);
 }
 
-static void HPDF_STDCALL InternalFreeMem(void *aptr)
+static void InternalFreeMem(void *aptr)
 {
 	HPDF_FREE(aptr);
 }

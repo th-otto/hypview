@@ -412,7 +412,7 @@ HPDF_BOOL HPDF_Image_Validate(HPDF_Image image)
 }
 
 
-HPDF_EXPORT(HPDF_Point) HPDF_Image_GetSize(HPDF_Image image)
+HPDF_Point HPDF_Image_GetSize(HPDF_Image image)
 {
 	HPDF_Number width;
 	HPDF_Number height;
@@ -436,7 +436,7 @@ HPDF_EXPORT(HPDF_Point) HPDF_Image_GetSize(HPDF_Image image)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point * size)
+HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point * size)
 {
 	HPDF_Number width;
 	HPDF_Number height;
@@ -462,7 +462,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point * size
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_Image_GetBitsPerComponent(HPDF_Image image)
+HPDF_UINT HPDF_Image_GetBitsPerComponent(HPDF_Image image)
 {
 	HPDF_Number n;
 
@@ -480,7 +480,7 @@ HPDF_EXPORT(HPDF_UINT) HPDF_Image_GetBitsPerComponent(HPDF_Image image)
 }
 
 
-HPDF_EXPORT(const char *) HPDF_Image_GetColorSpace(HPDF_Image image)
+const char * HPDF_Image_GetColorSpace(HPDF_Image image)
 {
 	HPDF_Name n;
 
@@ -512,13 +512,13 @@ HPDF_EXPORT(const char *) HPDF_Image_GetColorSpace(HPDF_Image image)
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_Image_GetWidth(HPDF_Image image)
+HPDF_UINT HPDF_Image_GetWidth(HPDF_Image image)
 {
 	return (HPDF_UINT) HPDF_Image_GetSize(image).x;
 }
 
 
-HPDF_EXPORT(HPDF_UINT) HPDF_Image_GetHeight(HPDF_Image image)
+HPDF_UINT HPDF_Image_GetHeight(HPDF_Image image)
 {
 	return (HPDF_UINT) HPDF_Image_GetSize(image).y;
 }
@@ -550,7 +550,7 @@ HPDF_STATUS HPDF_Image_SetMask(HPDF_Image image, HPDF_BOOL mask)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Image_SetMaskImage(HPDF_Image image, HPDF_Image mask_image)
+HPDF_STATUS HPDF_Image_SetMaskImage(HPDF_Image image, HPDF_Image mask_image)
 {
 	if (!HPDF_Image_Validate(image))
 		return HPDF_INVALID_IMAGE;
@@ -565,7 +565,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Image_SetMaskImage(HPDF_Image image, HPDF_Image ma
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Image_SetColorMask(
+HPDF_STATUS HPDF_Image_SetColorMask(
 	HPDF_Image image,
 	HPDF_UINT rmin,
 	HPDF_UINT rmax,
@@ -613,7 +613,8 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_Image_SetColorMask(
 	return HPDF_OK;
 }
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_Image_AddSMask(HPDF_Image image, HPDF_Image smask)
+
+HPDF_STATUS HPDF_Image_AddSMask(HPDF_Image image, HPDF_Image smask)
 {
 
 	const char *name;

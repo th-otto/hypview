@@ -80,7 +80,7 @@ HPDF_Dict HPDF_ExtGState_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_ExtGState_SetAlphaStroke(HPDF_ExtGState ext_gstate, HPDF_REAL value)
+HPDF_STATUS HPDF_ExtGState_SetAlphaStroke(HPDF_ExtGState ext_gstate, HPDF_REAL value)
 {
 	HPDF_STATUS ret = ExtGState_Check(ext_gstate);
 
@@ -94,7 +94,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_ExtGState_SetAlphaStroke(HPDF_ExtGState ext_gstate
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_ExtGState_SetAlphaFill(HPDF_ExtGState ext_gstate, HPDF_REAL value)
+HPDF_STATUS HPDF_ExtGState_SetAlphaFill(HPDF_ExtGState ext_gstate, HPDF_REAL value)
 {
 	HPDF_STATUS ret = ExtGState_Check(ext_gstate);
 
@@ -108,7 +108,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_ExtGState_SetAlphaFill(HPDF_ExtGState ext_gstate, 
 }
 
 
-HPDF_EXPORT(HPDF_STATUS) HPDF_ExtGState_SetBlendMode(HPDF_ExtGState ext_gstate, HPDF_BlendMode bmode)
+HPDF_STATUS HPDF_ExtGState_SetBlendMode(HPDF_ExtGState ext_gstate, HPDF_BlendMode bmode)
 {
 	HPDF_STATUS ret = ExtGState_Check(ext_gstate);
 
