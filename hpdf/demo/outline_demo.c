@@ -106,7 +106,7 @@ int main(int argc, char **argv)
     dst = HPDF_Page_CreateDestination (page[0]);
     HPDF_Destination_SetXYZ(dst, 0, HPDF_Page_GetHeight(page[0]), 1);
     HPDF_Outline_SetDestination(outline[0], dst);
-  //  HPDF_Catalog_SetOpenAction(dst);
+ 	/* HPDF_Catalog_SetOpenAction(dst); */
 
     dst = HPDF_Page_CreateDestination (page[1]);
     HPDF_Destination_SetXYZ(dst, 0, HPDF_Page_GetHeight(page[1]), 1);

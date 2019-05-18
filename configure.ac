@@ -1020,6 +1020,7 @@ AC_OUTPUT([
 	hpdf/Makefile
 	hpdf/include/Makefile
 	hpdf/src/Makefile
+	hpdf/demo/Makefile
 	tos/Makefile
 	tos/utils/call-acc/Makefile
 	tools/Makefile

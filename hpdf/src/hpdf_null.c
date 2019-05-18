@@ -21,15 +21,15 @@
 #include <string.h>
 
 
-HPDF_Null
-HPDF_Null_New  (HPDF_MMgr  mmgr)
+HPDF_Null HPDF_Null_New(HPDF_MMgr mmgr)
 {
-    HPDF_Null obj = (HPDF_Null) HPDF_GetMem (mmgr, sizeof(HPDF_Null_Rec));
+	HPDF_Null obj = (HPDF_Null) HPDF_GetMem(mmgr, sizeof(HPDF_Null_Rec));
 
-    if (obj) {
-        memset (&obj->header, 0, sizeof(HPDF_Obj_Header));
-        obj->header.obj_class = HPDF_OCLASS_NULL;
-    }
+	if (obj)
+	{
+		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
+		obj->header.obj_class = HPDF_OCLASS_NULL;
+	}
 
-    return obj;
+	return obj;
 }

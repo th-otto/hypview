@@ -20,32 +20,29 @@
 #include "hpdf_objects.h"
 #include <string.h>
 
-HPDF_Boolean
-HPDF_Boolean_New  (HPDF_MMgr  mmgr,
-                   HPDF_BOOL  value)
+HPDF_Boolean HPDF_Boolean_New(HPDF_MMgr mmgr, HPDF_BOOL value)
 {
-    HPDF_Boolean obj = (HPDF_Boolean) HPDF_GetMem (mmgr, sizeof(HPDF_Boolean_Rec));
+	HPDF_Boolean obj = (HPDF_Boolean) HPDF_GetMem(mmgr, sizeof(HPDF_Boolean_Rec));
 
-    if (obj) {
-        memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-        obj->header.obj_class = HPDF_OCLASS_BOOLEAN;
-        obj->value = value;
-    }
+	if (obj)
+	{
+		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
+		obj->header.obj_class = HPDF_OCLASS_BOOLEAN;
+		obj->value = value;
+	}
 
-    return obj;
+	return obj;
 }
 
 
-HPDF_STATUS
-HPDF_Boolean_Write  (HPDF_Boolean  obj,
-                     HPDF_Stream   stream)
+HPDF_STATUS HPDF_Boolean_Write(HPDF_Boolean obj, HPDF_Stream stream)
 {
-    HPDF_STATUS ret;
+	HPDF_STATUS ret;
 
-    if (obj->value)
-        ret = HPDF_Stream_WriteStr (stream, "true");
-    else
-        ret = HPDF_Stream_WriteStr (stream, "false");
+	if (obj->value)
+		ret = HPDF_Stream_WriteStr(stream, "true");
+	else
+		ret = HPDF_Stream_WriteStr(stream, "false");
 
-    return ret;
+	return ret;
 }

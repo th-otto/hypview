@@ -26,9 +26,7 @@
 
 
 
-HPDF_ExData
-HPDF_3DAnnotExData_New(HPDF_MMgr mmgr,
-					   HPDF_Xref xref)
+HPDF_ExData HPDF_3DAnnotExData_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 {
 	HPDF_ExData exdata;
 	HPDF_STATUS ret = HPDF_OK;
@@ -36,15 +34,15 @@ HPDF_3DAnnotExData_New(HPDF_MMgr mmgr,
 
 	HPDF_PTRACE((" HPDF_ExData_New\n"));
 
-	exdata = HPDF_Dict_New (mmgr);
+	exdata = HPDF_Dict_New(mmgr);
 	if (!exdata)
 		return NULL;
 
-	if (HPDF_Xref_Add (xref, exdata) != HPDF_OK)
+	if (HPDF_Xref_Add(xref, exdata) != HPDF_OK)
 		return NULL;
 
-	ret += HPDF_Dict_AddName (exdata, "Type", "ExData");
-	ret += HPDF_Dict_AddName (exdata, "Subtype", "3DM");
+	ret += HPDF_Dict_AddName(exdata, "Type", "ExData");
+	ret += HPDF_Dict_AddName(exdata, "Subtype", "3DM");
 
 	if (ret != HPDF_OK)
 		return NULL;
@@ -54,13 +52,11 @@ HPDF_3DAnnotExData_New(HPDF_MMgr mmgr,
 
 
 
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, 
-						   HPDF_3DMeasure measure)
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, HPDF_3DMeasure measure)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
-	ret = HPDF_Dict_Add (exdata, "M3DREF", measure);
+	ret = HPDF_Dict_Add(exdata, "M3DREF", measure);
 	if (ret != HPDF_OK)
 		return ret;
 

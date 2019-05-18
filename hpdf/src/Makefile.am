@@ -61,6 +61,7 @@ libhpdf_a_SOURCES = \
 	hpdf_3dmeasure.c \
 	hpdf_exdata.c \
 	hpdf_encoder_utf8.c \
-	t4.h
+	t4.h \
+	$(empty)
 
-AM_CPPFLAGS = -I$(srcdir)/../include 
+AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib

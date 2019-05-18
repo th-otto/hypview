@@ -21,100 +21,93 @@
 #include <string.h>
 
 
-HPDF_Binary
-HPDF_Binary_New  (HPDF_MMgr  mmgr,
-                  HPDF_BYTE  *value,
-                  HPDF_UINT  len)
+HPDF_Binary HPDF_Binary_New(HPDF_MMgr mmgr, HPDF_BYTE *value, HPDF_UINT len)
 {
-    HPDF_Binary obj;
+	HPDF_Binary obj;
 
-    obj  = (HPDF_Binary) HPDF_GetMem (mmgr, sizeof(HPDF_Binary_Rec));
+	obj = (HPDF_Binary) HPDF_GetMem(mmgr, sizeof(HPDF_Binary_Rec));
 
-    if (obj) {
-        memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-        obj->header.obj_class = HPDF_OCLASS_BINARY;
+	if (obj)
+	{
+		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
+		obj->header.obj_class = HPDF_OCLASS_BINARY;
 
-        obj->mmgr = mmgr;
-        obj->error = mmgr->error;
-        obj->value = NULL;
-        obj->len = 0;
-        if (HPDF_Binary_SetValue (obj, value, len) != HPDF_OK) {
-            HPDF_FreeMem (mmgr, obj);
-            return NULL;
-        }
-    }
+		obj->mmgr = mmgr;
+		obj->error = mmgr->error;
+		obj->value = NULL;
+		obj->len = 0;
+		if (HPDF_Binary_SetValue(obj, value, len) != HPDF_OK)
+		{
+			HPDF_FreeMem(mmgr, obj);
+			return NULL;
+		}
+	}
 
-    return obj;
-}
-
-HPDF_STATUS
-HPDF_Binary_Write  (HPDF_Binary   obj,
-                    HPDF_Stream   stream,
-                    HPDF_Encrypt  e)
-{
-    HPDF_STATUS ret;
-
-    if (obj->len == 0)
-        return HPDF_Stream_WriteStr (stream, "<>");
-
-    if ((ret = HPDF_Stream_WriteChar (stream, '<')) != HPDF_OK)
-        return ret;
-
-    if (e)
-        HPDF_Encrypt_Reset (e);
-
-    if ((ret = HPDF_Stream_WriteBinary (stream, obj->value, obj->len, e)) !=
-                    HPDF_OK)
-        return ret;
-
-    return HPDF_Stream_WriteChar (stream, '>');
+	return obj;
 }
 
 
-HPDF_STATUS
-HPDF_Binary_SetValue  (HPDF_Binary  obj,
-                       HPDF_BYTE    *value,
-                       HPDF_UINT    len)
+HPDF_STATUS HPDF_Binary_Write(HPDF_Binary obj, HPDF_Stream stream, HPDF_Encrypt e)
 {
-    if (len > HPDF_LIMIT_MAX_STRING_LEN)
-        return HPDF_SetError (obj->error, HPDF_BINARY_LENGTH_ERR, 0);
+	HPDF_STATUS ret;
 
-    if (obj->value) {
-        HPDF_FreeMem (obj->mmgr, obj->value);
-        obj->len = 0;
-    }
+	if (obj->len == 0)
+		return HPDF_Stream_WriteStr(stream, "<>");
 
-    obj->value = (HPDF_BYTE *) HPDF_GetMem (obj->mmgr, len);
-    if (!obj->value)
-        return HPDF_Error_GetCode (obj->error);
+	if ((ret = HPDF_Stream_WriteChar(stream, '<')) != HPDF_OK)
+		return ret;
 
-    memcpy (obj->value, value, len);
-    obj->len = len;
+	if (e)
+		HPDF_Encrypt_Reset(e);
 
-    return HPDF_OK;
+	if ((ret = HPDF_Stream_WriteBinary(stream, obj->value, obj->len, e)) != HPDF_OK)
+		return ret;
+
+	return HPDF_Stream_WriteChar(stream, '>');
 }
 
 
-void
-HPDF_Binary_Free  (HPDF_Binary  obj)
+HPDF_STATUS HPDF_Binary_SetValue(HPDF_Binary obj, HPDF_BYTE * value, HPDF_UINT len)
 {
-    if (!obj)
-        return;
+	if (len > HPDF_LIMIT_MAX_STRING_LEN)
+		return HPDF_SetError(obj->error, HPDF_BINARY_LENGTH_ERR, 0);
 
-    if (obj->value)
-        HPDF_FreeMem (obj->mmgr, obj->value);
+	if (obj->value)
+	{
+		HPDF_FreeMem(obj->mmgr, obj->value);
+		obj->len = 0;
+	}
 
-    HPDF_FreeMem (obj->mmgr, obj);
+	obj->value = (HPDF_BYTE *) HPDF_GetMem(obj->mmgr, len);
+	if (!obj->value)
+		return HPDF_Error_GetCode(obj->error);
+
+	memcpy(obj->value, value, len);
+	obj->len = len;
+
+	return HPDF_OK;
 }
 
-HPDF_UINT
-HPDF_Binary_GetLen  (HPDF_Binary  obj)
+
+void HPDF_Binary_Free(HPDF_Binary obj)
 {
-    return obj->len;
+	if (!obj)
+		return;
+
+	if (obj->value)
+		HPDF_FreeMem(obj->mmgr, obj->value);
+
+	HPDF_FreeMem(obj->mmgr, obj);
 }
 
-HPDF_BYTE*
-HPDF_Binary_GetValue  (HPDF_Binary  obj)
+
+HPDF_UINT HPDF_Binary_GetLen(HPDF_Binary obj)
 {
-    return obj->value;
+	return obj->len;
+}
+
+
+HPDF_BYTE *HPDF_Binary_GetValue(HPDF_Binary obj)
+{
+	return obj->value;
 }

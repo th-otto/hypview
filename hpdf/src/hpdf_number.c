@@ -21,33 +21,28 @@
 #include <string.h>
 
 
-HPDF_Number
-HPDF_Number_New  (HPDF_MMgr   mmgr,
-                  HPDF_INT32  value)
+HPDF_Number HPDF_Number_New(HPDF_MMgr mmgr, HPDF_INT32 value)
 {
-    HPDF_Number obj = (HPDF_Number) HPDF_GetMem (mmgr, sizeof(HPDF_Number_Rec));
+	HPDF_Number obj = (HPDF_Number) HPDF_GetMem(mmgr, sizeof(HPDF_Number_Rec));
 
-    if (obj) {
-        memset (&obj->header, 0, sizeof(HPDF_Obj_Header));
-        obj->header.obj_class = HPDF_OCLASS_NUMBER;
-        obj->value = value;
-    }
+	if (obj)
+	{
+		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
+		obj->header.obj_class = HPDF_OCLASS_NUMBER;
+		obj->value = value;
+	}
 
-    return obj;
+	return obj;
 }
 
 
-HPDF_STATUS
-HPDF_Number_Write  (HPDF_Number  obj,
-                    HPDF_Stream  stream)
+HPDF_STATUS HPDF_Number_Write(HPDF_Number obj, HPDF_Stream stream)
 {
-    return HPDF_Stream_WriteInt (stream, obj->value);
+	return HPDF_Stream_WriteInt(stream, obj->value);
 }
 
 
-void
-HPDF_Number_SetValue  (HPDF_Number  obj,
-                       HPDF_INT32   value)
+void HPDF_Number_SetValue(HPDF_Number obj, HPDF_INT32 value)
 {
-    obj->value =value;
+	obj->value = value;
 }

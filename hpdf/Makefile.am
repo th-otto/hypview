@@ -1,2 +1,2 @@
-SUBDIRS=src include
+SUBDIRS=src include demo
 EXTRA_DIST=CHANGES

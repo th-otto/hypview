@@ -19,40 +19,37 @@
 #include "hpdf_utils.h"
 #include "hpdf_fontdef.h"
 
-void
-HPDF_FontDef_Cleanup (HPDF_FontDef  fontdef)
+void HPDF_FontDef_Cleanup(HPDF_FontDef fontdef)
 {
-    if (!fontdef)
-        return;
+	if (!fontdef)
+		return;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Cleanup\n"));
+	HPDF_PTRACE((" HPDF_FontDef_Cleanup\n"));
 
-    if (fontdef->clean_fn)
-        fontdef->clean_fn (fontdef);
+	if (fontdef->clean_fn)
+		fontdef->clean_fn(fontdef);
 
-    fontdef->descriptor = NULL;
+	fontdef->descriptor = NULL;
 }
 
-void
-HPDF_FontDef_Free (HPDF_FontDef  fontdef)
+void HPDF_FontDef_Free(HPDF_FontDef fontdef)
 {
-    if (!fontdef)
-        return;
+	if (!fontdef)
+		return;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Free\n"));
+	HPDF_PTRACE((" HPDF_FontDef_Free\n"));
 
-    if (fontdef->free_fn)
-        fontdef->free_fn (fontdef);
-    HPDF_FreeMem (fontdef->mmgr, fontdef);
+	if (fontdef->free_fn)
+		fontdef->free_fn(fontdef);
+	HPDF_FreeMem(fontdef->mmgr, fontdef);
 }
 
-HPDF_BOOL
-HPDF_FontDef_Validate (HPDF_FontDef  fontdef)
+HPDF_BOOL HPDF_FontDef_Validate(HPDF_FontDef fontdef)
 {
-    HPDF_PTRACE ((" HPDF_FontDef_Validate\n"));
+	HPDF_PTRACE((" HPDF_FontDef_Validate\n"));
 
-    if (!fontdef || fontdef->sig_bytes != HPDF_FONTDEF_SIG_BYTES)
-        return HPDF_FALSE;
-    else
-        return HPDF_TRUE;
+	if (!fontdef || fontdef->sig_bytes != HPDF_FONTDEF_SIG_BYTES)
+		return HPDF_FALSE;
+	else
+		return HPDF_TRUE;
 }
