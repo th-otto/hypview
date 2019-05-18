@@ -423,22 +423,6 @@ no)  enable_fatal_warnings=no
 esac
 ], [enable_fatal_warnings=no])
 
-AH_TEMPLATE([UDO_INTEGRATED], [define to integrate UDO into the shell])
-AC_ARG_ENABLE(integrate,
-[AC_HELP_STRING(--enable-integrate, [integrate UDO into the shell])],
-[case $enableval in
-yes)
-     udo_integrated=yes
-     ;;
-no)  udo_integrated=no ;;
-*)   AC_MSG_ERROR([must be yes or no: --enable-warnings=$enableval]) ;;
-esac
-], [udo_integrated=yes])
-if test "$udo_integrated" = yes; then
-     AC_DEFINE([UDO_INTEGRATED])
-fi
-AM_CONDITIONAL(UDO_INTEGRATED, test "$udo_integrated" = yes)
-
 AM_CONDITIONAL(OS_WIN32, test "$TARGET_OS" = "win32")
 AM_CONDITIONAL(OS_TOS, test "$TARGET_OS" = "tos")
 AM_CONDITIONAL(OS_UNIX, test "$TARGET_OS" = "unix")
@@ -918,8 +902,7 @@ AH_TEMPLATE([WITH_PDF], [include PDF output support])
 AH_TEMPLATE([LIBHPDF_HAVE_NOZLIB], [zlib is not available])
 AH_TEMPLATE([LIBHPDF_HAVE_NOPNGLIB], [libpng is not available])
 AC_ARG_WITH(pdf,
-  [AS_HELP_STRING([--with-pdf],[include PDF output support])
-  ],
+  [AS_HELP_STRING([--with-pdf],[include PDF output support])],
   [ ],
   [with_pdf=yes]
 )
@@ -927,8 +910,7 @@ AM_CONDITIONAL(WITH_PDF, test "$with_pdf" = "yes")
 if test "$with_pdf" = "yes"; then
 AC_DEFINE([WITH_PDF])
 AC_ARG_WITH(png,
-  [AS_HELP_STRING([--with-png],[include PNG support for PDF])
-  ],
+  [AS_HELP_STRING([--with-png],[include PNG support for PDF])],
   [ ],
   [with_png=yes]
 )
