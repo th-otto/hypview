@@ -30,8 +30,6 @@ HPDF_EncryptDict HPDF_EncryptDict_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	HPDF_Encrypt attr;
 	HPDF_EncryptDict dict;
 
-	HPDF_PTRACE((" HPDF_EncryptDict_New\n"));
-
 	dict = HPDF_Dict_New(mmgr);
 	if (!dict)
 		return NULL;
@@ -66,14 +64,14 @@ void HPDF_EncryptDict_CreateID(HPDF_EncryptDict dict, HPDF_Dict info, HPDF_Xref 
 	 */
 #ifndef LIBHPDF_DEBUG
 	time_t t = HPDF_TIME(NULL);
-#endif /* LIBHPDF_DEBUG */
+#endif
 
 	HPDF_MD5Init(&ctx);
 	HPDF_UNUSED(xref);
 	HPDF_UNUSED(info);
 
 #ifndef LIBHPDF_DEBUG
-	HPDF_MD5Update(&ctx, (HPDF_BYTE *) & t, sizeof(t));
+	HPDF_MD5Update(&ctx, (HPDF_BYTE *) &t, sizeof(t));
 
 	/* create File Identifier from elements of Info dictionary. */
 	if (info)
@@ -126,8 +124,6 @@ HPDF_STATUS HPDF_EncryptDict_Prepare(HPDF_EncryptDict dict, HPDF_Dict info, HPDF
 	HPDF_Binary user_key;
 	HPDF_Binary owner_key;
 
-	HPDF_PTRACE((" HPDF_EncryptDict_Prepare\n"));
-
 	HPDF_EncryptDict_CreateID(dict, info, xref);
 	HPDF_Encrypt_CreateOwnerKey(attr);
 	HPDF_Encrypt_CreateEncryptionKey(attr);
@@ -173,8 +169,6 @@ void HPDF_EncryptDict_OnFree(HPDF_Dict obj)
 {
 	HPDF_Encrypt attr = (HPDF_Encrypt) obj->attr;
 
-	HPDF_PTRACE((" HPDF_EncryptDict_OnFree\n"));
-
 	if (attr)
 		HPDF_FreeMem(obj->mmgr, attr);
 }
@@ -183,8 +177,6 @@ void HPDF_EncryptDict_OnFree(HPDF_Dict obj)
 HPDF_STATUS HPDF_EncryptDict_SetPassword(HPDF_EncryptDict dict, const char *owner_passwd, const char *user_passwd)
 {
 	HPDF_Encrypt attr = (HPDF_Encrypt) dict->attr;
-
-	HPDF_PTRACE((" HPDF_EncryptDict_SetPassword\n"));
 
 	if (HPDF_StrLen(owner_passwd, 2) == 0)
 		return HPDF_SetError(dict->error, HPDF_ENCRYPT_INVALID_PASSWORD, 0);
@@ -203,8 +195,6 @@ HPDF_BOOL HPDF_EncryptDict_Validate(HPDF_EncryptDict dict)
 {
 	HPDF_Obj_Header *header = (HPDF_Obj_Header *) dict;
 
-	HPDF_PTRACE((" HPDF_EncryptDict_Validate\n"));
-
 	if (!dict || !dict->attr)
 		return HPDF_FALSE;
 
@@ -218,8 +208,6 @@ HPDF_BOOL HPDF_EncryptDict_Validate(HPDF_EncryptDict dict)
 HPDF_Encrypt HPDF_EncryptDict_GetAttr(HPDF_EncryptDict dict)
 {
 	HPDF_Obj_Header *header = (HPDF_Obj_Header *) dict;
-
-	HPDF_PTRACE((" HPDF_EncryptDict_GetAttr\n"));
 
 	if (dict && dict->attr && (header->obj_class == (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_ENCRYPT)))
 		return (HPDF_Encrypt) dict->attr;

@@ -15239,7 +15239,6 @@ static HPDF_STATUS ETen_B5_V_Init(HPDF_Encoder encoder)
 	return HPDF_OK;
 }
 
-
 /*--------------------------------------------------------------------------*/
 
 HPDF_STATUS HPDF_UseCNTEncodings(HPDF_Doc pdf)

@@ -20,6 +20,7 @@
 #include "hpdf_objects.h"
 #include <string.h>
 
+
 HPDF_Boolean HPDF_Boolean_New(HPDF_MMgr mmgr, HPDF_BOOL value)
 {
 	HPDF_Boolean obj = (HPDF_Boolean) HPDF_GetMem(mmgr, sizeof(HPDF_Boolean_Rec));

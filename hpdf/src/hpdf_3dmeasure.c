@@ -51,8 +51,6 @@ HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Point3
 	HPDF_3DMeasure measure;
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_3DC3DMeasure_New\n"));
-
 	measure = HPDF_Dict_New(mmgr);
 	if (!measure)
 		return NULL;
@@ -180,8 +178,6 @@ HPDF_3DMeasure HPDF_PD33DMeasure_New(HPDF_MMgr mmgr,
 	HPDF_3DMeasure measure;
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_String s;
-
-	HPDF_PTRACE((" HPDF_3DC3DMeasure_New\n"));
 
 	measure = HPDF_Dict_New(mmgr);
 	if (!measure)

@@ -29,8 +29,6 @@ HPDF_NameDict HPDF_NameDict_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 {
 	HPDF_NameDict ndict;
 
-	HPDF_PTRACE((" HPDF_NameDict_New\n"));
-
 	ndict = HPDF_Dict_New(mmgr);
 	if (!ndict)
 		return NULL;
@@ -81,8 +79,6 @@ HPDF_NameTree HPDF_NameTree_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	HPDF_NameTree ntree;
 	HPDF_Array items;
 
-	HPDF_PTRACE((" HPDF_NameTree_New\n"));
-
 	ntree = HPDF_Dict_New(mmgr);
 	if (!ntree)
 		return NULL;
@@ -102,6 +98,7 @@ HPDF_NameTree HPDF_NameTree_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 
 	return ntree;
 }
+
 
 HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
 {
@@ -155,6 +152,7 @@ HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
 	return HPDF_OK;
 }
 
+
 HPDF_BOOL HPDF_NameTree_Validate(HPDF_NameTree nametree)
 {
 	if (!nametree)
@@ -168,7 +166,6 @@ HPDF_BOOL HPDF_NameTree_Validate(HPDF_NameTree nametree)
 
 	return HPDF_TRUE;
 }
-
 
 /*------- EmbeddedFile -------*/
 

@@ -39,8 +39,6 @@ HPDF_Destination HPDF_Destination_New(HPDF_MMgr mmgr, HPDF_Page target, HPDF_Xre
 {
 	HPDF_Destination dst;
 
-	HPDF_PTRACE((" HPDF_Destination_New\n"));
-
 	if (!HPDF_Page_Validate(target))
 	{
 		HPDF_SetError(mmgr->error, HPDF_INVALID_PAGE, 0);
@@ -96,8 +94,6 @@ HPDF_STATUS HPDF_Destination_SetXYZ(HPDF_Destination dst, HPDF_REAL left, HPDF_R
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
 
-	HPDF_PTRACE((" HPDF_Destination_SetXYZ\n"));
-
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
 
@@ -130,8 +126,6 @@ HPDF_STATUS HPDF_Destination_SetFit(HPDF_Destination dst)
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
 
-	HPDF_PTRACE((" HPDF_Destination_SetFit\n"));
-
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
 
@@ -157,8 +151,6 @@ HPDF_STATUS HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REAL top)
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
 
-	HPDF_PTRACE((" HPDF_Destination_SetFitH\n"));
-
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
 
@@ -179,12 +171,11 @@ HPDF_STATUS HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REAL top)
 	return HPDF_OK;
 }
 
+
 HPDF_STATUS HPDF_Destination_SetFitV(HPDF_Destination dst, HPDF_REAL left)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
-
-	HPDF_PTRACE((" HPDF_Destination_SetFitV\n"));
 
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
@@ -211,8 +202,6 @@ HPDF_STATUS HPDF_Destination_SetFitR(HPDF_Destination dst, HPDF_REAL left, HPDF_
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
-
-	HPDF_PTRACE((" HPDF_Destination_SetFitR\n"));
 
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
@@ -243,8 +232,6 @@ HPDF_STATUS HPDF_Destination_SetFitB(HPDF_Destination dst)
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
 
-	HPDF_PTRACE((" HPDF_Destination_SetFitB\n"));
-
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
 
@@ -269,8 +256,6 @@ HPDF_STATUS HPDF_Destination_SetFitBH(HPDF_Destination dst, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
-
-	HPDF_PTRACE((" HPDF_Destination_SetFitBH\n"));
 
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;
@@ -297,8 +282,6 @@ HPDF_STATUS HPDF_Destination_SetFitBV(HPDF_Destination dst, HPDF_REAL left)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Page target;
-
-	HPDF_PTRACE((" HPDF_Destination_SetFitBV\n"));
 
 	if (!HPDF_Destination_Validate(dst))
 		return HPDF_INVALID_DESTINATION;

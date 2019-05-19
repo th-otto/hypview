@@ -47,7 +47,6 @@
 #define HPDF_FREE                   free
 #define HPDF_FILEP                  FILE*
 #define HPDF_TIME                   time
-#define HPDF_PRINTF                 printf
 #define HPDF_SIN                    sin
 #define HPDF_COS                    cos
 

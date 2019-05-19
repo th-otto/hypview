@@ -291,8 +291,6 @@ static HPDF_STATUS SimSun_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
 
-	HPDF_PTRACE((" HPDF_FontDef_SimSun_Init\n"));
-
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 683;
@@ -333,6 +331,7 @@ static HPDF_STATUS SimSun_Italic_Init(HPDF_FontDef fontdef)
 	return HPDF_CIDFontDef_ChangeStyle(fontdef, HPDF_FALSE, HPDF_TRUE);
 }
 
+
 static HPDF_STATUS SimSun_BoldItalic_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret = SimSun_Init(fontdef);
@@ -347,8 +346,6 @@ static HPDF_STATUS SimSun_BoldItalic_Init(HPDF_FontDef fontdef)
 static HPDF_STATUS SimHei_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
-
-	HPDF_PTRACE((" HPDF_FontDef_SimHei_Init\n"));
 
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
@@ -389,6 +386,7 @@ static HPDF_STATUS SimHei_Italic_Init(HPDF_FontDef fontdef)
 
 	return HPDF_CIDFontDef_ChangeStyle(fontdef, HPDF_FALSE, HPDF_TRUE);
 }
+
 
 static HPDF_STATUS SimHei_BoldItalic_Init(HPDF_FontDef fontdef)
 {

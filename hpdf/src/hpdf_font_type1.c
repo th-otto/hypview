@@ -21,7 +21,6 @@
 #include <string.h>
 
 
-
 static HPDF_STATUS Type1Font_OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) obj->attr;
@@ -31,8 +30,6 @@ static HPDF_STATUS Type1Font_OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 	HPDF_STATUS ret;
 	char buf[HPDF_TMP_BUF_SIZ];
 	char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
-
-	HPDF_PTRACE((" HPDF_Font_Type1Font_OnWrite\n"));
 
 	/* if font is base14-font these entries is not required */
 	if (!fontdef_attr->is_base14font || encoder_attr->has_differences)
@@ -91,8 +88,6 @@ static HPDF_TextWidth Type1Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text
 	HPDF_UINT i;
 	HPDF_BYTE b = 0;
 
-	HPDF_PTRACE((" HPDF_Type1Font_TextWidth\n"));
-
 	if (attr->widths)
 	{
 		for (i = 0; i < len; i++)
@@ -138,8 +133,6 @@ static HPDF_UINT Type1Font_MeasureText(
 	HPDF_UINT i;
 	HPDF_FontAttr attr = (HPDF_FontAttr) font->attr;
 
-	HPDF_PTRACE((" HPDF_Type1Font_MeasureText\n"));
-
 	for (i = 0; i < len; i++)
 	{
 		HPDF_BYTE b = text[i];
@@ -183,8 +176,6 @@ static HPDF_STATUS Type1Font_CreateDescriptor(HPDF_MMgr mmgr, HPDF_Font font, HP
 	HPDF_FontAttr font_attr = (HPDF_FontAttr) font->attr;
 	HPDF_FontDef def = font_attr->fontdef;
 	HPDF_Type1FontDefAttr def_attr = (HPDF_Type1FontDefAttr) def->attr;
-
-	HPDF_PTRACE((" HPDF_Type1Font_CreateDescriptor\n"));
 
 	if (!font_attr->fontdef->descriptor)
 	{
@@ -247,8 +238,6 @@ static void Type1Font_OnFree(HPDF_Dict obj)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) obj->attr;
 
-	HPDF_PTRACE((" HPDF_Type1Font_OnFree\n"));
-
 	if (attr)
 	{
 		if (attr->widths)
@@ -268,8 +257,6 @@ HPDF_Font HPDF_Type1Font_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder 
 	HPDF_BasicEncoderAttr encoder_attr;
 	HPDF_STATUS ret = 0;
 	HPDF_UINT i;
-
-	HPDF_PTRACE((" HPDF_Type1Font_New\n"));
 
 	/* check whether the fontdef object and the encoder object is valid. */
 	if (encoder->type != HPDF_ENCODER_TYPE_SINGLE_BYTE)

@@ -25,14 +25,10 @@
 /*------ HPDF_ExData -----------------------------------------------------*/
 
 
-
 HPDF_ExData HPDF_3DAnnotExData_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 {
 	HPDF_ExData exdata;
 	HPDF_STATUS ret = HPDF_OK;
-
-
-	HPDF_PTRACE((" HPDF_ExData_New\n"));
 
 	exdata = HPDF_Dict_New(mmgr);
 	if (!exdata)
@@ -49,7 +45,6 @@ HPDF_ExData HPDF_3DAnnotExData_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 
 	return exdata;
 }
-
 
 
 HPDF_STATUS HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, HPDF_3DMeasure measure)

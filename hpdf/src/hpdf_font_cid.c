@@ -40,8 +40,6 @@ static HPDF_Font CIDFontType0_New(HPDF_Font parent, HPDF_Xref xref)
 	HPDF_Dict descriptor;
 	HPDF_Dict cid_system_info;
 
-	HPDF_PTRACE((" HPDF_CIDFontType0_New\n"));
-
 	font = HPDF_Dict_New(parent->mmgr);
 	if (!font)
 		return NULL;
@@ -159,8 +157,6 @@ static HPDF_STATUS CIDFontType2_BeforeWrite_Func(HPDF_Dict obj)
 	HPDF_TTFontDefAttr def_attr = (HPDF_TTFontDefAttr) def->attr;
 	HPDF_STATUS ret = 0;
 
-	HPDF_PTRACE((" CIDFontType2_BeforeWrite_Func\n"));
-
 	if (font_attr->map_stream)
 		font_attr->map_stream->filter = obj->filter;
 
@@ -242,8 +238,6 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 	HPDF_Dict cid_system_info;
 
 	HPDF_UINT16 max = 0;
-
-	HPDF_PTRACE((" HPDF_CIDFontType2_New\n"));
 
 	font = HPDF_Dict_New(parent->mmgr);
 	if (!font)
@@ -407,8 +401,6 @@ static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UIN
 	HPDF_INT dw2;
 	HPDF_BYTE b = 0;
 
-	HPDF_PTRACE((" HPDF_Type0Font_TextWidth\n"));
-
 	if (attr->fontdef->type == HPDF_FONTDEF_TYPE_CID)
 	{
 		HPDF_CIDFontDefAttr cid_fontdef_attr = (HPDF_CIDFontDefAttr) attr->fontdef->attr;
@@ -503,8 +495,6 @@ static HPDF_UINT MeasureText(
 	HPDF_Encoder encoder = attr->encoder;
 	HPDF_ParseText_Rec parse_state;
 	HPDF_INT dw2;
-
-	HPDF_PTRACE((" HPDF_Type0Font_MeasureText\n"));
 
 	if (attr->fontdef->type == HPDF_FONTDEF_TYPE_CID)
 	{
@@ -918,8 +908,6 @@ static void OnFree_Func(HPDF_Dict obj)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) obj->attr;
 
-	HPDF_PTRACE((" HPDF_Type0Font_OnFree\n"));
-
 	if (attr)
 		HPDF_FreeMem(obj->mmgr, attr);
 }
@@ -932,8 +920,6 @@ HPDF_Font HPDF_Type0Font_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder 
 	HPDF_CMapEncoderAttr encoder_attr;
 	HPDF_STATUS ret = 0;
 	HPDF_Array descendant_fonts;
-
-	HPDF_PTRACE((" HPDF_Type0Font_New\n"));
 
 	font = HPDF_Dict_New(mmgr);
 	if (!font)

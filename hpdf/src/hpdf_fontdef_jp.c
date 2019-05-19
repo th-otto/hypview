@@ -1556,8 +1556,6 @@ static HPDF_STATUS MS_Gothic_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
 
-	HPDF_PTRACE((" HPDF_FontDef_MS_Gothic_Init\n"));
-
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 769;
@@ -1598,6 +1596,7 @@ static HPDF_STATUS MS_Gothic_Italic_Init(HPDF_FontDef fontdef)
 	return HPDF_CIDFontDef_ChangeStyle(fontdef, HPDF_FALSE, HPDF_TRUE);
 }
 
+
 static HPDF_STATUS MS_Gothic_BoldItalic_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret = MS_Gothic_Init(fontdef);
@@ -1612,8 +1611,6 @@ static HPDF_STATUS MS_Gothic_BoldItalic_Init(HPDF_FontDef fontdef)
 static HPDF_STATUS MS_PGothic_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
-
-	HPDF_PTRACE((" HPDF_FontDef_MS_PGothic_Init\n"));
 
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
@@ -1670,8 +1667,6 @@ static HPDF_STATUS MS_Mincho_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
 
-	HPDF_PTRACE((" HPDF_FontDef_MS_Mincho_Init\n"));
-
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 769;
@@ -1712,6 +1707,7 @@ static HPDF_STATUS MS_Mincho_Italic_Init(HPDF_FontDef fontdef)
 	return HPDF_CIDFontDef_ChangeStyle(fontdef, HPDF_FALSE, HPDF_TRUE);
 }
 
+
 static HPDF_STATUS MS_Mincho_BoldItalic_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret = MS_Mincho_Init(fontdef);
@@ -1726,8 +1722,6 @@ static HPDF_STATUS MS_Mincho_BoldItalic_Init(HPDF_FontDef fontdef)
 static HPDF_STATUS MS_PMincho_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
-
-	HPDF_PTRACE((" HPDF_FontDef_MS_PMincho_Init\n"));
 
 	fontdef->ascent = 859;
 	fontdef->descent = -140;

@@ -113,8 +113,6 @@ void HPDF_Dict_Free(HPDF_Dict dict)
 }
 
 
-
-
 static HPDF_DictElement GetElement(HPDF_Dict dict, const char *key)
 {
 	HPDF_UINT i;
@@ -195,7 +193,7 @@ HPDF_STATUS HPDF_Dict_Write(HPDF_Dict dict, HPDF_Stream stream, HPDF_Encrypt e)
 #ifndef LIBHPDF_HAVE_NOZLIB
 			if (dict->filter & HPDF_STREAM_FILTER_FLATE_DECODE)
 				HPDF_Array_AddName(array, "FlateDecode");
-#endif /* LIBHPDF_HAVE_NOZLIB */
+#endif
 
 			if (dict->filter & HPDF_STREAM_FILTER_DCT_DECODE)
 				HPDF_Array_AddName(array, "DCTDecode");
@@ -220,8 +218,6 @@ HPDF_STATUS HPDF_Dict_Write(HPDF_Dict dict, HPDF_Stream stream, HPDF_Encrypt e)
 
 		if (header->obj_id & HPDF_OTYPE_HIDDEN)
 		{
-			HPDF_PTRACE((" HPDF_Dict_Write obj=%p skipped obj_id=0x%08X\n",
-						 element->value, (unsigned int) header->obj_id));
 		} else
 		{
 			ret = HPDF_Stream_WriteEscapeName(stream, element->key);
@@ -294,6 +290,7 @@ HPDF_STATUS HPDF_Dict_Write(HPDF_Dict dict, HPDF_Stream stream, HPDF_Encrypt e)
 	return ret;
 }
 
+
 HPDF_STATUS HPDF_Dict_Add(HPDF_Dict dict, const char *key, void *obj)
 {
 	HPDF_Obj_Header *header;
@@ -321,8 +318,6 @@ HPDF_STATUS HPDF_Dict_Add(HPDF_Dict dict, const char *key, void *obj)
 
 	if (dict->list->count >= HPDF_LIMIT_MAX_DICT_ELEMENT)
 	{
-		HPDF_PTRACE((" HPDF_Dict_Add exceed limitatin of dict count(%d)\n", HPDF_LIMIT_MAX_DICT_ELEMENT));
-
 		HPDF_Obj_Free(dict->mmgr, obj);
 		return HPDF_SetError(dict->error, HPDF_DICT_COUNT_ERR, 0);
 	}
@@ -447,8 +442,6 @@ void *HPDF_Dict_GetItem(HPDF_Dict dict, const char *key, HPDF_UINT16 obj_class)
 
 		if ((header->obj_class & HPDF_OCLASS_ANY) != obj_class)
 		{
-			HPDF_PTRACE((" HPDF_Dict_GetItem dict=%p key=%s obj_class=0x%08X\n",
-						 dict, key, (unsigned int) header->obj_class));
 			HPDF_SetError(dict->error, HPDF_DICT_ITEM_UNEXPECTED_TYPE, 0);
 
 			return NULL;
@@ -459,6 +452,7 @@ void *HPDF_Dict_GetItem(HPDF_Dict dict, const char *key, HPDF_UINT16 obj_class)
 
 	return NULL;
 }
+
 
 HPDF_STATUS HPDF_Dict_RemoveElement(HPDF_Dict dict, const char *key)
 {
@@ -481,6 +475,7 @@ HPDF_STATUS HPDF_Dict_RemoveElement(HPDF_Dict dict, const char *key)
 
 	return HPDF_DICT_ITEM_NOT_FOUND;
 }
+
 
 const char *HPDF_Dict_GetKeyByObj(HPDF_Dict dict, void *obj)
 {

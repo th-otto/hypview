@@ -38,8 +38,9 @@ HPDF_INT HPDF_AToI(const char *s)
 	while (*s)
 	{
 		if (HPDF_IS_WHITE_SPACE(*s))
+		{
 			s++;
-		else
+		} else
 		{
 			if (*s == '-')
 			{
@@ -77,8 +78,9 @@ HPDF_DOUBLE HPDF_AToF(const char *s)
 	while (*s)
 	{
 		if (HPDF_IS_WHITE_SPACE(*s))
+		{
 			s++;
-		else
+		} else
 		{
 			if (*s == '-')
 			{
@@ -343,6 +345,7 @@ HPDF_Point HPDF_ToPoint(HPDF_INT16 x, HPDF_INT16 y)
 	return point;
 }
 
+
 HPDF_Rect HPDF_ToRect(HPDF_REAL left, HPDF_REAL bottom, HPDF_REAL right, HPDF_REAL top)
 {
 	HPDF_Rect rect;
@@ -356,7 +359,7 @@ HPDF_Rect HPDF_ToRect(HPDF_REAL left, HPDF_REAL bottom, HPDF_REAL right, HPDF_RE
 }
 
 
-void HPDF_UInt16Swap(HPDF_UINT16 * value)
+void HPDF_UInt16Swap(HPDF_UINT16 *value)
 {
 	HPDF_BYTE u[2];
 

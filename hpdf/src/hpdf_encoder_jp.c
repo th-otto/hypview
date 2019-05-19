@@ -15993,7 +15993,6 @@ static HPDF_STATUS EUC_V_Init(HPDF_Encoder encoder)
 	return HPDF_OK;
 }
 
-
 /*--------------------------------------------------------------------------*/
 
 HPDF_STATUS HPDF_UseJPEncodings(HPDF_Doc pdf)

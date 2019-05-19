@@ -53,6 +53,7 @@ HPDF_STATUS HPDF_Page_SetLineWidth(HPDF_Page page, HPDF_REAL line_width)
 	return ret;
 }
 
+
 /* J */
 HPDF_STATUS HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
 {
@@ -78,6 +79,7 @@ HPDF_STATUS HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
 	return ret;
 }
 
+
 /* j */
 HPDF_STATUS HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
 {
@@ -102,6 +104,7 @@ HPDF_STATUS HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
 
 	return ret;
 }
+
 
 /* M */
 HPDF_STATUS HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter_limit)
@@ -281,6 +284,7 @@ HPDF_STATUS HPDF_Page_GSave(HPDF_Page page)
 	return ret;
 }
 
+
 /* Q */
 HPDF_STATUS HPDF_Page_GRestore(HPDF_Page page)
 {
@@ -305,6 +309,7 @@ HPDF_STATUS HPDF_Page_GRestore(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* cm */
 HPDF_STATUS HPDF_Page_Concat(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
@@ -385,6 +390,7 @@ HPDF_STATUS HPDF_Page_MoveTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 	return ret;
 }
 
+
 /* l */
 HPDF_STATUS HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
@@ -414,6 +420,7 @@ HPDF_STATUS HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 
 	return ret;
 }
+
 
 /* c */
 HPDF_STATUS HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
@@ -453,6 +460,7 @@ HPDF_STATUS HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_R
 	return ret;
 }
 
+
 /* v */
 HPDF_STATUS HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
 {
@@ -486,6 +494,7 @@ HPDF_STATUS HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_REAL y2, HPDF_
 
 	return ret;
 }
+
 
 /* y */
 HPDF_STATUS HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x3, HPDF_REAL y3)
@@ -521,6 +530,7 @@ HPDF_STATUS HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_
 	return ret;
 }
 
+
 /* h */
 HPDF_STATUS HPDF_Page_ClosePath(HPDF_Page page)
 {
@@ -539,6 +549,7 @@ HPDF_STATUS HPDF_Page_ClosePath(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* re */
 HPDF_STATUS HPDF_Page_Rectangle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height)
@@ -599,6 +610,7 @@ HPDF_STATUS HPDF_Page_Stroke(HPDF_Page page)
 	return ret;
 }
 
+
 /* s */
 HPDF_STATUS HPDF_Page_ClosePathStroke(HPDF_Page page)
 {
@@ -618,6 +630,7 @@ HPDF_STATUS HPDF_Page_ClosePathStroke(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* f */
 HPDF_STATUS HPDF_Page_Fill(HPDF_Page page)
@@ -639,6 +652,7 @@ HPDF_STATUS HPDF_Page_Fill(HPDF_Page page)
 	return ret;
 }
 
+
 /* f* */
 HPDF_STATUS HPDF_Page_Eofill(HPDF_Page page)
 {
@@ -658,6 +672,7 @@ HPDF_STATUS HPDF_Page_Eofill(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* B */
 HPDF_STATUS HPDF_Page_FillStroke(HPDF_Page page)
@@ -679,6 +694,7 @@ HPDF_STATUS HPDF_Page_FillStroke(HPDF_Page page)
 	return ret;
 }
 
+
 /* B* */
 HPDF_STATUS HPDF_Page_EofillStroke(HPDF_Page page)
 {
@@ -697,6 +713,7 @@ HPDF_STATUS HPDF_Page_EofillStroke(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* b */
 HPDF_STATUS HPDF_Page_ClosePathFillStroke(HPDF_Page page)
@@ -718,6 +735,7 @@ HPDF_STATUS HPDF_Page_ClosePathFillStroke(HPDF_Page page)
 	return ret;
 }
 
+
 /* b* */
 HPDF_STATUS HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
 {
@@ -737,6 +755,7 @@ HPDF_STATUS HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* n */
 HPDF_STATUS HPDF_Page_EndPath(HPDF_Page page)
@@ -780,6 +799,7 @@ HPDF_STATUS HPDF_Page_Clip(HPDF_Page page)
 	return ret;
 }
 
+
 /* W* */
 HPDF_STATUS HPDF_Page_Eoclip(HPDF_Page page)
 {
@@ -822,6 +842,7 @@ HPDF_STATUS HPDF_Page_BeginText(HPDF_Page page)
 
 	return ret;
 }
+
 
 /* ET */
 HPDF_STATUS HPDF_Page_EndText(HPDF_Page page)
@@ -870,6 +891,7 @@ HPDF_STATUS HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value)
 	return ret;
 }
 
+
 /* Tw */
 HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 {
@@ -894,6 +916,7 @@ HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 
 	return ret;
 }
+
 
 /* Tz */
 HPDF_STATUS HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value)
@@ -920,6 +943,7 @@ HPDF_STATUS HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value)
 	return ret;
 }
 
+
 /* TL */
 HPDF_STATUS HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value)
 {
@@ -942,8 +966,8 @@ HPDF_STATUS HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value)
 	return ret;
 }
 
-/* Tf */
 
+/* Tf */
 HPDF_STATUS HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font, HPDF_REAL size)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -989,6 +1013,7 @@ HPDF_STATUS HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font, HPDF_REAL s
 	return ret;
 }
 
+
 /* Tr */
 HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMode mode)
 {
@@ -1013,6 +1038,7 @@ HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMod
 
 	return ret;
 }
+
 
 /* Ts */
 HPDF_STATUS HPDF_Page_SetTextRaise(HPDF_Page page, HPDF_REAL value)
@@ -1045,7 +1071,6 @@ HPDF_STATUS HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
 /*--- Text positioning ---------------------------------------------------*/
 
 /* Td */
-
 HPDF_STATUS HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1076,6 +1101,7 @@ HPDF_STATUS HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 
 	return ret;
 }
+
 
 /* TD */
 HPDF_STATUS HPDF_Page_MoveTextPos2(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
@@ -1316,6 +1342,7 @@ HPDF_STATUS HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
 	return ret;
 }
 
+
 /* " */
 HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, HPDF_REAL char_space, const char *text)
 {
@@ -1395,7 +1422,6 @@ HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, H
 /* SCN --not implemented yet */
 
 /* g */
-
 HPDF_STATUS HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -1420,6 +1446,7 @@ HPDF_STATUS HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
 
 	return ret;
 }
+
 
 /* G */
 HPDF_STATUS HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
@@ -1446,6 +1473,7 @@ HPDF_STATUS HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
 
 	return ret;
 }
+
 
 /* rg */
 HPDF_STATUS HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
@@ -1484,6 +1512,7 @@ HPDF_STATUS HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_
 	return ret;
 }
 
+
 /* RG */
 HPDF_STATUS HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
@@ -1520,6 +1549,7 @@ HPDF_STATUS HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPD
 
 	return ret;
 }
+
 
 /* k */
 HPDF_STATUS HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
@@ -1560,6 +1590,7 @@ HPDF_STATUS HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF
 
 	return ret;
 }
+
 
 /* K */
 HPDF_STATUS HPDF_Page_SetCMYKStroke(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
@@ -1678,6 +1709,7 @@ static char *QuarterCircleA(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HP
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
+
 static char *QuarterCircleB(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray)
 {
 	pbuf = HPDF_FToA(pbuf, x + ray * KAPPA, eptr);
@@ -1693,6 +1725,7 @@ static char *QuarterCircleB(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HP
 	pbuf = HPDF_FToA(pbuf, y, eptr);
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
+
 
 static char *QuarterCircleC(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray)
 {
@@ -1710,6 +1743,7 @@ static char *QuarterCircleC(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HP
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
+
 static char *QuarterCircleD(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray)
 {
 	pbuf = HPDF_FToA(pbuf, x - ray * KAPPA, eptr);
@@ -1725,6 +1759,7 @@ static char *QuarterCircleD(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HP
 	pbuf = HPDF_FToA(pbuf, y, eptr);
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
+
 
 HPDF_STATUS HPDF_Page_Circle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray)
 {
@@ -1779,6 +1814,7 @@ static char *QuarterEllipseA(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
+
 static char *QuarterEllipseB(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HPDF_REAL xray, HPDF_REAL yray)
 {
 	pbuf = HPDF_FToA(pbuf, x + xray * KAPPA, eptr);
@@ -1795,6 +1831,7 @@ static char *QuarterEllipseB(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
+
 static char *QuarterEllipseC(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HPDF_REAL xray, HPDF_REAL yray)
 {
 	pbuf = HPDF_FToA(pbuf, x + xray, eptr);
@@ -1810,6 +1847,7 @@ static char *QuarterEllipseC(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	pbuf = HPDF_FToA(pbuf, y - yray, eptr);
 	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
 }
+
 
 static char *QuarterEllipseD(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, HPDF_REAL xray, HPDF_REAL yray)
 {
@@ -1963,7 +2001,6 @@ HPDF_STATUS HPDF_Page_Arc(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ra
 		ang1 = ang1 + 360;
 		ang2 = ang2 + 360;
 	}
-
 
 	for (;;)
 	{
@@ -2433,7 +2470,6 @@ HPDF_STATUS HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HP
 /*
  *  This function is contributed by Finn Arildsen.
  */
-
 HPDF_STATUS HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict * new_stream)
 {
 	/* Call this function to start a new content stream on a page. The
@@ -2485,7 +2521,6 @@ HPDF_STATUS HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict * new_stream)
 /*
  *  This function is contributed by Finn Arildsen.
  */
-
 HPDF_STATUS HPDF_Page_Insert_Shared_Content_Stream(HPDF_Page page, HPDF_Dict shared_stream)
 {
 	/* Call this function to insert a previously (with HPDF_New_Content_Stream) created content stream

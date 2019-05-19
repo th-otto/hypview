@@ -102,6 +102,7 @@ static HPDF_STATUS ReadPngData_Interlaced(HPDF_Dict image, png_structp png_ptr, 
 	return image->error->error_no;
 }
 
+
 static HPDF_STATUS ReadPngData(HPDF_Dict image, png_structp png_ptr, png_infop info_ptr)
 {
 	png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
@@ -298,6 +299,7 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 	return ret;
 }
 
+
 static HPDF_STATUS CreatePallet(HPDF_Dict image, png_structp png_ptr, png_infop info_ptr)
 {
 	HPDF_INT num_pl = 0;
@@ -362,8 +364,6 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 	int bit_depth, color_type;
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
-
-	HPDF_PTRACE((" HPDF_Image_LoadPngImage\n"));
 
 	/* create read_struct. */
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, image->error, PngErrorFunc, PngErrorFunc);
@@ -617,8 +617,6 @@ static HPDF_STATUS PngBeforeWrite(HPDF_Dict obj)
 	HPDF_Stream png_data;
 	HPDF_String s;
 
-	HPDF_PTRACE((" PngBeforeWrite\n"));
-
 	HPDF_MemStream_FreeData(obj->stream);
 
 	s = (HPDF_String) HPDF_Dict_GetItem(obj, "_FILE_NAME", HPDF_OCLASS_STRING);
@@ -651,8 +649,6 @@ static HPDF_STATUS PngBeforeWrite(HPDF_Dict obj)
 
 static HPDF_STATUS PngAfterWrite(HPDF_Dict obj)
 {
-	HPDF_PTRACE((" PngAfterWrite\n"));
-
 	HPDF_MemStream_FreeData(obj->stream);
 
 	return HPDF_OK;
@@ -665,8 +661,6 @@ HPDF_Image HPDF_Image_LoadPngImage(HPDF_MMgr mmgr, HPDF_Stream png_data, HPDF_Xr
 	HPDF_Dict image;
 	png_byte header[HPDF_PNG_BYTES_TO_CHECK];
 	HPDF_UINT len = HPDF_PNG_BYTES_TO_CHECK;
-
-	HPDF_PTRACE((" HPDF_Image_LoadPngImage\n"));
 
 	memset(header, 0x00, HPDF_PNG_BYTES_TO_CHECK);
 	ret = HPDF_Stream_Read(png_data, header, &len);

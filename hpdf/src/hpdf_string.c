@@ -29,8 +29,6 @@ HPDF_String HPDF_String_New(HPDF_MMgr mmgr, const char *value, HPDF_Encoder enco
 {
 	HPDF_String obj;
 
-	HPDF_PTRACE((" HPDF_String_New\n"));
-
 	obj = (HPDF_String) HPDF_GetMem(mmgr, sizeof(HPDF_String_Rec));
 	if (obj)
 	{
@@ -59,8 +57,6 @@ HPDF_STATUS HPDF_String_SetValue(HPDF_String obj, const char *value)
 	HPDF_UINT len;
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_String_SetValue\n"));
-
 	if (obj->value)
 	{
 		HPDF_FreeMem(obj->mmgr, obj->value);
@@ -82,12 +78,11 @@ HPDF_STATUS HPDF_String_SetValue(HPDF_String obj, const char *value)
 	return ret;
 }
 
+
 void HPDF_String_Free(HPDF_String obj)
 {
 	if (!obj)
 		return;
-
-	HPDF_PTRACE((" HPDF_String_Free\n"));
 
 	HPDF_FreeMem(obj->mmgr, obj->value);
 	HPDF_FreeMem(obj->mmgr, obj);
@@ -102,8 +97,6 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 	 *  When encoder is not NULL, text is changed to unicode using encoder,
 	 *  and it outputs by HPDF_write_binary method.
 	 */
-
-	HPDF_PTRACE((" HPDF_String_Write\n"));
 
 	if (e)
 		HPDF_Encrypt_Reset(e);
@@ -121,7 +114,7 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 			return HPDF_Stream_WriteChar(stream, '>');
 		} else
 		{
-			return HPDF_Stream_WriteEscapeText(stream, (char *) obj->value);
+			return HPDF_Stream_WriteEscapeText(stream, (const char *) obj->value);
 		}
 	} else
 	{
@@ -145,8 +138,7 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 		{
 			HPDF_BYTE b = src[i];
 			HPDF_UNICODE tmp_unicode;
-			HPDF_ByteType btype = HPDF_Encoder_ByteType(obj->encoder,
-														&parse_state);
+			HPDF_ByteType btype = HPDF_Encoder_ByteType(obj->encoder, &parse_state);
 
 			if (tmp_len >= HPDF_TEXT_DEFAULT_LEN - 1)
 			{

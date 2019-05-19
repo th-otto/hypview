@@ -30,8 +30,6 @@ static HPDF_STATUS OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 	char *pbuf = buf;
 	char *eptr = buf + 127;
 
-	HPDF_PTRACE((" HPDF_Font_OnWrite\n"));
-
 	/* Widths entry */
 	if ((ret = HPDF_Stream_WriteEscapeName(stream, "Widths")) != HPDF_OK)
 		return ret;
@@ -64,14 +62,11 @@ static HPDF_STATUS OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 }
 
 
-
 static HPDF_STATUS CreateDescriptor(HPDF_Font font)
 {
 	HPDF_FontAttr font_attr = (HPDF_FontAttr) font->attr;
 	HPDF_FontDef def = font_attr->fontdef;
 	HPDF_TTFontDefAttr def_attr = (HPDF_TTFontDefAttr) def->attr;
-
-	HPDF_PTRACE((" HPDF_TTFont_CreateDescriptor\n"));
 
 	if (!font_attr->fontdef->descriptor)
 	{
@@ -132,8 +127,6 @@ static HPDF_STATUS CreateDescriptor(HPDF_Font font)
 
 static HPDF_STATUS BeforeWrite(HPDF_Dict obj)
 {
-	HPDF_PTRACE((" HPDF_TTFont_BeforeWrite\n"));
-
 	return CreateDescriptor(obj);
 }
 
@@ -141,8 +134,6 @@ static HPDF_STATUS BeforeWrite(HPDF_Dict obj)
 static void OnFree(HPDF_Dict obj)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) obj->attr;
-
-	HPDF_PTRACE((" HPDF_TTFont_OnFree\n"));
 
 	if (attr)
 	{
@@ -183,8 +174,6 @@ static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UIN
 	HPDF_TextWidth ret = { 0, 0, 0, 0 };
 	HPDF_UINT i;
 	HPDF_BYTE b = 0;
-
-	HPDF_PTRACE((" HPDF_TTFont_TextWidth\n"));
 
 	if (attr->widths)
 	{
@@ -230,8 +219,6 @@ static HPDF_UINT MeasureText(
 	HPDF_UINT tmp_len = 0;
 	HPDF_UINT i;
 
-	HPDF_PTRACE((" HPDF_TTFont_MeasureText\n"));
-
 	for (i = 0; i < len; i++)
 	{
 		HPDF_BYTE b = text[i];
@@ -276,8 +263,6 @@ HPDF_Font HPDF_TTFont_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder enc
 	HPDF_TTFontDefAttr fontdef_attr;
 	HPDF_BasicEncoderAttr encoder_attr;
 	HPDF_STATUS ret = 0;
-
-	HPDF_PTRACE((" HPDF_TTFont_New\n"));
 
 	font = HPDF_Dict_New(mmgr);
 	if (!font)

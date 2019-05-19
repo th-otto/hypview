@@ -62,6 +62,7 @@ HPDF_STATUS HPDF_Name_SetValue(HPDF_Name obj, const char *value)
 	return HPDF_OK;
 }
 
+
 const char *HPDF_Name_GetValue(HPDF_Name obj)
 {
 	return (const char *) obj->value;

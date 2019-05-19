@@ -156,8 +156,6 @@ static HPDF_STATUS MingLiU_Init(HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
 
-	HPDF_PTRACE((" HPDF_FontDef_MingLiU_Init\n"));
-
 	fontdef->ascent = 800;
 	fontdef->descent = -199;
 	fontdef->cap_height = 769;
@@ -197,6 +195,7 @@ static HPDF_STATUS MingLiU_Italic_Init(HPDF_FontDef fontdef)
 
 	return HPDF_CIDFontDef_ChangeStyle(fontdef, HPDF_FALSE, HPDF_TRUE);
 }
+
 
 static HPDF_STATUS MingLiU_BoldItalic_Init(HPDF_FontDef fontdef)
 {

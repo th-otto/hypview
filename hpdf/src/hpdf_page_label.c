@@ -19,11 +19,10 @@
 #include "hpdf_utils.h"
 #include "hpdf_page_label.h"
 
+
 HPDF_Dict HPDF_PageLabel_New(HPDF_Doc pdf, HPDF_PageNumStyle style, HPDF_INT first_page, const char *prefix)
 {
 	HPDF_Dict obj = HPDF_Dict_New(pdf->mmgr);
-
-	HPDF_PTRACE((" HPDF_PageLabel_New\n"));
 
 	if (!obj)
 		return NULL;

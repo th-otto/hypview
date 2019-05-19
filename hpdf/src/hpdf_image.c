@@ -39,8 +39,6 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 	HPDF_STATUS ret;
 	HPDF_Array array;
 
-	HPDF_PTRACE((" HPDF_Image_LoadJpegHeader\n"));
-
 	len = 2;
 	if (HPDF_Stream_Read(stream, &tag, &len) != HPDF_OK)
 		return HPDF_Error_GetCode(stream->error);
@@ -65,8 +63,6 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 			return HPDF_Error_GetCode(stream->error);
 
 		HPDF_UInt16Swap(&size);
-
-		HPDF_PTRACE(("tag=%04X size=%u\n", tag, size));
 
 		if (tag == 0xFFC0 || tag == 0xFFC1 || tag == 0xFFC2 || tag == 0xFFC9)
 		{
@@ -163,8 +159,6 @@ HPDF_Image HPDF_Image_LoadJpegImage(HPDF_MMgr mmgr, HPDF_Stream jpeg_data, HPDF_
 	HPDF_Dict image;
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_Image_LoadJpegImage\n"));
-
 	image = HPDF_DictStream_New(mmgr, xref);
 	if (!image)
 		return NULL;
@@ -214,12 +208,11 @@ HPDF_Image HPDF_Image_LoadJpegImage(HPDF_MMgr mmgr, HPDF_Stream jpeg_data, HPDF_
 	return image;
 }
 
+
 HPDF_Image HPDF_Image_LoadJpegImageFromMem(HPDF_MMgr mmgr, const HPDF_BYTE * buf, HPDF_UINT size, HPDF_Xref xref)
 {
 	HPDF_Stream jpeg_data;
 	HPDF_Image image;
-
-	HPDF_PTRACE((" HPDF_Image_LoadJpegImageFromMem\n"));
 
 	jpeg_data = HPDF_MemStream_New(mmgr, size);
 	if (!HPDF_Stream_Validate(jpeg_data))
@@ -254,8 +247,6 @@ HPDF_Image HPDF_Image_LoadRawImage(
 	HPDF_Dict image;
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_UINT size;
-
-	HPDF_PTRACE((" HPDF_Image_LoadRawImage\n"));
 
 	if (color_space != HPDF_CS_DEVICE_GRAY && color_space != HPDF_CS_DEVICE_RGB && color_space != HPDF_CS_DEVICE_CMYK)
 	{
@@ -325,8 +316,6 @@ HPDF_Image HPDF_Image_LoadRawImageFromMem(
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_UINT size = 0;
 
-	HPDF_PTRACE((" HPDF_Image_LoadRawImageFromMem\n"));
-
 	if (color_space != HPDF_CS_DEVICE_GRAY && color_space != HPDF_CS_DEVICE_RGB && color_space != HPDF_CS_DEVICE_CMYK)
 	{
 		HPDF_SetError(mmgr->error, HPDF_INVALID_COLOR_SPACE, 0);
@@ -392,8 +381,6 @@ HPDF_BOOL HPDF_Image_Validate(HPDF_Image image)
 {
 	HPDF_Name subtype;
 
-	HPDF_PTRACE((" HPDF_Image_Validate\n"));
-
 	if (!image)
 		return HPDF_FALSE;
 
@@ -420,8 +407,6 @@ HPDF_Point HPDF_Image_GetSize(HPDF_Image image)
 	HPDF_Number height;
 	HPDF_Point ret = { 0, 0 };
 
-	HPDF_PTRACE((" HPDF_Image_GetSize\n"));
-
 	if (!HPDF_Image_Validate(image))
 		return ret;
 
@@ -446,8 +431,6 @@ HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point * size)
 	size->x = 0;
 	size->y = 0;
 
-	HPDF_PTRACE((" HPDF_Image_GetSize\n"));
-
 	if (!HPDF_Image_Validate(image))
 		return HPDF_INVALID_IMAGE;
 
@@ -468,8 +451,6 @@ HPDF_UINT HPDF_Image_GetBitsPerComponent(HPDF_Image image)
 {
 	HPDF_Number n;
 
-	HPDF_PTRACE((" HPDF_Image_GetBitsPerComponent\n"));
-
 	if (!HPDF_Image_Validate(image))
 		return 0;
 
@@ -485,8 +466,6 @@ HPDF_UINT HPDF_Image_GetBitsPerComponent(HPDF_Image image)
 const char * HPDF_Image_GetColorSpace(HPDF_Image image)
 {
 	HPDF_Name n;
-
-	HPDF_PTRACE((" HPDF_Image_GetColorSpace\n"));
 
 	n = (HPDF_Name) HPDF_Dict_GetItem(image, "ColorSpace", HPDF_OCLASS_NAME);
 

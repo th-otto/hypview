@@ -108,6 +108,7 @@ HPDF_GState HPDF_GState_New(HPDF_MMgr mmgr, HPDF_GState current)
 	return gstate;
 }
 
+
 HPDF_GState HPDF_GState_Free(HPDF_MMgr mmgr, HPDF_GState gstate)
 {
 	HPDF_GState current = NULL;

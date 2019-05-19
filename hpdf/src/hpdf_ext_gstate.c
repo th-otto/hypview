@@ -63,8 +63,6 @@ HPDF_Dict HPDF_ExtGState_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 {
 	HPDF_Dict obj = HPDF_Dict_New(mmgr);
 
-	HPDF_PTRACE((" HPDF_ExtGState_New\n"));
-
 	if (!obj)
 		return NULL;
 

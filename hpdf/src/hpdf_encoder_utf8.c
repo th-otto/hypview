@@ -71,15 +71,11 @@ static HPDF_ByteType UTF8_Encoder_ByteType_Func(HPDF_Encoder encoder, HPDF_Parse
 	if (state->index == 0)
 	{
 		/* First byte, initialize. */
-		HPDF_PTRACE((" UTF8_Encoder_ByteType_Func - Initialize: (%u) %s\n", state->len, state->text));
-
 		utf8_attr->current_byte = 0;
 	}
 
 	byte = state->text[state->index];
 	state->index++;
-
-	HPDF_PTRACE((" UTF8_Encoder_ByteType_Func - Byte: %hx\n", byte));
 
 	if (utf8_attr->current_byte == 0)
 	{
@@ -115,6 +111,7 @@ static HPDF_ByteType UTF8_Encoder_ByteType_Func(HPDF_Encoder encoder, HPDF_Parse
 
 	return HPDF_BYTE_TYPE_TRIAL;
 }
+
 
 /*
  * This function is taken from hpdf_encoder_utf8.c, originally submitted
@@ -165,6 +162,7 @@ static HPDF_UNICODE UTF8_Encoder_ToUnicode_Func(HPDF_Encoder encoder, HPDF_UINT1
 	return val;
 }
 
+
 static char *UTF8_Encoder_EncodeText_Func(HPDF_Encoder encoder, const char *text, HPDF_UINT len, HPDF_UINT * length)
 {
 	char *result = (char *) malloc(len * 2);
@@ -193,6 +191,7 @@ static char *UTF8_Encoder_EncodeText_Func(HPDF_Encoder encoder, const char *text
 
 	return result;
 }
+
 
 static HPDF_STATUS UTF8_Init(HPDF_Encoder encoder)
 {

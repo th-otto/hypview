@@ -28,8 +28,6 @@ HPDF_Xref HPDF_Xref_New(HPDF_MMgr mmgr, HPDF_UINT32 offset)
 	HPDF_Xref xref;
 	HPDF_XrefEntry new_entry;
 
-	HPDF_PTRACE((" HPDF_Xref_New\n"));
-
 	xref = (HPDF_Xref) HPDF_GetMem(mmgr, sizeof(HPDF_Xref_Rec));
 	if (!xref)
 		return NULL;
@@ -73,7 +71,6 @@ HPDF_Xref HPDF_Xref_New(HPDF_MMgr mmgr, HPDF_UINT32 offset)
 	return xref;
 
   Fail:
-	HPDF_PTRACE((" HPDF_Xref_New failed\n"));
 	HPDF_Xref_Free(xref);
 	return NULL;
 }
@@ -84,8 +81,6 @@ void HPDF_Xref_Free(HPDF_Xref xref)
 	HPDF_UINT i;
 	HPDF_XrefEntry entry;
 	HPDF_Xref tmp_xref;
-
-	HPDF_PTRACE((" HPDF_Xref_Free\n"));
 
 	/* delete xref entries. where prev element is not NULL,
 	 * delete all xref entries recursively.
@@ -121,8 +116,6 @@ HPDF_STATUS HPDF_Xref_Add(HPDF_Xref xref, void *obj)
 {
 	HPDF_XrefEntry entry;
 	HPDF_Obj_Header *header;
-
-	HPDF_PTRACE((" HPDF_Xref_Add\n"));
 
 	if (!obj)
 	{
@@ -174,8 +167,6 @@ HPDF_STATUS HPDF_Xref_Add(HPDF_Xref xref, void *obj)
 
 HPDF_XrefEntry HPDF_Xref_GetEntry(HPDF_Xref xref, HPDF_UINT index)
 {
-	HPDF_PTRACE((" HPDF_Xref_GetEntry\n"));
-
 	return (HPDF_XrefEntry) HPDF_List_ItemAt(xref->entries, index);
 }
 
@@ -183,8 +174,6 @@ HPDF_XrefEntry HPDF_Xref_GetEntry(HPDF_Xref xref, HPDF_UINT index)
 HPDF_XrefEntry HPDF_Xref_GetEntryByObjectId(HPDF_Xref xref, HPDF_UINT obj_id)
 {
 	HPDF_Xref tmp_xref = xref;
-
-	HPDF_PTRACE((" HPDF_Xref_GetEntryByObjectId\n"));
 
 	while (tmp_xref)
 	{
@@ -227,8 +216,6 @@ HPDF_STATUS HPDF_Xref_WriteToStream(HPDF_Xref xref, HPDF_Stream stream, HPDF_Enc
 	HPDF_Xref tmp_xref = xref;
 
 	/* write each objects of xref to the specified stream */
-
-	HPDF_PTRACE((" HPDF_Xref_WriteToStream\n"));
 
 	while (tmp_xref)
 	{
@@ -316,8 +303,6 @@ static HPDF_STATUS WriteTrailer(HPDF_Xref xref, HPDF_Stream stream)
 {
 	HPDF_UINT max_obj_id = xref->entries->count + xref->start_offset;
 	HPDF_STATUS ret;
-
-	HPDF_PTRACE((" WriteTrailer\n"));
 
 	if ((ret = HPDF_Dict_AddNumber(xref->trailer, "Size", max_obj_id)) != HPDF_OK)
 		return ret;

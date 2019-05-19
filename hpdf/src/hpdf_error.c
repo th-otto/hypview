@@ -56,8 +56,6 @@ void HPDF_CopyError(HPDF_Error dst, HPDF_Error src)
 
 HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS detail_no)
 {
-	HPDF_PTRACE((" HPDF_SetError: error_no=0x%04X detail_no=0x%04X\n", (unsigned int) error_no, (unsigned int) detail_no));
-
 	error->error_no = error_no;
 	error->detail_no = detail_no;
 
@@ -67,9 +65,6 @@ HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS de
 
 HPDF_STATUS HPDF_CheckError(HPDF_Error error)
 {
-	HPDF_PTRACE((" HPDF_CheckError: error_no=0x%04X detail_no=0x%04X\n",
-				 (unsigned int) error->error_no, (unsigned int) error->detail_no));
-
 	if (error->error_no != HPDF_OK && error->error_fn)
 		error->error_fn(error->error_no, error->detail_no, error->user_data);
 

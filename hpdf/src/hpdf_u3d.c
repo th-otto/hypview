@@ -248,6 +248,7 @@ HPDF_Dict HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
 	return view;
 }
 
+
 HPDF_STATUS HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
 {
 	HPDF_Array views = NULL;
@@ -315,6 +316,7 @@ HPDF_STATUS HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name)
 	return ret;
 }
 
+
 HPDF_STATUS HPDF_3DView_AddNode(HPDF_Dict view, HPDF_Dict node)
 {
 	HPDF_Array nodes = NULL;
@@ -352,6 +354,7 @@ HPDF_STATUS HPDF_3DView_AddNode(HPDF_Dict view, HPDF_Dict node)
 	return ret;
 }
 
+
 HPDF_Dict HPDF_3DView_CreateNode(HPDF_Dict view, const char *name)
 {
 	HPDF_Dict node;
@@ -380,6 +383,7 @@ HPDF_Dict HPDF_3DView_CreateNode(HPDF_Dict view, const char *name)
 	return node;
 }
 
+
 HPDF_STATUS HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL opacity)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -393,6 +397,7 @@ HPDF_STATUS HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL opacity)
 	return ret;
 }
 
+
 HPDF_STATUS HPDF_3DViewNode_SetVisibility(HPDF_Dict node, HPDF_BOOL visible)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -405,6 +410,7 @@ HPDF_STATUS HPDF_3DViewNode_SetVisibility(HPDF_Dict node, HPDF_BOOL visible)
 	ret = HPDF_Dict_AddBoolean(node, "V", visible);
 	return ret;
 }
+
 
 HPDF_STATUS HPDF_3DViewNode_SetMatrix(HPDF_Dict node, HPDF_3DMatrix Mat3D)
 {
@@ -444,6 +450,7 @@ HPDF_STATUS HPDF_3DViewNode_SetMatrix(HPDF_Dict node, HPDF_3DMatrix Mat3D)
 
 	return ret;
 }
+
 
 HPDF_STATUS HPDF_3DView_SetLighting(HPDF_Dict view, const char *scheme)
 {
@@ -499,6 +506,7 @@ HPDF_STATUS HPDF_3DView_SetLighting(HPDF_Dict view, const char *scheme)
 	}
 	return ret;
 }
+
 
 HPDF_STATUS HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
@@ -575,6 +583,7 @@ HPDF_STATUS HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REAL r, HPDF_REA
 	return ret;
 }
 
+
 HPDF_STATUS HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HPDF_REAL fov)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -620,6 +629,7 @@ HPDF_STATUS HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HPDF_REAL fov)
 	}
 	return ret;
 }
+
 
 HPDF_STATUS HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPDF_REAL mag)
 {
@@ -1051,6 +1061,7 @@ HPDF_STATUS HPDF_3DView_SetCrossSectionOn(
 	return ret;
 }
 
+
 HPDF_STATUS HPDF_3DView_SetCrossSectionOff(HPDF_Dict view)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -1074,6 +1085,7 @@ HPDF_STATUS HPDF_3DView_SetCrossSectionOff(HPDF_Dict view)
 
 	return ret;
 }
+
 
 HPDF_Dict HPDF_3DView_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_U3D u3d, const char *name)
 {

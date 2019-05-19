@@ -36243,7 +36243,6 @@ static HPDF_STATUS GB_EUC_V_Init(HPDF_Encoder encoder)
 	return HPDF_OK;
 }
 
-
 /*--------------------------------------------------------------------------*/
 
 HPDF_STATUS HPDF_UseCNSEncodings(HPDF_Doc pdf)

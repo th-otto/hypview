@@ -27845,7 +27845,6 @@ static HPDF_STATUS KSC_EUC_V_Init(HPDF_Encoder encoder)
 	return HPDF_OK;
 }
 
-
 /*--------------------------------------------------------------------------*/
 
 HPDF_STATUS HPDF_UseKREncodings(HPDF_Doc pdf)

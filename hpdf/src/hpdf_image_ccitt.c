@@ -237,12 +237,14 @@ static HPDF_STATUS HPDF_Fax3PreEncode(struct _HPDF_CCITT_Data *pData /*, tsample
 	return HPDF_OK;
 }
 
+
 static HPDF_STATUS HPDF_CCITT_AppendToStream(HPDF_Stream dst, tidata_t tif_rawdata, tsize_t tif_rawcc)
 {
 	if (HPDF_Stream_Write(dst, tif_rawdata, tif_rawcc) != HPDF_OK)
 		return 1;
 	return HPDF_OK;
 }
+
 
 /*
  * Internal version of TIFFFlushData that can be
@@ -264,6 +266,7 @@ static HPDF_STATUS HPDF_CCITT_FlushData(struct _HPDF_CCITT_Data *pData)
 	}
 	return HPDF_OK;
 }
+
 
 #define	HPDF_Fax3FlushBits(tif, sp) {				\
 	if ((tif)->tif_rawcc >= (tif)->tif_rawdatasize)		\
@@ -309,6 +312,7 @@ static void HPDF_Fax3PutBits(struct _HPDF_CCITT_Data *pData, unsigned int bits, 
 	sp->data = data;
 	sp->bit = bit;
 }
+
 
 /*
  * Write a code to the output stream.
@@ -472,8 +476,8 @@ static /*inline */ int32 find0span(const unsigned char *bp, int32 bs, int32 be)
 	return (span);
 }
 
-static /*inline */ int32
-find1span(const unsigned char *bp, int32 bs, int32 be)
+
+static int32 find1span(const unsigned char *bp, int32 bs, int32 be)
 {
 	int32 bits = be - bs;
 	int32 n, span;
@@ -556,16 +560,15 @@ find1span(const unsigned char *bp, int32 bs, int32 be)
 	(_bs < _be ? finddiff(_cp,_bs,_be,_color) : _be)
 
 
-/*
-void 
-HPDF_Fax3PostEncode(struct _HPDF_CCITT_Data *pData)
+#if 0
+void HPDF_Fax3PostEncode(struct _HPDF_CCITT_Data *pData)
 {
 	HPDF_Fax3CodecState* sp = EncoderState(pData);
 
 	if (sp->bit != 8)
 		HPDF_Fax3FlushBits(pData, sp);
 }
-*/
+#endif
 
 static const tableentry horizcode = { 3, 0x1, 0 };	/* 001 */
 static const tableentry passcode = { 4, 0x1, 0 };	/* 0001 */
@@ -580,12 +583,12 @@ static const tableentry vcodes[7] = {
 	{7, 0x02, 0}						/* 0000 010 */
 };
 
+
 /*
  * 2d-encode a row of pixels.  Consult the CCITT
  * documentation for the algorithm.
  */
-static HPDF_STATUS
-HPDF_Fax3Encode2DRow(struct _HPDF_CCITT_Data *pData, const unsigned char *bp, unsigned char *rp, uint32 bits)
+static HPDF_STATUS HPDF_Fax3Encode2DRow(struct _HPDF_CCITT_Data *pData, const unsigned char *bp, unsigned char *rp, uint32 bits)
 {
 #define	PIXEL(buf,ix)	((((buf)[(ix)>>3]) >> (7-((ix)&7))) & 1)
 	uint32 a0 = 0;
@@ -634,6 +637,7 @@ HPDF_Fax3Encode2DRow(struct _HPDF_CCITT_Data *pData, const unsigned char *bp, un
 #undef PIXEL
 }
 
+
 /*
  * Encode the requested amount of data.
  */
@@ -653,6 +657,7 @@ HPDF_Fax4Encode(struct _HPDF_CCITT_Data *pData, const tidataval_t * bp, tsize_t 
 	}
 	return HPDF_OK;
 }
+
 
 static void HPDF_Fax4PostEncode(struct _HPDF_CCITT_Data *pData)
 {
@@ -750,8 +755,6 @@ HPDF_Image HPDF_Image_Load1BitImageFromMem(
 
 	/* HPDF_UINT size; */
 
-	HPDF_PTRACE((" HPDF_Image_Load1BitImage\n"));
-
 	image = HPDF_DictStream_New(mmgr, xref);
 	if (!image)
 		return NULL;
@@ -800,8 +803,6 @@ HPDF_Image HPDF_Image_LoadRaw1BitImageFromMem(
 	HPDF_BOOL top_is_first)
 {
 	HPDF_Image image;
-
-	HPDF_PTRACE((" HPDF_Image_Load1BitImageFromMem\n"));
 
 	if (!HPDF_HasDoc(pdf))
 		return NULL;

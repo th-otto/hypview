@@ -26,8 +26,6 @@ static HPDF_Image LoadPngImageFromStream(HPDF_Doc pdf, HPDF_Stream imagedata, HP
 #ifndef LIBHPDF_HAVE_NOPNGLIB
 	HPDF_Image image;
 
-	HPDF_PTRACE((" HPDF_LoadPngImageFromStream\n"));
-
 	image = HPDF_Image_LoadPngImage(pdf->mmgr, imagedata, pdf->xref, delayed_loading);
 
 	if (image && (pdf->compression_mode & HPDF_COMP_IMAGE))
@@ -48,8 +46,6 @@ HPDF_Image HPDF_LoadPngImageFromMem(HPDF_Doc pdf, const HPDF_BYTE * buffer, HPDF
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;
-
-	HPDF_PTRACE((" HPDF_LoadPngImageFromFile\n"));
 
 	if (!HPDF_HasDoc(pdf))
 	{
@@ -91,8 +87,6 @@ HPDF_Image HPDF_LoadPngImageFromFile(HPDF_Doc pdf, const char *filename)
 	HPDF_Stream imagedata;
 	HPDF_Image image;
 
-	HPDF_PTRACE((" HPDF_LoadPngImageFromFile\n"));
-
 	if (!HPDF_HasDoc(pdf))
 		return NULL;
 
@@ -121,8 +115,6 @@ HPDF_Image HPDF_LoadPngImageFromFile2(HPDF_Doc pdf, const char *filename)
 	HPDF_Stream imagedata;
 	HPDF_Image image;
 	HPDF_String fname;
-
-	HPDF_PTRACE((" HPDF_LoadPngImageFromFile\n"));
 
 	if (!HPDF_HasDoc(pdf))
 		return NULL;
