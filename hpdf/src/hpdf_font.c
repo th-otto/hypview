@@ -20,12 +20,10 @@
 #include "hpdf.h"
 
 
-HPDF_TextWidth HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len)
+HPDF_TextWidth HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
 {
 	HPDF_TextWidth tw = { 0, 0, 0, 0 };
 	HPDF_FontAttr attr;
-
-	HPDF_PTRACE((" HPDF_Font_TextWidth\n"));
 
 	if (!HPDF_Font_Validate(font))
 		return tw;
@@ -52,7 +50,7 @@ HPDF_TextWidth HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_
 
 HPDF_UINT HPDF_Font_MeasureText(
 	HPDF_Font font,
-	const HPDF_BYTE * text,
+	const HPDF_BYTE *text,
 	HPDF_UINT len,
 	HPDF_REAL width,
 	HPDF_REAL font_size,
@@ -62,8 +60,6 @@ HPDF_UINT HPDF_Font_MeasureText(
 	HPDF_REAL *real_width)
 {
 	HPDF_FontAttr attr;
-
-	HPDF_PTRACE((" HPDF_Font_MeasureText\n"));
 
 	if (!HPDF_Font_Validate(font))
 		return 0;
@@ -90,8 +86,6 @@ const char *HPDF_Font_GetFontName(HPDF_Font font)
 {
 	HPDF_FontAttr attr;
 
-	HPDF_PTRACE((" HPDF_Font_GetFontName\n"));
-
 	if (!HPDF_Font_Validate(font))
 		return NULL;
 
@@ -104,8 +98,6 @@ const char *HPDF_Font_GetFontName(HPDF_Font font)
 const char *HPDF_Font_GetEncodingName(HPDF_Font font)
 {
 	HPDF_FontAttr attr;
-
-	HPDF_PTRACE((" HPDF_Font_GetEncodingName\n"));
 
 	if (!HPDF_Font_Validate(font))
 		return NULL;
@@ -120,8 +112,6 @@ HPDF_INT HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code)
 {
 	HPDF_FontAttr attr;
 	HPDF_FontDef fontdef;
-
-	HPDF_PTRACE((" HPDF_Font_GetUnicodeWidth\n"));
 
 	if (!HPDF_Font_Validate(font))
 		return 0;
@@ -138,8 +128,7 @@ HPDF_INT HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code)
 	} else if (fontdef->type == HPDF_FONTDEF_TYPE_CID)
 	{
 		HPDF_CMapEncoderAttr encoder_attr = (HPDF_CMapEncoderAttr) attr->encoder->attr;
-		HPDF_UINT l,
-		 h;
+		HPDF_UINT l, h;
 
 		for (l = 0; l <= 255; l++)
 		{
@@ -155,8 +144,6 @@ HPDF_INT HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code)
 		}
 	}
 
-	HPDF_PTRACE((" HPDF_Font_GetUnicodeWidth not found (0x%04X)\n", code));
-
 	return 0;
 }
 
@@ -165,7 +152,6 @@ HPDF_Box HPDF_Font_GetBBox(HPDF_Font font)
 {
 	HPDF_Box bbox = { 0, 0, 0, 0 };
 
-	HPDF_PTRACE((" HPDF_Font_GetBBox\n"));
 	if (HPDF_Font_Validate(font))
 		return ((HPDF_FontAttr) font->attr)->fontdef->font_bbox;
 
@@ -175,8 +161,6 @@ HPDF_Box HPDF_Font_GetBBox(HPDF_Font font)
 
 HPDF_INT HPDF_Font_GetAscent(HPDF_Font font)
 {
-	HPDF_PTRACE((" HPDF_Font_GetAscent\n"));
-
 	if (HPDF_Font_Validate(font))
 		return ((HPDF_FontAttr) font->attr)->fontdef->ascent;
 
@@ -186,8 +170,6 @@ HPDF_INT HPDF_Font_GetAscent(HPDF_Font font)
 
 HPDF_INT HPDF_Font_GetDescent(HPDF_Font font)
 {
-	HPDF_PTRACE((" HPDF_Font_GetDescent\n"));
-
 	if (HPDF_Font_Validate(font))
 		return ((HPDF_FontAttr) font->attr)->fontdef->descent;
 
@@ -197,8 +179,6 @@ HPDF_INT HPDF_Font_GetDescent(HPDF_Font font)
 
 HPDF_UINT HPDF_Font_GetXHeight(HPDF_Font font)
 {
-	HPDF_PTRACE((" HPDF_Font_GetXHeight\n"));
-
 	if (HPDF_Font_Validate(font))
 		return ((HPDF_FontAttr) font->attr)->fontdef->x_height;
 
@@ -208,8 +188,6 @@ HPDF_UINT HPDF_Font_GetXHeight(HPDF_Font font)
 
 HPDF_UINT HPDF_Font_GetCapHeight(HPDF_Font font)
 {
-	HPDF_PTRACE((" HPDF_Font_GetCapHeight\n"));
-
 	if (HPDF_Font_Validate(font))
 		return ((HPDF_FontAttr) font->attr)->fontdef->cap_height;
 
@@ -219,8 +197,6 @@ HPDF_UINT HPDF_Font_GetCapHeight(HPDF_Font font)
 
 HPDF_BOOL HPDF_Font_Validate(HPDF_Font font)
 {
-	HPDF_PTRACE((" HPDF_Font_Validate\n"));
-
 	if (!font || !font->attr || font->header.obj_class != (HPDF_OSUBCLASS_FONT | HPDF_OCLASS_DICT))
 		return HPDF_FALSE;
 

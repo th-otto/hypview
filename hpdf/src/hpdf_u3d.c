@@ -34,8 +34,6 @@ static HPDF_STATUS Get3DStreamType(HPDF_Stream stream, const char **type)
 	HPDF_BYTE tag[4];
 	HPDF_UINT len;
 
-	HPDF_PTRACE((" HPDF_U3D_Get3DStreamType\n"));
-
 	len = 4;
 	if (HPDF_Stream_Read(stream, tag, &len) != HPDF_OK)
 	{
@@ -67,8 +65,6 @@ static HPDF_U3D HPDF_U3D_LoadU3D(HPDF_MMgr mmgr, HPDF_Stream u3d_data, HPDF_Xref
 {
 	HPDF_Dict u3d;
 	const char *type = NULL;
-
-	HPDF_PTRACE((" HPDF_U3D_LoadU3D\n"));
 
 	u3d = HPDF_DictStream_New(mmgr, xref);
 	if (!u3d)
@@ -139,8 +135,6 @@ HPDF_Image HPDF_LoadU3DFromFile(HPDF_Doc pdf, const char *filename)
 	HPDF_Stream imagedata;
 	HPDF_Image image;
 
-	HPDF_PTRACE((" HPDF_LoadU3DFromFile\n"));
-
 	if (!HPDF_HasDoc(pdf))
 	{
 		return NULL;
@@ -175,8 +169,6 @@ HPDF_Image HPDF_LoadU3DFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_UINT 
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;
-
-	HPDF_PTRACE((" HPDF_LoadU3DFromMem\n"));
 
 	if (!HPDF_HasDoc(pdf))
 	{
@@ -221,8 +213,6 @@ HPDF_Dict HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict view;
 
-	HPDF_PTRACE((" HPDF_Create3DView\n"));
-
 	if (name == NULL || name[0] == '\0')
 	{
 		return NULL;
@@ -263,8 +253,6 @@ HPDF_STATUS HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
 	HPDF_Array views = NULL;
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_Add3DView\n"));
-
 	if (u3d == NULL || view == NULL)
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -303,8 +291,6 @@ HPDF_STATUS HPDF_U3D_AddOnInstanciate(HPDF_U3D u3d, HPDF_JavaScript javascript)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_U3D_AddOnInstanciate\n"));
-
 	if (u3d == NULL || javascript == NULL)
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -320,8 +306,6 @@ HPDF_STATUS HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_U3D_SetDefault3DView\n"));
-
 	if (u3d == NULL || name == NULL || name[0] == '\0')
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -335,8 +319,6 @@ HPDF_STATUS HPDF_3DView_AddNode(HPDF_Dict view, HPDF_Dict node)
 {
 	HPDF_Array nodes = NULL;
 	HPDF_STATUS ret = HPDF_OK;
-
-	HPDF_PTRACE((" HPDF_3DView_AddNode\n"));
 
 	if (view == NULL)
 	{
@@ -375,8 +357,6 @@ HPDF_Dict HPDF_3DView_CreateNode(HPDF_Dict view, const char *name)
 	HPDF_Dict node;
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_3DView_CreateNode\n"));
-
 	node = HPDF_Dict_New(view->mmgr);
 	if (!node)
 	{
@@ -404,8 +384,6 @@ HPDF_STATUS HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL opacity)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_3DViewNode_SetOpacity\n"));
-
 	if (node == NULL)
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -418,8 +396,6 @@ HPDF_STATUS HPDF_3DViewNode_SetOpacity(HPDF_Dict node, HPDF_REAL opacity)
 HPDF_STATUS HPDF_3DViewNode_SetVisibility(HPDF_Dict node, HPDF_BOOL visible)
 {
 	HPDF_STATUS ret = HPDF_OK;
-
-	HPDF_PTRACE((" HPDF_3DViewNode_SetVisibility\n"));
 
 	if (node == NULL)
 	{
@@ -434,8 +410,6 @@ HPDF_STATUS HPDF_3DViewNode_SetMatrix(HPDF_Dict node, HPDF_3DMatrix Mat3D)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array array_m;
-
-	HPDF_PTRACE((" HPDF_3DViewNode_SetMatrix\n"));
 
 	if (node == NULL)
 	{
@@ -478,8 +452,6 @@ HPDF_STATUS HPDF_3DView_SetLighting(HPDF_Dict view, const char *scheme)
 	int i;
 	static const char *const schemes[] =
 		{ "Artwork", "None", "White", "Day", "Night", "Hard", "Primary", "Blue", "Red", "Cube", "CAD", "Headlamp" };
-
-	HPDF_PTRACE((" HPDF_3DView_SetLighting\n"));
 
 	if (view == NULL || scheme == NULL || scheme[0] == '\0')
 	{
@@ -533,8 +505,6 @@ HPDF_STATUS HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REAL r, HPDF_REA
 	HPDF_Array color;
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict background;
-
-	HPDF_PTRACE((" HPDF_3DView_SetBackgroundColor\n"));
 
 	if (view == NULL || r < 0 || r > 1 || g < 0 || g > 1 || b < 0 || b > 1)
 	{
@@ -610,8 +580,6 @@ HPDF_STATUS HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HPDF_REAL fov)
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict projection;
 
-	HPDF_PTRACE((" HPDF_3DView_SetPerspectiveProjection\n"));
-
 	if (view == NULL || fov < 0 || fov > 180)
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -657,8 +625,6 @@ HPDF_STATUS HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPDF_REAL mag)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict projection;
-
-	HPDF_PTRACE((" HPDF_3DView_SetOrthogonalProjection\n"));
 
 	if (view == NULL || mag <= 0)
 	{
@@ -730,8 +696,6 @@ HPDF_STATUS HPDF_3DView_SetCamera(
 
 	HPDF_Array matrix;
 	HPDF_STATUS ret = HPDF_OK;
-
-	HPDF_PTRACE((" HPDF_3DView_SetCamera\n"));
 
 	if (view == NULL)
 	{
@@ -898,8 +862,6 @@ HPDF_STATUS HPDF_3DView_SetCameraByMatrix(HPDF_Dict view, HPDF_3DMatrix Mat3D, H
 	HPDF_Array matrix;
 	HPDF_STATUS ret = HPDF_OK;
 
-	HPDF_PTRACE((" HPDF_3DView_SetCameraByMatrix\n"));
-
 	if (view == NULL)
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -994,8 +956,6 @@ HPDF_STATUS HPDF_3DView_SetCrossSectionOn(
 	HPDF_Array array_b;
 	HPDF_Array array_sa;
 	HPDF_Dict crosssection;
-
-	HPDF_PTRACE((" HPDF_3DView_SetCrossSectionOn\n"));
 
 	if (view == NULL)
 	{
@@ -1096,8 +1056,6 @@ HPDF_STATUS HPDF_3DView_SetCrossSectionOff(HPDF_Dict view)
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array array_sa;
 
-	HPDF_PTRACE((" HPDF_3DView_SetCrossSectionOff\n"));
-
 	if (view == NULL)
 	{
 		return HPDF_INVALID_U3D_DATA;
@@ -1121,8 +1079,6 @@ HPDF_Dict HPDF_3DView_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_U3D u3d, const ch
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict view;
-
-	HPDF_PTRACE((" HPDF_3DView_New\n"));
 
 	if (name == NULL || name[0] == '\0')
 	{
@@ -1203,8 +1159,6 @@ HPDF_JavaScript HPDF_CreateJavaScript(HPDF_Doc pdf, const char *code)
 	HPDF_JavaScript javaScript;
 	HPDF_UINT len;
 
-	HPDF_PTRACE((" HPDF_CreateJavaScript\n"));
-
 	javaScript = (HPDF_JavaScript) HPDF_DictStream_New(pdf->mmgr, pdf->xref);
 	if (!javaScript)
 	{
@@ -1214,7 +1168,7 @@ HPDF_JavaScript HPDF_CreateJavaScript(HPDF_Doc pdf, const char *code)
 	javaScript->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
 	len = (HPDF_UINT) strlen(code);
-	if (HPDF_Stream_Write(javaScript->stream, (const HPDF_BYTE *) code, len) != HPDF_OK)
+	if (HPDF_Stream_Write(javaScript->stream, code, len) != HPDF_OK)
 	{
 		HPDF_Dict_Free(javaScript);
 		return NULL;
@@ -1228,8 +1182,6 @@ HPDF_JavaScript HPDF_LoadJSFromFile(HPDF_Doc pdf, const char *filename)
 {
 	HPDF_Stream js_data;
 	HPDF_JavaScript js = NULL;
-
-	HPDF_PTRACE((" HPDF_LoadJSFromFile\n"));
 
 	if (!HPDF_HasDoc(pdf))
 	{

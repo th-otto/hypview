@@ -208,7 +208,9 @@ HPDF_STATUS HPDF_Array_Add(HPDF_Array array, void *obj)
 		proxy->header.obj_id |= HPDF_OTYPE_DIRECT;
 		obj = proxy;
 	} else
+	{
 		header->obj_id |= HPDF_OTYPE_DIRECT;
+	}
 
 	ret = HPDF_List_Add(array->list, obj);
 	if (ret != HPDF_OK)
@@ -271,7 +273,9 @@ HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
 		proxy->header.obj_id |= HPDF_OTYPE_DIRECT;
 		obj = proxy;
 	} else
+	{
 		header->obj_id |= HPDF_OTYPE_DIRECT;
+	}
 
 	/* get the target-object from object-list
 	 * consider that the pointer contained in list may be proxy-object.
@@ -299,7 +303,7 @@ HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
 
 	HPDF_Obj_Free(array->mmgr, obj);
 
-	return HPDF_ITEM_NOT_FOUND;
+	return HPDF_ARRAY_ITEM_NOT_FOUND;
 }
 
 

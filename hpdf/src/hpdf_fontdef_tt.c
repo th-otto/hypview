@@ -178,12 +178,12 @@ static void INT16Swap(HPDF_INT16 * value)
 }
 
 
-static HPDF_STATUS GetUINT32(HPDF_Stream stream, HPDF_UINT32 * value)
+static HPDF_STATUS GetUINT32(HPDF_Stream stream, HPDF_UINT32 *value)
 {
 	HPDF_STATUS ret;
 	HPDF_UINT size = sizeof(HPDF_UINT32);
 
-	ret = HPDF_Stream_Read(stream, (HPDF_BYTE *) value, &size);
+	ret = HPDF_Stream_Read(stream, value, &size);
 	if (ret != HPDF_OK)
 	{
 		*value = 0;
@@ -201,7 +201,7 @@ static HPDF_STATUS GetUINT16(HPDF_Stream stream, HPDF_UINT16 * value)
 	HPDF_STATUS ret;
 	HPDF_UINT size = sizeof(HPDF_UINT16);
 
-	ret = HPDF_Stream_Read(stream, (HPDF_BYTE *) value, &size);
+	ret = HPDF_Stream_Read(stream, value, &size);
 	if (ret != HPDF_OK)
 	{
 		*value = 0;
@@ -219,7 +219,7 @@ static HPDF_STATUS GetINT16(HPDF_Stream stream, HPDF_INT16 * value)
 	HPDF_STATUS ret;
 	HPDF_UINT size = sizeof(HPDF_INT16);
 
-	ret = HPDF_Stream_Read(stream, (HPDF_BYTE *) value, &size);
+	ret = HPDF_Stream_Read(stream, value, &size);
 	if (ret != HPDF_OK)
 	{
 		*value = 0;
@@ -238,7 +238,7 @@ static HPDF_STATUS WriteUINT32(HPDF_Stream stream, HPDF_UINT32 value)
 
 	UINT32Swap(&tmp);
 
-	ret = HPDF_Stream_Write(stream, (HPDF_BYTE *) & tmp, sizeof(tmp));
+	ret = HPDF_Stream_Write(stream, &tmp, sizeof(tmp));
 	if (ret != HPDF_OK)
 		return ret;
 
@@ -253,7 +253,7 @@ static HPDF_STATUS WriteUINT16(HPDF_Stream stream, HPDF_UINT16 value)
 
 	UINT16Swap(&tmp);
 
-	ret = HPDF_Stream_Write(stream, (HPDF_BYTE *) & tmp, sizeof(tmp));
+	ret = HPDF_Stream_Write(stream, &tmp, sizeof(tmp));
 	if (ret != HPDF_OK)
 		return ret;
 
@@ -268,7 +268,7 @@ static HPDF_STATUS WriteINT16(HPDF_Stream stream, HPDF_INT16 value)
 
 	INT16Swap(&tmp);
 
-	ret = HPDF_Stream_Write(stream, (HPDF_BYTE *) & tmp, sizeof(tmp));
+	ret = HPDF_Stream_Write(stream, &tmp, sizeof(tmp));
 	if (ret != HPDF_OK)
 		return ret;
 
@@ -306,7 +306,7 @@ static HPDF_STATUS LoadTTFTable(HPDF_FontDef fontdef)
 	{
 		HPDF_UINT siz = 4;
 
-		ret += HPDF_Stream_Read(attr->stream, (HPDF_BYTE *) tbl->tag, &siz);
+		ret += HPDF_Stream_Read(attr->stream, tbl->tag, &siz);
 		ret += GetUINT32(attr->stream, &tbl->check_sum);
 		ret += GetUINT32(attr->stream, &tbl->offset);
 		ret += GetUINT32(attr->stream, &tbl->length);
@@ -369,7 +369,7 @@ static HPDF_STATUS ParseHead(HPDF_FontDef fontdef)
 		return ret;
 
 	siz = 4;
-	ret += HPDF_Stream_Read(attr->stream, (HPDF_BYTE *) & attr->header.version_number, &siz);
+	ret += HPDF_Stream_Read(attr->stream, &attr->header.version_number, &siz);
 	ret += GetUINT32(attr->stream, &attr->header.font_revision);
 	ret += GetUINT32(attr->stream, &attr->header.check_sum_adjustment);
 	ret += GetUINT32(attr->stream, &attr->header.magic_number);
@@ -559,7 +559,9 @@ static HPDF_STATUS ParseCMAP_format4(HPDF_FontDef fontdef, HPDF_UINT32 offset)
 			if ((ret = GetUINT16(attr->stream, pglyph_id_array++)) != HPDF_OK)
 				return ret;
 	} else
+	{
 		attr->cmap.glyph_id_array = NULL;
+	}
 
 #ifdef LIBHPDF_DEBUG
 	/* print all elements of cmap table */
@@ -983,7 +985,7 @@ static HPDF_STATUS ParseName(HPDF_FontDef fontdef)
 		if ((ret = HPDF_Stream_Seek(attr->stream, offset_id1, HPDF_SEEK_SET)) != HPDF_OK)
 			return ret;
 
-		if ((ret = HPDF_Stream_Read(attr->stream, (HPDF_BYTE *) attr->base_font, &len_id1)) != HPDF_OK)
+		if ((ret = HPDF_Stream_Read(attr->stream, attr->base_font, &len_id1)) != HPDF_OK)
 			return ret;
 	} else
 	{
@@ -998,7 +1000,7 @@ static HPDF_STATUS ParseName(HPDF_FontDef fontdef)
 		if ((ret = HPDF_Stream_Seek(attr->stream, offset_id2, HPDF_SEEK_SET)) != HPDF_OK)
 			return ret;
 
-		if ((ret = HPDF_Stream_Read(attr->stream, (HPDF_BYTE *) tmp, &len_id2)) != HPDF_OK)
+		if ((ret = HPDF_Stream_Read(attr->stream, tmp, &len_id2)) != HPDF_OK)
 			return ret;
 	} else
 	{
@@ -1745,11 +1747,11 @@ static HPDF_STATUS RecreateName(HPDF_FontDef fontdef, HPDF_Stream stream)
 		{
 			if (name_rec->platform_id == 0 || name_rec->platform_id == 3)
 			{
-				ret += HPDF_Stream_Write(tmp_stream, (HPDF_BYTE *) attr->tag_name2, sizeof(attr->tag_name2));
+				ret += HPDF_Stream_Write(tmp_stream, attr->tag_name2, sizeof(attr->tag_name2));
 				name_len += sizeof(attr->tag_name2);
 			} else
 			{
-				ret += HPDF_Stream_Write(tmp_stream, (HPDF_BYTE *) attr->tag_name, sizeof(attr->tag_name));
+				ret += HPDF_Stream_Write(tmp_stream, attr->tag_name, sizeof(attr->tag_name));
 				name_len += sizeof(attr->tag_name);
 			}
 		}
@@ -1949,15 +1951,15 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 			{
 				value = 0;
 				size = 4;
-				ret = HPDF_Stream_Read(attr->stream, (HPDF_BYTE *) & value, &size);
-				ret += HPDF_Stream_Write(tmp_stream, (HPDF_BYTE *) & value, size);
+				ret = HPDF_Stream_Read(attr->stream, &value, &size);
+				ret += HPDF_Stream_Write(tmp_stream, &value, size);
 				length -= 4;
 			}
 
 			value = 0;
 			size = length;
-			ret += HPDF_Stream_Read(attr->stream, (HPDF_BYTE *) & value, &size);
-			ret += HPDF_Stream_Write(tmp_stream, (HPDF_BYTE *) & value, size);
+			ret += HPDF_Stream_Read(attr->stream, &value, &size);
+			ret += HPDF_Stream_Write(tmp_stream, &value, size);
 		}
 
 		tmp_tbl[i].offset = new_offset;
@@ -1985,7 +1987,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 			HPDF_UINT rlen = (length > 4) ? 4 : length;
 
 			buf = 0;
-			if ((ret = HPDF_Stream_Read(tmp_stream, (HPDF_BYTE *) & buf, &rlen)) != HPDF_OK)
+			if ((ret = HPDF_Stream_Read(tmp_stream, &buf, &rlen)) != HPDF_OK)
 				break;
 
 			UINT32Swap(&buf);
@@ -1999,7 +2001,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 		HPDF_PTRACE((" SaveFontData tag[%s] check-sum=%u offset=%u\n",
 					 REQUIRED_TAGS[i], (unsigned int) tbl.check_sum, (unsigned int) tbl.offset));
 
-		ret += HPDF_Stream_Write(stream, (const HPDF_BYTE *) REQUIRED_TAGS[i], 4);
+		ret += HPDF_Stream_Write(stream, REQUIRED_TAGS[i], 4);
 		ret += WriteUINT32(stream, tbl.check_sum);
 		tbl.offset += offset_base;
 		ret += WriteUINT32(stream, tbl.offset);
@@ -2022,7 +2024,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 		HPDF_UINT32 buf;
 		HPDF_UINT siz = sizeof(buf);
 
-		ret = HPDF_Stream_Read(tmp_stream, (HPDF_BYTE *) & buf, &siz);
+		ret = HPDF_Stream_Read(tmp_stream, &buf, &siz);
 		if (ret != HPDF_OK || siz <= 0)
 		{
 			if (ret == HPDF_STREAM_EOF)

@@ -42,7 +42,7 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 	HPDF_PTRACE((" HPDF_Image_LoadJpegHeader\n"));
 
 	len = 2;
-	if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & tag, &len) != HPDF_OK)
+	if (HPDF_Stream_Read(stream, &tag, &len) != HPDF_OK)
 		return HPDF_Error_GetCode(stream->error);
 
 	HPDF_UInt16Swap(&tag);
@@ -55,13 +55,13 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 		HPDF_UINT16 size;
 
 		len = 2;
-		if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & tag, &len) != HPDF_OK)
+		if (HPDF_Stream_Read(stream, &tag, &len) != HPDF_OK)
 			return HPDF_Error_GetCode(stream->error);
 
 		HPDF_UInt16Swap(&tag);
 
 		len = 2;
-		if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & size, &len) != HPDF_OK)
+		if (HPDF_Stream_Read(stream, &size, &len) != HPDF_OK)
 			return HPDF_Error_GetCode(stream->error);
 
 		HPDF_UInt16Swap(&size);
@@ -72,23 +72,23 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 		{
 
 			len = 1;
-			if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & precision, &len) != HPDF_OK)
+			if (HPDF_Stream_Read(stream, &precision, &len) != HPDF_OK)
 				return HPDF_Error_GetCode(stream->error);
 
 			len = 2;
-			if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & height, &len) != HPDF_OK)
+			if (HPDF_Stream_Read(stream,  &height, &len) != HPDF_OK)
 				return HPDF_Error_GetCode(stream->error);
 
 			HPDF_UInt16Swap(&height);
 
 			len = 2;
-			if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & width, &len) != HPDF_OK)
+			if (HPDF_Stream_Read(stream, &width, &len) != HPDF_OK)
 				return HPDF_Error_GetCode(stream->error);
 
 			HPDF_UInt16Swap(&width);
 
 			len = 1;
-			if (HPDF_Stream_Read(stream, (HPDF_BYTE *) & num_components, &len) != HPDF_OK)
+			if (HPDF_Stream_Read(stream, &num_components, &len) != HPDF_OK)
 				return HPDF_Error_GetCode(stream->error);
 
 			break;
@@ -202,7 +202,9 @@ HPDF_Image HPDF_Image_LoadJpegImage(HPDF_MMgr mmgr, HPDF_Stream jpeg_data, HPDF_
 				}
 				break;
 			} else
+			{
 				return NULL;
+			}
 		}
 
 		if (HPDF_Stream_Write(image->stream, buf, len) != HPDF_OK)

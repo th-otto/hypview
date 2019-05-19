@@ -311,7 +311,7 @@ static HPDF_STATUS CreatePallet(HPDF_Dict image, png_structp png_ptr, png_infop 
 	 * so we call HPDF_Set_Error to set error-code.
 	 */
 	if (png_get_PLTE(png_ptr, info_ptr, (png_color **) & src_pl, &num_pl) != PNG_INFO_PLTE)
-		return HPDF_SetError(image->error, HPDF_LIBPNG_ERROR, HPDF_CANNOT_GET_PALLET);
+		return HPDF_SetError(image->error, HPDF_LIBPNG_ERROR, HPDF_CANNOT_GET_PALETTE);
 
 
 	/* make a pallet array for indexed image. */

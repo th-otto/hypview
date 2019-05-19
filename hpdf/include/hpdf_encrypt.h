@@ -131,7 +131,7 @@ void HPDF_Encrypt_InitKey(HPDF_Encrypt attr, HPDF_UINT32 object_id, HPDF_UINT16 
 void HPDF_Encrypt_Reset(HPDF_Encrypt attr);
 
 
-void HPDF_Encrypt_CryptBuf(HPDF_Encrypt attr, const HPDF_BYTE *src, HPDF_BYTE *dst, HPDF_UINT len);
+void HPDF_Encrypt_CryptBuf(HPDF_Encrypt attr, const void *src, void *dst, HPDF_UINT len);
 
 #ifdef __cplusplus
 }

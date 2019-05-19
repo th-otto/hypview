@@ -70,66 +70,66 @@ static HPDF_STATUS ConvertDateToXMDate(HPDF_Stream stream, const char *pDate)
 		return HPDF_INVALID_PARAMETER;
 	pDate += 2;
 	/* Copy YYYY */
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 4);
+	ret = HPDF_Stream_Write(stream, pDate, 4);
 	if (ret != HPDF_OK)
 		return ret;
 	pDate += 4;
 	/* Write -MM */
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) "-", 1);
+	ret = HPDF_Stream_Write(stream, "-", 1);
 	if (ret != HPDF_OK)
 		return ret;
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 2);
+	ret = HPDF_Stream_Write(stream, pDate, 2);
 	if (ret != HPDF_OK)
 		return ret;
 	pDate += 2;
 	/* Write -DD */
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) "-", 1);
+	ret = HPDF_Stream_Write(stream, "-", 1);
 	if (ret != HPDF_OK)
 		return ret;
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 2);
+	ret = HPDF_Stream_Write(stream, pDate, 2);
 	if (ret != HPDF_OK)
 		return ret;
 	pDate += 2;
 	/* Write THH */
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) "T", 1);
+	ret = HPDF_Stream_Write(stream, "T", 1);
 	if (ret != HPDF_OK)
 		return ret;
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 2);
+	ret = HPDF_Stream_Write(stream, pDate, 2);
 	if (ret != HPDF_OK)
 		return ret;
 	pDate += 2;
 	/* Write :mm */
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) ":", 1);
+	ret = HPDF_Stream_Write(stream, ":", 1);
 	if (ret != HPDF_OK)
 		return ret;
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 2);
+	ret = HPDF_Stream_Write(stream, pDate, 2);
 	if (ret != HPDF_OK)
 		return ret;
 	pDate += 2;
 	/* Write :SS */
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) ":", 1);
+	ret = HPDF_Stream_Write(stream, ":", 1);
 	if (ret != HPDF_OK)
 		return ret;
-	ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 2);
+	ret = HPDF_Stream_Write(stream, pDate, 2);
 	if (ret != HPDF_OK)
 		return ret;
 	pDate += 2;
 	/* Write +... */
 	if (pDate[0] == 0)
 	{
-		ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) "Z", 1);
+		ret = HPDF_Stream_Write(stream, "Z", 1);
 		return ret;
 	}
 	if (pDate[0] == '+' || pDate[0] == '-')
 	{
-		ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 3);
+		ret = HPDF_Stream_Write(stream, pDate, 3);
 		if (ret != HPDF_OK)
 			return ret;
 		pDate += 4;
-		ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) ":", 1);
+		ret = HPDF_Stream_Write(stream, ":", 1);
 		if (ret != HPDF_OK)
 			return ret;
-		ret = HPDF_Stream_Write(stream, (const HPDF_BYTE *) pDate, 2);
+		ret = HPDF_Stream_Write(stream, pDate, 2);
 		if (ret != HPDF_OK)
 			return ret;
 		return ret;
@@ -182,7 +182,8 @@ HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 		}
 
 		/* Update the PDF number version */
-		pdf->pdf_version = HPDF_VER_14;
+		if (pdf->pdf_version < HPDF_VER_14)
+			pdf->pdf_version = HPDF_VER_14;
 
 		HPDF_Dict_AddName(xmp, "Type", "Metadata");
 		HPDF_Dict_AddName(xmp, "SubType", "XML");
@@ -191,7 +192,7 @@ HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 		ret += HPDF_Stream_WriteStr(xmp->stream, HEADER);
 
 		/* Add the dc block */
-		if ((dc_title != NULL) || (dc_creator != NULL) || (dc_description != NULL))
+		if (dc_title != NULL || dc_creator != NULL || dc_description != NULL)
 		{
 			ret += HPDF_Stream_WriteStr(xmp->stream, DC_HEADER);
 
@@ -220,7 +221,7 @@ HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 		}
 
 		/* Add the xmp block */
-		if ((xmp_CreateDate != NULL) || (xmp_ModifyDate != NULL) || (xmp_CreatorTool != NULL))
+		if (xmp_CreateDate != NULL || xmp_ModifyDate != NULL || xmp_CreatorTool != NULL)
 		{
 			ret += HPDF_Stream_WriteStr(xmp->stream, XMP_HEADER);
 
@@ -251,7 +252,7 @@ HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 		}
 
 		/* Add the pdf block */
-		if ((pdf_Keywords != NULL) || (pdf_Producer != NULL))
+		if (pdf_Keywords != NULL || pdf_Producer != NULL)
 		{
 			ret += HPDF_Stream_WriteStr(xmp->stream, PDF_HEADER);
 

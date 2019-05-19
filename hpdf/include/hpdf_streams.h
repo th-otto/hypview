@@ -54,10 +54,10 @@ typedef enum _HPDF_WhenceMode
 
 typedef struct _HPDF_Stream_Rec *HPDF_Stream;
 
-typedef HPDF_STATUS(*HPDF_Stream_Write_Func) (HPDF_Stream stream, const HPDF_BYTE *ptr, HPDF_UINT siz);
+typedef HPDF_STATUS(*HPDF_Stream_Write_Func) (HPDF_Stream stream, const void *ptr, HPDF_UINT siz);
 
 
-typedef HPDF_STATUS(*HPDF_Stream_Read_Func) (HPDF_Stream stream, HPDF_BYTE *ptr, HPDF_UINT *siz);
+typedef HPDF_STATUS(*HPDF_Stream_Read_Func) (HPDF_Stream stream, void *ptr, HPDF_UINT *siz);
 
 
 typedef HPDF_STATUS(*HPDF_Stream_Seek_Func) (HPDF_Stream stream, HPDF_INT pos, HPDF_WhenceMode mode);
@@ -161,10 +161,10 @@ HPDF_STATUS HPDF_Stream_WriteUInt(HPDF_Stream stream, HPDF_UINT value);
 HPDF_STATUS HPDF_Stream_WriteReal(HPDF_Stream stream, HPDF_REAL value);
 
 
-HPDF_STATUS HPDF_Stream_Write(HPDF_Stream stream, const HPDF_BYTE *ptr, HPDF_UINT size);
+HPDF_STATUS HPDF_Stream_Write(HPDF_Stream stream, const void *ptr, HPDF_UINT size);
 
 
-HPDF_STATUS HPDF_Stream_Read(HPDF_Stream stream, HPDF_BYTE *ptr, HPDF_UINT *size);
+HPDF_STATUS HPDF_Stream_Read(HPDF_Stream stream, void *ptr, HPDF_UINT *size);
 
 HPDF_STATUS HPDF_Stream_ReadLn(HPDF_Stream stream, char *s, HPDF_UINT *size);
 
@@ -192,7 +192,7 @@ HPDF_STATUS HPDF_Stream_WriteEscapeText2(HPDF_Stream stream, const char *text, H
 HPDF_STATUS HPDF_Stream_WriteEscapeText(HPDF_Stream stream, const char *text);
 
 
-HPDF_STATUS HPDF_Stream_WriteBinary(HPDF_Stream stream, const HPDF_BYTE *data, HPDF_UINT len, HPDF_Encrypt e);
+HPDF_STATUS HPDF_Stream_WriteBinary(HPDF_Stream stream, const void *data, HPDF_UINT len, HPDF_Encrypt e);
 
 
 HPDF_STATUS HPDF_Stream_Validate(HPDF_Stream stream);

@@ -24,6 +24,7 @@ static const char *const HPDF_NAMEDICT_KEYS[] = {
 	"EmbeddedFiles"
 };
 
+
 HPDF_NameDict HPDF_NameDict_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 {
 	HPDF_NameDict ndict;
@@ -42,6 +43,7 @@ HPDF_NameDict HPDF_NameDict_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	return ndict;
 }
 
+
 HPDF_NameTree HPDF_NameDict_GetNameTree(HPDF_NameDict namedict, HPDF_NameDictKey key)
 {
 	if (!namedict)
@@ -49,10 +51,12 @@ HPDF_NameTree HPDF_NameDict_GetNameTree(HPDF_NameDict namedict, HPDF_NameDictKey
 	return (HPDF_NameTree) HPDF_Dict_GetItem(namedict, HPDF_NAMEDICT_KEYS[key], HPDF_OCLASS_DICT);
 }
 
+
 HPDF_STATUS HPDF_NameDict_SetNameTree(HPDF_NameDict namedict, HPDF_NameDictKey key, HPDF_NameTree ntree)
 {
 	return HPDF_Dict_Add(namedict, HPDF_NAMEDICT_KEYS[key], ntree);
 }
+
 
 HPDF_BOOL HPDF_NameDict_Validate(HPDF_NameDict namedict)
 {
@@ -211,6 +215,7 @@ HPDF_EmbeddedFile HPDF_EmbeddedFile_New(HPDF_MMgr mmgr, HPDF_Xref xref, const ch
 
 	return ef;
 }
+
 
 HPDF_BOOL HPDF_EmbeddedFile_Validate(HPDF_EmbeddedFile emfile)
 {

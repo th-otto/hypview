@@ -12,6 +12,8 @@ Known bugs in this version:
 
   Such nodes will now give a warning, and are written uncompressed
   to the output file.
+  The 64k limit does not apply to images, which use an extra field from
+  the index to store the missing information.
 
 - hcp ignores the -dN option.
   hcp currently accepts this option for compatibility, but does not
@@ -27,3 +29,6 @@ Known bugs in this version:
   as "ar" when recompiling. Note also that symbols are not generated
   at all if the corresponding REF-file is missing. In this case,
   you will have to investigate the generated link-commands.
+
+- when recompiling to PDF, a white background is always implied. Any
+  background color configured in hypview.ini will be ignored.

@@ -792,8 +792,8 @@ int main(int argc, const char **argv)
 			{
 				const char *filename = argv[c++];
 				
-				/* force utf-8 output for PDF */
-				opts->output_charset = HYP_CHARSET_UTF8;
+				if (opts->output_charset == HYP_CHARSET_NONE)
+					opts->output_charset = HYP_CHARSET_CP1252;
 				/*
 				 * args beyond filename are node names to display
 				 */
@@ -856,7 +856,7 @@ int main(int argc, const char **argv)
 		getchar();
 #endif
 	}
-	
+
 	HypProfile_Delete();
 	x_free_resources();
 

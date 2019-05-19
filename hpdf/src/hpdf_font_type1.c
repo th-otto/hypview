@@ -108,7 +108,9 @@ static HPDF_TextWidth Type1Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text
 			}
 		}
 	} else
+	{
 		HPDF_SetError(font->error, HPDF_FONT_INVALID_WIDTHS_TABLE, 0);
+	}
 
 	/* 2006.08.19 add. */
 	if (HPDF_IS_WHITE_SPACE(b))

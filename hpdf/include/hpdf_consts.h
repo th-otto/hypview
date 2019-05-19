@@ -64,9 +64,8 @@
 
 #define HPDF_BS_DEF_WIDTH           1
 
-/* defalt page-size */
-#define HPDF_DEF_PAGE_WIDTH         595.276F
-#define HPDF_DEF_PAGE_HEIGHT        841.89F
+/* default page-size */
+#define HPDF_DEF_PAGE_SIZE          HPDF_PAGE_SIZE_A4
 
 /*---------------------------------------------------------------------------*/
 /*----- compression mode ----------------------------------------------------*/
@@ -95,12 +94,15 @@
 /*----------------------------------------------------------------------------*/
 /*------ viewer preferences definitions --------------------------------------*/
 
-#define HPDF_HIDE_TOOLBAR    1
-#define HPDF_HIDE_MENUBAR    2
-#define HPDF_HIDE_WINDOW_UI  4
-#define HPDF_FIT_WINDOW      8
-#define HPDF_CENTER_WINDOW   16
-#define HPDF_PRINT_SCALING_NONE   32
+#define HPDF_HIDE_TOOLBAR		1
+#define HPDF_HIDE_MENUBAR		2
+#define HPDF_HIDE_WINDOW_UI		4
+#define HPDF_FIT_WINDOW			8
+#define HPDF_CENTER_WINDOW		16
+#define HPDF_PRINT_SCALING_NONE	32
+#define HPDF_DISPLAY_TOC_TITLE	64
+#define HPDF_DIRECTION_R2L		128
+#define HPDF_VIEWAREA			256
 
 
 /*---------------------------------------------------------------------------*/

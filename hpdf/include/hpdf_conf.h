@@ -43,7 +43,6 @@
 #define HPDF_FSEEK                  fseek
 #define HPDF_FTELL                  ftell
 #define HPDF_FEOF                   feof
-#define HPDF_FERROR                 ferror
 #define HPDF_MALLOC                 malloc
 #define HPDF_FREE                   free
 #define HPDF_FILEP                  FILE*

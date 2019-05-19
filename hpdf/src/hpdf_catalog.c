@@ -123,8 +123,6 @@ HPDF_STATUS HPDF_Catalog_SetPageLayout(HPDF_Catalog catalog, HPDF_PageLayout lay
 }
 
 
-
-
 HPDF_PageMode HPDF_Catalog_GetPageMode(HPDF_Catalog catalog)
 {
 	HPDF_Name mode;
@@ -215,6 +213,7 @@ HPDF_STATUS HPDF_Catalog_AddPageLabel(HPDF_Catalog catalog, HPDF_UINT page_num, 
 
 	return HPDF_Array_Add(nums, page_label);
 }
+
 
 HPDF_STATUS HPDF_Catalog_SetViewerPreference(HPDF_Catalog catalog, HPDF_UINT value)
 {
@@ -308,8 +307,31 @@ HPDF_STATUS HPDF_Catalog_SetViewerPreference(HPDF_Catalog catalog, HPDF_UINT val
 				return ret;
 	}
 
+	if (value & HPDF_DISPLAY_TOC_TITLE)
+	{
+		if ((ret = HPDF_Dict_AddBoolean(preferences, "DisplayTocTitle", HPDF_TRUE)) != HPDF_OK)
+			return ret;
+	} else
+	{
+		if ((ret = HPDF_Dict_RemoveElement(preferences, "DisplayTocTitle")) != HPDF_OK)
+			if (ret != HPDF_DICT_ITEM_NOT_FOUND)
+				return ret;
+	}
+
+	if (value & HPDF_DIRECTION_R2L)
+	{
+		if ((ret = HPDF_Dict_AddName(preferences, "Direction", "R2L")) != HPDF_OK)
+			return ret;
+	} else
+	{
+		if ((ret = HPDF_Dict_RemoveElement(preferences, "Direction")) != HPDF_OK)
+			if (ret != HPDF_DICT_ITEM_NOT_FOUND)
+				return ret;
+	}
+
 	return HPDF_OK;
 }
+
 
 HPDF_UINT HPDF_Catalog_GetViewerPreference(HPDF_Catalog catalog)
 {
@@ -328,35 +350,54 @@ HPDF_UINT HPDF_Catalog_GetViewerPreference(HPDF_Catalog catalog)
 	if (obj)
 	{
 		if (obj->value)
-			value += HPDF_HIDE_TOOLBAR;
+			value |= HPDF_HIDE_TOOLBAR;
 	}
 
 	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "HideMenubar", HPDF_OCLASS_BOOLEAN);
 	if (obj)
 	{
 		if (obj->value)
-			value += HPDF_HIDE_MENUBAR;
+			value |= HPDF_HIDE_MENUBAR;
 	}
 
 	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "HideWindowUI", HPDF_OCLASS_BOOLEAN);
 	if (obj)
 	{
 		if (obj->value)
-			value += HPDF_HIDE_WINDOW_UI;
+			value |= HPDF_HIDE_WINDOW_UI;
 	}
 
 	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "FitWindow", HPDF_OCLASS_BOOLEAN);
 	if (obj)
 	{
 		if (obj->value)
-			value += HPDF_FIT_WINDOW;
+			value |= HPDF_FIT_WINDOW;
 	}
 
 	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "CenterWindow", HPDF_OCLASS_BOOLEAN);
 	if (obj)
 	{
 		if (obj->value)
-			value += HPDF_CENTER_WINDOW;
+			value |= HPDF_CENTER_WINDOW;
+	}
+
+	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "PrintScaling", HPDF_OCLASS_BOOLEAN);
+	if (obj)
+	{
+		value |= HPDF_PRINT_SCALING_NONE;
+	}
+
+	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "DisplayTocTitle", HPDF_OCLASS_BOOLEAN);
+	if (obj)
+	{
+		if (obj->value)
+			value |= HPDF_DISPLAY_TOC_TITLE;
+	}
+
+	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "Direction", HPDF_OCLASS_BOOLEAN);
+	if (obj)
+	{
+		value |= HPDF_DIRECTION_R2L;
 	}
 
 	return value;

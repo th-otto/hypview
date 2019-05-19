@@ -343,7 +343,9 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 				if ((ret = HPDF_Array_AddNumber(tmp_array, w)) != HPDF_OK)
 					return NULL;
 			} else
+			{
 				tmp_array = NULL;
+			}
 		}
 
 		/* create "CIDToGIDMap" data */
@@ -367,7 +369,7 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 				memcpy(tmp_map + i, u, 2);
 			}
 
-			if ((ret = HPDF_Stream_Write(attr->map_stream->stream, (HPDF_BYTE *) tmp_map, max * 2)) != HPDF_OK)
+			if ((ret = HPDF_Stream_Write(attr->map_stream->stream, tmp_map, max * 2)) != HPDF_OK)
 				return NULL;
 		}
 	} else
@@ -1005,7 +1007,9 @@ HPDF_Font HPDF_Type0Font_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder 
 			{
 				ret += HPDF_Dict_Add(font, "ToUnicode", attr->cmap_stream);
 			} else
+			{
 				return NULL;
+			}
 		} else
 		{
 			attr->cmap_stream = CreateCMap(encoder, xref);

@@ -192,7 +192,9 @@ HPDF_STATUS HPDF_List_Remove(HPDF_List list, void *item)
 			HPDF_List_RemoveByIndex(list, i);
 			return HPDF_OK;
 		} else
+		{
 			obj++;
+		}
 	}
 
 	return HPDF_ITEM_NOT_FOUND;

@@ -29,7 +29,8 @@ extern "C" {
 #define HPDF_ARRAY_ITEM_NOT_FOUND                 0x1002
 #define HPDF_ARRAY_ITEM_UNEXPECTED_TYPE           0x1003
 #define HPDF_BINARY_LENGTH_ERR                    0x1004
-#define HPDF_CANNOT_GET_PALLET                    0x1005
+#define HPDF_CANNOT_GET_PALETTE                   0x1005
+/*                                                0x1006 */
 #define HPDF_DICT_COUNT_ERR                       0x1007
 #define HPDF_DICT_ITEM_NOT_FOUND                  0x1008
 #define HPDF_DICT_ITEM_UNEXPECTED_TYPE            0x1009
@@ -129,6 +130,12 @@ extern "C" {
 #define HPDF_INVALID_PAGE_INDEX                   0x1067
 #define HPDF_INVALID_URI                          0x1068
 #define HPDF_PAGE_LAYOUT_OUT_OF_RANGE             0x1069
+/*                                                0x106a */
+/*                                                0x106b */
+/*                                                0x106b */
+/*                                                0x106d */
+/*                                                0x106e */
+/*                                                0x106f */
 #define HPDF_PAGE_MODE_OUT_OF_RANGE               0x1070
 #define HPDF_PAGE_NUM_STYLE_OUT_OF_RANGE          0x1071
 #define HPDF_ANNOT_INVALID_ICON                   0x1072
@@ -143,7 +150,7 @@ extern "C" {
 #define HPDF_INVALID_EXT_GSTATE                   0x1081
 #define HPDF_EXT_GSTATE_READ_ONLY                 0x1082
 #define HPDF_INVALID_U3D_DATA                     0x1083
-#define HPDF_NAME_CANNOT_GET_NAMES                0x1084
+/*                                                0x1084 */
 #define HPDF_INVALID_ICC_COMPONENT_NUM            0x1085
 
 /*---------------------------------------------------------------------------*/
@@ -187,6 +194,8 @@ HPDF_STATUS HPDF_RaiseError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS 
 
 void HPDF_CopyError(HPDF_Error dst, HPDF_Error src);
 
+
+const char *HPDF_ErrorStr(HPDF_STATUS error_no);
 
 #ifdef __cplusplus
 }

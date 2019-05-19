@@ -34,7 +34,8 @@
  * needed on buffers full of bytes, and then call MD5Final, which
  * will fill a supplied 16-byte array with the digest.
  *
- *---------------------------------------------------------------------------*/
+ *---------------------------------------------------------------------------
+ */
 
 #include "hpdf_conf.h"
 #include "hpdf_consts.h"
@@ -179,7 +180,7 @@ static void MD5ByteReverse(HPDF_BYTE *buf, HPDF_UINT32 longs)
 	} while (--longs);
 }
 
-void HPDF_MD5Update(struct HPDF_MD5Context *ctx, const HPDF_BYTE * buf, HPDF_UINT32 len)
+void HPDF_MD5Update(struct HPDF_MD5Context *ctx, const HPDF_BYTE *buf, HPDF_UINT32 len)
 {
 	HPDF_UINT32 t;
 
@@ -276,7 +277,7 @@ void HPDF_MD5Final(HPDF_BYTE digest[16], struct HPDF_MD5Context *ctx)
 
 /*----- encrypt-obj ---------------------------------------------------------*/
 
-static void ARC4Init(HPDF_ARC4_Ctx_Rec * ctx, const HPDF_BYTE * key, HPDF_UINT key_len)
+static void ARC4Init(HPDF_ARC4_Ctx_Rec *ctx, const HPDF_BYTE *key, HPDF_UINT key_len)
 {
 	HPDF_BYTE tmp_array[HPDF_ARC4_BUF_SIZE];
 	HPDF_UINT i;
@@ -308,8 +309,10 @@ static void ARC4Init(HPDF_ARC4_Ctx_Rec * ctx, const HPDF_BYTE * key, HPDF_UINT k
 
 
 
-static void ARC4CryptBuf(HPDF_ARC4_Ctx_Rec * ctx, const HPDF_BYTE * in, HPDF_BYTE * out, HPDF_UINT len)
+static void ARC4CryptBuf(HPDF_ARC4_Ctx_Rec *ctx, const void *_in, void *_out, HPDF_UINT len)
 {
+	const HPDF_BYTE *in = (const HPDF_BYTE *)_in;
+	HPDF_BYTE *out = (HPDF_BYTE *)_out;
 	HPDF_UINT i;
 	HPDF_UINT t;
 	HPDF_BYTE K;
@@ -330,14 +333,14 @@ static void ARC4CryptBuf(HPDF_ARC4_Ctx_Rec * ctx, const HPDF_BYTE * in, HPDF_BYT
 		t = (ctx->state[ctx->idx1] + ctx->state[ctx->idx2]) % 256;
 		K = ctx->state[t];
 
-		out[i] = (HPDF_BYTE) (in[i] ^ K);
+		out[i] = in[i] ^ K;
 	}
 }
 
 
 /*---------------------------------------------------------------------------*/
 
-void HPDF_PadOrTrancatePasswd(const char *pwd, HPDF_BYTE * new_pwd)
+void HPDF_PadOrTrancatePasswd(const char *pwd, HPDF_BYTE *new_pwd)
 {
 	HPDF_UINT len = HPDF_StrLen(pwd, HPDF_PASSWD_LEN + 1);
 
@@ -586,7 +589,7 @@ void HPDF_Encrypt_Reset(HPDF_Encrypt attr)
 }
 
 
-void HPDF_Encrypt_CryptBuf(HPDF_Encrypt attr, const HPDF_BYTE * src, HPDF_BYTE * dst, HPDF_UINT len)
+void HPDF_Encrypt_CryptBuf(HPDF_Encrypt attr, const void *src, void *dst, HPDF_UINT len)
 {
 	ARC4CryptBuf(&attr->arc4ctx, src, dst, len);
 }

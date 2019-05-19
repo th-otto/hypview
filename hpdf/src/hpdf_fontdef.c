@@ -32,6 +32,7 @@ void HPDF_FontDef_Cleanup(HPDF_FontDef fontdef)
 	fontdef->descriptor = NULL;
 }
 
+
 void HPDF_FontDef_Free(HPDF_FontDef fontdef)
 {
 	if (!fontdef)
@@ -43,6 +44,7 @@ void HPDF_FontDef_Free(HPDF_FontDef fontdef)
 		fontdef->free_fn(fontdef);
 	HPDF_FreeMem(fontdef->mmgr, fontdef);
 }
+
 
 HPDF_BOOL HPDF_FontDef_Validate(HPDF_FontDef fontdef)
 {

@@ -426,7 +426,9 @@ static /*inline */ int32 find0span(const unsigned char *bp, int32 bs, int32 be)
 		bits -= span;
 		bp++;
 	} else
+	{
 		span = 0;
+	}
 	if (bits >= (int32) (2 * 8 * sizeof(long)))
 	{
 		const long *lp;
@@ -492,7 +494,9 @@ find1span(const unsigned char *bp, int32 bs, int32 be)
 		bits -= span;
 		bp++;
 	} else
+	{
 		span = 0;
+	}
 	if (bits >= (int32) (2 * 8 * sizeof(long)))
 	{
 		const long *lp;

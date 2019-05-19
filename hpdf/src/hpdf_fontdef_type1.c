@@ -252,7 +252,9 @@ static HPDF_STATUS LoadAfm(HPDF_FontDef fontdef, HPDF_Stream stream)
 			cdata->char_cd = (HPDF_INT16) HPDF_AToI(buf2);
 
 		} else
+		{
 			return HPDF_SetError(fontdef->error, HPDF_INVALID_CHAR_MATRICS_DATA, 0);
+		}
 
 		/* WX Character width */
 		s = HPDF_StrStr(s, "WX ", 0);
@@ -301,7 +303,7 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream)
 		return HPDF_Error_GetCode(fontdef->error);
 
 	len = 11;
-	ret = HPDF_Stream_Read(stream, (HPDF_BYTE *) pbuf, &len);
+	ret = HPDF_Stream_Read(stream, pbuf, &len);
 	if (ret != HPDF_OK)
 		return ret;
 	pbuf += 11;
@@ -309,7 +311,7 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream)
 	for (;;)
 	{
 		len = HPDF_STREAM_BUF_SIZ - 11;
-		ret = HPDF_Stream_Read(stream, (HPDF_BYTE *) pbuf, &len);
+		ret = HPDF_Stream_Read(stream, pbuf, &len);
 		if (ret == HPDF_STREAM_EOF)
 		{
 			end_flg = HPDF_TRUE;
@@ -343,13 +345,13 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream)
 
 		if (end_flg)
 		{
-			if ((ret = HPDF_Stream_Write(attr->font_data, (HPDF_BYTE *) buf, len + 11)) != HPDF_OK)
+			if ((ret = HPDF_Stream_Write(attr->font_data, buf, len + 11)) != HPDF_OK)
 				return ret;
 
 			break;
 		} else
 		{
-			if ((ret = HPDF_Stream_Write(attr->font_data, (HPDF_BYTE *) buf, len)) != HPDF_OK)
+			if ((ret = HPDF_Stream_Write(attr->font_data, buf, len)) != HPDF_OK)
 				return ret;
 			memcpy(buf, buf + len, 11);
 			pbuf = buf + 11;

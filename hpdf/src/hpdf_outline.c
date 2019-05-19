@@ -132,8 +132,7 @@ HPDF_Outline HPDF_OutlineRoot_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 }
 
 
-HPDF_Outline
-HPDF_Outline_New(HPDF_MMgr mmgr, HPDF_Outline parent, const char *title, HPDF_Encoder encoder, HPDF_Xref xref)
+HPDF_Outline HPDF_Outline_New(HPDF_MMgr mmgr, HPDF_Outline parent, const char *title, HPDF_Encoder encoder, HPDF_Xref xref)
 {
 	HPDF_Outline outline;
 	HPDF_String s;

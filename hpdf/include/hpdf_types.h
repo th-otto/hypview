@@ -128,7 +128,7 @@ typedef struct _HPDF_Date
 typedef enum _HPDF_InfoType
 {
 	/* date-time type parameters */
-	HPDF_INFO_CREATION_DATE = 0,
+	HPDF_INFO_CREATION_DATE,
 	HPDF_INFO_MOD_DATE,
 
 	/* string type parameters */
@@ -147,14 +147,14 @@ typedef enum _HPDF_InfoType
 
 typedef enum _HPDF_PDFA_TYPE
 {
-	HPDF_PDFA_1A = 0,
-	HPDF_PDFA_1B = 1
+	HPDF_PDFA_1A,
+	HPDF_PDFA_1B
 } HPDF_PDFAType;
 
 
 typedef enum _HPDF_PdfVer
 {
-	HPDF_VER_12 = 0,
+	HPDF_VER_12,
 	HPDF_VER_13,
 	HPDF_VER_14,
 	HPDF_VER_15,
@@ -241,7 +241,7 @@ typedef struct _HPDF_3DMatrix
 
 typedef enum _HPDF_ColorSpace
 {
-	HPDF_CS_DEVICE_GRAY = 0,
+	HPDF_CS_DEVICE_GRAY,
 	HPDF_CS_DEVICE_RGB,
 	HPDF_CS_DEVICE_CMYK,
 	HPDF_CS_CAL_GRAY,
@@ -281,7 +281,7 @@ typedef struct _HPDF_CMYKColor
 
 typedef enum _HPDF_LineCap
 {
-	HPDF_BUTT_END = 0,
+	HPDF_BUTT_END,
 	HPDF_ROUND_END,
 	HPDF_PROJECTING_SCUARE_END,
 	HPDF_LINECAP_EOF
@@ -292,7 +292,7 @@ typedef enum _HPDF_LineCap
 
 typedef enum _HPDF_LineJoin
 {
-	HPDF_MITER_JOIN = 0,
+	HPDF_MITER_JOIN,
 	HPDF_ROUND_JOIN,
 	HPDF_BEVEL_JOIN,
 	HPDF_LINEJOIN_EOF
@@ -303,7 +303,7 @@ typedef enum _HPDF_LineJoin
 
 typedef enum _HPDF_TextRenderingMode
 {
-	HPDF_FILL = 0,
+	HPDF_FILL,
 	HPDF_STROKE,
 	HPDF_FILL_THEN_STROKE,
 	HPDF_INVISIBLE,
@@ -317,7 +317,7 @@ typedef enum _HPDF_TextRenderingMode
 
 typedef enum _HPDF_WritingMode
 {
-	HPDF_WMODE_HORIZONTAL = 0,
+	HPDF_WMODE_HORIZONTAL,
 	HPDF_WMODE_VERTICAL,
 	HPDF_WMODE_EOF
 } HPDF_WritingMode;
@@ -325,7 +325,7 @@ typedef enum _HPDF_WritingMode
 
 typedef enum _HPDF_PageLayout
 {
-	HPDF_PAGE_LAYOUT_SINGLE = 0,
+	HPDF_PAGE_LAYOUT_SINGLE,
 	HPDF_PAGE_LAYOUT_ONE_COLUMN,
 	HPDF_PAGE_LAYOUT_TWO_COLUMN_LEFT,
 	HPDF_PAGE_LAYOUT_TWO_COLUMN_RIGHT,
@@ -337,20 +337,21 @@ typedef enum _HPDF_PageLayout
 
 typedef enum _HPDF_PageMode
 {
-	HPDF_PAGE_MODE_USE_NONE = 0,
+	HPDF_PAGE_MODE_USE_NONE,
 	HPDF_PAGE_MODE_USE_OUTLINE,
 	HPDF_PAGE_MODE_USE_THUMBS,
 	HPDF_PAGE_MODE_FULL_SCREEN,
-/*  HPDF_PAGE_MODE_USE_OC,
-HPDF_PAGE_MODE_USE_ATTACHMENTS,
- */
+#if 0
+	HPDF_PAGE_MODE_USE_OC,
+	HPDF_PAGE_MODE_USE_ATTACHMENTS,
+#endif
 	HPDF_PAGE_MODE_EOF
 } HPDF_PageMode;
 
 
 typedef enum _HPDF_PageNumStyle
 {
-	HPDF_PAGE_NUM_STYLE_DECIMAL = 0,
+	HPDF_PAGE_NUM_STYLE_DECIMAL,
 	HPDF_PAGE_NUM_STYLE_UPPER_ROMAN,
 	HPDF_PAGE_NUM_STYLE_LOWER_ROMAN,
 	HPDF_PAGE_NUM_STYLE_UPPER_LETTERS,
@@ -361,7 +362,7 @@ typedef enum _HPDF_PageNumStyle
 
 typedef enum _HPDF_DestinationType
 {
-	HPDF_XYZ = 0,
+	HPDF_XYZ,
 	HPDF_FIT,
 	HPDF_FIT_H,
 	HPDF_FIT_V,
@@ -410,7 +411,7 @@ typedef enum _HPDF_AnnotFlgs
 
 typedef enum _HPDF_AnnotHighlightMode
 {
-	HPDF_ANNOT_NO_HIGHTLIGHT = 0,
+	HPDF_ANNOT_NO_HIGHTLIGHT,
 	HPDF_ANNOT_INVERT_BOX,
 	HPDF_ANNOT_INVERT_BORDER,
 	HPDF_ANNOT_DOWN_APPEARANCE,
@@ -420,7 +421,7 @@ typedef enum _HPDF_AnnotHighlightMode
 
 typedef enum _HPDF_AnnotIcon
 {
-	HPDF_ANNOT_ICON_COMMENT = 0,
+	HPDF_ANNOT_ICON_COMMENT,
 	HPDF_ANNOT_ICON_KEY,
 	HPDF_ANNOT_ICON_NOTE,
 	HPDF_ANNOT_ICON_HELP,
@@ -432,7 +433,7 @@ typedef enum _HPDF_AnnotIcon
 
 typedef enum _HPDF_AnnotIntent
 {
-	HPDF_ANNOT_INTENT_FREETEXTCALLOUT = 0,
+	HPDF_ANNOT_INTENT_FREETEXTCALLOUT,
 	HPDF_ANNOT_INTENT_FREETEXTTYPEWRITER,
 	HPDF_ANNOT_INTENT_LINEARROW,
 	HPDF_ANNOT_INTENT_LINEDIMENSION,
@@ -443,7 +444,7 @@ typedef enum _HPDF_AnnotIntent
 
 typedef enum _HPDF_LineAnnotEndingStyle
 {
-	HPDF_LINE_ANNOT_NONE = 0,
+	HPDF_LINE_ANNOT_NONE,
 	HPDF_LINE_ANNOT_SQUARE,
 	HPDF_LINE_ANNOT_CIRCLE,
 	HPDF_LINE_ANNOT_DIAMOND,
@@ -457,13 +458,13 @@ typedef enum _HPDF_LineAnnotEndingStyle
 
 typedef enum _HPDF_LineAnnotCapPosition
 {
-	HPDF_LINE_ANNOT_CAP_INLINE = 0,
+	HPDF_LINE_ANNOT_CAP_INLINE,
 	HPDF_LINE_ANNOT_CAP_TOP
 } HPDF_LineAnnotCapPosition;
 
 typedef enum _HPDF_StampAnnotName
 {
-	HPDF_STAMP_ANNOT_APPROVED = 0,
+	HPDF_STAMP_ANNOT_APPROVED,
 	HPDF_STAMP_ANNOT_EXPERIMENTAL,
 	HPDF_STAMP_ANNOT_NOTAPPROVED,
 	HPDF_STAMP_ANNOT_ASIS,
@@ -515,7 +516,7 @@ typedef enum _HPDF_BlendMode
 
 typedef enum _HPDF_TransitionStyle
 {
-	HPDF_TS_WIPE_RIGHT = 0,
+	HPDF_TS_WIPE_RIGHT,
 	HPDF_TS_WIPE_UP,
 	HPDF_TS_WIPE_LEFT,
 	HPDF_TS_WIPE_DOWN,
@@ -539,7 +540,7 @@ typedef enum _HPDF_TransitionStyle
 
 typedef enum _HPDF_PageSizes
 {
-	HPDF_PAGE_SIZE_LETTER = 0,
+	HPDF_PAGE_SIZE_LETTER,
 	HPDF_PAGE_SIZE_LEGAL,
 	HPDF_PAGE_SIZE_A3,
 	HPDF_PAGE_SIZE_A4,
@@ -557,7 +558,7 @@ typedef enum _HPDF_PageSizes
 
 typedef enum _HPDF_PageDirection
 {
-	HPDF_PAGE_PORTRAIT = 0,
+	HPDF_PAGE_PORTRAIT,
 	HPDF_PAGE_LANDSCAPE
 } HPDF_PageDirection;
 
@@ -573,7 +574,7 @@ typedef enum _HPDF_EncoderType
 
 typedef enum _HPDF_ByteType
 {
-	HPDF_BYTE_TYPE_SINGLE = 0,
+	HPDF_BYTE_TYPE_SINGLE,
 	HPDF_BYTE_TYPE_LEAD,
 	HPDF_BYTE_TYPE_TRIAL,
 	HPDF_BYTE_TYPE_UNKNOWN
@@ -582,7 +583,7 @@ typedef enum _HPDF_ByteType
 
 typedef enum _HPDF_TextAlignment
 {
-	HPDF_TALIGN_LEFT = 0,
+	HPDF_TALIGN_LEFT,
 	HPDF_TALIGN_RIGHT,
 	HPDF_TALIGN_CENTER,
 	HPDF_TALIGN_JUSTIFY
@@ -593,7 +594,16 @@ typedef enum _HPDF_TextAlignment
 /* Name Dictionary values -- see PDF reference section 7.7.4 */
 typedef enum _HPDF_NameDictKey
 {
-	HPDF_NAME_EMBEDDED_FILES = 0,	/* TODO the rest */
+	HPDF_NAME_EMBEDDED_FILES,
+	HPDF_NAME_DESTS,              /* named destinations */
+	HPDF_NAME_AP,                 /* annotation appearance */
+	HPDF_NAME_JAVASCRIPT,
+	HPDF_NAME_PAGES,
+	HPDF_NAME_TEMPLATES,
+	HPDF_NAME_IDS,
+	HPDF_NAME_URLS,
+	HPDF_NAME_ALTERNATEPRESENTATIONS,
+	HPDF_NAME_RENDITIONS,
 	HPDF_NAME_EOF
 } HPDF_NameDictKey;
 

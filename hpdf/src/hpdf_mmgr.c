@@ -112,7 +112,9 @@ HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func al
 			mmgr->buf_size = buf_size;
 		}
 	} else
+	{
 		HPDF_SetError(error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+	}
 
 	return mmgr;
 }
