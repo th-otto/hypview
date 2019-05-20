@@ -3,6 +3,8 @@
 #include "hcp_opts.h"
 #include "pdf.h"
 
+#ifdef WITH_PDF /* whole file */
+
 /*
  * gzip header:
  *    magic 0x1f 0x8b
@@ -652,7 +654,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	gboolean retval = TRUE;
 	int gfx_id = 0;
 	int converror = 0;
-	gboolean in_text_out;
+	gboolean in_text_out = FALSE;
 
 #define BEGINTEXT() \
 	if (!in_text_out) \
@@ -815,7 +817,6 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			lineno = 0;
 			retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
 			retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
-			retval &= HPDF_Page_MoveTextPos(pdf->page, 0, pdf->page_height - pdf->line_height) == HPDF_NOERROR;
 			
 			while (retval && src < end)
 			{
@@ -1066,7 +1067,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			}
 		}
 		
-#if 1
+#if 0
 		{
 			char buf[512];
 			HPDF_Point p;
@@ -1310,3 +1311,9 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 
 	return ret;
 }
+
+#else
+
+extern int _I_dont_care_that_ISO_C_forbids_an_empty_source_file_;
+
+#endif /* WITH_PDF */

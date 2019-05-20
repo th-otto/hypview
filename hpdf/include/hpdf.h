@@ -630,10 +630,6 @@ HPDF_REAL HPDF_Page_GetTextLeading(HPDF_Page page);
 HPDF_TextRenderingMode HPDF_Page_GetTextRenderingMode(HPDF_Page page);
 
 
-/* This function is obsolete. Use HPDF_Page_GetTextRise.  */
-HPDF_REAL HPDF_Page_GetTextRaise(HPDF_Page page);
-
-
 HPDF_REAL HPDF_Page_GetTextRise(HPDF_Page page);
 
 
@@ -804,9 +800,6 @@ HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMod
 
 /* Ts */
 HPDF_STATUS HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value);
-
-/* This function is obsolete. Use HPDF_Page_SetTextRise.  */
-HPDF_STATUS HPDF_Page_SetTextRaise(HPDF_Page page, HPDF_REAL value);
 
 /*--- Text positioning ---------------------------------------------------*/
 

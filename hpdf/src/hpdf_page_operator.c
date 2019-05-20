@@ -134,7 +134,7 @@ HPDF_STATUS HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter_limit)
 
 /* d */
 HPDF_STATUS
-HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 * dash_ptn, HPDF_UINT num_param, HPDF_UINT phase)
+HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 *dash_ptn, HPDF_UINT num_param, HPDF_UINT phase)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -1041,12 +1041,6 @@ HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMod
 
 
 /* Ts */
-HPDF_STATUS HPDF_Page_SetTextRaise(HPDF_Page page, HPDF_REAL value)
-{
-	return HPDF_Page_SetTextRise(page, value);
-}
-
-
 HPDF_STATUS HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -2470,7 +2464,7 @@ HPDF_STATUS HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HP
 /*
  *  This function is contributed by Finn Arildsen.
  */
-HPDF_STATUS HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict * new_stream)
+HPDF_STATUS HPDF_Page_New_Content_Stream(HPDF_Page page, HPDF_Dict *new_stream)
 {
 	/* Call this function to start a new content stream on a page. The
 	   handle is returned to new_stream.

@@ -140,7 +140,7 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 		case HPDF_INVALID_FONTDEF_TYPE: return _("Invalid font definition type");
 		case HPDF_INVALID_FONT_NAME: return _("Font with the specified name is not found");
 		case HPDF_INVALID_IMAGE: return _("Unsupported image format");
-		case HPDF_INVALID_JPEG_DATA: return _("Invalie Jpeg data");
+		case HPDF_INVALID_JPEG_DATA: return _("Invalid Jpeg data");
 		case HPDF_INVALID_N_DATA: return _("Cannot read a postscript-name from an afm file");
 		case HPDF_INVALID_OBJECT: return _("An invalid object is set");
 		case HPDF_INVALID_OBJ_ID: return _("An invalid object id is set");

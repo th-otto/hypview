@@ -19,6 +19,8 @@
 #include "hpdf_utils.h"
 #include "hpdf.h"
 
+#ifdef LIBHPDF_WITH_ASIAN_FONTS
+
 /*----------------------------------------------------------------------------*/
 
 static const HPDF_CID_Width MS_Gothic_W_ARRAY[] = {
@@ -1773,9 +1775,11 @@ static HPDF_STATUS MS_PMincho_BoldItalic_Init(HPDF_FontDef fontdef)
 	return HPDF_CIDFontDef_ChangeStyle(fontdef, HPDF_TRUE, HPDF_TRUE);
 }
 
+#endif /* LIBHPDF_WITH_ASIAN_FONTS */
 
 HPDF_STATUS HPDF_UseJPFonts(HPDF_Doc pdf)
 {
+#ifdef LIBHPDF_WITH_ASIAN_FONTS
 	HPDF_FontDef fontdef;
 	HPDF_STATUS ret;
 
@@ -1867,4 +1871,9 @@ HPDF_STATUS HPDF_UseJPFonts(HPDF_Doc pdf)
 		return ret;
 
 	return HPDF_OK;
+#else
+	if (!HPDF_HasDoc(pdf))
+		return HPDF_INVALID_DOCUMENT;
+	return HPDF_RaiseError(&pdf->error, HPDF_UNSUPPORTED_FONT_TYPE, 0);
+#endif
 }

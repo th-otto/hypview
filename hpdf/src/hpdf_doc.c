@@ -684,8 +684,7 @@ HPDF_BOOL HPDF_Doc_Validate(HPDF_Doc pdf)
 {
 	if (!pdf || pdf->sig_bytes != HPDF_SIG_BYTES)
 		return HPDF_FALSE;
-	else
-		return HPDF_TRUE;
+	return HPDF_TRUE;
 }
 
 
@@ -2139,7 +2138,7 @@ HPDF_EmbeddedFile HPDF_AttachFile(HPDF_Doc pdf, const char *file)
 	HPDF_NameTree ntree;
 	HPDF_EmbeddedFile efile;
 	HPDF_String name;
-	HPDF_STATUS ret = HPDF_OK;
+	HPDF_STATUS ret;
 
 	if (!HPDF_HasDoc(pdf))
 		return NULL;
@@ -2176,7 +2175,7 @@ HPDF_EmbeddedFile HPDF_AttachFile(HPDF_Doc pdf, const char *file)
 	if (!name)
 		return NULL;
 
-	ret += HPDF_NameTree_Add(ntree, name, efile);
+	ret = HPDF_NameTree_Add(ntree, name, efile);
 	if (ret != HPDF_OK)
 		return NULL;
 

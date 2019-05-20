@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = -Wno-portability
+AUTOMAKE_OPTIONS = -Wno-portability subdir-objects
 
 include ../Makefile.common
 
@@ -54,6 +54,10 @@ hypview_SOURCES = \
 	\
 	windebug.c windebug.h \
 	$(empty)
+
+if WITH_PDF
+hypview_SOURCES += ../hyp/pdf.c
+endif
 
 hypview_DEPENDENCIES = resource.res $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)
 hypview_LDADD = resource.res

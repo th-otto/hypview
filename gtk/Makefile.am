@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = -Wno-portability
+AUTOMAKE_OPTIONS = -Wno-portability subdir-objects
 
 include ../Makefile.common
 
@@ -74,6 +74,11 @@ hypview_SOURCES = \
 	hv_recomp.c \
 	hcp_opts.c \
 	$(empty)
+
+if WITH_PDF
+hypview_SOURCES += ../hyp/pdf.c
+endif
+
 
 hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
 hypview_LDADD =

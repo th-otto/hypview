@@ -1123,12 +1123,6 @@ HPDF_TextRenderingMode HPDF_Page_GetTextRenderingMode(HPDF_Page page)
 }
 
 
-HPDF_REAL HPDF_Page_GetTextRaise(HPDF_Page page)
-{
-	return HPDF_Page_GetTextRise(page);
-}
-
-
 HPDF_REAL HPDF_Page_GetTextRise(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))

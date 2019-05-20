@@ -20,6 +20,8 @@
 #include "hpdf_encoder.h"
 #include "hpdf.h"
 
+#ifdef LIBHPDF_WITH_ASIAN_FONTS
+
 static const HPDF_UnicodeMap_Rec CP932_UNICODE_ARRAY[] = {
 	{0x00, 0x0000},
 	{0x01, 0x0001},
@@ -15993,10 +15995,13 @@ static HPDF_STATUS EUC_V_Init(HPDF_Encoder encoder)
 	return HPDF_OK;
 }
 
+#endif /* LIBHPDF_WITH_ASIAN_FONTS */
+
 /*--------------------------------------------------------------------------*/
 
 HPDF_STATUS HPDF_UseJPEncodings(HPDF_Doc pdf)
 {
+#ifdef LIBHPDF_WITH_ASIAN_FONTS
 	HPDF_Encoder encoder;
 	HPDF_STATUS ret;
 
@@ -16033,6 +16038,10 @@ HPDF_STATUS HPDF_UseJPEncodings(HPDF_Doc pdf)
 	if ((ret = HPDF_Doc_RegisterEncoder(pdf, encoder)) != HPDF_OK)
 		return ret;
 
-
 	return HPDF_OK;
+#else
+	if (!HPDF_HasDoc(pdf))
+		return HPDF_INVALID_DOCUMENT;
+	return HPDF_RaiseError(&pdf->error, HPDF_UNSUPPORTED_FONT_TYPE, 0);
+#endif
 }

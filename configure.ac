@@ -901,6 +901,7 @@ AM_CONDITIONAL(HAVE_CURL, test "$no_curl" = "")
 AH_TEMPLATE([WITH_PDF], [include PDF output support])
 AH_TEMPLATE([LIBHPDF_HAVE_NOZLIB], [zlib is not available])
 AH_TEMPLATE([LIBHPDF_HAVE_NOPNGLIB], [libpng is not available])
+AH_TEMPLATE([LIBHPDF_WITH_ASIAN_FONTS], [include support for asian character encodings])
 AC_ARG_WITH(pdf,
   [AS_HELP_STRING([--with-pdf],[include PDF output support])],
   [ ],
@@ -919,9 +920,17 @@ if test "$with_png" != "no"; then
     AC_MSG_ERROR([png_init_io() is missing, check config.log for more details])
   ])
 fi
+AC_ARG_ENABLE(asian-fonts,
+  [AS_HELP_STRING([--enable-asian-font],[include support for asian character encodings])],
+  [ ],
+  [with_asian_fonts=no]
+)
 fi
 if test "$with_png" = "no"; then
   AC_DEFINE([LIBHPDF_HAVE_NOPNGLIB])
+fi
+if test "$with_asian_fonts" = "yes"; then
+  AC_DEFINE([LIBHPDF_WITH_ASIAN_FONTS])
 fi
 
 ###############################################################################
