@@ -12,6 +12,7 @@ typedef struct _pdf {
 	HPDF_REAL font_size;
 	HPDF_REAL line_height;
 	HPDF_Page page;
+	HPDF_Page *pages;
 	HPDF_REAL page_height;
 } PDF;
 

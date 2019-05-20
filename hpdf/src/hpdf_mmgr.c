@@ -45,12 +45,6 @@ HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func al
 	{
 		/* initialize mmgr object */
 		mmgr->error = error;
-
-
-#ifdef HPDF_MEM_DEBUG
-		mmgr->alloc_cnt = 0;
-		mmgr->free_cnt = 0;
-#endif
 		/*
 		 *  if alloc_fn and free_fn are specified, these function is
 		 *  used. if not, default function (maybe these will be "malloc" and
@@ -72,8 +66,9 @@ HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func al
 		 *
 		 */
 		if (!buf_size)
+		{
 			mmgr->mpool = NULL;
-		else
+		} else
 		{
 			HPDF_MPool_Node node;
 
@@ -93,13 +88,6 @@ HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func al
 				node->used_size = 0;
 				node->next_node = NULL;
 			}
-
-#ifdef HPDF_MEM_DEBUG
-			if (mmgr)
-			{
-				mmgr->alloc_cnt += 1;
-			}
-#endif
 		}
 
 		if (mmgr)
@@ -132,19 +120,7 @@ void HPDF_MMgr_Free(HPDF_MMgr mmgr)
 		node = tmp->next_node;
 
 		mmgr->free_fn(tmp);
-
-#ifdef HPDF_MEM_DEBUG
-		mmgr->free_cnt++;
-#endif
-
 	}
-
-#ifdef HPDF_MEM_DEBUG
-	printf("# HPDF_MMgr alloc-cnt=%u, free-cnt=%u\n", mmgr->alloc_cnt, mmgr->free_cnt);
-
-	if (mmgr->alloc_cnt != mmgr->free_cnt)
-		printf("# ERROR #\n");
-#endif
 
 	mmgr->free_fn(mmgr);
 }
@@ -195,11 +171,6 @@ void *HPDF_GetMem(HPDF_MMgr mmgr, HPDF_UINT size)
 			HPDF_SetError(mmgr->error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
 	}
 
-#ifdef HPDF_MEM_DEBUG
-	if (ptr)
-		mmgr->alloc_cnt++;
-#endif
-
 	return ptr;
 }
 
@@ -212,9 +183,23 @@ void HPDF_FreeMem(HPDF_MMgr mmgr, void *aptr)
 	if (!mmgr->mpool)
 	{
 		mmgr->free_fn(aptr);
-
-#ifdef HPDF_MEM_DEBUG
-		mmgr->free_cnt++;
-#endif
 	}
+}
+
+
+void *HPDF_DirectAlloc(HPDF_MMgr mmgr, HPDF_UINT size)
+{
+	void *ptr;
+
+	ptr = mmgr->alloc_fn(size);
+	if (ptr == NULL)
+		HPDF_SetError(mmgr->error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+
+	return ptr;
+}
+
+
+void HPDF_DirectFree(HPDF_MMgr mmgr, void *aptr)
+{
+	mmgr->free_fn(aptr);
 }

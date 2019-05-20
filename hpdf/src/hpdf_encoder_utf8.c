@@ -48,7 +48,7 @@ static const HPDF_CidRange_Rec UTF8_CID_RANGE[] = {
  * This function is taken from hpdf_encoder_utf8.c, originally submitted
  * to libharu by 'Mirco'
  */
-static HPDF_ByteType UTF8_Encoder_ByteType_Func(HPDF_Encoder encoder, HPDF_ParseText_Rec * state)
+static HPDF_ByteType UTF8_Encoder_ByteType_Func(HPDF_Encoder encoder, HPDF_ParseText_Rec *state)
 {
 	/* This function is supposed to increment state->index */
 	/* Not logical ! (look at function HPDF_String_Write in hpdf_string.c) */
@@ -163,13 +163,15 @@ static HPDF_UNICODE UTF8_Encoder_ToUnicode_Func(HPDF_Encoder encoder, HPDF_UINT1
 }
 
 
-static char *UTF8_Encoder_EncodeText_Func(HPDF_Encoder encoder, const char *text, HPDF_UINT len, HPDF_UINT * length)
+static char *UTF8_Encoder_EncodeText_Func(HPDF_Encoder encoder, HPDF_MMgr mmgr, const char *text, HPDF_UINT len, HPDF_UINT *length)
 {
-	char *result = (char *) malloc(len * 2);
+	char *result = (char *) HPDF_DirectAlloc(mmgr, len * 2);
 	char *c = result;
 	HPDF_ParseText_Rec parse_state;
 	HPDF_UINT i;
 
+	if (result == NULL)
+		return NULL;
 	HPDF_Encoder_SetParseText(encoder, &parse_state, (const HPDF_BYTE *) text, len);
 
 	for (i = 0; i < len; i++)

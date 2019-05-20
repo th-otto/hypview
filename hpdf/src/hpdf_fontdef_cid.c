@@ -80,7 +80,7 @@ HPDF_FontDef HPDF_CIDFontDef_New(HPDF_MMgr mmgr, const char *name, HPDF_FontDef_
 	}
 
 	fontdef->attr = fontdef_attr;
-	memset((HPDF_BYTE *) fontdef_attr, 0, sizeof(HPDF_CIDFontDefAttr_Rec));
+	memset(fontdef_attr, 0, sizeof(HPDF_CIDFontDefAttr_Rec));
 
 	fontdef_attr->widths = HPDF_List_New(mmgr, HPDF_DEF_CHAR_WIDTHS_NUM);
 	if (!fontdef_attr->widths)

@@ -45,11 +45,6 @@ typedef struct _HPDF_MMgr_Rec
 	HPDF_Free_Func free_fn;
 	HPDF_MPool_Node mpool;
 	HPDF_UINT buf_size;
-
-#ifdef HPDF_MEM_DEBUG
-	HPDF_UINT alloc_cnt;
-	HPDF_UINT free_cnt;
-#endif
 } HPDF_MMgr_Rec;
 
 
@@ -60,15 +55,13 @@ typedef struct _HPDF_MMgr_Rec
  *  if buf_size is non-zero, mmgr is configured to be using memory-pool
  */
 HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func alloc_fn, HPDF_Free_Func free_fn);
-
-
 void HPDF_MMgr_Free(HPDF_MMgr mmgr);
 
-
 void *HPDF_GetMem(HPDF_MMgr mmgr, HPDF_UINT size);
-
-
 void HPDF_FreeMem(HPDF_MMgr mmgr, void *aptr);
+
+void *HPDF_DirectAlloc(HPDF_MMgr mmgr, HPDF_UINT size);
+void HPDF_DirectFree(HPDF_MMgr mmgr, void *aptr);
 
 #ifdef __cplusplus
 }

@@ -89,7 +89,7 @@ typedef HPDF_ByteType(*HPDF_Encoder_ByteType_Func) (HPDF_Encoder encoder, HPDF_P
 
 typedef HPDF_UNICODE(*HPDF_Encoder_ToUnicode_Func) (HPDF_Encoder encoder, HPDF_UINT16 code);
 
-typedef char *(*HPDF_Encoder_EncodeText_Func)(HPDF_Encoder encoder, const char *text, HPDF_UINT len, HPDF_UINT *encoded_length);
+typedef char *(*HPDF_Encoder_EncodeText_Func)(HPDF_Encoder encoder, HPDF_MMgr mmgr, const char *text, HPDF_UINT len, HPDF_UINT *encoded_length);
 
 typedef HPDF_STATUS(*HPDF_Encoder_Write_Func) (HPDF_Encoder encoder, HPDF_Stream out);
 

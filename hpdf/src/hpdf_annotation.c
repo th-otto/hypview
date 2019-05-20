@@ -373,7 +373,7 @@ HPDF_STATUS HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHig
 
 	switch (mode)
 	{
-	case HPDF_ANNOT_NO_HIGHTLIGHT:
+	case HPDF_ANNOT_NO_HIGHLIGHT:
 		ret = HPDF_Dict_AddName(annot, "H", "N");
 		break;
 	case HPDF_ANNOT_INVERT_BORDER:

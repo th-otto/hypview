@@ -104,10 +104,10 @@ int main(int argc, char **argv)
 	HPDF_Page_MoveTextPos(index_page, 20, 180);
 	HPDF_Page_SetTextLeading(index_page, 23);
 
-	/* page1 (HPDF_ANNOT_NO_HIGHTLIGHT) */
+	/* page1 (HPDF_ANNOT_NO_HIGHLIGHT) */
 	tp = HPDF_Page_GetCurrentTextPos(index_page);
 
-	HPDF_Page_ShowText(index_page, "Jump to Page1 (HilightMode=HPDF_ANNOT_NO_HIGHTLIGHT)");
+	HPDF_Page_ShowText(index_page, "Jump to Page1 (HilightMode=HPDF_ANNOT_NO_HIGHLIGHT)");
 	rect.left = tp.x - 4;
 	rect.bottom = tp.y - 4;
 	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 
 	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
 
-	HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_NO_HIGHTLIGHT);
+	HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_NO_HIGHLIGHT);
 
 
 	/* page2 (HPDF_ANNOT_INVERT_BOX) */

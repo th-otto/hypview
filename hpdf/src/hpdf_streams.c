@@ -282,7 +282,7 @@ HPDF_STATUS HPDF_Stream_WriteEscapeName(HPDF_Stream stream, const char *value)
 {
 	char tmp_char[HPDF_LIMIT_MAX_NAME_LEN * 3 + 2];
 	HPDF_UINT len;
-	HPDF_INT i;
+	HPDF_UINT i;
 	const HPDF_BYTE *pos1;
 	char *pos2;
 
@@ -291,21 +291,21 @@ HPDF_STATUS HPDF_Stream_WriteEscapeName(HPDF_Stream stream, const char *value)
 	pos2 = tmp_char;
 
 	*pos2++ = '/';
-	for (i = 0; i < (HPDF_INT32) len; i++)
+	for (i = 0; i < len; i++)
 	{
 		HPDF_BYTE c = *pos1++;
 
 		if (HPDF_NEEDS_ESCAPE(c))
 		{
 			*pos2++ = '#';
-			*pos2 = (char) (c >> 4);
+			*pos2 = c >> 4;
 			if (*pos2 <= 9)
 				*pos2 += 0x30;
 			else
 				*pos2 += 0x41 - 10;
 			pos2++;
 
-			*pos2 = (char) (c & 0x0f);
+			*pos2 = c & 0x0f;
 			if (*pos2 <= 9)
 				*pos2 += 0x30;
 			else
@@ -343,7 +343,7 @@ HPDF_STATUS HPDF_Stream_WriteEscapeText2(HPDF_Stream stream, const char *text, H
 
 	for (i = 0; i < len; i++)
 	{
-		HPDF_BYTE c = (HPDF_BYTE) * p++;
+		HPDF_BYTE c = *p++;
 
 		if (HPDF_NEEDS_ESCAPE(c))
 		{
@@ -383,7 +383,7 @@ HPDF_STATUS HPDF_Stream_WriteEscapeText(HPDF_Stream stream, const char *text)
 {
 	HPDF_UINT len;
 
-	len = (text == NULL) ? 0 : HPDF_StrLen(text, HPDF_LIMIT_MAX_STRING_LEN);
+	len = text == NULL ? 0 : HPDF_StrLen(text, HPDF_LIMIT_MAX_STRING_LEN);
 
 	return HPDF_Stream_WriteEscapeText2(stream, text, len);
 }
@@ -420,7 +420,7 @@ HPDF_STATUS HPDF_Stream_WriteBinary(HPDF_Stream stream, const void *data, HPDF_U
 
 	for (i = 0; i < len; i++, p++)
 	{
-		char c = (char) (*p >> 4);
+		HPDF_BYTE c = *p >> 4;
 
 		if (c <= 9)
 			c += 0x30;
@@ -428,7 +428,7 @@ HPDF_STATUS HPDF_Stream_WriteBinary(HPDF_Stream stream, const void *data, HPDF_U
 			c += 0x41 - 10;
 		buf[idx++] = c;
 
-		c = (char) (*p & 0x0f);
+		c = *p & 0x0f;
 		if (c <= 9)
 			c += 0x30;
 		else
@@ -794,7 +794,7 @@ static HPDF_UINT32 HPDF_FileStream_SizeFunc(HPDF_Stream stream)
 		return 0;
 	}
 
-	return (HPDF_UINT32) size;
+	return size;
 }
 
 
@@ -868,7 +868,7 @@ static HPDF_STATUS HPDF_FileWriter_WriteFunc(HPDF_Stream stream, const void *ptr
 HPDF_Stream HPDF_FileWriter_New(HPDF_MMgr mmgr, const char *fname)
 {
 	HPDF_Stream stream;
-	HPDF_FILEP fp = HPDF_FOPEN(fname, "wb");
+	HPDF_FILEP fp = strcmp(fname, "-") == 0 ? stdout : HPDF_FOPEN(fname, "wb");
 
 	if (!fp)
 	{
@@ -985,9 +985,11 @@ static HPDF_STATUS HPDF_MemStream_SeekFunc(HPDF_Stream stream, HPDF_INT pos, HPD
 		pos += (attr->r_ptr_idx * attr->buf_siz);
 		pos += attr->r_pos;
 	} else if (mode == HPDF_SEEK_END)
+	{
 		pos = stream->size - pos;
+	}
 
-	if (pos > (HPDF_INT) stream->size)
+	if ((HPDF_UINT) pos > stream->size)
 	{
 		return HPDF_SetError(stream->error, HPDF_STREAM_EOF, 0);
 	}

@@ -4458,7 +4458,6 @@ HPDF_FontDef HPDF_Base14FontDef_New(HPDF_MMgr mmgr, const char *font_name)
 	HPDF_FontDef fontdef;
 	HPDF_STATUS ret;
 	const HPDF_Base14FontDefData *data;
-	char *eptr;
 	HPDF_Type1FontDefAttr attr;
 
 	fontdef = HPDF_Type1FontDef_New(mmgr);
@@ -4474,15 +4473,13 @@ HPDF_FontDef HPDF_Base14FontDef_New(HPDF_MMgr mmgr, const char *font_name)
 		return NULL;
 	}
 
-	eptr = fontdef->base_font + HPDF_LIMIT_MAX_NAME_LEN;
-	HPDF_StrCpy(fontdef->base_font, data->font_name, eptr);
+	strcpy(fontdef->base_font, data->font_name);
 
 	attr = (HPDF_Type1FontDefAttr) fontdef->attr;
 	attr->is_base14font = HPDF_TRUE;
 
 	if (data->is_font_specific)
-		HPDF_StrCpy(attr->encoding_scheme, HPDF_ENCODING_FONT_SPECIFIC,
-					attr->encoding_scheme + HPDF_LIMIT_MAX_NAME_LEN);
+		strcpy(attr->encoding_scheme, HPDF_ENCODING_FONT_SPECIFIC);
 
 	ret = HPDF_Type1FontDef_SetWidths(fontdef, data->widths_table);
 

@@ -1738,7 +1738,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				char *quoted = html_quote_name(label, QUOTE_LABEL | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s#%s\"%s>%s</a>", style, xref->destfilename, quoted, target, xref->text);
 				g_free(quoted);
-			} else if (xref->desttype == HYP_NODE_POPUP && *target == '\0')
+			} else if (xref->desttype == HYP_NODE_POPUP && !newwindow)
 			{
 				char *id;
 				GString *tmp;

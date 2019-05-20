@@ -99,6 +99,7 @@ struct _HPDF_CCITT_Data
 	HPDF_Fax3CodecState *tif_data;
 
 	HPDF_Stream dst;
+	HPDF_MMgr mmgr;
 
 	tsize_t tif_rawdatasize;			/* # of bytes in raw data buffer */
 	tsize_t tif_rawcc;					/* bytes unread from raw buffer */
@@ -115,7 +116,7 @@ static HPDF_STATUS HPDF_InitCCITTFax3(struct _HPDF_CCITT_Data *pData)
 	/*
 	 * Allocate state block so tag methods have storage to record values.
 	 */
-	pData->tif_data = (HPDF_Fax3CodecState *) malloc(sizeof(HPDF_Fax3CodecState));
+	pData->tif_data = (HPDF_Fax3CodecState *) HPDF_DirectAlloc(pData->mmgr, sizeof(HPDF_Fax3CodecState));
 
 	if (pData->tif_data == NULL)
 	{
@@ -148,20 +149,20 @@ static HPDF_STATUS HPDF_FreeCCITTFax3(struct _HPDF_CCITT_Data *pData)
 
 		if (esp->refline != NULL)
 		{
-			free(esp->refline);
+			HPDF_DirectFree(pData->mmgr, esp->refline);
 			esp->refline = NULL;
 		}
 		if (esp->runs != NULL)
 		{
-			free(esp->runs);
+			HPDF_DirectFree(pData->mmgr, esp->runs);
 			esp->runs = NULL;
 		}
-		free(pData->tif_data);
+		HPDF_DirectFree(pData->mmgr, pData->tif_data);
 		pData->tif_data = NULL;
 	}
 	if (pData->tif_rawdata != NULL)
 	{
-		free(pData->tif_rawdata);
+		HPDF_DirectFree(pData->mmgr, pData->tif_rawdata);
 		pData->tif_rawdata = NULL;
 	}
 	return HPDF_OK;
@@ -191,7 +192,7 @@ static int HPDF_Fax3SetupState(struct _HPDF_CCITT_Data *pData, HPDF_UINT width, 
 
 	nruns = 2 * TIFFroundup(rowpixels, 32);
 	nruns += 3;
-	esp->runs = (uint32 *) malloc(2 * nruns * sizeof(uint32));
+	esp->runs = (uint32 *) HPDF_DirectAlloc(pData->mmgr, 2 * nruns * sizeof(uint32));
 	if (esp->runs == NULL)
 		return 1;
 	esp->curruns = esp->runs;
@@ -204,7 +205,7 @@ static int HPDF_Fax3SetupState(struct _HPDF_CCITT_Data *pData, HPDF_UINT width, 
 	 * is referenced.  The reference line must
 	 * be initialized to be ``white'' (done elsewhere).
 	 */
-	esp->refline = (unsigned char *) malloc(rowbytes);
+	esp->refline = (unsigned char *) HPDF_DirectAlloc(pData->mmgr, rowbytes);
 	if (esp->refline == NULL)
 	{
 		return 1;
@@ -255,10 +256,10 @@ static HPDF_STATUS HPDF_CCITT_FlushData(struct _HPDF_CCITT_Data *pData)
 {
 	if (pData->tif_rawcc > 0)
 	{
-		/*if (!isFillOrder(tif, tif->tif_dir.td_fillorder) &&
-		   (tif->tif_flags & TIFF_NOBITREV) == 0)
-		   TIFFReverseBits((unsigned char *pData->tif_rawdata,
-		   pData->tif_rawcc); */
+#if 0
+		if (!isFillOrder(tif, tif->tif_dir.td_fillorder) && (tif->tif_flags & TIFF_NOBITREV) == 0)
+			TIFFReverseBits((unsigned char *pData->tif_rawdata, pData->tif_rawcc);
+#endif
 		if (HPDF_CCITT_AppendToStream(pData->dst, pData->tif_rawdata, pData->tif_rawcc) != HPDF_OK)
 			return 1;
 		pData->tif_rawcc = 0;
@@ -675,9 +676,10 @@ static void HPDF_Fax4PostEncode(struct _HPDF_CCITT_Data *pData)
 
 
 static HPDF_STATUS HPDF_Stream_CcittToStream(
-	const HPDF_BYTE * buf,
+	const HPDF_BYTE *buf,
 	HPDF_Stream dst,
 	HPDF_Encrypt e,
+	HPDF_MMgr mmgr,
 	HPDF_UINT width,
 	HPDF_UINT height,
 	HPDF_UINT line_width,
@@ -706,7 +708,8 @@ static HPDF_STATUS HPDF_Stream_CcittToStream(
 
 	memset(&data, 0, sizeof(struct _HPDF_CCITT_Data));
 	data.dst = dst;
-	data.tif_rawdata = (tidata_t) malloc(16384);	/*  16 kb buffer */
+	data.mmgr = mmgr;
+	data.tif_rawdata = (tidata_t) HPDF_DirectAlloc(mmgr, 16384);	/*  16 kb buffer */
 	data.tif_rawdatasize = 16384;
 	data.tif_rawcc = 0;
 	data.tif_rawcp = data.tif_rawdata;
@@ -779,7 +782,7 @@ HPDF_Image HPDF_Image_Load1BitImageFromMem(
 	if (HPDF_Dict_AddNumber(image, "BitsPerComponent", 1) != HPDF_OK)
 		return NULL;
 
-	if (HPDF_Stream_CcittToStream(buf, image->stream, NULL, width, height, line_width, top_is_first) != HPDF_OK)
+	if (HPDF_Stream_CcittToStream(buf, image->stream, NULL, mmgr, width, height, line_width, top_is_first) != HPDF_OK)
 		return NULL;
 
 	return image;

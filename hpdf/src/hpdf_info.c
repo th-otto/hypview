@@ -110,7 +110,6 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_D
 	case 12:
 		if (value.day > 31)
 			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
-
 		break;
 	case 4:
 	case 6:
@@ -118,13 +117,11 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_D
 	case 11:
 		if (value.day > 30)
 			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
-
 		break;
 	case 2:
 		if (value.day > 29 || (value.day == 29 &&
 							   (value.year % 4 != 0 || (value.year % 100 == 0 && value.year % 400 != 0))))
 			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
-
 		break;
 	default:
 		return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);

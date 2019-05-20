@@ -58,7 +58,6 @@ static HPDF_STATUS Type1Font_OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 		pbuf = buf;
 		for (i = encoder_attr->first_char; i <= encoder_attr->last_char; i++)
 		{
-
 			pbuf = HPDF_IToA(pbuf, attr->widths[i], eptr);
 			*pbuf++ = ' ';
 

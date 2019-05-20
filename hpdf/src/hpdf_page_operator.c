@@ -1205,7 +1205,7 @@ HPDF_STATUS HPDF_Page_MoveToNextLine(HPDF_Page page)
 
 /*--- Text showing -------------------------------------------------------*/
 
-static HPDF_STATUS InternalWriteText(HPDF_PageAttr attr, const char *text)
+static HPDF_STATUS InternalWriteText(HPDF_PageAttr attr, HPDF_MMgr mmgr, const char *text)
 {
 	HPDF_FontAttr font_attr = (HPDF_FontAttr) attr->gstate->font->attr;
 	HPDF_STATUS ret;
@@ -1230,11 +1230,11 @@ static HPDF_STATUS InternalWriteText(HPDF_PageAttr attr, const char *text)
 			char *encoded;
 			HPDF_UINT length;
 
-			encoded = (encoder->encode_text_fn) (encoder, text, len, &length);
+			encoded = (encoder->encode_text_fn) (encoder, mmgr, text, len, &length);
 
 			ret = HPDF_Stream_WriteBinary(attr->stream, (HPDF_BYTE *) encoded, length, NULL);
 
-			free(encoded);
+			HPDF_DirectFree(mmgr, encoded);
 
 			if (ret != HPDF_OK)
 				return ret;
@@ -1267,7 +1267,7 @@ HPDF_STATUS HPDF_Page_ShowText(HPDF_Page page, const char *text)
 	if (!tw)
 		return ret;
 
-	if (InternalWriteText(attr, text) != HPDF_OK)
+	if (InternalWriteText(attr, page->mmgr, text) != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
 	if (HPDF_Stream_WriteStr(attr->stream, " Tj\012") != HPDF_OK)
@@ -1308,7 +1308,7 @@ HPDF_STATUS HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
 	if (text == NULL || text[0] == 0)
 		return HPDF_Page_MoveToNextLine(page);
 
-	if (InternalWriteText(attr, text) != HPDF_OK)
+	if (InternalWriteText(attr, page->mmgr, text) != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
 	if (HPDF_Stream_WriteStr(attr->stream, " \'\012") != HPDF_OK)
@@ -1371,10 +1371,10 @@ HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, H
 	pbuf = HPDF_FToA(pbuf, char_space, eptr);
 	*pbuf = ' ';
 
-	if (InternalWriteText(attr, buf) != HPDF_OK)
+	if (InternalWriteText(attr, page->mmgr, buf) != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
-	if (InternalWriteText(attr, text) != HPDF_OK)
+	if (InternalWriteText(attr, page->mmgr, text) != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
 	if (HPDF_Stream_WriteStr(attr->stream, " \"\012") != HPDF_OK)
@@ -2103,9 +2103,9 @@ static HPDF_STATUS InternalShowTextNextLine(HPDF_Page page, const char *text, HP
 			char *encoded;
 			HPDF_UINT length;
 
-			encoded = (encoder->encode_text_fn) (encoder, text, len, &length);
+			encoded = (encoder->encode_text_fn) (encoder, page->mmgr, text, len, &length);
 			ret = HPDF_Stream_WriteBinary(attr->stream, (HPDF_BYTE *) encoded, length, NULL);
-			free(encoded);
+			HPDF_DirectFree(page->mmgr, encoded);
 
 			if (ret != HPDF_OK)
 				return ret;

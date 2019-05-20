@@ -915,7 +915,7 @@ static void OnFree_Func(HPDF_Dict obj)
 
 HPDF_Font HPDF_Type0Font_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder encoder, HPDF_Xref xref)
 {
-	HPDF_Dict font;
+	HPDF_Font font;
 	HPDF_FontAttr attr;
 	HPDF_CMapEncoderAttr encoder_attr;
 	HPDF_STATUS ret = 0;

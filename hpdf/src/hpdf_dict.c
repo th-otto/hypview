@@ -172,8 +172,9 @@ HPDF_STATUS HPDF_Dict_Write(HPDF_Dict dict, HPDF_Stream stream, HPDF_Encrypt e)
 	{
 		/* set filter element */
 		if (dict->filter == HPDF_STREAM_FILTER_NONE)
+		{
 			HPDF_Dict_RemoveElement(dict, "Filter");
-		else
+		} else
 		{
 			HPDF_Array array = (HPDF_Array) HPDF_Dict_GetItem(dict, "Filter", HPDF_OCLASS_ARRAY);
 

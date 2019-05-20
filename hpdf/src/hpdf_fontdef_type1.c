@@ -74,7 +74,7 @@ HPDF_FontDef HPDF_Type1FontDef_New(HPDF_MMgr mmgr)
 	}
 
 	fontdef->attr = fontdef_attr;
-	memset((HPDF_BYTE *) fontdef_attr, 0, sizeof(HPDF_Type1FontDefAttr_Rec));
+	memset(fontdef_attr, 0, sizeof(HPDF_Type1FontDefAttr_Rec));
 	fontdef->flags = HPDF_FONT_STD_CHARSET;
 
 	return fontdef;

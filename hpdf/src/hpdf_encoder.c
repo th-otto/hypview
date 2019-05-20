@@ -2078,7 +2078,7 @@ static const HPDF_BuiltinEncodingData HPDF_BUILTIN_ENCODINGS[] = {
 
 /*---------------------------------------------------------------------------*/
 
-static void HPDF_BasicEncoder_CopyMap(HPDF_Encoder encoder, const HPDF_UNICODE * map)
+static void HPDF_BasicEncoder_CopyMap(HPDF_Encoder encoder, const HPDF_UNICODE *map)
 {
 	HPDF_UINT i;
 	HPDF_UNICODE *dst = ((HPDF_BasicEncoderAttr) encoder->attr)->unicode_map + HPDF_BASIC_ENCODER_FIRST_CHAR;
@@ -2103,7 +2103,7 @@ static const HPDF_BuiltinEncodingData *HPDF_BasicEncoder_FindBuiltinData(const c
 }
 
 
-static HPDF_STATUS HPDF_BasicEncoder_OverrideMap(HPDF_Encoder encoder, const HPDF_UNICODE * map)
+static HPDF_STATUS HPDF_BasicEncoder_OverrideMap(HPDF_Encoder encoder, const HPDF_UNICODE *map)
 {
 	HPDF_UINT i;
 	HPDF_BasicEncoderAttr data = (HPDF_BasicEncoderAttr) encoder->attr;
@@ -2282,7 +2282,7 @@ HPDF_STATUS HPDF_BasicEncoder_Write(HPDF_Encoder encoder, HPDF_Stream out)
 	HPDF_STATUS ret;
 	HPDF_BasicEncoderAttr attr = (HPDF_BasicEncoderAttr) encoder->attr;
 
-	/*  if HPDF_ENCODING_FONT_SPECIFIC is selected, no Encoding object will be "
+	/*  if HPDF_ENCODING_FONT_SPECIFIC is selected, no Encoding object will be
 	 *  written.
 	 */
 	if (strcmp(attr->base_encoding, HPDF_ENCODING_FONT_SPECIFIC) == 0)
@@ -2290,7 +2290,7 @@ HPDF_STATUS HPDF_BasicEncoder_Write(HPDF_Encoder encoder, HPDF_Stream out)
 
 	/* if encoder has differences-data, encoding object is written as
 	   dictionary-object, otherwise it is written as name-object. */
-	if (attr->has_differences == HPDF_TRUE)
+	if (attr->has_differences)
 	{
 		ret = HPDF_Stream_WriteStr(out, "/Encoding <<\012" "/Type /Encoding\012" "/BaseEncoding ");
 		if (ret != HPDF_OK)
@@ -2311,7 +2311,7 @@ HPDF_STATUS HPDF_BasicEncoder_Write(HPDF_Encoder encoder, HPDF_Stream out)
 		return ret;
 
 	/* write differences data */
-	if (attr->has_differences == HPDF_TRUE)
+	if (attr->has_differences)
 	{
 		HPDF_INT i;
 
@@ -2514,7 +2514,7 @@ HPDF_STATUS HPDF_CMapEncoder_Write(HPDF_Encoder encoder, HPDF_Stream out)
 }
 
 
-void HPDF_Encoder_SetParseText(HPDF_Encoder encoder, HPDF_ParseText_Rec * state, const HPDF_BYTE * text, HPDF_UINT len)
+void HPDF_Encoder_SetParseText(HPDF_Encoder encoder, HPDF_ParseText_Rec *state, const HPDF_BYTE *text, HPDF_UINT len)
 {
 	HPDF_UNUSED(encoder);
 
@@ -2525,7 +2525,7 @@ void HPDF_Encoder_SetParseText(HPDF_Encoder encoder, HPDF_ParseText_Rec * state,
 }
 
 
-HPDF_ByteType HPDF_CMapEncoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec * state)
+HPDF_ByteType HPDF_CMapEncoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec *state)
 {
 	HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr) encoder->attr;
 
@@ -2552,7 +2552,7 @@ HPDF_ByteType HPDF_CMapEncoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec
 }
 
 
-HPDF_ByteType HPDF_Encoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec * state)
+HPDF_ByteType HPDF_Encoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec *state)
 {
 	if (encoder->byte_type_fn)
 		return encoder->byte_type_fn(encoder, state);
@@ -2561,7 +2561,7 @@ HPDF_ByteType HPDF_Encoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec * s
 }
 
 
-HPDF_STATUS HPDF_CMapEncoder_AddCMap(HPDF_Encoder encoder, const HPDF_CidRange_Rec * range)
+HPDF_STATUS HPDF_CMapEncoder_AddCMap(HPDF_Encoder encoder, const HPDF_CidRange_Rec *range)
 {
 	HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr) encoder->attr;
 
@@ -2650,7 +2650,7 @@ HPDF_STATUS HPDF_CMapEncoder_AddCodeSpaceRange(HPDF_Encoder encoder, HPDF_CidRan
 }
 
 
-void HPDF_CMapEncoder_SetUnicodeArray(HPDF_Encoder encoder, const HPDF_UnicodeMap_Rec * array)
+void HPDF_CMapEncoder_SetUnicodeArray(HPDF_Encoder encoder, const HPDF_UnicodeMap_Rec *array)
 {
 	HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr) encoder->attr;
 
@@ -2666,7 +2666,7 @@ void HPDF_CMapEncoder_SetUnicodeArray(HPDF_Encoder encoder, const HPDF_UnicodeMa
 }
 
 
-HPDF_STATUS HPDF_CMapEncoder_AddJWWLineHead(HPDF_Encoder encoder, const HPDF_UINT16 * code)
+HPDF_STATUS HPDF_CMapEncoder_AddJWWLineHead(HPDF_Encoder encoder, const HPDF_UINT16 *code)
 {
 	HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr) encoder->attr;
 	HPDF_UINT i, j;
