@@ -1834,7 +1834,7 @@ static void ValidateColors(void)
 	viewer_colors.ghosted = get_color(gl_profile.colors.ghosted);
 	
 	if (viewer_colors.background == viewer_colors.text)
-		viewer_colors.background = viewer_colors.text ^ 1;
+		viewer_colors.background = viewer_colors.text ^ 0xffffff;
 	if (display_colors < 16)
 		viewer_colors.link =
 		viewer_colors.popup =

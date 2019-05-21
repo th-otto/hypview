@@ -251,10 +251,12 @@ HPDF_STATUS HPDF_Stream_Seek(HPDF_Stream stream, HPDF_INT pos, HPDF_WhenceMode m
 HPDF_INT32 HPDF_Stream_Tell(HPDF_Stream stream)
 {
 	if (!(stream->tell_fn))
-		return HPDF_SetError(stream->error, HPDF_INVALID_OPERATION, 0);
-
+	{
+		HPDF_SetError(stream->error, HPDF_INVALID_OPERATION, 0);
+		return -1;
+	}
 	if (HPDF_Error_GetCode(stream->error) != 0)
-		return HPDF_THIS_FUNC_WAS_SKIPPED;
+		return -1;
 
 	return stream->tell_fn(stream);
 }
@@ -681,7 +683,7 @@ HPDF_STATUS HPDF_Stream_WriteToStream(HPDF_Stream src, HPDF_Stream dst, HPDF_UIN
 static HPDF_STATUS HPDF_FileReader_ReadFunc(HPDF_Stream stream, void *ptr, HPDF_UINT *siz)
 {
 	HPDF_FILEP fp = (HPDF_FILEP) stream->attr;
-	HPDF_UINT rsiz;
+	size_t rsiz;
 
 	memset(ptr, 0, *siz);
 	rsiz = HPDF_FREAD(ptr, 1, *siz, fp);
@@ -690,7 +692,7 @@ static HPDF_STATUS HPDF_FileReader_ReadFunc(HPDF_Stream stream, void *ptr, HPDF_
 	{
 		if (HPDF_FEOF(fp))
 		{
-			*siz = rsiz;
+			*siz = (HPDF_UINT)rsiz;
 
 			return HPDF_STREAM_EOF;
 		}
@@ -748,22 +750,23 @@ static HPDF_STATUS HPDF_FileReader_SeekFunc(HPDF_Stream stream, HPDF_INT pos, HP
 
 static HPDF_INT32 HPDF_FileStream_TellFunc(HPDF_Stream stream)
 {
-	HPDF_INT32 ret;
+	long ret;
 	HPDF_FILEP fp = (HPDF_FILEP) stream->attr;
 
 	if ((ret = HPDF_FTELL(fp)) < 0)
 	{
-		return HPDF_SetError(stream->error, HPDF_FILE_IO_ERROR, errno);
+		HPDF_SetError(stream->error, HPDF_FILE_IO_ERROR, errno);
+		return -1;
 	}
 
-	return ret;
+	return (HPDF_INT32)ret;
 }
 
 
 static HPDF_UINT32 HPDF_FileStream_SizeFunc(HPDF_Stream stream)
 {
-	HPDF_INT size;
-	HPDF_INT ptr;
+	long size;
+	long ptr;
 	HPDF_FILEP fp = (HPDF_FILEP) stream->attr;
 
 	/* save current file-pointer */
@@ -794,7 +797,7 @@ static HPDF_UINT32 HPDF_FileStream_SizeFunc(HPDF_Stream stream)
 		return 0;
 	}
 
-	return size;
+	return (HPDF_UINT32)size;
 }
 
 
@@ -851,7 +854,7 @@ HPDF_Stream HPDF_FileReader_New(HPDF_MMgr mmgr, const char *fname)
 static HPDF_STATUS HPDF_FileWriter_WriteFunc(HPDF_Stream stream, const void *ptr, HPDF_UINT siz)
 {
 	HPDF_FILEP fp;
-	HPDF_UINT ret;
+	size_t ret;
 
 	fp = (HPDF_FILEP) stream->attr;
 	ret = HPDF_FWRITE(ptr, 1, siz, fp);

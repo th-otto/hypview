@@ -440,6 +440,12 @@ AC_CHECK_LIB(m, log)
 AC_CHECK_LIB(gettextpo, po_read_file, have_gettextpo=yes, have_gettextpo=no)
 AM_CONDITIONAL([HAVE_GETTEXTPO], test "$have_gettextpo" = yes)
 
+if test "$TARGET_OS" = "mac"; then
+	# Make sure libpng (and other 3rd party libs installed by MacPorts) are found
+	LDFLAGS="$LDFLAGS -L/opt/local/lib"
+	CPPFLAGS="$CPPFLAGS -I/opt/local/include"
+fi
+
 ###############################################################################
 #
 #       Check for -lgtk (and Gnome stuff)

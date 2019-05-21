@@ -109,7 +109,7 @@ HPDF_Image HPDF_LoadPngImageFromFile(HPDF_Doc pdf, const char *filename)
 }
 
 
-/* delaied loading version of HPDF_LoadPngImageFromFile */
+/* delayed loading version of HPDF_LoadPngImageFromFile */
 HPDF_Image HPDF_LoadPngImageFromFile2(HPDF_Doc pdf, const char *filename)
 {
 	HPDF_Stream imagedata;

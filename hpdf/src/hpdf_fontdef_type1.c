@@ -316,7 +316,7 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream)
 
 				/* length1 indicate the size of ascii-data of font-file. */
 				if (s1)
-					attr->length1 = attr->font_data->size + (s1 - buf) + 6;
+					attr->length1 = attr->font_data->size + (HPDF_UINT)(s1 - buf) + 6;
 			}
 
 			if (attr->length1 > 0 && attr->length2 == 0)
@@ -324,7 +324,7 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream)
 				const char *s2 = HPDF_StrStr(buf, "cleartomark", len + 11);
 
 				if (s2)
-					attr->length2 = attr->font_data->size + -520 - attr->length1 + (s2 - buf);
+					attr->length2 = attr->font_data->size + -520 - attr->length1 + (HPDF_UINT)(s2 - buf);
 				/*  length1 indicate the size of binary-data.
 				 *  in most fonts, it is all right at 520 bytes . but it need
 				 *  to modify because it does not fully satisfy the

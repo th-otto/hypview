@@ -94,7 +94,9 @@ static void print_usage(FILE *out)
 	hyp_utf8_fprintf(out, _("  -v, --view                    view listed nodes as ASCII\n"));
 	hyp_utf8_fprintf(out, _("      --html                    generate html output\n"));
 	hyp_utf8_fprintf(out, _("      --xml                     generate xml output\n"));
+#ifdef WITH_PDF
 	hyp_utf8_fprintf(out, _("      --pdf                     generate pdf output\n"));
+#endif
 	hyp_utf8_fprintf(out, "\n");
 	hyp_utf8_fprintf(out, _("  -h, --help                    print help and exit\n"));
 	hyp_utf8_fprintf(out, _("  -V, --version                 print version and exit\n"));
@@ -788,6 +790,7 @@ int main(int argc, const char **argv)
 				}
 			} else if (opts->recompile_format == HYP_FT_PDF)
 			{
+#ifdef WITH_PDF
 				const char *filename = argv[c++];
 				
 				if (opts->output_charset == HYP_CHARSET_NONE)
@@ -799,6 +802,10 @@ int main(int argc, const char **argv)
 				{
 					retval = EXIT_FAILURE;
 				}
+#else
+				hcp_usage_error(_("this version was compiled without PDF support"));
+				retval = EXIT_FAILURE;
+#endif
 			} else if (opts->recompile_format == HYP_FT_BINARY)
 			{
 				const char *filename = argv[c++];
@@ -817,6 +824,7 @@ int main(int argc, const char **argv)
 				if (opts->output_filename && num_args > 1)
 				{
 					hcp_usage_error(_("cannot compile multiple input files to single output"));
+					retval = EXIT_FAILURE;
 				} else
 				{
 					while (c < argc)

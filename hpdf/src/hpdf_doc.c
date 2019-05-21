@@ -2021,7 +2021,7 @@ HPDF_STATUS HPDF_SetPageLayout(HPDF_Doc pdf, HPDF_PageLayout layout)
 	if (!HPDF_HasDoc(pdf))
 		return HPDF_INVALID_DOCUMENT;
 
-	if (layout < 0 || layout >= HPDF_PAGE_LAYOUT_EOF)
+	if ((unsigned int)layout >= HPDF_PAGE_LAYOUT_EOF)
 		return HPDF_RaiseError(&pdf->error, HPDF_PAGE_LAYOUT_OUT_OF_RANGE, (HPDF_STATUS) layout);
 
 	if ((layout == HPDF_PAGE_LAYOUT_TWO_PAGE_LEFT || layout == HPDF_PAGE_LAYOUT_TWO_PAGE_RIGHT)
@@ -2052,7 +2052,7 @@ HPDF_STATUS HPDF_SetPageMode(HPDF_Doc pdf, HPDF_PageMode mode)
 	if (!HPDF_HasDoc(pdf))
 		return HPDF_INVALID_DOCUMENT;
 
-	if (mode < 0 || mode >= HPDF_PAGE_MODE_EOF)
+	if ((unsigned int)mode >= HPDF_PAGE_MODE_EOF)
 		return HPDF_RaiseError(&pdf->error, HPDF_PAGE_MODE_OUT_OF_RANGE, (HPDF_STATUS) mode);
 
 	ret = HPDF_Catalog_SetPageMode(pdf->catalog, mode);
@@ -2121,7 +2121,7 @@ HPDF_STATUS HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPDF_PageNumStyl
 	if (!page_label)
 		return HPDF_CheckError(&pdf->error);
 
-	if (style < 0 || style >= HPDF_PAGE_NUM_STYLE_EOF)
+	if ((unsigned int)style >= HPDF_PAGE_NUM_STYLE_EOF)
 		return HPDF_RaiseError(&pdf->error, HPDF_PAGE_NUM_STYLE_OUT_OF_RANGE, (HPDF_STATUS) style);
 
 	ret = HPDF_Catalog_AddPageLabel(pdf->catalog, page_num, page_label);

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8CFB7062226AEA3F00116947"
-               BuildableName = "hypview.app"
+               BuildableName = "HypView.app"
                BlueprintName = "hypview"
                ReferencedContainer = "container:hypview.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8CFB7062226AEA3F00116947"
-            BuildableName = "hypview.app"
+            BuildableName = "HypView.app"
             BlueprintName = "hypview"
             ReferencedContainer = "container:hypview.xcodeproj">
          </BuildableReference>
@@ -56,7 +56,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8CFB7062226AEA3F00116947"
-            BuildableName = "hypview.app"
+            BuildableName = "HypView.app"
             BlueprintName = "hypview"
             ReferencedContainer = "container:hypview.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8CFB7062226AEA3F00116947"
-            BuildableName = "hypview.app"
+            BuildableName = "HypView.app"
             BlueprintName = "hypview"
             ReferencedContainer = "container:hypview.xcodeproj">
          </BuildableReference>

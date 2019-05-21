@@ -693,7 +693,9 @@ symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
 		char *nodename = NULL;
 		const REF_ENTRY *entry;
 		
-		for (mod = hyp->ref->modules; mod != NULL; mod = mod->next)
+		/* for (mod = hyp->ref->modules; mod != NULL; mod = mod->next) */
+		mod = hyp->ref->modules;
+		if (mod != NULL)
 		{
 			for (node_num = 0; node_num < mod->num_entries; node_num++)
 			{
@@ -722,7 +724,7 @@ symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
 				last = &(sym)->next;
 			}
 			/* only search the first module */
-			break;
+			/* break; */
 		}
 	}
 	return syms;

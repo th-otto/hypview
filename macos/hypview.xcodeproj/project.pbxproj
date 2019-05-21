@@ -7,6 +7,110 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C3B55FD229417180074375F /* outcomm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B55FA229416AC0074375F /* outcomm.c */; };
+		8C3B55FE229418390074375F /* outcomm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B55FA229416AC0074375F /* outcomm.c */; };
+		8C3B55FF2294183A0074375F /* outcomm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B55FA229416AC0074375F /* outcomm.c */; };
+		8C3B568022941C5D0074375F /* hpdf_3dmeasure.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B560E22941C3E0074375F /* hpdf_3dmeasure.c */; };
+		8C3B568122941C5D0074375F /* hpdf_annotation.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B560F22941C3E0074375F /* hpdf_annotation.c */; };
+		8C3B568222941C5D0074375F /* hpdf_array.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561022941C3E0074375F /* hpdf_array.c */; };
+		8C3B568322941C5D0074375F /* hpdf_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561122941C3E0074375F /* hpdf_binary.c */; };
+		8C3B568422941C5D0074375F /* hpdf_boolean.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561222941C3E0074375F /* hpdf_boolean.c */; };
+		8C3B568522941C5D0074375F /* hpdf_catalog.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561322941C3E0074375F /* hpdf_catalog.c */; };
+		8C3B568622941C5D0074375F /* hpdf_destination.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561422941C3E0074375F /* hpdf_destination.c */; };
+		8C3B568722941C5D0074375F /* hpdf_dict.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561522941C3E0074375F /* hpdf_dict.c */; };
+		8C3B568822941C5D0074375F /* hpdf_doc_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561622941C3E0074375F /* hpdf_doc_png.c */; };
+		8C3B568922941C5D0074375F /* hpdf_doc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561722941C3E0074375F /* hpdf_doc.c */; };
+		8C3B568A22941C5D0074375F /* hpdf_encoder_cns.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561822941C3E0074375F /* hpdf_encoder_cns.c */; };
+		8C3B568B22941C5D0074375F /* hpdf_encoder_cnt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561922941C3E0074375F /* hpdf_encoder_cnt.c */; };
+		8C3B568C22941C5D0074375F /* hpdf_encoder_jp.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561A22941C3E0074375F /* hpdf_encoder_jp.c */; };
+		8C3B568D22941C5D0074375F /* hpdf_encoder_kr.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561B22941C3E0074375F /* hpdf_encoder_kr.c */; };
+		8C3B568E22941C5D0074375F /* hpdf_encoder_utf8.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561C22941C3E0074375F /* hpdf_encoder_utf8.c */; };
+		8C3B568F22941C5D0074375F /* hpdf_encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561D22941C3E0074375F /* hpdf_encoder.c */; };
+		8C3B569022941C5D0074375F /* hpdf_encrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561E22941C3E0074375F /* hpdf_encrypt.c */; };
+		8C3B569122941C5D0074375F /* hpdf_encryptdict.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B561F22941C3E0074375F /* hpdf_encryptdict.c */; };
+		8C3B569222941C6E0074375F /* hpdf_error.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562022941C3E0074375F /* hpdf_error.c */; };
+		8C3B569322941C6E0074375F /* hpdf_exdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562122941C3E0074375F /* hpdf_exdata.c */; };
+		8C3B569422941C6E0074375F /* hpdf_ext_gstate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562222941C3E0074375F /* hpdf_ext_gstate.c */; };
+		8C3B569522941C6E0074375F /* hpdf_font_cid.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562322941C3E0074375F /* hpdf_font_cid.c */; };
+		8C3B569622941C6E0074375F /* hpdf_font_tt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562422941C3E0074375F /* hpdf_font_tt.c */; };
+		8C3B569722941C6E0074375F /* hpdf_font_type1.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562522941C3E0074375F /* hpdf_font_type1.c */; };
+		8C3B569822941C6E0074375F /* hpdf_font.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562622941C3E0074375F /* hpdf_font.c */; };
+		8C3B569922941C6E0074375F /* hpdf_fontdef_base14.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562722941C3E0074375F /* hpdf_fontdef_base14.c */; };
+		8C3B569A22941C6E0074375F /* hpdf_fontdef_cid.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562822941C3E0074375F /* hpdf_fontdef_cid.c */; };
+		8C3B569B22941C6E0074375F /* hpdf_fontdef_cns.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562922941C3E0074375F /* hpdf_fontdef_cns.c */; };
+		8C3B569C22941C6E0074375F /* hpdf_fontdef_cnt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562A22941C3E0074375F /* hpdf_fontdef_cnt.c */; };
+		8C3B569D22941C6E0074375F /* hpdf_fontdef_jp.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562B22941C3E0074375F /* hpdf_fontdef_jp.c */; };
+		8C3B569E22941C6E0074375F /* hpdf_fontdef_kr.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562C22941C3E0074375F /* hpdf_fontdef_kr.c */; };
+		8C3B569F22941C6E0074375F /* hpdf_fontdef_tt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562D22941C3E0074375F /* hpdf_fontdef_tt.c */; };
+		8C3B56A022941C6E0074375F /* hpdf_fontdef_type1.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562E22941C3E0074375F /* hpdf_fontdef_type1.c */; };
+		8C3B56A122941C6E0074375F /* hpdf_fontdef.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B562F22941C3E0074375F /* hpdf_fontdef.c */; };
+		8C3B56A222941C6E0074375F /* hpdf_gstate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563022941C3E0074375F /* hpdf_gstate.c */; };
+		8C3B56A322941C6E0074375F /* hpdf_image_ccitt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563122941C3E0074375F /* hpdf_image_ccitt.c */; };
+		8C3B56A422941C6E0074375F /* hpdf_image_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563222941C3E0074375F /* hpdf_image_png.c */; };
+		8C3B56A522941C6E0074375F /* hpdf_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563322941C3E0074375F /* hpdf_image.c */; };
+		8C3B56A622941C6E0074375F /* hpdf_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563422941C3E0074375F /* hpdf_info.c */; };
+		8C3B56A722941C6E0074375F /* hpdf_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563522941C3E0074375F /* hpdf_list.c */; };
+		8C3B56A822941C6E0074375F /* hpdf_mmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563622941C3E0074375F /* hpdf_mmgr.c */; };
+		8C3B56A922941C6E0074375F /* hpdf_name.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563722941C3E0074375F /* hpdf_name.c */; };
+		8C3B56AA22941C6E0074375F /* hpdf_namedict.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563822941C3E0074375F /* hpdf_namedict.c */; };
+		8C3B56AB22941C6E0074375F /* hpdf_null.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563922941C3E0074375F /* hpdf_null.c */; };
+		8C3B56AC22941C6E0074375F /* hpdf_number.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563A22941C3E0074375F /* hpdf_number.c */; };
+		8C3B56AD22941C6E0074375F /* hpdf_objects.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563B22941C3E0074375F /* hpdf_objects.c */; };
+		8C3B56AE22941C6E0074375F /* hpdf_outline.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563C22941C3E0074375F /* hpdf_outline.c */; };
+		8C3B56AF22941C6E0074375F /* hpdf_page_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563D22941C3E0074375F /* hpdf_page_label.c */; };
+		8C3B56B022941C6E0074375F /* hpdf_page_operator.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563E22941C3E0074375F /* hpdf_page_operator.c */; };
+		8C3B56B122941C6E0074375F /* hpdf_pages.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B563F22941C3E0074375F /* hpdf_pages.c */; };
+		8C3B56B222941C6E0074375F /* hpdf_pdfa.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564022941C3E0074375F /* hpdf_pdfa.c */; };
+		8C3B56B322941C6E0074375F /* hpdf_real.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564122941C3E0074375F /* hpdf_real.c */; };
+		8C3B56B422941C6E0074375F /* hpdf_streams.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564222941C3E0074375F /* hpdf_streams.c */; };
+		8C3B56B522941C6E0074375F /* hpdf_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564322941C3E0074375F /* hpdf_string.c */; };
+		8C3B56B622941C6E0074375F /* hpdf_u3d.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564422941C3E0074375F /* hpdf_u3d.c */; };
+		8C3B56B722941C6E0074375F /* hpdf_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564522941C3E0074375F /* hpdf_utils.c */; };
+		8C3B56B822941C6E0074375F /* hpdf_xref.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B564622941C3E0074375F /* hpdf_xref.c */; };
+		8C3B56B922941CD80074375F /* libhpdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C3B560522941C0A0074375F /* libhpdf.a */; };
+		8C3B56BA22941CE80074375F /* libhpdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C3B560522941C0A0074375F /* libhpdf.a */; };
+		8C3B56BD229429D40074375F /* pdf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56BB2294292E0074375F /* pdf.c */; };
+		8C3B56BE229429D60074375F /* pdf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56BB2294292E0074375F /* pdf.c */; };
+		8C3B56FB22944CF80074375F /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56DD22944CF80074375F /* inflate.c */; };
+		8C3B570522944D3D0074375F /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C3B56C322944A020074375F /* libz.a */; };
+		8C3B570622944D480074375F /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C3B56C322944A020074375F /* libz.a */; };
+		8C3B570722944D5A0074375F /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56CC22944CF80074375F /* adler32.c */; };
+		8C3B570822944D680074375F /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56CD22944CF80074375F /* compress.c */; };
+		8C3B570922944D680074375F /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56CE22944CF80074375F /* crc32.c */; };
+		8C3B570A22944D680074375F /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56CF22944CF80074375F /* crc32.h */; };
+		8C3B570B22944D680074375F /* crypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56D022944CF80074375F /* crypt.h */; };
+		8C3B570C22944D680074375F /* dbgmem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56D122944CF80074375F /* dbgmem.h */; };
+		8C3B570D22944D680074375F /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56D222944CF80074375F /* deflate.c */; };
+		8C3B570E22944D680074375F /* deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56D322944CF80074375F /* deflate.h */; };
+		8C3B570F22944D680074375F /* gzclose.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56D422944CF80074375F /* gzclose.c */; };
+		8C3B571022944D680074375F /* gzguts.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56D522944CF80074375F /* gzguts.h */; };
+		8C3B571122944D680074375F /* gzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56D622944CF80074375F /* gzlib.c */; };
+		8C3B571222944D680074375F /* gzread.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56D722944CF80074375F /* gzread.c */; };
+		8C3B571322944D680074375F /* gzwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56D822944CF80074375F /* gzwrite.c */; };
+		8C3B571422944D680074375F /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56D922944CF80074375F /* infback.c */; };
+		8C3B571522944D680074375F /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56DA22944CF80074375F /* inffast.c */; };
+		8C3B571622944D680074375F /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56DB22944CF80074375F /* inffast.h */; };
+		8C3B571722944D680074375F /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56DC22944CF80074375F /* inffixed.h */; };
+		8C3B571822944D680074375F /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56DD22944CF80074375F /* inflate.c */; };
+		8C3B571922944D680074375F /* inflate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56DE22944CF80074375F /* inflate.h */; };
+		8C3B571A22944D680074375F /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56DF22944CF80074375F /* inftrees.c */; };
+		8C3B571B22944D680074375F /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56E022944CF80074375F /* inftrees.h */; };
+		8C3B571C22944D680074375F /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56E122944CF80074375F /* ioapi.c */; };
+		8C3B571D22944D680074375F /* ioapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56E222944CF80074375F /* ioapi.h */; };
+		8C3B571E22944D680074375F /* iowin32.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56E322944CF80074375F /* iowin32.c */; };
+		8C3B571F22944D680074375F /* iowin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56E422944CF80074375F /* iowin32.h */; };
+		8C3B572022944D680074375F /* makecrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56E522944CF80074375F /* makecrc.c */; };
+		8C3B572122944D680074375F /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56E622944CF80074375F /* trees.c */; };
+		8C3B572222944D680074375F /* trees.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56E722944CF80074375F /* trees.h */; };
+		8C3B572322944D680074375F /* uncompr.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56E822944CF80074375F /* uncompr.c */; };
+		8C3B572422944D680074375F /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56E922944CF80074375F /* unzip.c */; };
+		8C3B572522944D680074375F /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56EA22944CF80074375F /* unzip.h */; };
+		8C3B572622944D680074375F /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56EB22944CF80074375F /* zconf.h */; };
+		8C3B572722944D680074375F /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56EC22944CF80074375F /* zip.c */; };
+		8C3B572822944D680074375F /* zip.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56ED22944CF80074375F /* zip.h */; };
+		8C3B572922944D680074375F /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56EE22944CF80074375F /* zlib.h */; };
+		8C3B572A22944D680074375F /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56EF22944CF80074375F /* zutil.c */; };
+		8C3B572B22944D680074375F /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56F022944CF80074375F /* zutil.h */; };
 		8CFB707B226AEC0600116947 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFB707A226AEC0600116947 /* Cocoa.framework */; };
 		8CFB7081226AF12400116947 /* hv_main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB7080226AF12400116947 /* hv_main.m */; };
 		8CFB7091226B7F1200116947 /* casefold.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CFB7090226B7F1200116947 /* casefold.h */; };
@@ -242,6 +346,104 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8C3B55FA229416AC0074375F /* outcomm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = outcomm.c; path = ../hyp/outcomm.c; sourceTree = SOURCE_ROOT; };
+		8C3B560522941C0A0074375F /* libhpdf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libhpdf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C3B560E22941C3E0074375F /* hpdf_3dmeasure.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_3dmeasure.c; path = ../hpdf/src/hpdf_3dmeasure.c; sourceTree = SOURCE_ROOT; };
+		8C3B560F22941C3E0074375F /* hpdf_annotation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_annotation.c; path = ../hpdf/src/hpdf_annotation.c; sourceTree = SOURCE_ROOT; };
+		8C3B561022941C3E0074375F /* hpdf_array.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_array.c; path = ../hpdf/src/hpdf_array.c; sourceTree = SOURCE_ROOT; };
+		8C3B561122941C3E0074375F /* hpdf_binary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_binary.c; path = ../hpdf/src/hpdf_binary.c; sourceTree = SOURCE_ROOT; };
+		8C3B561222941C3E0074375F /* hpdf_boolean.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_boolean.c; path = ../hpdf/src/hpdf_boolean.c; sourceTree = SOURCE_ROOT; };
+		8C3B561322941C3E0074375F /* hpdf_catalog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_catalog.c; path = ../hpdf/src/hpdf_catalog.c; sourceTree = SOURCE_ROOT; };
+		8C3B561422941C3E0074375F /* hpdf_destination.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_destination.c; path = ../hpdf/src/hpdf_destination.c; sourceTree = SOURCE_ROOT; };
+		8C3B561522941C3E0074375F /* hpdf_dict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_dict.c; path = ../hpdf/src/hpdf_dict.c; sourceTree = SOURCE_ROOT; };
+		8C3B561622941C3E0074375F /* hpdf_doc_png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_doc_png.c; path = ../hpdf/src/hpdf_doc_png.c; sourceTree = SOURCE_ROOT; };
+		8C3B561722941C3E0074375F /* hpdf_doc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_doc.c; path = ../hpdf/src/hpdf_doc.c; sourceTree = SOURCE_ROOT; };
+		8C3B561822941C3E0074375F /* hpdf_encoder_cns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encoder_cns.c; path = ../hpdf/src/hpdf_encoder_cns.c; sourceTree = SOURCE_ROOT; };
+		8C3B561922941C3E0074375F /* hpdf_encoder_cnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encoder_cnt.c; path = ../hpdf/src/hpdf_encoder_cnt.c; sourceTree = SOURCE_ROOT; };
+		8C3B561A22941C3E0074375F /* hpdf_encoder_jp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encoder_jp.c; path = ../hpdf/src/hpdf_encoder_jp.c; sourceTree = SOURCE_ROOT; };
+		8C3B561B22941C3E0074375F /* hpdf_encoder_kr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encoder_kr.c; path = ../hpdf/src/hpdf_encoder_kr.c; sourceTree = SOURCE_ROOT; };
+		8C3B561C22941C3E0074375F /* hpdf_encoder_utf8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encoder_utf8.c; path = ../hpdf/src/hpdf_encoder_utf8.c; sourceTree = SOURCE_ROOT; };
+		8C3B561D22941C3E0074375F /* hpdf_encoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encoder.c; path = ../hpdf/src/hpdf_encoder.c; sourceTree = SOURCE_ROOT; };
+		8C3B561E22941C3E0074375F /* hpdf_encrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encrypt.c; path = ../hpdf/src/hpdf_encrypt.c; sourceTree = SOURCE_ROOT; };
+		8C3B561F22941C3E0074375F /* hpdf_encryptdict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_encryptdict.c; path = ../hpdf/src/hpdf_encryptdict.c; sourceTree = SOURCE_ROOT; };
+		8C3B562022941C3E0074375F /* hpdf_error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_error.c; path = ../hpdf/src/hpdf_error.c; sourceTree = SOURCE_ROOT; };
+		8C3B562122941C3E0074375F /* hpdf_exdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_exdata.c; path = ../hpdf/src/hpdf_exdata.c; sourceTree = SOURCE_ROOT; };
+		8C3B562222941C3E0074375F /* hpdf_ext_gstate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_ext_gstate.c; path = ../hpdf/src/hpdf_ext_gstate.c; sourceTree = SOURCE_ROOT; };
+		8C3B562322941C3E0074375F /* hpdf_font_cid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_font_cid.c; path = ../hpdf/src/hpdf_font_cid.c; sourceTree = SOURCE_ROOT; };
+		8C3B562422941C3E0074375F /* hpdf_font_tt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_font_tt.c; path = ../hpdf/src/hpdf_font_tt.c; sourceTree = SOURCE_ROOT; };
+		8C3B562522941C3E0074375F /* hpdf_font_type1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_font_type1.c; path = ../hpdf/src/hpdf_font_type1.c; sourceTree = SOURCE_ROOT; };
+		8C3B562622941C3E0074375F /* hpdf_font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_font.c; path = ../hpdf/src/hpdf_font.c; sourceTree = SOURCE_ROOT; };
+		8C3B562722941C3E0074375F /* hpdf_fontdef_base14.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_base14.c; path = ../hpdf/src/hpdf_fontdef_base14.c; sourceTree = SOURCE_ROOT; };
+		8C3B562822941C3E0074375F /* hpdf_fontdef_cid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_cid.c; path = ../hpdf/src/hpdf_fontdef_cid.c; sourceTree = SOURCE_ROOT; };
+		8C3B562922941C3E0074375F /* hpdf_fontdef_cns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_cns.c; path = ../hpdf/src/hpdf_fontdef_cns.c; sourceTree = SOURCE_ROOT; };
+		8C3B562A22941C3E0074375F /* hpdf_fontdef_cnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_cnt.c; path = ../hpdf/src/hpdf_fontdef_cnt.c; sourceTree = SOURCE_ROOT; };
+		8C3B562B22941C3E0074375F /* hpdf_fontdef_jp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_jp.c; path = ../hpdf/src/hpdf_fontdef_jp.c; sourceTree = SOURCE_ROOT; };
+		8C3B562C22941C3E0074375F /* hpdf_fontdef_kr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_kr.c; path = ../hpdf/src/hpdf_fontdef_kr.c; sourceTree = SOURCE_ROOT; };
+		8C3B562D22941C3E0074375F /* hpdf_fontdef_tt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_tt.c; path = ../hpdf/src/hpdf_fontdef_tt.c; sourceTree = SOURCE_ROOT; };
+		8C3B562E22941C3E0074375F /* hpdf_fontdef_type1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef_type1.c; path = ../hpdf/src/hpdf_fontdef_type1.c; sourceTree = SOURCE_ROOT; };
+		8C3B562F22941C3E0074375F /* hpdf_fontdef.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_fontdef.c; path = ../hpdf/src/hpdf_fontdef.c; sourceTree = SOURCE_ROOT; };
+		8C3B563022941C3E0074375F /* hpdf_gstate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_gstate.c; path = ../hpdf/src/hpdf_gstate.c; sourceTree = SOURCE_ROOT; };
+		8C3B563122941C3E0074375F /* hpdf_image_ccitt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_image_ccitt.c; path = ../hpdf/src/hpdf_image_ccitt.c; sourceTree = SOURCE_ROOT; };
+		8C3B563222941C3E0074375F /* hpdf_image_png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_image_png.c; path = ../hpdf/src/hpdf_image_png.c; sourceTree = SOURCE_ROOT; };
+		8C3B563322941C3E0074375F /* hpdf_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_image.c; path = ../hpdf/src/hpdf_image.c; sourceTree = SOURCE_ROOT; };
+		8C3B563422941C3E0074375F /* hpdf_info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_info.c; path = ../hpdf/src/hpdf_info.c; sourceTree = SOURCE_ROOT; };
+		8C3B563522941C3E0074375F /* hpdf_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_list.c; path = ../hpdf/src/hpdf_list.c; sourceTree = SOURCE_ROOT; };
+		8C3B563622941C3E0074375F /* hpdf_mmgr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_mmgr.c; path = ../hpdf/src/hpdf_mmgr.c; sourceTree = SOURCE_ROOT; };
+		8C3B563722941C3E0074375F /* hpdf_name.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_name.c; path = ../hpdf/src/hpdf_name.c; sourceTree = SOURCE_ROOT; };
+		8C3B563822941C3E0074375F /* hpdf_namedict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_namedict.c; path = ../hpdf/src/hpdf_namedict.c; sourceTree = SOURCE_ROOT; };
+		8C3B563922941C3E0074375F /* hpdf_null.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_null.c; path = ../hpdf/src/hpdf_null.c; sourceTree = SOURCE_ROOT; };
+		8C3B563A22941C3E0074375F /* hpdf_number.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_number.c; path = ../hpdf/src/hpdf_number.c; sourceTree = SOURCE_ROOT; };
+		8C3B563B22941C3E0074375F /* hpdf_objects.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_objects.c; path = ../hpdf/src/hpdf_objects.c; sourceTree = SOURCE_ROOT; };
+		8C3B563C22941C3E0074375F /* hpdf_outline.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_outline.c; path = ../hpdf/src/hpdf_outline.c; sourceTree = SOURCE_ROOT; };
+		8C3B563D22941C3E0074375F /* hpdf_page_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_page_label.c; path = ../hpdf/src/hpdf_page_label.c; sourceTree = SOURCE_ROOT; };
+		8C3B563E22941C3E0074375F /* hpdf_page_operator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_page_operator.c; path = ../hpdf/src/hpdf_page_operator.c; sourceTree = SOURCE_ROOT; };
+		8C3B563F22941C3E0074375F /* hpdf_pages.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_pages.c; path = ../hpdf/src/hpdf_pages.c; sourceTree = SOURCE_ROOT; };
+		8C3B564022941C3E0074375F /* hpdf_pdfa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_pdfa.c; path = ../hpdf/src/hpdf_pdfa.c; sourceTree = SOURCE_ROOT; };
+		8C3B564122941C3E0074375F /* hpdf_real.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_real.c; path = ../hpdf/src/hpdf_real.c; sourceTree = SOURCE_ROOT; };
+		8C3B564222941C3E0074375F /* hpdf_streams.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_streams.c; path = ../hpdf/src/hpdf_streams.c; sourceTree = SOURCE_ROOT; };
+		8C3B564322941C3E0074375F /* hpdf_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_string.c; path = ../hpdf/src/hpdf_string.c; sourceTree = SOURCE_ROOT; };
+		8C3B564422941C3E0074375F /* hpdf_u3d.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_u3d.c; path = ../hpdf/src/hpdf_u3d.c; sourceTree = SOURCE_ROOT; };
+		8C3B564522941C3E0074375F /* hpdf_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_utils.c; path = ../hpdf/src/hpdf_utils.c; sourceTree = SOURCE_ROOT; };
+		8C3B564622941C3E0074375F /* hpdf_xref.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_xref.c; path = ../hpdf/src/hpdf_xref.c; sourceTree = SOURCE_ROOT; };
+		8C3B56BB2294292E0074375F /* pdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pdf.c; path = ../hyp/pdf.c; sourceTree = SOURCE_ROOT; };
+		8C3B56C322944A020074375F /* libz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libz.a; path = libzlib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C3B56CC22944CF80074375F /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adler32.c; sourceTree = "<group>"; };
+		8C3B56CD22944CF80074375F /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = compress.c; sourceTree = "<group>"; };
+		8C3B56CE22944CF80074375F /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
+		8C3B56CF22944CF80074375F /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crc32.h; sourceTree = "<group>"; };
+		8C3B56D022944CF80074375F /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		8C3B56D122944CF80074375F /* dbgmem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dbgmem.h; sourceTree = "<group>"; };
+		8C3B56D222944CF80074375F /* deflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = deflate.c; sourceTree = "<group>"; };
+		8C3B56D322944CF80074375F /* deflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = deflate.h; sourceTree = "<group>"; };
+		8C3B56D422944CF80074375F /* gzclose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gzclose.c; sourceTree = "<group>"; };
+		8C3B56D522944CF80074375F /* gzguts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gzguts.h; sourceTree = "<group>"; };
+		8C3B56D622944CF80074375F /* gzlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gzlib.c; sourceTree = "<group>"; };
+		8C3B56D722944CF80074375F /* gzread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gzread.c; sourceTree = "<group>"; };
+		8C3B56D822944CF80074375F /* gzwrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gzwrite.c; sourceTree = "<group>"; };
+		8C3B56D922944CF80074375F /* infback.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = infback.c; sourceTree = "<group>"; };
+		8C3B56DA22944CF80074375F /* inffast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = inffast.c; sourceTree = "<group>"; };
+		8C3B56DB22944CF80074375F /* inffast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inffast.h; sourceTree = "<group>"; };
+		8C3B56DC22944CF80074375F /* inffixed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inffixed.h; sourceTree = "<group>"; };
+		8C3B56DD22944CF80074375F /* inflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = inflate.c; sourceTree = "<group>"; };
+		8C3B56DE22944CF80074375F /* inflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inflate.h; sourceTree = "<group>"; };
+		8C3B56DF22944CF80074375F /* inftrees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = inftrees.c; sourceTree = "<group>"; };
+		8C3B56E022944CF80074375F /* inftrees.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inftrees.h; sourceTree = "<group>"; };
+		8C3B56E122944CF80074375F /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		8C3B56E222944CF80074375F /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		8C3B56E322944CF80074375F /* iowin32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iowin32.c; sourceTree = "<group>"; };
+		8C3B56E422944CF80074375F /* iowin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iowin32.h; sourceTree = "<group>"; };
+		8C3B56E522944CF80074375F /* makecrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = makecrc.c; sourceTree = "<group>"; };
+		8C3B56E622944CF80074375F /* trees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trees.c; sourceTree = "<group>"; };
+		8C3B56E722944CF80074375F /* trees.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trees.h; sourceTree = "<group>"; };
+		8C3B56E822944CF80074375F /* uncompr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = uncompr.c; sourceTree = "<group>"; };
+		8C3B56E922944CF80074375F /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		8C3B56EA22944CF80074375F /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		8C3B56EB22944CF80074375F /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
+		8C3B56EC22944CF80074375F /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		8C3B56ED22944CF80074375F /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		8C3B56EE22944CF80074375F /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
+		8C3B56EF22944CF80074375F /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zutil.c; sourceTree = "<group>"; };
+		8C3B56F022944CF80074375F /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
 		8CFB7063226AEA3F00116947 /* HypView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HypView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CFB707A226AEC0600116947 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8CFB7080226AF12400116947 /* hv_main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_main.m; sourceTree = "<group>"; };
@@ -376,10 +578,26 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8C3B560222941C0A0074375F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C3B56C022944A020074375F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8CFB7060226AEA3F00116947 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C3B570522944D3D0074375F /* libz.a in Frameworks */,
+				8C3B56B922941CD80074375F /* libhpdf.a in Frameworks */,
 				8CFB7116226B8EFF00116947 /* liblibpic.a in Frameworks */,
 				8CFB70EE226B863C00116947 /* liblibhypdoc.a in Frameworks */,
 				8CFB70D8226B852E00116947 /* liblibhyp.a in Frameworks */,
@@ -412,6 +630,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C3B570622944D480074375F /* libz.a in Frameworks */,
+				8C3B56BA22941CE80074375F /* libhpdf.a in Frameworks */,
 				8CFB7139226B928000116947 /* liblibhyp.a in Frameworks */,
 				8CFB713A226B928000116947 /* liblibpic.a in Frameworks */,
 			);
@@ -461,6 +681,116 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8C3B5600229418770074375F /* hpdf */ = {
+			isa = PBXGroup;
+			children = (
+				8C3B560E22941C3E0074375F /* hpdf_3dmeasure.c */,
+				8C3B560F22941C3E0074375F /* hpdf_annotation.c */,
+				8C3B561022941C3E0074375F /* hpdf_array.c */,
+				8C3B561122941C3E0074375F /* hpdf_binary.c */,
+				8C3B561222941C3E0074375F /* hpdf_boolean.c */,
+				8C3B561322941C3E0074375F /* hpdf_catalog.c */,
+				8C3B561422941C3E0074375F /* hpdf_destination.c */,
+				8C3B561522941C3E0074375F /* hpdf_dict.c */,
+				8C3B561622941C3E0074375F /* hpdf_doc_png.c */,
+				8C3B561722941C3E0074375F /* hpdf_doc.c */,
+				8C3B561822941C3E0074375F /* hpdf_encoder_cns.c */,
+				8C3B561922941C3E0074375F /* hpdf_encoder_cnt.c */,
+				8C3B561A22941C3E0074375F /* hpdf_encoder_jp.c */,
+				8C3B561B22941C3E0074375F /* hpdf_encoder_kr.c */,
+				8C3B561C22941C3E0074375F /* hpdf_encoder_utf8.c */,
+				8C3B561D22941C3E0074375F /* hpdf_encoder.c */,
+				8C3B561E22941C3E0074375F /* hpdf_encrypt.c */,
+				8C3B561F22941C3E0074375F /* hpdf_encryptdict.c */,
+				8C3B562022941C3E0074375F /* hpdf_error.c */,
+				8C3B562122941C3E0074375F /* hpdf_exdata.c */,
+				8C3B562222941C3E0074375F /* hpdf_ext_gstate.c */,
+				8C3B562322941C3E0074375F /* hpdf_font_cid.c */,
+				8C3B562422941C3E0074375F /* hpdf_font_tt.c */,
+				8C3B562522941C3E0074375F /* hpdf_font_type1.c */,
+				8C3B562622941C3E0074375F /* hpdf_font.c */,
+				8C3B562722941C3E0074375F /* hpdf_fontdef_base14.c */,
+				8C3B562822941C3E0074375F /* hpdf_fontdef_cid.c */,
+				8C3B562922941C3E0074375F /* hpdf_fontdef_cns.c */,
+				8C3B562A22941C3E0074375F /* hpdf_fontdef_cnt.c */,
+				8C3B562B22941C3E0074375F /* hpdf_fontdef_jp.c */,
+				8C3B562C22941C3E0074375F /* hpdf_fontdef_kr.c */,
+				8C3B562D22941C3E0074375F /* hpdf_fontdef_tt.c */,
+				8C3B562E22941C3E0074375F /* hpdf_fontdef_type1.c */,
+				8C3B562F22941C3E0074375F /* hpdf_fontdef.c */,
+				8C3B563022941C3E0074375F /* hpdf_gstate.c */,
+				8C3B563122941C3E0074375F /* hpdf_image_ccitt.c */,
+				8C3B563222941C3E0074375F /* hpdf_image_png.c */,
+				8C3B563322941C3E0074375F /* hpdf_image.c */,
+				8C3B563422941C3E0074375F /* hpdf_info.c */,
+				8C3B563522941C3E0074375F /* hpdf_list.c */,
+				8C3B563622941C3E0074375F /* hpdf_mmgr.c */,
+				8C3B563722941C3E0074375F /* hpdf_name.c */,
+				8C3B563822941C3E0074375F /* hpdf_namedict.c */,
+				8C3B563922941C3E0074375F /* hpdf_null.c */,
+				8C3B563A22941C3E0074375F /* hpdf_number.c */,
+				8C3B563B22941C3E0074375F /* hpdf_objects.c */,
+				8C3B563C22941C3E0074375F /* hpdf_outline.c */,
+				8C3B563D22941C3E0074375F /* hpdf_page_label.c */,
+				8C3B563E22941C3E0074375F /* hpdf_page_operator.c */,
+				8C3B563F22941C3E0074375F /* hpdf_pages.c */,
+				8C3B564022941C3E0074375F /* hpdf_pdfa.c */,
+				8C3B564122941C3E0074375F /* hpdf_real.c */,
+				8C3B564222941C3E0074375F /* hpdf_streams.c */,
+				8C3B564322941C3E0074375F /* hpdf_string.c */,
+				8C3B564422941C3E0074375F /* hpdf_u3d.c */,
+				8C3B564522941C3E0074375F /* hpdf_utils.c */,
+				8C3B564622941C3E0074375F /* hpdf_xref.c */,
+			);
+			name = hpdf;
+			path = ../hpdf;
+			sourceTree = SOURCE_ROOT;
+		};
+		8C3B56C422944A020074375F /* zlib */ = {
+			isa = PBXGroup;
+			children = (
+				8C3B56CC22944CF80074375F /* adler32.c */,
+				8C3B56CD22944CF80074375F /* compress.c */,
+				8C3B56CE22944CF80074375F /* crc32.c */,
+				8C3B56CF22944CF80074375F /* crc32.h */,
+				8C3B56D022944CF80074375F /* crypt.h */,
+				8C3B56D122944CF80074375F /* dbgmem.h */,
+				8C3B56D222944CF80074375F /* deflate.c */,
+				8C3B56D322944CF80074375F /* deflate.h */,
+				8C3B56D422944CF80074375F /* gzclose.c */,
+				8C3B56D522944CF80074375F /* gzguts.h */,
+				8C3B56D622944CF80074375F /* gzlib.c */,
+				8C3B56D722944CF80074375F /* gzread.c */,
+				8C3B56D822944CF80074375F /* gzwrite.c */,
+				8C3B56D922944CF80074375F /* infback.c */,
+				8C3B56DA22944CF80074375F /* inffast.c */,
+				8C3B56DB22944CF80074375F /* inffast.h */,
+				8C3B56DC22944CF80074375F /* inffixed.h */,
+				8C3B56DD22944CF80074375F /* inflate.c */,
+				8C3B56DE22944CF80074375F /* inflate.h */,
+				8C3B56DF22944CF80074375F /* inftrees.c */,
+				8C3B56E022944CF80074375F /* inftrees.h */,
+				8C3B56E122944CF80074375F /* ioapi.c */,
+				8C3B56E222944CF80074375F /* ioapi.h */,
+				8C3B56E322944CF80074375F /* iowin32.c */,
+				8C3B56E422944CF80074375F /* iowin32.h */,
+				8C3B56E522944CF80074375F /* makecrc.c */,
+				8C3B56E622944CF80074375F /* trees.c */,
+				8C3B56E722944CF80074375F /* trees.h */,
+				8C3B56E822944CF80074375F /* uncompr.c */,
+				8C3B56E922944CF80074375F /* unzip.c */,
+				8C3B56EA22944CF80074375F /* unzip.h */,
+				8C3B56EB22944CF80074375F /* zconf.h */,
+				8C3B56EC22944CF80074375F /* zip.c */,
+				8C3B56ED22944CF80074375F /* zip.h */,
+				8C3B56EE22944CF80074375F /* zlib.h */,
+				8C3B56EF22944CF80074375F /* zutil.c */,
+				8C3B56F022944CF80074375F /* zutil.h */,
+			);
+			name = zlib;
+			path = ../zlib;
+			sourceTree = SOURCE_ROOT;
+		};
 		8CFB7058226AE93900116947 = {
 			isa = PBXGroup;
 			children = (
@@ -468,12 +798,14 @@
 				8CFB7087226B7E3700116947 /* libhyp */,
 				8CFB70DE226B859B00116947 /* libhypdoc */,
 				8CFB70F4226B8E6D00116947 /* libpic */,
+				8C3B5600229418770074375F /* hpdf */,
 				8CFB711C226B910900116947 /* hcp */,
 				8CFB7140226B95AB00116947 /* hypinfo */,
 				8CFB715F226BF95900116947 /* reflink */,
 				8CFB7170226BFAF800116947 /* refcheck */,
 				8CFB7181226BFB8100116947 /* stool */,
 				8CFB7191226BFC1900116947 /* hypfind */,
+				8C3B56C422944A020074375F /* zlib */,
 				8CFB7064226AEA3F00116947 /* Products */,
 				8CFB7079226AEC0600116947 /* Frameworks */,
 			);
@@ -492,6 +824,8 @@
 				8CFB716F226BFAF800116947 /* refcheck */,
 				8CFB7180226BFB8100116947 /* stool */,
 				8CFB7190226BFC1800116947 /* hypfind */,
+				8C3B560522941C0A0074375F /* libhpdf.a */,
+				8C3B56C322944A020074375F /* libz.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -571,6 +905,8 @@
 				8CFB70B3226B818100116947 /* lh5crc.c */,
 				8CFB70B4226B818100116947 /* lh5d.c */,
 				8CFB70B5226B818100116947 /* localenm.c */,
+				8C3B55FA229416AC0074375F /* outcomm.c */,
+				8C3B56BB2294292E0074375F /* pdf.c */,
 				8CFB70B6226B818100116947 /* prepare.c */,
 				8CFB70B7226B818100116947 /* profile.c */,
 				8CFB70B8226B818100116947 /* ref.c */,
@@ -594,7 +930,7 @@
 				8CFB70E9226B862A00116947 /* hypdoc.c */,
 			);
 			path = libhypdoc;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		8CFB70F4226B8E6D00116947 /* libpic */ = {
 			isa = PBXGroup;
@@ -614,7 +950,7 @@
 				8CFB7108226B8EE600116947 /* stad.c */,
 			);
 			path = libpic;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		8CFB711C226B910900116947 /* hcp */ = {
 			isa = PBXGroup;
@@ -705,6 +1041,37 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		8C3B560322941C0A0074375F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C3B56C122944A020074375F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C3B572222944D680074375F /* trees.h in Headers */,
+				8C3B570E22944D680074375F /* deflate.h in Headers */,
+				8C3B571B22944D680074375F /* inftrees.h in Headers */,
+				8C3B572822944D680074375F /* zip.h in Headers */,
+				8C3B571022944D680074375F /* gzguts.h in Headers */,
+				8C3B571922944D680074375F /* inflate.h in Headers */,
+				8C3B571622944D680074375F /* inffast.h in Headers */,
+				8C3B570A22944D680074375F /* crc32.h in Headers */,
+				8C3B571722944D680074375F /* inffixed.h in Headers */,
+				8C3B570C22944D680074375F /* dbgmem.h in Headers */,
+				8C3B570B22944D680074375F /* crypt.h in Headers */,
+				8C3B571F22944D680074375F /* iowin32.h in Headers */,
+				8C3B572B22944D680074375F /* zutil.h in Headers */,
+				8C3B572622944D680074375F /* zconf.h in Headers */,
+				8C3B572922944D680074375F /* zlib.h in Headers */,
+				8C3B571D22944D680074375F /* ioapi.h in Headers */,
+				8C3B572522944D680074375F /* unzip.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8CFB7084226B7E3700116947 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -739,6 +1106,40 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		8C3B560422941C0A0074375F /* hpdf */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C3B560B22941C0A0074375F /* Build configuration list for PBXNativeTarget "hpdf" */;
+			buildPhases = (
+				8C3B560122941C0A0074375F /* Sources */,
+				8C3B560222941C0A0074375F /* Frameworks */,
+				8C3B560322941C0A0074375F /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = hpdf;
+			productName = hpdf;
+			productReference = 8C3B560522941C0A0074375F /* libhpdf.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8C3B56C222944A020074375F /* zlib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C3B56C922944A020074375F /* Build configuration list for PBXNativeTarget "zlib" */;
+			buildPhases = (
+				8C3B56BF22944A020074375F /* Sources */,
+				8C3B56C022944A020074375F /* Frameworks */,
+				8C3B56C122944A020074375F /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = zlib;
+			productName = zlib;
+			productReference = 8C3B56C322944A020074375F /* libz.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		8CFB7062226AEA3F00116947 /* hypview */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8CFB7077226AEA3F00116947 /* Build configuration list for PBXNativeTarget "hypview" */;
@@ -923,6 +1324,14 @@
 			attributes = {
 				LastUpgradeCheck = 0830;
 				TargetAttributes = {
+					8C3B560422941C0A0074375F = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+					8C3B56C222944A020074375F = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
 					8CFB7062226AEA3F00116947 = {
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
@@ -988,6 +1397,8 @@
 				8CFB716E226BFAF800116947 /* refcheck */,
 				8CFB717F226BFB8100116947 /* stool */,
 				8CFB718F226BFC1800116947 /* hypfind */,
+				8C3B560422941C0A0074375F /* hpdf */,
+				8C3B56C222944A020074375F /* zlib */,
 			);
 		};
 /* End PBXProject section */
@@ -1003,11 +1414,103 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8C3B560122941C0A0074375F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C3B568B22941C5D0074375F /* hpdf_encoder_cnt.c in Sources */,
+				8C3B56B422941C6E0074375F /* hpdf_streams.c in Sources */,
+				8C3B56A622941C6E0074375F /* hpdf_info.c in Sources */,
+				8C3B56A522941C6E0074375F /* hpdf_image.c in Sources */,
+				8C3B569122941C5D0074375F /* hpdf_encryptdict.c in Sources */,
+				8C3B568322941C5D0074375F /* hpdf_binary.c in Sources */,
+				8C3B56A222941C6E0074375F /* hpdf_gstate.c in Sources */,
+				8C3B56AA22941C6E0074375F /* hpdf_namedict.c in Sources */,
+				8C3B568C22941C5D0074375F /* hpdf_encoder_jp.c in Sources */,
+				8C3B56B222941C6E0074375F /* hpdf_pdfa.c in Sources */,
+				8C3B569C22941C6E0074375F /* hpdf_fontdef_cnt.c in Sources */,
+				8C3B569E22941C6E0074375F /* hpdf_fontdef_kr.c in Sources */,
+				8C3B568922941C5D0074375F /* hpdf_doc.c in Sources */,
+				8C3B56B722941C6E0074375F /* hpdf_utils.c in Sources */,
+				8C3B569B22941C6E0074375F /* hpdf_fontdef_cns.c in Sources */,
+				8C3B56B122941C6E0074375F /* hpdf_pages.c in Sources */,
+				8C3B56AB22941C6E0074375F /* hpdf_null.c in Sources */,
+				8C3B569D22941C6E0074375F /* hpdf_fontdef_jp.c in Sources */,
+				8C3B56A422941C6E0074375F /* hpdf_image_png.c in Sources */,
+				8C3B56AE22941C6E0074375F /* hpdf_outline.c in Sources */,
+				8C3B569622941C6E0074375F /* hpdf_font_tt.c in Sources */,
+				8C3B569522941C6E0074375F /* hpdf_font_cid.c in Sources */,
+				8C3B56AF22941C6E0074375F /* hpdf_page_label.c in Sources */,
+				8C3B56A322941C6E0074375F /* hpdf_image_ccitt.c in Sources */,
+				8C3B569822941C6E0074375F /* hpdf_font.c in Sources */,
+				8C3B56AD22941C6E0074375F /* hpdf_objects.c in Sources */,
+				8C3B568A22941C5D0074375F /* hpdf_encoder_cns.c in Sources */,
+				8C3B56A022941C6E0074375F /* hpdf_fontdef_type1.c in Sources */,
+				8C3B568422941C5D0074375F /* hpdf_boolean.c in Sources */,
+				8C3B568222941C5D0074375F /* hpdf_array.c in Sources */,
+				8C3B56A722941C6E0074375F /* hpdf_list.c in Sources */,
+				8C3B56B022941C6E0074375F /* hpdf_page_operator.c in Sources */,
+				8C3B569422941C6E0074375F /* hpdf_ext_gstate.c in Sources */,
+				8C3B56A922941C6E0074375F /* hpdf_name.c in Sources */,
+				8C3B568722941C5D0074375F /* hpdf_dict.c in Sources */,
+				8C3B56B322941C6E0074375F /* hpdf_real.c in Sources */,
+				8C3B569022941C5D0074375F /* hpdf_encrypt.c in Sources */,
+				8C3B568522941C5D0074375F /* hpdf_catalog.c in Sources */,
+				8C3B569222941C6E0074375F /* hpdf_error.c in Sources */,
+				8C3B56B822941C6E0074375F /* hpdf_xref.c in Sources */,
+				8C3B56A822941C6E0074375F /* hpdf_mmgr.c in Sources */,
+				8C3B56AC22941C6E0074375F /* hpdf_number.c in Sources */,
+				8C3B569F22941C6E0074375F /* hpdf_fontdef_tt.c in Sources */,
+				8C3B569A22941C6E0074375F /* hpdf_fontdef_cid.c in Sources */,
+				8C3B568122941C5D0074375F /* hpdf_annotation.c in Sources */,
+				8C3B56A122941C6E0074375F /* hpdf_fontdef.c in Sources */,
+				8C3B568E22941C5D0074375F /* hpdf_encoder_utf8.c in Sources */,
+				8C3B568622941C5D0074375F /* hpdf_destination.c in Sources */,
+				8C3B568822941C5D0074375F /* hpdf_doc_png.c in Sources */,
+				8C3B56B622941C6E0074375F /* hpdf_u3d.c in Sources */,
+				8C3B56B522941C6E0074375F /* hpdf_string.c in Sources */,
+				8C3B569922941C6E0074375F /* hpdf_fontdef_base14.c in Sources */,
+				8C3B568F22941C5D0074375F /* hpdf_encoder.c in Sources */,
+				8C3B568022941C5D0074375F /* hpdf_3dmeasure.c in Sources */,
+				8C3B569722941C6E0074375F /* hpdf_font_type1.c in Sources */,
+				8C3B569322941C6E0074375F /* hpdf_exdata.c in Sources */,
+				8C3B568D22941C5D0074375F /* hpdf_encoder_kr.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C3B56BF22944A020074375F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C3B572422944D680074375F /* unzip.c in Sources */,
+				8C3B571122944D680074375F /* gzlib.c in Sources */,
+				8C3B571C22944D680074375F /* ioapi.c in Sources */,
+				8C3B571222944D680074375F /* gzread.c in Sources */,
+				8C3B572A22944D680074375F /* zutil.c in Sources */,
+				8C3B570922944D680074375F /* crc32.c in Sources */,
+				8C3B571A22944D680074375F /* inftrees.c in Sources */,
+				8C3B572722944D680074375F /* zip.c in Sources */,
+				8C3B570722944D5A0074375F /* adler32.c in Sources */,
+				8C3B572022944D680074375F /* makecrc.c in Sources */,
+				8C3B570822944D680074375F /* compress.c in Sources */,
+				8C3B571E22944D680074375F /* iowin32.c in Sources */,
+				8C3B571522944D680074375F /* inffast.c in Sources */,
+				8C3B572322944D680074375F /* uncompr.c in Sources */,
+				8C3B571822944D680074375F /* inflate.c in Sources */,
+				8C3B572122944D680074375F /* trees.c in Sources */,
+				8C3B570F22944D680074375F /* gzclose.c in Sources */,
+				8C3B571322944D680074375F /* gzwrite.c in Sources */,
+				8C3B570D22944D680074375F /* deflate.c in Sources */,
+				8C3B571422944D680074375F /* infback.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8CFB705F226AEA3F00116947 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				8CFB71D2226E895000116947 /* hv_eref.m in Sources */,
+				8C3B56FB22944CF80074375F /* inflate.c in Sources */,
 				8CFB71D6226E8CCB00116947 /* hv_popup.m in Sources */,
 				8CFB71B6226D1A1C00116947 /* hv_tbar.m in Sources */,
 				8CFB71B8226D1ACB00116947 /* hv_hist.m in Sources */,
@@ -1023,12 +1526,14 @@
 				8CFB71CC226E30A100116947 /* hv_disp.m in Sources */,
 				8CFB71F22271D9BB00116947 /* pixdata.c in Sources */,
 				8CFB71BA226D595E00116947 /* hv_gfx.m in Sources */,
+				8C3B55FD229417180074375F /* outcomm.c in Sources */,
 				8CFB71E0226EF9F900116947 /* hv_recomp.m in Sources */,
 				8CFB71DC226EE4AD00116947 /* hv_info.m in Sources */,
 				8CFB71CA226E2E0100116947 /* autoloc.m in Sources */,
 				8CFB71B3226D192A00116947 /* hv_bin.m in Sources */,
 				8CFB71BC226D69A600116947 /* hv_block.m in Sources */,
 				8CFB71C2226DF58E00116947 /* hv_font.m in Sources */,
+				8C3B56BE229429D60074375F /* pdf.c in Sources */,
 				8CFB71C0226DA34000116947 /* hv_fsel.m in Sources */,
 				8CFB71AF226D12EA00116947 /* hv_nav.m in Sources */,
 				8CFB71AB226CC86500116947 /* hv_mark.m in Sources */,
@@ -1120,6 +1625,8 @@
 				8CFB7131226B922000116947 /* hcp_opts.c in Sources */,
 				8CFB7132226B922000116947 /* hobstack.c in Sources */,
 				8CFB7134226B922000116947 /* refcmds.c in Sources */,
+				8C3B55FF2294183A0074375F /* outcomm.c in Sources */,
+				8C3B56BD229429D40074375F /* pdf.c in Sources */,
 				8CFB7137226B926700116947 /* utl_err.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1134,6 +1641,7 @@
 				8CFB7158226BA20C00116947 /* utl_err.c in Sources */,
 				8CFB7150226B9E4F00116947 /* sparse.c in Sources */,
 				8CFB7159226BA5DB00116947 /* utl_ngui.c in Sources */,
+				8C3B55FE229418390074375F /* outcomm.c in Sources */,
 				8CFB7157226BA1FF00116947 /* hcp_opts.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1217,951 +1725,284 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		8C3B560C22941C0A0074375F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = /opt/local/include;
+			};
+			name = Debug;
+		};
+		8C3B560D22941C0A0074375F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = /opt/local/include;
+			};
+			name = Release;
+		};
+		8C3B56CA22944A020074375F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8C3B56CB22944A020074375F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		8CFB705D226AE93900116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "HAVE_CONFIG_H=1";
-				USER_HEADER_SEARCH_PATHS = "../include ..";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "../include ../zlib ../hpdf/include ..";
 			};
 			name = Debug;
 		};
 		8CFB705E226AE93900116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "HAVE_CONFIG_H=1";
-				USER_HEADER_SEARCH_PATHS = "../include ..";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "../include ../zlib ../hpdf/include ..";
 			};
 			name = Release;
 		};
 		8CFB7075226AEA3F00116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.th-otto.hypview";
 				PRODUCT_NAME = HypView;
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7076226AEA3F00116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.th-otto.hypview";
 				PRODUCT_NAME = HypView;
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB708D226B7E3700116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB708E226B7E3700116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB70E4226B859B00116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB70E5226B859B00116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB70FA226B8E6D00116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB70FB226B8E6D00116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB7120226B910900116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7121226B910900116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB7144226B95AB00116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7145226B95AB00116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB7163226BF95900116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7164226BF95900116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB7174226BFAF800116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7175226BFAF800116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB7185226BFB8100116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7186226BFB8100116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		8CFB7195226BFC1900116947 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		8CFB7196226BFC1900116947 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8C3B560B22941C0A0074375F /* Build configuration list for PBXNativeTarget "hpdf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C3B560C22941C0A0074375F /* Debug */,
+				8C3B560D22941C0A0074375F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8C3B56C922944A020074375F /* Build configuration list for PBXNativeTarget "zlib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C3B56CA22944A020074375F /* Debug */,
+				8C3B56CB22944A020074375F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8CFB705C226AE93900116947 /* Build configuration list for PBXProject "hypview" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

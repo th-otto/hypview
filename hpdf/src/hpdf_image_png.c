@@ -26,7 +26,7 @@
 
 static void PngReadFunc(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-	HPDF_UINT len = length;
+	HPDF_UINT len = (HPDF_UINT)length;
 	HPDF_Stream stream = (HPDF_Stream) png_get_io_ptr(png_ptr);
 
 	HPDF_Stream_Read(stream, data, &len);
@@ -60,7 +60,7 @@ static void PngErrorFunc(png_structp png_ptr, const char *msg)
 
 static HPDF_STATUS ReadPngData_Interlaced(HPDF_Dict image, png_structp png_ptr, png_infop info_ptr)
 {
-	png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+	png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
 	png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
 	png_bytep *row_pointers = (png_bytep *) HPDF_GetMem(image->mmgr, height * sizeof(png_bytep));
 
@@ -105,7 +105,7 @@ static HPDF_STATUS ReadPngData_Interlaced(HPDF_Dict image, png_structp png_ptr, 
 
 static HPDF_STATUS ReadPngData(HPDF_Dict image, png_structp png_ptr, png_infop info_ptr)
 {
-	png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+	png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
 	png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
 	png_bytep buf_ptr = (png_bytep) HPDF_GetMem(image->mmgr, len);
 
@@ -150,7 +150,7 @@ static HPDF_STATUS ReadTransparentPaletteData(
 		return HPDF_FAILD_TO_ALLOC_MEM;
 	} else
 	{
-		png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+		png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
 
 		for (i = 0; i < (HPDF_UINT) height; i++)
 		{
@@ -222,7 +222,7 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 		return HPDF_FAILD_TO_ALLOC_MEM;
 	} else
 	{
-		png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+		png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
 
 		for (i = 0; i < (HPDF_UINT) height; i++)
 		{
