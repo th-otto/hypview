@@ -25,21 +25,31 @@
 static const char *const HPDF_ANNOT_TYPE_NAMES[] = {
 	"Text",
 	"Link",
-	"Sound",
 	"FreeText",
-	"Stamp",
+	"Line",
 	"Square",
 	"Circle",
-	"StrikeOut",
+	"Polygon",
+	"PolyLine",
 	"Highlight",
 	"Underline",
-	"Ink",
-	"FileAttachment",
-	"Popup",
-	"3D",
 	"Squiggly",
-	"Line",
-	"Projection" "Widget"
+	"StrikeOut",
+	"Stamp",
+	"Caret",
+	"Ink",
+	"Popup",
+	"FileAttachment",
+	"Sound",
+	"Movie",
+	"Widget",
+	"Screen",
+	"PrinterMark",
+	"TrapNet",
+	"Watermark",
+	"3D",
+	"Redact",
+	"Projection",
 };
 
 static const char *const HPDF_ANNOT_ICON_NAMES_NAMES[] = {
@@ -519,7 +529,7 @@ HPDF_Annotation HPDF_MarkupAnnot_New(HPDF_MMgr mmgr,
 }
 
 
-HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)
+HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *color)
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -529,9 +539,9 @@ HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)
 		return HPDF_Error_GetCode(annot->error);
 
 	ret += HPDF_Dict_Add(annot, "C", cArray);
-	ret += HPDF_Array_AddReal(cArray, color.r);
-	ret += HPDF_Array_AddReal(cArray, color.g);
-	ret += HPDF_Array_AddReal(cArray, color.b);
+	ret += HPDF_Array_AddReal(cArray, color->r);
+	ret += HPDF_Array_AddReal(cArray, color->g);
+	ret += HPDF_Array_AddReal(cArray, color->b);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(annot->error);
@@ -540,7 +550,7 @@ HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)
 }
 
 
-HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)
+HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor *color)
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -550,10 +560,10 @@ HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)
 		return HPDF_Error_GetCode(annot->error);
 
 	ret += HPDF_Dict_Add(annot, "C", cArray);
-	ret += HPDF_Array_AddReal(cArray, color.c);
-	ret += HPDF_Array_AddReal(cArray, color.m);
-	ret += HPDF_Array_AddReal(cArray, color.y);
-	ret += HPDF_Array_AddReal(cArray, color.k);
+	ret += HPDF_Array_AddReal(cArray, color->c);
+	ret += HPDF_Array_AddReal(cArray, color->m);
+	ret += HPDF_Array_AddReal(cArray, color->y);
+	ret += HPDF_Array_AddReal(cArray, color->k);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(annot->error);
@@ -680,7 +690,7 @@ HPDF_STATUS HPDF_MarkupAnnot_SetPopup(HPDF_Annotation annot, HPDF_Annotation pop
 }
 
 
-HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, HPDF_RGBColor color)	/* IC with RGB entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *color)	/* IC with RGB entry */
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -690,9 +700,9 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, HPDF_RGB
 		return HPDF_Error_GetCode(annot->error);
 
 	ret += HPDF_Dict_Add(annot, "IC", cArray);
-	ret += HPDF_Array_AddReal(cArray, color.r);
-	ret += HPDF_Array_AddReal(cArray, color.g);
-	ret += HPDF_Array_AddReal(cArray, color.b);
+	ret += HPDF_Array_AddReal(cArray, color->r);
+	ret += HPDF_Array_AddReal(cArray, color->g);
+	ret += HPDF_Array_AddReal(cArray, color->b);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(annot->error);
@@ -701,7 +711,7 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, HPDF_RGB
 }
 
 
-HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color)	/* IC with CMYK entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor *color)	/* IC with CMYK entry */
 {
 	HPDF_Array cArray;
 	HPDF_STATUS ret = HPDF_OK;
@@ -711,10 +721,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, HPDF_CM
 		return HPDF_Error_GetCode(annot->error);
 
 	ret += HPDF_Dict_Add(annot, "IC", cArray);
-	ret += HPDF_Array_AddReal(cArray, color.c);
-	ret += HPDF_Array_AddReal(cArray, color.m);
-	ret += HPDF_Array_AddReal(cArray, color.y);
-	ret += HPDF_Array_AddReal(cArray, color.k);
+	ret += HPDF_Array_AddReal(cArray, color->c);
+	ret += HPDF_Array_AddReal(cArray, color->m);
+	ret += HPDF_Array_AddReal(cArray, color->y);
+	ret += HPDF_Array_AddReal(cArray, color->k);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(annot->error);

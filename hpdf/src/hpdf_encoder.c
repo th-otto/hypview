@@ -2359,7 +2359,6 @@ HPDF_STATUS HPDF_Encoder_Validate(HPDF_Encoder encoder)
 /* At first, CMAP encoder is create as 'virtual' object.
  * When init_fn is called, cmap-data is loaded and it becomes to be available
  */
-
 HPDF_Encoder HPDF_CMapEncoder_New(HPDF_MMgr mmgr, const char *name, HPDF_Encoder_Init_Func init_fn)
 {
 	HPDF_Encoder encoder;

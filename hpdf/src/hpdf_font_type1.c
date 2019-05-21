@@ -80,7 +80,7 @@ static HPDF_STATUS Type1Font_OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 }
 
 
-static HPDF_TextWidth Type1Font_TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len)
+static HPDF_TextWidth Type1Font_TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) font->attr;
 	HPDF_TextWidth ret = { 0, 0, 0, 0 };

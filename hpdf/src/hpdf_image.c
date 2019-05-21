@@ -209,7 +209,7 @@ HPDF_Image HPDF_Image_LoadJpegImage(HPDF_MMgr mmgr, HPDF_Stream jpeg_data, HPDF_
 }
 
 
-HPDF_Image HPDF_Image_LoadJpegImageFromMem(HPDF_MMgr mmgr, const HPDF_BYTE * buf, HPDF_UINT size, HPDF_Xref xref)
+HPDF_Image HPDF_Image_LoadJpegImageFromMem(HPDF_MMgr mmgr, const HPDF_BYTE *buf, HPDF_UINT size, HPDF_Xref xref)
 {
 	HPDF_Stream jpeg_data;
 	HPDF_Image image;
@@ -423,7 +423,7 @@ HPDF_Point HPDF_Image_GetSize(HPDF_Image image)
 }
 
 
-HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point * size)
+HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point *size)
 {
 	HPDF_Number width;
 	HPDF_Number height;
@@ -463,7 +463,7 @@ HPDF_UINT HPDF_Image_GetBitsPerComponent(HPDF_Image image)
 }
 
 
-const char * HPDF_Image_GetColorSpace(HPDF_Image image)
+const char *HPDF_Image_GetColorSpace(HPDF_Image image)
 {
 	HPDF_Name n;
 

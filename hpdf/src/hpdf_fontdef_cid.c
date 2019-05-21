@@ -117,7 +117,7 @@ HPDF_INT16 HPDF_CIDFontDef_GetCIDWidth(HPDF_FontDef fontdef, HPDF_UINT16 cid)
 }
 
 
-HPDF_STATUS HPDF_CIDFontDef_AddWidth(HPDF_FontDef fontdef, const HPDF_CID_Width * widths)
+HPDF_STATUS HPDF_CIDFontDef_AddWidth(HPDF_FontDef fontdef, const HPDF_CID_Width *widths)
 {
 	HPDF_CIDFontDefAttr attr = (HPDF_CIDFontDefAttr) fontdef->attr;
 

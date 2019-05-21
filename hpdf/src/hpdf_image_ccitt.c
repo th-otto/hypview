@@ -327,7 +327,7 @@ static void HPDF_Fax3PutBits(struct _HPDF_CCITT_Data *pData, unsigned int bits, 
  * appropriate table that holds the make-up and
  * terminating codes is supplied.
  */
-static void putspan(struct _HPDF_CCITT_Data *pData, int32 span, const tableentry * tab)
+static void putspan(struct _HPDF_CCITT_Data *pData, int32 span, const tableentry *tab)
 {
 	HPDF_Fax3CodecState *sp = EncoderState(pData);
 	unsigned int bit = sp->bit;
@@ -410,7 +410,7 @@ static const unsigned char oneruns[256] = {
  * table.  The ``base'' of the bit string is supplied
  * along with the start+end bit indices.
  */
-static /*inline */ int32 find0span(const unsigned char *bp, int32 bs, int32 be)
+static int32 find0span(const unsigned char *bp, int32 bs, int32 be)
 {
 	int32 bits = be - bs;
 	int32 n, span;
@@ -545,6 +545,7 @@ static int32 find1span(const unsigned char *bp, int32 bs, int32 be)
 	return (span);
 }
 
+
 /*
  * Return the offset of the next bit in the range
  * [bs..be] that is different from the specified
@@ -643,7 +644,7 @@ static HPDF_STATUS HPDF_Fax3Encode2DRow(struct _HPDF_CCITT_Data *pData, const un
  * Encode the requested amount of data.
  */
 static HPDF_STATUS
-HPDF_Fax4Encode(struct _HPDF_CCITT_Data *pData, const tidataval_t * bp, tsize_t cc /*, tsample_t s */ )
+HPDF_Fax4Encode(struct _HPDF_CCITT_Data *pData, const tidataval_t *bp, tsize_t cc /*, tsample_t s */ )
 {
 	HPDF_Fax3CodecState *sp = EncoderState(pData);
 
@@ -697,7 +698,7 @@ static HPDF_STATUS HPDF_Stream_CcittToStream(
 	if (top_is_first)
 	{
 		pBufPos = buf;
-		pBufEnd = buf + (line_width * height);
+		pBufEnd = buf + line_width * height;
 		lineIncrement = line_width;
 	} else
 	{

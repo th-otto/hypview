@@ -15263,7 +15263,8 @@ HPDF_STATUS HPDF_UseCNTEncodings(HPDF_Doc pdf)
 		return ret;
 
 	/* Microsoft Code Page 950 (lfCharSet 0x88) Big Five character set with
-	 * ETen extensions (vertical writing) */
+	 * ETen extensions (vertical writing)
+	 */
 	encoder = HPDF_CMapEncoder_New(pdf->mmgr, "ETen-B5-V", ETen_B5_V_Init);
 
 	if ((ret = HPDF_Doc_RegisterEncoder(pdf, encoder)) != HPDF_OK)

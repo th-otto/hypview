@@ -72,7 +72,7 @@ HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Point3
 
 
 
-HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, HPDF_RGBColor color)
+HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, const HPDF_RGBColor *color)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
@@ -86,9 +86,9 @@ HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, HPDF_RGBColor color)
 		return ret;
 
 	ret += HPDF_Array_AddName(array, "DeviceRGB");
-	ret += HPDF_Array_AddReal(array, color.r);
-	ret += HPDF_Array_AddReal(array, color.g);
-	ret += HPDF_Array_AddReal(array, color.b);
+	ret += HPDF_Array_AddReal(array, color->r);
+	ret += HPDF_Array_AddReal(array, color->g);
+	ret += HPDF_Array_AddReal(array, color->b);
 
 	return ret;
 }

@@ -67,7 +67,7 @@ HPDF_STATUS HPDF_Binary_Write(HPDF_Binary obj, HPDF_Stream stream, HPDF_Encrypt 
 }
 
 
-HPDF_STATUS HPDF_Binary_SetValue(HPDF_Binary obj, HPDF_BYTE * value, HPDF_UINT len)
+HPDF_STATUS HPDF_Binary_SetValue(HPDF_Binary obj, HPDF_BYTE *value, HPDF_UINT len)
 {
 	if (len > HPDF_LIMIT_MAX_STRING_LEN)
 		return HPDF_SetError(obj->error, HPDF_BINARY_LENGTH_ERR, 0);

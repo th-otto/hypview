@@ -6,69 +6,42 @@
 #ifdef WITH_PDF /* whole file */
 
 /*
- * gzip header:
- *    magic 0x1f 0x8b
- *    cm    0x08
- *    flg   0x00
- *    mtime 0x00 0x00 0x00 0x00
- *    xfl   0x02
- *    os    0x03
- * 
- *
- * deflate stream header:
- *   CMF FLG
- *
- *   CMF: compression method and flags
- *        0..3: CM compression method (8)
- *        4..7: CINFO compression info (ln2 window-size, minus 8)
- *              eg. value of 7 = 1 << 15 = 32k windows size
- *
- *   FLG: Flags
- *        0..4 FCHECK check bits for CMF and FLG
- *             (CMF*256 + FLG) must be multiple of 31
- *        5    FDICT preset dictionary
- *             if set, a DICTID identifier follows
- *        6..7 Compression level (informative only)
- */
-
-/*
  * node/label names are case sensitiv
  */
 #define namecmp strcmp
 
 static struct {
-	uint32_t background;           /* window background color */
-	uint32_t text;                 /* Displays text in the specified color */
-	int link_effect;               /* Text Effect for references */
-	uint32_t link;                 /* Displays references in the specified color */
-	uint32_t popup;                /* Displays references to popups in the specified color */
-	uint32_t xref;                 /* Displays external references in the specified color */
-	uint32_t system;               /* Displays references to {@ system } in the specified color */
-	uint32_t rx;                   /* Displays references to {@ rx } in the specified color */
-	uint32_t rxs;                  /* Displays references to {@ rxs } in the specified color */
-	uint32_t quit;                 /* Displays references to {@ quit } in the specified color */
-	uint32_t close;                /* Displays references to {@ close } in the specified color */
-	uint32_t ghosted;			   /* for "ghosted" effect (attribute @{G}) */
-	uint32_t error;
+	HPDF_RGBColor background;           /* window background color */
+	HPDF_RGBColor text;                 /* Displays text in the specified color */
+	HPDF_RGBColor link;                 /* Displays references in the specified color */
+	HPDF_RGBColor popup;                /* Displays references to popups in the specified color */
+	HPDF_RGBColor xref;                 /* Displays external references in the specified color */
+	HPDF_RGBColor system;               /* Displays references to {@ system } in the specified color */
+	HPDF_RGBColor rx;                   /* Displays references to {@ rx } in the specified color */
+	HPDF_RGBColor rxs;                  /* Displays references to {@ rxs } in the specified color */
+	HPDF_RGBColor quit;                 /* Displays references to {@ quit } in the specified color */
+	HPDF_RGBColor close;                /* Displays references to {@ close } in the specified color */
+	HPDF_RGBColor ghosted;			    /* for "ghosted" effect (attribute @{G}) */
+	HPDF_RGBColor error;
 } viewer_colors;
 
-static uint32_t user_colors[16] = {
-	0xffffff,
-	0x000000,
-	0xff0000,
-	0x00ff00,
-	0x0000ff,
-	0x00ffff,
-	0xffff00,
-	0xff00ff,
-	0xcccccc,
-	0x888888,
-	0x880000,
-	0x008800,
-	0x000088,
-	0x008888,
-	0x888800,
-	0x880088
+static HPDF_RGBColor user_colors[16] = {
+	{ 1.0, 1.0, 1.0 },
+	{ 0.0, 0.0, 0.0 },
+	{ 1.0, 0.0, 0.0 },
+	{ 0.0, 1.0, 0.0 },
+	{ 0.0, 0.0, 1.0 },
+	{ 0.0, 1.0, 1.0 },
+	{ 1.0, 1.0, 0.0 },
+	{ 1.0, 0.0, 1.0 },
+	{ 0.8, 0.8, 0.8 },
+	{ 0.533, 0.533, 0.533 },
+	{ 0.533, 0.0, 0.0 },
+	{ 0.0, 0.533, 0.0 },
+	{ 0.0, 0.0, 0.533 },
+	{ 0.0, 0.533, 0.533 },
+	{ 0.533, 0.533, 0.0 },
+	{ 0.533, 0.0, 0.533 }
 };
 
 typedef struct _symtab_entry symtab_entry;
@@ -103,6 +76,11 @@ struct pdf_xref {
 };
 
 #define PDF_DEFAULT_PIC_TYPE HYP_PIC_PNG
+
+#define LINK_BORDER_WIDTH 0
+
+static HPDF_REAL text_xoffset;
+static HPDF_REAL text_yoffset;
 
 /* ------------------------------------------------------------------------- */
 
@@ -499,9 +477,9 @@ static gboolean pdf_out_gfx(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, in
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_color(HPDF_Page page, uint32_t color)
+static gboolean pdf_out_color(HPDF_Page page, const HPDF_RGBColor *color)
 {
-	return HPDF_Page_SetRGBFill(page, ((color >> 16) & 0xff) / 255.0, ((color >> 8) & 0xff) / 255.0, ((color) & 0xff) / 255.0) == HPDF_NOERROR;
+	return HPDF_Page_SetRGBFill(page, color->r, color->g, color->b) == HPDF_NOERROR;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -519,7 +497,31 @@ static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, const unsigned char *st
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *xref, symtab_entry *syms, gboolean newwindow, unsigned char curtextattr, HPDF_Point *text_pos)
+static gboolean pdf_out_curattr(PDF *pdf, struct textattr *attr)
+{
+	gboolean retval = TRUE;
+
+	(void)pdf;
+	(void)attr;
+	return retval;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean pdf_out_curcolor(PDF *pdf, struct textattr *attr)
+{
+	gboolean retval = TRUE;
+
+	if (attr->curfg == HYP_DEFAULT_FG)
+		retval &= pdf_out_color(pdf->page, &viewer_colors.text);
+	else
+		retval &= pdf_out_color(pdf->page, &user_colors[attr->curfg]);
+	return retval;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *xref, symtab_entry *syms, gboolean newwindow, struct textattr *attr, HPDF_Point *text_pos)
 {
 	gboolean retval = TRUE;
 	HPDF_Destination dst;
@@ -529,33 +531,33 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 	(void)hyp;
 	(void)syms;
 	(void)newwindow;
-	(void)curtextattr;
+	(void)attr;
 
 	switch (xref->desttype)
 	{
 	case HYP_NODE_EOF:
-		retval &= pdf_out_color(pdf->page, viewer_colors.error);
+		retval &= pdf_out_color(pdf->page, &viewer_colors.error);
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
 		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
-		retval &= pdf_out_color(pdf->page, viewer_colors.text);
+		retval &= pdf_out_curcolor(pdf, attr);
 		break;
 	case HYP_NODE_INTERNAL:
 	case HYP_NODE_POPUP:
 	case HYP_NODE_EXTERNAL_REF:
-		rect.left = text_pos->x - 4;
-		rect.bottom = text_pos->y - 4;
-		rect.top = text_pos->y + pdf->line_height + 4;
-		retval &= pdf_out_color(pdf->page, viewer_colors.link);
+		rect.left = text_pos->x - LINK_BORDER_WIDTH;
+		rect.bottom = text_pos->y - LINK_BORDER_WIDTH;
+		rect.top = text_pos->y + pdf->line_height + LINK_BORDER_WIDTH;
+		retval &= pdf_out_color(pdf->page, &viewer_colors.link);
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
 		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
-		retval &= pdf_out_color(pdf->page, viewer_colors.text);
-		rect.right = text_pos->x + 4;
+		retval &= pdf_out_curcolor(pdf, attr);
+		rect.right = text_pos->x + LINK_BORDER_WIDTH;
 		dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
 		annot = HPDF_Page_CreateLinkAnnot(pdf->page, rect, dst);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
@@ -665,15 +667,16 @@ static gboolean pdf_out_attr(PDF *pdf, struct textattr *attr)
 {
 	gboolean retval = TRUE;
 	
-	(void)pdf;
 	if (attr->curattr != attr->newattr)
 	{
 		attr->curattr = attr->newattr;
+		pdf_out_curattr(pdf, attr);
 	}
 
 	if (attr->curfg != attr->newfg)
 	{
 		attr->curfg = attr->newfg;
+		pdf_out_curcolor(pdf, attr);
 	}
 
 	if (attr->curbg != attr->newbg)
@@ -691,7 +694,7 @@ static HPDF_Page pdf_newpage(PDF *pdf)
 	HPDF_Page page;
 	
 	page = pdf->page = HPDF_AddPage(pdf->hpdf);
-	pdf_out_color(page, viewer_colors.text);
+	pdf_out_color(page, &viewer_colors.text);
 	HPDF_Page_SetFontAndSize(page, pdf->font, pdf->font_size); 
 	HPDF_Page_SetTextRenderingMode(page, HPDF_FILL);
 	pdf->line_height = (HPDF_Font_GetAscent(pdf->font) - HPDF_Font_GetDescent(pdf->font)) * pdf->font_size / 1000;
@@ -734,9 +737,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	if (src > textstart) \
 	{ \
 		BEGINTEXT(); \
-		if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, user_colors[attr.curfg]); \
+		if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]); \
 		retval &= pdf_out_str(pdf, hyp, textstart, src - textstart, &converror); \
-		if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, viewer_colors.text); \
+		if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text); \
 		at_bol = FALSE; \
 	}
 #define FLUSHLINE() \
@@ -876,8 +879,8 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			attr.curfg = attr.newfg = HYP_DEFAULT_FG;
 			attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 			lineno = 0;
-			text_pos.x = 0;
-			text_pos.y = pdf->page_height - pdf->line_height - lineno * pdf->line_height;
+			text_pos.x = text_xoffset;
+			text_pos.y = pdf->page_height - pdf->line_height - lineno * pdf->line_height - text_yoffset;
 			retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
 			retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
 			
@@ -943,7 +946,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 								xref.destname = hyp_invalid_page(xref.dest_page);
 								xref.desttype = HYP_NODE_EOF;
 							}
-	
+
 							if (*src <= HYP_STRLEN_OFFSET)
 							{
 								src++;
@@ -979,7 +982,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							
 							text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
 							ENDTEXT();
-							retval &= pdf_generate_link(pdf, hyp, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, attr.curattr, &text_pos);
+							retval &= pdf_generate_link(pdf, hyp, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, &attr, &text_pos);
 	
 							g_free(xref.destname);
 							g_free(xref.text);
@@ -1072,11 +1075,6 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						break;
 				
 					case HYP_ESC_UNKNOWN_A4:
-						if (pdf->opts->print_unknown)
-							hyp_utf8_fprintf(pdf->opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
-						src++;
-						break;
-
 					default:
 						if (pdf->opts->print_unknown)
 							hyp_utf8_fprintf(pdf->opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
@@ -1091,8 +1089,8 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					ENDTEXT();
 					at_bol = TRUE;
 					++lineno;
-					text_pos.x = 0;
-					text_pos.y = pdf->page_height - pdf->line_height - lineno * pdf->line_height;
+					text_pos.x = text_xoffset;
+					text_pos.y = pdf->page_height - pdf->line_height - lineno * pdf->line_height - text_yoffset;
 					retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
 					retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
 					src++;
@@ -1113,8 +1111,8 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			FLUSHLINE();
 			FLUSHTREE();
 			++lineno;
-			text_pos.x = 0;
-			text_pos.y = pdf->page_height - pdf->line_height - lineno * pdf->line_height;
+			text_pos.x = text_xoffset;
+			text_pos.y = pdf->page_height - pdf->line_height - lineno * pdf->line_height - text_yoffset;
 			retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
 			retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
 			
@@ -1230,6 +1228,41 @@ static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
 #undef STR
 }
 
+static unsigned char parse_hex(const char *str)
+{
+	unsigned char val;
+	if (str[0] >= '0' && str[0] <= '9')
+		val = str[0] - '0';
+	else if (str[0] >= 'a' && str[0] <= 'f')
+		val = str[0] - 'a' + 10;
+	else if (str[0] >= 'A' && str[0] <= 'F')
+		val = str[0] - 'A' + 10;
+	else
+		val = 0;
+	val <<= 4;
+	if (str[1] >= '0' && str[1] <= '9')
+		val |= str[1] - '0';
+	else if (str[1] >= 'a' && str[1] <= 'f')
+		val |= str[1] - 'a' + 10;
+	else if (str[1] >= 'A' && str[1] <= 'F')
+		val |= str[1] - 'A' + 10;
+	return val;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void parse_color(const char *name, HPDF_RGBColor *color)
+{
+	if (name == NULL || *name != '#' || strlen(name) != 7)
+	{
+		color->r = color->g = color->b = 0;
+		return;
+	}
+	color->r = parse_hex(name + 1) / 255.0;
+	color->g = parse_hex(name + 3) / 255.0;
+	color->b = parse_hex(name + 5) / 255.0;
+}
+
 /* ------------------------------------------------------------------------- */
 
 gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv)
@@ -1247,22 +1280,21 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	
 	/* force_crlf = FALSE; */
 
-	/*
-	 * TODO: get from config
-	 */
-	viewer_colors.background = 0xfffff;
-	viewer_colors.text = 0x000000;
-	viewer_colors.link = 0x0000ff;
-	viewer_colors.link_effect = HYP_TXT_BOLD | HYP_TXT_UNDERLINED;
-	viewer_colors.popup = 0x00ff00;
-	viewer_colors.xref = 0xff0000;
-	viewer_colors.system = 0xff00ff;
-	viewer_colors.rx = 0xff00ff;
-	viewer_colors.rxs = 0xff00ff;
-	viewer_colors.quit = 0xff0000;
-	viewer_colors.close = 0xff0000;
-	viewer_colors.ghosted = 0xcccccc;
-	viewer_colors.error = 0xff0000;
+	parse_color(gl_profile.colors.background, &viewer_colors.background);
+	parse_color(gl_profile.colors.text, &viewer_colors.text);
+	parse_color(gl_profile.colors.link, &viewer_colors.link);
+	parse_color(gl_profile.colors.xref, &viewer_colors.xref);
+	parse_color(gl_profile.colors.popup, &viewer_colors.popup);
+	parse_color(gl_profile.colors.system, &viewer_colors.system);
+	parse_color(gl_profile.colors.rx, &viewer_colors.rx);
+	parse_color(gl_profile.colors.rxs, &viewer_colors.rxs);
+	parse_color(gl_profile.colors.quit, &viewer_colors.quit);
+	parse_color(gl_profile.colors.close, &viewer_colors.close);
+	parse_color(gl_profile.colors.ghosted, &viewer_colors.ghosted);
+	parse_color("#ff0000", &viewer_colors.error); /* used to display invalid links in hypertext files */
+
+	text_xoffset = (gl_profile.viewer.text_xoffset / 90.0) * 72.0;
+	text_yoffset = (gl_profile.viewer.text_yoffset / 90.0) * 72.0;
 
 	ret = TRUE;
 		

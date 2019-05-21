@@ -115,7 +115,8 @@ HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
 	/* "The keys shall be sorted in lexical order" -- 7.9.6, Name Trees.
 	 * Since we store keys sorted, it's best to do a linear insertion sort
 	 * Find the first element larger than 'key', and insert 'key' and then
-	 * 'obj' into the items. */
+	 * 'obj' into the items.
+	 */
 
 	icount = HPDF_Array_Items(items);
 
@@ -133,7 +134,8 @@ HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
 	}
 
 	/* Walk backwards through the list until we're smaller than an element=
-	 * That's the element to insert in front of. */
+	 * That's the element to insert in front of.
+	 */
 	for (i = icount - 4; i >= 0; i -= 2)
 	{
 		HPDF_String elem = (HPDF_String) HPDF_Array_GetItem(items, i, HPDF_OCLASS_STRING);

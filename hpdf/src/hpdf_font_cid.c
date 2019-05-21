@@ -391,7 +391,7 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 }
 
 
-static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len)
+static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
 {
 	HPDF_TextWidth tw = { 0, 0, 0, 0 };
 	HPDF_FontAttr attr = (HPDF_FontAttr) font->attr;
@@ -475,7 +475,7 @@ static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UIN
 
 static HPDF_UINT MeasureText(
 	HPDF_Font font,
-	const HPDF_BYTE * text,
+	const HPDF_BYTE *text,
 	HPDF_UINT len,
 	HPDF_REAL width,
 	HPDF_REAL font_size,

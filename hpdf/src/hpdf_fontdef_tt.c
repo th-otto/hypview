@@ -148,17 +148,16 @@ HPDF_FontDef HPDF_TTFontDef_New(HPDF_MMgr mmgr)
 }
 
 
-static void UINT32Swap(HPDF_UINT32 * value)
+static void UINT32Swap(HPDF_UINT32 *value)
 {
 	HPDF_BYTE b[4];
 
 	memcpy(b, value, 4);
-	*value = (HPDF_UINT32) ((HPDF_UINT32) b[0] << 24 |
-							(HPDF_UINT32) b[1] << 16 | (HPDF_UINT32) b[2] << 8 | (HPDF_UINT32) b[3]);
+	*value = (HPDF_UINT32) ((HPDF_UINT32) b[0] << 24 | (HPDF_UINT32) b[1] << 16 | (HPDF_UINT32) b[2] << 8 | (HPDF_UINT32) b[3]);
 }
 
 
-static void UINT16Swap(HPDF_UINT16 * value)
+static void UINT16Swap(HPDF_UINT16 *value)
 {
 	HPDF_BYTE b[2];
 
@@ -167,7 +166,7 @@ static void UINT16Swap(HPDF_UINT16 * value)
 }
 
 
-static void INT16Swap(HPDF_INT16 * value)
+static void INT16Swap(HPDF_INT16 *value)
 {
 	HPDF_BYTE b[2];
 
@@ -194,7 +193,7 @@ static HPDF_STATUS GetUINT32(HPDF_Stream stream, HPDF_UINT32 *value)
 }
 
 
-static HPDF_STATUS GetUINT16(HPDF_Stream stream, HPDF_UINT16 * value)
+static HPDF_STATUS GetUINT16(HPDF_Stream stream, HPDF_UINT16 *value)
 {
 	HPDF_STATUS ret;
 	HPDF_UINT size = sizeof(HPDF_UINT16);
@@ -212,7 +211,7 @@ static HPDF_STATUS GetUINT16(HPDF_Stream stream, HPDF_UINT16 * value)
 }
 
 
-static HPDF_STATUS GetINT16(HPDF_Stream stream, HPDF_INT16 * value)
+static HPDF_STATUS GetINT16(HPDF_Stream stream, HPDF_INT16 *value)
 {
 	HPDF_STATUS ret;
 	HPDF_UINT size = sizeof(HPDF_INT16);
@@ -1179,8 +1178,7 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_B
 	attr->glyph_tbl.base_offset = tbl->offset;
 	fontdef->cap_height = (HPDF_UINT16) HPDF_TTFontDef_GetCharBBox(fontdef, (HPDF_UINT16) 'H').top;
 	fontdef->x_height = (HPDF_UINT16) HPDF_TTFontDef_GetCharBBox(fontdef, (HPDF_UINT16) 'x').top;
-	fontdef->missing_width = (HPDF_INT16) ((HPDF_UINT32) attr->h_metric[0].advance_width * 1000 /
-										   attr->header.units_per_em);
+	fontdef->missing_width = (HPDF_INT16) ((HPDF_UINT32) attr->h_metric[0].advance_width * 1000 / attr->header.units_per_em);
 
 	if (!embedding)
 	{
@@ -1507,7 +1505,7 @@ HPDF_INT16 HPDF_TTFontDef_GetGidWidth(HPDF_FontDef fontdef, HPDF_UINT16 gid)
 
 
 
-static HPDF_STATUS RecreateGLYF(HPDF_FontDef fontdef, HPDF_UINT32 * new_offsets, HPDF_Stream stream)
+static HPDF_STATUS RecreateGLYF(HPDF_FontDef fontdef, HPDF_UINT32 *new_offsets, HPDF_Stream stream)
 {
 	HPDF_UINT32 save_offset = 0;
 	HPDF_UINT32 start_offset = stream->size;
@@ -1659,7 +1657,7 @@ static HPDF_STATUS RecreateName(HPDF_FontDef fontdef, HPDF_Stream stream)
 }
 
 
-static HPDF_STATUS WriteHeader(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_UINT32 * check_sum_ptr)
+static HPDF_STATUS WriteHeader(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_UINT32 *check_sum_ptr)
 {
 	HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr) fontdef->attr;
 	HPDF_STATUS ret = HPDF_OK;

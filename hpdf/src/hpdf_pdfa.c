@@ -137,8 +137,10 @@ static HPDF_STATUS ConvertDateToXMDate(HPDF_Stream stream, const char *pDate)
 	return HPDF_SetError(stream->error, HPDF_INVALID_PARAMETER, 0);
 }
 
-/* Write XMP Metadata for PDF/A */
 
+/*
+ * Write XMP Metadata for PDF/A
+ */
 HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 {
 	HPDF_OutputIntent xmp;
@@ -361,7 +363,6 @@ HPDF_STATUS HPDF_PDFA_GenerateID(HPDF_Doc pdf)
  *
  * 2. Call this function
  */
-
 HPDF_STATUS HPDF_PDFA_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdict)
 {
 	HPDF_Array intents;

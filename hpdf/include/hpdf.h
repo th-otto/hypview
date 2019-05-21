@@ -317,9 +317,9 @@ HPDF_STATUS HPDF_TextAnnot_SetIcon(HPDF_Annotation annot, HPDF_AnnotIcon icon);
 
 HPDF_STATUS HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened);
 
-HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, HPDF_RGBColor color);
+HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *color);
 
-HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color);
+HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor *color);
 
 HPDF_STATUS HPDF_Annot_SetGrayColor(HPDF_Annotation annot, HPDF_REAL color);
 
@@ -341,9 +341,9 @@ HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPDF_Rect rect);
 
 HPDF_STATUS HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, HPDF_INT cloudIntensity);	/* BE entry */
 
-HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, HPDF_RGBColor color);	/* IC with RGB entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *color);	/* IC with RGB entry */
 
-HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, HPDF_CMYKColor color);	/* IC with CMYK entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor *color);	/* IC with CMYK entry */
 
 HPDF_STATUS HPDF_MarkupAnnot_SetInteriorGrayColor(HPDF_Annotation annot, HPDF_REAL color);	/* IC with Gray entry */
 
@@ -392,7 +392,7 @@ HPDF_3DMeasure HPDF_Page_CreatePD33DMeasure(HPDF_Page page,
 
 HPDF_STATUS HPDF_3DMeasure_SetName(HPDF_3DMeasure measure, const char *name);
 
-HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, HPDF_RGBColor color);
+HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, const HPDF_RGBColor *color);
 
 HPDF_STATUS HPDF_3DMeasure_SetTextSize(HPDF_3DMeasure measure, HPDF_REAL textsize);
 

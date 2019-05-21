@@ -20,8 +20,6 @@
 #include "hpdf_objects.h"
 #include <string.h>
 
-static HPDF_STATUS WriteTrailer(HPDF_Xref xref, HPDF_Stream stream);
-
 
 HPDF_Xref HPDF_Xref_New(HPDF_MMgr mmgr, HPDF_UINT32 offset)
 {
@@ -165,6 +163,7 @@ HPDF_STATUS HPDF_Xref_Add(HPDF_Xref xref, void *obj)
 	return HPDF_Error_GetCode(xref->error);
 }
 
+
 HPDF_XrefEntry HPDF_Xref_GetEntry(HPDF_Xref xref, HPDF_UINT index)
 {
 	return (HPDF_XrefEntry) HPDF_List_ItemAt(xref->entries, index);
@@ -202,6 +201,37 @@ HPDF_XrefEntry HPDF_Xref_GetEntryByObjectId(HPDF_Xref xref, HPDF_UINT obj_id)
 	}
 
 	return NULL;
+}
+
+
+static HPDF_STATUS WriteTrailer(HPDF_Xref xref, HPDF_Stream stream)
+{
+	HPDF_UINT max_obj_id = xref->entries->count + xref->start_offset;
+	HPDF_STATUS ret;
+
+	if ((ret = HPDF_Dict_AddNumber(xref->trailer, "Size", max_obj_id)) != HPDF_OK)
+		return ret;
+
+	if (xref->prev)
+		if ((ret = HPDF_Dict_AddNumber(xref->trailer, "Prev", xref->prev->addr)) != HPDF_OK)
+			return ret;
+
+	if ((ret = HPDF_Stream_WriteStr(stream, "trailer\012")) != HPDF_OK)
+		return ret;
+
+	if ((ret = HPDF_Dict_Write(xref->trailer, stream, NULL)) != HPDF_OK)
+		return ret;
+
+	if ((ret = HPDF_Stream_WriteStr(stream, "\012startxref\012")) != HPDF_OK)
+		return ret;
+
+	if ((ret = HPDF_Stream_WriteUInt(stream, xref->addr)) != HPDF_OK)
+		return ret;
+
+	if ((ret = HPDF_Stream_WriteStr(stream, "\012%%EOF\012")) != HPDF_OK)
+		return ret;
+
+	return HPDF_OK;
 }
 
 
@@ -297,34 +327,4 @@ HPDF_STATUS HPDF_Xref_WriteToStream(HPDF_Xref xref, HPDF_Stream stream, HPDF_Enc
 	ret = WriteTrailer(xref, stream);
 
 	return ret;
-}
-
-static HPDF_STATUS WriteTrailer(HPDF_Xref xref, HPDF_Stream stream)
-{
-	HPDF_UINT max_obj_id = xref->entries->count + xref->start_offset;
-	HPDF_STATUS ret;
-
-	if ((ret = HPDF_Dict_AddNumber(xref->trailer, "Size", max_obj_id)) != HPDF_OK)
-		return ret;
-
-	if (xref->prev)
-		if ((ret = HPDF_Dict_AddNumber(xref->trailer, "Prev", xref->prev->addr)) != HPDF_OK)
-			return ret;
-
-	if ((ret = HPDF_Stream_WriteStr(stream, "trailer\012")) != HPDF_OK)
-		return ret;
-
-	if ((ret = HPDF_Dict_Write(xref->trailer, stream, NULL)) != HPDF_OK)
-		return ret;
-
-	if ((ret = HPDF_Stream_WriteStr(stream, "\012startxref\012")) != HPDF_OK)
-		return ret;
-
-	if ((ret = HPDF_Stream_WriteUInt(stream, xref->addr)) != HPDF_OK)
-		return ret;
-
-	if ((ret = HPDF_Stream_WriteStr(stream, "\012%%EOF\012")) != HPDF_OK)
-		return ret;
-
-	return HPDF_OK;
 }

@@ -42,7 +42,7 @@ static HPDF_Image LoadPngImageFromStream(HPDF_Doc pdf, HPDF_Stream imagedata, HP
 }
 
 
-HPDF_Image HPDF_LoadPngImageFromMem(HPDF_Doc pdf, const HPDF_BYTE * buffer, HPDF_UINT size)
+HPDF_Image HPDF_LoadPngImageFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_UINT size)
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;

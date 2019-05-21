@@ -168,7 +168,7 @@ static HPDF_INT CharWidth(HPDF_Font font, HPDF_BYTE code)
 }
 
 
-static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len)
+static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) font->attr;
 	HPDF_TextWidth ret = { 0, 0, 0, 0 };

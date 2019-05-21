@@ -405,7 +405,7 @@ HPDF_FontDef HPDF_Type1FontDef_Duplicate(HPDF_MMgr mmgr, HPDF_FontDef src)
 }
 
 
-HPDF_STATUS HPDF_Type1FontDef_SetWidths(HPDF_FontDef fontdef, const HPDF_CharData * widths)
+HPDF_STATUS HPDF_Type1FontDef_SetWidths(HPDF_FontDef fontdef, const HPDF_CharData *widths)
 {
 	const HPDF_CharData *src = widths;
 	HPDF_Type1FontDefAttr attr = (HPDF_Type1FontDefAttr) fontdef->attr;

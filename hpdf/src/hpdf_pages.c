@@ -1902,7 +1902,7 @@ HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(
 
 HPDF_Annotation HPDF_Page_CreateHighlightAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
 {
-	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_HIGHTLIGHT);
+	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_HIGHLIGHT);
 }
 
 

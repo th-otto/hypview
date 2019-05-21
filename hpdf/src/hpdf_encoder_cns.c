@@ -36265,7 +36265,8 @@ HPDF_STATUS HPDF_UseCNSEncodings(HPDF_Doc pdf)
 		return ret;
 
 	/* Microsoft Code Page 936 (lfCharSet 0x86) GBK encoding
-	 * (vertical writing) */
+	 * (vertical writing)
+	 */
 	encoder = HPDF_CMapEncoder_New(pdf->mmgr, "GBK-EUC-V", GBK_EUC_V_Init);
 
 	if ((ret = HPDF_Doc_RegisterEncoder(pdf, encoder)) != HPDF_OK)
