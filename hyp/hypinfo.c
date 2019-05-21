@@ -9,6 +9,7 @@
 #include <locale.h>
 #endif
 #include "hv_vers.h"
+#include "outcomm.h"
 
 /*
  * Pure-C is not able to compile the ~20MB file model.c :(
@@ -31,10 +32,8 @@ static gboolean preserve;
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-#define CMDLINE_VERSION 1
 #define OUT_ASCII_ONLY 1
 
-#include "outcomm.h"
 #include "outasc.h"
 
 /*****************************************************************************/
@@ -1017,6 +1016,5 @@ int main(int argc, const char **argv)
 	HypProfile_Delete();
 	x_free_resources();
 
-	(void) vdi_maptab16;
 	return retval;
 }

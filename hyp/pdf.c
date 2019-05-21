@@ -2,13 +2,9 @@
 #include "hypdebug.h"
 #include "hcp_opts.h"
 #include "pdf.h"
+#include "outcomm.h"
 
 #ifdef WITH_PDF /* whole file */
-
-/*
- * node/label names are case sensitiv
- */
-#define namecmp strcmp
 
 static struct {
 	HPDF_RGBColor background;           /* window background color */
@@ -44,28 +40,6 @@ static HPDF_RGBColor user_colors[16] = {
 	{ 0.533, 0.0, 0.533 }
 };
 
-typedef struct _symtab_entry symtab_entry;
-struct _symtab_entry {
-	char *nodename;
-	hyp_lineno lineno;
-	hyp_reftype type;
-	char *name;
-	gboolean freeme;
-	gboolean from_ref;
-	gboolean from_idx;
-	gboolean referenced;
-	symtab_entry *next;
-};
-
-struct textattr {
-	unsigned char curattr;
-	unsigned char curfg;
-	unsigned char curbg;
-	unsigned char newattr;
-	unsigned char newfg;
-	unsigned char newbg;
-};
-
 struct pdf_xref {
 	char *destname;
 	char *text;	/* text to display */
@@ -84,267 +58,6 @@ static HPDF_REAL text_yoffset;
 
 /* ------------------------------------------------------------------------- */
 
-static symtab_entry *sym_find(symtab_entry *sym, const char *search, hyp_reftype type)
-{
-	while (sym != NULL)
-	{
-		if (type == sym->type && strcmp(sym->nodename, search) == 0)
-			return sym;
-		sym = sym->next;
-	}
-	return NULL;
-}
-
-/* ------------------------------------------------------------------------- */
-
-static gboolean sym_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, symtab_entry **syms)
-{
-	char *str;
-	long lineno;
-	HYP_NODE *nodeptr;
-	gboolean retval = TRUE;
-	
-	if ((nodeptr = hyp_loadtext(hyp, node)) != NULL)
-	{
-		const unsigned char *src;
-		const unsigned char *end;
-		
-		end = nodeptr->end;
-		src = nodeptr->start;
-		lineno = 0;
-		
-		while (retval && src < end)
-		{
-			if (*src == HYP_ESC)
-			{
-				src++;
-				switch (*src)
-				{
-				case HYP_ESC_ESC:
-				case HYP_ESC_WINDOWTITLE:
-				case HYP_ESC_CASE_DATA:
-				case HYP_ESC_EXTERNAL_REFS:
-				case HYP_ESC_OBJTABLE:
-				case HYP_ESC_PIC:
-				case HYP_ESC_LINE:
-				case HYP_ESC_BOX:
-				case HYP_ESC_RBOX:
-				case HYP_ESC_CASE_TEXTATTR:
-				case HYP_ESC_LINK:
-				case HYP_ESC_ALINK:
-				case HYP_ESC_UNKNOWN_A4:
-				case HYP_ESC_FG_COLOR:
-				case HYP_ESC_BG_COLOR:
-					src = hyp_skip_esc(src - 1);
-					break;
-				
-				case HYP_ESC_LINK_LINE:
-				case HYP_ESC_ALINK_LINE:
-					{
-						hyp_nodenr dest_page;
-						hyp_lineno line;
-						char *dest;
-						
-						line = DEC_255(&src[1]);
-						src += 2;
-						dest_page = DEC_255(&src[1]);
-						src += 3;
-						dest = NULL;
-						str = NULL;
-						if (hypnode_valid(hyp, dest_page))
-						{
-							INDEX_ENTRY *dest_entry = hyp->indextable[dest_page];
-							
-							switch ((hyp_indextype) dest_entry->type)
-							{
-							case HYP_NODE_INTERNAL:
-							case HYP_NODE_POPUP:
-								dest = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
-								break;
-							case HYP_NODE_EXTERNAL_REF:
-							case HYP_NODE_REXX_COMMAND:
-							case HYP_NODE_REXX_SCRIPT:
-							case HYP_NODE_SYSTEM_ARGUMENT:
-							case HYP_NODE_IMAGE:
-							case HYP_NODE_QUIT:
-							case HYP_NODE_CLOSE:
-							default:
-							case HYP_NODE_EOF:
-								break;
-							}
-						}
-						if (dest)
-						{
-							if (*src <= HYP_STRLEN_OFFSET)
-							{
-								src++;
-								str = g_strdup(dest);
-							} else
-							{
-								size_t len;
-	
-								len = *src - HYP_STRLEN_OFFSET;
-								src++;
-								str = hyp_conv_to_utf8(hyp->comp_charset, src, len);
-								src += len;
-							}
-							{
-								gboolean is_xref = FALSE;
-								
-								char *p = (hyp->st_guide_flags & STG_ALLOW_FOLDERS_IN_XREFS ? strrslash : strslash)(dest);
-								if (p != NULL)
-								{
-									hyp_filetype ft;
-									*p = '\0';
-									ft = hyp_guess_filetype(dest);
-									if (ft == HYP_FT_HYP || ft == HYP_FT_RSC)
-									{
-										is_xref = TRUE;
-									} else
-									{
-										*p = '/';
-									}
-								}
-								if (!is_xref)
-								{
-									symtab_entry *sym;
-									
-									sym = sym_find(*syms, dest, REF_LABELNAME);
-									while (sym != NULL)
-									{
-										if (strcmp(sym->name, str) == 0)
-											break;
-										if (sym->lineno == line && sym->from_ref)
-											break;
-										sym = sym_find(sym->next, dest, REF_LABELNAME);
-									}
-									if (sym == NULL)
-									{
-										symtab_entry **last = syms;
-										symtab_entry *sym;
-										
-										while (*last)
-											last = &(*last)->next;
-										sym = g_new(symtab_entry, 1);
-										if (sym == NULL)
-										{
-											retval = FALSE;
-										} else
-										{
-											sym->nodename = dest;
-											dest = NULL;
-											sym->type = REF_LABELNAME;
-											sym->name = str;
-											str = NULL;
-											sym->lineno = line;
-											sym->freeme = TRUE;
-											sym->from_ref = FALSE;
-											sym->from_idx = node == hyp->index_page;
-											sym->referenced = FALSE;
-											sym->next = NULL;
-											*last = sym;
-										}
-									}
-								}
-							}
-						}
-						g_free(dest);
-						g_free(str);
-					}
-					break;
-					
-				default:
-					break;
-				}
-			} else if (*src == HYP_EOL)
-			{
-				++lineno;
-				src++;
-			} else
-			{
-				src++;
-			}
-		}
-		++lineno;
-		
-		hyp_node_free(nodeptr);
-	} else
-	{
-		hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
-	}
-
-	return retval;
-}
-
-/* ------------------------------------------------------------------------- */
-
-static symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
-{
-	symtab_entry *syms = NULL;
-	symtab_entry **last = &syms;
-	symtab_entry *sym;
-	
-	/* load REF if not done already */
-	if (hyp->ref == NULL)
-	{
-		char *filename;
-		int ret;
-
-		filename = replace_ext(hyp->file, HYP_EXT_HYP, HYP_EXT_REF);
-
-		ret = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
-		if (ret >= 0)
-		{
-			hyp->ref = ref_load(filename, ret, FALSE);
-			hyp_utf8_close(ret);
-		}
-		g_free(filename);
-	}
-	ref_conv_to_utf8(hyp->ref);
-	if (hyp->ref != NULL)
-	{
-		hyp_nodenr node_num;
-		REF_MODULE *mod;
-		char *nodename = NULL;
-		const REF_ENTRY *entry;
-		
-		for (mod = hyp->ref->modules; mod != NULL; mod = mod->next)
-		{
-			for (node_num = 0; node_num < mod->num_entries; node_num++)
-			{
-				entry = &mod->entries[node_num];
-				
-				if (entry->type == REF_NODENAME)
-				{
-					nodename = entry->name.utf8;
-				} else if (entry->type != REF_ALIASNAME && entry->type != REF_LABELNAME)
-				{
-					continue;
-				}
-				sym = g_new(symtab_entry, 1);
-				if (sym == NULL)
-					return syms;
-				sym->nodename = nodename;
-				sym->type = entry->type;
-				sym->name = entry->name.utf8;
-				sym->lineno = entry->lineno;
-				sym->freeme = FALSE;
-				sym->from_ref = TRUE;
-				sym->from_idx = FALSE;
-				sym->referenced = FALSE;
-				sym->next = NULL;
-				*last = sym;
-				last = &(sym)->next;
-			}
-			/* only search the first module */
-			break;
-		}
-	}
-	return syms;
-}
-
-/* ------------------------------------------------------------------------- */
-
 static void pdf_error_handler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *user_data)
 {
 	PDF *pdf = (PDF *)user_data;
@@ -352,51 +65,6 @@ static void pdf_error_handler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void 
 #if 0
 	longjmp(pdf->error_env, 1);
 #endif
-}
-
-/* ------------------------------------------------------------------------- */
-
-static hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pic_format default_format)
-{
-	hyp_pic_format format;
-
-	format = opts->pic_format;
-#ifndef HAVE_PNG
-	if (default_format == HYP_PIC_PNG)
-		default_format = HYP_PIC_GIF;
-#endif
-	if (format == HYP_PIC_ORIG)
-	{
-		/*
-		 * not documented, but HCP seems to write the
-		 * orignal file format into the "up" field
-		 */
-		format = (hyp_pic_format)entry->toc_index;
-	}
-	if ((opts->recompile_format == HYP_FT_HTML || opts->recompile_format == HYP_FT_HTML_XML) && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
-	{
-		format = default_format;
-		hyp_utf8_fprintf(opts->errorfile, _("%sGEM images are not displayable in HTML, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format));
-	}
-	if (opts->recompile_format == HYP_FT_XML && (format == HYP_PIC_IMG || format == HYP_PIC_ICN))
-	{
-		format = default_format;
-		/* hyp_utf8_fprintf(opts->errorfile, _("%sGEM images are not displayable in XML, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format)); */
-	}
-#ifndef HAVE_PNG
-	if (format == HYP_PIC_PNG)
-	{
-		format = default_format;
-		hyp_utf8_fprintf(opts->errorfile, _("%sPNG not supported on this platform, using %s instead\n"), _("warning: "), hcp_pic_format_to_name(default_format));
-	}
-#endif
-	if (format < 1 || format > HYP_PIC_LAST)
-	{
-		format = default_format;
-		hyp_utf8_fprintf(opts->errorfile, _("unknown image source type, using %s instead\n"), hcp_pic_format_to_name(default_format));
-	}
-	
-	return format;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1417,6 +1085,9 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		idx++;
 	}
 
+	if (cmdline_version)
+		ClearCache(hyp);
+	
 	for (i = 0; i < argc; i++)
 	{
 		if (argv[i] != NULL)

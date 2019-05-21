@@ -121,8 +121,9 @@ hcp_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
+	outcomm.c outcomm.h \
 	pdf.c pdf.h \
-	outasc.h outstg.h outdump.h outhtml.h htmljs.h outcomm.h outxml.h \
+	outasc.h outstg.h outdump.h outhtml.h htmljs.h outxml.h \
 	$(UTIL_SRC)
 
 htmljs.h: $(top_srcdir)/www/_hypview.js
@@ -167,8 +168,9 @@ hypview_cgi_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
+	outcomm.c outcomm.h \
 	pdf.c pdf.h \
-	outasc.h outstg.h outdump.h outhtml.h htmljs.h outcomm.h outxml.h \
+	outasc.h outstg.h outdump.h outhtml.h htmljs.h outxml.h \
 	cgic.c cgic.h \
 	$(UTIL_SRC)
 
@@ -201,6 +203,7 @@ endif
 rscview_cgi_SOURCES = \
 	rsccgi.c \
 	hcp_opts.c \
+	outcomm.c outcomm.h \
 	cgic.c cgic.h \
 	$(UTIL_SRC)
 
@@ -227,6 +230,7 @@ hypinfo_SOURCES = \
 	hcp_opts.c \
 	llangid.c llangid.h \
 	sparse.c sparse.h \
+	outcomm.c outcomm.h \
 	model.c model.h \
 	$(UTIL_SRC)
 hypinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)

@@ -22,6 +22,7 @@ static gboolean recompile(HYP_DOCUMENT *hyp, hcp_opts *opts, recompile_func func
 	char *dir;
 	char *output_filename = NULL;
 	
+	cmdline_version = FALSE;
 	if ((opts->errorfile == NULL || opts->errorfile == stderr) && opts->error_filename != NULL)
 	{
 		opts->errorfile = hyp_utf8_fopen(opts->error_filename, "w");

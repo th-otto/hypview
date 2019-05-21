@@ -2962,9 +2962,8 @@ static gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, cons
 		g_string_truncate(out, 0);
 	}
 	
-#ifdef CMDLINE_VERSION
-	ClearCache(hyp);
-#endif
+	if (cmdline_version)
+		ClearCache(hyp);
 	
 	{
 		symtab_entry *sym;

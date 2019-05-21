@@ -73,6 +73,7 @@ hypview_SOURCES = \
 	autoloc.c \
 	hv_recomp.c \
 	hcp_opts.c \
+	../hyp/outcomm.c \
 	$(empty)
 
 if WITH_PDF

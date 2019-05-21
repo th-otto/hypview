@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <utime.h>
 #include "cgic.h"
+#include "outcomm.h"
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hypview.cgi";
@@ -38,9 +39,7 @@ struct curl_parms {
 /*****************************************************************************/
 
 #define CGI_VERSION 1
-#define CMDLINE_VERSION 1
 
-#include "outcomm.h"
 #include "outstg.h"
 #include "outhtml.h"
 
@@ -176,9 +175,8 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 		break;
 	}
 	
-#ifdef CMDLINE_VERSION
-	ClearCache(hyp);
-#endif
+	if (cmdline_version)
+		ClearCache(hyp);
 	
 	free_symtab(syms);
 	return ret;

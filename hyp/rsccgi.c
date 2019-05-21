@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <utime.h>
 #include "cgic.h"
+#include "outcomm.h"
 #include "hv_vers.h"
 
 char const gl_program_name[] = "rscview.cgi";
@@ -38,9 +39,7 @@ struct curl_parms {
 /*****************************************************************************/
 
 #define CGI_VERSION 1
-#define CMDLINE_VERSION 1
 
-#include "outcomm.h"
 #include "outstg.h"
 #include "outhtml.h"
 

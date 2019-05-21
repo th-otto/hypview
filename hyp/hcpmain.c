@@ -7,6 +7,7 @@
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
+#include "outcomm.h"
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hcp";
@@ -102,9 +103,6 @@ static void print_usage(FILE *out)
 
 /* ------------------------------------------------------------------------- */
 
-#define CMDLINE_VERSION 1
-
-#include "outcomm.h"
 #include "outasc.h"
 #include "outstg.h"
 #include "outhtml.h"
