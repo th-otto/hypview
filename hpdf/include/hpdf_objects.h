@@ -108,12 +108,12 @@ void HPDF_Obj_ForceFree(HPDF_MMgr mmgr, void *obj);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Null -----------------------------------------------------------*/
 
-typedef struct _HPDF_Null_Rec *HPDF_Null;
-
 typedef struct _HPDF_Null_Rec
 {
 	HPDF_Obj_Header header;
 } HPDF_Null_Rec;
+
+typedef HPDF_Null_Rec *HPDF_Null;
 
 
 
@@ -123,13 +123,13 @@ HPDF_Null HPDF_Null_New(HPDF_MMgr mmgr);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Boolean --------------------------------------------------------*/
 
-typedef struct _HPDF_Boolean_Rec *HPDF_Boolean;
-
 typedef struct _HPDF_Boolean_Rec
 {
 	HPDF_Obj_Header header;
 	HPDF_BOOL value;
 } HPDF_Boolean_Rec;
+
+typedef HPDF_Boolean_Rec *HPDF_Boolean;
 
 
 
@@ -142,13 +142,13 @@ HPDF_STATUS HPDF_Boolean_Write(HPDF_Boolean obj, HPDF_Stream stream);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Number ---------------------------------------------------------*/
 
-typedef struct _HPDF_Number_Rec *HPDF_Number;
-
 typedef struct _HPDF_Number_Rec
 {
 	HPDF_Obj_Header header;
 	HPDF_INT32 value;
 } HPDF_Number_Rec;
+
+typedef HPDF_Number_Rec *HPDF_Number;
 
 
 
@@ -164,14 +164,14 @@ HPDF_STATUS HPDF_Number_Write(HPDF_Number obj, HPDF_Stream stream);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Real -----------------------------------------------------------*/
 
-typedef struct _HPDF_Real_Rec *HPDF_Real;
-
 typedef struct _HPDF_Real_Rec
 {
 	HPDF_Obj_Header header;
 	HPDF_Error error;
 	HPDF_REAL value;
 } HPDF_Real_Rec;
+
+typedef HPDF_Real_Rec *HPDF_Real;
 
 
 
@@ -187,14 +187,14 @@ HPDF_STATUS HPDF_Real_SetValue(HPDF_Real obj, HPDF_REAL value);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Name -----------------------------------------------------------*/
 
-typedef struct _HPDF_Name_Rec *HPDF_Name;
-
 typedef struct _HPDF_Name_Rec
 {
 	HPDF_Obj_Header header;
 	HPDF_Error error;
 	char value[HPDF_LIMIT_MAX_NAME_LEN + 1];
 } HPDF_Name_Rec;
+
+typedef HPDF_Name_Rec *HPDF_Name;
 
 
 
@@ -212,8 +212,6 @@ const char *HPDF_Name_GetValue(HPDF_Name obj);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_String ---------------------------------------------------------*/
 
-typedef struct _HPDF_String_Rec *HPDF_String;
-
 typedef struct _HPDF_String_Rec
 {
 	HPDF_Obj_Header header;
@@ -223,6 +221,8 @@ typedef struct _HPDF_String_Rec
 	HPDF_BYTE *value;
 	HPDF_UINT len;
 } HPDF_String_Rec;
+
+typedef HPDF_String_Rec *HPDF_String;
 
 
 
@@ -243,8 +243,6 @@ HPDF_INT32 HPDF_String_Cmp(HPDF_String s1, HPDF_String s2);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Binary ---------------------------------------------------------*/
 
-typedef struct _HPDF_Binary_Rec *HPDF_Binary;
-
 typedef struct _HPDF_Binary_Rec
 {
 	HPDF_Obj_Header header;
@@ -253,6 +251,8 @@ typedef struct _HPDF_Binary_Rec
 	HPDF_BYTE *value;
 	HPDF_UINT len;
 } HPDF_Binary_Rec;
+
+typedef HPDF_Binary_Rec *HPDF_Binary;
 
 
 
@@ -277,8 +277,6 @@ HPDF_UINT HPDF_Binary_GetLen(HPDF_Binary obj);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Array ----------------------------------------------------------*/
 
-typedef struct _HPDF_Array_Rec *HPDF_Array;
-
 typedef struct _HPDF_Array_Rec
 {
 	HPDF_Obj_Header header;
@@ -286,6 +284,8 @@ typedef struct _HPDF_Array_Rec
 	HPDF_Error error;
 	HPDF_List list;
 } HPDF_Array_Rec;
+
+typedef HPDF_Array_Rec *HPDF_Array;
 
 
 HPDF_Array HPDF_Array_New(HPDF_MMgr mmgr);
@@ -327,17 +327,15 @@ HPDF_UINT HPDF_Array_Items(HPDF_Array array);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Dict -----------------------------------------------------------*/
 
-typedef struct _HPDF_Xref_Rec *HPDF_Xref;
-
 typedef struct _HPDF_Dict_Rec *HPDF_Dict;
 
 typedef void (*HPDF_Dict_FreeFunc)(HPDF_Dict obj);
 
-typedef HPDF_STATUS(*HPDF_Dict_BeforeWriteFunc) (HPDF_Dict obj);
+typedef HPDF_STATUS (*HPDF_Dict_BeforeWriteFunc) (HPDF_Dict obj);
 
-typedef HPDF_STATUS(*HPDF_Dict_AfterWriteFunc) (HPDF_Dict obj);
+typedef HPDF_STATUS (*HPDF_Dict_AfterWriteFunc) (HPDF_Dict obj);
 
-typedef HPDF_STATUS(*HPDF_Dict_OnWriteFunc) (HPDF_Dict obj, HPDF_Stream stream);
+typedef HPDF_STATUS (*HPDF_Dict_OnWriteFunc) (HPDF_Dict obj, HPDF_Stream stream);
 
 typedef struct _HPDF_Dict_Rec
 {
@@ -355,14 +353,16 @@ typedef struct _HPDF_Dict_Rec
 	void *attr;
 } HPDF_Dict_Rec;
 
+typedef struct _HPDF_Xref_Rec *HPDF_Xref;
 
-typedef struct _HPDF_DictElement_Rec *HPDF_DictElement;
 
 typedef struct _HPDF_DictElement_Rec
 {
 	char key[HPDF_LIMIT_MAX_NAME_LEN + 1];
 	void *value;
 } HPDF_DictElement_Rec;
+
+typedef HPDF_DictElement_Rec *HPDF_DictElement;
 
 
 HPDF_Dict HPDF_Dict_New(HPDF_MMgr mmgr);
@@ -406,13 +406,13 @@ HPDF_STATUS HPDF_Dict_RemoveElement(HPDF_Dict dict, const char *key);
 
 
 
-typedef struct _HPDF_Proxy_Rec *HPDF_Proxy;
-
 typedef struct _HPDF_Proxy_Rec
 {
 	HPDF_Obj_Header header;
 	void *obj;
 } HPDF_Proxy_Rec;
+
+typedef HPDF_Proxy_Rec *HPDF_Proxy;
 
 
 HPDF_Proxy HPDF_Proxy_New(HPDF_MMgr mmgr, void *obj);
@@ -422,8 +422,6 @@ HPDF_Proxy HPDF_Proxy_New(HPDF_MMgr mmgr, void *obj);
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Xref -----------------------------------------------------------*/
 
-typedef struct _HPDF_XrefEntry_Rec *HPDF_XrefEntry;
-
 typedef struct _HPDF_XrefEntry_Rec
 {
 	char entry_typ;
@@ -431,6 +429,8 @@ typedef struct _HPDF_XrefEntry_Rec
 	HPDF_UINT16 gen_no;
 	void *obj;
 } HPDF_XrefEntry_Rec;
+
+typedef HPDF_XrefEntry_Rec *HPDF_XrefEntry;
 
 
 typedef struct _HPDF_Xref_Rec

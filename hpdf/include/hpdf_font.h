@@ -57,8 +57,6 @@ typedef HPDF_UINT (*HPDF_Font_MeasureText_Func) (HPDF_Font font, const HPDF_BYTE
 	HPDF_REAL *real_width);
 
 
-typedef struct _HPDF_FontAttr_Rec *HPDF_FontAttr;
-
 typedef struct _HPDF_FontAttr_Rec
 {
 	HPDF_FontType type;
@@ -80,6 +78,8 @@ typedef struct _HPDF_FontAttr_Rec
 	HPDF_Dict map_stream;
 	HPDF_Dict cmap_stream;
 } HPDF_FontAttr_Rec;
+
+typedef HPDF_FontAttr_Rec *HPDF_FontAttr;
 
 
 HPDF_Font HPDF_Type1Font_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder encoder, HPDF_Xref xref);

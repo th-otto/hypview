@@ -1,3 +1,6 @@
+#ifndef __HYPOUTCOMM_H__
+#define __HYPOUTCOMM_H__ 1
+
 extern gboolean force_crlf;
 extern gboolean is_MASTER;
 extern gboolean cmdline_version;
@@ -43,3 +46,5 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp);
 void free_symtab(symtab_entry *sym);
 void write_strout(GString *s, FILE *outfp);
+
+#endif /* __HYPOUTCOMM_H__ */

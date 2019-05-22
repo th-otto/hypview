@@ -32,3 +32,7 @@ Known bugs in this version:
 
 - when recompiling to PDF, a white background is always implied. Any
   background color configured in hypview.ini will be ignored.
+
+- PDF output currently does not support @xref
+
+- Not all viewers currently support lines with arrow endings

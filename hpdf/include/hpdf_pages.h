@@ -40,8 +40,6 @@ HPDF_STATUS HPDF_Pages_AddKids(HPDF_Pages parent, HPDF_Dict kid);
 HPDF_STATUS HPDF_Page_InsertBefore(HPDF_Page page, HPDF_Page target);
 
 
-typedef struct _HPDF_PageAttr_Rec *HPDF_PageAttr;
-
 typedef struct _HPDF_PageAttr_Rec
 {
 	HPDF_Pages parent;
@@ -60,6 +58,8 @@ typedef struct _HPDF_PageAttr_Rec
 	HPDF_UINT compression_mode;
 	HPDF_PDFVer *ver;
 } HPDF_PageAttr_Rec;
+
+typedef HPDF_PageAttr_Rec *HPDF_PageAttr;
 
 
 /*----------------------------------------------------------------------------*/

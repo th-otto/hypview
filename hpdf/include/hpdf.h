@@ -280,6 +280,10 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HP
 HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, HPDF_Rect rect);
 
 HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow);
+HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, HPDF_Rect rect, const char *type);
+HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *args, const char *type);
 
 
 HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, HPDF_Rect rect, const char *uri);

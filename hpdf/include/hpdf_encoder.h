@@ -114,10 +114,10 @@ typedef struct _HPDF_Encoder_Rec
 	HPDF_Encoder_Write_Func write_fn;
 	HPDF_Encoder_Free_Func free_fn;
 	HPDF_Encoder_Init_Func init_fn;
-	/*
-	   char                         lang_code[3];
-	   char                         country_code[3];
-	 */
+#if 0
+	char lang_code[3];
+	char country_code[3];
+#endif
 	void *attr;
 } HPDF_Encoder_Rec;
 
@@ -147,8 +147,6 @@ void HPDF_Encoder_Free(HPDF_Encoder encoder);
 /*-- HPDF_BasicEncoder ----------------------------------*/
 
 
-typedef struct _HPDF_BasicEncoderAttr_Rec *HPDF_BasicEncoderAttr;
-
 typedef struct _HPDF_BasicEncoderAttr_Rec
 {
 	char base_encoding[HPDF_LIMIT_MAX_NAME_LEN + 1];
@@ -158,6 +156,8 @@ typedef struct _HPDF_BasicEncoderAttr_Rec
 	HPDF_BOOL has_differences;
 	HPDF_BYTE differences[256];
 } HPDF_BasicEncoderAttr_Rec;
+
+typedef HPDF_BasicEncoderAttr_Rec *HPDF_BasicEncoderAttr;
 
 
 HPDF_Encoder HPDF_BasicEncoder_New(HPDF_MMgr mmgr, const char *encoding_name);
@@ -189,8 +189,6 @@ typedef struct _HPDF_UnicodeMap_Rec
 	HPDF_UINT16 unicode;
 } HPDF_UnicodeMap_Rec;
 
-typedef struct _HPDF_CMapEncoderAttr_Rec *HPDF_CMapEncoderAttr;
-
 typedef struct _HPDF_CMapEncoderAttr_Rec
 {
 	HPDF_UNICODE unicode_map[256][256];
@@ -208,6 +206,8 @@ typedef struct _HPDF_CMapEncoderAttr_Rec
 	HPDF_INT uid_offset;
 	HPDF_UINT xuid[3];
 } HPDF_CMapEncoderAttr_Rec;
+
+typedef HPDF_CMapEncoderAttr_Rec *HPDF_CMapEncoderAttr;
 
 
 HPDF_Encoder HPDF_CMapEncoder_New(HPDF_MMgr mmgr, const char *name, HPDF_Encoder_Init_Func init_fn);

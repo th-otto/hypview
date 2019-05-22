@@ -189,6 +189,45 @@ static gboolean pdf_out_curcolor(PDF *pdf, struct textattr *attr)
 
 /* ------------------------------------------------------------------------- */
 
+/*
+ * Disallow certain characters that might clash with
+ * the filesystem or uri escape sequences, and also any non-ascii characters.
+ * For simplicity, this is done in-place.
+ */
+static void pdf_convert_filename(char *filename)
+{
+	char *p = filename;
+	unsigned char c;
+	
+	while ((c = *p) != '\0')
+	{
+		if (c == ' ' ||
+			c == ':' ||
+			c == '%' ||
+			c == '?' ||
+			c == '*' ||
+			c == '/' ||
+			c == '&' ||
+			c == '<' ||
+			c == '>' ||
+			c == '"' ||
+			c == '\'' ||
+			c == '\\' ||
+			c >= 0x7f ||
+			c < 0x20)
+		{
+			c = '_';
+		} else if (c >= 'A' && c <= 'Z')
+		{
+			/* make it lowercase. should eventually be configurable */
+			c = c - 'A' + 'a';
+		}
+		*p++ = c;
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *xref, symtab_entry *syms, gboolean newwindow, struct textattr *attr, HPDF_Point *text_pos)
 {
 	gboolean retval = TRUE;
@@ -196,10 +235,9 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 	HPDF_Rect rect;
 	HPDF_Annotation annot;
 
-	(void)hyp;
-	(void)syms;
-	(void)newwindow;
-	(void)attr;
+	rect.left = text_pos->x - LINK_BORDER_WIDTH;
+	rect.bottom = text_pos->y - LINK_BORDER_WIDTH;
+	rect.top = text_pos->y + pdf->line_height + LINK_BORDER_WIDTH;
 
 	switch (xref->desttype)
 	{
@@ -215,10 +253,145 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 	case HYP_NODE_INTERNAL:
 	case HYP_NODE_POPUP:
 	case HYP_NODE_EXTERNAL_REF:
-		rect.left = text_pos->x - LINK_BORDER_WIDTH;
-		rect.bottom = text_pos->y - LINK_BORDER_WIDTH;
-		rect.top = text_pos->y + pdf->line_height + LINK_BORDER_WIDTH;
-		retval &= pdf_out_color(pdf->page, &viewer_colors.link);
+		{
+			gboolean is_xref = FALSE;
+			const HPDF_RGBColor *style_color;
+
+			if (xref->desttype == HYP_NODE_EXTERNAL_REF)
+			{
+				char *p = ((hyp->st_guide_flags & STG_ALLOW_FOLDERS_IN_XREFS) ? strrslash : strslash)(xref->destname);
+				char c = '\0';
+				hyp_filetype ft;
+				style_color = &viewer_colors.xref;
+				if (p != NULL)
+				{
+					c = *p;
+					*p = '\0';
+				}
+				ft = hyp_guess_filetype(xref->destname);
+				is_xref = ft != HYP_FT_NONE;
+				if (ft == HYP_FT_RSC)
+				{
+					/*
+					 * generate link to a resource file
+					 */
+					/* TODO */
+				} else if (ft == HYP_FT_HYP)
+				{
+					/*
+					 * generate link to a remote hyp file
+					 */
+					/*
+					 * basename here is as specified in the link,
+					 * which is often all uppercase.
+					 * Always convert to lowercase first.
+					 */
+					char *base = hyp_utf8_strdown(hyp_basename(xref->destname), STR0TERM);
+					char *pdfbase = replace_ext(base, HYP_EXT_HYP, HYP_EXT_PDF);
+					pdf_convert_filename(pdfbase);
+					retval &= pdf_out_color(pdf->page, style_color);
+					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+					retval &= pdf_out_curcolor(pdf, attr);
+					rect.right = text_pos->x + LINK_BORDER_WIDTH;
+					dst = NULL; /* XXX should be named dest */
+					annot = HPDF_Page_CreateGoToRAnnot(pdf->page, rect, pdfbase, p ? p + 1 : "Main", newwindow);
+					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
+					g_free(pdfbase);
+					g_free(base);
+				}
+				if (p)
+					*p = c;
+			} else if (xref->desttype == HYP_NODE_POPUP)
+			{
+				style_color = &viewer_colors.popup;
+			} else
+			{
+				style_color = &viewer_colors.link;
+			}
+			
+			if (!is_xref)
+			{
+				symtab_entry *sym;
+				symtab_entry *label;
+				
+				label = NULL;
+				if (xref->line != 0)
+				{
+					sym = sym_find(syms, xref->destname, REF_LABELNAME);
+					while (sym)
+					{
+						if (sym->lineno == xref->line /* && !sym->from_idx */)
+						{
+							label = sym;
+							sym->referenced = TRUE;
+							break;
+						}
+						sym = sym_find(sym->next, xref->destname, REF_LABELNAME);
+					}
+				}
+				if (label)
+				{
+					/*
+					 * generate link to a label
+					 */
+					retval &= pdf_out_color(pdf->page, style_color);
+					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+					retval &= pdf_out_curcolor(pdf, attr);
+					rect.right = text_pos->x + LINK_BORDER_WIDTH;
+					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
+					HPDF_Destination_SetFitBH(dst, (sym->lineno - 1) * pdf->line_height);
+					annot = HPDF_Page_CreateGoToAnnot(pdf->page, rect, dst);
+					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
+				} else if (xref->desttype == HYP_NODE_POPUP && !newwindow)
+				{
+					/*
+					 * generate link to a popup node
+					 */
+					retval &= pdf_out_color(pdf->page, style_color);
+					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+					retval &= pdf_out_curcolor(pdf, attr);
+					rect.right = text_pos->x + LINK_BORDER_WIDTH;
+					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
+					annot = HPDF_Page_CreateLinkAnnot(pdf->page, rect, dst);
+					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
+				} else
+				{
+					/*
+					 * generate link to a regular node
+					 */
+					retval &= pdf_out_color(pdf->page, style_color);
+					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+					retval &= pdf_out_curcolor(pdf, attr);
+					rect.right = text_pos->x + LINK_BORDER_WIDTH;
+					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
+					annot = HPDF_Page_CreateLinkAnnot(pdf->page, rect, dst);
+					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
+				}
+			}
+		}
+		break;
+	case HYP_NODE_REXX_COMMAND:
+		retval &= pdf_out_color(pdf->page, &viewer_colors.rx);
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
@@ -226,22 +399,72 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
-		dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
-		annot = HPDF_Page_CreateLinkAnnot(pdf->page, rect, dst);
+		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, rect, xref->destname, NULL, NULL);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
-	case HYP_NODE_REXX_COMMAND:
-		break;
 	case HYP_NODE_REXX_SCRIPT:
+		retval &= pdf_out_color(pdf->page, &viewer_colors.rxs);
+		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+		retval &= pdf_out_curcolor(pdf, attr);
+		rect.right = text_pos->x + LINK_BORDER_WIDTH;
+		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, rect, xref->destname, NULL, NULL);
+		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
+		retval &= pdf_out_color(pdf->page, &viewer_colors.system);
+		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+		retval &= pdf_out_curcolor(pdf, attr);
+		rect.right = text_pos->x + LINK_BORDER_WIDTH;
+		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, rect, xref->destname, NULL, NULL);
+		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
 	case HYP_NODE_IMAGE:
+		/* that would be an inline image; currently not supported by compiler */
+		retval &= pdf_out_color(pdf->page, &viewer_colors.system);
+		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+		retval &= pdf_out_curcolor(pdf, attr);
+		rect.right = text_pos->x + LINK_BORDER_WIDTH;
 		break;
 	case HYP_NODE_QUIT:
+		retval &= pdf_out_color(pdf->page, &viewer_colors.quit);
+		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+		retval &= pdf_out_curcolor(pdf, attr);
+		rect.right = text_pos->x + LINK_BORDER_WIDTH;
+		annot = HPDF_Page_CreateNamedAnnot(pdf->page, rect, "Quit");
+		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
 	case HYP_NODE_CLOSE:
+		retval &= pdf_out_color(pdf->page, &viewer_colors.close);
+		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
+		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+		retval &= pdf_out_curcolor(pdf, attr);
+		rect.right = text_pos->x + LINK_BORDER_WIDTH;
+		annot = HPDF_Page_CreateNamedAnnot(pdf->page, rect, "Close");
+		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
+		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
 	default:
 		/* hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"%s\">%s %u</a>", html_error_link_style, xref->destfilename, _("link to unknown node type"), hyp->indextable[xref->dest_page]->type); */
@@ -432,103 +655,151 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 		const unsigned char *end;
 		const unsigned char *textstart;
 		INDEX_ENTRY *entry;
+		struct pdf_xref *xrefs = NULL;
+		struct pdf_xref **last_xref = &xrefs;
 		unsigned short dithermask;
 
 		entry = hyp->indextable[node];
 		hyp_node_find_windowtitle(nodeptr);
 		
 		{
-		char *title;
-		
-		if (nodeptr->window_title)
-		{
-			title = hyp_conv_charset(hyp->comp_charset, pdf->opts->output_charset, nodeptr->window_title, STR0TERM, &converror);
-		} else
-		{
-			title = pdf_quote_nodename(hyp, node, pdf->opts->output_charset, &converror);
-		}
-
-		/*
-		 * scan through esc commands, gathering graphic commands
-		 */
-		src = nodeptr->start;
-		end = nodeptr->end;
-		dithermask = 0;
-		while (retval && src < end && *src == HYP_ESC)
-		{
-			switch (src[1])
-			{
-			case HYP_ESC_PIC:
-			case HYP_ESC_LINE:
-			case HYP_ESC_BOX:
-			case HYP_ESC_RBOX:
-				{
-					struct hyp_gfx *adm, **last;
-					
-					last = &hyp_gfx;
-					while (*last != NULL)
-						last = &(*last)->next;
-					adm = g_new0(struct hyp_gfx, 1);
-					if (adm == NULL)
-					{
-						retval = FALSE;
-					} else
-					{
-						*last = adm;
-						hyp_decode_gfx(hyp, src + 1, adm, pdf->opts->errorfile, pdf->opts->read_images);
-						if (adm->type == HYP_ESC_PIC)
-						{
-							adm->format = format_from_pic(pdf->opts, hyp->indextable[adm->extern_node_index], PDF_DEFAULT_PIC_TYPE);
-							adm->dithermask = dithermask;
-							dithermask = 0;
-						}
-					}
-				}
-				break;
-			case HYP_ESC_WINDOWTITLE:
-				/* @title already output */
-				break;
-			case HYP_ESC_EXTERNAL_REFS:
-				break;
-			case HYP_ESC_DITHERMASK:
-				if (src[2] == 5u)
-					dithermask = short_from_chars(&src[3]);
-				break;
-			default:
-				break;
-			}
-			src = hyp_skip_esc(src);
-		}
-
-		/*
-		 * join vertical lines,
-		 * otherwise we get small gaps.
-		 * downcase: this will print wrong commands when embedding the stg source in html
-		 */
-		{
-			struct hyp_gfx *gfx1, *gfx2;
+			char *title;
 			
-			for (gfx1 = hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
+			if (nodeptr->window_title)
 			{
-				if (gfx1->type == HYP_ESC_LINE && gfx1->width == 0 && gfx1->begend == 0)
+				title = hyp_conv_charset(hyp->comp_charset, pdf->opts->output_charset, nodeptr->window_title, STR0TERM, &converror);
+			} else
+			{
+				title = pdf_quote_nodename(hyp, node, pdf->opts->output_charset, &converror);
+			}
+	
+			/*
+			 * scan through esc commands, gathering graphic commands
+			 */
+			src = nodeptr->start;
+			end = nodeptr->end;
+			dithermask = 0;
+			while (retval && src < end && *src == HYP_ESC)
+			{
+				switch (src[1])
 				{
-					for (gfx2 = gfx1->next; gfx2 != NULL; gfx2 = gfx2->next)
+				case HYP_ESC_PIC:
+				case HYP_ESC_LINE:
+				case HYP_ESC_BOX:
+				case HYP_ESC_RBOX:
 					{
-						if (gfx2->type == HYP_ESC_LINE && gfx2->width == 0 && gfx2->begend == 0 &&
-							gfx1->x_offset == gfx2->x_offset &&
-							gfx1->style == gfx2->style &&
-							(gfx1->y_offset + gfx1->height) == gfx2->y_offset)
+						struct hyp_gfx *adm, **last;
+						
+						last = &hyp_gfx;
+						while (*last != NULL)
+							last = &(*last)->next;
+						adm = g_new0(struct hyp_gfx, 1);
+						if (adm == NULL)
 						{
-							gfx1->height += gfx2->height;
-							gfx2->type = 0;
-							gfx2->used = TRUE;
+							retval = FALSE;
+						} else
+						{
+							*last = adm;
+							hyp_decode_gfx(hyp, src + 1, adm, pdf->opts->errorfile, pdf->opts->read_images);
+							if (adm->type == HYP_ESC_PIC)
+							{
+								adm->format = format_from_pic(pdf->opts, hyp->indextable[adm->extern_node_index], PDF_DEFAULT_PIC_TYPE);
+								adm->dithermask = dithermask;
+								dithermask = 0;
+							}
+						}
+					}
+					break;
+				case HYP_ESC_WINDOWTITLE:
+					/* @title already output */
+					break;
+				case HYP_ESC_EXTERNAL_REFS:
+					{
+						hyp_nodenr dest_page;
+						char *destname;
+						char *text;
+						char *buf;
+						hyp_indextype desttype;
+						
+						dest_page = DEC_255(&src[3]);
+						buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
+						buf = chomp(buf);
+						text = pdf_quote_name(hyp->comp_charset, buf, STR0TERM, pdf->opts->output_charset, &converror);
+						g_free(buf);
+						if (hypnode_valid(hyp, dest_page))
+						{
+							INDEX_ENTRY *dest_entry = hyp->indextable[dest_page];
+							destname = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
+							desttype = (hyp_indextype) dest_entry->type;
+						} else
+						{
+							destname = hyp_invalid_page(dest_page);
+							desttype = HYP_NODE_EOF;
+						}
+						if (empty(text))
+						{
+							g_free(text);
+							text = g_strdup(destname);
+						}
+						{
+							struct pdf_xref *xref;
+							xref = g_new0(struct pdf_xref, 1);
+							xref->text = text;
+							xref->destname = destname;
+							xref->dest_page = dest_page;
+							xref->desttype = desttype;
+							xref->line = 0;
+							xref->next = NULL;
+							*last_xref = xref;
+							last_xref = &(xref)->next;
+						}
+					}
+					break;
+				case HYP_ESC_DITHERMASK:
+					if (src[2] == 5u)
+						dithermask = short_from_chars(&src[3]);
+					break;
+				default:
+					break;
+				}
+				src = hyp_skip_esc(src);
+			}
+	
+			/*
+			 * join vertical lines,
+			 * otherwise we get small gaps.
+			 */
+			{
+				struct hyp_gfx *gfx1, *gfx2;
+				
+				for (gfx1 = hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
+				{
+					if (gfx1->type == HYP_ESC_LINE && gfx1->width == 0 && gfx1->begend == 0)
+					{
+						for (gfx2 = gfx1->next; gfx2 != NULL; gfx2 = gfx2->next)
+						{
+							if (gfx2->type == HYP_ESC_LINE && gfx2->width == 0 && gfx2->begend == 0 &&
+								gfx1->x_offset == gfx2->x_offset &&
+								gfx1->style == gfx2->style &&
+								(gfx1->y_offset + gfx1->height) == gfx2->y_offset)
+							{
+								gfx1->height += gfx2->height;
+								gfx2->type = 0;
+								gfx2->used = TRUE;
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		g_free(title);
+			
+			/*
+			 * not yet supported: xrefs
+			 */
+			
+			/*
+			 * there seems to be no way to change the window title
+			 */
+			g_free(title);
 		}
 
 		{
@@ -648,7 +919,8 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							FLUSHTREE();
 							UNUSED(str_equal);
 							
-							text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+							if (in_text_out)
+								text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
 							ENDTEXT();
 							retval &= pdf_generate_link(pdf, hyp, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, &attr, &text_pos);
 	
@@ -802,27 +1074,19 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			}
 		}
 		
-#if 0
 		{
-			char buf[512];
-			HPDF_Point p;
+			struct pdf_xref *xref, *next;
 			
-			if (HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR)
+			for (xref = xrefs; xref != NULL; xref = next)
 			{
-				HPDF_Page_MoveTextPos(pdf->page, 100, 500);
-				HPDF_Page_ShowText(pdf->page, "Hello, ");
-				HPDF_Page_ShowText(pdf->page, "world");
-				HPDF_Page_MoveTextPos(pdf->page, 0, -30);
-				p = HPDF_Page_GetCurrentTextPos(pdf->page);
-				sprintf(buf, "pos before %.2f %.2f", p.x, p.y);
-				HPDF_Page_ShowText(pdf->page, buf);
-				p = HPDF_Page_GetCurrentTextPos(pdf->page);
-				sprintf(buf, " after %.2f %.2f", p.x, p.y);
-				HPDF_Page_ShowText(pdf->page, buf);
-				/* HPDF_Page_EndText(pdf->page); */
+				next = xref->next;
+				g_free(xref->destname);
+				g_free(xref->text);
+				g_free(xref);
 			}
 		}
-#endif
+		
+		hyp_node_free(nodeptr);
 	} else
 	{
 		char *text = g_strdup_printf(_("%s: Node %u: failed to decode"), hyp->file, node);
@@ -886,10 +1150,13 @@ static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
 	str = g_strdup_printf("%s %s for %s, using Haru Free PDF Library %s", gl_program_name, gl_program_version, hyp_osname(hyp_get_current_os()), HPDF_GetVersion());
 	STR(HPDF_INFO_PRODUCER, str);
 	g_free(str);
+	str = pdf_datestr(s.st_mtime);
+	STR(HPDF_INFO_CREATION_DATE, str);
+	g_free(str);
 	if (hyp_utf8_stat(hyp->file, &s) == 0)
 	{
 		str = pdf_datestr(s.st_mtime);
-		STR(HPDF_INFO_CREATION_DATE, str);
+		STR(HPDF_INFO_MOD_DATE, str);
 		g_free(str);
 	}
 
@@ -1077,14 +1344,20 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		}
 	}
 
-	HPDF_SaveToStream(pdf->hpdf, &stream);
-	idx = 0;
-	while ((buf = HPDF_MemStream_GetBufPtr(stream, idx, &length)) != NULL)
+	ret &= HPDF_SaveToStream(pdf->hpdf, &stream) == HPDF_NOERROR;
+	if (ret)
 	{
-		fwrite(buf, 1, length, opts->outfile);
-		idx++;
+		idx = 0;
+		if (stream)
+		{
+			while ((buf = HPDF_MemStream_GetBufPtr(stream, idx, &length)) != NULL)
+			{
+				fwrite(buf, 1, length, opts->outfile);
+				idx++;
+			}
+		}
 	}
-
+	
 	if (cmdline_version)
 		ClearCache(hyp);
 	

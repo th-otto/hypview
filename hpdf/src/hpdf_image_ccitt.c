@@ -89,10 +89,6 @@ typedef struct
 #define	TIFFroundup(x, y) (TIFFhowmany(x,y)*(y))
 
 
-/*
-struct _HPDF_CCITT_Encoder {
-} HPDF_CCITT_Encoder;
-*/
 
 struct _HPDF_CCITT_Data
 {

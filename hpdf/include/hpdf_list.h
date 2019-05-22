@@ -25,8 +25,6 @@
 extern "C" {
 #endif
 
-typedef struct _HPDF_List_Rec *HPDF_List;
-
 typedef struct _HPDF_List_Rec
 {
 	HPDF_MMgr mmgr;
@@ -36,6 +34,8 @@ typedef struct _HPDF_List_Rec
 	HPDF_UINT count;
 	void **obj;
 } HPDF_List_Rec;
+
+typedef HPDF_List_Rec *HPDF_List;
 
 
 HPDF_List HPDF_List_New(HPDF_MMgr mmgr, HPDF_UINT items_per_block);

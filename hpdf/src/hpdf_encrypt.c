@@ -54,7 +54,7 @@ static const HPDF_BYTE HPDF_PADDING_STRING[] = {
 /*---------------------------------------------------------------------------*/
 /*------ MD5 message-digest algorithm ---------------------------------------*/
 
-void HPDF_MD5Init(struct HPDF_MD5Context *ctx)
+void HPDF_MD5Init(HPDF_MD5_CTX *ctx)
 {
 	ctx->buf[0] = 0x67452301;
 	ctx->buf[1] = 0xefcdab89;
@@ -180,7 +180,7 @@ static void MD5ByteReverse(HPDF_BYTE *buf, HPDF_UINT32 longs)
 	} while (--longs);
 }
 
-void HPDF_MD5Update(struct HPDF_MD5Context *ctx, const HPDF_BYTE *buf, HPDF_UINT32 len)
+void HPDF_MD5Update(HPDF_MD5_CTX *ctx, const HPDF_BYTE *buf, HPDF_UINT32 len)
 {
 	HPDF_UINT32 t;
 
@@ -232,7 +232,7 @@ void HPDF_MD5Update(struct HPDF_MD5Context *ctx, const HPDF_BYTE *buf, HPDF_UINT
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void HPDF_MD5Final(HPDF_BYTE digest[16], struct HPDF_MD5Context *ctx)
+void HPDF_MD5Final(HPDF_BYTE digest[16], HPDF_MD5_CTX *ctx)
 {
 	HPDF_UINT32 count;
 	HPDF_BYTE *p;

@@ -268,25 +268,25 @@ static void Page_OnFree(HPDF_Dict obj)
 static HPDF_STATUS AddResource(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_OK;
-	HPDF_Dict resource;
+	HPDF_Dict resources;
 	HPDF_Array procset;
 
-	resource = HPDF_Dict_New(page->mmgr);
-	if (!resource)
+	resources = HPDF_Dict_New(page->mmgr);
+	if (!resources)
 		return HPDF_Error_GetCode(page->error);
 
-	/* althoth ProcSet-entry is obsolete, add it to resource for
+	/* although ProcSet-entry is obsolete, add it to resource for
 	 * compatibility
 	 */
 
-	ret += HPDF_Dict_Add(page, "Resources", resource);
+	ret += HPDF_Dict_Add(page, "Resources", resources);
 
 	procset = HPDF_Array_New(page->mmgr);
 	if (!procset)
 		return HPDF_Error_GetCode(page->error);
 
-	if (HPDF_Dict_Add(resource, "ProcSet", procset) != HPDF_OK)
-		return HPDF_Error_GetCode(resource->error);
+	if (HPDF_Dict_Add(resources, "ProcSet", procset) != HPDF_OK)
+		return HPDF_Error_GetCode(resources->error);
 
 	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
 	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "Text"));
@@ -1726,6 +1726,123 @@ HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_D
 	}
 
 	annot = HPDF_LinkAnnot_New(page->mmgr, attr->xref, rect, dst);
+	if (annot)
+	{
+		if (AddAnnotation(page, annot) != HPDF_OK)
+		{
+			HPDF_CheckError(page->error);
+			annot = NULL;
+		}
+	} else
+	{
+		HPDF_CheckError(page->error);
+	}
+
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst)
+{
+	HPDF_PageAttr attr;
+	HPDF_Annotation annot;
+
+	if (!HPDF_Page_Validate(page))
+		return NULL;
+
+	attr = (HPDF_PageAttr) page->attr;
+
+	if (dst)
+	{
+		if (!HPDF_Destination_Validate(dst))
+		{
+			HPDF_RaiseError(page->error, HPDF_INVALID_DESTINATION, 0);
+			return NULL;
+		}
+	}
+
+	annot = HPDF_GoToLinkAnnot_New(page->mmgr, attr->xref, rect, dst);
+	if (annot)
+	{
+		if (AddAnnotation(page, annot) != HPDF_OK)
+		{
+			HPDF_CheckError(page->error);
+			annot = NULL;
+		}
+	} else
+	{
+		HPDF_CheckError(page->error);
+	}
+
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow)
+{
+	HPDF_PageAttr attr;
+	HPDF_Annotation annot;
+
+	if (!HPDF_Page_Validate(page))
+		return NULL;
+
+	attr = (HPDF_PageAttr) page->attr;
+
+	annot = HPDF_GoToRLinkAnnot_New(page->mmgr, attr->xref, rect, file, destname, newwindow);
+	if (annot)
+	{
+		if (AddAnnotation(page, annot) != HPDF_OK)
+		{
+			HPDF_CheckError(page->error);
+			annot = NULL;
+		}
+	} else
+	{
+		HPDF_CheckError(page->error);
+	}
+
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, HPDF_Rect rect, const char *type)
+{
+	HPDF_PageAttr attr;
+	HPDF_Annotation annot;
+
+	if (!HPDF_Page_Validate(page))
+		return NULL;
+
+	attr = (HPDF_PageAttr) page->attr;
+
+	annot = HPDF_NamedLinkAnnot_New(page->mmgr, attr->xref, rect, type);
+	if (annot)
+	{
+		if (AddAnnotation(page, annot) != HPDF_OK)
+		{
+			HPDF_CheckError(page->error);
+			annot = NULL;
+		}
+	} else
+	{
+		HPDF_CheckError(page->error);
+	}
+
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *args, const char *type)
+{
+	HPDF_PageAttr attr;
+	HPDF_Annotation annot;
+
+	if (!HPDF_Page_Validate(page))
+		return NULL;
+
+	attr = (HPDF_PageAttr) page->attr;
+
+	annot = HPDF_LaunchLinkAnnot_New(page->mmgr, attr->xref, rect, file, args, type);
 	if (annot)
 	{
 		if (AddAnnotation(page, annot) != HPDF_OK)

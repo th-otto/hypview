@@ -20,7 +20,7 @@
 #include "hpdf.h"
 #include "hpdf_destination.h"
 
-const char *const HPDF_DESTINATION_TYPE_NAMES[] = {
+static const char *const HPDF_DESTINATION_TYPE_NAMES[] = {
 	"XYZ",
 	"Fit",
 	"FitH",

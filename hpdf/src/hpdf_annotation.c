@@ -252,7 +252,7 @@ HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rec
 }
 
 
-HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *uri)
+static HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *type, const char *dst, void *obj)
 {
 	HPDF_Annotation annot;
 	HPDF_Dict action;
@@ -271,13 +271,104 @@ HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect 
 	if (ret != HPDF_OK)
 		return NULL;
 
-	ret += HPDF_Dict_AddName(action, "Type", "Action");
-	ret += HPDF_Dict_AddName(action, "S", "URI");
-	ret += HPDF_Dict_Add(action, "URI", HPDF_String_New(mmgr, uri, NULL));
+	ret += HPDF_Dict_AddName(action, "S", type);
+	if (obj)
+		ret += HPDF_Dict_Add(action, dst, obj);
 
 	if (ret != HPDF_OK)
 		return NULL;
 
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *uri)
+{
+	return HPDF_ActionAnnot_New(mmgr, xref, rect, "URI", "URI", HPDF_String_New(mmgr, uri, NULL));
+}
+
+
+HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Destination dst)
+{
+	return HPDF_ActionAnnot_New(mmgr, xref, rect, "GoTo", "D", dst);
+}
+
+
+HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow)
+{
+	HPDF_Annotation annot;
+	HPDF_String dst = NULL;
+	
+	if (destname)
+		dst = HPDF_String_New(mmgr, destname, NULL);
+	annot = HPDF_ActionAnnot_New(mmgr, xref, rect, "GoToR", "D", dst);
+	if (annot)
+	{
+		HPDF_Dict action = (HPDF_Dict) HPDF_Dict_GetItem(annot, "A", HPDF_OCLASS_DICT);
+		if (HPDF_Dict_Add(action, "F", HPDF_String_New(mmgr, file, NULL)) != HPDF_OK)
+			return NULL;
+		if (newwindow)
+			if (HPDF_Dict_Add(action, "NewWindow", HPDF_Boolean_New(mmgr, newwindow)) != HPDF_OK)
+				return NULL;
+	}
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *type)
+{
+	HPDF_Annotation annot;
+	HPDF_Dict action;
+	HPDF_STATUS ret;
+
+	annot = HPDF_Annotation_New(mmgr, xref, HPDF_ANNOT_LINK, rect);
+	if (!annot)
+		return NULL;
+
+	/* create action dictionary */
+	action = HPDF_Dict_New(mmgr);
+	if (!action)
+		return NULL;
+
+	ret = HPDF_Dict_Add(annot, "A", action);
+	if (ret != HPDF_OK)
+		return NULL;
+
+	ret += HPDF_Dict_AddName(action, "S", "Named");
+	ret += HPDF_Dict_AddName(action, "N", type);
+
+	if (ret != HPDF_OK)
+		return NULL;
+
+	return annot;
+}
+
+
+HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *file, const char *args, const char *type)
+{
+	HPDF_Annotation annot;
+	HPDF_Dict win;
+	
+	annot = HPDF_ActionAnnot_New(mmgr, xref, rect, "Launch", "F", HPDF_String_New(mmgr, file, NULL));
+	if (annot)
+	{
+		HPDF_Dict action = (HPDF_Dict) HPDF_Dict_GetItem(annot, "A", HPDF_OCLASS_DICT);
+		if (HPDF_Dict_Add(action, "F", HPDF_String_New(mmgr, file, NULL)) != HPDF_OK)
+			return NULL;
+		win = HPDF_Dict_New(mmgr);
+		if (HPDF_Dict_Add(action, "NewWindow", HPDF_Boolean_New(mmgr, HPDF_TRUE)) != HPDF_OK)
+			return NULL;
+		if (HPDF_Dict_Add(action, "Win", win) != HPDF_OK)
+			return NULL;
+		if (HPDF_Dict_Add(win, "F", HPDF_String_New(mmgr, file, NULL)) != HPDF_OK)
+			return NULL;
+		if (args)
+			if (HPDF_Dict_Add(win, "P", HPDF_String_New(mmgr, type, NULL)) != HPDF_OK)
+				return NULL;
+		if (type)
+			if (HPDF_Dict_Add(win, "O", HPDF_String_New(mmgr, type, NULL)) != HPDF_OK)
+				return NULL;
+	}
 	return annot;
 }
 

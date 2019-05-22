@@ -36,8 +36,6 @@ typedef struct _HPDF_MPool_Node_Rec
 } HPDF_MPool_Node_Rec;
 
 
-typedef struct _HPDF_MMgr_Rec *HPDF_MMgr;
-
 typedef struct _HPDF_MMgr_Rec
 {
 	HPDF_Error error;
@@ -46,6 +44,8 @@ typedef struct _HPDF_MMgr_Rec
 	HPDF_MPool_Node mpool;
 	HPDF_UINT buf_size;
 } HPDF_MMgr_Rec;
+
+typedef HPDF_MMgr_Rec *HPDF_MMgr;
 
 
 /*  HPDF_mpool_new

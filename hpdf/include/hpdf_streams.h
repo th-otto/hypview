@@ -54,26 +54,12 @@ typedef enum _HPDF_WhenceMode
 
 typedef struct _HPDF_Stream_Rec *HPDF_Stream;
 
-typedef HPDF_STATUS(*HPDF_Stream_Write_Func) (HPDF_Stream stream, const void *ptr, HPDF_UINT siz);
-
-
-typedef HPDF_STATUS(*HPDF_Stream_Read_Func) (HPDF_Stream stream, void *ptr, HPDF_UINT *siz);
-
-
-typedef HPDF_STATUS(*HPDF_Stream_Seek_Func) (HPDF_Stream stream, HPDF_INT pos, HPDF_WhenceMode mode);
-
-
-typedef HPDF_INT32(*HPDF_Stream_Tell_Func) (HPDF_Stream stream);
-
-
+typedef HPDF_STATUS (*HPDF_Stream_Write_Func) (HPDF_Stream stream, const void *ptr, HPDF_UINT siz);
+typedef HPDF_STATUS (*HPDF_Stream_Read_Func) (HPDF_Stream stream, void *ptr, HPDF_UINT *siz);
+typedef HPDF_STATUS (*HPDF_Stream_Seek_Func) (HPDF_Stream stream, HPDF_INT pos, HPDF_WhenceMode mode);
+typedef HPDF_INT32 (*HPDF_Stream_Tell_Func) (HPDF_Stream stream);
 typedef void (*HPDF_Stream_Free_Func)(HPDF_Stream stream);
-
-
-typedef HPDF_UINT32(*HPDF_Stream_Size_Func) (HPDF_Stream stream);
-
-
-typedef struct _HPDF_MemStreamAttr_Rec *HPDF_MemStreamAttr;
-
+typedef HPDF_UINT32 (*HPDF_Stream_Size_Func) (HPDF_Stream stream);
 
 typedef struct _HPDF_MemStreamAttr_Rec
 {
@@ -85,6 +71,8 @@ typedef struct _HPDF_MemStreamAttr_Rec
 	HPDF_UINT r_pos;
 	HPDF_BYTE *r_ptr;
 } HPDF_MemStreamAttr_Rec;
+
+typedef HPDF_MemStreamAttr_Rec *HPDF_MemStreamAttr;
 
 
 typedef struct _HPDF_Stream_Rec

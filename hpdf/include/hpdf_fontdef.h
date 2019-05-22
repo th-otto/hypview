@@ -135,9 +135,7 @@ HPDF_BOOL HPDF_FontDef_Validate(HPDF_FontDef fontdef);
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_Type1FontDef  ---------------------------------------------------*/
 
-typedef struct _HPDF_Type1FontDefAttrRec *HPDF_Type1FontDefAttr;
-
-typedef struct _HPDF_Type1FontDefAttrRec
+typedef struct _HPDF_Type1FontDefAttr_Rec
 {
 	HPDF_BYTE first_char;			/* Required */
 	HPDF_BYTE last_char;			/* Required */
@@ -155,6 +153,8 @@ typedef struct _HPDF_Type1FontDefAttrRec
 
 	HPDF_Stream font_data;
 } HPDF_Type1FontDefAttr_Rec;
+
+typedef HPDF_Type1FontDefAttr_Rec *HPDF_Type1FontDefAttr;
 
 
 
@@ -281,8 +281,6 @@ typedef struct _HPDF_TTF_NamingTable
 } HPDF_TTF_NamingTable;
 
 
-typedef struct _HPDF_TTFontDefAttr_Rec *HPDF_TTFontDefAttr;
-
 typedef struct _HPDF_TTFontDefAttr_Rec
 {
 	char base_font[HPDF_LIMIT_MAX_NAME_LEN + 1];
@@ -312,6 +310,8 @@ typedef struct _HPDF_TTFontDefAttr_Rec
 
 	HPDF_Stream stream;
 } HPDF_TTFontDefAttr_Rec;
+
+typedef HPDF_TTFontDefAttr_Rec *HPDF_TTFontDefAttr;
 
 
 
@@ -345,14 +345,14 @@ void HPDF_TTFontDef_SetTagName(HPDF_FontDef fontdef, char *tag);
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_CIDFontDef  -----------------------------------------------------*/
 
-typedef struct _HPDF_CIDFontDefAttrRec *HPDF_CIDFontDefAttr;
-
-typedef struct _HPDF_CIDFontDefAttrRec
+typedef struct _HPDF_CIDFontDefAttr_Rec
 {
 	HPDF_List widths;
 	HPDF_INT16 DW;
 	HPDF_INT16 DW2[2];
 } HPDF_CIDFontDefAttr_Rec;
+
+typedef HPDF_CIDFontDefAttr_Rec *HPDF_CIDFontDefAttr;
 
 
 HPDF_FontDef HPDF_CIDFontDef_New(HPDF_MMgr mmgr, const char *name, HPDF_FontDef_InitFunc init_fn);

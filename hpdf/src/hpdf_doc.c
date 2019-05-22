@@ -1174,6 +1174,9 @@ static HPDF_STATUS InternalSaveToStream(HPDF_Doc pdf, HPDF_Stream stream)
 
 HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf, HPDF_Stream *stream)
 {
+	if (stream)
+		*stream = NULL;
+
 	if (!HPDF_HasDoc(pdf))
 		return HPDF_INVALID_DOCUMENT;
 

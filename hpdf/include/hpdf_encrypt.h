@@ -73,8 +73,6 @@ typedef struct _HPDF_ARC4_Ctx_Rec
 } HPDF_ARC4_Ctx_Rec;
 
 
-typedef struct _HPDF_Encrypt_Rec *HPDF_Encrypt;
-
 typedef struct _HPDF_Encrypt_Rec
 {
 	HPDF_EncryptMode mode;
@@ -101,14 +99,16 @@ typedef struct _HPDF_Encrypt_Rec
 	HPDF_ARC4_Ctx_Rec arc4ctx;
 } HPDF_Encrypt_Rec;
 
-
-void HPDF_MD5Init(struct HPDF_MD5Context *ctx);
-
-
-void HPDF_MD5Update(struct HPDF_MD5Context *ctx, const HPDF_BYTE *buf, HPDF_UINT32 len);
+typedef HPDF_Encrypt_Rec *HPDF_Encrypt;
 
 
-void HPDF_MD5Final(HPDF_BYTE digest[16], struct HPDF_MD5Context *ctx);
+void HPDF_MD5Init(HPDF_MD5_CTX *ctx);
+
+
+void HPDF_MD5Update(HPDF_MD5_CTX *ctx, const HPDF_BYTE *buf, HPDF_UINT32 len);
+
+
+void HPDF_MD5Final(HPDF_BYTE digest[16], HPDF_MD5_CTX *ctx);
 
 void HPDF_PadOrTrancatePasswd(const char *pwd, HPDF_BYTE *new_pwd);
 

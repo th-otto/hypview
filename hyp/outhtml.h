@@ -1668,11 +1668,17 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			is_xref = ft != HYP_FT_NONE;
 			if (ft == HYP_FT_RSC)
 			{
+				/*
+				 * generate link to a resource file
+				 */
 				quoted = html_quote_name(xref->destname, QUOTE_CONVSLASH | QUOTE_SPACE | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s?file=%s&amp;cached=1&amp;tree=%u\">%s</a>", style, html_view_rsc_href, quoted, xref->line, xref->text);
 				g_free(quoted);
 			} else if (ft == HYP_FT_HYP)
 			{
+				/*
+				 * generate link to a remote hyp file
+				 */
 				/*
 				 * basename here is as specified in the link,
 				 * which is often all uppercase.
@@ -1735,6 +1741,9 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 			}
 			if (label)
 			{
+				/*
+				 * generate link to a label
+				 */
 				char *quoted = html_quote_name(label, QUOTE_LABEL | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s#%s\"%s>%s</a>", style, xref->destfilename, quoted, target, xref->text);
 				g_free(quoted);
@@ -1744,6 +1753,9 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				GString *tmp;
 				struct textattr attr;
 				
+				/*
+				 * generate link to a popup node
+				 */
 				++html_popup_id;
 				id = g_strdup_printf("hypview_popup_%d", html_popup_id);
 				attr.curattr = curtextattr;
@@ -1767,6 +1779,9 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				html_out_attr(out, &attr);
 			} else
 			{
+				/*
+				 * generate link to a regular node
+				 */
 				hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s\"%s>%s</a>", style, xref->destfilename, target, xref->text);
 			}
 		}
@@ -1894,69 +1909,69 @@ static void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, con
 	const char *doctype;
 	
 	{
-	char *html_extra;
-	char *html_lang;
-	char *p;
+		char *html_extra;
+		char *html_lang;
+		char *p;
+		
+		if (hyp && hyp->language != NULL)
+		{
+			html_lang = g_strdup(hyp->language);
+			p = strchr(html_lang, '_');
+			if (p)
+				*p = '-';
+		} else
+		{
+			html_lang = g_strdup("en");
+		}
+		
+		switch (html_doctype)
+		{
+		case HTML_DOCTYPE_OLD:
+			doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\"";
+			html_extra = g_strdup_printf(" lang=\"%s\"", html_lang);
+			break;
+		case HTML_DOCTYPE_TRANS:
+			doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n"
+			          "        \"http://www.w3.org/TR/html4/loose.dtd\"";
+			html_extra = g_strdup_printf(" lang=\"%s\"", html_lang);
+			break;
+		
+		case HTML_DOCTYPE_XSTRICT:
+			if (opts->recompile_format == HYP_FT_HTML_XML)
+				g_string_append_printf(out, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", charset);
+			doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n"
+			          "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"";
+			if (hyp_gfx != NULL)
+				html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\"", html_lang, html_lang);
+			else
+				html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\" xmlns=\"http://www.w3.org/1999/xhtml\"", html_lang, html_lang);
+			break;
+		case HTML_DOCTYPE_STRICT:
+		default:
+			doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n"
+			          "          \"http://www.w3.org/TR/html4/strict.dtd\"";
+			html_extra = g_strdup_printf(" lang=\"%s\"", html_lang);
+			break;
+		case HTML_DOCTYPE_HTML5:
+			doctype = "<!DOCTYPE html";
+			html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\"", html_lang, html_lang);
+			break;
+		case HTML_DOCTYPE_FRAME:
+		case HTML_DOCTYPE_XFRAME:
+			abort();
+			break;
+		}
 	
-	if (hyp && hyp->language != NULL)
-	{
-		html_lang = g_strdup(hyp->language);
-		p = strchr(html_lang, '_');
-		if (p)
-			*p = '-';
-	} else
-	{
-		html_lang = g_strdup("en");
-	}
-	
-	switch (html_doctype)
-	{
-	case HTML_DOCTYPE_OLD:
-		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\"";
-		html_extra = g_strdup_printf(" lang=\"%s\"", html_lang);
-		break;
-	case HTML_DOCTYPE_TRANS:
-		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n"
-		          "        \"http://www.w3.org/TR/html4/loose.dtd\"";
-		html_extra = g_strdup_printf(" lang=\"%s\"", html_lang);
-		break;
-	
-	case HTML_DOCTYPE_XSTRICT:
-		if (opts->recompile_format == HYP_FT_HTML_XML)
-			g_string_append_printf(out, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", charset);
-		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n"
-		          "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"";
-		if (hyp_gfx != NULL)
-			html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\"", html_lang, html_lang);
-		else
-			html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\" xmlns=\"http://www.w3.org/1999/xhtml\"", html_lang, html_lang);
-		break;
-	case HTML_DOCTYPE_STRICT:
-	default:
-		doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n"
-		          "          \"http://www.w3.org/TR/html4/strict.dtd\"";
-		html_extra = g_strdup_printf(" lang=\"%s\"", html_lang);
-		break;
-	case HTML_DOCTYPE_HTML5:
-		doctype = "<!DOCTYPE html";
-		html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\"", html_lang, html_lang);
-		break;
-	case HTML_DOCTYPE_FRAME:
-	case HTML_DOCTYPE_XFRAME:
-		abort();
-		break;
-	}
-
-	if (doctype)
-		g_string_append(out, doctype);
-	html_out_entities(out);
-	if (doctype)
+		if (doctype)
+			g_string_append(out, doctype);
+		html_out_entities(out);
+		if (doctype)
+			g_string_append(out, ">\n");
+		g_string_append(out, "<html");
+		g_string_append(out, html_extra);
 		g_string_append(out, ">\n");
-	g_string_append(out, "<html");
-	g_string_append(out, html_extra);
-	g_string_append(out, ">\n");
-	g_free(html_extra);
-	g_free(html_lang);
+		g_free(html_extra);
+		g_free(html_lang);
 	}
 	
 	g_string_append_printf(out, "<!-- This file was automatically generated by %s version %s -->\n", gl_program_name, gl_program_version);
@@ -2299,179 +2314,177 @@ static gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		gboolean needs_javascript = FALSE;
 		
 		{
-		char *title;
-		
-		if (!for_inline && opts->outfile != stdout && node != hyp->main_page)
-		{
-			char *name = html_filename_for_node(hyp, opts, node, FALSE);
-			char *output_filename;
+			char *title;
 			
-			/*
-			 * the first file was already created in the main loop,
-			 * create the output file for the next node
-			 */
-			output_filename = g_build_filename(opts->output_dir, name, NULL);
-			outfp = hyp_utf8_fopen(output_filename, "wb");
-			if (outfp == NULL)
+			if (!for_inline && opts->outfile != stdout && node != hyp->main_page)
 			{
-				hyp_node_free(nodeptr);
-				hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, output_filename, hyp_utf8_strerror(errno));
+				char *name = html_filename_for_node(hyp, opts, node, FALSE);
+				char *output_filename;
+				
+				/*
+				 * the first file was already created in the main loop,
+				 * create the output file for the next node
+				 */
+				output_filename = g_build_filename(opts->output_dir, name, NULL);
+				outfp = hyp_utf8_fopen(output_filename, "wb");
+				if (outfp == NULL)
+				{
+					hyp_node_free(nodeptr);
+					hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, output_filename, hyp_utf8_strerror(errno));
+					g_free(output_filename);
+					g_free(name);
+					return FALSE;
+				}
+				if (opts->verbose >= 2 && opts->outfile != stdout)
+					hyp_utf8_fprintf(stdout, _("writing %s\n"), name);
 				g_free(output_filename);
 				g_free(name);
-				return FALSE;
 			}
-			if (opts->verbose >= 2 && opts->outfile != stdout)
-				hyp_utf8_fprintf(stdout, _("writing %s\n"), name);
-			g_free(output_filename);
-			g_free(name);
-		}
-		
-		entry = hyp->indextable[node];
-		hyp_node_find_windowtitle(nodeptr);
-		
-		if (nodeptr->window_title)
-		{
-			char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
-			title = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
-			g_free(buf);
-		} else
-		{
-			title = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
-		}
-
-		/*
-		 * scan through esc commands, gathering graphic commands
-		 */
-		src = nodeptr->start;
-		end = nodeptr->end;
-		dithermask = 0;
-		while (retval && src < end && *src == HYP_ESC)
-		{
-			switch (src[1])
+			
+			entry = hyp->indextable[node];
+			hyp_node_find_windowtitle(nodeptr);
+			
+			if (nodeptr->window_title)
 			{
-			case HYP_ESC_PIC:
-			case HYP_ESC_LINE:
-			case HYP_ESC_BOX:
-			case HYP_ESC_RBOX:
+				char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+				title = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+				g_free(buf);
+			} else
+			{
+				title = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+			}
+	
+			/*
+			 * scan through esc commands, gathering graphic commands
+			 */
+			src = nodeptr->start;
+			end = nodeptr->end;
+			dithermask = 0;
+			while (retval && src < end && *src == HYP_ESC)
+			{
+				switch (src[1])
 				{
-					struct hyp_gfx *adm, **last;
-					
-					last = &hyp_gfx;
-					while (*last != NULL)
-						last = &(*last)->next;
-					adm = g_new0(struct hyp_gfx, 1);
-					if (adm == NULL)
+				case HYP_ESC_PIC:
+				case HYP_ESC_LINE:
+				case HYP_ESC_BOX:
+				case HYP_ESC_RBOX:
 					{
-						retval = FALSE;
-					} else
-					{
-						*last = adm;
-						hyp_decode_gfx(hyp, src + 1, adm, opts->errorfile, opts->read_images);
-						if (adm->type == HYP_ESC_PIC)
+						struct hyp_gfx *adm, **last;
+						
+						last = &hyp_gfx;
+						while (*last != NULL)
+							last = &(*last)->next;
+						adm = g_new0(struct hyp_gfx, 1);
+						if (adm == NULL)
 						{
-							adm->format = format_from_pic(opts, hyp->indextable[adm->extern_node_index], HTML_DEFAULT_PIC_TYPE);
-							adm->dithermask = dithermask;
-							dithermask = 0;
+							retval = FALSE;
 						} else
 						{
-							needs_javascript = TRUE;
+							*last = adm;
+							hyp_decode_gfx(hyp, src + 1, adm, opts->errorfile, opts->read_images);
+							if (adm->type == HYP_ESC_PIC)
+							{
+								adm->format = format_from_pic(opts, hyp->indextable[adm->extern_node_index], HTML_DEFAULT_PIC_TYPE);
+								adm->dithermask = dithermask;
+								dithermask = 0;
+							} else
+							{
+								needs_javascript = TRUE;
+							}
 						}
 					}
-				}
-				break;
-			case HYP_ESC_WINDOWTITLE:
-				/* @title already output */
-				break;
-			case HYP_ESC_EXTERNAL_REFS:
-				{
-					hyp_nodenr dest_page;
-					char *destname;
-					char *destfilename;
-					char *text;
-					char *buf;
-					hyp_indextype desttype;
-					
-					dest_page = DEC_255(&src[3]);
-					buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
-					buf = chomp(buf);
-					text = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-					g_free(buf);
-					if (hypnode_valid(hyp, dest_page))
+					break;
+				case HYP_ESC_WINDOWTITLE:
+					/* @title already output */
+					break;
+				case HYP_ESC_EXTERNAL_REFS:
 					{
-						INDEX_ENTRY *dest_entry = hyp->indextable[dest_page];
-						destfilename = html_filename_for_node(hyp, opts, dest_page, TRUE);
-						destname = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
-						desttype = (hyp_indextype) dest_entry->type;
-					} else
-					{
-						destfilename = g_strdup("/nonexistent.html");
-						str = hyp_invalid_page(dest_page);
-						destname = g_strdup(str);
-						g_free(str);
-						desttype = HYP_NODE_EOF;
-					}
-					if (empty(text))
-					{
-						g_free(text);
-						text = g_strdup(destname);
-					}
-					{
-						struct html_xref *xref;
-						xref = g_new0(struct html_xref, 1);
-						xref->text = text;
-						xref->destname = destname;
-						xref->destfilename = destfilename;
-						xref->dest_page = dest_page;
-						xref->desttype = desttype;
-						xref->line = 0;
-						xref->next = NULL;
-						*last_xref = xref;
-						last_xref = &(xref)->next;
-					}
-				}
-				break;
-			case HYP_ESC_DITHERMASK:
-				if (src[2] == 5u)
-					dithermask = short_from_chars(&src[3]);
-				break;
-			default:
-				break;
-			}
-			src = hyp_skip_esc(src);
-		}
-		
-		/*
-		 * join vertical lines,
-		 * otherwise we get small gaps.
-		 * downcase: this will print wrong commands when embedding the stg source in html
-		 */
-		{
-			struct hyp_gfx *gfx1, *gfx2;
-			
-			for (gfx1 = hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
-			{
-				if (gfx1->type == HYP_ESC_LINE && gfx1->width == 0 && gfx1->begend == 0)
-				{
-					for (gfx2 = gfx1->next; gfx2 != NULL; gfx2 = gfx2->next)
-					{
-						if (gfx2->type == HYP_ESC_LINE && gfx2->width == 0 && gfx2->begend == 0 &&
-							gfx1->x_offset == gfx2->x_offset &&
-							gfx1->style == gfx2->style &&
-							(gfx1->y_offset + gfx1->height) == gfx2->y_offset)
+						hyp_nodenr dest_page;
+						char *destname;
+						char *destfilename;
+						char *text;
+						char *buf;
+						hyp_indextype desttype;
+						
+						dest_page = DEC_255(&src[3]);
+						buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
+						buf = chomp(buf);
+						text = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
+						g_free(buf);
+						if (hypnode_valid(hyp, dest_page))
 						{
-							gfx1->height += gfx2->height;
-							gfx2->type = 0;
-							gfx2->used = TRUE;
+							INDEX_ENTRY *dest_entry = hyp->indextable[dest_page];
+							destfilename = html_filename_for_node(hyp, opts, dest_page, TRUE);
+							destname = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
+							desttype = (hyp_indextype) dest_entry->type;
+						} else
+						{
+							destfilename = g_strdup("/nonexistent.html");
+							destname = hyp_invalid_page(dest_page);
+							desttype = HYP_NODE_EOF;
+						}
+						if (empty(text))
+						{
+							g_free(text);
+							text = g_strdup(destname);
+						}
+						{
+							struct html_xref *xref;
+							xref = g_new0(struct html_xref, 1);
+							xref->text = text;
+							xref->destname = destname;
+							xref->destfilename = destfilename;
+							xref->dest_page = dest_page;
+							xref->desttype = desttype;
+							xref->line = 0;
+							xref->next = NULL;
+							*last_xref = xref;
+							last_xref = &(xref)->next;
+						}
+					}
+					break;
+				case HYP_ESC_DITHERMASK:
+					if (src[2] == 5u)
+						dithermask = short_from_chars(&src[3]);
+					break;
+				default:
+					break;
+				}
+				src = hyp_skip_esc(src);
+			}
+			
+			/*
+			 * join vertical lines,
+			 * otherwise we get small gaps.
+			 * downcase: this will print wrong commands when embedding the stg source in html
+			 */
+			{
+				struct hyp_gfx *gfx1, *gfx2;
+				
+				for (gfx1 = hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
+				{
+					if (gfx1->type == HYP_ESC_LINE && gfx1->width == 0 && gfx1->begend == 0)
+					{
+						for (gfx2 = gfx1->next; gfx2 != NULL; gfx2 = gfx2->next)
+						{
+							if (gfx2->type == HYP_ESC_LINE && gfx2->width == 0 && gfx2->begend == 0 &&
+								gfx1->x_offset == gfx2->x_offset &&
+								gfx1->style == gfx2->style &&
+								(gfx1->y_offset + gfx1->height) == gfx2->y_offset)
+							{
+								gfx1->height += gfx2->height;
+								gfx2->type = 0;
+								gfx2->used = TRUE;
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		if (!for_inline)
-			html_out_header(hyp, opts, out, title, node, hyp_gfx, xrefs, syms, FALSE);
-
-		g_free(title);
+			
+			if (!for_inline)
+				html_out_header(hyp, opts, out, title, node, hyp_gfx, xrefs, syms, FALSE);
+	
+			g_free(title);
 		}
 
 		if (opts->showstg)
