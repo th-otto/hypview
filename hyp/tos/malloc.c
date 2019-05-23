@@ -34,7 +34,7 @@
 static BASEPAGE *volatile *tospd;
 int acc_memsave;
 
-static long _CDECL get_toshdr(void)
+static long get_toshdr(void)
 {
 	OSHEADER *hdr = *((OSHEADER **)0x4f2l);
 

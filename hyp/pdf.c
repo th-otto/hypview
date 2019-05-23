@@ -1073,7 +1073,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 				}
 			}
 		}
-		
+
 		{
 			struct pdf_xref *xref, *next;
 			
