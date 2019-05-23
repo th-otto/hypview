@@ -1532,7 +1532,7 @@ HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, HPDF_Rect rect, const 
 		return NULL;
 	}
 
-	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_TEXT_NOTES);
+	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_TEXT);
 	if (annot)
 	{
 		if (AddAnnotation(page, annot) != HPDF_OK)

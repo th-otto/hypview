@@ -5,7 +5,7 @@
 /******************************************************************************/
 
 #if defined(__TOS__) || defined(__atarist__)
-static long _CDECL getBootDrive(void)
+static long getBootDrive(void)
 {
 	char bootDrive = *((char *) 0x447) + 'A';
 

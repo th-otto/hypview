@@ -699,7 +699,7 @@ HPDF_STATUS HPDF_Annot_SetNoColor(HPDF_Annotation annot)
 
 HPDF_STATUS HPDF_TextAnnot_SetIcon(HPDF_Annotation annot, HPDF_AnnotIcon icon)
 {
-	if (!CheckSubType(annot, HPDF_ANNOT_TEXT_NOTES))
+	if (!CheckSubType(annot, HPDF_ANNOT_TEXT))
 		return HPDF_INVALID_ANNOTATION;
 
 	if (icon >= HPDF_ANNOT_ICON_EOF)
@@ -716,7 +716,7 @@ HPDF_STATUS HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 {
 	HPDF_Boolean b;
 
-	if (!CheckSubType(annot, HPDF_ANNOT_TEXT_NOTES))
+	if (!CheckSubType(annot, HPDF_ANNOT_TEXT))
 		return HPDF_INVALID_ANNOTATION;
 
 	b = HPDF_Boolean_New(annot->mmgr, opened);

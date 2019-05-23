@@ -35,4 +35,8 @@ Known bugs in this version:
 
 - PDF output currently does not support @xref
 
+- PDF output currently does not display any window title
+  at the start of a page (they will occur in the contents view
+  however)
+
 - Not all viewers currently support lines with arrow endings
