@@ -65,3 +65,4 @@ libhpdf_a_SOURCES = \
 	$(empty)
 
 AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib
+AM_CPPFLAGS += -DZLIB_STATIC

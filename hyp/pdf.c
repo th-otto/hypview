@@ -1109,6 +1109,16 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 static char *pdf_datestr(time_t t)
 {
 	struct tm tm;
+#ifdef _WIN32
+	gmtime_r(&t, &tm);
+	return g_strdup_printf("D:%04d%02d%02d%02d%02d%02d",
+		tm.tm_year + 1900,
+		tm.tm_mon + 1,
+		tm.tm_mday,
+		tm.tm_hour,
+		tm.tm_min,
+		tm.tm_sec);
+#else
 	int gmtoff;
 	int c;
 	
@@ -1127,6 +1137,7 @@ static char *pdf_datestr(time_t t)
 		c,
 		gmtoff / 60,
 		gmtoff % 60);
+#endif
 }
 
 /* ------------------------------------------------------------------------- */

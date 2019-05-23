@@ -2,7 +2,7 @@ include ../../silent.am
 include ../../Makefile.common
 
 AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib -DSRCDIR=\"$(srcdir)\"
-LIBS = -L../src -lhpdf -L../../zlib -lz -lm @LIBS@
+LIBS = -L../src -lhpdf -lm @LIBS@ -L../../zlib -lz
 
 
 noinst_PROGRAMS = \

@@ -848,6 +848,7 @@ gboolean WriteEntryBytes(HYP_DOCUMENT *hyp, hyp_nodenr num, unsigned char *src, 
 hyp_nodenr find_nr_by_title(HYP_DOCUMENT *hyp_doc, const char *title, gboolean last);
 const unsigned char *hyp_skip_esc(const unsigned char *pos);
 gboolean hyp_node_find_windowtitle(HYP_NODE *nodeptr);
+hyp_nodenr hyp_node_find_objref(HYP_NODE *nodeptr, _WORD tree, _WORD obj, hyp_lineno *line);
 hyp_nodenr hyp_first_text_page(HYP_DOCUMENT *hyp_doc);
 hyp_nodenr hyp_last_text_page(HYP_DOCUMENT *hyp_doc);
 

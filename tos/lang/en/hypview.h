@@ -1,27 +1,29 @@
 /*
  * resource set indices for hypview
  *
- * created by ORCS 2.14
+ * created by ORCS 2.16
  */
 
 /*
- * Number of Strings:        181
+ * Number of Strings:        183
  * Number of Bitblks:        0
  * Number of Iconblks:       0
  * Number of Color Iconblks: 20
  * Number of Color Icons:    34
  * Number of Tedinfos:       31
- * Number of Free Strings:   20
+ * Number of Free Strings:   22
  * Number of Free Images:    0
  * Number of Objects:        114
  * Number of Trees:          8
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          31284
+ * Total file size:          31380
  */
 
 #undef RSC_NAME
+#ifndef __ALCYON__
 #define RSC_NAME "hypview"
+#endif
 #undef RSC_ID
 #ifdef hypview
 #define RSC_ID hypview
@@ -29,9 +31,12 @@
 #define RSC_ID 0
 #endif
 
-#if !defined(RSC_STATIC_FILE) || !RSC_STATIC_FILE
-#define NUM_STRINGS 181
-#define NUM_FRSTR 20
+#ifndef RSC_STATIC_FILE
+# define RSC_STATIC_FILE 0
+#endif
+#if !RSC_STATIC_FILE
+#define NUM_STRINGS 183
+#define NUM_FRSTR 22
 #define NUM_UD 0
 #define NUM_IMAGES 0
 #define NUM_BB 0
@@ -217,6 +222,12 @@
 #define HV_ERR_HYPFIND                    19 /* Alert string */
 /* [1][HypFind exited with code %d][Cancel] */
 
+#define HV_ERR_NOTREE                     20 /* Alert string */
+/* [1][Tree %u not found!][Abort] */
+
+#define HV_ERR_NO_OBJECT                  21 /* Alert string */
+/* [1][No node defined for|this object.][Continue|Cancel] */
+
 
 
 
@@ -228,7 +239,7 @@
 #    define _WORD short
 #  endif
 #endif
-extern _WORD hypview_rsc_load(void);
+extern _WORD hypview_rsc_load(_WORD wchar, _WORD hchar);
 extern _WORD hypview_rsc_gaddr(_WORD type, _WORD idx, void *gaddr);
 extern _WORD hypview_rsc_free(void);
 #endif

@@ -965,6 +965,14 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 	return g_strdup((const char *)src);
 }
 
+char *hyp_conv_to_utf8(HYP_CHARSET charset, const void *src, size_t len)
+{
+	UNUSED(charset);
+	if (len != STR0TERM)
+		return NULL;
+	return g_strdup((const char *)src);
+}
+
 #endif
 
 #include "hyp/hyp_intl.c"

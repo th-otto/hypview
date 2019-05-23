@@ -180,13 +180,18 @@ void HypfindFinish(short AppID, short ret);
 /*
  * hv_popup.c
  */
-void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y);
+gboolean OpenPopup(WINDOW_DATA *win, hyp_nodenr num, hyp_lineno line, short x, short y);
 
 
 /*
  * hv_eref.c
  */
 void HypExtRefPopup(WINDOW_DATA *win, short x, short y);
-void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window);
+void HypOpenExtRef(WINDOW_DATA *win, const char *name, hyp_lineno line_no, gboolean new_window);
+
+/*
+ * hv_rsc.c
+ */
+void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr);
 
 #endif /* __HV_DEFS_H__ */

@@ -1,5 +1,5 @@
-;hypview.app
-c:\hypview.acc
+hypview.app
+;c:\hypview.acc
 .C[-I..\include\tos]
 .C[-I..\include]
 .C[-I..\rcintl]
@@ -56,6 +56,7 @@ cstartv.o
 ..\tos\hv_eref.c
 ..\tos\hv_user.c
 ..\tos\autoloc.c
+..\tos\hv_rsc.c
 
 ..\hyp\hyp.c
 ..\hyp\ref.c

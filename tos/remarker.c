@@ -1,3 +1,8 @@
+/*
+ * this is a dummy implementation,
+ * just enough to test communication with HypView
+ */
+
 #include "hv_defs.h"
 #include <mint/cookie.h>
 #include <mint/arch/nf_ops.h>
@@ -25,15 +30,6 @@ GRECT winpos = { 700, 100, 200, 200 };
 static OBJECT theobj[] = {
 	{ -1, -1, -1, G_BOX, OF_LASTOB, 0, 0, 0, 0, 0, 0 }
 };
-
-/*** ---------------------------------------------------------------------- ***/
-
-void GetTextSize(_WORD *width, _WORD *height)
-{
-	_WORD dummy;
-	
-	graf_handle(width, height, &dummy, &dummy);
-}
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -74,7 +70,7 @@ int DoInitSystem(void)
 	v_opnvwk(workin, &vdi_handle, workout);
 	if (!vdi_handle)
 	{
-		form_alert(1, "[1][Can't open a VDI workstation.][Cancel]");
+		form_alert(1, rs_string(DI_VDI_WKS_ERROR));
 		return FALSE;
 	}
 	vq_extnd(vdi_handle, 1, ext_workout);

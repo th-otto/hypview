@@ -58,6 +58,31 @@ gboolean hyp_node_find_windowtitle(HYP_NODE *nodeptr)
 
 /* ------------------------------------------------------------------------- */
 
+hyp_nodenr hyp_node_find_objref(HYP_NODE *nodeptr, _WORD tree, _WORD obj, hyp_lineno *line)
+{
+	const unsigned char *src;
+	const unsigned char *end;
+
+	src = nodeptr->start;
+	end = nodeptr->end;
+
+	while (src < end && *src == HYP_ESC)
+	{
+		if (src[1] == HYP_ESC_OBJTABLE)
+		{
+			if (DEC_255(&src[4]) == tree && DEC_255(&src[6]) == obj)
+			{
+				*line = DEC_255(&src[2]);
+				return DEC_255(&src[8]);
+			}
+		}
+		src = hyp_skip_esc(src);
+	}
+	return HYP_NOINDEX;
+}
+
+/* ------------------------------------------------------------------------- */
+
 /*
  * bad design. why does not every esc sequence just contain a length byte?
  */

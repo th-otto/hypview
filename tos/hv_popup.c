@@ -135,10 +135,11 @@ gboolean PopupWindow(WINDOW_DATA *win, _WORD obj, void *data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
+gboolean OpenPopup(WINDOW_DATA *win, hyp_nodenr num, hyp_lineno line, short x, short y)
 {
 	DOCUMENT *doc = win->data;
 	POPUP_INFO *popup;
+	gboolean ret = FALSE;
 
 	graf_mouse(BUSY_BEE, NULL);
 
@@ -148,10 +149,10 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 	{
 		GRECT work;
 		char *old_wtitle = win->title;
-		gboolean ret;
 		
 		popup->doc = *doc;
 		popup->parentwin = win;
+		popup->doc.start_line = line;
 		win->popup = hv_win_new(&popup->doc, TRUE);
 		if (win->popup == NULL)
 		{
@@ -183,4 +184,5 @@ void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, short x, short y)
 	}
 	
 	graf_mouse(ARROW, NULL);
+	return ret;
 }

@@ -422,13 +422,13 @@ LPCDLGTEMPLATE LoadDialog(HINSTANCE instance, LPCWSTR name);
  * hv_eref.c
  */
 void HypExtRefPopup(WINDOW_DATA *win, int button);
-void HypOpenExtRef(WINDOW_DATA *win, const char *name, gboolean new_window);
+void HypOpenExtRef(WINDOW_DATA *win, const char *name, hyp_lineno line_no, gboolean new_window);
 
 
 /*
  * hv_popup.c
  */
-void OpenPopup(WINDOW_DATA *win, hyp_nodenr num, int x, int y);
+gboolean OpenPopup(WINDOW_DATA *win, hyp_nodenr num, hyp_lineno line, int x, int y);
 
 
 /*

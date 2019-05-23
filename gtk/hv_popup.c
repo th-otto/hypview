@@ -37,11 +37,12 @@ static gboolean popup_grab_on_window(GdkWindow *window, guint32 activate_time, g
 
 /*** ---------------------------------------------------------------------- ***/
 
-void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
+gboolean OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, hyp_lineno line, int x, int y)
 {
 	DOCUMENT *doc = parentwin->data;
 	DOCUMENT *newdoc = hypdoc_ref(doc);
 	WINDOW_DATA *win;
+	gboolean ret = FALSE;
 	
 	if (parentwin->popup)
 		gtk_widget_destroy(GTK_WIDGET(parentwin->popup));
@@ -50,6 +51,7 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 	{
 		g_signal_connect(G_OBJECT(win), "destroy", G_CALLBACK(popup_destroyed), (gpointer) parentwin);
 
+		newdoc->start_line = line;
 		if (newdoc->gotoNodeProc(win, NULL, num))
 		{
 			char *geom;
@@ -76,9 +78,11 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 			popup_grab_on_window(gtk_widget_get_window(GTK_WIDGET(win)), gtk_get_current_event_time(), TRUE);
 			gtk_grab_add(GTK_WIDGET(win));
 #endif
+			ret = TRUE;
 		} else
 		{
 			gtk_widget_destroy(GTK_WIDGET(win));
 		}
 	}
+	return ret;
 }

@@ -17,15 +17,6 @@ struct _viewer_colors viewer_colors;
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GetTextSize(_WORD *width, _WORD *height)
-{
-	_WORD dummy;
-	
-	graf_handle(width, height, &dummy, &dummy);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 static unsigned char parse_hex(const char *str)
 {
 	unsigned char val;

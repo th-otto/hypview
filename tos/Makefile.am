@@ -45,6 +45,7 @@ hypview_SOURCES = \
 	hv_tbar.c \
 	hv_user.c \
 	hv_win.c \
+	hv_rsc.c \
 	autoloc.c \
 	\
 	dl_apinf.c \

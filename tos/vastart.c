@@ -18,15 +18,6 @@ short doneFlag;
 
 /*** ---------------------------------------------------------------------- ***/
 
-void GetTextSize(_WORD *width, _WORD *height)
-{
-	_WORD dummy;
-	
-	graf_handle(width, height, &dummy, &dummy);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 int DoAesInit(void)
 {
 	/* gl_apid = appl_init(); moved to hypmain.h */

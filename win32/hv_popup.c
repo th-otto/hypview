@@ -5,11 +5,12 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
+gboolean OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, hyp_lineno line, int x, int y)
 {
 	DOCUMENT *doc = parentwin->data;
 	DOCUMENT *newdoc = hypdoc_ref(doc);
 	WINDOW_DATA *win;
+	gboolean ret = FALSE;
 	
 	if (parentwin->popup)
 		DestroyWindow(parentwin->popup->hwnd);
@@ -18,15 +19,18 @@ void OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, int x, int y)
 	{
 		win->parentwin = parentwin;
 
+		newdoc->start_line = line;
 		if (newdoc->gotoNodeProc(win, NULL, num))
 		{
 			parentwin->popup = win;
 			ReInitWindow(win, FALSE);
 			MoveWindow(win->hwnd, x, y, win->docsize.w + win->x_margin_left + win->x_margin_right, win->docsize.h + win->y_margin_top + win->y_margin_bottom, TRUE);
 			hv_win_open(win);
+			ret = TRUE;
 		} else
 		{
 			DestroyWindow(win->hwnd);
 		}
 	}
+	return ret;
 }

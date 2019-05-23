@@ -198,7 +198,7 @@ int DoAesInit(void)
 	vq_extnd(aes_handle, 0, workout);
 	vq_extnd(aes_handle, 1, ext_workout);
 
-	if (hypview_rsc_load() == 0)
+	if (hypview_rsc_load(pwchar, phchar) == 0)
 	{
 		char *str = g_strdup_printf(_("[1][Error while loading |'%s'.][Cancel]"), rsc_name);
 		form_alert(1, str);

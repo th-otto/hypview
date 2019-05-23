@@ -49,6 +49,7 @@ cstartv.o
 ..\hyp\hyp_cfg.c
 ..\hyp\hypgfx.c
 ..\hyp\base64.c
+..\hyp\outcomm.c
 
 ..\hyp\tos\cookie.c
 

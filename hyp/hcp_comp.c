@@ -13,6 +13,9 @@
 extern char *__mktemp(char *__template);
 #define mktemp __mktemp
 #endif
+#if defined(__PUREC__) && !defined(__MINT__)
+#define mktemp tmpnam
+#endif
 
 typedef struct _filelist FILELIST;
 struct _filelist {
@@ -6386,6 +6389,13 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 				{
 					treenr = define->value;
 				}
+				/*
+				 * strange inconsistency here:
+				 * in the source file, the link is written as @{... LINK "file.rsc/<tree>"},
+				 * but the entry in the index is always "file.rsc/MAIN",
+				 * and the link is turned into @{... LINK "file.rsc" "<tree>"},
+				 * so the tree number is contained in the linenumber field of the link
+				 */
 				tmp = g_strconcat(dest, "/MAIN", NULL);
 				g_free(dest);
 				dest = argv[2] = tmp;

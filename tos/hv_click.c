@@ -223,12 +223,12 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 							}
 							break;
 						case HYP_NODE_POPUP:
-							OpenPopup(win, dest_page, x, sy);
+							OpenPopup(win, dest_page, 0, x, sy);
 							break;
 						case HYP_NODE_EXTERNAL_REF:
 							{
 								char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest_page]->name, STR0TERM);
-								HypOpenExtRef(win, name, (m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin));
+								HypOpenExtRef(win, name, line_nr, (m->kstate & K_CTRL) || (link_type >= HYP_ESC_ALINK && gl_profile.viewer.alink_newwin));
 								g_free(name);
 							}
 							break;

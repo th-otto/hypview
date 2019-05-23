@@ -924,7 +924,7 @@ AC_ARG_WITH(png,
 if test "$with_png" != "no"; then
   AC_CHECK_LIB([png], [png_init_io], [], [
     AC_MSG_ERROR([png_init_io() is missing, check config.log for more details])
-  ])
+  ], [-lz])
 fi
 AC_ARG_ENABLE(asian-fonts,
   [AS_HELP_STRING([--enable-asian-font],[include support for asian character encodings])],

@@ -392,9 +392,31 @@ void ItemEvent(EVNT *event)
 			FileselectorEvents((FILESEL_DATA *) ptr, event);
 		else if (ptr->type == WIN_FONTSEL)
 			FontselectorEvents((FONTSEL_DATA *) ptr, event);
+	} else
+	{
+		/*
+		 * close popup windows, even if message was outside
+		 * the window
+		 */
+		for (ptr = all_list; ptr; ptr = ptr->next)
+		{
+			if (ptr->type == WIN_WINDOW)
+			{
+				WINDOW_DATA *win = (WINDOW_DATA *) ptr;
+				if (win->popup)
+				{
+					WindowEvents(win, event);
+					/*
+					 * the event might have removed win from the list,
+					 * get out of the loop
+					 */
+					break;
+				}
+			}
+		}
 	}
 #if USE_MENU
-	if ((modal_items < 0) && !menu_enabled)
+	if (modal_items < 0 && !menu_enabled)
 		SetMenu(TRUE);
 #endif
 }
