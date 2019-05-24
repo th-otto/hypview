@@ -7743,7 +7743,7 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILELIST *f)
 		break;
 	case HYP_PIC_PNG:
 #ifdef HAVE_PNG
-		NYI();
+		/* NYI(); */
 #else
 		unreachable();
 #endif

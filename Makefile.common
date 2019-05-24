@@ -32,6 +32,12 @@ LIBZ = $(LIBZ_DEP)
 $(LIBZ_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/zlib libz.a; fi
 
+LIBPNG_DEP = $(hyp_builddir)/libpng/libpng.a
+LIBPNG = $(LIBPNG_DEP)
+
+$(LIBPNG_DEP)::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/libpng libpng.a; fi
+
 LIBHPDF_DEP = $(hyp_builddir)/hpdf/src/libhpdf.a
 LIBHPDF = $(LIBHPDF_DEP)
 

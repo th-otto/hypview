@@ -20,7 +20,7 @@
 #include "hpdf_image.h"
 #include <string.h>
 
-#ifndef LIBHPDF_HAVE_NOPNGLIB
+#ifdef HAVE_PNG
 #include <png.h>
 #include <string.h>
 
@@ -685,4 +685,4 @@ HPDF_Image HPDF_Image_LoadPngImage(HPDF_MMgr mmgr, HPDF_Stream png_data, HPDF_Xr
 
 	return image;
 }
-#endif /* LIBHPDF_HAVE_NOPNGLIB */
+#endif /* HAVE_PNG */

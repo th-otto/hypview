@@ -19,7 +19,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
-#ifndef HPDF_NOPNGLIB
+#ifdef HAVE_PNG
 
 static jmp_buf env;
 
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
 int main(void)
 {
-	printf("WARNING: if you want to run this example, \n" "make libhpdf without HPDF_NOPNGLIB option.\n");
+	printf("WARNING: if you want to run this example, \n" "make libhpdf with HAVE_PNG option.\n");
 	return 0;
 }
 

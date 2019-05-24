@@ -19,7 +19,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
-#ifndef HPDF_NOPNGLIB
+#ifdef HAVE_PNG
 
 #if defined(__WIN32__) || defined(__atarist__)
 #define FILE_SEPARATOR "\\"
@@ -247,8 +247,8 @@ int main(int argc, char **argv)
 
 int main(void)
 {
-	printf("WARNING: if you want to run this demo, \n" "make libhpdf without HPDF_NOPNGLIB option.\n");
+	printf("WARNING: if you want to run this demo, \n" "make libhpdf with HAVE_PNG option.\n");
 	return 0;
 }
 
-#endif /* HPDF_NOPNGLIB */
+#endif /* HAVE_PNG */

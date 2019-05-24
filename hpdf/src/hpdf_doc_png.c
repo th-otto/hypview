@@ -23,7 +23,7 @@
 
 static HPDF_Image LoadPngImageFromStream(HPDF_Doc pdf, HPDF_Stream imagedata, HPDF_BOOL delayed_loading)
 {
-#ifndef LIBHPDF_HAVE_NOPNGLIB
+#ifdef HAVE_PNG
 	HPDF_Image image;
 
 	image = HPDF_Image_LoadPngImage(pdf->mmgr, imagedata, pdf->xref, delayed_loading);
@@ -38,7 +38,7 @@ static HPDF_Image LoadPngImageFromStream(HPDF_Doc pdf, HPDF_Stream imagedata, HP
 	HPDF_UNUSED(imagedata);
 
 	return NULL;
-#endif /* LIBHPDF_HAVE_NOPNGLIB */
+#endif /* HAVE_PNG */
 }
 
 

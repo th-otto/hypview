@@ -1,7 +1,10 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = rcintl potools pic icons po zlib hyp
+SUBDIRS = rcintl potools pic icons po hyp
+if HAVE_PNG
+SUBDIRS += zlib libpng
+endif
 if WITH_PDF
 SUBDIRS += hpdf
 endif

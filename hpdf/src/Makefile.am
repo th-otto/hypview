@@ -66,3 +66,6 @@ libhpdf_a_SOURCES = \
 
 AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib
 AM_CPPFLAGS += -DZLIB_STATIC
+if HAVE_PNG
+AM_CPPFLAGS += -I$(srcdir)/../../libpng
+endif

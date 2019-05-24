@@ -906,7 +906,7 @@ AM_CONDITIONAL(HAVE_CURL, test "$no_curl" = "")
 
 AH_TEMPLATE([WITH_PDF], [include PDF output support])
 AH_TEMPLATE([LIBHPDF_HAVE_NOZLIB], [zlib is not available])
-AH_TEMPLATE([LIBHPDF_HAVE_NOPNGLIB], [libpng is not available])
+AH_TEMPLATE([HAVE_PNG], [libpng is available])
 AH_TEMPLATE([LIBHPDF_WITH_ASIAN_FONTS], [include support for asian character encodings])
 AC_ARG_WITH(pdf,
   [AS_HELP_STRING([--with-pdf],[include PDF output support])],
@@ -916,28 +916,25 @@ AC_ARG_WITH(pdf,
 AM_CONDITIONAL(WITH_PDF, test "$with_pdf" = "yes")
 if test "$with_pdf" = "yes"; then
 AC_DEFINE([WITH_PDF])
-AC_ARG_WITH(png,
-  [AS_HELP_STRING([--with-png],[include PNG support for PDF])],
-  [ ],
-  [with_png=yes]
-)
-if test "$with_png" != "no"; then
-  AC_CHECK_LIB([png], [png_init_io], [], [
-    AC_MSG_ERROR([png_init_io() is missing, check config.log for more details])
-  ], [-lz])
-fi
 AC_ARG_ENABLE(asian-fonts,
   [AS_HELP_STRING([--enable-asian-font],[include support for asian character encodings])],
   [ ],
   [with_asian_fonts=no]
 )
 fi
-if test "$with_png" = "no"; then
-  AC_DEFINE([LIBHPDF_HAVE_NOPNGLIB])
-fi
 if test "$with_asian_fonts" = "yes"; then
   AC_DEFINE([LIBHPDF_WITH_ASIAN_FONTS])
 fi
+
+AC_ARG_WITH(png,
+  [AS_HELP_STRING([--with-png],[include PNG support])],
+  [ ],
+  [with_png=yes]
+)
+if test "$with_png" = "yes"; then
+  AC_DEFINE([HAVE_PNG])
+fi
+AM_CONDITIONAL(HAVE_PNG, test "$with_png" != "no")
 
 ###############################################################################
 #
@@ -978,8 +975,6 @@ AC_SUBST(SOUP_LIBS)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(JPEG_CFLAGS)
 AC_SUBST(JPEG_LIBS)
-AC_SUBST(PNG_CFLAGS)
-AC_SUBST(PNG_LIBS)
 AC_SUBST(XPM_LIBS)
 
 AH_BOTTOM([
@@ -1011,6 +1006,7 @@ AC_OUTPUT([
 	pic/Makefile
 	icons/Makefile
 	zlib/Makefile
+	libpng/Makefile
 	hyp/Makefile
 	gtk/Makefile
 	win32/Makefile

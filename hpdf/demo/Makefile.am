@@ -2,7 +2,12 @@ include ../../silent.am
 include ../../Makefile.common
 
 AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib -DSRCDIR=\"$(srcdir)\"
-LIBS = -L../src -lhpdf -lm @LIBS@ -L../../zlib -lz
+LIBS = -L../src -lhpdf -lm @LIBS@
+if HAVE_PNG
+AM_CPPFLAGS += -I$(srcdir)/../../libpng
+LIBS += -L../../pnglib -lpng
+endif
+LIBS += -L../../zlib -lz
 
 
 noinst_PROGRAMS = \
