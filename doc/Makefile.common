@@ -147,8 +147,7 @@ all:		help
 # create default formats of manual
 help:	hypview_help
 
-hypview_help:		win4 \
-			html \
+hypview_help:		html \
 			htmlhelp \
 			stg
 
