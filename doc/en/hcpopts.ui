@@ -512,7 +512,12 @@ a parameter that can specify the desired format. The choices are:
     !item [1:]          in IFF-format
     !item [2:]          in ICN-format
     !item [3:]          in IMG-format
+    !item [4:]          in BMP-format
+    !item [5:]          in GIF-format
+    !item [6:]          in PNG-dormat
 !end_xlist
+
+Symbolic names (icn, bmp etc.) are also accepted.
 
 Default value:  0
 Setable with:   HCP_OPT, Command line

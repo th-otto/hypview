@@ -84,7 +84,20 @@ hypview_SOURCES = \
 	bubble/bgh.c
 
 hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYPDOC_DEP) $(LIBHYP_DEP)
-hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(LIBPIC) $(LIBGEM) $(INTLLIBS)
+hypview_LDADD = $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(LIBPIC)
+if WITH_PDF
+hypview_DEPENDENCIES += $(LIBHPDF_DEP)
+hypview_LDADD += $(LIBHPDF)
+endif
+if HAVE_PNG
+hypview_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+hypview_LDADD += $(LIBPNG) $(LIBZ)
+endif
+if WITH_PDF
+hypview_DEPENDENCIES += $(LIBZ_DEP)
+hypview_LDADD += $(LIBZ)
+endif
+hypview_LDADD += $(LIBGEM) $(INTLLIBS)
 
 CLEANFILES = hypview.app
 

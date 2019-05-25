@@ -84,10 +84,19 @@ endif
 hypview_DEPENDENCIES = $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP)
 hypview_LDADD =
 if WITH_PDF
-hypview_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
-hypview_LDADD += $(LIBHPDF) $(LIBZ)
+hypview_DEPENDENCIES += $(LIBHPDF_DEP)
+hypview_LDADD += $(LIBHPDF)
 endif
-hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(GTK_LIBS) $(INTLLIBS)
+hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP)
+if HAVE_PNG
+hypview_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+hypview_LDADD += $(LIBPNG) $(LIBZ)
+endif
+if WITH_PDF
+hypview_DEPENDENCIES += $(LIBZ_DEP)
+hypview_LDADD += $(LIBZ)
+endif
+hypview_LDADD += $(GTK_LIBS) $(INTLLIBS)
 hypview_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 if OS_WIN32
 hypview_DEPENDENCIES += $(LIBRCINTL_DEP)

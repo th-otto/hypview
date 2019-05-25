@@ -496,7 +496,12 @@ Parameter, welcher das gewÅnschte Format spezifiziert; dabei bedeutet:
     !item [1:] IFF-Format
     !item [2:] ICN-Format
     !item [3:] IMG-Format
+    !item [4:] BMP-Format
+    !item [5:] GIF-Format
+    !item [6:] PNG-Format
 !end_xlist
+
+Symbolische Namen (icn, bmp etc.) werden ebenfalls unterstÅtzt.
 
 Defaultwert:    0
 Setzbar:        HCP_OPT, Kommandozeile

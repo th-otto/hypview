@@ -7743,7 +7743,8 @@ static hyp_pic_format load_image(hcp_vars *vars, int handle, FILELIST *f)
 		break;
 	case HYP_PIC_PNG:
 #ifdef HAVE_PNG
-		/* NYI(); */
+		if (png_unpack(planebuf, buf + pic.pi_dataoffset, &pic, FALSE) == FALSE)
+			format = HYP_PIC_UNKNOWN;
 #else
 		unreachable();
 #endif

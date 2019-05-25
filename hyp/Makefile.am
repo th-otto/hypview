@@ -32,7 +32,10 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)
 if WITH_PDF
-AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
+AM_CPPFLAGS += -I$(srcdir)/../hpdf/include -I$(srcdir)/../zlib
+endif
+if HAVE_PNG
+AM_CPPFLAGS += -I$(srcdir)/../libpng -I$(srcdir)/../zlib
 endif
 
 LANGID_MODEL = $(srcdir)/ldpy.model
@@ -138,11 +141,20 @@ MOFILES := $(shell $(EVAL_MOFILES))
 
 hcp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 hcp_LDADD =
+hcp_LDADD += $(LIBHYP) $(LIBPIC)
 if WITH_PDF
-hcp_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
-hcp_LDADD += $(LIBHPDF) $(LIBZ)
+hcp_DEPENDENCIES += $(LIBHPDF_DEP)
+hcp_LDADD += $(LIBHPDF)
 endif
-hcp_LDADD += $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+hcp_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+hcp_LDADD += $(LIBPNG) $(LIBZ)
+endif
+if WITH_PDF
+hcp_DEPENDENCIES += $(LIBZ_DEP)
+hcp_LDADD += $(LIBZ)
+endif
+hcp_LDADD += $(GLIB_LIBS) $(INTLLIBS)
 if OS_WIN32
 hcp_SOURCES += hcp_rc.rc
 hcp_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
@@ -177,10 +189,19 @@ hypview_cgi_SOURCES = \
 hypview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 hypview_cgi_LDADD =
 if WITH_PDF
-hypview_cgi_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
-hypview_cgi_LDADD += $(LIBHPDF) $(LIBZ)
+hypview_cgi_DEPENDENCIES += $(LIBHPDF_DEP)
+hypview_cgi_LDADD += $(LIBHPDF)
 endif
-hypview_cgi_LDADD += $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
+hypview_cgi_LDADD += $(LIBHYP) $(LIBPIC)
+if HAVE_PNG
+hypview_cgi_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+hypview_cgi_LDADD += $(LIBPNG) $(LIBZ)
+endif
+if WITH_PDF
+hypview_cgi_DEPENDENCIES += $(LIBZ_DEP)
+hypview_cgi_LDADD += $(LIBZ)
+endif
+hypview_cgi_LDADD += $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
 if OS_WIN32
 hypview_cgi_SOURCES += hcp_rc.rc
 hypview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
@@ -208,7 +229,12 @@ rscview_cgi_SOURCES = \
 	$(UTIL_SRC)
 
 rscview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-rscview_cgi_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
+rscview_cgi_LDADD = $(LIBHYP) $(LIBPIC)
+if HAVE_PNG
+rscview_cgi_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+rscview_cgi_LDADD += $(LIBPNG) $(LIBZ)
+endif
+rscview_cgi_LDADD += $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
 if OS_WIN32
 rscview_cgi_SOURCES += hcp_rc.rc
 rscview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
@@ -234,7 +260,12 @@ hypinfo_SOURCES = \
 	model.c model.h \
 	$(UTIL_SRC)
 hypinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-hypinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+hypinfo_LDADD = $(LIBHYP) $(LIBPIC)
+hypinfo_LDADD += $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+hypinfo_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+hypinfo_LDADD += $(LIBPNG) $(LIBZ)
+endif
 if WITH_GUI_GTK
 hypinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
@@ -342,6 +373,10 @@ img2bmp_SOURCES = \
 	$(UTIL_SRC)
 img2bmp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 img2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+img2bmp_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+img2bmp_LDADD += $(LIBPNG) $(LIBZ)
+endif
 
 
 bmp2img_SOURCES = \
@@ -349,6 +384,10 @@ bmp2img_SOURCES = \
 	$(UTIL_SRC)
 bmp2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 bmp2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+bmp2img_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+bmp2img_LDADD += $(LIBPNG) $(LIBZ)
+endif
 
 
 bmp2gif_SOURCES = \
@@ -356,6 +395,10 @@ bmp2gif_SOURCES = \
 	$(UTIL_SRC)
 bmp2gif_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 bmp2gif_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+bmp2gif_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+bmp2gif_LDADD += $(LIBPNG) $(LIBZ)
+endif
 
 
 gif2bmp_SOURCES = \
@@ -363,6 +406,10 @@ gif2bmp_SOURCES = \
 	$(UTIL_SRC)
 gif2bmp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 gif2bmp_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+gif2bmp_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+gif2bmp_LDADD += $(LIBPNG) $(LIBZ)
+endif
 
 
 icn2img_SOURCES = \
@@ -370,6 +417,10 @@ icn2img_SOURCES = \
 	$(UTIL_SRC)
 icn2img_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 icn2img_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+icn2img_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+icn2img_LDADD += $(LIBPNG) $(LIBZ)
+endif
 
 
 icn2ico_SOURCES = \
@@ -377,12 +428,21 @@ icn2ico_SOURCES = \
 	$(UTIL_SRC)
 icn2ico_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 icn2ico_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+icn2ico_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+icn2ico_LDADD += $(LIBPNG) $(LIBZ)
+endif
+
 
 ico2icn_SOURCES = \
 	ico2icn.c \
 	$(UTIL_SRC)
 ico2icn_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 ico2icn_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+ico2icn_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+ico2icn_LDADD += $(LIBPNG) $(LIBZ)
+endif
 
 
 
@@ -392,6 +452,10 @@ picinfo_SOURCES = \
 
 picinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 picinfo_LDADD = $(LIBHYP) $(LIBPIC) $(GLIB_LIBS) $(INTLLIBS)
+if HAVE_PNG
+picinfo_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+picinfo_LDADD += $(LIBPNG) $(LIBZ)
+endif
 if WITH_GUI_GTK
 picinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif

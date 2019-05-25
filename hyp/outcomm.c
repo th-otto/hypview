@@ -609,7 +609,6 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 	
 	case HYP_PIC_GIF:
 		pic_planes_to_interleaved(conv, buf + SIZEOF_HYP_PICTURE, &pic);
-		
 		g_free(buf);
 		buf = NULL;
 		pic.pi_transparent = pic_find_transparent(&pic, conv);
@@ -633,8 +632,36 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 		}
 		break;
 
-	case HYP_PIC_UNKNOWN:
 	case HYP_PIC_PNG:
+#ifdef HAVE_PNG
+		pic_planes_to_interleaved(conv, buf + SIZEOF_HYP_PICTURE, &pic);
+		g_free(buf);
+		buf = NULL;
+		pic.pi_transparent = pic_find_transparent(&pic, conv);
+		if (out)
+		{
+			buf = png_pack(conv, &pic);
+			if (buf)
+			{
+				g_string_set_size(out, pic.pi_datasize);
+				memcpy(out->str, buf, pic.pi_datasize);
+			}
+		} else
+		{
+			if (!png_fwrite(fp, conv, &pic) ||
+				fflush(fp) != 0 ||
+				ferror(fp))
+			{
+				FileErrorErrno(pic.pi_name);
+				goto error;
+			}
+		}
+#else
+		unreachable();
+#endif
+		break;
+
+	case HYP_PIC_UNKNOWN:
 		unreachable();
 		break;
 	}

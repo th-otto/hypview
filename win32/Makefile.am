@@ -63,11 +63,20 @@ endif
 hypview_DEPENDENCIES = resource.res $(LIBPIC_DEP) $(LIBHYP_DEP) $(LIBHYPDOC_DEP) $(LIBRCINTL_DEP)
 hypview_LDADD = resource.res
 if WITH_PDF
-hypview_DEPENDENCIES += $(LIBHPDF_DEP) $(LIBZ_DEP)
-hypview_LDADD += $(LIBHPDF) $(LIBZ)
+hypview_DEPENDENCIES += $(LIBHPDF_DEP)
+hypview_LDADD += $(LIBHPDF)
 endif
-hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP) $(INTLLIBS) -lshell32 -lgdi32 -lcomdlg32
-hypview_LDFLAGS = -mconsole
+hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP)
+if HAVE_PNG
+hypview_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
+hypview_LDADD += $(LIBPNG) $(LIBZ)
+endif
+if WITH_PDF
+hypview_DEPENDENCIES += $(LIBZ_DEP)
+hypview_LDADD += $(LIBZ)
+endif
+hypview_LDADD += $(INTLLIBS) -lshell32 -lgdi32 -lcomdlg32
+hypview_LDFLAGS = -mwindows
 
 EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
 MOFILES := $(shell $(EVAL_MOFILES))

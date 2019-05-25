@@ -330,6 +330,12 @@ gboolean gif_fread(unsigned char **dest, FILE *fp, PICTURE *pic);
 /*** PNG ------------------------------------------------------------------ ***/
 
 gboolean pic_type_png(PICTURE *pic, const unsigned char *buf, long size);
+#ifdef HAVE_PNG
+gboolean png_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean with_mask);
+gboolean png_fwrite(FILE *fp, const unsigned char *src, PICTURE *pic);
+unsigned char *png_pack(const unsigned char *src, PICTURE *pic);
+long png_rowsize(PICTURE *pic, _WORD planes);
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 

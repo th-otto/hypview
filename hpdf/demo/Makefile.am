@@ -5,9 +5,9 @@ AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib -DSRCDIR=\"$(srcdir)
 LIBS = -L../src -lhpdf -lm @LIBS@
 if HAVE_PNG
 AM_CPPFLAGS += -I$(srcdir)/../../libpng
-LIBS += -L../../pnglib -lpng
+LIBS += $(LIBPNG)
 endif
-LIBS += -L../../zlib -lz
+LIBS += $(LIBZ)
 
 
 noinst_PROGRAMS = \

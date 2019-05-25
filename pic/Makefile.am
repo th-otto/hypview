@@ -5,6 +5,9 @@ noinst_LIBRARIES = libpic.a
 AM_CPPFLAGS = $(GLIB_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)
+if HAVE_PNG
+AM_CPPFLAGS += -I$(srcdir)/../libpng
+endif
 
 libpic_a_SOURCES = \
 	bmp.c \
