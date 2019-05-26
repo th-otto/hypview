@@ -69,7 +69,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 	yoffset = gtk_adjustment_get_value(adj);
 	adj = gtk_text_view_get_hadjustment(GTK_TEXT_VIEW(win->text_view));
 	xoffset = gtk_adjustment_get_value(adj);
-	cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
 	for (l = win->image_childs; l; l = l->next)
 	{
 		struct hyp_gfx *gfx = (struct hyp_gfx *)l->data;
@@ -140,7 +140,17 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 			{
 				gtk_text_buffer_move_mark(info->text_buffer, info->picend, &info->iter);
 				gtk_text_buffer_get_iter_at_mark(info->text_buffer, &start, info->picstart);
-				gtk_text_buffer_apply_tag_by_name(info->text_buffer, "center", &start, &info->iter);
+				if (0)
+				{
+					gtk_text_buffer_apply_tag_by_name(info->text_buffer, "center", &start, &info->iter);
+				} else
+				{
+					char *tag_name = g_strdup_printf("hv-indent-%d", info->indent_id);
+					GtkTextTag *tag = gtk_text_table_create_tag(info->tag_table, tag_name, "indent", tx, NULL);
+					gtk_text_buffer_apply_tag(info->text_buffer, tag, &start, &info->iter);
+					info->indent_id++;
+					g_free(tag_name);
+				}
 			} else if (((gfx->x_offset - 1) + (gfx->pixwidth / HYP_PIC_FONTW)) == hyp->line_width)
 			{
 				gtk_text_buffer_move_mark(info->text_buffer, info->picend, &info->iter);
