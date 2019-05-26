@@ -3,11 +3,13 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS =
 AM_CPPFLAGS += -I$(top_srcdir)
 AM_CPPFLAGS += -I$(srcdir)
-AM_CPPFLAGS += -DZLIB_STATIC
+AM_CPPFLAGS += $(Z_CFLAGS)
 
 noinst_LIBRARIES = libpng.a
 
 libpng_a_SOURCES = \
+	png.h pngconf.h pnglibconf.h \
+	pngdebug.h pnginfo.h pngpriv.h pngstruct.h \
 	png.c \
 	pngerror.c \
 	pngget.c \

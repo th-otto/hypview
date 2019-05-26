@@ -1,5 +1,5 @@
 /*
- * Codepage iso-8859-1
+ * Codepage iso-8859-1/latin 1
  */
 static h_unichar_t const latin1_to_unicode[256] = {
 /* 00 */	0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,

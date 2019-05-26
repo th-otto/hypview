@@ -64,8 +64,8 @@ libhpdf_a_SOURCES = \
 	t4.h \
 	$(empty)
 
-AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib
-AM_CPPFLAGS += -DZLIB_STATIC
+AM_CPPFLAGS = -I$(srcdir)/../include
+AM_CPPFLAGS += $(Z_CFLAGS)
 if HAVE_PNG
-AM_CPPFLAGS += -I$(srcdir)/../../libpng
+AM_CPPFLAGS += $(PNG_CFLAGS)
 endif

@@ -9,43 +9,61 @@ hyp_builddir = $(top_builddir)
 WINDRES = orc --compiler none
 
 LIBHYP_DEP = $(hyp_builddir)/hyp/libhyp.a
-LIBHYP = $(LIBHYP_DEP)
+LIBHYP = -L$(hyp_builddir)/hyp -lhyp
 
 $(LIBHYP_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/hyp libhyp.a; fi
 
 LIBHYPDOC_DEP = $(hyp_builddir)/hyp/libhypdoc.a
-LIBHYPDOC = $(LIBHYPDOC_DEP)
+LIBHYPDOC = -L$(hyp_builddir)/hyp -lhypdoc
 
 $(LIBHYPDOC_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/hyp libhypdoc.a; fi
 
 LIBPIC_DEP = $(hyp_builddir)/pic/libpic.a
-LIBPIC = $(LIBPIC_DEP)
+LIBPIC = -L$(hyp_builddir)/pic -lpic
 
 $(LIBPIC_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/pic libpic.a; fi
 
 LIBZ_DEP = $(hyp_builddir)/zlib/libz.a
-LIBZ = $(LIBZ_DEP)
+LIBZ = -L$(hyp_builddir)/zlib -lz
+Z_CFLAGS = -I$(top_srcdir)/zlib -DZLIB_STATIC
 
 $(LIBZ_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/zlib libz.a; fi
 
 LIBPNG_DEP = $(hyp_builddir)/libpng/libpng.a
-LIBPNG = $(LIBPNG_DEP)
+LIBPNG = -L$(hyp_builddir)/libpng -lpng
+PNG_CFLAGS = -I$(top_srcdir)/libpng
 
 $(LIBPNG_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/libpng libpng.a; fi
 
 LIBHPDF_DEP = $(hyp_builddir)/hpdf/src/libhpdf.a
-LIBHPDF = $(LIBHPDF_DEP)
+LIBHPDF = -L$(hyp_builddir)/hpdf/src -lhpdf
 
 $(LIBHPDF_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/hpdf/src libhpdf.a; fi
 
 LIBRCINTL_DEP = $(top_builddir)/rcintl/librcintl.a
-LIBRCINTL = $(LIBRCINTL_DEP)
+LIBRCINTL = -L$(top_builddir)/rcintl -lrcintl
 
 $(LIBRCINTL_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rcintl librcintl.a; fi
+
+if OS_TOS
+GEMLIB_DEPS =
+GEMLIBS = -lgem
+else
+GEMLIB_DEPS = $(top_builddir)/rsc/aes/libaes.a $(top_builddir)/rsc/vdi/libvdi.a $(top_builddir)/rsc/gemlib/libgem.a $(top_builddir)/rsc/src/librsc.a
+GEMLIBS = -L$(top_builddir)/rsc/src -L$(top_builddir)/rsc/aes -L$(top_builddir)/rsc/vdi -L$(top_builddir)/rsc/gemlib -lrsc -laes -lgem -lvdi -laes -lgem -lvdi
+$(top_builddir)/rsc/aes/libaes.a::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/aes libaes.a; fi
+$(top_builddir)/rsc/vdi/libvdi.a::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/vdi libvdi.a; fi
+$(top_builddir)/rsc/gemlib/libgem.a::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/gemlib libgem.a; fi
+$(top_builddir)/rsc/src/librsc.a::
+	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/src librsc.a; fi
+endif

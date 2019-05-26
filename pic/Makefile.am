@@ -6,7 +6,7 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)
 if HAVE_PNG
-AM_CPPFLAGS += -I$(srcdir)/../libpng
+AM_CPPFLAGS += $(PNG_CFLAGS)
 endif
 
 libpic_a_SOURCES = \

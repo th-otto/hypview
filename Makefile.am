@@ -2,11 +2,17 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = rcintl potools pic icons po hyp
+if NEED_ZLIB
+SUBDIRS += zlib
+endif
 if HAVE_PNG
-SUBDIRS += zlib libpng
+SUBDIRS += libpng
 endif
 if WITH_PDF
 SUBDIRS += hpdf
+endif
+if NEED_GEMLIB
+SUBDIRS += rsc
 endif
 SUBDIRS += gtk win32 tos tools doc www
 

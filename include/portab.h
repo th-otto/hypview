@@ -152,13 +152,14 @@
 
 #endif /* GEMDOS */
 
+#ifdef __PUREC__
+#define __CDECL  cdecl
+#endif
 
 #define CONST    const
 #define VOLATILE volatile
-#undef CDECL
-#define CDECL    cdecl
 #ifndef __CDECL
-#define __CDECL  cdecl
+#define __CDECL
 #endif
 #ifdef __NO_CDECL
 #define _CDECL
@@ -260,7 +261,14 @@ _BOOL is_big_endian (void);
 
 #define ALL_FILE_MASK "*.*"
 
-#define INLINE
+#ifndef INLINE
+#  ifdef __GNUC__
+#	 define INLINE __inline__
+#  endif
+#endif
+#ifndef INLINE
+#  define INLINE /**/
+#endif
 
 #ifndef NO_CONST
 #  ifdef __GNUC__
@@ -307,7 +315,5 @@ typedef long gssize;
 #  define EXTERN_C_BEG
 #  define EXTERN_C_END
 #endif
-
-#define HOST_BYTE_ORDER BYTE_ORDER_BIG_ENDIAN
 
 #endif /* __PORTAB_H__ */

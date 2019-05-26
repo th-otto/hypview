@@ -185,6 +185,8 @@ char **g_win32_get_command_line(void);
 #define mem_garbage_clear(p)
 #endif
 
+char *g_strdup0(const char *str);
+
 double g_ascii_strtodouble(const char *nptr, const char **endptr);
 gboolean g_is_number(const char *val, gboolean is_unsigned);
 int g_ascii_strcasecmp(const char *s1, const char *s2);

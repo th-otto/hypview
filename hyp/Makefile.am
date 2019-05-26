@@ -32,10 +32,13 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) $(CURL_CFLAGS) \
 	-DBINDIR="\"$(bindir)\""
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)
 if WITH_PDF
-AM_CPPFLAGS += -I$(srcdir)/../hpdf/include -I$(srcdir)/../zlib
+AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
 endif
 if HAVE_PNG
-AM_CPPFLAGS += -I$(srcdir)/../libpng -I$(srcdir)/../zlib
+AM_CPPFLAGS += $(PNG_CFLAGS)
+endif
+if NEED_ZLIB
+AM_CPPFLAGS += $(Z_CFLAGS)
 endif
 
 LANGID_MODEL = $(srcdir)/ldpy.model
@@ -147,10 +150,10 @@ hcp_DEPENDENCIES += $(LIBHPDF_DEP)
 hcp_LDADD += $(LIBHPDF)
 endif
 if HAVE_PNG
-hcp_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
-hcp_LDADD += $(LIBPNG) $(LIBZ)
+hcp_DEPENDENCIES += $(LIBPNG_DEP)
+hcp_LDADD += $(LIBPNG)
 endif
-if WITH_PDF
+if NEED_ZLIB
 hcp_DEPENDENCIES += $(LIBZ_DEP)
 hcp_LDADD += $(LIBZ)
 endif
@@ -194,10 +197,10 @@ hypview_cgi_LDADD += $(LIBHPDF)
 endif
 hypview_cgi_LDADD += $(LIBHYP) $(LIBPIC)
 if HAVE_PNG
-hypview_cgi_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
-hypview_cgi_LDADD += $(LIBPNG) $(LIBZ)
+hypview_cgi_DEPENDENCIES += $(LIBPNG_DEP)
+hypview_cgi_LDADD += $(LIBPNG)
 endif
-if WITH_PDF
+if NEED_ZLIB
 hypview_cgi_DEPENDENCIES += $(LIBZ_DEP)
 hypview_cgi_LDADD += $(LIBZ)
 endif
@@ -231,8 +234,12 @@ rscview_cgi_SOURCES = \
 rscview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 rscview_cgi_LDADD = $(LIBHYP) $(LIBPIC)
 if HAVE_PNG
-rscview_cgi_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
-rscview_cgi_LDADD += $(LIBPNG) $(LIBZ)
+rscview_cgi_DEPENDENCIES += $(LIBPNG_DEP)
+rscview_cgi_LDADD += $(LIBPNG)
+endif
+if NEED_ZLIB
+rscview_cgi_DEPENDENCIES += $(LIBZ_DEP)
+rscview_cgi_LDADD += $(LIBZ)
 endif
 rscview_cgi_LDADD += $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
 if OS_WIN32
@@ -263,8 +270,12 @@ hypinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 hypinfo_LDADD = $(LIBHYP) $(LIBPIC)
 hypinfo_LDADD += $(GLIB_LIBS) $(INTLLIBS)
 if HAVE_PNG
-hypinfo_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
-hypinfo_LDADD += $(LIBPNG) $(LIBZ)
+hypinfo_DEPENDENCIES += $(LIBPNG_DEP)
+hypinfo_LDADD += $(LIBPNG)
+endif
+if NEED_ZLIB
+hypinfo_DEPENDENCIES += $(LIBZ_DEP)
+hypinfo_LDADD += $(LIBZ)
 endif
 if WITH_GUI_GTK
 hypinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)

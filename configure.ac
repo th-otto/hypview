@@ -428,12 +428,13 @@ AM_CONDITIONAL(OS_TOS, test "$TARGET_OS" = "tos")
 AM_CONDITIONAL(OS_UNIX, test "$TARGET_OS" = "unix")
 AM_CONDITIONAL(OS_MACOS, test "$TARGET_OS" = "mac")
 AM_CONDITIONAL(CROSS_COMPILING, test "$cross_compiling" != no)
+AM_CONDITIONAL(NEED_GEMLIB, test "$TARGET_OS" != "tos")
 
 AC_CHECK_HEADERS([argz.h limits.h locale.h nl_types.h malloc.h string.h strings.h unistd.h process.h sys/param.h endian.h io.h fcntl.h dlfcn.h pwd.h wchar.h])
 
 AC_CHECK_FUNCS([strcasecmp strncasecmp stricmp strnicmp strincmp strncmpi strlwr strupr tmpnam strerror sys_errlist fdopen times mempcpy \
 	getcwd munmap putenv setenv setlocale strchr \
-	sigaction syslog realpath setrlimit \
+	sigaction syslog realpath setrlimit fstat \
 	getuid geteuid getgid getegid getpid getppid lstat mkdir mktemp mkstemp mkstemps])
 
 AC_CHECK_LIB(m, log)
@@ -935,6 +936,7 @@ if test "$with_png" = "yes"; then
   AC_DEFINE([HAVE_PNG])
 fi
 AM_CONDITIONAL(HAVE_PNG, test "$with_png" != "no")
+AM_CONDITIONAL(NEED_ZLIB, test "$with_png" != "no" -o "$with_pdf" = "yes")
 
 ###############################################################################
 #
@@ -1020,6 +1022,11 @@ AC_OUTPUT([
 	tools/help_rc/Makefile
 	tools/pc_conv/Makefile
 	tools/1st_conv/Makefile
+	rsc/Makefile
+	rsc/aes/Makefile
+	rsc/gemlib/Makefile
+	rsc/vdi/Makefile
+	rsc/src/Makefile
 	po/Makefile.in
 	doc/Makefile
 	doc/de/Makefile

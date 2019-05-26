@@ -9,8 +9,6 @@ bin_PROGRAMS = hypview
 endif
 EXEEXT = .app
 
-LIBGEM = -lgem
-
 AM_CPPFLAGS = -I$(hyp_srcdir)/include -I$(hyp_srcdir)/include/tos
 
 hypview_SOURCES = \
@@ -90,14 +88,14 @@ hypview_DEPENDENCIES += $(LIBHPDF_DEP)
 hypview_LDADD += $(LIBHPDF)
 endif
 if HAVE_PNG
-hypview_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
-hypview_LDADD += $(LIBPNG) $(LIBZ)
+hypview_DEPENDENCIES += $(LIBPNG_DEP)
+hypview_LDADD += $(LIBPNG)
 endif
-if WITH_PDF
+if NEED_ZLIB
 hypview_DEPENDENCIES += $(LIBZ_DEP)
 hypview_LDADD += $(LIBZ)
 endif
-hypview_LDADD += $(LIBGEM) $(INTLLIBS)
+hypview_LDADD += $(GEMLIBS) $(INTLLIBS)
 
 CLEANFILES = hypview.app
 

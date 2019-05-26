@@ -1,10 +1,10 @@
 include ../../silent.am
 include ../../Makefile.common
 
-AM_CPPFLAGS = -I$(srcdir)/../include -I$(srcdir)/../../zlib -DSRCDIR=\"$(srcdir)\"
+AM_CPPFLAGS = -I$(srcdir)/../include $(Z_CFLAGS) -DSRCDIR=\"$(srcdir)\"
 LIBS = -L../src -lhpdf -lm @LIBS@
 if HAVE_PNG
-AM_CPPFLAGS += -I$(srcdir)/../../libpng
+AM_CPPFLAGS += $(PNG_CFLAGS)
 LIBS += $(LIBPNG)
 endif
 LIBS += $(LIBZ)
