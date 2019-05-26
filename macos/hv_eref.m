@@ -37,7 +37,7 @@ static void xref_selected(WINDOW_DATA *win, int sel)
 						{
 						case HYP_NODE_EXTERNAL_REF:
 							name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, STR0TERM);
-							HypOpenExtRef(win, name, FALSE);
+							HypOpenExtRef(win, name, 0, FALSE);
 							g_free(name);
 							break;
 						case HYP_NODE_INTERNAL:
@@ -45,7 +45,7 @@ static void xref_selected(WINDOW_DATA *win, int sel)
 							GotoPage(win, dest_page, 0, TRUE);
 							break;
 						case HYP_NODE_POPUP:
-							OpenPopup(win, dest_page, -1, -1);
+							OpenPopup(win, dest_page, 0, -1, -1);
 							break;
 						default:
 							HYP_DBG(("Illegal External reference!"));

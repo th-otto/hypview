@@ -348,7 +348,7 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 					retval &= pdf_out_curcolor(pdf, attr);
 					rect.right = text_pos->x + LINK_BORDER_WIDTH;
 					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
-					HPDF_Destination_SetFitBH(dst, (sym->lineno - 1) * pdf->line_height);
+					HPDF_Destination_SetFitBH(dst, (label->lineno - 1) * pdf->line_height);
 					annot = HPDF_Page_CreateGoToAnnot(pdf->page, rect, dst);
 					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
