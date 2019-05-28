@@ -867,7 +867,10 @@ static gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 						hyp_utf8_sprintf_charset(out, opts->output_charset, "@tree %d\n", tree);
 						in_tree = tree;
 					}
-					hyp_utf8_sprintf_charset(out, opts->output_charset, "   %d \"%s\" %u\n", obj, str, line);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, "   %d \"%s\"", obj, str);
+					if (line != 0)
+						hyp_utf8_sprintf_charset(out, opts->output_charset, " %u", line);
+					g_string_append_c(out, '\n');
 					g_free(str);
 					src += 9;
 				}

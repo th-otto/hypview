@@ -3354,11 +3354,18 @@ static void c_tree(hcp_vars *vars, int argc, char **argv)
 	define = find_rsc_define(vars, argv[1]);
 	if (define == NULL || define->value == HYP_NOINDEX)
 	{
-		if (vars->hcp_pass == 1)
-			hcp_warning(vars, NULL, _("Define %s not found. Skipping whole tree."), argv[1]);
-		return;
+		if (!g_is_number(argv[1], TRUE))
+		{
+			if (vars->hcp_pass == 1)
+				hcp_warning(vars, NULL, _("Define %s not found. Skipping whole tree."), argv[1]);
+		} else
+		{
+			vars->cur_rsc_tree_nr = strtoul(argv[1], NULL, 0);
+		}
+	} else
+	{
+		vars->cur_rsc_tree_nr = define->value;
 	}
-	vars->cur_rsc_tree_nr = define->value;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -5487,9 +5494,11 @@ static gboolean finish_pass1(hcp_vars *vars)
 			if (target == NULL)
 			{
 				hcp_warning(vars, &tree->loc, _("node-name %s for tree not found (object ignored)"), tree->name);
+#if 0
 			} else if (target->is_popup)
 			{
 				hcp_warning(vars, &tree->loc, _("node %s for object-tree must not be popup-node (object ignored)"), tree->name);
+#endif
 			} else
 			{
 				tree->node = target->node_index;
@@ -5593,7 +5602,7 @@ static gboolean finish_pass1(hcp_vars *vars)
 			{
 				/* not found. turn into external reference */
 				entry->type = HYP_NODE_EXTERNAL_REF;
-				entry->extern_labindex = 0;
+				entry->extern_labindex = 0; /* FIXME? that stores also the lineno for external references */
 				ASSERT(entry->extern_nodeindex == HYP_NOINDEX);
 				for (j = 0; j < i; j++)
 					if (vars->extern_table[j]->type == HYP_NODE_EXTERNAL_REF && strcmp((const char *) vars->extern_table[j]->name, (const char *) entry->name) == 0)
@@ -5684,9 +5693,26 @@ static gboolean finish_pass1(hcp_vars *vars)
 			} else
 			{
 				entry->type = HYP_NODE_EXTERNAL_REF;
-				entry->extern_labindex = 0;
-				vars->p2_real_external_node_counter++;
-				vars->stats.external_nodes++;
+				for (j = 0; j < i; j++)
+					if (vars->extern_table[j]->type == HYP_NODE_EXTERNAL_REF && strcmp((const char *) vars->extern_table[j]->name, (const char *) entry->name) == 0)
+						break;
+				if (j < i)
+				{
+					if (vars->extern_table[j]->xlink_target == HYP_NOINDEX)
+					{
+						vars->extern_table[j]->xlink_target = vars->p2_real_external_node_counter;
+						vars->p2_real_external_node_counter++;
+					} else
+					{
+						entry->extern_nodeindex = j;
+					}
+					entry->xlink_target = vars->extern_table[j]->xlink_target;
+				} else
+				{
+					entry->xlink_target = vars->p2_real_external_node_counter;
+					vars->p2_real_external_node_counter++;
+					vars->stats.external_nodes++;
+				}
 			}
 			break;
 
@@ -6317,7 +6343,7 @@ static gboolean is_external_link(const char *link)
  */
 static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 {
-	INDEX_ENTRY *entry;
+	INDEX_ENTRY *entry = NULL;
 	int len = 0;
 	hyp_nodenr target;
 	hyp_lineno lineno = HYP_NOINDEX;
@@ -6358,15 +6384,6 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 		
 		target = vars->p1_external_node_counter;
 
-		entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XLINK, dest);
-		if (entry == NULL)
-			return len;
-		/*
-		 * lineno will be resolved in finish_pass1(),
-		 * since it can also be label name
-		 */
-		entry->xlink_lineno = lineno;
-
 		/* check for RSC link */
 		p = (vars->opts->compat_flags & STG_ALLOW_FOLDERS_IN_XREFS ? strrslash : strslash)(dest);
 		if (p != NULL)
@@ -6375,16 +6392,21 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 			*p = '\0';
 			if (hyp_guess_filetype(dest) == HYP_FT_RSC)
 			{
-				entry->type = HYP_NODE_XLINK_RSC;
 				define = find_rsc_define(vars, p + 1);
 				if (define == NULL || define->value == HYP_NOINDEX)
 				{
-					hcp_warning(vars, NULL, _("Define %s not found. Resource-Link ignored"), p + 1);
-					/*
-					 * add it to table anyway, so we can access
-					 * the entry and write the link text instead in pass2
-					 */
-					treenr = HYP_NOINDEX;
+					if (!g_is_number(p + 1, TRUE))
+					{
+						hcp_warning(vars, NULL, _("Define %s not found. Resource-Link ignored"), p + 1);
+						/*
+						 * add it to table anyway, so we can access
+						 * the entry and write the link text instead in pass2
+						 */
+						treenr = HYP_NOINDEX;
+					} else
+					{
+						treenr = (hyp_nodenr)strtoul(p + 1, NULL, 0);
+					}
 				} else
 				{
 					treenr = define->value;
@@ -6399,11 +6421,27 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 				tmp = g_strconcat(dest, "/MAIN", NULL);
 				g_free(dest);
 				dest = argv[2] = tmp;
-				entry->xlink_rsc_treenr = treenr;
+				entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XLINK_RSC, dest);
+				if (entry == NULL)
+					return len;
+				entry->xlink_rsc_treenr = treenr + 1; /* +1 because it will be decremented again in c_inline_link */
 				is_resource = TRUE;
 				have_lineno = TRUE;
 				if (argc == 4)
 					warn_extra_args(vars);
+				{
+					TREEDEF *tree;
+					
+					for (tree = vars->node_table[vars->p1_node_counter]->objects; tree != NULL; tree = tree->next)
+					{
+						if (tree->treenr == treenr)
+							break;
+					}
+					if (tree == NULL)
+					{
+						hcp_warning(vars, NULL, _("resource tree #%u not defined in object table"), treenr);
+					}
+				}
 			} else
 			{
 				if (c == '\\' && hyp_guess_filetype(dest) != HYP_FT_NONE)
@@ -6415,6 +6453,18 @@ static int c_inline_link(hcp_vars *vars, int argc, char **argv, gboolean alink)
 					*p = c;
 				}
 			}
+		}
+		
+		if (entry == NULL)
+		{
+			entry = add_external_node(vars, (hyp_indextype)HYP_NODE_XLINK, dest);
+			if (entry == NULL)
+				return len;
+			/*
+			 * lineno will be resolved in finish_pass1(),
+			 * since it can also be label name
+			 */
+			entry->xlink_lineno = lineno;
 		}
 
 		entry->next = HYP_NOINDEX;
@@ -6714,7 +6764,7 @@ static void process_treeline(hcp_vars *vars, const char *line)
 	if (argc > 3)
 		warn_extra_args(vars);
 	define = find_rsc_define(vars, argv[0]);
-	if (define)
+	if (define && define->value != HYP_NOINDEX)
 	{
 		value = define->value;
 	} else if (g_is_number(argv[0], TRUE))
@@ -6730,7 +6780,7 @@ static void process_treeline(hcp_vars *vars, const char *line)
 	{
 		if (g_is_number(argv[2], TRUE))
 		{
-			lineno = strtoul(argv[3], NULL, 0);
+			lineno = strtoul(argv[2], NULL, 0);
 			if (lineno > HYP_LINENO_MAX || lineno < 1)
 			{
 				hcp_warning(vars, NULL, _("bad line number"));
