@@ -20,6 +20,8 @@
 #include "gem_rsc.h"
 #include "dos.h"
 
+#undef DELETE /* clashes with Win32 */
+
 #define FORWARD 0
 #define BACKWARD 1
 #define DEFLT 2

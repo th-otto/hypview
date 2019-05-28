@@ -912,6 +912,7 @@ _WORD _mt_aes(AESPB *pb, _LONG code);
 #define AESLANG_SWEDISH 	L_SWEDISH
 
 /* appl_getinfo return values (AES_LARGEFONT, AES_SMALLFONT) */
+#undef SYSTEM_FONT /* clashes with Win32 */
 #define SYSTEM_FONT			0	/* see  mt_appl_getinfo() */
 #define OUTLINE_FONT 		1	/* see  mt_appl_getinfo() */
 
@@ -1072,6 +1073,7 @@ _WORD appl_xbvset(_ULONG bvdisk, _ULONG bvhard);
 #define SM_M_RES8       108         /* MAG!X */
 #define SM_M_RES9       109         /* MAG!X */
 #define WM_WHEEL        345         /* XaAES */
+#undef WM_MOUSEWHEEL /* clashes with Win32 */
 #define WM_MOUSEWHEEL   2352
 #define WM_SHADED       22360       /* WiNX */
 #define WM_UNSHADED     22361       /* WinX */
@@ -1154,6 +1156,7 @@ typedef struct _mevent
 	_ULONG	e_xtra2;
 } MEVENT;
 
+#undef MOUSE_EVENT /* clashes with Win32 */
 typedef struct mouse_event_type
 {
 	_WORD *x;
@@ -2093,6 +2096,7 @@ extern _WORD xgrf_2box(_WORD xc, _WORD yc, _WORD w, _WORD h, _WORD corners, _WOR
 #define	CC_SLCTDNAME	14
 
 /* Desktop Image Modes */
+#undef DT_CENTER /* clashes with Win32 */
 #define DT_CENTER	1
 #define DT_TILE		2
 

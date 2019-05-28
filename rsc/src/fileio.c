@@ -60,7 +60,7 @@ static _BOOL fopen_mode;
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static _BOOL __attribute_noinline__ inpc(_UBYTE *x)
+static _BOOL __attribute__((__noinline__)) inpc(_UBYTE *x)
 {
 	int c;
 	
@@ -72,7 +72,7 @@ static _BOOL __attribute_noinline__ inpc(_UBYTE *x)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static _BOOL __attribute_noinline__ inpw(_UWORD *x)
+static _BOOL __attribute__((__noinline__)) inpw(_UWORD *x)
 {
 	_UWORD c1;
 	int c;
@@ -1351,7 +1351,7 @@ static void update_checksum(const unsigned char *buf, _WORD bytes)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static _BOOL __attribute_noinline__ inpwc(_UWORD *x)
+static _BOOL __attribute__((__noinline__)) inpwc(_UWORD *x)
 {
 	if (inpw(x) == FALSE)
 		return FALSE;
@@ -1361,7 +1361,7 @@ static _BOOL __attribute_noinline__ inpwc(_UWORD *x)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static _BOOL __attribute_noinline__ inpl(_ULONG *x)
+static _BOOL __attribute__((__noinline__)) inpl(_ULONG *x)
 {
 	_UWORD l1, l2;
 	

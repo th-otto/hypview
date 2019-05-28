@@ -146,7 +146,7 @@ char *W_Fontdesc(const FONT_ATTR *attr)
 	char attrbuf[FONT_NAME_LEN];
 	
 	strcpy(namebuf, attr->name);
-	strncat(namebuf, ",", sizeof(namebuf));
+	strncat(namebuf, ",", sizeof(namebuf) - 1);
 	*attrbuf = '\0';
 	if (attr->textstyle & HYP_TXT_BOLD)
 		strcat(attrbuf, " Bold");
@@ -155,9 +155,9 @@ char *W_Fontdesc(const FONT_ATTR *attr)
 	if (attr->textstyle & HYP_TXT_UNDERLINED)
 		strcat(attrbuf, " Underline");
 	if (attrbuf[0] != '\0')
-		strncat(namebuf, attrbuf + 1, sizeof(namebuf));
+		strncat(namebuf, attrbuf + 1, sizeof(namebuf) - 1);
 	sprintf(sizebuf, " , %d", attr->size);
-	strncat(namebuf, sizebuf, sizeof(namebuf));
+	strncat(namebuf, sizebuf, sizeof(namebuf) - 1);
 	return g_strdup(namebuf);
 }
 

@@ -20,6 +20,8 @@
 #include "gem_rsc.h"
 
 
+#undef DELETE /* clashes with Win32 */
+
 #define BACKSPACE 0x0E08                /* backspace        */
 #define SPACE 0x3920                    /* ASCII <space>    */
 #define UP 0x4800                       /* up arrow         */

@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = subdir-objects
+
 include $(top_srcdir)/silent.am
 include $(top_srcdir)/Makefile.common
 
@@ -26,6 +28,10 @@ rscview_SOURCES = \
 	glib.c \
 	fio_err.c \
 	$(empty)
+
+if OS_WIN32
+rscview_SOURCES += ../../hyp/win32/hypmain.c
+endif
 
 $(top_builddir)/rsc/src/librsc.a:: librsc.a
 
