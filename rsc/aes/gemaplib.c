@@ -69,5 +69,6 @@ _WORD ap_init(AES_GLOBAL *pglobal)
  */
 _WORD ap_exit(void)
 {
+	rlr = NULL;
 	return TRUE;
 }

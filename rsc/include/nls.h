@@ -13,12 +13,12 @@
 #ifndef NLS_H
 #define NLS_H
 
-#define CONF_WITH_NLS 1
-
 /* the gettext-like macros */
 
+#ifndef N_
 #define N_(a) a
 #define _(x) x
+#endif
 
 /* Indexes of font sets inside font_sets[] */
 #define CHARSET_ST 1

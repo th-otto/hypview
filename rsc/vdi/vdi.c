@@ -3851,6 +3851,51 @@ static int vdi_vq_tabstatus(VWK *v, VDIPB *pb)
 
 /******************************************************************************/
 
+static void vdi_v_hardcopy_ex(VWK *v, VDIPB *pb)
+{
+	_WORD *intin = PV_INTIN(pb);
+	_WORD *ptsin = PV_PTSIN(pb);
+	uint8_t *dst = (uint8_t *)PV_INTOUT(pb);
+	int32_t rowstride = *((int32_t *)intin);
+	vdi_rectangle r;
+	struct {
+		unsigned char r, g, b;
+	} palette[256];
+	int i;
+	int x, y;
+	uint8_t *p;
+	
+	if (make_rectangle(v, V_PTSIN(pb, 0), V_PTSIN(pb, 1), V_PTSIN(pb, 2), V_PTSIN(pb, 3), &r, v->width, v->height))
+	{
+		for (i = 0; i < v->dev_tab.num_colors; i++)
+		{
+			int c;
+			pel pix;
+			pix = FIX_COLOR(i);
+			c = (*v->req_col)[i][0]; c = c * 255 / 1000;
+			palette[pix].r = c;
+			c = (*v->req_col)[i][1]; c = c * 255 / 1000;
+			palette[pix].g = c;
+			c = (*v->req_col)[i][2]; c = c * 255 / 1000;
+			palette[pix].b = c;
+		}
+		for (y = 0; y < r.height; y++)
+		{
+			p = dst;
+			for (x = 0; x < r.width; x++)
+			{
+				pel pix = pixel(x + r.x, y + r.y);
+				*p++ = palette[pix].r;
+				*p++ = palette[pix].g;
+				*p++ = palette[pix].b;
+				*p++ = 0xff;
+			}
+			dst += rowstride;
+		}
+	}
+}
+
+
 static int vdi_v_hardcopy(VWK *v, VDIPB *pb)
 {
 	_WORD *control = PV_CONTROL(pb);
@@ -3861,7 +3906,14 @@ static int vdi_v_hardcopy(VWK *v, VDIPB *pb)
 	V_NINTOUT(pb, 0);
 	if (IS_SCREEN_V(v))
 	{
-		sys_Scrdmp();
+		if (V_NINTIN(pb) >= 2 && V_NPTSIN(pb) >= 2)
+		{
+			vdi_v_hardcopy_ex(v, pb);
+			V_NINTOUT(pb, 1);
+		} else
+		{
+			sys_Scrdmp();
+		}
 	}
 	return VDI_DONE;
 }

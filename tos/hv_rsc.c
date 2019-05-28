@@ -34,6 +34,8 @@ static void show_rsc(WINDOW_DATA *win, RSHDR *rsh, _UWORD treenr)
 	GRECT big, little;
 	_WORD obj;
 	_WORD mx, my, button, kstate;
+	DOCUMENT *doc = win->data;
+	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
 	HYP_NODE *node = win->displayed_node;
 	hyp_nodenr dest;
 	hyp_lineno line;
@@ -75,14 +77,42 @@ static void show_rsc(WINDOW_DATA *win, RSHDR *rsh, _UWORD treenr)
 				break;
 		} else
 		{
-			if (OpenPopup(win, dest, line, mx - win->scroll.g_x, my - win->scroll.g_y))
+			hyp_indextype dst_type = (hyp_indextype)hyp->indextable[dest]->type;
+			
+			switch (dst_type)
 			{
-				wind_update(END_UPDATE);
-				while (win->popup != NULL)
+			case HYP_NODE_POPUP:
+				if (OpenPopup(win, dest, line, mx - win->scroll.g_x, my - win->scroll.g_y))
 				{
-					DoEvent();
+					wind_update(END_UPDATE);
+					while (win->popup != NULL)
+					{
+						DoEvent();
+					}
+					wind_update(BEG_UPDATE);
 				}
-				wind_update(BEG_UPDATE);
+				break;
+			case HYP_NODE_INTERNAL:
+				AddHistoryEntry(win, doc);
+				GotoPage(win, dest, line, TRUE);
+				break;
+			case HYP_NODE_EXTERNAL_REF:
+				{
+					char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest]->name, STR0TERM);
+					HypOpenExtRef(win, name, line, FALSE);
+					g_free(name);
+				}
+				break;
+			case HYP_NODE_REXX_COMMAND:
+			case HYP_NODE_SYSTEM_ARGUMENT:
+			case HYP_NODE_REXX_SCRIPT:
+			case HYP_NODE_QUIT:
+			case HYP_NODE_CLOSE:
+			case HYP_NODE_IMAGE:
+			case HYP_NODE_EOF:
+			default:
+				form_alert(1, rs_string(HV_ERR_NOT_IMPLEMENTED));
+				break;
 			}
 		}
 	}

@@ -15,7 +15,7 @@ static void error(const char *msg, ...)
 	va_list args;
 	
 	va_start(args, msg);
-	errout("%s: error: ", program_name);
+	errout("%s: error: ", gl_program_name);
 	erroutv(msg, args);
 	va_end(args);
 	errout("\n");
@@ -28,7 +28,7 @@ static void warn(const char *msg, ...)
 	va_list args;
 	
 	va_start(args, msg);
-	errout("%s: warning: ", program_name);
+	errout("%s: warning: ", gl_program_name);
 	erroutv(msg, args);
 	va_end(args);
 	errout("\n");
@@ -126,6 +126,7 @@ void warn_names_truncated(_WORD maxlen)
 {
 	warn(_("Names truncated (maxlen = %d)"), maxlen);
 }
+
 /*** ---------------------------------------------------------------------- ***/
 
 void warn_interface_flags(const char *filename)

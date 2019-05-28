@@ -249,10 +249,7 @@ void HypOpenExtRef(WINDOW_DATA *win, const char *name, hyp_lineno line_no, gbool
 			chapter = NULL;
 		if (hyp_guess_filetype(path) == HYP_FT_RSC)
 		{
-			char *str = g_strdup_printf(_("Display of resource files not implemented."));
-			UNUSED(line_no);
-			show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
-			g_free(str);
+			ShowResource(win, path, line_no);
 		} else
 		{
 			win = OpenFileInWindow(win, path, chapter, 0, TRUE, new_window ? FORCE_NEW_WINDOW : 0, FALSE);

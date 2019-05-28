@@ -19,9 +19,9 @@
 #define RSCVIEW_VERSION "1.05"
 #define RSCVIEW_DATE "25.07.2018"
 
-char const program_name[] = "rscview";
-char const program_version[] = RSCVIEW_VERSION;
-char const program_date[] = RSCVIEW_DATE;
+char const gl_program_name[] = "rscview";
+char const gl_program_version[] = RSCVIEW_VERSION;
+char const gl_program_date[] = RSCVIEW_DATE;
 
 /*
  * gui variables
@@ -702,8 +702,8 @@ static struct option const long_options[] = {
 
 static void usage(FILE *fp)
 {
-	fprintf(fp, _("%s - Create png files from GEM resource files\n"), program_name);
-	fprintf(fp, _("Usage: %s [<options>] <file...>\n"), program_name);
+	fprintf(fp, _("%s - Create png files from GEM resource files\n"), gl_program_name);
+	fprintf(fp, _("Usage: %s [<options>] <file...>\n"), gl_program_name);
 	fprintf(fp, _("Options:\n"));
 	fprintf(fp, _("   -v, --verbose        emit some progress messages\n"));
 	fprintf(fp, _("   -c, --charset <name> use <charset> for display\n"));
@@ -724,7 +724,7 @@ static void stdout_handler(void *data, const char *fmt, va_list args)
 
 static void print_version(void)
 {
-	printf(_("%s version %s, %s\n"), program_name, program_version, program_date);
+	printf(_("%s version %s, %s\n"), gl_program_name, gl_program_version, gl_program_date);
 	set_errout_handler(stdout_handler, stdout);
 	writepng_version_info();
 }
@@ -793,7 +793,7 @@ int main(int argc, char **argv)
 	
 	if (optind >= argc)
 	{
-		errout(_("%s: missing arguments\n"), program_name);
+		errout(_("%s: missing arguments\n"), gl_program_name);
 		return EXIT_FAILURE;
 	}
 	
@@ -802,14 +802,14 @@ int main(int argc, char **argv)
 		htmlout_file = fopen(htmlout_name, "w");
 		if (htmlout_file == NULL)
 		{
-			errout(_("%s: %s: %s\n"), program_name, htmlout_name, strerror(errno));
+			errout(_("%s: %s: %s\n"), gl_program_name, htmlout_name, strerror(errno));
 			return EXIT_FAILURE;
 		}
 	}
 	
 	appl_init();
 	
-	menu_register(-1, program_name);
+	menu_register(-1, gl_program_name);
 	phys_handle = graf_handle(&gl_wchar, &gl_hchar, &gl_wbox, &gl_hbox);
 	wind_get(DESK, WF_WORKXYWH, &desk.g_x, &desk.g_y, &desk.g_w, &desk.g_h);
 

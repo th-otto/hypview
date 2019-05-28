@@ -324,7 +324,7 @@ gboolean W_Fix_Bitmap(void **pdata, _WORD _width, _WORD _height, _WORD _planes)
 		plane_ptr[i] = &src[i * planesize];
 	
 	pos = 0;
-	width <<= 2; /* we write 4 bytes per picel */
+	width <<= 2; /* we write 4 bytes per pixel */
 	for (x = 0; x < planesize; x += 2)
 	{
 		for (np = 0; np < planes; np++)

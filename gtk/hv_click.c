@@ -160,7 +160,7 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 		case HYP_NODE_EOF:
 		default:
 			{
-				char *str = g_strdup_printf(_("Link to node of type %u not implemented."), info->dest_page);
+				char *str = g_strdup_printf(_("Link to node of type %u not implemented."), info->dst_type);
 				show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
 				g_free(str);
 			}

@@ -484,4 +484,10 @@ void hv_config_output(WINDOW_DATA *win);
 gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filetype type);
 
 
+/*
+ * hv_rsc.c
+ */
+void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr);
+
+
 #endif /* __HV_DEFS_H__ */

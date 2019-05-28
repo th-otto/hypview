@@ -123,9 +123,9 @@ typedef struct {
 
 #define c_is_print(c) ((unsigned char)(c) >= 0x20 && (unsigned char)(c) <= 0x7e)
 
-extern char const program_name[];
-extern char const program_version[];
-extern char const program_date[];
+extern char const gl_program_name[];
+extern char const gl_program_version[];
+extern char const gl_program_date[];
 
 typedef struct rsc_counter {
 	_ULONG total_size;

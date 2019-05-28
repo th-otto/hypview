@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = -Wno-portability subdir-objects
 
-include ../Makefile.common
+include $(top_srcdir)/Makefile.common
 
 if WITH_GUI_GTK
 bin_PROGRAMS = hypview
@@ -15,6 +15,7 @@ AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
 	
 AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir) -I$(top_srcdir)/rcintl
+AM_CPPFLAGS += -I$(hyp_srcdir)/rsc/include
 if WITH_PDF
 AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
 endif
@@ -67,6 +68,7 @@ hypview_SOURCES = \
 	hv_nav.c \
 	hv_popup.c \
 	hv_prefs.c \
+	hv_rsc.c \
 	hv_srch.c \
 	hv_tbar.c \
 	hv_win.c \
@@ -88,6 +90,8 @@ hypview_DEPENDENCIES += $(LIBHPDF_DEP)
 hypview_LDADD += $(LIBHPDF)
 endif
 hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP)
+hypview_DEPENDENCIES += $(GEMLIB_DEPS)
+hypview_LDADD += $(GEMLIBS)
 if HAVE_PNG
 hypview_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
 hypview_LDADD += $(LIBPNG) $(LIBZ)

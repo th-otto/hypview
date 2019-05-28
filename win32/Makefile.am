@@ -43,6 +43,7 @@ hypview_SOURCES = \
 	hv_nav.c \
 	hv_popup.c \
 	hv_prefs.c \
+	hv_rsc.c \
 	hv_selec.c \
 	hv_srch.c \
 	hv_tbar.c \

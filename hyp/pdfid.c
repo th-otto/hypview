@@ -25,8 +25,8 @@
 
 #define _(x) x
 
-static char const program_name[] = "pdfid";
-static char const program_version[] = "0.2.5";
+static char const gl_program_name[] = "pdfid";
+static char const gl_program_version[] = "0.2.5";
 
 static int scan;
 static int allnames;
@@ -448,7 +448,7 @@ static void print_xml(struct pdf *pdf, FILE *out)
 		filename,
 		header,
 		xml_bool(pdf->isPDF),
-		program_version);
+		gl_program_version);
 	g_free(header);
 	g_free(filename);
 	g_free(errorMessage);
@@ -965,7 +965,7 @@ static void print_normal(struct pdf *pdf)
 {
 	struct word *word;
 
-	LogPrint("PDFiD %s %s\n", program_version, pdf->filename);
+	LogPrint("PDFiD %s %s\n", gl_program_version, pdf->filename);
 	if (pdf->errorOccured)
 	{
 		LogPrint("***Error occured***\n%s\n", pdf->errorMessage ? pdf->errorMessage : "(null)");
@@ -1195,7 +1195,7 @@ static struct option const long_options[] = {
 
 static void usage(FILE *fp)
 {
-	fprintf(fp, _("usage: %s [options] [pdf-file]...\n"), program_name);
+	fprintf(fp, _("usage: %s [options] [pdf-file]...\n"), gl_program_name);
 	fputs(_("Tool to test a PDF file"), fp);
 	fputs("\n", fp);
 	fputs(_("Arguments:\n"), fp);
@@ -1220,7 +1220,7 @@ static void usage(FILE *fp)
 
 static void print_version(FILE *fp)
 {
-	fprintf(fp, "%s %s\n", program_name, program_version);
+	fprintf(fp, "%s %s\n", gl_program_name, gl_program_version);
 }
 
 

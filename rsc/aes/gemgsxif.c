@@ -120,7 +120,6 @@ static _LONG form_alert_bufsize(void)
 static _ULONG gsx_mcalc(void)
 {
 	_LONG mem;
-	MFDB gl_tmp;
 	
 	gsx_fix(&gl_tmp, 0x0L, 0, 0);			/* store screen info	*/
 #if 0 /* function used by EmuTOS */
@@ -173,16 +172,16 @@ _BOOL gsx_malloc(void)
 
 void gsx_mfree(void)
 {
-	if (gl_tmp.fd_addr)
-		dos_free(gl_tmp.fd_addr);
+	dos_free(gl_tmp.fd_addr);
+	gl_tmp.fd_addr = 0;
 }
 
 
 
 void gsx_mret(void **pmaddr, _LONG *pmlen)
 {
-	 *pmaddr = gl_tmp.fd_addr;
-	 *pmlen = gl_mlen;
+	*pmaddr = gl_tmp.fd_addr;
+	*pmlen = gl_mlen;
 }
 
 

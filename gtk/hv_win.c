@@ -176,6 +176,12 @@ static void gtk_hypview_window_finalize(GObject *object)
 			win->popup = NULL;
 			gtk_widget_destroy(GTK_WIDGET(pop));
 		}
+		if (win->rscfile)
+		{
+			GtkWidget *rscfile = win->rscfile;
+			win->rscfile = NULL;
+			gtk_widget_destroy(rscfile);
+		}
 		hypdoc_unref(doc);
 		win->data = NULL;
 		if (!win->is_popup)
@@ -433,6 +439,7 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 	win->strnotfound = NULL;
 	win->hovering_over_link = FALSE;
 	win->popup = NULL;
+	win->rscfile = NULL;
 	win->history = NULL;
 	win->displayed_node = NULL;
 	win->image_childs = NULL;

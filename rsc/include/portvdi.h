@@ -1173,6 +1173,7 @@ _WORD		vst_fg_color		(_WORD handle, int32_t color_space, COLOR_ENTRY *fg_color);
  * extensions used by our emulation
  */
 _WORD v_write_png(_WORD handle, const char *filename);
+_WORD v_hardcopy_ex(_WORD handle, _WORD *pxyarray, int32_t rowstride, void *buffer);
 
 
 /*

@@ -119,6 +119,7 @@ struct _window_data_
 	GtkWidget *strnotfound;				/* GtkLabel */
 	gboolean hovering_over_link;
 	WINDOW_DATA *popup;
+	GtkWidget *rscfile;
 	HISTORY *history;
 	HYP_NODE *displayed_node;           /* Currently displayed node */
 	GSList *image_childs;               /* list of child widget to implement graphic commands */
@@ -365,6 +366,12 @@ void hv_config_output(WINDOW_DATA *win);
  * hv_recomp.c
  */
 gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filetype type);
+
+
+/*
+ * hv_rsc.c
+ */
+void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr);
 
 
 #endif /* __HV_GTK_H__ */
