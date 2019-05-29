@@ -55,6 +55,17 @@ static _BOOL use_timestamps = TRUE;
 static const char *pngdir;
 #endif
 
+typedef struct {
+	WINDOW_DATA *parent;
+	RSCFILE *file;
+	RSCTREE *rsctree;
+	_UWORD treenr;
+	DOCUMENT *doc;
+	HYP_DOCUMENT *hyp;
+	HYP_NODE *node;
+	GtkWidget *dialog;
+} IMAGE_INFO;
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
@@ -343,29 +354,45 @@ static _WORD write_png(RSCTREE *tree, _WORD x, _WORD y, _WORD w, _WORD h)
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+static void check_parent(IMAGE_INFO *info)
+{
+	GList *tops, *l;
+
+	if (info->parent == NULL)
+		return;
+	tops = gtk_window_list_toplevels();
+	for (l = tops; l != NULL; l = l->next)
+	{
+		if (l->data == info->parent)
+		{
+			g_list_free(tops);
+			return;
+		}
+	}
+	g_list_free(tops);
+	info->parent = NULL;
+}
+
 static void image_destroyed(GtkWidget *w, gpointer user_data)
 {
-	GtkWidget *dialog = (GtkWidget *)user_data;
-	RSCFILE *file;
-	DOCUMENT *doc;
-	WINDOW_DATA *win;
+	IMAGE_INFO *info = (IMAGE_INFO *)user_data;
 	GList *tops, *l;
 	
 	UNUSED(w);
-	doc = (DOCUMENT *)g_object_get_data(G_OBJECT(dialog), "hypdoc");
-	file = (RSCFILE *)g_object_get_data(G_OBJECT(dialog), "rscfile");
-	win = (WINDOW_DATA *)g_object_get_data(G_OBJECT(dialog), "parentwin");
-	rsc_file_delete(file, FALSE);
-	xrsrc_free(file);
-	hypdoc_unref(doc);
+	rsc_file_delete(info->file, FALSE);
+	xrsrc_free(info->file);
+	hypdoc_unref(info->doc);
 
 	tops = gtk_window_list_toplevels();
 	for (l = tops; l != NULL; l = l->next)
-		if (l->data == win)
+	{
+		if (info->parent && l->data == info->parent)
 		{
-			win->rscfile = NULL;
+			info->parent->rscfile = NULL;
 		}
+	}
 	g_list_free(tops);
+	g_free(info);
 	check_toplevels(NULL);
 }
 
@@ -405,17 +432,11 @@ static GdkPixbuf *get_pixbuf(_WORD x, _WORD y, _WORD w, _WORD h)
 
 static gboolean image_clicked(GtkWidget *w, GdkEventButton *event, gpointer user_data)
 {
-	GtkWidget *dialog;
-	WINDOW_DATA *win;
-	DOCUMENT *doc;
-	HYP_DOCUMENT *hyp;
-	RSCTREE *rsctree;
+	IMAGE_INFO *info = (IMAGE_INFO *)user_data;
 	OBJECT *tree;
 	_WORD obj;
-	_UWORD treenr;
 	hyp_nodenr dest;
 	hyp_lineno line;
-	HYP_NODE *node;
 	gint x, y;
 	GdkModifierType mask;
 
@@ -423,54 +444,50 @@ static gboolean image_clicked(GtkWidget *w, GdkEventButton *event, gpointer user
 	if (event->type != GDK_BUTTON_PRESS || event->button != GDK_BUTTON_PRIMARY)
 		return FALSE;
 
-	dialog = (GtkWidget *)user_data;
-	win = (WINDOW_DATA *)g_object_get_data(G_OBJECT(dialog), "parentwin");
-	doc = (DOCUMENT *)g_object_get_data(G_OBJECT(dialog), "hypdoc");
-	hyp = (HYP_DOCUMENT *)g_object_get_data(G_OBJECT(dialog), "hypfile");
-	rsctree = (RSCTREE *)g_object_get_data(G_OBJECT(dialog), "rsctree");
-	tree = rsctree->rt_objects.dial.di_tree;
-	node = (HYP_NODE *)g_object_get_data(G_OBJECT(dialog), "node");
-	treenr = (_UWORD)(uintptr_t)g_object_get_data(G_OBJECT(dialog), "treenr");
-		
-	if (win->popup)
-		gtk_widget_destroy(GTK_WIDGET(win->popup));
+	check_parent(info);
+	if (info->parent && info->parent->popup)
+		gtk_widget_destroy(GTK_WIDGET(info->parent->popup));
 
+	tree = info->rsctree->rt_objects.dial.di_tree;
+		
 	obj = objc_find(tree, ROOT, MAX_DEPTH, (int)event->x, (int)event->y);
 	if (obj < 0)
 	{
-		gtk_widget_destroy(dialog);
+		gtk_widget_destroy(info->dialog);
 		return FALSE;
 	}
-	dest = hyp_node_find_objref(node, treenr, obj, &line);
+	dest = hyp_node_find_objref(info->node, info->treenr, obj, &line);
 	if (dest == HYP_NOINDEX)
 	{
-		if (!ask_yesno(dialog, _("No node defined for this object.\nContinue?")))
+		if (!ask_yesno(info->dialog, _("No node defined for this object.\nContinue?")))
 		{
-			gtk_widget_destroy(dialog);
+			gtk_widget_destroy(info->dialog);
 			return FALSE;
 		}
 	} else
 	{
+		HYP_DOCUMENT *hyp = info->hyp;
 		hyp_indextype dst_type = (hyp_indextype)hyp->indextable[dest]->type;
 		
 		switch (dst_type)
 		{
 		case HYP_NODE_POPUP:
-			gdk_display_get_pointer(gtk_widget_get_display(dialog), NULL, &x, &y, &mask);
-			if (win->data == doc)
-				OpenPopup(win, dest, line, x, y);
+			gdk_display_get_pointer(gtk_widget_get_display(info->dialog), NULL, &x, &y, &mask);
+			if (info->parent && info->parent->data == info->doc)
+				OpenPopup(info->parent, dest, line, x, y);
 			break;
 		case HYP_NODE_INTERNAL:
-			if (win->data == doc)
+			if (info->parent && info->parent->data == info->doc)
 			{
-				AddHistoryEntry(win, doc);
-				GotoPage(win, dest, line, TRUE);
+				AddHistoryEntry(info->parent, info->doc);
+				GotoPage(info->parent, dest, line, TRUE);
 			}
 			break;
 		case HYP_NODE_EXTERNAL_REF:
+			if (info->parent)
 			{
 				char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[dest]->name, STR0TERM);
-				HypOpenExtRef(win, name, line, FALSE);
+				HypOpenExtRef(info->parent, name, line, FALSE);
 				g_free(name);
 			}
 			break;
@@ -484,7 +501,7 @@ static gboolean image_clicked(GtkWidget *w, GdkEventButton *event, gpointer user
 		default:
 			{
 				char *str = g_strdup_printf(_("Link to node of type %u not implemented."), dst_type);
-				show_message(dialog, _("Error"), str, FALSE);
+				show_message(info->dialog, _("Error"), str, FALSE);
 				g_free(str);
 			}
 			break;
@@ -495,7 +512,7 @@ static gboolean image_clicked(GtkWidget *w, GdkEventButton *event, gpointer user
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD treenr, _WORD x, _WORD y, _WORD w, _WORD h)
+static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD treenr, GRECT *gr)
 {
 	GtkWidget *dialog, *vbox, *hbox, *image, *event_box;
 	GtkWidget *scroll;
@@ -504,6 +521,7 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	GdkPixbuf *pixbuf;
 	DOCUMENT *doc;
 	HYP_DOCUMENT *hyp;
+	IMAGE_INFO *info;
 
 	if (parent == NULL)
 		return;
@@ -513,20 +531,25 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	doc = parent->data;
 	hyp = (HYP_DOCUMENT *)doc->data;
 
+	info = g_new(IMAGE_INFO, 1);
+	if (info == NULL)
+		return;
+	
 	hypdoc_ref(doc);
 
-	dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	info->parent = parent;
+	info->file = file;
+	info->rsctree = tree;
+	info->treenr = treenr;
+	info->doc = doc;
+	info->hyp = hyp;
+	info->node = parent->displayed_node;
+	
+	dialog = info->dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	parent->rscfile = dialog;
 	gtk_window_set_screen(GTK_WINDOW(dialog), gtk_widget_get_screen(GTK_WIDGET(parent)));
 	g_object_set_data(G_OBJECT(dialog), "hypview_window_type", NO_CONST("resource"));
-	g_object_set_data(G_OBJECT(dialog), "rscfile", (void *)file);
-	g_object_set_data(G_OBJECT(dialog), "rsctree", (void *)tree);
-	g_object_set_data(G_OBJECT(dialog), "parentwin", (void *)parent);
-	g_object_set_data(G_OBJECT(dialog), "node", (void *)parent->displayed_node);
-	g_object_set_data(G_OBJECT(dialog), "treenr", (void *)(uintptr_t)treenr);
-	g_object_set_data(G_OBJECT(dialog), "hypdoc", (void *)doc);
-	g_object_set_data(G_OBJECT(dialog), "hypfile", (void *)hyp);
-	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(image_destroyed), dialog);
+	g_signal_connect(G_OBJECT(dialog), "destroy", G_CALLBACK(image_destroyed), info);
 	title = g_strdup_printf("%s/%u", rsc_basename(file->rsc_rsxname), treenr);
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	g_free(title);
@@ -539,15 +562,15 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), gl_profile.viewer.text_xoffset);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 
-	pixbuf = get_pixbuf(x, y, w, h);
+	pixbuf = get_pixbuf(gr->g_x, gr->g_y, gr->g_w, gr->g_h);
 	
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	gdk_pixbuf_unref(pixbuf);
 	event_box = gtk_event_box_new();
 	gtk_container_add(GTK_CONTAINER(event_box), image);
 	gtk_widget_add_events(event_box, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
-	g_signal_connect(G_OBJECT(event_box), "button-press-event", G_CALLBACK(image_clicked), dialog);
-	g_signal_connect(G_OBJECT(event_box), "button-release-event", G_CALLBACK(image_clicked), dialog);
+	g_signal_connect(G_OBJECT(event_box), "button-press-event", G_CALLBACK(image_clicked), info);
+	g_signal_connect(G_OBJECT(event_box), "button-release-event", G_CALLBACK(image_clicked), info);
 	
 	if (big)
 	{
@@ -555,7 +578,7 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scroll), event_box);
 		gtk_box_pack_start(GTK_BOX(hbox), scroll, TRUE, TRUE, 0);
-		gtk_widget_set_usize(image, w, h);
+		gtk_widget_set_usize(image, gr->g_w, gr->g_h);
 	} else
 	{
 		gtk_box_pack_start(GTK_BOX(hbox), event_box, TRUE, TRUE, 0);
@@ -575,7 +598,7 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 static gboolean draw_dialog(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD treenr)
 {
 	OBJECT *ob;
-	GRECT gr;
+	GRECT gr, draw_gr;
 	
 	ob = tree->rt_objects.dial.di_tree;
 	if (ob == NULL)
@@ -599,7 +622,8 @@ static gboolean draw_dialog(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _
 #if 0
 	err = write_png(tree, gr.g_x, gr.g_y, gr.g_w, gr.g_h);
 #else
-	show_image(parent, file, tree, treenr, gr.g_x, gr.g_y, gr.g_w, gr.g_h);
+	draw_gr = gr;
+	show_image(parent, file, tree, treenr, &draw_gr);
 #endif
 
 	form_dial_grect(FMD_FINISH, &gr, &gr);
@@ -618,7 +642,7 @@ static gboolean draw_menu(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UW
 	_WORD themenus;
 	_WORD title, menubox;
 	_WORD x;
-	GRECT gr;
+	GRECT gr, draw_gr;
 	_WORD maxx, maxy;
 	
 	ob = tree->rt_objects.menu.mn_tree;
@@ -711,7 +735,11 @@ static gboolean draw_menu(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UW
 #if 0
 	err = write_png(tree, 0, 0, maxx, maxy);
 #else
-	show_image(parent, file, tree, treenr, 0, 0, maxx, maxy);
+	draw_gr.g_x = 0;
+	draw_gr.g_y = 0;
+	draw_gr.g_w = maxx;
+	draw_gr.g_h = maxy;
+	show_image(parent, file, tree, treenr, &draw_gr);
 #endif
 
 	menu_bar(ob, FALSE);

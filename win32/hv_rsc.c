@@ -729,12 +729,12 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	doc = parent->data;
 	hyp = (HYP_DOCUMENT *)doc->data;
 
-	hypdoc_ref(doc);
-
 	info = g_new(IMAGE_INFO, 1);
 	if (info == NULL)
 		return;
 	
+	hypdoc_ref(doc);
+
 	info->parent = parent;
 	info->file = file;
 	info->rsctree = tree;
