@@ -1,7 +1,7 @@
 #include "aes.h"
+#include "nls.h"
 #include "gem_rsc.h"
 #define rs_fstr rs_frstr
-#define N_(a) a
 #include "gem_rsc.rsh"
 #include "s_endian.h"
 
