@@ -211,7 +211,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		if (fillstyle != IP_HOLLOW)
 			W_Fill_Rect(hdc, &gr, fillstyle, viewer_colors.text);
-		if (fillstyle != IP_SOLID)
+		if (fillstyle != IP_WIN_SOLID)
 			W_Rectangle(hdc, &gr, W_PEN_SOLID, viewer_colors.text);
 	} else
 	{
@@ -585,7 +585,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, node->window_title, STR0TERM);
 	else
 		win->title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node->number]->name, STR0TERM);
-	hv_set_title(win, win->title);
+	hv_set_title(win->hwnd, win->title);
 	
 	StartRemarker(win, remarker_update, TRUE);
 	

@@ -10,8 +10,11 @@
 #include <ro_mem.h>
 #include <rsc.h>
 #include <errno.h>
-#include <sys/stat.h>
 #include "fileio.h"
+#include "time_.h"
+#include "stat_.h"
+#include "tos/nogem.h"
+#include "hyp.h"
 #ifdef __MINGW32__
 #include <libgen.h>
 #define basename(x) basename((char *)NO_CONST(x))
@@ -936,7 +939,7 @@ RSCFILE *xrsrc_load(const char *filename, _UWORD flags)
 	
 	cicon_p = NULL;
 	cicon_dst = NULL;
-	fp = fopen(filename, "rb");
+	fp = hyp_utf8_fopen(filename, "rb");
 
 	if (fp == NULL)
 	{

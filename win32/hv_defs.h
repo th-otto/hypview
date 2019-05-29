@@ -172,6 +172,7 @@ struct _window_data_
 	gboolean is_popup;
 	
 	WINDOW_DATA *popup;
+	HWND rscfile;
 	HISTORY *history;
 	HYP_NODE *displayed_node;           /* Currently displayed node */
 	
@@ -303,7 +304,7 @@ void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
 WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup);
 void ReInitWindow(WINDOW_DATA *win, gboolean prep);
-void hv_set_title(WINDOW_DATA *win, const char *wintitle);
+void hv_set_title(HWND hwnd, const char *wintitle);
 void hv_set_font(WINDOW_DATA *win);
 void SendRedraw(WINDOW_DATA *win);
 void SendCloseWindow(WINDOW_DATA *win);
@@ -364,9 +365,9 @@ void AutoLocatorPaste(WINDOW_DATA *win);
  * hv_fsel.c
  */
 enum choose_file_mode {
-	file_open,
-	file_save,
-	file_dirsel
+	choose_file_open,
+	choose_file_save,
+	choose_file_dirsel
 };
 
 extern char const hypertext_file_filter[];

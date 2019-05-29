@@ -13,6 +13,10 @@
 #include "aesutils.h"
 #include "rso.h"
 #include "nls.h"
+#include "time_.h"
+#include "stat_.h"
+#include "tos/nogem.h"
+#include "hyp.h"
 #include "rsc_lang.h"
 
 FILE *ffp = NULL;
@@ -123,7 +127,7 @@ _BOOL file_close(_BOOL status)
 
 _BOOL file_create(const char *filename, const char *mode)
 {
-	if ((ffp = fopen(filename, mode)) == NULL)
+	if ((ffp = hyp_utf8_fopen(filename, mode)) == NULL)
 	{
 		err_fcreate(filename);
 		return FALSE;
@@ -136,7 +140,7 @@ _BOOL file_create(const char *filename, const char *mode)
 
 _BOOL file_open(const char *filename, const char *mode)
 {
-	if ((ffp = fopen(filename, mode)) == NULL)
+	if ((ffp = hyp_utf8_fopen(filename, mode)) == NULL)
 		return FALSE;
 	fopen_mode = FALSE;
 	return TRUE;

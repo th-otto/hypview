@@ -197,7 +197,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		if (fillstyle != IP_HOLLOW)
 			W_Fill_Rect(hdc, &gr, fillstyle, viewer_colors.text);
-		if (fillstyle != IP_SOLID)
+		if (fillstyle != IP_WIN_SOLID)
 			W_Rectangle(hdc, &gr, W_PEN_SOLID, viewer_colors.text);
 	} else
 	{

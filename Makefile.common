@@ -58,6 +58,7 @@ GEMLIBS = -lgem
 else
 GEMLIB_DEPS = $(top_builddir)/rsc/aes/libaes.a $(top_builddir)/rsc/vdi/libvdi.a $(top_builddir)/rsc/gemlib/libgem.a $(top_builddir)/rsc/src/librsc.a
 GEMLIBS = -L$(top_builddir)/rsc/src -L$(top_builddir)/rsc/aes -L$(top_builddir)/rsc/vdi -L$(top_builddir)/rsc/gemlib -lrsc -laes -lgem -lvdi -laes -lgem -lvdi
+endif
 $(top_builddir)/rsc/aes/libaes.a::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/aes libaes.a; fi
 $(top_builddir)/rsc/vdi/libvdi.a::
@@ -66,4 +67,3 @@ $(top_builddir)/rsc/gemlib/libgem.a::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/gemlib libgem.a; fi
 $(top_builddir)/rsc/src/librsc.a::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/src librsc.a; fi
-endif

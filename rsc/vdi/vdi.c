@@ -3856,7 +3856,8 @@ static void vdi_v_hardcopy_ex(VWK *v, VDIPB *pb)
 	_WORD *intin = PV_INTIN(pb);
 	_WORD *ptsin = PV_PTSIN(pb);
 	uint8_t *dst = (uint8_t *)PV_INTOUT(pb);
-	int32_t rowstride = *((int32_t *)intin);
+	int32_t px_format = *((int32_t *)(intin + 0));
+	int32_t rowstride = *((int32_t *)(intin + 2));
 	vdi_rectangle r;
 	struct {
 		unsigned char r, g, b;
@@ -3885,10 +3886,31 @@ static void vdi_v_hardcopy_ex(VWK *v, VDIPB *pb)
 			for (x = 0; x < r.width; x++)
 			{
 				pel pix = pixel(x + r.x, y + r.y);
-				*p++ = palette[pix].r;
-				*p++ = palette[pix].g;
-				*p++ = palette[pix].b;
-				*p++ = 0xff;
+				switch (px_format)
+				{
+				case PX_RGB:
+					*p++ = palette[pix].r;
+					*p++ = palette[pix].g;
+					*p++ = palette[pix].b;
+					break;
+				case PX_BGR:
+					*p++ = palette[pix].b;
+					*p++ = palette[pix].g;
+					*p++ = palette[pix].r;
+					break;
+				case PX_RGBA:
+					*p++ = palette[pix].r;
+					*p++ = palette[pix].g;
+					*p++ = palette[pix].b;
+					*p++ = 0xff;
+					break;
+				case PX_BGRA:
+					*p++ = palette[pix].b;
+					*p++ = palette[pix].g;
+					*p++ = palette[pix].r;
+					*p++ = 0xff;
+					break;
+				}
 			}
 			dst += rowstride;
 		}
@@ -3906,7 +3928,7 @@ static int vdi_v_hardcopy(VWK *v, VDIPB *pb)
 	V_NINTOUT(pb, 0);
 	if (IS_SCREEN_V(v))
 	{
-		if (V_NINTIN(pb) >= 2 && V_NPTSIN(pb) >= 2)
+		if (V_NINTIN(pb) >= 4 && V_NPTSIN(pb) >= 2)
 		{
 			vdi_v_hardcopy_ex(v, pb);
 			V_NINTOUT(pb, 1);

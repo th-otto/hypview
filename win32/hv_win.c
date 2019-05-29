@@ -235,6 +235,12 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 			win->popup = NULL;
 			DestroyWindow(pop->hwnd);
 		}
+		if (win->rscfile)
+		{
+			HWND rscfile = win->rscfile;
+			win->rscfile = NO_WINDOW;
+			DestroyWindow(rscfile);
+		}
 		if (win->parentwin)
 			win->parentwin->popup = NULL;
 		toolbar_status_exit(win);
@@ -1323,7 +1329,7 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	win->x_margin_right = gl_profile.viewer.text_xoffset;
 	
 	hv_set_font(win);
-	hv_set_title(win, win->title);
+	hv_set_title(win->hwnd, win->title);
 
 	WindowCalcScroll(win);
 	SetWindowSlider(win);
@@ -1345,10 +1351,10 @@ long hv_win_topline(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void hv_set_title(WINDOW_DATA *win, const char *title)
+void hv_set_title(HWND hwnd, const char *title)
 {
 	wchar_t *wtitle = hyp_utf8_to_wchar(title, STR0TERM, NULL);
-	SetWindowTextW(win->hwnd, wtitle);
+	SetWindowTextW(hwnd, wtitle);
 	g_free(wtitle);
 }
 
@@ -1443,7 +1449,7 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	hv_set_font(win);
 	if (prep)
 		doc->prepNode(win, win->displayed_node);
-	hv_set_title(win, win->title);
+	hv_set_title(win->hwnd, win->title);
 	win->selection.valid = FALSE;
 	
 	/* adjust window size to new dimensions */

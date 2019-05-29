@@ -41,7 +41,7 @@ static _WORD gl_hchar;
 static _WORD gl_wchar;
 static _WORD gl_wbox;
 static _WORD gl_hbox;							/* system sizes */
-static GRECT desk;
+static GRECT desk, screen;
 static _WORD phys_handle;						/* physical workstation handle */
 static _WORD vdi_handle;						/* virtual screen handle */
 static WS ws;
@@ -184,7 +184,7 @@ void warn_interface_flags(const char *filename)
 
 _BOOL ask_tree_notfound(_WORD trindex)
 {
-	char *str = g_strdup_printf(_("Tree %d not found. Continue"), trindex);
+	char *str = g_strdup_printf(_("Tree %d not found.\nContinue?"), trindex);
 	_BOOL ret = ask_yesno(top_window(), str);
 	g_free(str);
 	return ret;
@@ -194,7 +194,7 @@ _BOOL ask_tree_notfound(_WORD trindex)
 
 _BOOL ask_object_notfound(_LONG ob_index, char *tree_name)
 {
-	char *str = g_strdup_printf(_("No object #%ld in tree %s. Continue"), ob_index, tree_name);
+	char *str = g_strdup_printf(_("No object #%ld in tree %s.\nContinue?"), ob_index, tree_name);
 	_BOOL ret = ask_yesno(top_window(), str);
 	g_free(str);
 	return ret;
@@ -351,6 +351,7 @@ static void image_destroyed(GtkWidget *w, gpointer user_data)
 	WINDOW_DATA *win;
 	GList *tops, *l;
 	
+	UNUSED(w);
 	doc = (DOCUMENT *)g_object_get_data(G_OBJECT(dialog), "hypdoc");
 	file = (RSCFILE *)g_object_get_data(G_OBJECT(dialog), "rscfile");
 	win = (WINDOW_DATA *)g_object_get_data(G_OBJECT(dialog), "parentwin");
@@ -365,7 +366,7 @@ static void image_destroyed(GtkWidget *w, gpointer user_data)
 			win->rscfile = NULL;
 		}
 	g_list_free(tops);
-	check_toplevels(w);
+	check_toplevels(NULL);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -395,7 +396,7 @@ static GdkPixbuf *get_pixbuf(_WORD x, _WORD y, _WORD w, _WORD h)
 	pxy[2] = x + w - 1;
 	pxy[3] = y + h - 1;
 
-	v_hardcopy_ex(vdi_handle, pxy, dststride, dst);
+	v_hardcopy_ex(vdi_handle, pxy, PX_RGBA, dststride, dst);
 	
 	return pixbuf;
 }
@@ -496,7 +497,7 @@ static gboolean image_clicked(GtkWidget *w, GdkEventButton *event, gpointer user
 
 static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD treenr, _WORD x, _WORD y, _WORD w, _WORD h)
 {
-	GtkWidget *dialog, *vbox, *image, *event_box;
+	GtkWidget *dialog, *vbox, *hbox, *image, *event_box;
 	GtkWidget *scroll;
 	char *title;
 	gboolean big = FALSE;
@@ -504,6 +505,8 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	DOCUMENT *doc;
 	HYP_DOCUMENT *hyp;
 
+	if (parent == NULL)
+		return;
 	if (parent->rscfile)
 		gtk_widget_destroy(parent->rscfile);
 	
@@ -530,8 +533,11 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_MOUSE);
 	
 	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), gl_profile.viewer.text_xoffset);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), gl_profile.viewer.text_yoffset);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), gl_profile.viewer.text_xoffset);
+	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 
 	pixbuf = get_pixbuf(x, y, w, h);
 	
@@ -548,17 +554,15 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 		scroll = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scroll), event_box);
-		gtk_box_pack_start(GTK_BOX(vbox), scroll, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox), scroll, TRUE, TRUE, 0);
 		gtk_widget_set_usize(image, w, h);
 	} else
 	{
-		gtk_box_pack_start(GTK_BOX(vbox), event_box, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox), event_box, TRUE, TRUE, 0);
 	}
 	
 	if (big && 0)
 		gtk_window_set_default_size(GTK_WINDOW(dialog), 640, 400);
-	if (parent == NULL)
-		parent = (WINDOW_DATA *)top_window();
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
 	gtk_widget_show_all(dialog);
 	gtk_window_present(GTK_WINDOW(dialog));
@@ -735,8 +739,8 @@ void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr)
 	menu_register(-1, gl_program_name);
 	phys_handle = graf_handle(&gl_wchar, &gl_hchar, &gl_wbox, &gl_hbox);
 	wind_get(DESK, WF_WORKXYWH, &desk.g_x, &desk.g_y, &desk.g_w, &desk.g_h);
+	wind_get(DESK, WF_CURRXYWH, &screen.g_x, &screen.g_y, &screen.g_w, &screen.g_h);
 
-	(void)treenr;
 	file = load_all(filename, load_flags);
 	if (file != NULL)
 	{

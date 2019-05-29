@@ -380,19 +380,19 @@ static INT_PTR CALLBACK preference_dialog(HWND hwnd, UINT message, WPARAM wParam
 			SwitchFont(win, FALSE);
 			break;
 		case IDC_HYPFOLD:
-			if (choose_file(hwnd, &params->hypfold, file_dirsel, _("Path for Hypertexts"), NULL))
+			if (choose_file(hwnd, &params->hypfold, choose_file_dirsel, _("Path for Hypertexts"), NULL))
 			{
 				DlgSetText(hwnd, IDC_HYPFOLD, hyp_basename(params->hypfold));
 			}
 			break;
 		case IDC_DEFAULT_FILE:
-			if (choose_file(hwnd, &params->default_file, file_open, _("Default-Hypertext"), _(hypertext_file_filter)))
+			if (choose_file(hwnd, &params->default_file, choose_file_open, _("Default-Hypertext"), _(hypertext_file_filter)))
 			{
 				DlgSetText(hwnd, IDC_DEFAULT_FILE, hyp_basename(params->default_file));
 			}
 			break;
 		case IDC_CATALOG_FILE:
-			if (choose_file(hwnd, &params->catalog_file, file_open, _("Catalog file"), _(hypertext_file_filter)))
+			if (choose_file(hwnd, &params->catalog_file, choose_file_open, _("Catalog file"), _(hypertext_file_filter)))
 			{
 				DlgSetText(hwnd, IDC_CATALOG_FILE, hyp_basename(params->catalog_file));
 			}

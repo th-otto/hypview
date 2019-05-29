@@ -1,5 +1,7 @@
 #include "hypdefs.h"
 
+#ifdef __WIN32__
+
 #define CP_UTF16_LE 1200
 
 struct errentry {
@@ -264,3 +266,5 @@ void hyp_utf8_closedir(DIR *dir)
 	_WDIR *wdir = (_WDIR *)dir;
 	_wclosedir(wdir);
 }
+
+#endif /* __WIN32__ */

@@ -21,6 +21,7 @@ librsc_a_SOURCES = \
 	bghio.c \
 	debug.c \
 	nls.h \
+	win32.c \
 	$(empty)
 
 rscview_SOURCES = \
@@ -28,10 +29,6 @@ rscview_SOURCES = \
 	glib.c \
 	fio_err.c \
 	$(empty)
-
-if OS_WIN32
-rscview_SOURCES += ../../hyp/win32/hypmain.c
-endif
 
 $(top_builddir)/rsc/src/librsc.a:: librsc.a
 

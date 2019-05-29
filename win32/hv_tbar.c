@@ -486,7 +486,7 @@ static void toolbar_help_paint(HDC hdc, GRECT *gr, const char *text)
 	HFONT oldfont;
 	
 	oldmode = SetBkMode(hdc, OPAQUE);
-	W_Fill_Rect(hdc, gr, IP_SOLID, W_PAL_YELLOW);
+	W_Fill_Rect(hdc, gr, IP_WIN_SOLID, W_PAL_YELLOW);
 #if 0
 	W_TDFrame(hdc, gr, 1, 0);
 #else

@@ -117,7 +117,7 @@ gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = parent;
 	ofn.hInstance = 0;
-	if (mode == file_dirsel)
+	if (mode == choose_file_dirsel)
 	{
 		realname = freeme = g_build_filename(*name, "*.*", NULL);
 	} else
@@ -144,11 +144,11 @@ gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const
 	ofn.lpstrTitle = wtitle;
 	wfilter = hv_file_selector_add_filter(filter);
 	ofn.lpstrFilter = wfilter;
-	if (mode == file_save)
+	if (mode == choose_file_save)
 	{
 		ofn.Flags |= OFN_OVERWRITEPROMPT;
 		retV = GetSaveFileNameW(&ofn);
-	} else if (mode == file_dirsel)
+	} else if (mode == choose_file_dirsel)
 	{
 		retV = GetOpenFileNameW(&ofn);
 	} else
@@ -164,7 +164,7 @@ gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const
 		if (err == CDERR_STRUCTSIZE)
 		{
 			ofn.lStructSize = OPENFILENAME_SIZE_VERSION_400;
-			if (mode == file_save)
+			if (mode == choose_file_save)
 				retV = GetSaveFileNameW(&ofn);
 			else
 				retV = GetOpenFileNameW(&ofn);
@@ -177,7 +177,7 @@ gboolean choose_file(HWND parent, char **name, enum choose_file_mode mode, const
 	{
 		g_free(*name);
 		*name = hyp_wchar_to_utf8(szName, STR0TERM);
-		if (mode == file_dirsel)
+		if (mode == choose_file_dirsel)
 		{
 			freeme = hyp_path_get_dirname(*name);
 			g_free(*name);
@@ -209,7 +209,7 @@ WINDOW_DATA *SelectFileLoad(WINDOW_DATA *win)
 		g_free(subst);
 	}
 	
-	if (choose_file(parent, &name, file_open, _("Open Hypertext..."), _(hypertext_file_filter)))
+	if (choose_file(parent, &name, choose_file_open, _("Open Hypertext..."), _(hypertext_file_filter)))
 	{
 		hv_recent_add(name);
 		win = OpenFileInWindow(win, name, NULL, 0, TRUE, FALSE, FALSE);
@@ -270,7 +270,7 @@ char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 		filepath = replace_ext(doc->path, NULL, defext);
 	}
 	
-	if (choose_file(parent, &filepath, file_save, title, filter))
+	if (choose_file(parent, &filepath, choose_file_save, title, filter))
 	{
 		g_free(gl_profile.output.output_dir);
 		gl_profile.output.output_dir = hyp_path_get_dirname(filepath);

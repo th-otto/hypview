@@ -117,7 +117,7 @@ _BOOL rsc_lang_split(LANG_ARRAY arr, const char *_str)
 
 /* ------------------------------------------------------------------- */
 
-_VOID rsc_lang_unsplit(LANG_ARRAY arr)
+void rsc_lang_unsplit(LANG_ARRAY arr)
 {
 	_WORD i;
 

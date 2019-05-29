@@ -106,7 +106,7 @@ static HBRUSH w_fill_brush(HDC hdc, int fillstyle, COLORREF color, gboolean *del
 		*del = FALSE;
 		break;
 
-	case IP_SOLID:
+	case IP_WIN_SOLID:
 		if (color == W_PAL_WHITE)
 		{
 			hBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -478,7 +478,7 @@ void W_rounded_box(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color)
 		HBRUSH hBrush = w_fill_brush(hdc, fillstyle, color, &del);
 		HBRUSH oldbrush = (HBRUSH)SelectObject(hdc, (HGDIOBJ)hBrush);
 		HPEN pen;
-		pen = W_PenCreate(hdc, 1, fillstyle == IP_SOLID ? W_PEN_NULL : W_PEN_SOLID, color, &line_mask);
+		pen = W_PenCreate(hdc, 1, fillstyle == IP_WIN_SOLID ? W_PEN_NULL : W_PEN_SOLID, color, &line_mask);
 		Polygon(hdc, points, 20);
 		SelectObject(hdc, (HGDIOBJ)oldbrush);
 		if (del)
@@ -486,7 +486,7 @@ void W_rounded_box(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color)
 			DeleteObject(hBrush);
 		}
 		W_PenDelete(hdc, pen);
-	} else if (fillstyle != IP_SOLID)
+	} else if (fillstyle != IP_WIN_SOLID)
 	{
 		W_Lines(hdc, points, 21, W_PEN_SOLID, color);
 	}
@@ -587,7 +587,7 @@ void W_Draw_Arrows(HDC hdc, POINT *xy, int npoints, COLORREF color, unsigned cha
 	new_y_start = y_start = xy[0].y;
 	
 	pen = W_PenCreate(hdc, 1, W_PEN_NULL, color, &line_mask);
-	hbrush = w_fill_brush(hdc, IP_SOLID, color, &del);
+	hbrush = w_fill_brush(hdc, IP_WIN_SOLID, color, &del);
 	oldbrush = (HBRUSH)SelectObject(hdc, (HGDIOBJ)hbrush);
 	
 	if (line_ends & (1 << 0))
@@ -768,7 +768,7 @@ void W_TDFrame(HDC hdc, const GRECT *r, int height, int flags)
 	
 	if (flags & FILL)
 	{
-		W_Fill_Rect(hdc, r, IP_SOLID, W_PAL_LGRAY);
+		W_Fill_Rect(hdc, r, IP_WIN_SOLID, W_PAL_LGRAY);
 	}
 
 	r1 = *r;
@@ -826,7 +826,7 @@ void W_TDFrame(HDC hdc, const GRECT *r, int height, int flags)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, _VOID *data, COLORREF fg, COLORREF bg, DWORD mode)
+void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, void *data, COLORREF fg, COLORREF bg, DWORD mode)
 {
 	HDC hdcMem;
 	COLORREF oldColor, oldBk;

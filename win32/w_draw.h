@@ -59,7 +59,7 @@ char *W_Fontdesc(const FONT_ATTR *attr);
 gboolean W_Fontname(const char *name, FONT_ATTR *attr);
 void W_Font_Default(FONT_ATTR *attr);
 
-void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, _VOID *data, COLORREF fg, COLORREF bg, DWORD mode);
+void W_Draw_Image(HDC hdc, _WORD x, _WORD y, _WORD w, _WORD h, void *data, COLORREF fg, COLORREF bg, DWORD mode);
 void W_Draw_Picture(HDC hdc, _WORD x, _WORD y, GRECT *area, MFDB *pic, DWORD mode);
 
 gboolean w_init_brush(void);
@@ -91,7 +91,7 @@ void w_exit_brush(void);
 #define IP_5PATT		5
 #define IP_6PATT		6
 #define IP_7PATT		7
-#define IP_SOLID		8
+#define IP_WIN_SOLID	8
 
 #define W_PEN_NULL             0
 #define W_PEN_SOLID            1
@@ -107,7 +107,7 @@ typedef struct {
 #define BITMAP_MAGIC 0x4afcdeadl
 	_UBYTE *bm_orig_data;
 	_UBYTE *bm_data;
-	_VOID  *bm_info;
+	void   *bm_info;
 } IBITMAP;
 
 #endif /* __W_DRAW_H__ */

@@ -360,7 +360,7 @@ static void init_screen(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-GLOBAL _WORD GetNumPlanes(_VOID)
+GLOBAL _WORD GetNumPlanes(void)
 {
 	init_screen();
 	return screen_planes;
@@ -541,7 +541,6 @@ gboolean W_Fix_Bitmap(void **pdata, _WORD w, _WORD h, _WORD nplanes)
 					_WORD i, ansi_color;
 					const _WORD *table;
 
-					num_colors = 1 << nplanes;
 					info = (BITMAPINFO *)map->bm_info;
 					info->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 					/* correct value for writing bmp */
