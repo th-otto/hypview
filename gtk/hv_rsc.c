@@ -70,14 +70,6 @@ typedef struct {
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-void GetTextSize(_WORD *wchar, _WORD *hchar)
-{
-	*wchar = gl_wchar;
-	*hchar = gl_hchar;
-}
-
-/* ------------------------------------------------------------------------- */
-
 void err_fcreate(const char *filename)
 {
 	char *str = g_strdup_printf(_("Can't create %s:\n%s"), filename, hyp_utf8_strerror(errno));
@@ -398,15 +390,13 @@ static void image_destroyed(GtkWidget *w, gpointer user_data)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static GdkPixbuf *get_pixbuf(_WORD x, _WORD y, _WORD w, _WORD h)
+static GdkPixbuf *get_pixbuf(GRECT *gr)
 {
-	int width = w;
-	int height = h;
-	int planes = xworkout[4];
+	int width = gr->g_w;
+	int height = gr->g_h;
 	GdkPixbuf *pixbuf;
 	guint8 *dst;
 	int dststride;
-	PALETTE pal;
 	_WORD pxy[4];
 	
 	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, width, height);
@@ -416,12 +406,11 @@ static GdkPixbuf *get_pixbuf(_WORD x, _WORD y, _WORD w, _WORD h)
 	}
 	
 	dststride = gdk_pixbuf_get_rowstride(pixbuf);
-	pic_stdpalette(pal, planes);
 	dst = gdk_pixbuf_get_pixels(pixbuf);
-	pxy[0] = x;
-	pxy[1] = y;
-	pxy[2] = x + w - 1;
-	pxy[3] = y + h - 1;
+	pxy[0] = gr->g_x;
+	pxy[1] = gr->g_y;
+	pxy[2] = gr->g_x + gr->g_w - 1;
+	pxy[3] = gr->g_y + gr->g_h - 1;
 
 	v_hardcopy_ex(vdi_handle, pxy, PX_RGBA, dststride, dst);
 	
@@ -562,7 +551,7 @@ static void show_image(WINDOW_DATA *parent, RSCFILE *file, RSCTREE *tree, _UWORD
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), gl_profile.viewer.text_xoffset);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 
-	pixbuf = get_pixbuf(gr->g_x, gr->g_y, gr->g_w, gr->g_h);
+	pixbuf = get_pixbuf(gr);
 	
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	gdk_pixbuf_unref(pixbuf);
@@ -769,7 +758,7 @@ void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr)
 	wind_get(DESK, WF_WORKXYWH, &desk.g_x, &desk.g_y, &desk.g_w, &desk.g_h);
 	wind_get(DESK, WF_CURRXYWH, &screen.g_x, &screen.g_y, &screen.g_w, &screen.g_h);
 
-	file = load_all(filename, load_flags);
+	file = load_all(filename, gl_wchar, gl_hchar, load_flags);
 	if (file != NULL)
 	{
 		RSCTREE *tree;

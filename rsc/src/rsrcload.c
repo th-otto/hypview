@@ -823,11 +823,8 @@ static _BOOL intel_2_m68k(RSCFILE *file, _LONG filesize)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void rsc_obfix(OBJECT *tree, _ULONG count)
+static void rsc_obfix(OBJECT *tree, _ULONG count, _WORD wchar, _WORD hchar)
 {
-	_WORD wchar, hchar;
-
-	GetTextSize(&wchar, &hchar);
 	/* Koordinaten fuer alle Objekte umrechnen */
 	while (count)
 	{
@@ -916,7 +913,7 @@ _BOOL W_Cicon_Setpalette(_WORD *palette)
 /*
  * xrsrc_load: like rsrc_load()
  */
-RSCFILE *xrsrc_load(const char *filename, _UWORD flags)
+RSCFILE *xrsrc_load(const char *filename, _WORD wchar, _WORD hchar, _UWORD flags)
 {
 	_ULONG UObj;
 	CICONBLK *cicon_p;
@@ -1699,7 +1696,7 @@ RSCFILE *xrsrc_load(const char *filename, _UWORD flags)
 		OBJECT *rs_object = file->rs_object;
 		
 		if (!(flags & XRSC_NO_OBFIX))
-			rsc_obfix(rs_object, xrsc_header.rsh_nobs);
+			rsc_obfix(rs_object, xrsc_header.rsh_nobs, wchar, hchar);
 		for (UObj = 0; UObj < xrsc_header.rsh_nobs; UObj++, rs_object++)
 		{
 			idx = rs_object->ob_spec.index;

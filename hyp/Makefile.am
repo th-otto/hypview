@@ -203,6 +203,8 @@ hypview_cgi_DEPENDENCIES += $(LIBHPDF_DEP)
 hypview_cgi_LDADD += $(LIBHPDF)
 endif
 hypview_cgi_LDADD += $(LIBHYP) $(LIBPIC)
+hypview_cgi_DEPENDENCIES += $(GEMLIB_DEPS)
+hypview_cgi_LDADD += $(GEMLIBS)
 if HAVE_PNG
 hypview_cgi_DEPENDENCIES += $(LIBPNG_DEP)
 hypview_cgi_LDADD += $(LIBPNG)

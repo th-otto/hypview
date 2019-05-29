@@ -1948,15 +1948,14 @@ static void trim_spaces(char *string)
  *  the object.  It is perfectly reasonable (and common) to have
  *  left-aligned text within a right-aligned TEDINFO object.
  */
-static void align_objects(OBJECT *obj_array, int nobj)
+static void align_objects(OBJECT *obj_array, int nobj, _WORD wchar, _WORD hchar)
 {
 	OBJECT *obj;
 	char *p;
 	_WORD len;		 /* string length in pixels */
-	_WORD wchar, hchar;
 	_WORD type;
 	
-	GetTextSize(&wchar, &hchar);
+	UNUSED(hchar);
 	for (obj = obj_array; --nobj >= 0; obj++)
 	{
 		type = obj->ob_type & OBTYPEMASK;
@@ -2002,14 +2001,11 @@ static void align_objects(OBJECT *obj_array, int nobj)
  *  If object 1 of a tree is a G_STRING and its y position equals
  *  one character height, we assume it's the dialog title.
  */
-static void centre_title(OBJECT *root)
+static void centre_title(OBJECT *root, _WORD wchar, _WORD hchar)
 {
 	OBJECT *title;
 	_WORD len;
-	_WORD wchar, hchar;
 	
-	GetTextSize(&wchar, &hchar);
-
 	title = root + 1;
 
 	/* if object #1 is a dialog title, center it */
@@ -2024,12 +2020,12 @@ static void centre_title(OBJECT *root)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void centre_titles(RSCFILE *file)
+static void centre_titles(RSCFILE *file, _WORD wchar, _WORD hchar)
 {
 	_ULONG i;
 	
 	for (i = 0; i < file->header.rsh_ntree; i++)
-		centre_title(file->rs_trindex[i]);
+		centre_title(file->rs_trindex[i], wchar, hchar);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -2037,7 +2033,7 @@ static void centre_titles(RSCFILE *file)
 /*
  *  Change the sizes of the menus after translation
  */
-static void adjust_menu(RSCFILE *file, _WORD treeindex)
+static void adjust_menu(RSCFILE *file, _WORD treeindex, _WORD wchar, _WORD hchar)
 {
 	OBJECT *menu = file->rs_trindex[treeindex];
 	_WORD i, j;	/* index in the menu bar */
@@ -2045,11 +2041,9 @@ static void adjust_menu(RSCFILE *file, _WORD treeindex)
 	_WORD mbar = menu_the_active(menu);
 	_WORD the_menus;
 	OBJECT *title;
-	_WORD wchar, hchar;
 	RSCTREE *tree = rsc_tree_index(file, treeindex, RT_UNKNOWN);
 	
-	GetTextSize(&wchar, &hchar);
-
+	UNUSED(hchar);
 	/*
 	 * first, set ob_x & ob_width for all the menu headings, and
 	 * determine the required width of the (translated) menu bar.
@@ -2173,16 +2167,13 @@ static void adjust_menu(RSCFILE *file, _WORD treeindex)
 }
 
 
-static void emutos_desktop_fix(RSCFILE *file)
+static void emutos_desktop_fix(RSCFILE *file, _WORD wchar, _WORD hchar)
 {
 	OBJECT *tree = file->rs_trindex[ADDINFO];
 	static char version[80];
 	static char copyright_year[12];
 	time_t now;
 	struct tm *tm;
-	_WORD wchar, hchar;
-	
-	GetTextSize(&wchar, &hchar);
 	
 	now = time(NULL);
 	tm = localtime(&now);
@@ -2205,15 +2196,15 @@ static void emutos_desktop_fix(RSCFILE *file)
 	tree[DECOPYRT].ob_spec.free_string = copyright_year;
 
 	/* adjust the size and coordinates of menu items */
-	adjust_menu(file, ADMENU);
+	adjust_menu(file, ADMENU, wchar, hchar);
 
 	/*
 	 * perform special object alignment - this must be done after
 	 * translation and coordinate fixing
 	 */
-	align_objects(file->rs_object, file->header.rsh_nobs);
+	align_objects(file->rs_object, file->header.rsh_nobs, wchar, hchar);
 	
-	centre_titles(file);
+	centre_titles(file, wchar, hchar);
 }
 
 
@@ -2224,14 +2215,14 @@ static void emutos_desktop_fix(RSCFILE *file)
 #undef DEVERSN
 #undef DECOPYRT
 
-static void emutos_aes_fix(RSCFILE *file)
+static void emutos_aes_fix(RSCFILE *file, _WORD wchar, _WORD hchar)
 {
-	centre_titles(file);
+	centre_titles(file, wchar, hchar);
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-RSCFILE *load_all(const char *file_name, _UWORD flags)
+RSCFILE *load_all(const char *file_name, _WORD wchar, _WORD hchar, _UWORD flags)
 {
 	RSCFILE *file;
 	char filename[PATH_MAX];
@@ -2251,7 +2242,7 @@ RSCFILE *load_all(const char *file_name, _UWORD flags)
 		{ "def", rsd_load, RF_DEF },
 	};
 	
-	file = xrsrc_load(file_name, flags);
+	file = xrsrc_load(file_name, wchar, hchar, flags);
 	if (file == NULL)
 		return NULL;
 	
@@ -2310,10 +2301,10 @@ RSCFILE *load_all(const char *file_name, _UWORD flags)
 	switch (file->rsc_emutos)
 	{
 	case EMUTOS_AES:
-		emutos_aes_fix(file);
+		emutos_aes_fix(file, wchar, hchar);
 		break;
 	case EMUTOS_DESK:
-		emutos_desktop_fix(file);
+		emutos_desktop_fix(file, wchar, hchar);
 		break;
 	case EMUTOS_ICONS:
 	case EMUTOS_NONE:

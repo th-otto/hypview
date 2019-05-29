@@ -125,7 +125,6 @@ typedef struct _writepng_info {
 	FILE *outfile;
 	png_structp png_ptr;
 	png_infop info_ptr;
-	unsigned char *image_data;
 	png_int_t bpp;
 	png_int_t interlaced;
 	int have_bg;

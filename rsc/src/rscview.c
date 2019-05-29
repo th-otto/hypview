@@ -53,14 +53,6 @@ static _BOOL gen_imagemap;
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-void GetTextSize(_WORD *wchar, _WORD *hchar)
-{
-	*wchar = gl_wchar;
-	*hchar = gl_hchar;
-}
-
-/* ------------------------------------------------------------------------- */
-
 __attribute__((format(printf, 1, 2)))
 static void warn(const char *fmt, ...)
 {
@@ -816,7 +808,7 @@ int main(int argc, char **argv)
 	while (optind < argc)
 	{
 		filename = argv[optind++];
-		file = load_all(filename, load_flags);
+		file = load_all(filename, gl_wchar, gl_hchar, load_flags);
 		if (file != NULL)
 		{
 			if (charset)

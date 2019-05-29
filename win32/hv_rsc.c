@@ -76,14 +76,6 @@ typedef struct {
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
-void GetTextSize(_WORD *wchar, _WORD *hchar)
-{
-	*wchar = gl_wchar;
-	*hchar = gl_hchar;
-}
-
-/* ------------------------------------------------------------------------- */
-
 void err_fcreate(const char *filename)
 {
 	char *str = g_strdup_printf(_("Can't create %s:\n%s"), filename, hyp_utf8_strerror(errno));
@@ -361,11 +353,9 @@ static _WORD write_png(RSCTREE *tree, _WORD x, _WORD y, _WORD w, _WORD h)
 static BITMAPINFO *get_bitmap(_WORD x, _WORD y, _WORD w, _WORD h)
 {
 	size_t dst_rowstride, dst_imagesize;
-	int planes = xworkout[4];
 	_UBYTE *map;
 	size_t addsize;
 	BITMAPINFO *info;
-	PALETTE pal;
 	_WORD pxy[4];
 	
 	addsize = sizeof(BITMAPINFOHEADER);
@@ -391,7 +381,6 @@ static BITMAPINFO *get_bitmap(_WORD x, _WORD y, _WORD w, _WORD h)
 		info->bmiHeader.biClrUsed = 0;
 		info->bmiHeader.biClrImportant = 0;
 
-		pic_stdpalette(pal, planes);
 		pxy[0] = x;
 		pxy[1] = y;
 		pxy[2] = x + w - 1;
@@ -987,7 +976,7 @@ void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr)
 	wind_get(DESK, WF_WORKXYWH, &desk.g_x, &desk.g_y, &desk.g_w, &desk.g_h);
 	wind_get(DESK, WF_CURRXYWH, &screen.g_x, &screen.g_y, &screen.g_w, &screen.g_h);
 	
-	file = load_all(filename, load_flags);
+	file = load_all(filename, gl_wchar, gl_hchar, load_flags);
 	if (file != NULL)
 	{
 		RSCTREE *tree;
