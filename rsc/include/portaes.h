@@ -633,7 +633,7 @@ _WORD aes(AESPB *pb);
  */
 int _AesCall( _LONG c0to3); /* c4=0 */ /* MO */
 int _AesXCall( _LONG c0to3, _WORD c4);  /* MO */
-int vq_aes(void);
+_WORD vq_aes(void);
 void _crystal(AESPARBLK *aespb);
 _WORD _aes(_WORD dummy, _LONG code);
 _WORD _mt_aes(AESPB *pb, _LONG code);
@@ -952,6 +952,7 @@ _WORD _mt_aes(AESPB *pb, _LONG code);
  *  <tr><td> #APPEVNT_BUTTON (1) <td> low word  = state (1 = down), high word = # of clicks
  *  <tr><td> #APPEVNT_MOUSE (2) <td> low word  = X pos, high word = Y pos
  *  <tr><td> #APPEVNT_KEYBOARD (3) <td> bits 0-7 = ASCII code, bits 8-15 = scan code, bits 16-31 = shift key
+ *  </table>
  *
  *  Please read documentation of mt_appl_trecord() and mt_appl_tplay() for more details and
  *  known bugs related to this structure.

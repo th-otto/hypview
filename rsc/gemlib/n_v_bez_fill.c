@@ -5,7 +5,7 @@
 /** This call draws a filled polygon with bezier curves.
  *
  *  @param handle Device handle
- *  @param count 
+ *  @param count Number of entries in bezarr
  *  @param xyarr xyarr[0..2count-1] = coordinates
  *  @param bezarr bezarr[0..count-1] = point-type flags defined as follow:
  *         - bit 0:   first point in a 4-point bezier curve (two anchor points and two

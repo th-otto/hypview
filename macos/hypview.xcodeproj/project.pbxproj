@@ -606,6 +606,7 @@
 		8CFE2E5B229EFF05005A4516 /* n_v_delete_driver_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2ABD229EFEB7005A4516 /* n_v_delete_driver_info.c */; };
 		8CFE2E5C229EFF05005A4516 /* n_v_delete_itab.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2ABE229EFEB7005A4516 /* n_v_delete_itab.c */; };
 		8CFE2E5D229EFF05005A4516 /* n_v_ftext_offset.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2ABF229EFEB7005A4516 /* n_v_ftext_offset.c */; };
+		8CFE2E5E229F138D005A4516 /* libgem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFE2A89229EFC8A005A4516 /* libgem.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -711,7 +712,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8C2B0125229A3ADB00B409C3 /* libpng.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libpng.a; path = libpnglib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C2B0125229A3ADB00B409C3 /* libpng.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpng.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C2B012E229A3B3C00B409C3 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = png.c; sourceTree = "<group>"; };
 		8C2B012F229A3B3C00B409C3 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		8C2B0130229A3B3C00B409C3 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
@@ -796,7 +797,7 @@
 		8C3B564522941C3E0074375F /* hpdf_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_utils.c; path = ../hpdf/src/hpdf_utils.c; sourceTree = SOURCE_ROOT; };
 		8C3B564622941C3E0074375F /* hpdf_xref.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hpdf_xref.c; path = ../hpdf/src/hpdf_xref.c; sourceTree = SOURCE_ROOT; };
 		8C3B56BB2294292E0074375F /* pdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pdf.c; path = ../hyp/pdf.c; sourceTree = SOURCE_ROOT; };
-		8C3B56C322944A020074375F /* libz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libz.a; path = libzlib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C3B56C322944A020074375F /* libz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libz.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C3B56CC22944CF80074375F /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adler32.c; sourceTree = "<group>"; };
 		8C3B56CD22944CF80074375F /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = compress.c; sourceTree = "<group>"; };
 		8C3B56CE22944CF80074375F /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
@@ -972,7 +973,7 @@
 		8CFE2A75229EF74D005A4516 /* outxml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = outxml.c; path = ../hyp/outxml.c; sourceTree = SOURCE_ROOT; };
 		8CFE2A82229EF845005A4516 /* pdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pdf.h; path = ../hyp/pdf.h; sourceTree = SOURCE_ROOT; };
 		8CFE2A83229EF8AD005A4516 /* hv_rsc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_rsc.m; sourceTree = "<group>"; };
-		8CFE2A89229EFC8A005A4516 /* libgem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libgem.a; path = liblibgem.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CFE2A89229EFC8A005A4516 /* libgem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CFE2A92229EFEB7005A4516 /* a_appl_exit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = a_appl_exit.c; sourceTree = "<group>"; };
 		8CFE2A93229EFEB7005A4516 /* a_appl_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = a_appl_init.c; sourceTree = "<group>"; };
 		8CFE2A94229EFEB7005A4516 /* a_form_alert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = a_form_alert.c; sourceTree = "<group>"; };
@@ -1362,6 +1363,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CFE2E5E229F138D005A4516 /* libgem.a in Frameworks */,
 				8C2B0161229A3E9C00B409C3 /* libpng.a in Frameworks */,
 				8C3B570622944D480074375F /* libz.a in Frameworks */,
 				8C3B56BA22941CE80074375F /* libhpdf.a in Frameworks */,

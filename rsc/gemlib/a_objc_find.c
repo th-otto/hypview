@@ -10,7 +10,6 @@
  *         of 7 to search all objects).
  *  @param mx specify the x-coordinate to search at.
  *  @param my specify the y-coordinate to search at.
- *  @param global_aes global AES array
  *
  *  @return the object index of the object found at
  *          coordinates ( \a mx, \a my ) or -1 if no object is found.

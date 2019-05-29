@@ -33,7 +33,6 @@
  *                               was covering.
  *  @param fo_dilittl the first rectangle (usage depends on \a mode)
  *  @param fo_dibig the second rectangle (usage depends on \a mode)
- *  @param global_aes global AES array
  *
  *  @return non-zero if succeeded.
  *
