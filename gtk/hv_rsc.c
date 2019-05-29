@@ -24,7 +24,7 @@
 #include <gem.h>
 #include <errno.h>
 #include <ctype.h>
-#include <sys/stat.h>
+#include "stat_.h"
 #include "portvdi.h"
 #include "../rsc/src/fileio.h"
 #include "rsc.h"

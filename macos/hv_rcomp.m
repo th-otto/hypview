@@ -4,6 +4,7 @@
 #include "picture.h"
 #include "hcp.h"
 #include "hv_vers.h"
+#include "base64.h"
 
 #include "../hyp/outcomm.h"
 #include "../hyp/outasc.h"
@@ -94,8 +95,8 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	gboolean retval = TRUE;
 
 	is_MASTER = getenv("TO_MASTER") != NULL;
-	js_written = FALSE;
-	css_written = FALSE;
+	html_js_written = FALSE;
+	html_css_written = FALSE;
 	
 	hcp_opts_init(opts);
 	if (!hcp_opts_parse_string(opts, gl_profile.hcp.options, OPTS_FROM_CONFIG))

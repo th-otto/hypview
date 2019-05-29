@@ -6,10 +6,10 @@
 #define __RSRCLOAD_H__
 
 #include <portab.h>
-#include <portaes.h>
-#include <xrsrc.h>
-#include <mobject.h>
-#include <extob.h>
+#include "portaes.h"
+#include "xrsrc.h"
+#include "mobject.h"
+#include "extob.h"
 #include <time.h>
 
 EXTERN_C_BEG

@@ -76,6 +76,11 @@ hypview_SOURCES = \
 	hv_rcomp.c \
 	hcp_opts.c \
 	../hyp/outcomm.c \
+	../hyp/outstg.c \
+	../hyp/outhtml.c \
+	../hyp/outxml.c \
+	../hyp/outasc.c \
+	../hyp/outdump.c \
 	$(empty)
 
 if WITH_PDF

@@ -54,6 +54,11 @@ hypview_SOURCES = \
 	hcp_opts.c \
 	w_draw.c w_draw.h \
 	../hyp/outcomm.c \
+	../hyp/outstg.c \
+	../hyp/outhtml.c \
+	../hyp/outxml.c \
+	../hyp/outasc.c \
+	../hyp/outdump.c \
 	\
 	windebug.c windebug.h \
 	$(empty)

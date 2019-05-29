@@ -9,7 +9,7 @@
 #  include <portab.h>
 #endif
 #ifndef __GRECT_H__
-#  include <grect.h>
+#  include "grect.h"
 #endif
 
 EXTERN_C_BEG

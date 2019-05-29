@@ -8,6 +8,12 @@
 #include <locale.h>
 #endif
 #include "outcomm.h"
+#include "outstg.h"
+#include "outhtml.h"
+#include "outxml.h"
+#include "outasc.h"
+#include "outdump.h"
+#include "pdf.h"
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hcp";
@@ -102,15 +108,6 @@ static void print_usage(FILE *out)
 	hyp_utf8_fprintf(out, _("  -V, --version                 print version and exit\n"));
 }
 
-
-/* ------------------------------------------------------------------------- */
-
-#include "outasc.h"
-#include "outstg.h"
-#include "outhtml.h"
-#include "outxml.h"
-#include "pdf.h"
-#include "outdump.h"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */

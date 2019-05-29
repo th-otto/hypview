@@ -1,3 +1,29 @@
+/*
+ * HypView - (c)      - 2019 Thorsten Otto
+ *
+ * A replacement hypertext viewer
+ *
+ * This file is part of HypView.
+ *
+ * HypView is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HypView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HypView; if not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * This is the main CGI program that is invoked from
+ * the HypView web service.
+ */
+
 #include "hypdefs.h"
 #include "hypdebug.h"
 #include "xgetopt.h"
@@ -12,6 +38,10 @@
 #include <utime.h>
 #include "cgic.h"
 #include "outcomm.h"
+#include "outstg.h"
+#include "outhtml.h"
+#include "stat_.h"
+#include "cgirsc.h"
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hypview.cgi";
@@ -33,15 +63,6 @@ struct curl_parms {
 	CURLPROTO_SCP | \
 	CURLPROTO_SFTP | \
 	CURLPROTO_TFTP)
-
-/*****************************************************************************/
-/* ------------------------------------------------------------------------- */
-/*****************************************************************************/
-
-#define CGI_VERSION 1
-
-#include "outstg.h"
-#include "outhtml.h"
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -77,10 +98,6 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	
 	/* load REF if not done already */
 	syms = ref_loadsyms(hyp);
-	
-#if 0
-	create_patterns();
-#endif
 	
 	for (node = 0; node < hyp->num_index; node++)
 	{
@@ -247,9 +264,6 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
 		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
 	opts->long_filenames = TRUE;
-	(void) check_long_filenames;
-	(void) recompile_html;
-	(void) recompile_stg;
 	if (opts->long_filenames)
 	{
 		g_free(opts->image_name_prefix);
@@ -505,7 +519,8 @@ int main(void)
 	char *lang;
 	hyp_nodenr node = 0;
 	char *val;
-	
+	gboolean isrsc = FALSE;
+
 #ifdef __WIN32__
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 #endif
@@ -600,6 +615,11 @@ int main(void)
 		node = (int)strtoul(val, NULL, 10);
 		g_free(val);
 	}
+	if ((val = cgiFormString("isrsc")) != NULL)
+	{
+		isrsc = (int)strtol(val, NULL, 10) != 0;
+		g_free(val);
+	}
 	if ((val = cgiFormString("cached")) != NULL)
 	{
 		opts->cgi_cached = (int)strtol(val, NULL, 10) != 0;
@@ -666,9 +686,18 @@ int main(void)
 		}
 		if (filename && retval == EXIT_SUCCESS)
 		{
-			if (recompile(filename, opts, body, node, &pic_format) == FALSE)
+			if (isrsc)
 			{
-				retval = EXIT_FAILURE;
+				if (show_resource(filename, opts, body, node, &pic_format) == FALSE)
+				{
+					retval = EXIT_FAILURE;
+				}
+			} else
+			{
+				if (recompile(filename, opts, body, node, &pic_format) == FALSE)
+				{
+					retval = EXIT_FAILURE;
+				}
 			}
 			g_free(filename);
 		}
@@ -751,9 +780,18 @@ int main(void)
 				fclose(fp);
 				opts->cgi_cached = TRUE;
 				html_referer_url = g_strdup(filename);
-				if (recompile(local_filename, opts, body, node, &pic_format) == FALSE)
+				if (isrsc)
 				{
-					retval = EXIT_FAILURE;
+					if (show_resource(local_filename, opts, body, node, &pic_format) == FALSE)
+					{
+						retval = EXIT_FAILURE;
+					}
+				} else
+				{
+					if (recompile(local_filename, opts, body, node, &pic_format) == FALSE)
+					{
+						retval = EXIT_FAILURE;
+					}
 				}
 			}
 			g_free(local_filename);

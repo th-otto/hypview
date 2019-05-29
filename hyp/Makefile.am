@@ -13,7 +13,6 @@ noinst_SCRIPTS =
 
 if HAVE_CURL
 noinst_PROGRAMS += hypview.cgi
-noinst_PROGRAMS += rscview.cgi
 endif
 SRVDIR = /srv/www/htdocs/hypview
 
@@ -129,8 +128,12 @@ hcp_SOURCES = \
 	hobstack.c \
 	refcmds.c \
 	outcomm.c outcomm.h \
+	outstg.c outstg.h \
+	outhtml.c outhtml.h htmljs.h \
+	outxml.c outxml.h \
+	outasc.c outasc.h \
+	outdump.c outdump.h \
 	pdf.c pdf.h \
-	outasc.h outstg.h outdump.h outhtml.h htmljs.h outxml.h \
 	$(UTIL_SRC)
 
 htmljs.h: $(top_srcdir)/www/_hypview.js
@@ -184,9 +187,12 @@ hypview_cgi_SOURCES = \
 	kwset.c \
 	hobstack.c \
 	refcmds.c \
+	cgirsc.c cgirsc.h \
 	outcomm.c outcomm.h \
+	outstg.c outstg.h \
+	outhtml.c outhtml.h htmljs.h \
+	outxml.c outxml.h \
 	pdf.c pdf.h \
-	outasc.h outstg.h outdump.h outhtml.h htmljs.h outxml.h \
 	cgic.c cgic.h \
 	$(UTIL_SRC)
 
@@ -225,46 +231,13 @@ if !CROSS_COMPILING
 	fi
 endif
 
-rscview_cgi_SOURCES = \
-	rsccgi.c \
-	hcp_opts.c \
-	outcomm.c outcomm.h \
-	cgic.c cgic.h \
-	$(UTIL_SRC)
-
-rscview_cgi_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
-rscview_cgi_LDADD = $(LIBHYP) $(LIBPIC)
-if HAVE_PNG
-rscview_cgi_DEPENDENCIES += $(LIBPNG_DEP)
-rscview_cgi_LDADD += $(LIBPNG)
-endif
-if NEED_ZLIB
-rscview_cgi_DEPENDENCIES += $(LIBZ_DEP)
-rscview_cgi_LDADD += $(LIBZ)
-endif
-rscview_cgi_LDADD += $(GLIB_LIBS) $(CURL_LIBS) $(INTLLIBS)
-if OS_WIN32
-rscview_cgi_SOURCES += hcp_rc.rc
-rscview_cgi_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
-rscview_cgi_LDADD += hcp_rc.res
-endif
-rscview_cgi_LDFLAGS = -Wl,-rpath,$(CURL_LIBDIR)
-rscview.cgi$(EXEEXT): $(rscview_cgi_OBJECTS) $(rscview_cgi_DEPENDENCIES) $(EXTRA_rscview_cgi_DEPENDENCIES) 
-	@rm -f $@
-	$(AM_V_CCLD)$(rscview_cgi_LINK) $(rscview_cgi_OBJECTS) $(rscview_cgi_LDADD) $(LIBS)
-if !CROSS_COMPILING
-	$(AM_V_at)if test -d "$(SRVDIR)"; then \
-	   echo "installing $@ in $(SRVDIR)"; \
-	   cp $@ "$(SRVDIR)/$@"; \
-	fi
-endif
-
 hypinfo_SOURCES = \
 	hypinfo.c \
 	hcp_opts.c \
 	llangid.c llangid.h \
 	sparse.c sparse.h \
 	outcomm.c outcomm.h \
+	outasc.c outasc.h \
 	model.c model.h \
 	$(UTIL_SRC)
 hypinfo_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
