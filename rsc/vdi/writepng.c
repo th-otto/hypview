@@ -297,7 +297,7 @@ int writepng_init(writepng_info *wpnginfo)
 
 	interlace_type = wpnginfo->interlaced ? PNG_INTERLACE_ADAM7 : PNG_INTERLACE_NONE;
 
-	png_set_IHDR(png_ptr, info_ptr, wpnginfo->width, wpnginfo->height,
+	png_set_IHDR(png_ptr, info_ptr, (png_uint_32)wpnginfo->width, (png_uint_32)wpnginfo->height,
 				 wpnginfo->sample_depth, color_type, interlace_type,
 				 PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 

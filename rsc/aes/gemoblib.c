@@ -400,7 +400,7 @@ static _BOOL xor_ok(_WORD type, _WORD flags, OBSPEC spec)
  */
 static void just_draw(OBJECT *tree, _WORD obj, _WORD sx, _WORD sy)
 {
-	_WORD bcol, tcol, ipat, icol, tmode, th;
+	_WORD bcol = 0, tcol, ipat = 0, icol = 0, tmode, th;
 	_WORD state, obtype, len, flags;
 	OBSPEC spec;
 	_WORD tmpx, tmpy, tmpth;

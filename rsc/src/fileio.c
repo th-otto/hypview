@@ -47,6 +47,7 @@ static _BOOL fopen_mode;
 #define g_oblink		"G_OBLINK"
 #define g_unknown		"  ERROR: Unknown type"
 
+#undef FREAD
 #define FREAD(buf, size) if (test_read(buf, size) == FALSE) return FALSE
 #define INPC(x) if (inpc(&(x)) == FALSE) return FALSE
 #define INPW(x) if (inpw(&(x)) == FALSE) return FALSE
@@ -2051,7 +2052,7 @@ static void adjust_menu(RSCFILE *file, _WORD treeindex, _WORD wchar, _WORD hchar
 	for (i = menu[mbar].ob_head, x = 0; i != mbar; i = menu[i].ob_next, x += n)
 	{
 		title = &menu[i];
-		n = strlen(title->ob_spec.free_string) * wchar;
+		n = (int)strlen(title->ob_spec.free_string) * wchar;
 		title->ob_x = x;
 		title->ob_width = n;
 	}
@@ -2086,7 +2087,7 @@ static void adjust_menu(RSCFILE *file, _WORD treeindex, _WORD wchar, _WORD hchar
 				 */
 				trim_spaces(item->ob_spec.free_string);
 				str = item->ob_spec.free_string;
-				l = strlen(str);
+				l = (int)strlen(str);
 				
 				if ((item->ob_state & OS_DISABLED) && *str == '-')
 				{
@@ -2134,7 +2135,7 @@ static void adjust_menu(RSCFILE *file, _WORD treeindex, _WORD wchar, _WORD hchar
 		{
 			OBJECT *item = &menu[k];
 			const char *str = item->ob_spec.free_string;
-			int l = strlen(str);
+			int l = (int)strlen(str);
 			
 			if (item->ob_type == G_STRING)
 			{
@@ -2202,7 +2203,7 @@ static void emutos_desktop_fix(RSCFILE *file, _WORD wchar, _WORD hchar)
 	 * perform special object alignment - this must be done after
 	 * translation and coordinate fixing
 	 */
-	align_objects(file->rs_object, file->header.rsh_nobs, wchar, hchar);
+	align_objects(file->rs_object, (int)file->header.rsh_nobs, wchar, hchar);
 	
 	centre_titles(file, wchar, hchar);
 }

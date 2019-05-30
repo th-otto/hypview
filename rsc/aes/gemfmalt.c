@@ -66,7 +66,7 @@ static const char *fm_strbrk(OBJECT *start, _WORD maxnum, _WORD maxlen, const ch
 		}
 		*p = '\0';
 
-		len = p - obj->ob_spec.free_string;
+		len = (int)(p - obj->ob_spec.free_string);
 		if (len > *plen)				/* track max substring length */
 			*plen = len;
 
@@ -159,7 +159,7 @@ static void fm_parse(OBJECT *tree, const char *palstr, _WORD *picnum, _WORD *pnu
  */
 static void fm_build(OBJECT *tree, _BOOL haveicon, _WORD nummsg, _WORD mlenmsg, _WORD numbut, _WORD mlenbut)
 {
-	_WORD i, j, icw = 4, ich, allbut;
+	_WORD i, j, icw = 4, ich = 0, allbut;
 	GRECT al, ic, bt, ms;
 	OBJECT *obj;
 

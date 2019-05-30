@@ -308,13 +308,14 @@ void merge_str(char *pdst, const char *ptmp, va_list parms)
 		{
 			ptmp++;
 			do_value = FALSE;
+			lvalue = 0;
 			switch (*ptmp++)
 			{
 			case '%':
 				*pdst++ = '%';
 				break;
 			case 'L':
-				lvalue = va_arg(parms, _LONG);
+				lvalue = (int32_t)va_arg(parms, _LONG);
 				do_value = TRUE;
 				break;
 			case 'W':

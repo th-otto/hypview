@@ -607,6 +607,50 @@
 		8CFE2E5C229EFF05005A4516 /* n_v_delete_itab.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2ABE229EFEB7005A4516 /* n_v_delete_itab.c */; };
 		8CFE2E5D229EFF05005A4516 /* n_v_ftext_offset.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2ABF229EFEB7005A4516 /* n_v_ftext_offset.c */; };
 		8CFE2E5E229F138D005A4516 /* libgem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFE2A89229EFC8A005A4516 /* libgem.a */; };
+		8CFE2E6E229F40A6005A4516 /* aes.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E6C229F408A005A4516 /* aes.c */; };
+		8CFE2EB1229F4112005A4516 /* aesutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E71229F4103005A4516 /* aesutils.c */; };
+		8CFE2EB2229F411C005A4516 /* gem_rsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E73229F4103005A4516 /* gem_rsc.c */; };
+		8CFE2EB3229F413D005A4516 /* gemaplib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E78229F4103005A4516 /* gemaplib.c */; };
+		8CFE2EB4229F4146005A4516 /* gembase.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E79229F4103005A4516 /* gembase.c */; };
+		8CFE2EB5229F4152005A4516 /* gemctrl.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E7A229F4103005A4516 /* gemctrl.c */; };
+		8CFE2EB6229F4157005A4516 /* gemdos.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E7B229F4103005A4516 /* gemdos.c */; };
+		8CFE2EB7229F415C005A4516 /* gemevlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E7C229F4103005A4516 /* gemevlib.c */; };
+		8CFE2EB8229F4162005A4516 /* gemfmalt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E7D229F4103005A4516 /* gemfmalt.c */; };
+		8CFE2EB9229F4167005A4516 /* gemfmlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E7E229F4103005A4516 /* gemfmlib.c */; };
+		8CFE2EBA229F416D005A4516 /* gemfslib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E7F229F4103005A4516 /* gemfslib.c */; };
+		8CFE2EBB229F4175005A4516 /* gemglobe.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E80229F4103005A4516 /* gemglobe.c */; };
+		8CFE2EBC229F417C005A4516 /* gemgraf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E81229F4103005A4516 /* gemgraf.c */; };
+		8CFE2EBD229F41B3005A4516 /* gemgrlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E82229F4103005A4516 /* gemgrlib.c */; };
+		8CFE2EBE229F41B8005A4516 /* gemgsxif.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E83229F4103005A4516 /* gemgsxif.c */; };
+		8CFE2EBF229F41BF005A4516 /* geminit.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E84229F4103005A4516 /* geminit.c */; };
+		8CFE2EC0229F41C5005A4516 /* geminput.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E85229F4103005A4516 /* geminput.c */; };
+		8CFE2EC1229F41D7005A4516 /* gemmnlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E87229F4103005A4516 /* gemmnlib.c */; };
+		8CFE2EC2229F41DD005A4516 /* gemobed.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E88229F4103005A4516 /* gemobed.c */; };
+		8CFE2EC3229F41E6005A4516 /* gemobjop.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E89229F4103005A4516 /* gemobjop.c */; };
+		8CFE2EC4229F4235005A4516 /* gemoblib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E8A229F4103005A4516 /* gemoblib.c */; };
+		8CFE2EC5229F423A005A4516 /* gempd.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E8B229F4103005A4516 /* gempd.c */; };
+		8CFE2EC6229F4245005A4516 /* gemrslib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E8D229F4103005A4516 /* gemrslib.c */; };
+		8CFE2EC7229F424A005A4516 /* gemsclib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E8E229F4103005A4516 /* gemsclib.c */; };
+		8CFE2EC8229F4251005A4516 /* gemshlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E8F229F4103005A4516 /* gemshlib.c */; };
+		8CFE2EC9229F4258005A4516 /* gemwmlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E90229F4103005A4516 /* gemwmlib.c */; };
+		8CFE2ECA229F425D005A4516 /* gemwrect.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2E91229F4103005A4516 /* gemwrect.c */; };
+		8CFE2ECD229F4629005A4516 /* libaes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFE2E63229F4027005A4516 /* libaes.a */; };
+		8CFE2EE9229F49D8005A4516 /* vdi_bm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EDF229F49CE005A4516 /* vdi_bm.c */; };
+		8CFE2EEA229F49DD005A4516 /* vdi.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EE0229F49CE005A4516 /* vdi.c */; };
+		8CFE2EEB229F49E6005A4516 /* writepng.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EE4229F49CE005A4516 /* writepng.c */; };
+		8CFE2EEC229F49EC005A4516 /* maptab.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EDB229F49BC005A4516 /* maptab.c */; };
+		8CFE2EED229F4A37005A4516 /* libvdi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFE2ED2229F496E005A4516 /* libvdi.a */; };
+		8CFE2F13229F5130005A4516 /* bghio.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EFB229F5125005A4516 /* bghio.c */; };
+		8CFE2F14229F5134005A4516 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EFC229F5125005A4516 /* debug.c */; };
+		8CFE2F15229F513A005A4516 /* fileio.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EFD229F5125005A4516 /* fileio.c */; };
+		8CFE2F16229F5141005A4516 /* fio_err.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2EFF229F5125005A4516 /* fio_err.c */; };
+		8CFE2F17229F5145005A4516 /* glib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F00229F5125005A4516 /* glib.c */; };
+		8CFE2F18229F514D005A4516 /* object.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F02229F5125005A4516 /* object.c */; };
+		8CFE2F19229F5152005A4516 /* rsc_lang.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F03229F5125005A4516 /* rsc_lang.c */; };
+		8CFE2F1A229F515B005A4516 /* rsc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F05229F5125005A4516 /* rsc.c */; };
+		8CFE2F1B229F5162005A4516 /* rsrcload.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F07229F5125005A4516 /* rsrcload.c */; };
+		8CFE2F1C229F519A005A4516 /* win32.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F08229F5125005A4516 /* win32.c */; };
+		8CFE2F1D229F51BE005A4516 /* librsc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFE2EF2229F50B2005A4516 /* librsc.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1300,6 +1344,71 @@
 		8CFE2BFF229EFED6005A4516 /* vt_axis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vt_axis.c; sourceTree = "<group>"; };
 		8CFE2C00229EFED6005A4516 /* vt_origin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vt_origin.c; sourceTree = "<group>"; };
 		8CFE2C01229EFED6005A4516 /* vt_resolution.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vt_resolution.c; sourceTree = "<group>"; };
+		8CFE2E63229F4027005A4516 /* libaes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libaes.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CFE2E6C229F408A005A4516 /* aes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aes.c; sourceTree = "<group>"; };
+		8CFE2E6F229F4103005A4516 /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
+		8CFE2E70229F4103005A4516 /* aesdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aesdefs.h; sourceTree = "<group>"; };
+		8CFE2E71229F4103005A4516 /* aesutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aesutils.c; sourceTree = "<group>"; };
+		8CFE2E72229F4103005A4516 /* crysbind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crysbind.h; sourceTree = "<group>"; };
+		8CFE2E73229F4103005A4516 /* gem_rsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gem_rsc.c; sourceTree = "<group>"; };
+		8CFE2E74229F4103005A4516 /* gem_rsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gem_rsc.h; sourceTree = "<group>"; };
+		8CFE2E75229F4103005A4516 /* gem_rsc.rsc */ = {isa = PBXFileReference; lastKnownFileType = file; path = gem_rsc.rsc; sourceTree = "<group>"; };
+		8CFE2E76229F4103005A4516 /* gem_rsc.rsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gem_rsc.rsh; sourceTree = "<group>"; };
+		8CFE2E77229F4103005A4516 /* gem_rsc.rso */ = {isa = PBXFileReference; lastKnownFileType = file; path = gem_rsc.rso; sourceTree = "<group>"; };
+		8CFE2E78229F4103005A4516 /* gemaplib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemaplib.c; sourceTree = "<group>"; };
+		8CFE2E79229F4103005A4516 /* gembase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gembase.c; sourceTree = "<group>"; };
+		8CFE2E7A229F4103005A4516 /* gemctrl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemctrl.c; sourceTree = "<group>"; };
+		8CFE2E7B229F4103005A4516 /* gemdos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemdos.c; sourceTree = "<group>"; };
+		8CFE2E7C229F4103005A4516 /* gemevlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemevlib.c; sourceTree = "<group>"; };
+		8CFE2E7D229F4103005A4516 /* gemfmalt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemfmalt.c; sourceTree = "<group>"; };
+		8CFE2E7E229F4103005A4516 /* gemfmlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemfmlib.c; sourceTree = "<group>"; };
+		8CFE2E7F229F4103005A4516 /* gemfslib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemfslib.c; sourceTree = "<group>"; };
+		8CFE2E80229F4103005A4516 /* gemglobe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemglobe.c; sourceTree = "<group>"; };
+		8CFE2E81229F4103005A4516 /* gemgraf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemgraf.c; sourceTree = "<group>"; };
+		8CFE2E82229F4103005A4516 /* gemgrlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemgrlib.c; sourceTree = "<group>"; };
+		8CFE2E83229F4103005A4516 /* gemgsxif.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemgsxif.c; sourceTree = "<group>"; };
+		8CFE2E84229F4103005A4516 /* geminit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = geminit.c; sourceTree = "<group>"; };
+		8CFE2E85229F4103005A4516 /* geminput.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = geminput.c; sourceTree = "<group>"; };
+		8CFE2E86229F4103005A4516 /* gemlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gemlib.h; sourceTree = "<group>"; };
+		8CFE2E87229F4103005A4516 /* gemmnlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemmnlib.c; sourceTree = "<group>"; };
+		8CFE2E88229F4103005A4516 /* gemobed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemobed.c; sourceTree = "<group>"; };
+		8CFE2E89229F4103005A4516 /* gemobjop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemobjop.c; sourceTree = "<group>"; };
+		8CFE2E8A229F4103005A4516 /* gemoblib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemoblib.c; sourceTree = "<group>"; };
+		8CFE2E8B229F4103005A4516 /* gempd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gempd.c; sourceTree = "<group>"; };
+		8CFE2E8C229F4103005A4516 /* gempd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gempd.h; sourceTree = "<group>"; };
+		8CFE2E8D229F4103005A4516 /* gemrslib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemrslib.c; sourceTree = "<group>"; };
+		8CFE2E8E229F4103005A4516 /* gemsclib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemsclib.c; sourceTree = "<group>"; };
+		8CFE2E8F229F4103005A4516 /* gemshlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemshlib.c; sourceTree = "<group>"; };
+		8CFE2E90229F4103005A4516 /* gemwmlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemwmlib.c; sourceTree = "<group>"; };
+		8CFE2E91229F4103005A4516 /* gemwrect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gemwrect.c; sourceTree = "<group>"; };
+		8CFE2E92229F4103005A4516 /* gsxdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gsxdefs.h; sourceTree = "<group>"; };
+		8CFE2E93229F4103005A4516 /* struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = struct.h; sourceTree = "<group>"; };
+		8CFE2ED2229F496E005A4516 /* libvdi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libvdi.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CFE2EDB229F49BC005A4516 /* maptab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = maptab.c; sourceTree = "<group>"; };
+		8CFE2EDD229F49CE005A4516 /* maptab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maptab.h; sourceTree = "<group>"; };
+		8CFE2EDE229F49CE005A4516 /* pattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pattern.h; sourceTree = "<group>"; };
+		8CFE2EDF229F49CE005A4516 /* vdi_bm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vdi_bm.c; sourceTree = "<group>"; };
+		8CFE2EE0229F49CE005A4516 /* vdi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vdi.c; sourceTree = "<group>"; };
+		8CFE2EE1229F49CE005A4516 /* vdi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vdi.h; sourceTree = "<group>"; };
+		8CFE2EE2229F49CE005A4516 /* vdidefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vdidefs.h; sourceTree = "<group>"; };
+		8CFE2EE3229F49CE005A4516 /* vdimaps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vdimaps.h; sourceTree = "<group>"; };
+		8CFE2EE4229F49CE005A4516 /* writepng.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = writepng.c; sourceTree = "<group>"; };
+		8CFE2EE5229F49CE005A4516 /* writepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = writepng.h; sourceTree = "<group>"; };
+		8CFE2EF2229F50B2005A4516 /* librsc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = librsc.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CFE2EFB229F5125005A4516 /* bghio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bghio.c; sourceTree = "<group>"; };
+		8CFE2EFC229F5125005A4516 /* debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = debug.c; sourceTree = "<group>"; };
+		8CFE2EFD229F5125005A4516 /* fileio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fileio.c; sourceTree = "<group>"; };
+		8CFE2EFE229F5125005A4516 /* fileio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileio.h; sourceTree = "<group>"; };
+		8CFE2EFF229F5125005A4516 /* fio_err.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fio_err.c; sourceTree = "<group>"; };
+		8CFE2F00229F5125005A4516 /* glib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glib.c; sourceTree = "<group>"; };
+		8CFE2F01229F5125005A4516 /* langtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = langtab.h; sourceTree = "<group>"; };
+		8CFE2F02229F5125005A4516 /* object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = object.c; sourceTree = "<group>"; };
+		8CFE2F03229F5125005A4516 /* rsc_lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsc_lang.c; sourceTree = "<group>"; };
+		8CFE2F04229F5125005A4516 /* rsc_lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rsc_lang.h; sourceTree = "<group>"; };
+		8CFE2F05229F5125005A4516 /* rsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsc.c; sourceTree = "<group>"; };
+		8CFE2F06229F5125005A4516 /* rso.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rso.h; sourceTree = "<group>"; };
+		8CFE2F07229F5125005A4516 /* rsrcload.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsrcload.c; sourceTree = "<group>"; };
+		8CFE2F08229F5125005A4516 /* win32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = win32.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1363,6 +1472,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CFE2F1D229F51BE005A4516 /* librsc.a in Frameworks */,
+				8CFE2EED229F4A37005A4516 /* libvdi.a in Frameworks */,
+				8CFE2ECD229F4629005A4516 /* libaes.a in Frameworks */,
 				8CFE2E5E229F138D005A4516 /* libgem.a in Frameworks */,
 				8C2B0161229A3E9C00B409C3 /* libpng.a in Frameworks */,
 				8C3B570622944D480074375F /* libz.a in Frameworks */,
@@ -1416,6 +1528,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8CFE2A86229EFC8A005A4516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2E60229F4027005A4516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2ECF229F496E005A4516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2EEF229F50B2005A4516 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1584,6 +1717,9 @@
 				8C3B56C422944A020074375F /* zlib */,
 				8C2B0126229A3ADB00B409C3 /* pnglib */,
 				8CFE2A8A229EFC8A005A4516 /* gemlib */,
+				8CFE2E64229F4027005A4516 /* aes */,
+				8CFE2ED3229F496E005A4516 /* vdi */,
+				8CFE2EF3229F50B2005A4516 /* rsc */,
 				8CFB7064226AEA3F00116947 /* Products */,
 				8CFB7079226AEC0600116947 /* Frameworks */,
 			);
@@ -1606,6 +1742,9 @@
 				8C3B56C322944A020074375F /* libz.a */,
 				8C2B0125229A3ADB00B409C3 /* libpng.a */,
 				8CFE2A89229EFC8A005A4516 /* libgem.a */,
+				8CFE2E63229F4027005A4516 /* libaes.a */,
+				8CFE2ED2229F496E005A4516 /* libvdi.a */,
+				8CFE2EF2229F50B2005A4516 /* librsc.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2159,6 +2298,92 @@
 			path = ../rsc/gemlib;
 			sourceTree = SOURCE_ROOT;
 		};
+		8CFE2E64229F4027005A4516 /* aes */ = {
+			isa = PBXGroup;
+			children = (
+				8CFE2E6F229F4103005A4516 /* aes.h */,
+				8CFE2E70229F4103005A4516 /* aesdefs.h */,
+				8CFE2E71229F4103005A4516 /* aesutils.c */,
+				8CFE2E72229F4103005A4516 /* crysbind.h */,
+				8CFE2E73229F4103005A4516 /* gem_rsc.c */,
+				8CFE2E74229F4103005A4516 /* gem_rsc.h */,
+				8CFE2E75229F4103005A4516 /* gem_rsc.rsc */,
+				8CFE2E76229F4103005A4516 /* gem_rsc.rsh */,
+				8CFE2E77229F4103005A4516 /* gem_rsc.rso */,
+				8CFE2E78229F4103005A4516 /* gemaplib.c */,
+				8CFE2E79229F4103005A4516 /* gembase.c */,
+				8CFE2E7A229F4103005A4516 /* gemctrl.c */,
+				8CFE2E7B229F4103005A4516 /* gemdos.c */,
+				8CFE2E7C229F4103005A4516 /* gemevlib.c */,
+				8CFE2E7D229F4103005A4516 /* gemfmalt.c */,
+				8CFE2E7E229F4103005A4516 /* gemfmlib.c */,
+				8CFE2E7F229F4103005A4516 /* gemfslib.c */,
+				8CFE2E80229F4103005A4516 /* gemglobe.c */,
+				8CFE2E81229F4103005A4516 /* gemgraf.c */,
+				8CFE2E82229F4103005A4516 /* gemgrlib.c */,
+				8CFE2E83229F4103005A4516 /* gemgsxif.c */,
+				8CFE2E84229F4103005A4516 /* geminit.c */,
+				8CFE2E85229F4103005A4516 /* geminput.c */,
+				8CFE2E86229F4103005A4516 /* gemlib.h */,
+				8CFE2E87229F4103005A4516 /* gemmnlib.c */,
+				8CFE2E88229F4103005A4516 /* gemobed.c */,
+				8CFE2E89229F4103005A4516 /* gemobjop.c */,
+				8CFE2E8A229F4103005A4516 /* gemoblib.c */,
+				8CFE2E8B229F4103005A4516 /* gempd.c */,
+				8CFE2E8C229F4103005A4516 /* gempd.h */,
+				8CFE2E8D229F4103005A4516 /* gemrslib.c */,
+				8CFE2E8E229F4103005A4516 /* gemsclib.c */,
+				8CFE2E8F229F4103005A4516 /* gemshlib.c */,
+				8CFE2E90229F4103005A4516 /* gemwmlib.c */,
+				8CFE2E91229F4103005A4516 /* gemwrect.c */,
+				8CFE2E92229F4103005A4516 /* gsxdefs.h */,
+				8CFE2E93229F4103005A4516 /* struct.h */,
+				8CFE2E6C229F408A005A4516 /* aes.c */,
+			);
+			name = aes;
+			path = ../rsc/aes;
+			sourceTree = SOURCE_ROOT;
+		};
+		8CFE2ED3229F496E005A4516 /* vdi */ = {
+			isa = PBXGroup;
+			children = (
+				8CFE2EDD229F49CE005A4516 /* maptab.h */,
+				8CFE2EDE229F49CE005A4516 /* pattern.h */,
+				8CFE2EDF229F49CE005A4516 /* vdi_bm.c */,
+				8CFE2EE0229F49CE005A4516 /* vdi.c */,
+				8CFE2EE1229F49CE005A4516 /* vdi.h */,
+				8CFE2EE2229F49CE005A4516 /* vdidefs.h */,
+				8CFE2EE3229F49CE005A4516 /* vdimaps.h */,
+				8CFE2EE4229F49CE005A4516 /* writepng.c */,
+				8CFE2EE5229F49CE005A4516 /* writepng.h */,
+				8CFE2EDB229F49BC005A4516 /* maptab.c */,
+			);
+			name = vdi;
+			path = ../rsc/vdi;
+			sourceTree = SOURCE_ROOT;
+		};
+		8CFE2EF3229F50B2005A4516 /* rsc */ = {
+			isa = PBXGroup;
+			children = (
+				8CFE2EFB229F5125005A4516 /* bghio.c */,
+				8CFE2EFC229F5125005A4516 /* debug.c */,
+				8CFE2EFD229F5125005A4516 /* fileio.c */,
+				8CFE2EFE229F5125005A4516 /* fileio.h */,
+				8CFE2EFF229F5125005A4516 /* fio_err.c */,
+				8CFE2F00229F5125005A4516 /* glib.c */,
+				8CFE2F01229F5125005A4516 /* langtab.h */,
+				8CFE2F02229F5125005A4516 /* object.c */,
+				8CFE2F03229F5125005A4516 /* rsc_lang.c */,
+				8CFE2F04229F5125005A4516 /* rsc_lang.h */,
+				8CFE2F05229F5125005A4516 /* rsc.c */,
+				8CFE2F06229F5125005A4516 /* rso.h */,
+				8CFE2F07229F5125005A4516 /* rsrcload.c */,
+				8CFE2F08229F5125005A4516 /* win32.c */,
+			);
+			name = rsc;
+			path = ../rsc/src;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2248,6 +2473,27 @@
 				8CFE2DC9229EFF04005A4516 /* vdi_userdef.h in Headers */,
 				8CFE2E47229EFF05005A4516 /* gem_vdiP.h in Headers */,
 				8CFE2E48229EFF05005A4516 /* gem.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2E61229F4027005A4516 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2ED0229F496E005A4516 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2EF0229F50B2005A4516 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2498,6 +2744,57 @@
 			productReference = 8CFE2A89229EFC8A005A4516 /* libgem.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		8CFE2E62229F4027005A4516 /* aes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8CFE2E6B229F4027005A4516 /* Build configuration list for PBXNativeTarget "aes" */;
+			buildPhases = (
+				8CFE2E5F229F4027005A4516 /* Sources */,
+				8CFE2E60229F4027005A4516 /* Frameworks */,
+				8CFE2E61229F4027005A4516 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = aes;
+			productName = aes;
+			productReference = 8CFE2E63229F4027005A4516 /* libaes.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8CFE2ED1229F496E005A4516 /* vdi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8CFE2ED8229F496E005A4516 /* Build configuration list for PBXNativeTarget "vdi" */;
+			buildPhases = (
+				8CFE2ECE229F496E005A4516 /* Sources */,
+				8CFE2ECF229F496E005A4516 /* Frameworks */,
+				8CFE2ED0229F496E005A4516 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vdi;
+			productName = vdi;
+			productReference = 8CFE2ED2229F496E005A4516 /* libvdi.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8CFE2EF1229F50B2005A4516 /* rsc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8CFE2EFA229F50B2005A4516 /* Build configuration list for PBXNativeTarget "rsc" */;
+			buildPhases = (
+				8CFE2EEE229F50B2005A4516 /* Sources */,
+				8CFE2EEF229F50B2005A4516 /* Frameworks */,
+				8CFE2EF0229F50B2005A4516 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = rsc;
+			productName = rsc;
+			productReference = 8CFE2EF2229F50B2005A4516 /* librsc.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -2562,6 +2859,18 @@
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
 					};
+					8CFE2E62229F4027005A4516 = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+					8CFE2ED1229F496E005A4516 = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+					8CFE2EF1229F50B2005A4516 = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 8CFB705C226AE93900116947 /* Build configuration list for PBXProject "hypview" */;
@@ -2591,6 +2900,9 @@
 				8C3B56C222944A020074375F /* zlib */,
 				8C2B0124229A3ADB00B409C3 /* pnglib */,
 				8CFE2A88229EFC8A005A4516 /* gemlib */,
+				8CFE2E62229F4027005A4516 /* aes */,
+				8CFE2ED1229F496E005A4516 /* vdi */,
+				8CFE2EF1229F50B2005A4516 /* rsc */,
 			);
 		};
 /* End PBXProject section */
@@ -3243,6 +3555,68 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8CFE2E5F229F4027005A4516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CFE2EBA229F416D005A4516 /* gemfslib.c in Sources */,
+				8CFE2EB8229F4162005A4516 /* gemfmalt.c in Sources */,
+				8CFE2EC3229F41E6005A4516 /* gemobjop.c in Sources */,
+				8CFE2EB3229F413D005A4516 /* gemaplib.c in Sources */,
+				8CFE2EB9229F4167005A4516 /* gemfmlib.c in Sources */,
+				8CFE2EC9229F4258005A4516 /* gemwmlib.c in Sources */,
+				8CFE2EC0229F41C5005A4516 /* geminput.c in Sources */,
+				8CFE2EBD229F41B3005A4516 /* gemgrlib.c in Sources */,
+				8CFE2EC5229F423A005A4516 /* gempd.c in Sources */,
+				8CFE2EB6229F4157005A4516 /* gemdos.c in Sources */,
+				8CFE2ECA229F425D005A4516 /* gemwrect.c in Sources */,
+				8CFE2EC7229F424A005A4516 /* gemsclib.c in Sources */,
+				8CFE2EBC229F417C005A4516 /* gemgraf.c in Sources */,
+				8CFE2EBF229F41BF005A4516 /* geminit.c in Sources */,
+				8CFE2EBB229F4175005A4516 /* gemglobe.c in Sources */,
+				8CFE2EC4229F4235005A4516 /* gemoblib.c in Sources */,
+				8CFE2E6E229F40A6005A4516 /* aes.c in Sources */,
+				8CFE2EB4229F4146005A4516 /* gembase.c in Sources */,
+				8CFE2EB2229F411C005A4516 /* gem_rsc.c in Sources */,
+				8CFE2EC6229F4245005A4516 /* gemrslib.c in Sources */,
+				8CFE2EB5229F4152005A4516 /* gemctrl.c in Sources */,
+				8CFE2EC1229F41D7005A4516 /* gemmnlib.c in Sources */,
+				8CFE2EBE229F41B8005A4516 /* gemgsxif.c in Sources */,
+				8CFE2EB7229F415C005A4516 /* gemevlib.c in Sources */,
+				8CFE2EC8229F4251005A4516 /* gemshlib.c in Sources */,
+				8CFE2EC2229F41DD005A4516 /* gemobed.c in Sources */,
+				8CFE2EB1229F4112005A4516 /* aesutils.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2ECE229F496E005A4516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CFE2EE9229F49D8005A4516 /* vdi_bm.c in Sources */,
+				8CFE2EEB229F49E6005A4516 /* writepng.c in Sources */,
+				8CFE2EEC229F49EC005A4516 /* maptab.c in Sources */,
+				8CFE2EEA229F49DD005A4516 /* vdi.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CFE2EEE229F50B2005A4516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CFE2F18229F514D005A4516 /* object.c in Sources */,
+				8CFE2F17229F5145005A4516 /* glib.c in Sources */,
+				8CFE2F16229F5141005A4516 /* fio_err.c in Sources */,
+				8CFE2F13229F5130005A4516 /* bghio.c in Sources */,
+				8CFE2F14229F5134005A4516 /* debug.c in Sources */,
+				8CFE2F1C229F519A005A4516 /* win32.c in Sources */,
+				8CFE2F19229F5152005A4516 /* rsc_lang.c in Sources */,
+				8CFE2F1B229F5162005A4516 /* rsrcload.c in Sources */,
+				8CFE2F1A229F515B005A4516 /* rsc.c in Sources */,
+				8CFE2F15229F513A005A4516 /* fileio.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -3283,7 +3657,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = png;
 			};
 			name = Debug;
 		};
@@ -3291,7 +3665,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = png;
 			};
 			name = Release;
 		};
@@ -3314,14 +3688,16 @@
 		8C3B56CA22944A020074375F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = z;
 			};
 			name = Debug;
 		};
 		8C3B56CB22944A020074375F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = z;
 			};
 			name = Release;
 		};
@@ -3555,14 +3931,64 @@
 		8CFE2A90229EFC8A005A4516 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libgem;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = gem;
 			};
 			name = Debug;
 		};
 		8CFE2A91229EFC8A005A4516 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = libgem;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = gem;
+			};
+			name = Release;
+		};
+		8CFE2E69229F4027005A4516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = aes;
+			};
+			name = Debug;
+		};
+		8CFE2E6A229F4027005A4516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = aes;
+			};
+			name = Release;
+		};
+		8CFE2ED9229F496E005A4516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = vdi;
+			};
+			name = Debug;
+		};
+		8CFE2EDA229F496E005A4516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = vdi;
+			};
+			name = Release;
+		};
+		8CFE2EF8229F50B2005A4516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = rsc;
+			};
+			name = Debug;
+		};
+		8CFE2EF9229F50B2005A4516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = rsc;
 			};
 			name = Release;
 		};
@@ -3700,6 +4126,33 @@
 			buildConfigurations = (
 				8CFE2A90229EFC8A005A4516 /* Debug */,
 				8CFE2A91229EFC8A005A4516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8CFE2E6B229F4027005A4516 /* Build configuration list for PBXNativeTarget "aes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CFE2E69229F4027005A4516 /* Debug */,
+				8CFE2E6A229F4027005A4516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8CFE2ED8229F496E005A4516 /* Build configuration list for PBXNativeTarget "vdi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CFE2ED9229F496E005A4516 /* Debug */,
+				8CFE2EDA229F496E005A4516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8CFE2EFA229F50B2005A4516 /* Build configuration list for PBXNativeTarget "rsc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CFE2EF8229F50B2005A4516 /* Debug */,
+				8CFE2EF9229F50B2005A4516 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

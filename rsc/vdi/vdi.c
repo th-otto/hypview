@@ -1752,7 +1752,7 @@ static void set_font_align(VWK *v, _WORD *items, int n, gboolean justified)
 	if (v->text_style & TXT_SKEWED)
 	{
 		d1 = sysfont[v->font_index].left_offset;
-		d1 = sysfont[v->font_index].right_offset;
+		d2 = sysfont[v->font_index].right_offset;
 	} else
 	{
 		d1 = 0;
@@ -2257,17 +2257,19 @@ static int vdi_vqt_width(VWK *v, VDIPB *pb)
 		V_INTOUT(pb, 0) = -1;
 	} else
 	{
-		if (sf->per_char != NULL)
+#if 0 /* cannot happen here */
+		if (sf->per_char == NULL)
+		{
+			PTSOUT(0) = sf->cellwidth;
+			PTSOUT(2) = sf->left_offset;
+			PTSOUT(4) = sf->right_offset;
+		} else
+#endif
 		{
 			c -= sf->first_char;
 			PTSOUT(0) = sf->per_char[c].width;
 			PTSOUT(2) = sf->per_char[c].lbearing;
 			PTSOUT(4) = sf->per_char[c].width - sf->per_char[c].rbearing;
-		} else
-		{
-			PTSOUT(0) = sf->cellwidth;
-			PTSOUT(2) = sf->left_offset;
-			PTSOUT(4) = sf->right_offset;
 		}
 		V_INTOUT(pb, 0) = 0;
 	}
@@ -2898,7 +2900,7 @@ static void do_trnfm(VWK *v, MFDB *s, MFDB *d)
 
 			for (h = height - 1; h >= 0; h--)
 			{
-				for (w = words - 1; w >= 0; w--)
+				for (w = (int)(words - 1); w >= 0; w--)
 				{
 					_WORD *tmp;
 
@@ -2922,7 +2924,7 @@ static void do_trnfm(VWK *v, MFDB *s, MFDB *d)
 				tmp = src;
 				for (h = height - 1; h >= 0; h--)
 				{
-					for (w = words - 1; w >= 0; w--)
+					for (w = (int)(words - 1); w >= 0; w--)
 					{
 						*dst = *src;
 						dst++;
@@ -3094,7 +3096,7 @@ int vdi_output_c(_WORD dev, unsigned char c)
 	VWK *v;
 	struct alpha_info *vt52;
 	
-	if (!VALID_S_HANDLE(h) || framebuffer == NULL)
+	if (!VALID_S_HANDLE(h) /* || framebuffer == NULL */)
 	{
 		return VDI_PASS;
 	}
@@ -4201,9 +4203,9 @@ static inline int SMUL_DIV(int m1, int m2, int d1)
 
 static void arrow(VWK *v, VDI_POINT *xy, int inc, int npoints)
 {
-	int arrow_len, arrow_wid, line_len;
+	int arrow_len, arrow_wid, line_len = 0;
 	VDI_POINT triangle[4];						/* triangle 2 high to close polygon */
-	_WORD dx, dy;
+	_WORD dx = 0, dy = 0;
 	_WORD base_x, base_y, ht_x, ht_y;
 	int xybeg;
 	int i;
@@ -4451,17 +4453,17 @@ static void gen_segs(VDI_POINT *array, VDI_POINT *px, const gboolean for_x, cons
 		q--;
 	}
 
-	d1x = ((3L * d1x) << (2 * bez_qual)) + ((3L * d2x) << bez_qual) + d3x;
+	d1x = (int32_t)(((3L * d1x) << (2 * bez_qual)) + ((3L * d2x) << bez_qual) + d3x);
 
 	d3x = 6L * d3x;
 
-	d2x = ((6L * d2x) << bez_qual) + d3x;
+	d2x = (int32_t)(((6L * d2x) << bez_qual) + d3x);
 
 	x0 = _labs(x0);
 	while (x0 >= (0x7fffffffL >> q))
 		q--, qd++;
 
-	x0 = (x0 << q) + (1L << (q - 1));
+	x0 = (int32_t)((x0 << q) + (1L << (q - 1)));
 
 	for (i = 1 << bez_qual; i > 0; i--)
 	{
@@ -6745,19 +6747,19 @@ static int vdi_vq_ext_devinfo(VDIPB *pb)
 		if (file_path)
 		{
 			const char *path = "C:\\GEMSYS\\"; /* FIXME */
-			l = strlen(path) + 1;
+			l = (int)strlen(path) + 1;
 			memcpy(file_path, path, l);
 		}
 		if (file_name)
 		{
 			const char *name = info ? info->name : "";
-			l = strlen(name) + 1;
+			l = (int)strlen(name) + 1;
 			memcpy(file_name, name, l);
 		}
 		if (name)
 		{
 			const char *desc = info ? info->desc : "";
-			l = strlen(desc) + 1;
+			l = (int)strlen(desc) + 1;
 			memcpy(name, desc, l);
 		}
 		V_INTOUT(pb, 0) = info != NULL;

@@ -365,7 +365,7 @@ _WORD fs_input(char *pipath, char *pisel, _WORD *pbutton, const char *lstring)
 	_WORD botptr;
 	_WORD value;
 	uint32_t count;
-	_WORD xoff, yoff, mx, my, bret;
+	_WORD xoff, yoff, mx, my = 0, bret;
 	char dirbuffer[122];
 	char scopy[16];
 	char chr;
@@ -402,7 +402,7 @@ _WORD fs_input(char *pipath, char *pisel, _WORD *pbutton, const char *lstring)
 	/* get all the memory   */
 	mul = dos_avail();
 	/*  LEN_FSNAMES;    */
-	fs_fnum = mul / LEN_FSNAME;
+	fs_fnum = (int32_t)(mul / LEN_FSNAME);
 
 	if (mul == 0 || fs_fnum < NM_NAMES)
 	{
