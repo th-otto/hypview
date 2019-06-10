@@ -1,65 +1,193 @@
-/*
- * Jump table structures.
- */
-typedef struct {
-	size_t last_jump;
-	size_t delta[256];
-	size_t patlen;
-	const unsigned char *pattern;
-} BM_TABLE;
+#include "hypdefs.h"
+#include "hypdebug.h"
+#include "hcp.h"
+#include "bm.h"
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
+
+static void bm_init_block(BM_TABLE *tbl, size_t *delta)
+{
+	size_t j;
+
+	for (j = 0; j < 256; j++)
+		delta[j] = tbl->patlen;
+}
 
 /* ------------------------------------------------------------------------- */
 
-/*
- * make_delta -- Create the delta tables.
- */
-static void make_delta(const char *pstring, BM_TABLE *tbl)
+static gboolean bm_add_delta(BM_TABLE *tbl, h_unichar_t ch, size_t delta)
 {
-	size_t j;
-	size_t jump_by;
-	unsigned char ch;
-	const unsigned char *sp;
+	unsigned int idx;
 	
-	tbl->pattern = (const unsigned char *)pstring;
-
-	jump_by = strlen(pstring);
-
-	for (j = 0; j < 256; j++)
-		tbl->delta[j] = jump_by;
-
-	jump_by -= 1;
-
-	/* Now put in the characters contained
-	 * in the pattern, duplicating the CASE.
-	 */
-	sp = tbl->pattern;
-	for (j = 0; j < jump_by; j++)
+	if (ch >= 0x10000UL)
 	{
-		ch = *sp++;
-		tbl->delta[ch] = jump_by - j;
+		tbl->slowcase = TRUE;
+		return TRUE;
 	}
-
-	/* The last character (left over from the loop above) will
-	 * have the pattern length, unless there are duplicates of
-	 * it.  Get the number to jump from the delta array, and
-	 * overwrite with zeroes in delta duplicating the CASE.
-	 */
-	ch = *sp;
-	tbl->patlen = jump_by;
-	tbl->last_jump = tbl->delta[ch];
-
-	tbl->delta[ch] = 0;
+	idx = (unsigned int)(ch >> 8);
+	if (tbl->skip_table[idx] == tbl->delta)
+	{
+		tbl->skip_table[idx] = g_new(size_t, 256);
+		if (tbl->skip_table[idx] == NULL)
+			return FALSE;
+		bm_init_block(tbl, tbl->skip_table[idx]);
+	}
+	tbl->skip_table[idx][ch & 0xff] = delta;
+	return TRUE;
 }
 
 /* ------------------------------------------------------------------------- */
 
 /*
- * liteq -- compare the string versus the current characters in the line.
+ * bm_init -- Create the delta tables.
+ */
+gboolean bm_init(BM_TABLE *tbl, const char *pstring, gboolean casesensitive)
+{
+	size_t j;
+	size_t jump_by;
+	
+	for (j = 0; j < 256; j++)
+		tbl->skip_table[j] = tbl->delta;
+		
+	tbl->pattern = pstring;
+
+	if (pstring == NULL)
+	{
+		tbl->patlen = 0;
+		bm_init_block(tbl, tbl->delta);
+		return TRUE;
+	}
+	
+	/*
+	 * we cannot scan for an empty pattern
+	 */
+	if (*pstring == '\0')
+		return FALSE;
+	
+	tbl->casesensitive = casesensitive;
+	tbl->slowcase = FALSE;
+	
+	jump_by = strlen(pstring);
+	tbl->patlen = jump_by;
+
+	bm_init_block(tbl, tbl->delta);
+
+	if (casesensitive)
+	{
+		const unsigned char *sp;
+		unsigned char ch;
+		
+		/*
+		 * we don't have to care for any mapping,
+		 * and can just search for the bytes.
+		 */
+		jump_by -= 1;
+		tbl->patlen_minus_1 = jump_by;
+		
+		/* Now put in the characters contained
+		 * in the pattern.
+		 */
+		sp = (const unsigned char *)tbl->pattern;
+		for (j = 0; j < jump_by; j++)
+		{
+			ch = *sp++;
+			tbl->delta[ch] = jump_by - j;
+		}
+		
+		/* The last character (left over from the loop above) will
+		 * have the pattern length, unless there are duplicates of
+		 * it.  Get the number to jump from the delta array, and
+		 * overwrite with zeroes in delta.
+		 */
+		ch = *sp;
+		tbl->last_jump = tbl->delta[ch];
+		
+		tbl->delta[ch] = 0;
+	} else
+	{
+		h_unichar_t ch;
+		const char *sp;
+		
+		/*
+		 * get byte-length of pattern without the last character
+		 */
+		sp = tbl->pattern;
+		do {
+			jump_by = sp - tbl->pattern;
+			sp = g_utf8_skipchar(sp);
+		} while (*sp != '\0');
+		tbl->patlen_minus_1 = jump_by;
+		
+		/* Now put in the characters contained
+		 * in the pattern, duplicating the CASE.
+		 */
+		sp = tbl->pattern;
+		for (;;)
+		{
+			j = jump_by - (sp - tbl->pattern);
+			ch = hyp_utf8_get_char(sp);
+			sp = g_utf8_skipchar(sp);
+			if (*sp == '\0')
+				break;
+			if (!bm_add_delta(tbl, ch, j))
+				return FALSE;
+			if (!bm_add_delta(tbl, g_unichar_tolower(ch), j))
+				return FALSE;
+			if (!bm_add_delta(tbl, g_unichar_toupper(ch), j))
+				return FALSE;
+		}
+		
+		/* The last character (left over from the loop above) will
+		 * have the pattern length, unless there are duplicates of
+		 * it.  Get the number to jump from the delta array, and
+		 * overwrite with zeroes in delta duplicating the CASE.
+		 */
+		if (ch >= 0x10000UL)
+		{
+			tbl->slowcase = TRUE;
+		} else
+		{
+			unsigned int idx = (unsigned int)(ch >> 8);
+			tbl->last_jump = tbl->skip_table[idx][ch & 0xff];
+			if (!bm_add_delta(tbl, ch, 0))
+				return FALSE;
+			if (!bm_add_delta(tbl, g_unichar_tolower(ch), 0))
+				return FALSE;
+			if (!bm_add_delta(tbl, g_unichar_toupper(ch), 0))
+				return FALSE;
+		}
+	}
+	
+	return TRUE;
+}
+
+/* ------------------------------------------------------------------------- */
+
+void bm_exit(BM_TABLE *tbl)
+{
+	size_t j;
+	
+	if (tbl->pattern == NULL || tbl->casesensitive)
+		return;
+	for (j = 0; j < 256; j++)
+		if (tbl->skip_table[j] != tbl->delta)
+		{
+			g_free(tbl->skip_table[j]);
+			tbl->skip_table[j] = NULL;
+		}
+}
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * bm_streq -- compare the string versus the current characters in the line.
  *  Returns 0 (no match) or the number of characters matched.
  */
-static gboolean liteq(const unsigned char *text, const unsigned char *pattern)
+static gboolean bm_streq(BM_TABLE *tbl, const unsigned char *text)
 {
-	const unsigned char *strptr = pattern;
+	const unsigned char *strptr = (const unsigned char *)tbl->pattern;
 	
 	while (*strptr)
 	{
@@ -73,47 +201,81 @@ static gboolean liteq(const unsigned char *text, const unsigned char *pattern)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean fbound(const unsigned char **ptext, size_t jump, const unsigned char *end, BM_TABLE *tbl)
+static gboolean bm_strcaseeq(BM_TABLE *tbl, const unsigned char *text)
 {
-	const unsigned char *text = *ptext;
+	const char *strptr = tbl->pattern;
+	const char *textptr = (const char *)text;
+	h_unichar_t ch1, ch2;
+	
+	while (*strptr)
+	{
+		ch1 = g_unichar_tolower(hyp_utf8_get_char(textptr));
+		if (ch1 >= 0x10000UL)
+			return hyp_utf8_strncasecmp((const char *)text, tbl->pattern, tbl->patlen) == 0;
+		ch2 = g_unichar_tolower(hyp_utf8_get_char(strptr));
+		if (ch1 != ch2)
+			return FALSE;
+		strptr = g_utf8_skipchar(strptr);
+		textptr = g_utf8_skipchar(textptr);
+	}
+	return TRUE;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static const unsigned char *bm_boundary(BM_TABLE *tbl, const unsigned char *text, size_t jump, const unsigned char *end)
+{
+	while (jump != 0)
+	{
+		text += jump;
+		if (text >= end)
+			return NULL;
+
+		jump = tbl->delta[*text];
+	}
+	return text;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static const unsigned char *bm_caseboundary(BM_TABLE *tbl, const unsigned char *text, size_t jump, const unsigned char *end)
+{
+	h_unichar_t ch;
+	unsigned int idx;
 	
 	while (jump != 0)
 	{
 		text += jump;
 		if (text >= end)
-			return TRUE;			/* hit end of buffer */
-
-		jump = tbl->BM_TABLE[*text];
+			return NULL;
+		ch = hyp_utf8_get_char((const char *)text);
+		if (ch >= 0x10000UL)
+		{
+			tbl->slowcase = TRUE;
+			return text;
+		}
+		idx = (unsigned int)(ch >> 8);
+		jump = tbl->skip_table[idx][ch & 0xff];
 	}
-	*ptext = text;
-	return FALSE;
+	return text;
 }
 
 /* ------------------------------------------------------------------------- */
 
-/*
- * scanner -- Search for a pattern in either direction.  If found,
- *	reset the "." to be at the start or just after the match string,
- *	and (perhaps) repaint the display.
- *	Fast version using simplified version of Boyer and Moore
- *	Software-Practice and Experience, vol 10, 501-506 (1980)
- */
-static const char *scanner(struct hypfind_opts *opts, const char *buf, size_t len)
+const char *bm_scanner(BM_TABLE *tbl, const char *buf, size_t len)
 {
-	BM_TABLE *tbl = &opts->deltapat;
-	register size_t patlenadd;
+	size_t patlenadd;
 	const unsigned char *text = (const unsigned char *)buf;
 	const unsigned char *end = text + len;
-	const char *match;
 	
-	patlenadd = tbl->patlen;
+	patlenadd = tbl->patlen_minus_1;
 	
 	/* Scan each character until we hit the head link record.
 	 * Get the character resolving newlines, offset
 	 * by the pattern length, i.e. the last character of the
 	 * potential match.
 	 */
-	if (!fbound(&text, patlenadd, end, tbl))
+	if ((text = bm_boundary(tbl, text, patlenadd, end)) != NULL)
 	{
 		do
 		{
@@ -121,17 +283,54 @@ static const char *scanner(struct hypfind_opts *opts, const char *buf, size_t le
 			 * the search string at this point.
 			 */
 			text -= patlenadd;
-			match = (const char *)text;
 			
-			if (liteq(text, opts->deltapat.pattern))
+			if (bm_streq(tbl, text))
 			{
-				return match;
+				return (const char *)text;
 			}
 			
 			text += patlenadd;
-		} while (!fbound(&text, tbl->last_jump, end, tbl));
+		} while ((text = bm_boundary(tbl, text, tbl->last_jump, end)) != NULL);
 	}
 
 	return NULL;	/* We could not find a match */
 }
 
+/* ------------------------------------------------------------------------- */
+
+const char *bm_casescanner(BM_TABLE *tbl, const char *buf, size_t len)
+{
+	size_t patlenadd;
+	const unsigned char *text = (const unsigned char *)buf;
+	const unsigned char *end = text + len;
+	
+	patlenadd = tbl->patlen_minus_1;
+	
+	/* Scan each character until we hit the head link record.
+	 * Get the character resolving newlines, offset
+	 * by the pattern length, i.e. the last character of the
+	 * potential match.
+	 */
+	if ((text = bm_caseboundary(tbl, text, patlenadd, end)) != NULL)
+	{
+		do
+		{
+			if (tbl->slowcase)
+				return hyp_utf8_strcasestr(buf, tbl->pattern);
+			
+			/* Save the current position in case we match
+			 * the search string at this point.
+			 */
+			text -= patlenadd;
+			
+			if (bm_strcaseeq(tbl, text))
+			{
+				return (const char *)text;
+			}
+			
+			text += patlenadd;
+		} while ((text = bm_caseboundary(tbl, text, tbl->last_jump, end)) != NULL);
+	}
+
+	return NULL;	/* We could not find a match */
+}

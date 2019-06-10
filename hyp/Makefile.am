@@ -334,6 +334,7 @@ $(build_triplet)-stool$(EXEEXT): stool$(EXEEXT)
 hypfind_SOURCES = \
 	hypfind.c \
 	hcp_opts.c \
+	bm.c bm.h \
 	$(UTIL_SRC)
 hypfind_DEPENDENCIES = libhyp.a
 hypfind_LDADD = $(LIBHYP) $(GLIB_LIBS) $(INTLLIBS)
