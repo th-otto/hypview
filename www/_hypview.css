@@ -99,6 +99,13 @@ ul {
   opacity: 0.4;
   /* filter: alpha(opacity=40); For IE8 and earlier */
 }
+/* style used for the search field in the navigation toolbar */
+.hypview_nav_search {
+  height:28px;
+  font-size: 80%;
+  padding: 0px;
+  border-width: 1px;
+}
 li {
   float: left;
 }

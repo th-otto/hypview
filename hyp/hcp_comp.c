@@ -8206,6 +8206,8 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 			hcp_error(vars, NULL, _("would overwrite input file"));
 			retval = FALSE;
 		}
+		if (hyp_utf8_strcasecmp(hyp_basename(output_filename), "hypfind.hyp") == 0)
+			opts->warn_compat = FALSE;
 
 		vars->hyp->file = output_filename;
 		dir = hyp_path_get_dirname(output_filename);

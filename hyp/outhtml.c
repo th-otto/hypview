@@ -51,6 +51,7 @@ static char const html_hyp_xrefs_id[] = "hyp_xrefs";
 static char const html_nav_dimensions[] = " width=\"32\" height=\"21\"";
 
 const char *cgi_scriptname = "hypview.cgi";
+char const hypview_lineno_tag[] = "hypview_lineno";
 static char const html_nav_load_href[] = "index.php";
 static char const hypview_css_name[] = "_hypview.css";
 static char const hypview_js_name[] = "_hypview.js";
@@ -69,7 +70,7 @@ static const char *html_name_attr = "id";
 /*
  * style names used
  */
-static char const html_attr_bold_style[] = "hypview_attr_bold";
+char const html_attr_bold_style[] = "hypview_attr_bold";
 static char const html_attr_light_style[] = "hypview_attr_light";
 static char const html_attr_italic_style[] = "hypview_attr_italic";
 static char const html_attr_underlined_style[] = "hypview_attr_underlined";
@@ -77,6 +78,7 @@ static char const html_attr_outlined_style[] = "hypview_attr_outlined";
 static char const html_attr_shadowed_style[] = "hypview_attr_shadowed";
 static char const html_toolbar_style[] = "hypview_nav_toolbar";
 static char const html_nav_img_style[] = "hypview_nav_img";
+static char const html_nav_search_style[] = "hypview_nav_search";
 static char const html_node_style[] = "hypview_node";
 static char const html_pnode_style[] = "hypview_pnode";
 static char const html_dropdown_pnode_style[] = "hypview_dropdown_pnode";
@@ -875,6 +877,13 @@ void html_out_stg_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hy
 
 /* ------------------------------------------------------------------------- */
 
+static void html_out_lineno(hcp_opts *opts, GString *out, long lineno)
+{
+	hyp_utf8_sprintf_charset(out, opts->output_charset, "<a %s=\"%s%ld\"></a>", html_name_attr, hypview_lineno_tag, lineno + 1);
+}
+
+/* ------------------------------------------------------------------------- */
+
 static void html_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const INDEX_ENTRY *entry, long lineno, symtab_entry *syms)
 {
 	char *nodename;
@@ -981,9 +990,9 @@ static char *html_cgi_params(hcp_opts *opts)
 /* ------------------------------------------------------------------------- */
 
 /*
- * TODO: check wether long filenames are supported
+ * TODO: check whether long filenames are supported
  */
-static char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, gboolean quote)
+char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, gboolean quote)
 {
 	INDEX_ENTRY *entry;
 	size_t namelen;
@@ -1227,6 +1236,14 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, "  /* filter: alpha(opacity=40); For IE8 and earlier */\n");
 	g_string_append(out, "}\n");
 	
+	g_string_append(out, "/* style used for the search field in the navigation toolbar */\n");
+	g_string_append_printf(out, ".%s {\n", html_nav_search_style);
+	g_string_append(out, "  height:28px;\n");
+	g_string_append(out, "  font-size: 80%;\n");
+	g_string_append(out, "  padding: 0px;\n");
+	g_string_append(out, "  border-width: 1px;\n");
+	g_string_append(out, "}\n");
+
 	g_string_append(out, "li {\n");
 	g_string_append(out, "  float: left;\n");
 	g_string_append(out, "}\n");
@@ -1451,7 +1468,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	g_string_append(out, "<ul>\n");
 	alt = _("Back");
 	g_string_append_printf(out,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"javascript: window.history.go(-1)\" class=\"%s\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1471,7 +1488,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"p\" rel=\"prev\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1493,7 +1510,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"t\" rel=\"up\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1515,7 +1532,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"n\" rel=\"next\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1537,7 +1554,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"x\" rel=\"index\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1558,7 +1575,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		click = "";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\"%s accesskey=\"c\" rel=\"bookmark\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1580,7 +1597,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		disabled = "_disabled";
 	}
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\" accesskey=\"h\" rel=\"help\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1593,7 +1610,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	str = g_strdup(void_href);
 	disabled = "";
 	hyp_utf8_sprintf_charset(out, opts->output_charset,
-		"<li style=\"position:absolute;left:%dpx;\">"
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 		"<a href=\"%s\" class=\"%s%s\" onclick=\"showInfo();\" accesskey=\"i\" rel=\"copyright\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 		"</li>\n",
 		xpos,
@@ -1608,18 +1625,18 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		alt = _("View a new file");
 		disabled = "";
 		g_string_append_printf(out,
-			"<li style=\"position:absolute;left:%dpx;\">"
+			"<li style=\"position:absolute;left:%dpx;top:1px;\">"
 			"<a href=\"%s\" class=\"%s%s\" accesskey=\"o\"><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
 			"</li>\n",
 			xpos,
 			html_nav_load_href, html_nav_img_style, disabled, html_nav_load_png, alt, alt, html_nav_dimensions, html_closer);
 		xpos += button_w;
 	
-		g_string_append_printf(out, "<li style=\"position:absolute;left:%dpx;\">\n", xpos);
+		g_string_append_printf(out, "<li style=\"position:absolute;left:%dpx;top:1px;padding:0px;\">\n", xpos);
 		str = html_quote_name(html_referer_url, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 		g_string_append_printf(out, "<input type=\"hidden\" name=\"url\" value=\"%s\"%s\n", str, html_closer);
 		g_free(str);
-		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" id=\"searchfield\" name=\"q\" size=\"10\" value=\"\"%s\n", html_closer);
+		g_string_append_printf(out, "<input accesskey=\"s\" type=\"text\" id=\"searchfield\" name=\"q\" class=\"%s\" size=\"10\" value=\"\"%s\n", html_nav_search_style, html_closer);
 		g_string_append_printf(out, "<script type=\"text/javascript\">document.getElementById('searchfield').placeholder = '%s';</script>\n", _("Search"));
 		g_string_append(out, "</li>\n");
 	}
@@ -2534,6 +2551,8 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 			attr.curfg = attr.newfg = HYP_DEFAULT_FG;
 			attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 			lineno = 0;
+			if (!for_inline)
+				html_out_lineno(opts, out, lineno);
 			html_out_labels(hyp, opts, out, entry, lineno, syms);
 			html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
 			
@@ -2592,6 +2611,12 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 							{
 								INDEX_ENTRY *dest_entry = hyp->indextable[xref.dest_page];
 								xref.destfilename = html_filename_for_node(hyp, opts, xref.dest_page, TRUE);
+								if (xref.line > 0)
+								{
+									char *tmp = g_strdup_printf("%s#%s%u", xref.destfilename, hypview_lineno_tag, xref.line + 1);
+									g_free(xref.destfilename);
+									xref.destfilename = tmp;
+								}
 								xref.destname = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
 								xref.desttype = (hyp_indextype) dest_entry->type;
 							} else
@@ -2749,10 +2774,12 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 					g_string_append_c(out, '\n');
 					at_bol = TRUE;
 					++lineno;
-					html_out_labels(hyp, opts, out, entry, lineno, syms);
-					html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
 					src++;
 					textstart = src;
+					if (src < end && !for_inline)
+						html_out_lineno(opts, out, lineno);
+					html_out_labels(hyp, opts, out, entry, lineno, syms);
+					html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
 				} else
 				{
 					FLUSHTREE();
@@ -2768,6 +2795,8 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 			FLUSHLINE();
 			FLUSHTREE();
 			++lineno;
+			if (src != textstart && !for_inline)
+				html_out_lineno(opts, out, lineno);
 			html_out_labels(hyp, opts, out, entry, lineno, syms);
 			html_out_graphics(hyp, opts, out, hyp_gfx, lineno, &gfx_id);
 			

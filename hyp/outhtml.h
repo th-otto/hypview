@@ -38,6 +38,8 @@ extern int html_doctype;
 extern const char *cgi_scriptname;
 extern gboolean html_css_written;
 extern gboolean html_js_written;
+extern char const hypview_lineno_tag[];
+extern char const html_attr_bold_style[];
 
 #define QUOTE_CONVSLASH  0x0001
 #define QUOTE_SPACE      0x0002
@@ -61,6 +63,7 @@ struct html_xref {
 
 char *html_quote_name(const char *name, unsigned int flags);
 char *html_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node, unsigned int flags);
+char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, gboolean quote);
 void html_out_entities(GString *out);
 void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, struct hyp_gfx *hyp_gfx, struct html_xref *xrefs, symtab_entry *syms, gboolean for_error);
 void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean for_error, gboolean warn_gfx);

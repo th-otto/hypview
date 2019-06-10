@@ -193,6 +193,7 @@ hypview_cgi_SOURCES = \
 	outhtml.c outhtml.h htmljs.h \
 	outxml.c outxml.h \
 	pdf.c pdf.h \
+	bm.c bm.h \
 	cgic.c cgic.h \
 	$(UTIL_SRC)
 

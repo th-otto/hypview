@@ -36,6 +36,7 @@ struct hypfind_opts {
 	gboolean print_unknown;
 	gboolean multiple;
 	unsigned long filecount;
+	unsigned long pagehits;
 	unsigned long hits;
 	unsigned long total_hits;
 	BM_TABLE deltapat;
@@ -269,29 +270,35 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 			break;
 		offset += opts->pattern_len;
 		scan += offset;
-		ASSERT(scanlen <= offset);
+		ASSERT(scanlen >= offset);
 		scanlen -= offset;
-	} 
-	nodename = stg_quote_nodename(hyp, nodeptr->number);
-	if (nodeptr->window_title)
-	{
-		char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
-		linktext = stg_quote_name(buf, STR0TERM);
-		g_free(buf);
-	} else
-	{
-		linktext = nodename;
 	}
 	target = hyp_basename(hyp->file);
-	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\" %ld}\n", target, linktext, target, nodename, nodeptr->height);
-	fputs(": ", opts->outfile);
+	nodename = stg_quote_nodename(hyp, nodeptr->number);
+	if (opts->pagehits == 0)
+	{
+		if (opts->hits != 0)
+			fputs("\n", opts->outfile);
+		if (nodeptr->window_title)
+		{
+			char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+			linktext = stg_quote_name(buf, STR0TERM);
+			g_free(buf);
+		} else
+		{
+			linktext = nodename;
+		}
+		hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\"}\n", target, linktext, target, nodename);
+
+		if (linktext != nodename)
+			g_free(linktext);
+	}
+	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%ld:\" link \"%s/%s\" %ld} ", nodeptr->height, target, nodename, nodeptr->height);
 	stg_out_str(opts->outfile, opts->output_charset, text, match, match + opts->pattern_len);
 	fputs("\n", opts->outfile);
-	fputs("\n", opts->outfile);
+	g_free(nodename);
 	
-	if (nodename != linktext)
-		g_free(nodename);
-	g_free(linktext);
+	opts->pagehits++;
 	opts->hits++;
 }
 
@@ -323,12 +330,13 @@ static gboolean search_node(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, HYP_NO
 		textlen += len; \
 		g_free(str); \
 	}
-	
+
 	end = nodeptr->end;
 
 	/*
 	 * now output data
 	 */
+	opts->pagehits = 0;
 	src = nodeptr->start;
 	textstart = src;
 	nodeptr->height = 0;

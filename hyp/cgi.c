@@ -42,6 +42,7 @@
 #include "outhtml.h"
 #include "stat_.h"
 #include "cgirsc.h"
+#include "bm.h"
 #include "hv_vers.h"
 
 char const gl_program_name[] = "hypview.cgi";
@@ -68,6 +69,361 @@ struct curl_parms {
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+struct hypfind_opts {
+	gboolean casesensitive;
+	gboolean wordonly;
+	char *pattern;
+	size_t pattern_len;
+	gboolean multiple;
+	unsigned long filecount;
+	unsigned long pagehits;
+	unsigned long hits;
+	unsigned long total_hits;
+	BM_TABLE deltapat;
+};
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean is_word_char(unsigned char ch)
+{
+	if (ch >= 0x80)
+		return TRUE;
+	if (strchr(gl_profile.hypfind.wordchars, ch) != NULL)
+		return TRUE;
+	return FALSE;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void search_out_str(hcp_opts *opts, GString *out, const char *str, size_t len)
+{
+	char *dst, *p;
+	gboolean converror = FALSE;
+	
+	dst = hyp_conv_charset(HYP_CHARSET_UTF8, opts->output_charset, str, len, &converror);
+	p = html_quote_name(dst, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
+	g_string_append(out, p);
+	g_free(p);
+	g_free(dst);
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void search_text(HYP_DOCUMENT *hyp, hcp_opts *opts, struct hypfind_opts *search, const char *text, size_t textlen, GString *out, HYP_NODE *nodeptr)
+{
+	char *title;
+	char *destname;
+	char *destfilename;
+	const char *match;
+	const char *scan = text;
+	size_t scanlen = textlen;
+	const char *style = "";
+	INDEX_ENTRY *dest_entry;
+	size_t offset;
+
+	for (;;)
+	{
+		if (scanlen == 0)
+			return;
+		if (search->casesensitive)
+			match = bm_scanner(&search->deltapat, scan, scanlen);
+		else if (search->deltapat.slowcase)
+			match = hyp_utf8_strcasestr(scan, search->pattern);
+		else
+			match = bm_casescanner(&search->deltapat, scan, scanlen);
+		if (match == NULL)
+			return;
+		if (!search->wordonly)
+			break;
+		offset = match - scan;
+		if ((offset == 0 || !is_word_char(match[-1])) &&
+			(offset + search->pattern_len >= scanlen || !is_word_char(match[search->pattern_len])))
+			break;
+		offset += search->pattern_len;
+		scan += offset;
+		ASSERT(scanlen >= offset);
+		scanlen -= offset;
+	}
+	dest_entry = hyp->indextable[nodeptr->number];
+	destname = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
+	destfilename = html_filename_for_node(hyp, opts, nodeptr->number, TRUE);
+	if (search->pagehits == 0)
+	{
+		if (search->hits != 0)
+		{
+			g_string_append_c(out, '\n');
+		} else
+		{
+			title = html_quote_name(gl_profile.hypfind.title, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
+			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE);
+			g_free(title);
+		}
+		if (nodeptr->window_title)
+		{
+			char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+			title = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+			g_free(buf);
+		} else
+		{
+			title = html_quote_nodename(hyp, nodeptr->number, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
+		}
+		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s\">%s</a>\n", style, destfilename, title);
+
+		g_free(title);
+	}
+	hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s#%s%ld\">%ld:</a> ", style, destfilename, hypview_lineno_tag, nodeptr->height, nodeptr->height);
+	offset = match - text;
+	search_out_str(opts, out, text, offset);
+	g_string_append_printf(out, "<span class=\"%s\">", html_attr_bold_style);
+	search_out_str(opts, out, match, search->pattern_len);
+	g_string_append_printf(out, "</span>");
+	search_out_str(opts, out, match + search->pattern_len, textlen - offset - search->pattern_len);
+	g_string_append_c(out, '\n');
+	g_free(destfilename);
+	g_free(destname);
+	
+	search->pagehits++;
+	search->hits++;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean search_node(HYP_DOCUMENT *hyp, hcp_opts *opts, struct hypfind_opts *search, GString *out, HYP_NODE *nodeptr)
+{
+	char *str;
+	const unsigned char *src;
+	const unsigned char *end;
+	const unsigned char *textstart;
+	char *text;
+	size_t len, textlen, text_alloced;
+	gboolean retval = TRUE;
+	
+	
+#define DUMPTEXT() \
+	if (src > textstart) \
+	{ \
+		str = hyp_conv_to_utf8(hyp->comp_charset, textstart, src - textstart); \
+		if (str == NULL) { retval = FALSE; goto error; } \
+		len = strlen(str); \
+		if ((textlen + len) >= text_alloced) \
+		{ \
+			text_alloced = textlen + len + 1024; \
+			text = g_renew(char, text, text_alloced); \
+			if (text == NULL) { retval = FALSE; goto error; } \
+		} \
+		strcpy(text + textlen, str); \
+		textlen += len; \
+		g_free(str); \
+	}
+
+	end = nodeptr->end;
+
+	/*
+	 * now output data
+	 */
+	search->pagehits = 0;
+	src = nodeptr->start;
+	textstart = src;
+	nodeptr->height = 0;
+	textlen = 0;
+	text_alloced = 1024;
+	text = g_new(char, text_alloced);
+	if (text == NULL) { retval = FALSE; goto error; }
+
+	while (src < end)
+	{
+		if (*src == HYP_ESC)
+		{
+			DUMPTEXT();
+			src++;
+			switch (*src)
+			{
+			case HYP_ESC_ESC:
+				textstart = src;
+				src++;
+				DUMPTEXT();
+				break;
+			
+			case HYP_ESC_WINDOWTITLE:
+				src++;
+				nodeptr->window_title = src;
+				src += ustrlen(src) + 1;
+				break;
+
+			case HYP_ESC_CASE_DATA:
+				if (src[1] < 3u)
+					src += 2;
+				else
+					src += src[1] - 1;
+				break;
+			
+			case HYP_ESC_LINK:
+			case HYP_ESC_LINK_LINE:
+			case HYP_ESC_ALINK:
+			case HYP_ESC_ALINK_LINE:
+				{
+					unsigned char type;
+					size_t len;
+					
+					type = *src;
+					if (type == HYP_ESC_LINK_LINE || type == HYP_ESC_ALINK_LINE)
+					{
+						src += 2;
+					}
+					src += 3;
+					if (*src <= HYP_STRLEN_OFFSET)
+					{
+						src++;
+					} else
+					{
+						len = *src - HYP_STRLEN_OFFSET;
+						src++;
+						textstart = src;
+						src += len;
+						DUMPTEXT();
+					}
+				}
+				break;
+				
+			case HYP_ESC_EXTERNAL_REFS:
+				if (src[1] < 5u)
+					src += 4;
+				else
+					src += src[1] - 1;
+				break;
+				
+			case HYP_ESC_OBJTABLE:
+				src += 9;
+				break;
+				
+			case HYP_ESC_PIC:
+				src += 8;
+				break;
+				
+			case HYP_ESC_LINE:
+				src += 7;
+				break;
+				
+			case HYP_ESC_BOX:
+			case HYP_ESC_RBOX:
+				src += 7;
+				break;
+				
+			case HYP_ESC_CASE_TEXTATTR:
+				src++;
+				break;
+			
+			case HYP_ESC_FG_COLOR:
+			case HYP_ESC_BG_COLOR:
+				src += 2;
+				break;
+			
+			case HYP_ESC_UNKNOWN_A4:
+				if (opts->print_unknown)
+					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+				src++;
+				break;
+			
+			default:
+				if (opts->print_unknown)
+					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
+				src++;
+				break;
+			}
+			textstart = src;
+		} else if (*src == HYP_EOL)
+		{
+			DUMPTEXT();
+			++nodeptr->height;
+			text[textlen] = '\0';
+			search_text(hyp, opts, search, text, textlen, out, nodeptr);
+			src++;
+			textstart = src;
+			textlen = 0;
+		} else
+		{
+			src++;
+		}
+	}
+	
+	if (retval)
+	{
+		DUMPTEXT();
+		++nodeptr->height;
+		text[textlen] = '\0';
+		search_text(hyp, opts, search, text, textlen, out, nodeptr);
+	}
+	
+error:
+	g_free(text);
+	
+#undef DUMPTEXT
+	return retval;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean search_hyp(HYP_DOCUMENT *hyp, hcp_opts *opts, struct hypfind_opts *search, GString *out, hyp_nodenr node)
+{
+	hyp_nodenr node_num;
+	INDEX_ENTRY *entry;
+	gboolean retval = TRUE;
+	HYP_NODE *nodeptr;
+
+	for (node_num = 0; node_num < hyp->num_index; node_num++)
+	{
+		entry = hyp->indextable[node_num];
+		if (node_num == hyp->index_page)
+			continue;
+		if (node != HYP_NOINDEX && node_num != node)
+			continue;
+		switch ((hyp_indextype) entry->type)
+		{
+		case HYP_NODE_INTERNAL:
+			nodeptr = hyp_loadtext(hyp, node_num);
+			if (nodeptr != NULL)
+			{
+				retval &= search_node(hyp, opts, search, out, nodeptr);
+				hyp_node_free(nodeptr);
+			}
+			break;
+		case HYP_NODE_POPUP:
+		case HYP_NODE_IMAGE:
+		case HYP_NODE_EXTERNAL_REF:
+		case HYP_NODE_SYSTEM_ARGUMENT:
+		case HYP_NODE_REXX_SCRIPT:
+		case HYP_NODE_REXX_COMMAND:
+		case HYP_NODE_QUIT:
+		case HYP_NODE_CLOSE:
+		case HYP_NODE_EOF:
+			break;
+		default:
+			if (opts->print_unknown)
+				hyp_utf8_fprintf(opts->errorfile, _("unknown index entry type %u\n"), entry->type);
+			break;
+		}
+	}
+
+	if (cmdline_version)
+		ClearCache(hyp);
+
+	if (search->hits == 0)
+	{
+		html_out_header(NULL, opts, out, _("No match"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, _("%s: No matches for this pattern!\n"), _("error"));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+	} else
+	{
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, FALSE, FALSE);
+	}
+	
+	return retval;
+}
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
+
 static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr output_node, hyp_pic_format *pic_format)
 {
 	hyp_nodenr node;
@@ -75,9 +431,12 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	gboolean ret;
 	symtab_entry *syms;
 	char *destname;
-	
+
 	ret = TRUE;
-	
+
+	if (output_node == HYP_NOINDEX)
+		output_node = 0;
+
 	if (hyp->first_text_page == HYP_NOINDEX)
 	{
 		html_out_header(NULL, opts, out, _("Corrupt HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
@@ -201,7 +560,7 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hyp_nodenr node, hyp_pic_format *pic_format)
+static gboolean recompile(const char *filename, hcp_opts *opts, struct hypfind_opts *search, GString *out, hyp_nodenr node, hyp_pic_format *pic_format)
 {
 	gboolean retval;
 	HYP_DOCUMENT *hyp;
@@ -277,7 +636,10 @@ static gboolean recompile(const char *filename, hcp_opts *opts, GString *out, hy
 		hcp_opts_parse_string(&hyp_opts, hyp->hcp_options, OPTS_FROM_SOURCE);
 	}
 	g_freep(&hyp_opts.output_filename);
-	retval = recompile_html_node(hyp, &hyp_opts, out, node, pic_format);
+	if (search->pattern)
+		retval = search_hyp(hyp, &hyp_opts, search, out, node);
+	else
+		retval = recompile_html_node(hyp, &hyp_opts, out, node, pic_format);
 	hyp_opts.outfile = NULL;
 	hyp_opts.errorfile = NULL;
 	hcp_opts_free(&hyp_opts);
@@ -512,12 +874,15 @@ int main(void)
 	int retval = EXIT_SUCCESS;
 	hcp_opts _opts;
 	hcp_opts *opts = &_opts;
+	struct hypfind_opts _search;
+	struct hypfind_opts *search = &_search;
 	FILE *out = stdout;
 	GString *body;
 	hyp_pic_format pic_format = HYP_PIC_UNKNOWN;
 	CURL *curl = NULL;
 	char *lang;
-	hyp_nodenr node = 0;
+	hyp_nodenr node = HYP_NOINDEX;
+	long lineno = 0;
 	char *val;
 	gboolean isrsc = FALSE;
 
@@ -545,6 +910,11 @@ int main(void)
 		{}
 	opts->all_links = !opts->autoreferences;
 
+	memset(search, 0, sizeof(*search));
+	search->casesensitive = FALSE;
+	search->wordonly = FALSE;
+	bm_init(&search->deltapat, NULL, TRUE);
+	
 	g_freep(&opts->error_filename);
 	opts->errorfile = fopen("hypview.log", "a");
 	if (opts->errorfile == NULL)
@@ -615,6 +985,12 @@ int main(void)
 		node = (int)strtoul(val, NULL, 10);
 		g_free(val);
 	}
+	if ((val = cgiFormString("lineno")) != NULL)
+	{
+		lineno = (int)strtoul(val, NULL, 10);
+		g_free(val);
+		(void)lineno;
+	}
 	if ((val = cgiFormString("isrsc")) != NULL)
 	{
 		isrsc = (int)strtol(val, NULL, 10) != 0;
@@ -625,9 +1001,23 @@ int main(void)
 		opts->cgi_cached = (int)strtol(val, NULL, 10) != 0;
 		g_free(val);
 	}
+	if ((val = cgiFormString("q")) != NULL)
+	{
+		search->pattern = val;
+		search->pattern_len = strlen(search->pattern);
+		if (!bm_init(&search->deltapat, search->pattern, search->casesensitive) ||
+			search->pattern_len == 0)
+		{
+			html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+			g_string_append(body, _("empty search pattern\n"));
+			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+			retval = EXIT_FAILURE;
+		}
+	}
 	opts->read_images = !opts->hideimages || opts->showstg;
 	
-	if (g_ascii_strcasecmp(cgiRequestMethod, "GET") == 0)
+	if (retval == EXIT_SUCCESS &&
+		g_ascii_strcasecmp(cgiRequestMethod, "GET") == 0)
 	{
 		char *url = cgiFormString("url");
 		char *filename = g_strdup(url);
@@ -688,13 +1078,15 @@ int main(void)
 		{
 			if (isrsc)
 			{
+				if (node == HYP_NOINDEX)
+					node = 0;
 				if (show_resource(filename, opts, body, node, &pic_format) == FALSE)
 				{
 					retval = EXIT_FAILURE;
 				}
 			} else
 			{
-				if (recompile(filename, opts, body, node, &pic_format) == FALSE)
+				if (recompile(filename, opts, search, body, node, &pic_format) == FALSE)
 				{
 					retval = EXIT_FAILURE;
 				}
@@ -705,8 +1097,9 @@ int main(void)
 		g_freep(&html_referer_url);
 
 		g_free(url);
-	} else if (g_ascii_strcasecmp(cgiRequestMethod, "POST") == 0 ||
-		g_ascii_strcasecmp(cgiRequestMethod, "BOTH") == 0)
+	} else if (retval == EXIT_SUCCESS &&
+		(g_ascii_strcasecmp(cgiRequestMethod, "POST") == 0 ||
+		 g_ascii_strcasecmp(cgiRequestMethod, "BOTH") == 0))
 	{
 		char *filename;
 		int len;
@@ -782,13 +1175,15 @@ int main(void)
 				html_referer_url = g_strdup(filename);
 				if (isrsc)
 				{
+					if (node == HYP_NOINDEX)
+						node = 0;
 					if (show_resource(local_filename, opts, body, node, &pic_format) == FALSE)
 					{
 						retval = EXIT_FAILURE;
 					}
 				} else
 				{
-					if (recompile(local_filename, opts, body, node, &pic_format) == FALSE)
+					if (recompile(local_filename, opts, search, body, node, &pic_format) == FALSE)
 					{
 						retval = EXIT_FAILURE;
 					}
@@ -825,6 +1220,8 @@ int main(void)
 		curl_global_cleanup();
 	}
 	
+	bm_exit(&search->deltapat);
+	g_free(search->pattern);
 	HypProfile_Delete();
 	x_free_resources();
 
