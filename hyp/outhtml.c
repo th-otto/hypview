@@ -1462,7 +1462,7 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 	
 	g_string_append_printf(out, "<div class=\"%s\">\n", html_toolbar_style);
 	
-	g_string_append(out, "<form action=\"hypview.cgi\" method=\"get\">\n");
+	g_string_append(out, "<form action=\"hypview.cgi\" method=\"get\" onsubmit=\"return submitSearch(event);\">\n");
 	g_string_append(out, "<fieldset style=\"border:0;margin-left:0;margin-right:0;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0;\">\n");
 	g_string_append(out, "<legend></legend>\n");
 	g_string_append(out, "<ul>\n");
