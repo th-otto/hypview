@@ -307,7 +307,7 @@ static GString *get_png(GRECT *gr, GString *out)
 {
 	int width = gr->g_w;
 	int height = gr->g_h;
-	unsigned char *dst;
+	unsigned char *volatile dst;
 	size_t dststride;
 	_WORD pxy[4];
 	writepng_info *wpnginfo;

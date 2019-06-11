@@ -148,7 +148,11 @@ char *g_get_current_dir(void)
 
 	if (cwd[0] == '\0')
 		strcpy(cwd, ".");
+#ifdef RSCVIEW_VERSION
+	return g_strdup(cwd);
+#else
 	return hyp_conv_to_utf8(hyp_get_current_charset(), cwd, STR0TERM);
+#endif
 #endif
 }
 #endif
