@@ -13,11 +13,11 @@ endif
 AM_CPPFLAGS =	$(GTK_CFLAGS) \
 		-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
-	
-AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir) -I$(top_srcdir)/rcintl
-AM_CPPFLAGS += -I$(hyp_srcdir)/rsc/include
+
+AM_CPPFLAGS += -I$(top_srcdir)/include -I$(top_srcdir)/rcintl
+AM_CPPFLAGS += -I$(top_srcdir)/rsc/include
 if WITH_PDF
-AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
+AM_CPPFLAGS += -I$(top_srcdir)/hpdf/include
 endif
 
 applicationdir = $(datadir)/applications
@@ -68,12 +68,12 @@ hypview_SOURCES = \
 	hv_nav.c \
 	hv_popup.c \
 	hv_prefs.c \
+	hv_rcomp.c \
 	hv_rsc.c \
 	hv_srch.c \
 	hv_tbar.c \
 	hv_win.c \
 	autoloc.c \
-	hv_rcomp.c \
 	hcp_opts.c \
 	../hyp/outcomm.c \
 	../hyp/outstg.c \

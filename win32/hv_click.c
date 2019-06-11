@@ -404,7 +404,7 @@ gboolean HypFindLink(WINDOW_DATA *win, int x, int y, LINK_INFO *info, gboolean s
 			} else
 			{
 				link_w = 0;
-				if (HYP_ESC_IS_TEXATTR(*src))	/* text attributes */
+				if (HYP_ESC_IS_TEXTATTR(*src))	/* text attributes */
 				{
 					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 					SelectObject(hdc, (HGDIOBJ)win->fonts[(textattr) & HYP_TXT_MASK]);

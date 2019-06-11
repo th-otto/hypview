@@ -328,7 +328,7 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 			} else
 			{
 				link_w = 0;
-				if (HYP_ESC_IS_TEXATTR(*src))	/* text attributes */
+				if (HYP_ESC_IS_TEXTATTR(*src))	/* text attributes */
 				{
 					textattr = *src - HYP_ESC_TEXTATTR_FIRST;
 					vst_effects(vdi_handle, textattr);

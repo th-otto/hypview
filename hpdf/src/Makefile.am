@@ -1,5 +1,5 @@
-include ../../silent.am
-include ../../Makefile.common
+include $(top_srcdir)/silent.am
+include $(top_srcdir)/Makefile.common
 
 noinst_LIBRARIES = libhpdf.a
 
@@ -64,7 +64,7 @@ libhpdf_a_SOURCES = \
 	t4.h \
 	$(empty)
 
-AM_CPPFLAGS = -I$(srcdir)/../include
+AM_CPPFLAGS = -I$(srcdir)/../include -I$(top_srcdir)/include
 AM_CPPFLAGS += $(Z_CFLAGS)
 if HAVE_PNG
 AM_CPPFLAGS += $(PNG_CFLAGS)

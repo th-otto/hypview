@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = rcintl potools pic icons po hyp
+SUBDIRS = include rcintl potools pic icons po
 if NEED_ZLIB
 SUBDIRS += zlib
 endif
@@ -14,10 +14,10 @@ endif
 if NEED_GEMLIB
 SUBDIRS += rsc
 endif
-SUBDIRS += gtk win32 tos tools doc www
+SUBDIRS += hyp gtk win32 tos macos tools doc www
 
 EXTRA_DIST = \
-	include defaults skins \
+	defaults skins \
 	intltool-merge.in intltool-extract.in intltool-update.in \
 	COPYING \
 	langid/model.c \

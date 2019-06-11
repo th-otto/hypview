@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
 AM_CPPFLAGS =
-AM_CPPFLAGS += -I$(top_srcdir)
+AM_CPPFLAGS += -I$(top_srcdir)/include
 AM_CPPFLAGS += -I$(srcdir)
 AM_CPPFLAGS += $(Z_CFLAGS)
 

@@ -312,6 +312,7 @@ AC_EXEEXT
 AC_C_CONST
 AC_PROG_CC_C_O
 AX_PROG_CC_FOR_BUILD
+AC_PROG_OBJC
 
 ###############################################################################
 #
@@ -1003,6 +1004,7 @@ AC_CONFIG_COMMANDS([pofiles],[
 
 AC_OUTPUT([
 	Makefile
+	include/Makefile
 	rcintl/Makefile
 	potools/Makefile
 	pic/Makefile
@@ -1012,6 +1014,7 @@ AC_OUTPUT([
 	hyp/Makefile
 	gtk/Makefile
 	win32/Makefile
+	macos/Makefile
 	hpdf/Makefile
 	hpdf/include/Makefile
 	hpdf/src/Makefile

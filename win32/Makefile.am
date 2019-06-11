@@ -8,10 +8,10 @@ endif
 
 AM_CPPFLAGS =	-DBINDIR="\"$(bindir)\"" \
 		-DPKGDATADIR="\"$(pkgdatadir)\""
-AM_CPPFLAGS += -I$(hyp_srcdir)/include -I$(top_srcdir)/rcintl
-AM_CPPFLAGS += -I$(hyp_srcdir)/rsc/include
+AM_CPPFLAGS += -I$(top_srcdir)/include -I$(top_srcdir)/rcintl
+AM_CPPFLAGS += -I$(top_srcdir)/rsc/include
 if WITH_PDF
-AM_CPPFLAGS += -I$(srcdir)/../hpdf/include
+AM_CPPFLAGS += -I$(top_srcdir)/hpdf/include
 endif
 
 	

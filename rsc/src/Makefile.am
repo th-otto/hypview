@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 include $(top_srcdir)/silent.am
 include $(top_srcdir)/Makefile.common
 
-AM_CPPFLAGS = -I$(srcdir) -I$(srcdir)/../include
+AM_CPPFLAGS = -I$(srcdir) -I$(srcdir)/../include -I$(top_srcdir)/include
 AM_CPPFLAGS += $(GLIB_CFLAGS)
 AM_CPPFLAGS += $(PNG_CFLAGS)
 AM_CPPFLAGS += $(Z_CFLAGS)
@@ -20,7 +20,6 @@ librsc_a_SOURCES = \
 	fileio.c \
 	bghio.c \
 	debug.c \
-	nls.h \
 	win32.c \
 	$(empty)
 

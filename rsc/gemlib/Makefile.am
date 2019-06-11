@@ -1,7 +1,7 @@
 include $(top_srcdir)/silent.am
 include $(top_srcdir)/Makefile.common
 
-AM_CPPFLAGS = -I$(srcdir) -I$(srcdir)/../include
+AM_CPPFLAGS = -I$(srcdir) -I$(srcdir)/../include -I$(top_srcdir)/include
 AM_CPPFLAGS += -DPRIVATE_AES -DPRIVATE_VDI
 
 noinst_LIBRARIES = libgem.a

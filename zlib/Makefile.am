@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libz.a
 
 AM_CPPFLAGS =
-AM_CPPFLAGS += -I$(top_srcdir)
+AM_CPPFLAGS += -I$(top_srcdir)/include
 AM_CPPFLAGS += -DZLIB_STATIC
 
 libz_a_SOURCES = \
