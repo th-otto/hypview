@@ -122,9 +122,9 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 		case HPDF_INVALID_ANNOTATION: return _("Specified annotation handle is invalid");
 		case 0x101d: return _("reserved");
 		case HPDF_INVALID_BIT_PER_COMPONENT: return _("Bit-per-component of a image which was set as mask-image is invalid");
-		case HPDF_INVALID_CHAR_MATRICS_DATA: return _("Cannot recognize char-matrics-data of afm file");
+		case HPDF_INVALID_CHAR_METRICS_DATA: return _("Cannot recognize char-metrics-data of afm file");
 		case HPDF_INVALID_COLOR_SPACE: return _("Invalid color_space parameter");
-		case HPDF_INVALID_COMPRESSION_MODE: return _("Invalid value set when invoking HPDF_SetCommpressionMode()");
+		case HPDF_INVALID_COMPRESSION_MODE: return _("Invalid value set when invoking HPDF_SetCompressionMode()");
 		case HPDF_INVALID_DATE_TIME: return _("An invalid date-time value was set");
 		case HPDF_INVALID_DESTINATION: return _("HPDF_INVALID_DESTINATION");
 		case 0x1024: return _("reserved");
@@ -134,7 +134,7 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 		case HPDF_INVALID_ENCODER_TYPE: return _("Combination between font and encoder is wrong");
 		case 0x1029: return _("reserved");
 		case 0x102a: return _("reserved");
-		case HPDF_INVALID_ENCODING_NAME: return _("An Invalid encoding name is specified");
+		case HPDF_INVALID_ENCODING_NAME: return _("An invalid encoding name is specified");
 		case HPDF_INVALID_ENCRYPT_KEY_LEN: return _("Encryption key length is invalid");
 		case HPDF_INVALID_FONTDEF_DATA: return _("An invalid font handle was set");
 		case HPDF_INVALID_FONTDEF_TYPE: return _("Invalid font definition type");
@@ -173,7 +173,7 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 		case HPDF_PAGE_INVALID_FONT: return _("An invalid font-handle was specified");
 		case HPDF_PAGE_INVALID_FONT_SIZE: return _("An invalid font-size was set");
 		case HPDF_PAGE_INVALID_GMODE: return _("Invalid page graphics mode");
-		case HPDF_PAGE_INVALID_INDEX: return _("Invaid page index");
+		case HPDF_PAGE_INVALID_INDEX: return _("Invalid page index");
 		case HPDF_PAGE_INVALID_ROTATE_VALUE: return _("Specified value is not multiple of 90");
 		case HPDF_PAGE_INVALID_SIZE: return _("An invalid page-size was set");
 		case HPDF_PAGE_INVALID_XOBJECT: return _("An invalid image-handle was set");
@@ -212,7 +212,7 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 		case HPDF_PAGE_INSUFFICIENT_SPACE: return _("Insufficient space on page");
 		case HPDF_PAGE_INVALID_DISPLAY_TIME: return _("Invalid display time");
 		case HPDF_PAGE_INVALID_TRANSITION_TIME: return _("Invalid page transition time");
-		case HPDF_INVALID_PAGE_SLIDESHOW_TYPE: return _("Invalid psgae slideshow type");
+		case HPDF_INVALID_PAGE_SLIDESHOW_TYPE: return _("Invalid page slideshow type");
 		case HPDF_EXT_GSTATE_OUT_OF_RANGE: return _("ExtGState out of range");
 		case HPDF_INVALID_EXT_GSTATE: return _("Invalid ExtGState");
 		case HPDF_EXT_GSTATE_READ_ONLY: return _("ExtGStateis read-only");

@@ -55,7 +55,7 @@ extern "C" {
 #define HPDF_INVALID_ANNOTATION                   0x101C
 /*                                                0x101D */
 #define HPDF_INVALID_BIT_PER_COMPONENT            0x101E
-#define HPDF_INVALID_CHAR_MATRICS_DATA            0x101F
+#define HPDF_INVALID_CHAR_METRICS_DATA            0x101F
 #define HPDF_INVALID_COLOR_SPACE                  0x1020
 #define HPDF_INVALID_COMPRESSION_MODE             0x1021
 #define HPDF_INVALID_DATE_TIME                    0x1022

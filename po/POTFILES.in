@@ -1,4 +1,4 @@
-# Auto-generated: Do 25. Apr 19:56:13 CEST 2019
+# Auto-generated: Di 11. Jun 20:35:54 CEST 2019
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -17,13 +17,16 @@ gtk/hv_main.c
 gtk/hv_mark.c
 gtk/hv_nav.c
 gtk/hv_prefs.c
-gtk/hv_recomp.c
+gtk/hv_rcomp.c
+gtk/hv_rsc.c
 gtk/hv_srch.c
 gtk/hv_win.c
 gtk/hypview.desktop.in
+hpdf/src/hpdf_error.c
 hyp/bmp2gif.c
 hyp/bmp2img.c
 hyp/cgi.c
+hyp/cgirsc.c
 hyp/gif2bmp.c
 hyp/hcp_comp.c
 hyp/hcp_opts.c
@@ -41,19 +44,20 @@ hyp/icn2ico.c
 hyp/icn2img.c
 hyp/ico2icn.c
 hyp/img2bmp.c
-hyp/outasc.h
-hyp/outcomm.h
-hyp/outdump.h
-hyp/outhtml.h
-hyp/outstg.h
-hyp/outxml.h
+hyp/outasc.c
+hyp/outcomm.c
+hyp/outdump.c
+hyp/outhtml.c
+hyp/outstg.c
+hyp/outxml.c
+hyp/pdf.c
+hyp/pdfid.c
 hyp/picinfo.c
 hyp/prepare.c
 hyp/ref.c
 hyp/refcheck.c
 hyp/refcmds.c
 hyp/reflink.c
-hyp/rsccgi.c
 hyp/stool.c
 hyp/win32.c
 hyp/xgetopt.c
@@ -70,9 +74,9 @@ macos/hv_main.m
 macos/hv_mark.m
 macos/hv_nav.m
 macos/hv_prefs.m
-macos/hv_recomp.m
+macos/hv_rcomp.m
+macos/hv_rsc.m
 macos/hv_srch.m
-macos/hv_win.m
 macos/pixdata.c
 pic/piccolor.c
 tools/1st_conv/1st_conv.c
@@ -101,6 +105,7 @@ win32/hv_main.c
 win32/hv_mark.c
 win32/hv_nav.c
 win32/hv_prefs.c
-win32/hv_recomp.c
+win32/hv_rcomp.c
+win32/hv_rsc.c
 win32/hv_srch.c
 win32/hv_win.c

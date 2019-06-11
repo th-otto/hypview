@@ -233,7 +233,7 @@ static HPDF_STATUS LoadAfm(HPDF_FontDef fontdef, HPDF_Stream stream)
 		if (strcmp(buf2, "CX") == 0)
 		{
 			/* not suppoted yet. */
-			return HPDF_SetError(fontdef->error, HPDF_INVALID_CHAR_MATRICS_DATA, 0);
+			return HPDF_SetError(fontdef->error, HPDF_INVALID_CHAR_METRICS_DATA, 0);
 		} else if (strcmp(buf2, "C") == 0)
 		{
 			s += 2;
@@ -245,7 +245,7 @@ static HPDF_STATUS LoadAfm(HPDF_FontDef fontdef, HPDF_Stream stream)
 
 		} else
 		{
-			return HPDF_SetError(fontdef->error, HPDF_INVALID_CHAR_MATRICS_DATA, 0);
+			return HPDF_SetError(fontdef->error, HPDF_INVALID_CHAR_METRICS_DATA, 0);
 		}
 
 		/* WX Character width */

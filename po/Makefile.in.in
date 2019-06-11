@@ -261,9 +261,11 @@ generate_potfiles_in:
 	 file=$(srcdir)/POTFILES.in ;			\
 	 ( cd $(srcdir)/..;			\
 	   echo "# Auto-generated: `LANG=C date`" ;	\
-	   ( grep -l '_("' gtk/*.[ch] tools/*/*.[ch] hyp/*.[ch] tos/*.[ch] win32/*.[ch] macos/*.[mch] pic/*.[ch] ;	\
+	   ( grep -l '_("' gtk/*.[ch] tools/*/*.[ch] hyp/*.[ch] tos/*.[ch] hpdf/src/*.[ch] win32/*.[ch] macos/*.[mch] pic/*.[ch] ;	\
+	     grep -l 'N_("' gtk/*.[ch] tools/*/*.[ch] hyp/*.[ch] tos/*.[ch] hpdf/src/*.[ch] win32/*.[ch] macos/*.[mch] pic/*.[ch] ;	\
+	     grep -l 'W_("' gtk/*.[ch] tools/*/*.[ch] hyp/*.[ch] tos/*.[ch] hpdf/src/*.[ch] win32/*.[ch] macos/*.[mch] pic/*.[ch] ;	\
 	     ls gtk/*.desktop.in		\
-	     ) | sort	\
+	     ) | sort -u \
 	  ) > $$tmp &&				\
 	 mv $$tmp $$file &&			\
 	 echo "created `pwd`/$$file" || $(RM) $tmp
