@@ -84,7 +84,8 @@ static __inline void **__vdi_array_ptr(short n, short *array)
 #define vdi_control_ptr(n, t)  *((t *)__vdi_array_ptr(7 + (n) * N_PTRINTS, vdi_control))
 #define vdi_intin_ptr(n, t)  *((t *)__vdi_array_ptr(n, vdi_intin))
 #define vdi_intout_ptr(n, t)  *((t *)__vdi_array_ptr(n, vdi_intout))
-#define vdi_ptsin_ptr(n, t)  *((t *)__vdi_array_ptr(n, vdi_intin))
+#define vdi_ptsin_ptr(n, t)  *((t *)__vdi_array_ptr(n, vdi_ptsin))
+#define vdi_ptsout_ptr(n, t)  *((t *)__vdi_array_ptr(n, vdi_ptsout))
 
 #if defined(__GNUC__) && defined(__mc68000__) && !defined(PRIVATE_VDI)
 
