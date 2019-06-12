@@ -865,6 +865,23 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
 
+static void mk_output_dir(hcp_opts *opts)
+{
+	char *dir = hyp_path_get_dirname(cgiScriptFilename);
+	char *cache_dir = g_build_filename(dir, cgi_cachedir, NULL);
+	opts->output_dir = g_build_filename(cache_dir, cgiRemoteAddr, NULL);
+
+	if (mkdir(cache_dir, 0750) < 0 && errno != EEXIST)
+		fprintf(opts->errorfile, "%s: %s\n", cache_dir, strerror(errno));
+	if (mkdir(opts->output_dir, 0750) < 0 && errno != EEXIST)
+		fprintf(opts->errorfile, "%s: %s\n", opts->output_dir, strerror(errno));
+	
+	g_free(cache_dir);
+	g_free(dir);
+}
+	
+/* ------------------------------------------------------------------------- */
+
 /*
  * this module does not get any parameters, so we don't need our wrappers */
 /* #include "hypmain.h" */
@@ -934,20 +951,6 @@ int main(void)
 	body = g_string_new(NULL);
 	cgiInit(body);
 
-	{
-		char *dir = hyp_path_get_dirname(cgiScriptFilename);
-		char *cache_dir = g_build_filename(dir, cgi_cachedir, NULL);
-		opts->output_dir = g_build_filename(cache_dir, cgiRemoteAddr, NULL);
-
-		if (mkdir(cache_dir, 0750) < 0 && errno != EEXIST)
-			fprintf(opts->errorfile, "%s: %s\n", cache_dir, strerror(errno));
-		if (mkdir(opts->output_dir, 0750) < 0 && errno != EEXIST)
-			fprintf(opts->errorfile, "%s: %s\n", opts->output_dir, strerror(errno));
-		
-		g_free(cache_dir);
-		g_free(dir);
-	}
-	
 	html_init(opts);
 
 	if (cgiAccept && strstr(cgiAccept, "application/xhtml+xml") != NULL)
@@ -1032,6 +1035,7 @@ int main(void)
 			/*
 			 * disallow file URIs, they would resolve to local files on the WEB server
 			 */
+			hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, query=%s\n", currdate(), fixnull(cgiRemoteHost), fixnull(cgiQueryString));
 			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
 			g_string_append_printf(body,
 				_("Sorry, this type of\n"
@@ -1057,6 +1061,7 @@ int main(void)
 			{
 				char *local_filename;
 				
+				mk_output_dir(opts);
 				if (opts->cgi_cached)
 				{
 					html_referer_url = g_strdup(hyp_basename(filename));
@@ -1124,6 +1129,7 @@ int main(void)
 			char *local_filename;
 			const char *data;
 			
+			mk_output_dir(opts);
 			if (*filename == '\0')
 			{
 				g_free(filename);
