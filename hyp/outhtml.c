@@ -1770,6 +1770,12 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					}
 					sym = sym_find(sym->next, xref->destname, REF_LABELNAME);
 				}
+				if (label == NULL)
+				{
+					char *tmp = g_strdup_printf("%s#%s%u", xref->destfilename, hypview_lineno_tag, xref->line + 1);
+					g_free(xref->destfilename);
+					xref->destfilename = tmp;
+				}
 			}
 			if (label)
 			{
@@ -2611,12 +2617,6 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 							{
 								INDEX_ENTRY *dest_entry = hyp->indextable[xref.dest_page];
 								xref.destfilename = html_filename_for_node(hyp, opts, xref.dest_page, TRUE);
-								if (xref.line > 0)
-								{
-									char *tmp = g_strdup_printf("%s#%s%u", xref.destfilename, hypview_lineno_tag, xref.line + 1);
-									g_free(xref.destfilename);
-									xref.destfilename = tmp;
-								}
 								xref.destname = hyp_conv_to_utf8(hyp->comp_charset, dest_entry->name, dest_entry->length - SIZEOF_INDEX_ENTRY);
 								xref.desttype = (hyp_indextype) dest_entry->type;
 							} else
