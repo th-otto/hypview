@@ -377,21 +377,21 @@ An unsuccessful search will be reported in an appropriate dialogue.
 How does one adapt ST-Guide to its environment?
 
 All components of ST-Guide can be configured via a file named
-ST-GUIDE.INF which has to reside in a folder specified by the HOME
+(!file [hypview.ini]) which has to reside in a folder specified by the HOME
 environment variable or in the root directory of the boot
 disk/partition (usually C:\ with a hard disk, otherwise A:\).
 
 It is constructed for the most part in a similar way to environment
 files of various AUTO folder environment setting programs
 
-Several variables are set in the ST-GUIDE.INF file, some of which
+Several variables are set in the (!file [hypview.ini]) file, some of which
 ST-Guide evaluates itself while others are required by external
-associated programs. The (!file [ST-GUIDE.INF]) file included in the distribution
+associated programs. The (!file [hypview.ini]) file included in the distribution
 already contains a full complement of settings (with comments) and need
 not be altered if the ST-Guide archive was unpacked to the root
 directory of the C: partition.
 
-ST-GUIDE.INF is a pure ASCII file that can be edited by any ASCII text
+(!file [hypview.ini]) is a pure ASCII file that can be edited by any ASCII text
 editor (e.g. Everest...) if required.
 
 The following environment variables are evaluated by ST-Guide:
@@ -462,8 +462,8 @@ Note that there may be no spaces before or after the '=', and
 <Variable> and <Value> must (!B)not(!b) be enclosed in angle brackets or
 quotes.
 
-!begin_node ST-GUIDE.INF
-!html_name st_guide_inf
+!begin_node HYPVIEW.INI
+!html_name hypview_ini
 
 The following environment variables are in use at present:
 
@@ -769,7 +769,7 @@ provide information about which $-lines are required.
 (ST-Guide)
 !end_blist
 
-!end_node # ST-GUIDE.INF
+!end_node # HYPVIEW.INI
 
 !end_node # Configuration
 
@@ -1043,7 +1043,7 @@ of which one can jump, of course, with a mouse click.
 !begin_xlist [~~~~~~]
 !item [~~~~~~] With this function (also reachable with (!key [Alternate - K])) one can
 load in the catalogue file created by STool. More exactly, the
-file identified by the variable HYPTOP in the (!file [ST-GUIDE.INF]) file
+file identified by the variable HYPTOP in the (!file [hypview.ini]) file
 will be loaded.
 
 If you have not yet created a catalogue, or if your present
@@ -1051,7 +1051,7 @@ catalogue is no longer quite up to date because new hypertexts
 have been added, then you can also create a current one right
 here. A click on the 'button' visible below starts STool. I
 hope! If not, then it is likely that the following line in your
-ST-GUIDE.INF file is wrong or absent:
+(!file [hypview.ini]) file is wrong or absent:
 
 $STOOL=<path>stool.tos
 
@@ -1162,7 +1162,7 @@ available. The key combination for this function is incidentally
 The preselected path in the file selector will be chosen in the
 following manner:
 !begin_enumerate !compressed
-!item Variable HYPFOLD (in the file ST-GUIDE.INF), if this
+!item Variable HYPFOLD (in the file (!file [hypview.ini])), if this
 exists,
 !item Path of the file last loaded, if HYPFOLD does not exist,
 or
@@ -1336,7 +1336,7 @@ Find as page.
 
 To express this more clearly: This search method deals with
 searching for a cross-reference or a character string in the global
-reference file specified in ST-GUIDE.INF with the REF variable
+reference file specified in (!file [hypview.ini]) with the REF variable
 (usually ALL.REF) which has been produced by the RefLink utility
 that combines the cross- reference files of individual hypertexts
 into a master file. Thus the search is not confined to just one
@@ -1356,7 +1356,7 @@ exists somewhere, then ST-Guide will find this page and display it.
 
 This utilises the external ST-Guide utility HypFind included in the
 ST-Guide distribution. The environment variable HYPFIND must be
-defined in ST-GUIDE.INF.
+defined in (!file [hypview.ini]).
 
 The search is case insensitive and the utility produces a hit list
 of all all matching entries in the form of a hypertext that will be
@@ -1448,7 +1448,7 @@ the 'correct ž' during this, so that all the German Umlaut characters
 should appear correctly in the printout.
 
 Alternatively there is the option of defining the variable PRINTER in
-the ST-GUIDE.INF file. In that case, instead of printing directly when
+the (!file [hypview.ini]) file. In that case, instead of printing directly when
 the 'Print' function is called, the program specified in the variable
 will be started and the contents of the page to be printed will be
 copied to the clipboard from where they can be read by the external
@@ -1502,7 +1502,7 @@ program to ST-Guide that allows annotations for given hypertext
 pages to be created, stored and recalled again at any time very
 simply. ST-Guide is well prepared for cooperation with Remarker.
 
-If the variable REMARKER is defined in ST-GUIDE.INF, or Remarker
+If the variable REMARKER is defined in (!file [hypview.ini]), or Remarker
 is also running, then this menu entry can be selected in the
 Extra popup or activated by the key-combination (!key [Alternate + R]).
 ST-Guide then calls or starts the Remarker. If REMARKER is
@@ -1556,7 +1556,7 @@ both to the icons as well as clicking on text in the window.
 
 (!B)Note:(!b) You can click not just on words or phrases emphasised as cross
 references, but also on unmarked words as long as the REFONLY variable
-has not been set in ST-GUIDE.INF. ST-Guide will then find the Reflink
+has not been set in (!file [hypview.ini]). ST-Guide will then find the Reflink
 generated global cross reference index file (REF) for the word clicked
 on, and display the corresponding page if the find was successful.
 
@@ -1573,7 +1573,7 @@ can choose to copy the marked block to the clipboard or print the
 block.
 
 !item The right mouse button can be used as an alternative to the Back
-icon if the RIGHTBACK variable has been defined in ST-GUIDE.INF and
+icon if the RIGHTBACK variable has been defined in (!file [hypview.ini]) and
 the click is made when the mouse cursor is inside the ST-Guide
 window. This function is not fully 'blessed' by the operating
 system, so to speak, and is therefore not activated at first. Mouse
@@ -1853,7 +1853,7 @@ A call using 'C:\AES.HYP' loads the selected file and displays the
 first page from it.
 
 A call using 'appl_init' searches for a matching reference in the
-file assigned to the REF variable in ST-GUIDE.INF (usually
+file assigned to the REF variable in (!file [hypview.ini]) (usually
 ALL.REF). If a matching reference is found the appropriate
 hypertext is loaded and displayed at the appropriate page.
 
@@ -2244,7 +2244,7 @@ Remedy: Use it RefLink or RefCheck to remove the "REF-body".
 it's located in a directory that can't be found.
 
 Remedy: (!link [Copy] [Extra -> Copy]) the hypertext to the Guides directory i.e.. the one
-that is defined in the ST-Guide.Inf file under "PATHS=", or extend
+that is defined in the (!file [hypview.ini]) file under "PATHS=", or extend
 this line to include the directory where the hypertext is located.
 
 !end_itemize
@@ -2268,9 +2268,9 @@ Possible causes:
 Remedy: Use RefLink or RefCheck to create it.
 
 !item You actually have a REF-file, however it is not defined correctly in
-the ST-Guide.Inf file.
+the (!file [hypview.ini]) file.
 
-Remedy: Put it in your ST-Guide.Inf file in the "REF=" line, giving
+Remedy: Put it in your (!file [hypview.ini]) file in the "REF=" line, giving
 the right path and names of the file, or copy its location of the
 REF-file to the "REF=" line.
 !end_itemize
@@ -2285,19 +2285,19 @@ REF-file to the "REF=" line.
 !endif
 
 A program should have been started from within the hypertext, but
-didn't, even though its path is given in the ST-Guide.Inf.
+didn't, even though its path is given in the (!file [hypview.ini]).
 
 Possible causes:
 
 !begin_itemize
 !item The author of the hypertext has forgotten to inform you how you need
-to install it in your ST-Guide.Inf file.
+to install it in your (!file [hypview.ini]) file.
 
 Remedy: Ask the author of the relevant hypertext what you have to
 do here.
 
 !item You have forgotten to identify the necessary extensions in the
-ST-Guide.Inf file.
+(!file [hypview.ini]) file.
 
 Remedy: Put the missing ones in immediately.
 !end_itemize
@@ -2352,7 +2352,7 @@ file.
 that is hidden from ST-Guide.
 
 Remedy: Copy the file into the GUIDES directory i.e. in one of the
-directories that is listed in the ST-GUIDE.INF file in the
+directories that is listed in the (!file [hypview.ini]) file in the
 'PATHS=' line, or include the directory where the file is located.
 
 !item You have renamed the file.

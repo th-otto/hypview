@@ -98,7 +98,7 @@ Run HypFind and enter the following command line then select 'OK':
 !end_quote
 
 HypFind examines each hypertext found in the directories listed under
-the ST-GUIDE.INF PATH variable and creates a hypertext containing each
+the (!file [hypview.ini]) PATH variable and creates a hypertext containing each
 occurrence of the word 'Joe'. Here's an extract:
 
 !begin_verbatim

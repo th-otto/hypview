@@ -41,7 +41,7 @@
 # ------------------------------------------------------
 # Set the subject for the ST-Guide
 # ------------------------------------------------------
-!raw [stg] @subject "Dokumentation/ST-Guide"
+!raw [stg] @subject "Dokumentation/HypView"
 !raw [stg] @options "+z -t4 +i"
 !docinfo [stgdatabase] RefLink Dokumentation
 
@@ -64,8 +64,8 @@
 !tableofcontents !depth 2
 !toc_title Der Referenz-File Linker RefLink
 
-!raw [stg] @xref "ST-Guide.HYP/Main" "ST-Guide Dokumentation"
-!raw [stg] @xref "HCP.HYP/Main" "HCP Dokumentation"
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide Dokumentation"
+!raw [stg] @xref "hcp.hyp/Main" "HCP Dokumentation"
 !raw [stg] @xref "stool.hyp/Main" "STool Dokumentation"
 
 !begin_node Allgemeines

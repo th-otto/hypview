@@ -149,7 +149,7 @@ For (!B)symbol(!b) the following is allowed:
                 useful in connection with (!link [@include] [Command @include])
     !item [0]           Returns undefined (FALSE), so  the 'if 0'  construction
                 known from C becomes possible
-    !item [<val>]       Returns the value of the ST-GUIDE.INF-variable <val>
+    !item [<val>]       Returns the value of the (!file [hypview.ini])-variable <val>
 !end_xlist
 
 For (!B)op(!b) the following character strings are allowed:
@@ -1614,7 +1614,7 @@ shel_find().
 
 Since the paths to the files are likely to be different with  different
 computers, the parameter  following 'system'  may also  be a  variable,
-which ST-Guide will then look for in the ST-GUIDE.INF file.
+which HypView will then look for in the (!file [hypview.ini]) file.
 
 (!U)An example will then look as follows(!u):
 
@@ -1625,12 +1625,12 @@ which ST-Guide will then look for in the ST-GUIDE.INF file.
 One should note the '$' character before the name, from which  ST-Guide
 recognises that this is a varaible.
 
-For this to work, ST-GUIDE.INF then  has to contain something like  the
+For this to work, (!file [hypview.ini]) then  has to contain something like  the
 following:
 
 !begin_quote
     ... (!nl)
-    $STOOL=C:\ST-GUIDE\STOOL.TOS (!nl)
+    $STOOL=C:\HYPVIEW\STOOL.TOS (!nl)
     ...
 !end_quote
 

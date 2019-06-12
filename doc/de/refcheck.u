@@ -75,7 +75,7 @@ Diese Bibliothek dient dem  ST-Guide  zum  Auffinden  von  Stichworten,
 welche in anderen als der aktuell dargestellten Hypertextdatei definiert
 wurden.
 
-Als Bibliothek wird hierbei defaultmÑûig die in der ST-GUIDE.INF-Variablen
+Als Bibliothek wird hierbei defaultmÑûig die in der (!file [hypview.ini])-Variablen
 'REF' angegebene Datei verwendet. Falls diese Variable nicht existiert, und
 in der Kommandozeile auch keine Bibliotheks-Datei angegeben wurde
 (Option -r), so wird eine Datei namens 'ALL.REF' im aktuellen Verzeichnis
@@ -92,7 +92,7 @@ werden.
 
 !begin_node CHECK-Modus (kleine Optionsbuchstaben)
 !html_name refcheck_check
-Im CHECK-Modus liest REFCHECK zuerst aus der Datei ST-GUIDE.INF die
+Im CHECK-Modus liest REFCHECK zuerst aus der Datei (!file [hypview.ini]) die
 Variablen PATHS und REF (Ausnahme siehe Option -r). Sollte auûerdem die
 Variable REFPATHS existieren, wird diese anstelle von PATHS benutzt. So kann
 man bestimmen, daû nur die REF-Dateien von Hypertexten aus bestimmten Pfaden
@@ -149,7 +149,7 @@ refcheck [-hH][-rR reflib][-acdfgims]|[[-A|-D|-E|-F|-L|-M] [file ...]]
 !begin_xlist [-r reflib oder -R reflib:] !compressed
     !item [(!link [-h oder -H] [Option -h]):] Am Ende auf Tastendruck warten
     !item [(!link [-r reflib oder -R reflib] [Option -r]):] Zu bearbeitende REF-Datei setzen
-                              (Default: REF aus ST-GUIDE.INF)
+                              (Default: REF aus (!file [hypview.ini]))
 !end_xlist
 
 !item [CHECK-Optionen:]
@@ -168,7 +168,7 @@ refcheck [-hH][-rR reflib][-acdfgims]|[[-A|-D|-E|-F|-L|-M] [file ...]]
 !end_xlist
 
 Alle CHECK-Optionen kînnen auch Åber die Variable REFCHECK-OPT in der
-Datei ST-GUIDE.INF gesetzt werden. Diese Variable wird aber nur
+Datei (!file [hypview.ini]) gesetzt werden. Diese Variable wird aber nur
 ausgewertet, wenn die Kommandozeile von REFCHECK leer ist!
 
 Beispiel: REFCHECK-OPT=ads
@@ -181,7 +181,7 @@ Bedeutung der unten verwendeten Namen:
 !item ['reffile'] = REF-Datei (kann auch eine REF-Bibliothek sein).
 !label reflib
 !item ['reflib']  = REF-Bibliothek (mehrere REF-Dateien in einer Datei).
-!item ['REF']     = REF-Bibliothek, die in der ST-GUIDE.INF hinter der Variablen
+!item ['REF']     = REF-Bibliothek, die in der (!file [hypview.ini]) hinter der Variablen
             REF angegeben ist bzw. die mit der Option -r gesetzte
             REF-Bibliothek.
 !label module
@@ -227,7 +227,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !item [-r (!link [reflib] [reflib]) oder -R reflib] (!nl)
         (set REF) (!nl)
         Normalerweise wird bei allen Optionen/Kommandos automatisch die
-        REF-Bibliothek bearbeitet, die in der Datei ST-GUIDE.INF mit der
+        REF-Bibliothek bearbeitet, die in der Datei (!file [hypview.ini]) mit der
         Variablen REF definiert ist. Mit dieser Option kann man eine
         beliebige andere REF-Datei/-Bibliothek bestimmen, die stattdessen
         bearbeitet wird.
@@ -256,7 +256,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
         (make catalog) (!nl)
         Falls beim REFCHECK-Lauf énderungen gefunden wurden, wird
         anschlieûend automatisch das Programm aufgerufen, das in der
-        (!file [ST-GUIDE.INF]) hinter der Variablen $STOOL definiert ist. Hierbei ist
+        (!file [hypview.ini]) hinter der Variablen $STOOL definiert ist. Hierbei ist
         mit 'énderungen' das HinzufÅgen von REF-Dateien oder das Lîschen von
         Modulen gemeint (auch wenn dieses nur angezeigt und nicht
         ausgefÅhrt wird).
@@ -293,7 +293,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
         Aussagen bei der Beschreibung zur Option -c.
         
         Die Option -f ist dann sinnvoll, wenn man die Variable REFPATHS
-        in ST-GUIDE.INF definiert hat und somit evtl. nicht alle Hypertexte
+        in (!file [hypview.ini]) definiert hat und somit evtl. nicht alle Hypertexte
         erfaût werden.
 !end_xlist
 
@@ -467,8 +467,8 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !begin_node Dateien
 !html_name refcheck_files
 
-!begin_xlist [ST-GUIDE.INF]
-    !item [ST-GUIDE.INF] (!nl)
+!begin_xlist [HYPVIEW.INI]
+    !item [hypview.ini] (!nl)
         Muû sich im HOME-Directory oder im Wurzelverzeichnis des
         Bootlaufwerkes befinden. Aus dieser Datei werden die Variablen
         REF, PATHS, [REFPATHS], REFCHECK-OPT und $STOOL gelesen.
@@ -479,7 +479,7 @@ Bei unbekannten Optionen (z.B. -?) wird eine Hilfe ausgegeben!
 !html_name refcheck_env
 !begin_xlist [SHELL]
     !item [HOME] (!nl)
-        Wird bei der Suche nach der ST-GUIDE.INF ausgewertet.
+        Wird bei der Suche nach der (!file [hypview.ini]) ausgewertet.
 
     !item [SHELL] (!nl)
         Wird evtl. beim Aufruf von $STOOL benutzt.

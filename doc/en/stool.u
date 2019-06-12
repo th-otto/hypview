@@ -42,7 +42,7 @@
 # ------------------------------------------------------
 !ifdest [stg,amg]
 !begin_raw
-@subject "Documentation/ST-Guide"
+@subject "Documentation/HypView"
 @options "+z -t4 +i"
 @extern HypView "hypview.hyp/Main"
 @extern HCP "hcp.hyp/Main"
@@ -50,7 +50,7 @@
 @extern STool "stool.hyp/Main"
 @extern "ST-Guide" "st-guide.hyp/Main"
 @extern MAN2STG "man2stg.hyp/Main"
-@extern Remarker "Remarker.hyp/Main"
+@extern Remarker "remarker.hyp/Main"
 @extern STG-FAQ "stg-faq.hyp/Main"
 !end_raw
 !endif
@@ -131,7 +131,7 @@ in your 'master' catalogue file.
 STool generates a hypertext  called CATALOG.HYP (or KATALOG.HYP  if
 you're using the German  version) and this can  be viewed like  any
 other hypertext; it will be displayed  at once if no other  default
-hypertext was specified in  ST-GUIDE.INF. There's a 'Catalog'  Menu
+hypertext was specified in  (!file [hypview.ini]). There's a 'Catalog'  Menu
 option in ST-Guide (or  press (!key [Alternate + K])) which will call the
 catalogue directly.
 
@@ -174,7 +174,7 @@ When STool is executed the following sequence takes place:
 
 !begin_enumerate
 !item The  paths  specified by  the  environmental variable PATHS  in
-    (!file [ST-GUIDE.INF]) are searched for hypertext files.
+    (!file [hypview.ini]) are searched for hypertext files.
 
 !item The file (!file [CATALOG.TXT]) is read and updated with the details of any
     hypertexts  not  currently  included.   This  means  that   any
@@ -211,7 +211,7 @@ The configuration file  that STool reads  should always reside  in
  HYPTOP and use  a .CFG file extender  with the same  file
  name as the intended catalogue.
 
- Here's an example: If the HYPTOP variable in ST-GUIDE.INF is
+ Here's an example: If the HYPTOP variable in (!file [hypview.ini]) is
 
 !begin_quote
  HYPTOP=C:\GUIDES\CONTENTS.HYP
@@ -546,7 +546,7 @@ other users!
 
 A link is set for each file so  that it can be accessed even if  it
 is addded at a  later stage, as  long as this  is in the  specified
-path, or one of the search paths defined in ST-GUIDE.INF.
+path, or one of the search paths defined in (!file [hypview.ini]).
 
 The filename for  the catalogue  is fixed; the  English version  is
 called CATALOG.HYP (the German  version is called KATALOG.HYP).  If
@@ -554,7 +554,7 @@ you obtain a catalogue with the  wrong filename, it can be  renamed
 using the GEM desktop's 'Show Info' option, or another utility.
 
 ST-Guide first searches for the catalogue in the folder defined  in
-ST-GUIDE.INF for generating the hypertext  in, then in the  current
+(!file [hypview.ini]) for generating the hypertext  in, then in the  current
 directory.
 
 (!U)New in versions from 8.11.94 onwards:(!u)
@@ -635,7 +635,7 @@ classify hypertexts according to your own requirements.
 !begin_node Environmental variables
 !html_name stool_env
 
-STool uses  some  environmental  variables  from  ST-GUIDE.INF.  In
+STool uses  some  environmental  variables  from  (!file [hypview.ini]).  In
 detail these are:
 
 !begin_blist [HYPTOP]

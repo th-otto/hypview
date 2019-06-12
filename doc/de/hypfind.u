@@ -98,7 +98,7 @@ Starte HypFind und gib folgende Kommandozeile ein, dann w„hle 'OK':
 !end_quote
 
 HypFind durchsucht alle Hypertexte in allen Verzeichnissen die in
-der ST-GUIDE.INF Variablen PATH angegeben sind, und erzeugt
+der (!file [hypview.ini]) Variablen PATH angegeben sind, und erzeugt
 einen Hypertext mit Verweisen auf alle Stellen in denen das
 Wort 'Joe' vorkommt. Hier ist ein Auszug:
 

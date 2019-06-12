@@ -66,8 +66,8 @@
 !toc_title Dokumentation zu Stool
 
 !raw [stg] @xref "hypview.hyp/Main" "HypView Dokumentation"
-!raw [stg] @xref "ST-Guide.HYP/Main" "ST-Guide Dokumentation"
-!raw [stg] @xref "HCP.HYP/Main" "HCP Dokumentation"
+!raw [stg] @xref "st-guide.hyp/Main" "ST-Guide Dokumentation"
+!raw [stg] @xref "hcp.hyp/Main" "HCP Dokumentation"
 !raw [stg] @xref "refcheck.hyp/Main" "RefCheck Dokumentation"
 
 !begin_node Die Idee hinter diesem Programm

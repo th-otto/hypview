@@ -79,7 +79,7 @@ to the screen (or to an output file specified with (!link [-o] [Option o]).
 In addition, the packed and unpacked length of each page and (!link [image] [Command @image]) will
 be listed. Note that the output file is laid out for a tab-width of  8,
 so that  if it  is to  be  viewed with  ST-GUIDE, TABSIZE=8  should  be
-specified in ST-GUIDE.INF or the columns will not line up properly. The
+specified in (!file [hypview.ini]) or the columns will not line up properly. The
 same tab-width should be set in any editors etc.
 
 One can optionally also specify <F> to (!link [define] [Command @define]) a filter mask; with  this

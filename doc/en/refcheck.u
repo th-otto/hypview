@@ -170,8 +170,8 @@ by (!HCP).
 
 !begin_node Files
 !html_name refcheck_files
-!begin_xlist [ST-GUIDE.INF]
-    !item [ST-GUIDE.INF] (!nl)
+!begin_xlist [HYPVIEW.INI]
+    !item [hypview.ini] (!nl)
     Must be in the directory set by the environment variable $HOME.
     This file is used to read the variables REF, PATHS, REFPATHS,
     REFCHECK-OPT and $STOOL.
@@ -182,7 +182,7 @@ by (!HCP).
 !html_name refcheck_env
 !begin_xlist [SHELL]
     !item [HOME] (!nl)
-        Will be used when search for (!file [ST-GUIDE.INF]).
+        Will be used when search for (!file [hypview.ini]).
 
     !item [SHELL] (!nl)
         Will be used when calling (!STOOL).

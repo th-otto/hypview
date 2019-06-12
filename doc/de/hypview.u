@@ -373,16 +373,16 @@ und zeigt eine Liste der gefundenen Verweise an.
 Wie paût man den ST-Guide an die Umgebung an?
 
 Alle Komponenten des ST-Guide kînnen Åber eine Datei konfiguriert werden,
-welche den Namen (!file [ST-GUIDE.INF]) trÑgt und sich im durch die
+welche den Namen (!file [hypview.ini]) trÑgt und sich im durch die
 Environmentvariable HOME angegebenen Ordner oder im Wurzelverzeichnis des
 Bootlaufwerkes befinden muû (meist C:\).
 
 Sie ist i.w. so aufgebaut wie die Environment-Dateien diverser
 Auto-Ordner-Environment-Setzer (tolles Wort...).
 
-In der Datei (!file [ST-GUIDE.INF]) werden mehrere Variablen gesetzt, wovon der
+In der Datei (!file [hypview.ini]) werden mehrere Variablen gesetzt, wovon der
 ST-Guide selbst einige auswertet, andere wiederum werden von externen
-Zusatz-Programmen benîtigt. Die mitgelieferte ST-GUIDE.INF enthÑlt bereits
+Zusatz-Programmen benîtigt. Die mitgelieferte (!file [hypview.ini]) enthÑlt bereits
 ein vollstÑndiges Set von Einstellungen (mit Kommentaren) und braucht nicht
 verÑndert zu werden, wenn das ST-Guide-Archiv im Wurzelverzeichnis der
 C:-Platte entpackt wurde.
@@ -451,8 +451,8 @@ Leerzeichen in den Zeilen befinden. Die Syntax ist
 Man beachte, daû keine Leerzeichen vor oder hinter dem '=' stehen dÅrfen
 und <Wert> (!B)ohne(!b) Hochkommata angegeben wird.
 
-!begin_node ST-GUIDE.INF
-!html_name st_guide_inf
+!begin_node HYPVIEW.INI
+!html_name hypview_ini
 !label INF-Datei
 
 Folgende Variablen werden zur Zeit benutzt:
@@ -1008,7 +1008,7 @@ natÅrlich per Mausklick gesprungen werden kann.
 !begin_xlist [~~~~~~]
 !item [~~~~~~] Mit dieser Funktion (auch aufrufbar durch (!key [Alternate - K])) kann die
 von STool erzeugte Katalog-Datei nachgeladen werden. Genaugenommen
-wird die Datei, die durch die Variable HYPTOP in der (!file [ST-GUIDE.INF])
+wird die Datei, die durch die Variable HYPTOP in der (!file [hypview.ini])
 festgelegt wurde, nachgeladen.
 
 Falls Sie noch keinen Katalog erzeugt haben, oder falls Ihr
@@ -1016,7 +1016,7 @@ vorhandener Katalog nicht mehr ganz aktuell ist, da neue Hypertexte
 hinzugekommen sind, kînnen Sie auch gleich hier einen aktuellen
 erzeugen lassen. Ein Klick auf den unten sichtbaren "Knopf" startet
 STool. Hoffenlich. Wenn nicht, dann ist wahrscheinlich die folgende
-Zeile in Ihrer (!file [ST-GUIDE.INF]) falsch oder nicht vorhanden: (!nl)
+Zeile in Ihrer (!file [hypview.ini]) falsch oder nicht vorhanden: (!nl)
 $(!nolink [STOOL])=<pfad>stool.tos
 
 !ifdest [stg,amg]
@@ -1124,7 +1124,7 @@ Funktion lautet Åbrigens (!key [Control - O]).
 Der voreingestellte Pfad fÅr den Selektor wird folgendermaûen
 gewÑhlt:
 !begin_enumerate !compressed
-!item Variable HYPFOLD (in der Datei ST-GUIDE.INF), falls diese
+!item Variable HYPFOLD (in der Datei (!file [hypview.ini])), falls diese
 existiert,
 !item Pfad der zuletzt geladenen Datei, falls HYPFOLD nicht
 existiert oder
@@ -1398,7 +1398,7 @@ Das berÅchtigte "Atari-(!beta)" wird dabei vom ST-Guide automatisch in das
 "richtige û" gewandelt, sodaû alle Umlaute korrekt im Ausdruck erscheinen
 sollten.
 
-Alternativ gibt es die Mîglichkeit, in der (!file [ST-GUIDE.INF]) die Variable
+Alternativ gibt es die Mîglichkeit, in der (!file [hypview.ini]) die Variable
 PRINTER zu definieren. In diesem Fall wird beim Aufruf der Drucken-Funktion
 statt eines direkten Ausdrucks das dort angegebene Programm gestartet.
 Der Inhalt der auszudruckenden Seite wird dabei auf das Klemmbrett kopiert.
@@ -1454,7 +1454,7 @@ bestimmten Hypertextseiten erstellt, abgespeichert und jederzeit
 wieder hervorgeholt werden kînnen. Der ST-Guide ist auf die
 Zusammenarbeit mit dem Remarker bestens vorbereitet.
 
-Falls die Variable REMARKER in der (!link [ST-GUIDE.INF] [REMARKER]) definiert ist
+Falls die Variable REMARKER in der (!link [HYPVIEW.INI] [REMARKER]) definiert ist
 oder Remarker ebenfalls lÑuft, kann dieser MenÅpunkt im Extra-Popup
 ausgewÑhlt oder per Tastenkombination (!key [Alternate - R]) aktiviert
 werden. Der ST-Guide ruft dann den Remarker auf bzw. startet ihn.
@@ -1508,7 +1508,7 @@ den Icons, als auch beim Anklicken von Text im Fenster.
 
 (!B)Merke:(!b) Nicht nur als solche kenntlich gemachte Verweise kînnen angeklickt
 werden, sondern auch nicht-markierte Worte, sofern nicht die REFONLY-
-Variable in der (!file [ST-GUIDE.INF]) gesetzt wurde. Der ST-Guide sucht dann in der
+Variable in der (!file [hypview.ini]) gesetzt wurde. Der ST-Guide sucht dann in der
 vom RefLink erzeugten globalen Stichwort-Datei (REF) nach dem angeklickten
 Wort und zeigt eine entsprechende Seite an, falls die Suche erfolgreich
 war.
@@ -1525,7 +1525,7 @@ Loslassen der Maustaste mittels Auswahl im erscheinenden Popup auf das
 Klemmbrett kopiert oder gedruckt werden.
 
 !item Rechte Maustaste als Alternative zum ZurÅck-Icon, falls die Variable
-RIGHTBACK in der (!file [ST-GUIDE.INF]) definiert ist und der Klick dann
+RIGHTBACK in der (!file [hypview.ini]) definiert ist und der Klick dann
 geschieht, wenn der Mauszeiger sich gerade im ST-Guide-Fenster befindet.
 Diese Funktion ist von einigen Betriebssystemen gewissermaûen nicht voll
 "abgesegnet" und daher zunÑchst nicht aktiviert. Mausfetischisten
@@ -2121,7 +2121,7 @@ war
 12 Seiten, zu denen auf diese Weise direkt zurÅckgekehrt
 werden kann
 !item [ST-Guide:] beginnt der bei "system" angegebene Programmname mit einem
-'$', so wird eine Variable dieses Namens in der ST-GUIDE.INF
+'$', so wird eine Variable dieses Namens in der (!file [hypview.ini])
 gesucht, und das dort angegebene Programm ausgefÅhrt
 !item [ST-Guide:] Iconify jetzt nach der (umstÑndlicheren) MTOS Methode
 implementiert, die den unangenehmen Nebeneffekt hat, daû die
@@ -2379,7 +2379,7 @@ finden, weil er sich in einem Verzeichnis befindet, das nicht durchsucht
 wurde.
 
 Abhilfe: kopieren sie den Hypertext in ihr Guides-Verzeichnis bzw. in
-eines der Verzeichnisse, die sie in der (!file [ST-Guide.inf]) Datei in der
+eines der Verzeichnisse, die sie in der (!file [hypview.ini]) Datei in der
 "PATHS=" Zeile angegeben haben, oder erweitern sie diese Zeile um das
 Verzeichnis, in dem sich der Hypertext befindet.
 !end_itemize
@@ -2401,9 +2401,9 @@ Mîgliche Ursachen:
 Abhilfe: benutzen sie RefLink oder RefCheck, um dies nachzuholen.
 
 !item Sie haben zwar eine REF-Datei, diese jedoch nicht oder nicht korrekt
-in der ST-Guide.inf Datei angegeben.
+in der (!file [hypview.ini]) Datei angegeben.
 
-Abhilfe: tragen sie in ihrer (!file [ST-Guide.inf]) Datei in der "REF=" Zeile
+Abhilfe: tragen sie in ihrer (!file [hypview.ini]) Datei in der "REF=" Zeile
 den richtigen Pfad und Namen der Datei ein, oder kopieren sie ihre
 REF-Datei in das bei "REF=" angegebene Verzeichnis.
 !end_itemize
@@ -2417,17 +2417,17 @@ REF-Datei in das bei "REF=" angegebene Verzeichnis.
 !endif
 
 Ein Programm sollte aus dem Hypertext heraus gestartet werden, dessen
-Pfad in der ST-Guide.inf angegeben sein sollte, es aber nicht war.
+Pfad in der (!file [hypview.ini]) angegeben sein sollte, es aber nicht war.
 
 Mîgliche Ursachen:
 !begin_itemize
 !item Der Autor des Hypertextes hat vergessen Ihnen mitzuteilen, daû sie Ihre
-(!file [ST-Guide.inf]) Datei anpassen mÅssen.
+(!file [hypview.ini]) Datei anpassen mÅssen.
 
 Abhilfe: fragen sie den Autor des betreffenden Hypertextes, was hier
 zu tun ist.
 
-!item Sie haben vergessen, die nîtigen Erweiterungen in der ST-Guide.inf Datei
+!item Sie haben vergessen, die nîtigen Erweiterungen in der (!file [hypview.ini]) Datei
 vorzunehmen.
 
 Abhilfe: holen sie das VersÑumte umgehend nach.
@@ -2479,7 +2479,7 @@ beauftragt hat, woher sie das Dokument bekommen kînnen.
 einem Verzeichnis versteckt, in dem ST-Guide sie nicht sucht.
 
 Abhilfe: kopieren sie die Datei in ihr Guides-Verzeichnis bzw. in
-eines der Verzeichnisse, die sie in der (!file [ST-Guide.inf]) Datei in der
+eines der Verzeichnisse, die sie in der (!file [hypview.ini]) Datei in der
 "PATHS=" Zeile angegeben haben, oder erweitern sie diese Zeile um das
 Verzeichnis, in dem sich die Datei befindet.
 
