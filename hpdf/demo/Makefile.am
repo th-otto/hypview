@@ -1,5 +1,5 @@
-include ../../silent.am
-include ../../Makefile.common
+include $(top_srcdir)/silent.am
+include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = -I$(srcdir)/../include $(Z_CFLAGS) -DSRCDIR=\"$(srcdir)\"
 LIBS = -L../src -lhpdf -lm @LIBS@

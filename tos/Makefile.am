@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-include ../Makefile.common
+include $(top_srcdir)/Makefile.common
 
 SUBDIRS = utils/call-acc
 

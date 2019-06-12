@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = -Wno-portability subdir-objects
 
-include ../Makefile.common
+include $(top_srcdir)/Makefile.common
 
 if WITH_GUI_WIN32
 bin_PROGRAMS = hypview

@@ -1,5 +1,5 @@
-include ../../../silent.am
-include ../../../Makefile.common
+include $(top_srcdir)/silent.am
+include $(top_srcdir)/Makefile.common
 
 if WITH_GUI_GEM
 bin_PROGRAMS = call-acc

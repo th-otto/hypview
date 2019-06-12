@@ -1,4 +1,4 @@
-include ../silent.am
+include $(top_srcdir)/silent.am
 
 if OS_WIN32
 noinst_LIBRARIES = librcintl.a

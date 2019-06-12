@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = -Wnone
 
-include ../silent.am
+include $(top_srcdir)/silent.am
 
 #
 # programs here are compiled for the build system.

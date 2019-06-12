@@ -1,4 +1,4 @@
-include ../Makefile.common
+include $(top_srcdir)/Makefile.common
 
 noinst_LIBRARIES = libpic.a
 

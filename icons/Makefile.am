@@ -1,4 +1,4 @@
-include ../Makefile.common
+include $(top_srcdir)/Makefile.common
 
 pixmapdir = $(datadir)/pixmaps
 

@@ -3,7 +3,7 @@
 #
 AUTOMAKE_OPTIONS = subdir-objects -Wno-portability
 
-include ../Makefile.common
+include $(top_srcdir)/Makefile.common
 
 noinst_LIBRARIES = libhyp.a libhypdoc.a
 bin_PROGRAMS = reflink refcheck hcp stool hypfind hypinfo
@@ -480,37 +480,3 @@ endif
 
 CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT) $(build_triplet)-stool$(EXEEXT) $(build_triplet)-hypfind$(EXEEXT) $(build_triplet)-hypinfo$(EXEEXT)
-
-HYP_VERSION = 1.0.1
-DISTDIR = hcp-$(HYP_VERSION)
-
-bindist:
-	-rm -rf $(DISTDIR)
-	-mkdir $(DISTDIR)
-	-mkdir $(DISTDIR)/bin
-	-mkdir $(DISTDIR)/defaults
-	cp -a README $(DISTDIR)
-	cp -a reflink$(EXEEXT) hypfind$(EXEEXT) hypinfo$(EXEEXT) refcheck$(EXEEXT) stool$(EXEEXT) hcp$(EXEEXT) $(DISTDIR)/bin
-	$(STRIP) $(DISTDIR)/bin/*
-	cp -a $(srcdir)/../defaults/{ST-GUIDE.INF,catalog.cfg,katalog.cfg,catalog.txt,katalog.txt,hypview.ini} $(DISTDIR)/defaults
-if OS_WIN32
-if WITH_GUI_WIN32
-	cp -a ../win32/hypview$(EXEEXT) $(DISTDIR)/bin
-	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
-endif
-	zip -r hcp-$(HYP_VERSION)-`if test "$(host_triplet)" = x86_64-w64-mingw32; then echo win64; else echo win32; fi`.zip $(DISTDIR)
-endif
-if OS_TOS
-	$(MAKE) DESTDIR=$(DISTDIR) bindir=/bin install-exec-hook
-	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
-endif
-if OS_UNIX
-if WITH_GUI_GTK
-	cp -a ../gtk/hypview$(EXEEXT) $(DISTDIR)/bin
-	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
-endif
-	tar cvfj hcp-$(HYP_VERSION)-linux.tar.bz2 $(DISTDIR)
-endif
-if OS_MACOS
-	tar cvfj hcp-$(HYP_VERSION)-macos.tar.bz2 $(DISTDIR)
-endif

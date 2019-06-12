@@ -24,3 +24,50 @@ EXTRA_DIST = \
 	$(empty)
 
 DISTCLEANFILES = intltool-merge intltool-extract intltool-update
+
+
+HYP_VERSION := $(shell sed -n 's/\#define PACKAGE_VERSION "\(.*\)"/\1/p' include/config.h)
+DISTDIR = hcp-$(HYP_VERSION)
+
+bindist:
+	-rm -rf $(DISTDIR)
+	mkdir $(DISTDIR)
+	mkdir $(DISTDIR)/bin
+	mkdir $(DISTDIR)/defaults
+	mkdir $(DISTDIR)/doc
+	cp -a BUGS hyp/README $(DISTDIR)
+	cp -a hyp/reflink$(EXEEXT) hyp/hypfind$(EXEEXT) hyp/hypinfo$(EXEEXT) hyp/refcheck$(EXEEXT) hyp/stool$(EXEEXT) hyp/hcp$(EXEEXT) $(DISTDIR)/bin
+	cp -a tools/pc_conv/pc_conv$(EXEEXT) $(DISTDIR)/bin
+	cp -a tools/1st_conv/1st_conv$(EXEEXT) $(DISTDIR)/bin
+	cp -a tools/help_rc/help_rc$(EXEEXT) $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/*
+	cp -a $(srcdir)/defaults/{catalog.cfg,katalog.cfg,catalog.txt,katalog.txt,hypview.ini} $(DISTDIR)/defaults
+	for lang in en de; do \
+		mkdir $(DISTDIR)/doc/$$lang; \
+		cp -a doc/output/$$lang/stguide/*.hyp $(DISTDIR)/doc/$$lang; \
+		cp -a doc/output/$$lang/stguide/*.ref $(DISTDIR)/doc/$$lang; \
+	done
+if OS_WIN32
+if WITH_GUI_WIN32
+	cp -a win32/hypview$(EXEEXT) $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
+endif
+	zip -r hcp-$(HYP_VERSION)-`if test "$(host_triplet)" = x86_64-w64-mingw32; then echo win64; else echo win32; fi`.zip $(DISTDIR)
+endif
+if OS_TOS
+	$(MAKE) -C hyp DESTDIR=../$(DISTDIR) bindir=/bin install-exec-hook
+	for f in pc_conv 1st_conv help_rc; do \
+		mv $(DISTDIR)/bin/$$f $(DISTDIR)/bin/$$f.ttp; \
+	done
+	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
+endif
+if OS_UNIX
+if WITH_GUI_GTK
+	cp -a gtk/hypview$(EXEEXT) $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
+endif
+	tar cvfj hcp-$(HYP_VERSION)-linux.tar.bz2 $(DISTDIR)
+endif
+if OS_MACOS
+	tar cvfj hcp-$(HYP_VERSION)-macos.tar.bz2 $(DISTDIR)
+endif
