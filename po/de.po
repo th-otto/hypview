@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-11 20:36+0200\n"
+"POT-Creation-Date: 2019-06-13 04:52+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <admin@tho-otto.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -595,7 +595,7 @@ msgstr ""
 "Sprache : %s%s\n"
 
 #: ../gtk/hv_info.c:112
-#: ../hyp/hypinfo.c:199
+#: ../hyp/hypinfo.c:201
 #: ../macos/hv_info.m:34
 #: ../win32/hv_info.c:55
 msgid  " (guessed)"
@@ -989,8 +989,8 @@ msgstr "Indexseite immer mit ausgeben"
 #: ../gtk/hv_rcomp.c:60
 #: ../hyp/hcpmain.c:167
 #: ../hyp/hypfind.c:573
-#: ../hyp/hypinfo.c:149
-#: ../hyp/hypinfo.c:681
+#: ../hyp/hypinfo.c:151
+#: ../hyp/hypinfo.c:683
 #: ../macos/hv_rcomp.m:39
 #: ../win32/hv_rcomp.c:60
 #, c-format
@@ -998,7 +998,7 @@ msgid  "%s: fatal: protected hypertext: %s\n"
 msgstr "%s: Fatal: geschützter Hypertext: %s\n"
 
 #: ../gtk/hv_rcomp.c:64
-#: ../hyp/cgi.c:624
+#: ../hyp/cgi.c:625
 #: ../hyp/hcpmain.c:121
 #: ../hyp/hypfind.c:577
 #: ../macos/hv_rcomp.m:43
@@ -1008,15 +1008,16 @@ msgid  "%s%s created by compiler version %u\n"
 msgstr "%s%s wurde von Compiler-Version %u erzeugt\n"
 
 #: ../gtk/hv_rcomp.c:64
-#: ../hyp/cgi.c:624
+#: ../hyp/cgi.c:625
 #: ../hyp/hcp_comp.c:653
 #: ../hyp/hcpmain.c:119
 #: ../hyp/hcpmain.c:121
 #: ../hyp/hypfind.c:577
 #: ../hyp/outcomm.c:190
 #: ../hyp/outcomm.c:201
-#: ../hyp/outhtml.c:2226
-#: ../hyp/outhtml.c:2939
+#: ../hyp/outhtml.c:2234
+#: ../hyp/outhtml.c:2268
+#: ../hyp/outhtml.c:2957
 #: ../macos/hv_rcomp.m:43
 #: ../win32/hv_rcomp.c:64
 #, c-format
@@ -2060,7 +2061,7 @@ msgstr "Unbekannter Fehler"
 #: ../hyp/gif2bmp.c:61
 #: ../hyp/hcpmain.c:28
 #: ../hyp/hypfind.c:67
-#: ../hyp/hypinfo.c:38
+#: ../hyp/hypinfo.c:39
 #: ../hyp/icn2ico.c:96
 #: ../hyp/icn2img.c:56
 #: ../hyp/ico2icn.c:56
@@ -2076,7 +2077,7 @@ msgstr "%s ist Open Source (siehe %s für weitere Informationen)."
 #: ../hyp/bmp2gif.c:85
 #: ../hyp/bmp2img.c:80
 #: ../hyp/gif2bmp.c:85
-#: ../hyp/hypinfo.c:80
+#: ../hyp/hypinfo.c:81
 #: ../hyp/icn2ico.c:120
 #: ../hyp/icn2img.c:80
 #: ../hyp/ico2icn.c:80
@@ -2090,7 +2091,7 @@ msgstr "Aufruf: %s [-options] file1 [file2 ...]\n"
 #: ../hyp/gif2bmp.c:86
 #: ../hyp/hcpmain.c:73
 #: ../hyp/hypfind.c:103
-#: ../hyp/hypinfo.c:81
+#: ../hyp/hypinfo.c:82
 #: ../hyp/img2bmp.c:84
 #: ../hyp/picinfo.c:86
 #: ../hyp/refcheck.c:100
@@ -2221,7 +2222,7 @@ msgstr "erzeugt: %s %d x %d x %d\n"
 #: ../hyp/bmp2img.c:248
 #: ../hyp/gif2bmp.c:285
 #: ../hyp/hcpmain.c:663
-#: ../hyp/hypinfo.c:943
+#: ../hyp/hypinfo.c:961
 #: ../hyp/icn2ico.c:303
 #: ../hyp/icn2img.c:255
 #: ../hyp/ico2icn.c:242
@@ -2238,23 +2239,23 @@ msgstr "Keine Dateien angegeben"
 #: ../hyp/outasc.c:381
 #: ../hyp/outdump.c:276
 #: ../hyp/outdump.c:281
-#: ../hyp/outhtml.c:2759
-#: ../hyp/outhtml.c:2765
+#: ../hyp/outhtml.c:2776
+#: ../hyp/outhtml.c:2782
 #: ../hyp/outstg.c:950
 #: ../hyp/outstg.c:956
 #: ../hyp/outxml.c:792
 #: ../hyp/outxml.c:798
-#: ../hyp/pdf.c:1020
+#: ../hyp/pdf.c:1048
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr "<unknown hex esc $%02x>\n"
 
 #: ../hyp/cgi.c:402
-#: ../hyp/cgi.c:550
+#: ../hyp/cgi.c:551
 #: ../hyp/hypfind.c:529
-#: ../hyp/outhtml.c:3014
-#: ../hyp/outstg.c:1126
-#: ../hyp/outxml.c:1015
+#: ../hyp/outhtml.c:3032
+#: ../hyp/outstg.c:1127
+#: ../hyp/outxml.c:1016
 #, c-format
 msgid  "unknown index entry type %u\n"
 msgstr "Unbekannter Index-Typ %u\n"
@@ -2273,81 +2274,82 @@ msgstr "%s: Keine Treffer für diesen Text!\n"
 msgid  "error"
 msgstr "Fehler"
 
-#: ../hyp/cgi.c:442
+#: ../hyp/cgi.c:443
 msgid  "Corrupt HYP file"
 msgstr "Defekte HYP-Datei"
 
-#: ../hyp/cgi.c:443
+#: ../hyp/cgi.c:444
 #: ../hyp/hcpmain.c:119
 #, c-format
 msgid  "%s%s does not have any text pages\n"
 msgstr "%s%s hat keine Text-Seiten\n"
 
-#: ../hyp/cgi.c:443
+#: ../hyp/cgi.c:444
 #: ../hyp/hcp_comp.c:620
 msgid  "error: "
 msgstr "Fehler: "
 
-#: ../hyp/cgi.c:449
+#: ../hyp/cgi.c:450
 msgid  "Invalid Node index"
 msgstr "Ungültiger Seiten-Index"
 
-#: ../hyp/cgi.c:450
+#: ../hyp/cgi.c:451
 #, c-format
 msgid  "node index %u invalid\n"
 msgstr "Seiten-Index %u is ungültig\n"
 
-#: ../hyp/cgi.c:576
-#: ../hyp/cgi.c:1165
+#: ../hyp/cgi.c:577
+#: ../hyp/cgi.c:1172
 #: ../hyp/cgirsc.c:75
 #: ../hyp/cgirsc.c:85
 #: ../hyp/cgirsc.c:595
 msgid  "404 Not Found"
 msgstr "404 Not Found"
 
-#: ../hyp/cgi.c:590
+#: ../hyp/cgi.c:591
 #, c-format
 msgid  "Listing of %s"
 msgstr "Listing von %s"
 
-#: ../hyp/cgi.c:608
+#: ../hyp/cgi.c:602
+msgid  "Listing of ref files not yet supported"
+msgstr "Anzeige von REF-Dateien nicht unterstützt"
+
 #: ../hyp/cgi.c:609
+#: ../hyp/cgi.c:610
 msgid  "not a HYP file"
 msgstr "Keine Hypertext-Datei"
 
-#: ../hyp/cgi.c:618
 #: ../hyp/cgi.c:619
+#: ../hyp/cgi.c:620
 msgid  "protected hypertext"
 msgstr "geschützter Hypertext"
 
-#: ../hyp/cgi.c:619
+#: ../hyp/cgi.c:620
 #, c-format
 msgid  "fatal: %s: %s\n"
 msgstr "Fatal: %s: %s\n"
 
-#: ../hyp/cgi.c:829
+#: ../hyp/cgi.c:830
 msgid  "Download error"
 msgstr "Download Fehler"
 
-#: ../hyp/cgi.c:1011
-#: ../hyp/cgi.c:1052
+#: ../hyp/cgi.c:1015
+#: ../hyp/cgi.c:1057
 msgid  "500 Internal Server Error"
 msgstr "500 Internal Server Error"
 
-#: ../hyp/cgi.c:1012
+#: ../hyp/cgi.c:1016
 msgid  "empty search pattern\n"
 msgstr "Leeres Suchmuster\n"
 
-#.
-#. * disallow file URIs, they would resolve to local files on the WEB server
-#.
-#: ../hyp/cgi.c:1035
-#: ../hyp/cgi.c:1112
+#: ../hyp/cgi.c:1040
+#: ../hyp/cgi.c:1118
 msgid  "403 Forbidden"
 msgstr "403 Forbidden"
 
-#: ../hyp/cgi.c:1037
-#: ../hyp/cgi.c:1114
+#: ../hyp/cgi.c:1042
+#: ../hyp/cgi.c:1120
 #, c-format
 msgid  ""
 "Sorry, this type of\n"
@@ -2362,7 +2364,7 @@ msgstr ""
 "(<q>%s</q>) wird von\n"
 "diesem Service nicht unterstützt. Bitte überprüfen Sie ob die URL korrekt angegeben wurde.\n"
 
-#: ../hyp/cgi.c:1053
+#: ../hyp/cgi.c:1058
 msgid  "could not initialize curl\n"
 msgstr "Fehler beim initialisieren von curl\n"
 
@@ -2481,6 +2483,8 @@ msgid  "extra arguments ignored"
 msgstr "Überflüssige Argumente ignoriert"
 
 #: ../hyp/hcp_comp.c:710
+#: ../hyp/outhtml.c:2265
+#: ../hyp/outhtml.c:2268
 msgid  "Some characters could not be converted"
 msgstr "Einige Zeichen konnten nocht konvertiert werden"
 
@@ -2746,7 +2750,8 @@ msgstr "Unbekanntes OS %s"
 #: ../hyp/hcp_comp.c:3858
 #: ../hyp/hcp_comp.c:3916
 #: ../hyp/hcp_opts.c:648
-#: ../hyp/hypinfo.c:843
+#: ../hyp/hypinfo.c:852
+#: ../hyp/hypinfo.c:885
 #, c-format
 msgid  "unrecognized character set %s"
 msgstr "Unbekannter Zeichensatz %s"
@@ -3386,8 +3391,8 @@ msgstr "      --pdf                     PDF-Ausgabe erzeugen\n"
 #: ../hyp/hcpmain.c:158
 #: ../hyp/hcpmain.c:280
 #: ../hyp/hypfind.c:566
-#: ../hyp/hypinfo.c:141
-#: ../hyp/hypinfo.c:673
+#: ../hyp/hypinfo.c:143
+#: ../hyp/hypinfo.c:675
 #, c-format
 msgid  "%s: %s: not a HYP file\n"
 msgstr "%s: %s: Keine Hypertext-Datei\n"
@@ -3511,12 +3516,12 @@ msgid  "cannot compile multiple input files to single output"
 msgstr "Kann nicht mehrere Eingabedateien in eine Ausgabedatei schreiben"
 
 #: ../hyp/hcpmain.c:853
-#: ../hyp/hypinfo.c:999
+#: ../hyp/hypinfo.c:1017
 msgid  "<press any key>"
 msgstr "<Taste drücken>"
 
 #: ../hyp/hcpmain.c:857
-#: ../hyp/hypinfo.c:1003
+#: ../hyp/hypinfo.c:1021
 msgid  "<press RETURN>"
 msgstr "<RETURN drücken>"
 
@@ -3526,7 +3531,7 @@ msgid  "Version %s for %s, %s"
 msgstr "Version %s für %s, %s"
 
 #: ../hyp/hyp.c:159
-#: ../hyp/hyp_cset.c:381
+#: ../hyp/hyp_cset.c:389
 #: ../hyp/stool.c:54
 msgid  "Unknown"
 msgstr "Unbekannt"
@@ -3562,7 +3567,7 @@ msgstr "Trefferliste: "
 msgid  "%s: could not create directory %s: %s\n"
 msgstr "%s: Kann Verzeichnis %s nicht anlegen: %s\n"
 
-#: ../hyp/hyp_cset.c:385
+#: ../hyp/hyp_cset.c:393
 #, c-format
 msgid  "Charset 0x%02x"
 msgstr "Zeichensatz 0x%02x"
@@ -3679,59 +3684,63 @@ msgstr "Fehler beim dekodieren der Bild-Seite %u\n"
 msgid  "failed to cache compressed image data for %u\n"
 msgstr "Kann komprimierte Bild-Daten für %u nicht zwischenspeichern\n"
 
-#: ../hyp/hypinfo.c:82
-msgid  "  -w, --wait        wait for keypress\n"
-msgstr "  -w, --wait        am Ende auf Taste warten\n"
-
 #: ../hyp/hypinfo.c:83
-msgid  "  -q, --quiet       be quiet\n"
-msgstr "  -q, --quiet       Ausgaben abschalten\n"
+msgid  "  -w, --wait              wait for keypress\n"
+msgstr "  -w, --wait              am Ende auf Taste warten\n"
 
 #: ../hyp/hypinfo.c:84
-msgid  "  -v, --verbose     be verbose\n"
-msgstr "  -v, --verbose     Mehr Ausgaben\n"
+msgid  "  -q, --quiet             be quiet\n"
+msgstr "  -q, --quiet             Ausgaben abschalten\n"
 
 #: ../hyp/hypinfo.c:85
-msgid  "  --charset <set>   specify output character set\n"
-msgstr "  --charset <set>   Zeichensatz angeben\n"
+msgid  "  -v, --verbose           be verbose\n"
+msgstr "  -v, --verbose           Mehr Ausgaben\n"
 
 #: ../hyp/hypinfo.c:86
-msgid  "  --language        only output language of file\n"
-msgstr "  --language        Nur Sprache ausgeben\n"
+msgid  "  --charset <set>         specify output character set\n"
+msgstr "  --charset <set>         Zeichensatz angeben\n"
 
 #: ../hyp/hypinfo.c:87
-msgid  "  -p, --preserve    preserve timestamps\n"
-msgstr "  -p, --preserve    Žnderungsdatum beibehalten\n"
+msgid  "  --language              only output language of file\n"
+msgstr "  --language              Nur Sprache ausgeben\n"
 
 #: ../hyp/hypinfo.c:88
-msgid  "  --fix-tree        fix @tree header field\n"
-msgstr "  --fix-tree        @tree Header korrigieren\n"
+msgid  "  -p, --preserve          preserve timestamps\n"
+msgstr "  -p, --preserve          Žnderungsdatum beibehalten\n"
 
 #: ../hyp/hypinfo.c:89
-msgid  "  --fix-lang <lang> fix @language header field\n"
-msgstr "  --fix-lang <lang> @language auf Sprache setzen\n"
+msgid  "  --fix-tree              fix @tree header field\n"
+msgstr "  --fix-tree              @tree Header korrigieren\n"
 
-#: ../hyp/hypinfo.c:292
+#: ../hyp/hypinfo.c:90
+msgid  "  --fix-lang <lang>       fix @language header field\n"
+msgstr "  --fix-lang <lang>       @language auf Sprache setzen\n"
+
+#: ../hyp/hypinfo.c:91
+msgid  "  --fix-charset <set>     fix @charset header field\n"
+msgstr "  --fix-charset <set>     @charset auf Zeichensatz setzen\n"
+
+#: ../hyp/hypinfo.c:294
 #, c-format
 msgid  "%s: EOF entry at %u\n"
 msgstr "%s: EOF Eintrag bei %u\n"
 
-#: ../hyp/hypinfo.c:298
+#: ../hyp/hypinfo.c:300
 #, c-format
 msgid  "%s: unknown index entry type %u\n"
 msgstr "%s: Unbekannter Index-Typ %u\n"
 
-#: ../hyp/hypinfo.c:375
+#: ../hyp/hypinfo.c:377
 #, c-format
 msgid  "%shyptree: datalen is %u, should be %u\n"
 msgstr "%shyptree: Datenlänge ist %u, sollte %u sein\n"
 
-#: ../hyp/hypinfo.c:381
+#: ../hyp/hypinfo.c:383
 #, c-format
 msgid  "%shyptree: title len is %ld, should be %ld\n"
 msgstr "%shyptree: Titellänge ist %ld, sollte %ld sein\n"
 
-#: ../hyp/hypinfo.c:387
+#: ../hyp/hypinfo.c:389
 #, c-format
 msgid  "%shyptree: %u errors in title bits\n"
 msgstr "%shyptree: %u Fehler in Titel-Bits\n"
@@ -3745,15 +3754,15 @@ msgstr "Siehe auch: %s\n"
 #: ../hyp/outasc.c:414
 #: ../hyp/outcomm.c:401
 #: ../hyp/outdump.c:302
-#: ../hyp/outhtml.c:2851
+#: ../hyp/outhtml.c:2868
 #: ../hyp/outstg.c:1030
 #, c-format
 msgid  "%s: Node %u: failed to decode\n"
 msgstr "%s: Node %u: Fehler beim dekomprimieren\n"
 
-#: ../hyp/outasc.c:513
+#: ../hyp/outasc.c:514
 #: ../hyp/outdump.c:539
-#: ../hyp/pdf.c:1379
+#: ../hyp/pdf.c:1407
 #, c-format
 msgid  "'%s' not found.\n"
 msgstr "'%s' nicht gefunden.\n"
@@ -4117,7 +4126,7 @@ msgstr "<nicht-Bild-Seite #%u>"
 
 #: ../hyp/outhtml.c:1098
 #: ../hyp/outhtml.c:1423
-#: ../hyp/outhtml.c:2371
+#: ../hyp/outhtml.c:2394
 #, c-format
 msgid  "writing %s\n"
 msgstr "schreibe %s\n"
@@ -4154,48 +4163,48 @@ msgstr "Neue Datei anzeigen"
 msgid  "Search"
 msgstr "Suchen"
 
-#: ../hyp/outhtml.c:1825
+#: ../hyp/outhtml.c:1831
 msgid  "Execute REXX command"
 msgstr "REXX-Kommando ausführen"
 
-#: ../hyp/outhtml.c:1830
+#: ../hyp/outhtml.c:1836
 msgid  "Execute REXX script"
 msgstr "REXX-Script ausführen"
 
-#: ../hyp/outhtml.c:1835
+#: ../hyp/outhtml.c:1841
 msgid  "Execute command"
 msgstr "Kommando ausführen"
 
-#: ../hyp/outhtml.c:1852
+#: ../hyp/outhtml.c:1858
 msgid  "link to unknown node type"
 msgstr "Link zu unbekanntem Seitentyp"
 
-#: ../hyp/outhtml.c:2014
+#: ../hyp/outhtml.c:2026
 #, c-format
 msgid  "<!-- Node #%u -->\n"
 msgstr "<!-- Node #%u -->\n"
 
-#: ../hyp/outhtml.c:2150
+#: ../hyp/outhtml.c:2158
 #, c-format
 msgid  "Topic       : %s\n"
 msgstr "Thema       : %s\n"
 
-#: ../hyp/outhtml.c:2153
+#: ../hyp/outhtml.c:2161
 #, c-format
 msgid  "Author      : %s\n"
 msgstr "Author      : %s\n"
 
-#: ../hyp/outhtml.c:2156
+#: ../hyp/outhtml.c:2164
 #, c-format
 msgid  "Version     : %s\n"
 msgstr "Version     : %s\n"
 
-#: ../hyp/outhtml.c:2159
+#: ../hyp/outhtml.c:2167
 #, c-format
 msgid  "Subject     : %s\n"
 msgstr "Subjekt     : %s\n"
 
-#: ../hyp/outhtml.c:2161
+#: ../hyp/outhtml.c:2169
 #, c-format
 msgid  ""
 "Nodes       : %u\n"
@@ -4220,7 +4229,7 @@ msgstr ""
 "@options    : %s\n"
 "@width      : %u"
 
-#: ../hyp/outhtml.c:2188
+#: ../hyp/outhtml.c:2196
 #, c-format
 msgid  ""
 "\n"
@@ -4229,18 +4238,18 @@ msgstr ""
 "\n"
 "@hostname   : %s"
 
-#: ../hyp/outhtml.c:2226
-#: ../hyp/outhtml.c:2939
+#: ../hyp/outhtml.c:2234
+#: ../hyp/outhtml.c:2957
 msgid  "writing html output in atari encoding might not work with non-atari browsers"
 msgstr ""
 "Warnung: HTML-Ausgabe im Atari-Zeichensatz funktioniert möglicherweise nicht mit Nicht-Atari-"
 "Browsern"
 
-#: ../hyp/outhtml.c:2238
+#: ../hyp/outhtml.c:2246
 msgid  "Your browser does not support JavaScript"
 msgstr "Ihr BRowser unterstützt kein JavaScript"
 
-#: ../hyp/outhtml.c:2239
+#: ../hyp/outhtml.c:2247
 msgid  "Graphics commands on this page cannot be displayed"
 msgstr "Grafik-Befehle auf dieser Seite können nicht dargestellt werden"
 
@@ -4259,7 +4268,7 @@ msgstr "Link auf unbekannten Index-Typ %u\n"
 msgid  "<!-- %s: Node %u: failed to decode -->\n"
 msgstr "<!-- %s: Node %u: failed to decode -->\n"
 
-#: ../hyp/pdf.c:1092
+#: ../hyp/pdf.c:1120
 #, c-format
 msgid  "%s: Node %u: failed to decode"
 msgstr "%s: Node %u: Fehler beim dekomprimieren"

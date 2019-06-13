@@ -97,7 +97,7 @@ static gboolean ascii_out_attr(GString *out, struct textattr *attr)
 
 /* ------------------------------------------------------------------------- */
 
-gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node)
+gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean *converror)
 {
 	char *str;
 	gboolean at_bol;
@@ -150,7 +150,7 @@ gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nod
 		title = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
 		if (title == NULL)
 			title = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[node]->name, STR0TERM);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s\n", title);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "%s\n", title);
 		g_free(title);
 		
 		end = nodeptr->end;
@@ -190,9 +190,9 @@ gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nod
 					 * of hypertext file, not depend on the current locale
 					 */
 					if (empty(text) || strcmp(str, text) == 0)
-						hyp_utf8_sprintf_charset(out, opts->output_charset, _("See also: %s\n"), str);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, converror, _("See also: %s\n"), str);
 					else
-						hyp_utf8_sprintf_charset(out, opts->output_charset, _("See also: %s\n"), text);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, converror, _("See also: %s\n"), text);
 					g_free(str);
 					g_free(text);
 				}
@@ -431,7 +431,8 @@ gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char
 	int i;
 	gboolean found;
 	GString *out;
-	
+	gboolean converror = FALSE;
+
 	force_crlf = FALSE;
 	
 	ret = TRUE;
@@ -487,7 +488,7 @@ gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char
 		{
 		case HYP_NODE_INTERNAL:
 		case HYP_NODE_POPUP:
-			ret &= ascii_out_node(hyp, opts, out, node);
+			ret &= ascii_out_node(hyp, opts, out, node, &converror);
 			if (node < hyp->last_text_page)
 				g_string_append(out, "\n\n\n");
 			break;

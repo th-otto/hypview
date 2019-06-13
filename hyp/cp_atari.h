@@ -71,6 +71,7 @@ static unsigned char const atari_maptab_00[256] = {
 /* f0 */	0xff, 0xa4, 0x95, 0xa2, 0x93, 0xb1, 0x94, 0xf6,
 /* f8 */	0xb3, 0x97, 0xa3, 0x96, 0x81, 0xff, 0xff, 0x98
 };
+
 static unsigned char const atari_maptab_01[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -105,6 +106,7 @@ static unsigned char const atari_maptab_01[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_02[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -139,6 +141,7 @@ static unsigned char const atari_maptab_02[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_03[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -173,6 +176,7 @@ static unsigned char const atari_maptab_03[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_05[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -207,6 +211,7 @@ static unsigned char const atari_maptab_05[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_20[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -241,6 +246,7 @@ static unsigned char const atari_maptab_20[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_21[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -275,6 +281,7 @@ static unsigned char const atari_maptab_21[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_22[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f, 0xff,
 /* 08 */	0xee, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -309,6 +316,7 @@ static unsigned char const atari_maptab_22[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_23[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -343,6 +351,7 @@ static unsigned char const atari_maptab_23[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_24[256] = {
 /* 00 */	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 /* 08 */	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -377,6 +386,7 @@ static unsigned char const atari_maptab_24[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0x31, 0x32, 0x33,
 /* f8 */	0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0xff, 0x30
 };
+
 static unsigned char const atari_maptab_26[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -411,6 +421,7 @@ static unsigned char const atari_maptab_26[256] = {
 /* f0 */	0x0e, 0x0f, 0x1c, 0x1d, 0x1e, 0x1f, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const atari_maptab_27[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -445,6 +456,7 @@ static unsigned char const atari_maptab_27[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const maptab_ff[256] = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -479,39 +491,38 @@ static unsigned char const maptab_ff[256] = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static const unsigned char (*const utf16_to_atari[256])[256] = {
-	&atari_maptab_00, &atari_maptab_01, &atari_maptab_02, &atari_maptab_03, &maptab_ff      , &atari_maptab_05, &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&atari_maptab_20, &atari_maptab_21, &atari_maptab_22, &atari_maptab_23, &atari_maptab_24, &maptab_ff      , &atari_maptab_26, &atari_maptab_27,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      ,
-	&maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff      , &maptab_ff
+	&atari_maptab_00, &atari_maptab_01, &atari_maptab_02, &atari_maptab_03, &maptab_ff,       &atari_maptab_05, &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&atari_maptab_20, &atari_maptab_21, &atari_maptab_22, &atari_maptab_23, &atari_maptab_24, &maptab_ff,       &atari_maptab_26, &atari_maptab_27,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff
 };
-
-

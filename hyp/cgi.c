@@ -155,7 +155,7 @@ static void search_text(HYP_DOCUMENT *hyp, hcp_opts *opts, struct hypfind_opts *
 		} else
 		{
 			title = html_quote_name(gl_profile.hypfind.title, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE);
+			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE, NULL);
 			g_free(title);
 		}
 		if (nodeptr->window_title)
@@ -167,11 +167,11 @@ static void search_text(HYP_DOCUMENT *hyp, hcp_opts *opts, struct hypfind_opts *
 		{
 			title = html_quote_nodename(hyp, nodeptr->number, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 		}
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s\">%s</a>\n", style, destfilename, title);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "<a%s href=\"%s\">%s</a>\n", style, destfilename, title);
 
 		g_free(title);
 	}
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "<a%s href=\"%s#%s%ld\">%ld:</a> ", style, destfilename, hypview_lineno_tag, nodeptr->height, nodeptr->height);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "<a%s href=\"%s#%s%ld\">%ld:</a> ", style, destfilename, hypview_lineno_tag, nodeptr->height, nodeptr->height);
 	offset = match - text;
 	search_out_str(opts, out, text, offset);
 	g_string_append_printf(out, "<span class=\"%s\">", html_attr_bold_style);
@@ -409,12 +409,12 @@ static gboolean search_hyp(HYP_DOCUMENT *hyp, hcp_opts *opts, struct hypfind_opt
 
 	if (search->hits == 0)
 	{
-		html_out_header(NULL, opts, out, _("No match"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, _("%s: No matches for this pattern!\n"), _("error"));
-		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+		html_out_header(NULL, opts, out, _("No match"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("%s: No matches for this pattern!\n"), _("error"));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, NULL);
 	} else
 	{
-		html_out_trailer(NULL, opts, out, HYP_NOINDEX, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, FALSE, FALSE, NULL);
 	}
 	
 	return retval;
@@ -431,7 +431,8 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	gboolean ret;
 	symtab_entry *syms;
 	char *destname;
-
+	gboolean converror = FALSE;
+	
 	ret = TRUE;
 
 	if (output_node == HYP_NOINDEX)
@@ -439,16 +440,16 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 
 	if (hyp->first_text_page == HYP_NOINDEX)
 	{
-		html_out_header(NULL, opts, out, _("Corrupt HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, _("%s%s does not have any text pages\n"), _("error: "), hyp_basename(hyp->file));
-		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+		html_out_header(NULL, opts, out, _("Corrupt HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, &converror);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _("%s%s does not have any text pages\n"), _("error: "), hyp_basename(hyp->file));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, &converror);
 		return FALSE;
 	}
 	if (!hypnode_valid(hyp, output_node))
 	{
-		html_out_header(NULL, opts, out, _("Invalid Node index"), output_node, NULL, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, _("node index %u invalid\n"), output_node);
-		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+		html_out_header(NULL, opts, out, _("Invalid Node index"), output_node, NULL, NULL, NULL, TRUE, &converror);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _("node index %u invalid\n"), output_node);
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, &converror);
 		return FALSE;
 	}
 			
@@ -485,10 +486,10 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	switch ((hyp_indextype) entry->type)
 	{
 	case HYP_NODE_INTERNAL:
-		ret &= html_out_node(hyp, opts, out, node, syms, FALSE);
+		ret &= html_out_node(hyp, opts, out, node, syms, FALSE, &converror);
 		break;
 	case HYP_NODE_POPUP:
-		ret &= html_out_node(hyp, opts, out, node, syms, FALSE);
+		ret &= html_out_node(hyp, opts, out, node, syms, FALSE, &converror);
 		break;
 	case HYP_NODE_IMAGE:
 		{
@@ -498,51 +499,51 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 				*pic_format = format_from_pic(opts, entry, HTML_DEFAULT_PIC_TYPE);
 			} else
 			{
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "%s", hyp_utf8_strerror(errno));
+				hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "%s", hyp_utf8_strerror(errno));
 			}
 		}
 		break;
 	case HYP_NODE_EXTERNAL_REF:
-		html_out_header(NULL, opts, out, "@{ link }", node, NULL, NULL, syms, FALSE);
+		html_out_header(NULL, opts, out, "@{ link }", node, NULL, NULL, syms, FALSE, NULL);
 		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ link \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "@{ link \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE, NULL);
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
-		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, syms, FALSE);
+		html_out_header(NULL, opts, out, "@{ system }", node, NULL, NULL, syms, FALSE, NULL);
 		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ system \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "@{ system \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE, NULL);
 		break;
 	case HYP_NODE_REXX_SCRIPT:
-		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, syms, FALSE);
+		html_out_header(NULL, opts, out, "@{ rxs }", node, NULL, NULL, syms, FALSE, NULL);
 		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rxs \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "@{ rxs \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE, NULL);
 		break;
 	case HYP_NODE_REXX_COMMAND:
-		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, syms, FALSE);
+		html_out_header(NULL, opts, out, "@{ rx }", node, NULL, NULL, syms, FALSE, NULL);
 		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ rx \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "@{ rx \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE, NULL);
 		break;
 	case HYP_NODE_QUIT:
-		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, syms, FALSE);
+		html_out_header(NULL, opts, out, "@{ quit }", node, NULL, NULL, syms, FALSE, NULL);
 		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ quit \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "@{ quit \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE, NULL);
 		break;
 	case HYP_NODE_CLOSE:
-		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, syms, FALSE);
+		html_out_header(NULL, opts, out, "@{ close }", node, NULL, NULL, syms, FALSE, NULL);
 		destname = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "@{ close \"%s\"}\n", destname);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "@{ close \"%s\"}\n", destname);
 		g_free(destname);
-		html_out_trailer(NULL, opts, out, node, FALSE, FALSE);
+		html_out_trailer(NULL, opts, out, node, FALSE, FALSE, NULL);
 		break;
 	case HYP_NODE_EOF:
 	default:
@@ -567,15 +568,15 @@ static gboolean recompile(const char *filename, hcp_opts *opts, struct hypfind_o
 	hyp_filetype type = HYP_FT_NONE;
 	int handle;
 	hcp_opts hyp_opts;
-	
+
 	*pic_format = HYP_PIC_UNKNOWN;
 	handle = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 
 	if (handle < 0)
 	{
-		html_out_header(NULL, opts, out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
-		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+		html_out_header(NULL, opts, out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, NULL);
 		return FALSE;
 	}
 
@@ -584,30 +585,30 @@ static gboolean recompile(const char *filename, hcp_opts *opts, struct hypfind_o
 	{
 		REF_FILE *ref = ref_load(filename, handle, FALSE);
 		gboolean ret;
-		
+
 		if (ref != NULL)
 		{
 			char *title = g_strdup_printf(_("Listing of %s"), hyp_basename(filename));
 			hyp_utf8_close(handle);
 #if 0
 			/* TODO: rewrite ref_list to append to body instead of writing to opts->outfile */
-			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE);
+			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE, NULL);
 			ret = ref_list(ref, opts->outfile, opts->list_flags != 0);
 			ref_close(ref);
-			html_out_trailer(NULL; opts, out, 0, FALSE, FALSE);
+			html_out_trailer(NULL; opts, out, 0, FALSE, FALSE, NULL);
 #else
-			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 			ref_close(ref);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "Listing of ref files not yet supported");
-			html_out_trailer(NULL, opts, out, 0, FALSE, FALSE);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("Listing of ref files not yet supported"));
+			html_out_trailer(NULL, opts, out, 0, TRUE, FALSE, NULL);
 			ret = TRUE;
 #endif
 			return ret;
 		}
 		hyp_utf8_close(handle);
-		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
-		html_out_trailer(NULL, opts, out, 0, TRUE, FALSE);
+		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
+		html_out_trailer(NULL, opts, out, 0, TRUE, FALSE, NULL);
 		return FALSE;
 	}
 	
@@ -615,9 +616,9 @@ static gboolean recompile(const char *filename, hcp_opts *opts, struct hypfind_o
 	{
 		hyp_unref(hyp);
 		hyp_utf8_close(handle);
-		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
-		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE);
+		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, NULL);
 		return FALSE;
 	}
 	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
@@ -825,9 +826,9 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 	
 	if (curlcode != CURLE_OK || stat(local_filename, &st) != 0)
 	{
-		html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+		html_out_header(NULL, opts, body, err, HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 		g_string_append_printf(body, "%s:\n%s", _("Download error"), err);
-		html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+		html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE, NULL);
 		unlink(local_filename);
 		g_free(local_filename);
 		local_filename = NULL;
@@ -847,6 +848,10 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 		unlink(local_filename);
 		g_free(local_filename);
 		local_filename = NULL;
+		/*
+		 * FIXME: if we got plain text, we must also annnounce that in the response header
+		 */
+		opts->recompile_format = HYP_FT_HTML;
 	} else
 	{
 		long ft = -1;
@@ -1011,9 +1016,9 @@ int main(void)
 		if (!bm_init(&search->deltapat, search->pattern, search->casesensitive) ||
 			search->pattern_len == 0)
 		{
-			html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+			html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 			g_string_append(body, _("empty search pattern\n"));
-			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE, NULL);
 			retval = EXIT_FAILURE;
 		}
 	}
@@ -1036,7 +1041,7 @@ int main(void)
 			 * disallow file URIs, they would resolve to local files on the WEB server
 			 */
 			hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, query=%s\n", currdate(), fixnull(cgiRemoteHost), fixnull(cgiQueryString));
-			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 			g_string_append_printf(body,
 				_("Sorry, this type of\n"
 				  "<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
@@ -1044,7 +1049,7 @@ int main(void)
 				  "(<q>%s</q>) is not\n"
 				  "supported by this service. Please check that you entered the URL correctly.\n"),
 				scheme);
-			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE, NULL);
 			g_free(filename);
 			filename = NULL;
 		} else
@@ -1053,9 +1058,9 @@ int main(void)
 				(curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK ||
 				(curl = curl_easy_init()) == NULL))
 			{
-				html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+				html_out_header(NULL, opts, body, _("500 Internal Server Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 				g_string_append(body, _("could not initialize curl\n"));
-				html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+				html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE, NULL);
 				retval = EXIT_FAILURE;
 			} else
 			{
@@ -1114,7 +1119,7 @@ int main(void)
 		if (filename == NULL || len == 0)
 		{
 			const char *scheme = "undefined";
-			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+			html_out_header(NULL, opts, body, _("403 Forbidden"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 			g_string_append_printf(body,
 				_("Sorry, this type of\n"
 				  "<a href=\"http://www.w3.org/Addressing/\">URL</a>\n"
@@ -1122,7 +1127,7 @@ int main(void)
 				  "(<q>%s</q>) is not\n"
 				  "supported by this service. Please check that you entered the URL correctly.\n"),
 				scheme);
-			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE);
+			html_out_trailer(NULL, opts, body, HYP_NOINDEX, TRUE, FALSE, NULL);
 		} else
 		{
 			FILE *fp;
@@ -1168,9 +1173,9 @@ int main(void)
 			{
 				const char *err = hyp_utf8_strerror(errno);
 				hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", local_filename, err);
-				html_out_header(NULL, opts, body, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
+				html_out_header(NULL, opts, body, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 				g_string_append_printf(body, "%s: %s\n", hyp_basename(filename), err);
-				html_out_trailer(NULL, opts, body, -1, TRUE, FALSE);
+				html_out_trailer(NULL, opts, body, -1, TRUE, FALSE, NULL);
 				retval = EXIT_FAILURE;
 			} else
 			{

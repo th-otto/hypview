@@ -22,8 +22,8 @@
 #ifndef __HYPOUTSTG_H__
 #define __HYPOUTSTG_H__ 1
 
-void stg_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out);
-gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, HYP_NODE *nodeptr, symtab_entry *syms);
+void stg_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, gboolean *converror);
+gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, HYP_NODE *nodeptr, symtab_entry *syms, gboolean *converror);
 gboolean recompile_stg(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv);
 
 #endif /* __HYPOUTSTG_H__ */

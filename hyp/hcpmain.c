@@ -604,6 +604,10 @@ int main(int argc, const char **argv)
 	hcp_opts *opts = &_opts;
 	int wait_key;
 	
+#if 0
+	check_charsets();
+#endif
+
 	HypProfile_Load(TRUE);
 	
 	hcp_opts_init(opts);
@@ -708,7 +712,7 @@ int main(int argc, const char **argv)
 					out = g_string_new(NULL);
 					if (num_args > 1)
 					{
-						hyp_utf8_sprintf_charset(out, opts->output_charset, _("@remark File: %s\n"), filename);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("@remark File: %s\n"), filename);
 						write_strout(out, opts->outfile);
 						g_string_truncate(out, 0);
 					}
@@ -737,7 +741,7 @@ int main(int argc, const char **argv)
 					out = g_string_new(NULL);
 					if (num_args > 1)
 					{
-						hyp_utf8_sprintf_charset(out, opts->output_charset, _("<!-- File: %s -->\n"), filename);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("<!-- File: %s -->\n"), filename);
 						write_strout(out, opts->outfile);
 						g_string_truncate(out, 0);
 					}
@@ -768,7 +772,7 @@ int main(int argc, const char **argv)
 					out = g_string_new(NULL);
 					if (num_args > 1)
 					{
-						hyp_utf8_sprintf_charset(out, opts->output_charset, _("<!-- File: %s -->\n"), filename);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("<!-- File: %s -->\n"), filename);
 						write_strout(out, opts->outfile);
 						g_string_truncate(out, 0);
 					}

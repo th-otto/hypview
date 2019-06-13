@@ -98,7 +98,7 @@ static gboolean pdf_out_alias(PDF *pdf, HYP_DOCUMENT *hyp, const INDEX_ENTRY *en
 	while (sym)
 	{
 		char *str = pdf_quote_name(hyp->comp_charset, sym->name, STR0TERM, pdf->opts->output_charset, converror);
-		/* hyp_utf8_sprintf_charset(out, pdf->opts->output_charset, "<a %s=\"%s\"></a>", html_name_attr, str); */
+		/* hyp_utf8_sprintf_charset(out, pdf->opts->output_charset, converror, "<a %s=\"%s\"></a>", html_name_attr, str); */
 		g_free(str);
 		sym->referenced = TRUE;
 		sym = sym_find(sym->next, nodename, REF_ALIASNAME);
@@ -121,7 +121,7 @@ static gboolean pdf_out_labels(PDF *pdf, HYP_DOCUMENT *hyp, const INDEX_ENTRY *e
 		if (sym->lineno == lineno)
 		{
 			char *str = pdf_quote_name(hyp->comp_charset, sym->name, STR0TERM, pdf->opts->output_charset, converror);
-			/* hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- lineno %u --><a %s=\"%s\"></a>", sym->lineno, html_name_attr, str); */
+			/* hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<!-- lineno %u --><a %s=\"%s\"></a>", sym->lineno, html_name_attr, str); */
 			g_free(str);
 			sym->referenced = TRUE;
 		}
@@ -467,7 +467,7 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
 	default:
-		/* hyp_utf8_sprintf_charset(out, opts->output_charset, "<a class=\"%s\" href=\"%s\">%s %u</a>", html_error_link_style, xref->destfilename, _("link to unknown node type"), hyp->indextable[xref->dest_page]->type); */
+		/* hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"%s\">%s %u</a>", html_error_link_style, xref->destfilename, _("link to unknown node type"), hyp->indextable[xref->dest_page]->type); */
 		break;
 	}
 	return retval;
@@ -517,8 +517,37 @@ PDF *pdf_new(hcp_opts *opts)
 		encoding = HPDF_ENCODING_CP1250;
 		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
 		break;
+	case HYP_CHARSET_CP1251:
+	case HYP_CHARSET_ATARI_RU:
+		encoding = HPDF_ENCODING_CP1251;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
 	case HYP_CHARSET_CP1252:
 		encoding = HPDF_ENCODING_CP1252;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
+	case HYP_CHARSET_CP1253:
+		encoding = HPDF_ENCODING_CP1253;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
+	case HYP_CHARSET_CP1254:
+		encoding = HPDF_ENCODING_CP1254;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
+	case HYP_CHARSET_CP1255:
+		encoding = HPDF_ENCODING_CP1255;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
+	case HYP_CHARSET_CP1256:
+		encoding = HPDF_ENCODING_CP1256;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
+	case HYP_CHARSET_CP1257:
+		encoding = HPDF_ENCODING_CP1257;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
+	case HYP_CHARSET_CP1258:
+		encoding = HPDF_ENCODING_CP1258;
 		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
 		break;
 	case HYP_CHARSET_LATIN1:
@@ -642,7 +671,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 #define FLUSHTREE() \
 	if (in_tree != -1) \
 	{ \
-		/* hyp_utf8_sprintf_charset(out, opts->output_charset, "end tree %d -->\n", in_tree); */ \
+		/* hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "end tree %d -->\n", in_tree); */ \
 		in_tree = -1; \
 		at_bol = TRUE; \
 	}
@@ -961,10 +990,10 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							if (tree != in_tree)
 							{
 								FLUSHTREE();
-								/* hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- begin tree %d\n", tree); */
+								/* hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "<!-- begin tree %d\n", tree); */
 								in_tree = tree;
 							}
-							/* hyp_utf8_sprintf_charset(out, opts->output_charset, "   %d \"%s\" %u\n", obj, str, line); */
+							/* hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "   %d \"%s\" %u\n", obj, str, line); */
 							(void)line;
 							(void)obj;
 							g_free(str);
@@ -1064,9 +1093,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 				{
 					if (!gfx->used)
 					{
-						/* hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- gfx unused: "); */
+						/* hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "<!-- gfx unused: "); */
 						pdf_out_gfx(pdf, hyp, gfx, &gfx_id);
-						/* hyp_utf8_sprintf_charset(out, opts->output_charset, "-->\n"); */
+						/* hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "-->\n"); */
 					}
 					next = gfx->next;
 					g_free(gfx);

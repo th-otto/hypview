@@ -44,8 +44,16 @@ LANGID_MODEL = $(srcdir)/ldpy.model
 
 libhyp_a_SOURCES = \
 	casefold.h \
-	cp_1252.h \
 	cp_1250.h \
+	cp_1251.h \
+	cp_1252.h \
+	cp_1253.h \
+	cp_1254.h \
+	cp_1255.h \
+	cp_1256.h \
+	cp_1257.h \
+	cp_1258.h \
+	cp_st_ru.h \
 	cp_latin1.h \
 	cp_850.h \
 	cp_atari.h \

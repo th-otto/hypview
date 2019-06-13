@@ -22,7 +22,7 @@
 #ifndef __HYPOUTASC_H__
 #define __HYPOUTASC_H__ 1
 
-gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node);
+gboolean ascii_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean *converror);
 gboolean recompile_ascii(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv);
 
 #endif /* __HYPOUTASC_H__ */

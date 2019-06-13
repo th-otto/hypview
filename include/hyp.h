@@ -90,39 +90,45 @@ typedef enum {
 	HYP_CHARSET_ATARI = 2,
 	HYP_CHARSET_CP850 = 3,
 	HYP_CHARSET_MACROMAN = 4,
-	HYP_CHARSET_CP1252 = 5,
-	HYP_CHARSET_CP1250 = 6,
-	HYP_CHARSET_LATIN1 = 7,
+	HYP_CHARSET_CP1252 = 5, /* ANSI Latin 1, similar to ISO8859-1 */
+	HYP_CHARSET_CP1250 = 6, /* ANSI Eastern Europe, similar to ISO8859-2 */
+	HYP_CHARSET_LATIN1 = 7, /* ISO8859-1, Western Europe */
 	HYP_CHARSET_BINARY = 8,
 	HYP_CHARSET_BINARY_TABS = 9,
+	HYP_CHARSET_CP1251 = 10, /* ANSI Cyrillic */
+	HYP_CHARSET_CP1253 = 11, /* ANSI Greek */
+	HYP_CHARSET_CP1254 = 12, /* ANSI Turkish */
+	HYP_CHARSET_CP1255 = 13, /* ANSI Hebrew */
+	HYP_CHARSET_CP1256 = 14, /* ANSI Arabic */
+	HYP_CHARSET_CP1257 = 15, /* ANSI Baltic */
+	HYP_CHARSET_CP1258 = 16, /* ANSI Viet Nam */
+	/* Non-Standard atari encodings: */
+	HYP_CHARSET_ATARI_RU = 17,
 	/* NYI: */
-	HYP_CHARSET_CP1251 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CP1253 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CP1254 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CP1255 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CP1256 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CP1257 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CP1258 = HYP_CHARSET_NONE,
-	HYP_CHARSET_LATIN2 = HYP_CHARSET_NONE,
-	HYP_CHARSET_LATIN3 = HYP_CHARSET_NONE,
-	HYP_CHARSET_LATIN4 = HYP_CHARSET_NONE,
-	HYP_CHARSET_CYRILLIC = HYP_CHARSET_NONE,
-	HYP_CHARSET_ARABIC = HYP_CHARSET_NONE,
-	HYP_CHARSET_GREEK = HYP_CHARSET_NONE,
-	HYP_CHARSET_HEBREW = HYP_CHARSET_NONE,
-	HYP_CHARSET_TURKISH = HYP_CHARSET_NONE,
-	HYP_CHARSET_NORDIC = HYP_CHARSET_NONE,
-	HYP_CHARSET_THAI = HYP_CHARSET_NONE,
-	HYP_CHARSET_BALTIC = HYP_CHARSET_NONE,
-	HYP_CHARSET_CELTIC = HYP_CHARSET_NONE,
-	HYP_CHARSET_LATIN9 = HYP_CHARSET_NONE,
-	HYP_CHARSET_LATIN10 = HYP_CHARSET_NONE,
-	HYP_CHARSET_MAC_CE = HYP_CHARSET_NONE,
+	HYP_CHARSET_CP28600 = HYP_CHARSET_NONE, /* Nordic */
+	HYP_CHARSET_LATIN2 = HYP_CHARSET_NONE, /* Latin-2, Eastern Europe */
+	HYP_CHARSET_LATIN3 = HYP_CHARSET_NONE, /* Latin-3, South-European */
+	HYP_CHARSET_LATIN4 = HYP_CHARSET_NONE, /* Latin-4, Baltic */
+	HYP_CHARSET_LATIN5 = HYP_CHARSET_NONE, /* Latin-5, ISO8859-9, Turkish */
+	HYP_CHARSET_LATIN6 = HYP_CHARSET_NONE, /* Latin-6, ISO8859-10, Nordic */
+	HYP_CHARSET_LATIN7 = HYP_CHARSET_NONE, /* Latin-7, ISO8859-13, Baltic */
+	HYP_CHARSET_LATIN8 = HYP_CHARSET_NONE, /* Latin-8, ISO8859-14, Celtic */
+	HYP_CHARSET_LATIN9 = HYP_CHARSET_NONE, /* Latin-9, ISO8859-15, Euro */
+	HYP_CHARSET_LATIN10 = HYP_CHARSET_NONE, /* Latin-10, ISO8859-16, Balkan */
 	HYP_CHARSET_CP437 = HYP_CHARSET_NONE,
+	HYP_CHARSET_CP874 = HYP_CHARSET_NONE,
+	HYP_CHARSET_CYRILLIC = HYP_CHARSET_CP1251,
+	HYP_CHARSET_ARABIC = HYP_CHARSET_CP1256,
+	HYP_CHARSET_GREEK = HYP_CHARSET_CP1253,
+	HYP_CHARSET_HEBREW = HYP_CHARSET_CP1255,
+	HYP_CHARSET_TURKISH = HYP_CHARSET_CP1254,
+	HYP_CHARSET_NORDIC = HYP_CHARSET_CP28600,
+	HYP_CHARSET_THAI = HYP_CHARSET_CP874,
+	HYP_CHARSET_BALTIC = HYP_CHARSET_CP1257,
+	HYP_CHARSET_CELTIC = HYP_CHARSET_LATIN8,
+	HYP_CHARSET_MAC_CE = HYP_CHARSET_NONE,
 	HYP_CHARSET_HP8 = HYP_CHARSET_NONE,
-	HYP_CHARSET_NEXT = HYP_CHARSET_NONE,
-
-	HYP_CHARSET_MAX = HYP_CHARSET_BINARY_TABS
+	HYP_CHARSET_NEXT = HYP_CHARSET_NONE
 } HYP_CHARSET;
 
 
@@ -997,19 +1003,21 @@ HYP_CHARSET hyp_default_charset(HYP_OS os);
 HYP_CHARSET hyp_get_current_charset(void);
 HYP_CHARSET hyp_get_filename_charset(void);
 HYP_OS hyp_get_current_os(void);
-int hyp_utf8_vfprintf(FILE *fp, const char *format, va_list args);
+int __attribute__((format(printf, 2, 0))) hyp_utf8_vfprintf(FILE *fp, const char *format, va_list args);
 int __attribute__((format(printf, 2, 3))) hyp_utf8_fprintf(FILE *fp, const char *format, ...);
 int __attribute__((format(printf, 1, 2))) hyp_utf8_printf(const char *format, ...);
-int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format, va_list args);
-int __attribute__((format(printf, 3, 4))) hyp_utf8_fprintf_charset(FILE *fp, HYP_CHARSET charset, const char *format, ...);
-int __attribute__((format(printf, 2, 3))) hyp_utf8_printf_charset(HYP_CHARSET charset, const char *format, ...);
-int __attribute__((format(printf, 3, 4))) hyp_utf8_sprintf_charset(GString *str, HYP_CHARSET charset, const char *format, ...);
+int __attribute__((format(printf, 4, 0))) hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, gboolean *converror, const char *format, va_list args);
+int __attribute__((format(printf, 4, 5))) hyp_utf8_fprintf_charset(FILE *fp, HYP_CHARSET charset, gboolean *converror, const char *format, ...);
+int __attribute__((format(printf, 3, 4))) hyp_utf8_printf_charset(HYP_CHARSET charset, gboolean *converror, const char *format, ...);
+int __attribute__((format(printf, 4, 5))) hyp_utf8_sprintf_charset(GString *str, HYP_CHARSET charset, gboolean *converror, const char *format, ...);
 
 char *hyp_utf8_to_charset(HYP_CHARSET charset, const void *src, size_t len, gboolean *converror);
 char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t len, gboolean *converror);
 const char *hyp_utf8_conv_char(HYP_CHARSET charset, const char *src, char *buf, gboolean *converror);
 char *hyp_conv_to_utf8(HYP_CHARSET charset, const void *src, size_t len);
 int hyp_name_cmp(HYP_CHARSET charset, const unsigned char *str1, const unsigned char *str2);
+
+void check_charsets(void);
 
 wchar_t *hyp_utf8_to_wchar(const char *str, size_t len, size_t *lenp);
 char *hyp_wchar_to_utf8(const wchar_t *str, size_t len);

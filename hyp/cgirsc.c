@@ -72,8 +72,8 @@ typedef struct _writepng_info {
 void err_fcreate(const char *filename)
 {
 	if (err_out->len == 0)
-		html_out_header(NULL, err_opts, err_out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-	hyp_utf8_sprintf_charset(err_out, err_opts->output_charset, _("Can't create %s: %s\n"), hyp_basename(filename), hyp_utf8_strerror(errno));
+		html_out_header(NULL, err_opts, err_out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+	hyp_utf8_sprintf_charset(err_out, err_opts->output_charset, NULL, _("Can't create %s: %s\n"), hyp_basename(filename), hyp_utf8_strerror(errno));
 	goterr = TRUE;
 }
 
@@ -82,8 +82,8 @@ void err_fcreate(const char *filename)
 void err_fopen(const char *filename)
 {
 	if (err_out->len == 0)
-		html_out_header(NULL, err_opts, err_out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-	hyp_utf8_sprintf_charset(err_out, err_opts->output_charset, _("Can't open %s: %s\n"), hyp_basename(filename), hyp_utf8_strerror(errno));
+		html_out_header(NULL, err_opts, err_out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+	hyp_utf8_sprintf_charset(err_out, err_opts->output_charset, NULL, _("Can't open %s: %s\n"), hyp_basename(filename), hyp_utf8_strerror(errno));
 	goterr = TRUE;
 }
 
@@ -592,8 +592,8 @@ gboolean show_resource(const char *filename, hcp_opts *opts, GString *out, _UWOR
 		if (tree == NULL)
 		{
 			if (err_out->len == 0)
-				html_out_header(NULL, err_opts, err_out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE);
-			hyp_utf8_sprintf_charset(err_out, err_opts->output_charset, _("Tree #%u not found!\n"), treenr);
+				html_out_header(NULL, err_opts, err_out, _("404 Not Found"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
+			hyp_utf8_sprintf_charset(err_out, err_opts->output_charset, NULL, _("Tree #%u not found!\n"), treenr);
 		
 			rsc_file_delete(file, FALSE);
 			xrsrc_free(file);
@@ -622,7 +622,7 @@ gboolean show_resource(const char *filename, hcp_opts *opts, GString *out, _UWOR
 		ret = FALSE;
 	if (ret == FALSE)
 	{
-		html_out_trailer(NULL, err_opts, err_out, HYP_NOINDEX, TRUE, FALSE);
+		html_out_trailer(NULL, err_opts, err_out, HYP_NOINDEX, TRUE, FALSE, NULL);
 	} else
 	{
 		*pic_format = HYP_PIC_PNG;

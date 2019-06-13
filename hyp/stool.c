@@ -1236,7 +1236,7 @@ static void print_dir(FILE *outfile, CFG *l)
 	{
 		title = stg_quote_name(l->nodename);
 		str = linkname(l);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s@{\"%s\" link \"%s\"}\n", STR_INDENT, title, str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "%s@{\"%s\" link \"%s\"}\n", STR_INDENT, title, str);
 		g_free(str);
 		g_free(title);
 		if (l->desc)
@@ -1244,7 +1244,7 @@ static void print_dir(FILE *outfile, CFG *l)
 		
 		l = l->right;
 		if (l)
-			hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
+			hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
 	}
 }
 
@@ -1258,11 +1258,11 @@ static void print_filelist(FILE *outfile, CFG *l)
 	
 	while (l)
 	{
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@label %s%ld\n", LABEL_PREFIX, l->labelnr);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@label %s%ld\n", LABEL_PREFIX, l->labelnr);
 		if (l->keywords)
 		{
 			str = stg_quote_name(l->keywords);
-			hyp_utf8_fprintf_charset(outfile, output_charset, "@keywords \"%s\"\n", str);
+			hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@keywords \"%s\"\n", str);
 			g_free(str);
 		}
 		
@@ -1281,7 +1281,7 @@ static void print_filelist(FILE *outfile, CFG *l)
 			tmp = g_strdup_printf("%s/%s", l->filename, hyp_default_main_node_name);
 		name = stg_quote_name(tmp);
 		g_free(tmp);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s@{\"%s\" link \"%s\"}\n", STR_INDENT, str, name);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "%s@{\"%s\" link \"%s\"}\n", STR_INDENT, str, name);
 		g_free(name);
 		g_free(str);
 		
@@ -1289,19 +1289,19 @@ static void print_filelist(FILE *outfile, CFG *l)
 			str = l->author;
 		else
 			str = strings[STR_UNKNOWN].val;
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s: %s\n", STR_INDENT, strings[STR_AUTHOR].val, str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "%s%s: %s\n", STR_INDENT, strings[STR_AUTHOR].val, str);
 		
 		if (l->version)
 			str = l->version;
 		else
 			str = strings[STR_UNKNOWN].val;
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s: %s\n", STR_INDENT, strings[STR_VERSION].val, str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "%s%s: %s\n", STR_INDENT, strings[STR_VERSION].val, str);
 		
 		if (hyp_guess_filetype(l->filename) == HYP_FT_HYP)
 			tmp = g_strdup(hyp_basename(l->filename));
 		else
 			tmp = g_strdup(l->filename);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "%s%s: %s%s%s\n", STR_INDENT, strings[STR_FILE].val, l->available ? "" : "@{G}", tmp, l->available ? "" : "@{g}");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "%s%s: %s%s%s\n", STR_INDENT, strings[STR_FILE].val, l->available ? "" : "@{G}", tmp, l->available ? "" : "@{g}");
 		g_free(tmp);
 		
 		if (l->desc)
@@ -1309,7 +1309,7 @@ static void print_filelist(FILE *outfile, CFG *l)
 		
 		l = l->list;
 		if (l)
-			hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
+			hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
 	}
 }
 
@@ -1325,41 +1325,41 @@ static void print_nodes(FILE *outfile, CFG *l)
 	{
 		str = linkname(l);
 		title = stg_quote_name(l->subject);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
-		hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@node \"%s\" \"%s\"\n", str, title);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@node \"%s\" \"%s\"\n", str, title);
 		g_free(title);
 		g_free(str);
 		if (l->down == NULL && l->up != NULL)
 		{
 			str = stg_quote_name(l->nodename);
-			hyp_utf8_fprintf_charset(outfile, output_charset, "@keywords \"%s\"\n", str);
+			hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@keywords \"%s\"\n", str);
 			g_free(str);
 		}
 		
 		if (l->up)
 		{
 			str = linkname(l->up);
-			hyp_utf8_fprintf_charset(outfile, output_charset, "@toc \"%s\"\n", str);
+			hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@toc \"%s\"\n", str);
 			g_free(str);
 		}
 		if (prev)
 			str = linkname(prev);
 		else
 			str = linkname(l);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@prev \"%s\"\n", str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@prev \"%s\"\n", str);
 		g_free(str);
 		if (l->right)
 			str = linkname(l->right);
 		else
 			str = linkname(l);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@next \"%s\"\n", str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@next \"%s\"\n", str);
 		g_free(str);
 		if (l->down)
 			print_dir(outfile, l->down);
 		else
 			print_filelist(outfile, l->list);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode\n");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@endnode\n");
 		
 		print_nodes(outfile, l->down);
 		
@@ -1453,11 +1453,11 @@ static void print_index(FILE *outfile, CFG *root)
 	memset(&info, 0, sizeof(info));
 	info.outfile = outfile;
 	do_files(root, check_used, &info);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
-	hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@node \"%s\"\n", hyp_default_index_node_name);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@next \"%s\"\n", hyp_default_index_node_name);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@prev \"%s\"\n", hyp_default_index_node_name);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@node \"%s\"\n", hyp_default_index_node_name);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@next \"%s\"\n", hyp_default_index_node_name);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@prev \"%s\"\n", hyp_default_index_node_name);
 	need_nl = FALSE;
 	for (i = 0; i < NUM_INDEX_CHARS; i++)
 	{
@@ -1479,7 +1479,7 @@ static void print_index(FILE *outfile, CFG *root)
 				str = stg_quote_name(tmp);
 				nodename = linkname(l->up);
 				label = linkname(l);
-				hyp_utf8_fprintf_charset(outfile, output_charset, "  %c  %s @{\"%s\" link \"%s\" %s}", j == 0 ? index_chars[i] : ' ', l->available ? S_CHECKMARK : " ", str, nodename, label);
+				hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "  %c  %s @{\"%s\" link \"%s\" %s}", j == 0 ? index_chars[i] : ' ', l->available ? S_CHECKMARK : " ", str, nodename, label);
 				len = (int)g_utf8_str_len(tmp, STR0TERM);
 				while (len < info.max_filename)
 				{
@@ -1498,7 +1498,7 @@ static void print_index(FILE *outfile, CFG *root)
 			g_free(info.files);
 		}
 	}
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@endnode\n");
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1516,13 +1516,13 @@ static void print_index_only(FILE *outfile, CFG *root)
 	memset(&info, 0, sizeof(info));
 	info.outfile = outfile;
 	do_files(root, check_used, &info);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
-	hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
 	nodename = linkname(root);
 	str = stg_quote_name(root->subject);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@node \"%s\" \"%s\"\n", nodename, str);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@next \"%s\"\n", nodename);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@prev \"%s\"\n", nodename);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@node \"%s\" \"%s\"\n", nodename, str);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@next \"%s\"\n", nodename);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@prev \"%s\"\n", nodename);
 	g_free(str);
 	g_free(nodename);
 	need_nl = FALSE;
@@ -1549,7 +1549,7 @@ static void print_index_only(FILE *outfile, CFG *root)
 				else
 					nodename = g_strdup_printf("%s/%s", l->filename, hyp_default_main_node_name);
 				label = stg_quote_name(nodename);
-				hyp_utf8_fprintf_charset(outfile, output_charset, "  %c  %s @{\"%s\" link \"%s\"}", j == 0 ? index_chars[i] : ' ', l->available ? S_CHECKMARK : " ", str, label);
+				hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "  %c  %s @{\"%s\" link \"%s\"}", j == 0 ? index_chars[i] : ' ', l->available ? S_CHECKMARK : " ", str, label);
 				len = (int)g_utf8_str_len(tmp, STR0TERM);
 				while (len < info.max_filename)
 				{
@@ -1568,7 +1568,7 @@ static void print_index_only(FILE *outfile, CFG *root)
 			g_free(info.files);
 		}
 	}
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@endnode\n");
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1578,15 +1578,15 @@ static void print_helppage(FILE *outfile)
 	char *nodename = stg_quote_name(hyp_default_help_node_name);
 	char *str;
 	
-	hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
-	hyp_utf8_fprintf_charset(outfile, output_charset, "\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "\n");
 	str = stg_quote_name(strings[STR_HELPTITLE].val);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@node \"%s\" \"%s\"\n", nodename, str);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@node \"%s\" \"%s\"\n", nodename, str);
 	g_free(str);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@prev \"%s\"\n", nodename);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@next \"%s\"\n", nodename);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@prev \"%s\"\n", nodename);
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@next \"%s\"\n", nodename);
 	print_str(outfile, STR_INDENT, help_page, TRUE, TRUE);
-	hyp_utf8_fprintf_charset(outfile, output_charset, "@endnode\n");
+	hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@endnode\n");
 	g_free(nodename);
 }
 
@@ -1789,22 +1789,22 @@ creating this catalog text are shown ticked."));
 			hyp_utf8_printf(_("writing output file '%s'\n"), *outfile_name);
 		}
 		
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@inputenc %s\n", hyp_charset_name(output_charset));
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@lang any\n");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@inputenc %s\n", hyp_charset_name(output_charset));
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@lang any\n");
 
 		str = stg_quote_name(strings[STR_DATABASE].val);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@database \"%s\"\n", str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@database \"%s\"\n", str);
 		g_free(str);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@options \"-a -i -n -s%s\"\n", do_updateref ? " +zz" : "");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@options \"-a -i -n -s%s\"\n", do_updateref ? " +zz" : "");
 		str = stg_quote_name(strings[STR_CATAUTHOR].val);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@author \"%s\"\n", str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@author \"%s\"\n", str);
 		g_free(str);
 		tmp = replace_ext(hyp_basename(*outfile_name), HYP_EXT_STG, "");
 		str = stg_quote_name(tmp);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@$VER: %s (@:\"__DATE__\")\n", str);
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@$VER: %s (@:\"__DATE__\")\n", str);
 		g_free(str);
 		g_free(tmp);
-		hyp_utf8_fprintf_charset(outfile, output_charset, "@subject \"TOP\"\n");
+		hyp_utf8_fprintf_charset(outfile, output_charset, NULL, "@subject \"TOP\"\n");
 		
 		if (do_index_only)
 		{

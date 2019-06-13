@@ -288,12 +288,12 @@ static void search_text(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, const char
 		{
 			linktext = nodename;
 		}
-		hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%s, Node '%s'\" link \"%s/%s\"}\n", target, linktext, target, nodename);
+		hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@{\"%s, Node '%s'\" link \"%s/%s\"}\n", target, linktext, target, nodename);
 
 		if (linktext != nodename)
 			g_free(linktext);
 	}
-	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@{\"%ld:\" link \"%s/%s\" %ld} ", nodeptr->height, target, nodename, nodeptr->height);
+	hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@{\"%ld:\" link \"%s/%s\" %ld} ", nodeptr->height, target, nodename, nodeptr->height);
 	stg_out_str(opts->outfile, opts->output_charset, text, match, match + opts->pattern_len);
 	fputs("\n", opts->outfile);
 	g_free(nodename);
@@ -833,22 +833,22 @@ int main(int argc, const char **argv)
 			hyp_utf8_fprintf(opts->outfile, "@endif\n");
 			
 			str = stg_quote_name(gl_profile.hypfind.database, STR0TERM);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@database \"%s\"\n", str);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@database \"%s\"\n", str);
 			g_free(str);
 			str = stg_quote_name(gl_profile.hypfind.subject, STR0TERM);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@subject \"%s\"\n", str);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@subject \"%s\"\n", str);
 			g_free(str);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@author \"Program %s\"\n", gl_program_name);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@$VER: %s 1.00 (@:__DATE__)\n", hypfind_hyp);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@options \"-s -i\"\n");
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "\n");
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@author \"Program %s\"\n", gl_program_name);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@$VER: %s 1.00 (@:__DATE__)\n", hypfind_hyp);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@options \"-s -i\"\n");
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "\n");
 
 			str = stg_quote_name(gl_profile.hypfind.title, STR0TERM);
 			str2 = stg_quote_name(opts->pattern, STR0TERM);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@node Main \"%s%s\"\n", str, str2);
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@node Main \"%s%s\"\n", str, str2);
 			g_free(str2);
 			g_free(str);
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "\n");
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "\n");
 		}
 		
 		if (retval == 0)
@@ -885,7 +885,7 @@ int main(int argc, const char **argv)
 		
 		if (retval == 0)
 		{
-			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, "@endnode\n");
+			hyp_utf8_fprintf_charset(opts->outfile, opts->output_charset, NULL, "@endnode\n");
 		}
 		
 		if (opts->outfile != NULL && opts->outfile != stdout)

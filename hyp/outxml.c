@@ -77,24 +77,24 @@ static char *xml_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node, unsigned int
 
 /* ------------------------------------------------------------------------- */
 
-static void xml_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
+static void xml_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, gboolean *converror)
 {
 	char *str;
 
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "  <header>\n");
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"os\" value=\"%s\" />\n", hyp_osname(hyp->comp_os));
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"charset\" value=\"%s\" />\n", hyp_charset_name(hyp->comp_charset));
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "  <header>\n");
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"os\" value=\"%s\" />\n", hyp_osname(hyp->comp_os));
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"charset\" value=\"%s\" />\n", hyp_charset_name(hyp->comp_charset));
 	
 	if (hyp->language != NULL)
 	{
 		str = xml_quote_name(hyp->language, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"language\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"language\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hyp->database != NULL)
 	{
 		str = xml_quote_name(hyp->database, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"database\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"database\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hyp->hostname != NULL)
@@ -104,56 +104,56 @@ static void xml_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out)
 		for (h = hyp->hostname; h != NULL; h = h->next)
 		{
 			str = xml_quote_name(h->name, 0);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"hostname\" value=\"%s\" />\n", str);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"hostname\" value=\"%s\" />\n", str);
 			g_free(str);
 		}
 	}
 	if (hypnode_valid(hyp, hyp->default_page))
 	{
 		str = xml_quote_nodename(hyp, hyp->default_page, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"default\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"default\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hyp->hcp_options != NULL)
 	{
 		str = xml_quote_name(hyp->hcp_options, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"options\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"options\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hyp->author != NULL)
 	{
 		str = xml_quote_name(hyp->author, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"author\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"author\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hypnode_valid(hyp, hyp->help_page))
 	{
 		str = xml_quote_nodename(hyp, hyp->help_page, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"help\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"help\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hyp->version != NULL)
 	{
 		str = xml_quote_name(hyp->version, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"version\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"version\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	if (hyp->subject != NULL)
 	{
 		str = xml_quote_name(hyp->subject, 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"subject\" value=\"%s\" />\n", str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"subject\" value=\"%s\" />\n", str);
 		g_free(str);
 	}
 	/* if (hyp->line_width != HYP_STGUIDE_DEFAULT_LINEWIDTH) */
 	{
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"width\" value=\"%d\" />\n", hyp->line_width);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"width\" value=\"%d\" />\n", hyp->line_width);
 	}
 	/* if (hyp->st_guide_flags != 0) */
 	{
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <param name=\"flags\" value=\"%d\" />\n", hyp->st_guide_flags);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <param name=\"flags\" value=\"%d\" />\n", hyp->st_guide_flags);
 	}
 
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "  </header>\n");
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "  </header>\n");
 }
 
 /* ------------------------------------------------------------------------- */
@@ -198,7 +198,7 @@ static void xml_out_attr(GString *out, struct textattr *attr)
 
 /* ------------------------------------------------------------------------- */
 
-static void xml_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const INDEX_ENTRY *entry, long lineno, symtab_entry *syms)
+static void xml_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const INDEX_ENTRY *entry, long lineno, symtab_entry *syms, gboolean *converror)
 {
 	char *nodename;
 	symtab_entry *sym;
@@ -211,9 +211,9 @@ static void xml_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, cons
 		{
 			char *str = xml_quote_name(sym->name, QUOTE_SPACE);
 			if (sym->from_idx && !sym->from_ref)
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_index%s>%s</_index><!-- lineno %u -->\n", xml_translatable, str, sym->lineno);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <_index%s>%s</_index><!-- lineno %u -->\n", xml_translatable, str, sym->lineno);
 			else
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_label%s>%s</_label><!-- lineno %u -->\n", xml_translatable, str, sym->lineno);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <_label%s>%s</_label><!-- lineno %u -->\n", xml_translatable, str, sym->lineno);
 			g_free(str);
 			sym->referenced = TRUE;
 		}
@@ -224,7 +224,7 @@ static void xml_out_labels(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, cons
 
 /* ------------------------------------------------------------------------- */
 
-static void xml_out_alias(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, const INDEX_ENTRY *entry, symtab_entry *syms)
+static void xml_out_alias(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, const INDEX_ENTRY *entry, symtab_entry *syms, gboolean *converror)
 {
 	char *nodename;
 	symtab_entry *sym;
@@ -234,7 +234,7 @@ static void xml_out_alias(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, const
 	while (sym)
 	{
 		char *str = xml_quote_name(sym->name, QUOTE_SPACE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_alias%s>%s</_alias>\n", xml_translatable, str);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <_alias%s>%s</_alias>\n", xml_translatable, str);
 		g_free(str);
 		sym->referenced = TRUE;
 		sym = sym_find(sym->next, nodename, REF_ALIASNAME);
@@ -244,7 +244,7 @@ static void xml_out_alias(GString *out, HYP_DOCUMENT *hyp, hcp_opts *opts, const
 
 /* ------------------------------------------------------------------------- */
 
-static void xml_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
+static void xml_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, gboolean *converror)
 {
 	const char *type;
 	
@@ -273,53 +273,53 @@ static void xml_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct 
 			}
 			quoted = xml_quote_name(fname, 0);
 			type = gfx->islimage ? "limage" : "image";
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <%s name=\"%s\" type=\"%s\">\n", type, quoted, format);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "      <width>%d</width>\n", gfx->pixwidth);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "      <height>%d</height>\n", gfx->pixheight);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "      <centered>%d</centered>\n", gfx->x_offset == 0);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <%s name=\"%s\" type=\"%s\">\n", type, quoted, format);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <width>%d</width>\n", gfx->pixwidth);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <height>%d</height>\n", gfx->pixheight);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <centered>%d</centered>\n", gfx->x_offset == 0);
 			if (gfx->x_offset != 0)
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "      <xoffset>%d</xoffset>\n", (gfx->x_offset - 1));
+				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <xoffset>%d</xoffset>\n", (gfx->x_offset - 1));
 			if (!empty(dithermask))
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "      <dithermask>%s</dithermask>\n", dithermask);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    </%s>\n", type);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <dithermask>%s</dithermask>\n", dithermask);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    </%s>\n", type);
 			g_free(quoted);
 			g_free(fname);
 			g_free(dithermask);
 		}
 		break;
 	case HYP_ESC_LINE:
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <line>\n");
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <xoffset>%d</xoffset>\n", (gfx->x_offset - 1));
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <width>%d</width>\n", gfx->width);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <height>%d</height>\n", gfx->height);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <begarrow>%d</begarrow>\n", (gfx->begend & (1 << 0)) != 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <endarrow>%d</endarrow>\n", (gfx->begend & (1 << 1)) != 0);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <style>%d</style>\n", gfx->style);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    </line>\n");
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <line>\n");
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <xoffset>%d</xoffset>\n", (gfx->x_offset - 1));
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <width>%d</width>\n", gfx->width);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <height>%d</height>\n", gfx->height);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <begarrow>%d</begarrow>\n", (gfx->begend & (1 << 0)) != 0);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <endarrow>%d</endarrow>\n", (gfx->begend & (1 << 1)) != 0);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <style>%d</style>\n", gfx->style);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    </line>\n");
 		break;
 	case HYP_ESC_BOX:
 	case HYP_ESC_RBOX:
 		type = gfx->type == HYP_ESC_BOX ? "box" : "rbox";
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <%s>\n", type);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <xoffset>%d</xoffset>\n", (gfx->x_offset - 1));
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <width>%d</width>\n", gfx->width);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <height>%d</height>\n", gfx->height);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <style>%d</style>\n", gfx->style);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    </%s>\n", type);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <%s>\n", type);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <xoffset>%d</xoffset>\n", (gfx->x_offset - 1));
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <width>%d</width>\n", gfx->width);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <height>%d</height>\n", gfx->height);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <style>%d</style>\n", gfx->style);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    </%s>\n", type);
 		break;
 	}
 }
 
 /* ------------------------------------------------------------------------- */
 
-static void xml_out_graphics(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct hyp_gfx *gfx, long lineno)
+static void xml_out_graphics(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct hyp_gfx *gfx, long lineno, gboolean *converror)
 {
 	while (gfx != NULL)
 	{
 		if (gfx->y_offset == lineno)
 		{
 			gfx->used = TRUE;
-			xml_out_gfx(opts, out, hyp, gfx);
+			xml_out_gfx(opts, out, hyp, gfx, converror);
 		}
 		gfx = gfx->next;
 	}
@@ -327,7 +327,7 @@ static void xml_out_graphics(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, st
 
 /* ------------------------------------------------------------------------- */
 
-static void xml_generate_link(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct xml_xref *xref, symtab_entry *syms, gboolean newwindow)
+static void xml_generate_link(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct xml_xref *xref, symtab_entry *syms, gboolean newwindow, gboolean *converror)
 {
 	const char *linktype;
 	char *targetfile = NULL;
@@ -439,30 +439,30 @@ static void xml_generate_link(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, s
 		linktype = "invalid";
 		break;
 	}
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "    <%s type=\"%s\">\n", xref->type, linktype);
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "      <targetnode>%u</targetnode>\n", xref->dest_page);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <%s type=\"%s\">\n", xref->type, linktype);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <targetnode>%u</targetnode>\n", xref->dest_page);
 	if (targetfile)
 	{
 		quoted = xml_quote_name(targetfile, QUOTE_SPACE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <targetfile%s>%s</targetfile>\n", xml_space_preserve, quoted);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <targetfile%s>%s</targetfile>\n", xml_space_preserve, quoted);
 		g_free(quoted);
 	}
 	if (xref->destname)
 	{
 		quoted = xml_quote_name(xref->destname, QUOTE_SPACE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "      <_targetname%s%s>%s</_targetname>\n", xml_space_preserve, xml_translatable, quoted);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <_targetname%s%s>%s</_targetname>\n", xml_space_preserve, xml_translatable, quoted);
 		g_free(quoted);
 	}
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "      <targetline>%u</targetline>\n", xref->line);
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "      <_text%s%s>%s</_text>\n", xml_space_preserve, xml_translatable, xref->text);
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "      <newwindow>%d</newwindow>\n", newwindow);
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "    </%s>\n", xref->type);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <targetline>%u</targetline>\n", xref->line);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <_text%s%s>%s</_text>\n", xml_space_preserve, xml_translatable, xref->text);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "      <newwindow>%d</newwindow>\n", newwindow);
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    </%s>\n", xref->type);
 	g_free(targetfile);
 }
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, symtab_entry *syms)
+static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, symtab_entry *syms, gboolean *converror)
 {
 	char *str;
 	int in_tree;
@@ -481,12 +481,12 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 #define FLUSHTREE() \
 	if (in_tree != -1) \
 	{ \
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "end tree %d -->\n", in_tree); \
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "end tree %d -->\n", in_tree); \
 		in_tree = -1; \
 	}
 	
 	entry = hyp->indextable[node];
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "  <node index=\"%u\" type=\"%s\">\n",
+	hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "  <node index=\"%u\" type=\"%s\">\n",
 		node,
 		entry->type == HYP_NODE_INTERNAL ? "internal" : "popup");
 
@@ -514,9 +514,9 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 			title = NULL;
 		}
 
-		hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, nodename);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, nodename);
 		if (title)
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_title%s%s>%s</_title>\n", xml_space_preserve, xml_translatable, title);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <_title%s%s>%s</_title>\n", xml_space_preserve, xml_translatable, title);
 			
 		g_free(title);
 		g_free(nodename);
@@ -589,7 +589,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 					}
 					xref.line = 0;
 					xref.type = "xref";
-					xml_generate_link(hyp, opts, out, &xref, syms, FALSE);
+					xml_generate_link(hyp, opts, out, &xref, syms, FALSE, converror);
 					g_free(xref.destname);
 					g_free(xref.text);
 				}
@@ -607,7 +607,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		/*
 		 * check for alias names in ref file
 		 */
-		xml_out_alias(out, hyp, opts, entry, syms);
+		xml_out_alias(out, hyp, opts, entry, syms, converror);
 		
 		/*
 		 * now output data
@@ -619,8 +619,8 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		attr.curfg = attr.newfg = HYP_DEFAULT_FG;
 		attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 		lineno = 0;
-		xml_out_labels(hyp, opts, out, entry, lineno, syms);
-		xml_out_graphics(hyp, opts, out, hyp_gfx, lineno);
+		xml_out_labels(hyp, opts, out, entry, lineno, syms, converror);
+		xml_out_graphics(hyp, opts, out, hyp_gfx, lineno, converror);
 		
 		while (retval && src < end)
 		{
@@ -704,7 +704,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 						FLUSHTREE();
 						
 						xref.type = "link";
-						xml_generate_link(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE);
+						xml_generate_link(hyp, opts, out, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, converror);
 						g_free(xref.destname);
 						g_free(xref.text);
 					}
@@ -739,10 +739,10 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 						if (tree != in_tree)
 						{
 							FLUSHTREE();
-							hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- begin tree %d\n", tree);
+							hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<!-- begin tree %d\n", tree);
 							in_tree = tree;
 						}
-						hyp_utf8_sprintf_charset(out, opts->output_charset, "   %d \"%s\" %u\n", obj, str, line);
+						hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "   %d \"%s\" %u\n", obj, str, line);
 						g_free(str);
 						src += 9;
 					}
@@ -806,8 +806,8 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 				DUMPTEXT();
 				g_string_append(out, "    <newline />\n");
 				++lineno;
-				xml_out_labels(hyp, opts, out, entry, lineno, syms);
-				xml_out_graphics(hyp, opts, out, hyp_gfx, lineno);
+				xml_out_labels(hyp, opts, out, entry, lineno, syms, converror);
+				xml_out_graphics(hyp, opts, out, hyp_gfx, lineno, converror);
 				src++;
 				textstart = src;
 			} else
@@ -823,8 +823,8 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		xml_out_attr(out, &attr);
 		FLUSHTREE();
 		++lineno;
-		xml_out_labels(hyp, opts, out, entry, lineno, syms);
-		xml_out_graphics(hyp, opts, out, hyp_gfx, lineno);
+		xml_out_labels(hyp, opts, out, entry, lineno, syms, converror);
+		xml_out_graphics(hyp, opts, out, hyp_gfx, lineno, converror);
 		
 		if (hyp_gfx != NULL)
 		{
@@ -834,9 +834,9 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 			{
 				if (!gfx->used)
 				{
-					hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- gfx unused: ");
-					xml_out_gfx(opts, out, hyp, gfx);
-					hyp_utf8_sprintf_charset(out, opts->output_charset, "-->\n");
+					hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "<!-- gfx unused: ");
+					xml_out_gfx(opts, out, hyp, gfx, converror);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "-->\n");
 				}
 				next = gfx->next;
 				g_free(gfx);
@@ -849,7 +849,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		hyp_utf8_fprintf(opts->errorfile, _("<!-- %s: Node %u: failed to decode -->\n"), hyp->file, node);
 	}
 
-	hyp_utf8_sprintf_charset(out, opts->output_charset, "  </node>\n");
+	hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "  </node>\n");
 
 #undef DUMPTEXT
 #undef FLUSHLINE
@@ -860,7 +860,7 @@ static gboolean xml_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 /* ------------------------------------------------------------------------- */
 
 
-static gboolean xml_out_image(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node)
+static gboolean xml_out_image(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean *converror)
 {
 	GString *image;
 	Base64 *b;
@@ -881,14 +881,14 @@ static gboolean xml_out_image(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 			fname = image_name(format, hyp, node, opts->image_name_prefix);
 			formatname = hcp_pic_format_to_mimetype(format);
 			quoted = xml_quote_name(fname, 0);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "  <node index=\"%u\" type=\"%s\">\n",
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "  <node index=\"%u\" type=\"%s\">\n",
 				node,
 				"image");
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, quoted);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <data href=\"data:%s;base64,", formatname);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, quoted);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "    <data href=\"data:%s;base64,", formatname);
 			g_string_append_len(out, Base64_EncodedMessage(b), Base64_EncodedMessageSize(b));
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "\" />\n");
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "  </node>\n");
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "\" />\n");
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "  </node>\n");
 			g_free(quoted);
 			g_free(fname);
 		}
@@ -910,7 +910,8 @@ gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	char *str;
 	const char *nodetype;
 	char *nodename;
-	
+	gboolean converror = FALSE;
+
 	UNUSED(argc);
 	UNUSED(argv);
 	
@@ -929,7 +930,7 @@ gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	str = xml_quote_name(hyp_basename(hyp->file), 0);
 	g_string_append_printf(out, "<hypfile name=\"%s\" generator=\"%s\" version=\"%s\">\n", str, gl_program_name, gl_program_version);
 	g_free(str);
-	xml_out_globals(hyp, opts, out);
+	xml_out_globals(hyp, opts, out, &converror);
 	
 	for (node = 0; node < hyp->num_index; node++)
 	{
@@ -978,11 +979,11 @@ gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		{
 		case HYP_NODE_INTERNAL:
 		case HYP_NODE_POPUP:
-			ret &= xml_out_node(hyp, opts, out, node, syms);
+			ret &= xml_out_node(hyp, opts, out, node, syms, &converror);
 			break;
 		case HYP_NODE_IMAGE:
 			if (opts->read_images)
-				ret &= xml_out_image(hyp, opts, out, node);
+				ret &= xml_out_image(hyp, opts, out, node, &converror);
 			break;
 		case HYP_NODE_EXTERNAL_REF:
 			nodetype = "external";
@@ -1017,12 +1018,12 @@ gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		}
 		if (nodetype && nodename)
 		{
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "  <node index=\"%u\" type=\"%s\">\n",
+			hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "  <node index=\"%u\" type=\"%s\">\n",
 				node,
 				nodetype);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, nodename);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "    <_name%s%s>%s</_name>\n", xml_space_preserve, xml_translatable, nodename);
 			g_free(nodename);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, "  </node>\n");
+			hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "  </node>\n");
 		}
 		write_strout(out, opts->outfile);
 		g_string_truncate(out, 0);
@@ -1038,7 +1039,7 @@ gboolean recompile_xml(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		{
 			if (!sym->referenced && sym->type != REF_NODENAME)
 			{
-				hyp_utf8_sprintf_charset(out, opts->output_charset, "<!-- symbol unused: \"%s\" \"%s\" -->\n", sym->nodename, sym->name);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "<!-- symbol unused: \"%s\" \"%s\" -->\n", sym->nodename, sym->name);
 			}
 		}
 	}

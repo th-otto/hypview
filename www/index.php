@@ -135,11 +135,17 @@ Output encoding:
 <td>
 <select id="output_charset" name="charset">
 <option value="latin1"> latin1 (ISO-8859-1) (Western Europe)</option>
-<option value="latin2"> latin2 (ISO-8859-2) (Central Europe)</option>
+<!-- <option value="latin2"> latin2 (ISO-8859-2) (Central Europe)</option> NYI -->
 <!-- <option value="latin5"> latin5 (ISO-8859-5) (Cyrillic)</option> NYI -->
 <option value="cp1250"> Windows 1250 (Central Europe)</option>
-<!-- <option value="cp1251"> Windows 1251 (Cyrillic)</option> NYI -->
+<option value="cp1251"> Windows 1251 (Cyrillic)</option>
 <option value="cp1252"> Windows 1252 (Western Europe)</option>
+<option value="cp1253"> Windows 1253 (Greek)</option>
+<option value="cp1254"> Windows 1254 (Turkish)</option>
+<option value="cp1255"> Windows 1255 (Hebrew)</option>
+<option value="cp1256"> Windows 1256 (Arabic)</option>
+<option value="cp1257"> Windows 1257 (Baltic)</option>
+<option value="cp1258"> Windows 1258 (Viet Nam)</option>
 <option value="atarist"> Atari-ST (might not work on non-Atari Browser)</option>
 <option value="utf8" selected="selected"> UTF-8 (Unicode, Worldwide)</option>
 </select>
@@ -299,9 +305,11 @@ function js_escape($string)
 
 class hyp {
 	public $files;
+
 	public function hyp($opt) {
 		$this->files = array();
 	}
+
 	public function __destruct()
 	{
 	}
@@ -314,7 +322,6 @@ class hyp {
 			return -1;
 		return $a > $b;
 	}
-
 }
 
 $localdir = $_SERVER['DOCUMENT_ROOT'] . $hypdir;
