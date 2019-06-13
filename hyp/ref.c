@@ -151,6 +151,22 @@ const char *ref_osname(HYP_OS os)
 
 /* ------------------------------------------------------------------------- */
 
+void ref_set_defaultcharset(REF_FILE *ref, HYP_CHARSET charset)
+{
+	REF_MODULE *mod;
+
+	if (ref == NULL || ref->is_converted)
+		return;
+	
+	for (mod = ref->modules; mod != NULL; mod = mod->next)
+	{
+		if (!mod->had_charset)
+			mod->charset = charset;
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 {
 	REF_MODULE *module;
@@ -161,8 +177,6 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 	long this_size;
 	long num, this_entries;
 	char *str;
-	gboolean os_found;
-	gboolean charset_found;
 	
 	if (ref == NULL)
 		return FALSE;
@@ -205,8 +219,6 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			return FALSE;
 		}
 		num = 0;
-		os_found = FALSE;
-		charset_found = FALSE;
 		while (num < this_entries && pos < this_end)
 		{
 			unsigned char type;
@@ -214,7 +226,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 
 			type = *pos++;
 			size = *pos++;
-			if (size <= 2)
+			if (size <= REF_ENTRYSIZE)
 			{
 				if (verbose)
 					hyp_utf8_fprintf(stderr, _("premature end of REF module %s in %s\n"), printnull(module->filename), ref->filename);
@@ -223,7 +235,7 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			module->entries[num].type = (hyp_reftype) type;
 			module->entries[num].name.hyp = pos;
 			module->entries[num].lineno = 0;
-			size -= 2;
+			size -= REF_ENTRYSIZE;
 			/* FIXME: restrict strcmps() & strcpys() to result string size, entry size & ref->data_size */
 			/* FIXME: check if the names are properly EOS terminated */
 			switch (type)
@@ -275,17 +287,18 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 					g_free(module->language);
 				}
 				module->language = g_strdup((const char *)pos);
+				module->had_language = TRUE;
 				break;
 			case REF_OS:
 				/*
 				 * in a ref, these seem to be '0' + ostype
 				 */
-				if (os_found)
+				if (module->had_os)
 				{
 					if (verbose)
 						hyp_utf8_fprintf(stderr, _("OS specified more than once in REF module %s of %s\n"), printnull(module->filename), ref->filename);
 				}
-				os_found = TRUE;
+				module->had_os = TRUE;
 				switch (*pos)
 				{
 				case '0':
@@ -326,12 +339,12 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 				}
 				break;
 			case REF_CHARSET:
-				if (charset_found)
+				if (module->had_charset)
 				{
 					if (verbose)
 						hyp_utf8_fprintf(stderr, _("character set specified more than once in REF module %s of %s\n"), printnull(module->filename), ref->filename);
 				}
-				charset_found = TRUE;
+				module->had_charset = TRUE;
 				module->charset = hyp_charset_from_name((const char *) pos);
 				if (module->charset == HYP_CHARSET_NONE)
 				{
@@ -368,24 +381,18 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			if (verbose)
 				hyp_utf8_fprintf(stderr, _("no filename found in %s\n"), ref->filename);
 		}
-		if (!os_found)
+		if (!module->had_os)
 		{
 			if (verbose > 1)
 				hyp_utf8_fprintf(stderr, _("No OS specified in REF module %s of %s\n"), printnull(module->filename), ref->filename);
 			module->os = HYP_OS_ATARI;
-		} else
-		{
-			module->had_os = TRUE;
 		}
 
-		if (!charset_found)
+		if (!module->had_charset)
 		{
 			if (verbose > 1)
 				hyp_utf8_fprintf(stderr, _("No character set specified in REF module %s of %s\n"), printnull(module->filename), ref->filename);
 			module->charset = hyp_default_charset(module->os);
-		} else
-		{
-			module->had_charset = TRUE;
 		}
 
 		if (module->module_filename != NULL)
@@ -428,10 +435,10 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			p = strrchr(str, '.');
 			if (p != NULL)
 				*p = '\0';
-			size = strlen(str) + sizeof(HYP_EXT_HYP) + 2 + strlen(str) + sizeof(HYP_EXT_HYP);
+			size = strlen(str) + sizeof(HYP_EXT_HYP) + REF_ENTRYSIZE + strlen(str) + sizeof(HYP_EXT_HYP);
 			module->filename = g_new(char, size);
 			strcat(strcpy(module->filename, str), HYP_EXT_HYP);
-			size = strlen(str) + sizeof(HYP_EXT_HYP) + 2;
+			size = strlen(str) + sizeof(HYP_EXT_HYP) + REF_ENTRYSIZE;
 			entry = (unsigned char *)module->filename + size;
 			entry[-2] = REF_FILENAME;
 			entry[-1] = (unsigned char) size;

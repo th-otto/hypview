@@ -1012,7 +1012,8 @@ char *g_build_filename(const char *first, ...)
 		if (*str == '\0')
 			continue;
 		ptr = ret + strlen(ret);
-		*ptr++ = G_DIR_SEPARATOR;
+		if (*ret)
+			*ptr++ = G_DIR_SEPARATOR;
 		strcpy(ptr, str);
 		ptr += strlen(ptr);
 		while (ptr > ret && G_IS_DIR_SEPARATOR(ptr[-1]))

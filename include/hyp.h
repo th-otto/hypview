@@ -90,20 +90,21 @@ typedef enum {
 	HYP_CHARSET_ATARI = 2,
 	HYP_CHARSET_CP850 = 3,
 	HYP_CHARSET_MACROMAN = 4,
-	HYP_CHARSET_CP1252 = 5, /* ANSI Latin 1, similar to ISO8859-1 */
-	HYP_CHARSET_CP1250 = 6, /* ANSI Eastern Europe, similar to ISO8859-2 */
-	HYP_CHARSET_LATIN1 = 7, /* ISO8859-1, Western Europe */
-	HYP_CHARSET_BINARY = 8,
-	HYP_CHARSET_BINARY_TABS = 9,
-	HYP_CHARSET_CP1251 = 10, /* ANSI Cyrillic */
-	HYP_CHARSET_CP1253 = 11, /* ANSI Greek */
-	HYP_CHARSET_CP1254 = 12, /* ANSI Turkish */
-	HYP_CHARSET_CP1255 = 13, /* ANSI Hebrew */
-	HYP_CHARSET_CP1256 = 14, /* ANSI Arabic */
-	HYP_CHARSET_CP1257 = 15, /* ANSI Baltic */
-	HYP_CHARSET_CP1258 = 16, /* ANSI Viet Nam */
+	HYP_CHARSET_CP1250 = 5, /* ANSI Eastern Europe, similar to ISO8859-2 */
+	HYP_CHARSET_CP1251 = 6, /* ANSI Cyrillic */
+	HYP_CHARSET_CP1252 = 7, /* ANSI Latin 1, similar to ISO8859-1 */
+	HYP_CHARSET_CP1253 = 8, /* ANSI Greek */
+	HYP_CHARSET_CP1254 = 9, /* ANSI Turkish */
+	HYP_CHARSET_CP1255 = 10, /* ANSI Hebrew */
+	HYP_CHARSET_CP1256 = 11, /* ANSI Arabic */
+	HYP_CHARSET_CP1257 = 12, /* ANSI Baltic */
+	HYP_CHARSET_CP1258 = 13, /* ANSI Viet Nam */
+	HYP_CHARSET_LATIN1 = 14, /* ISO8859-1, Western Europe */
 	/* Non-Standard atari encodings: */
-	HYP_CHARSET_ATARI_RU = 17,
+	HYP_CHARSET_ATARI_RU = 15,
+	/* used internally only for displaying binary data: */
+	HYP_CHARSET_BINARY = 16,
+	HYP_CHARSET_BINARY_TABS = 17,
 	/* NYI: */
 	HYP_CHARSET_CP28600 = HYP_CHARSET_NONE, /* Nordic */
 	HYP_CHARSET_LATIN2 = HYP_CHARSET_NONE, /* Latin-2, Eastern Europe */
@@ -117,6 +118,10 @@ typedef enum {
 	HYP_CHARSET_LATIN10 = HYP_CHARSET_NONE, /* Latin-10, ISO8859-16, Balkan */
 	HYP_CHARSET_CP437 = HYP_CHARSET_NONE,
 	HYP_CHARSET_CP874 = HYP_CHARSET_NONE,
+	HYP_CHARSET_HP8 = HYP_CHARSET_NONE,
+	HYP_CHARSET_NEXT = HYP_CHARSET_NONE,
+	HYP_CHARSET_MAC_CE = HYP_CHARSET_NONE,
+	/* Aliases: */
 	HYP_CHARSET_CYRILLIC = HYP_CHARSET_CP1251,
 	HYP_CHARSET_ARABIC = HYP_CHARSET_CP1256,
 	HYP_CHARSET_GREEK = HYP_CHARSET_CP1253,
@@ -125,10 +130,7 @@ typedef enum {
 	HYP_CHARSET_NORDIC = HYP_CHARSET_CP28600,
 	HYP_CHARSET_THAI = HYP_CHARSET_CP874,
 	HYP_CHARSET_BALTIC = HYP_CHARSET_CP1257,
-	HYP_CHARSET_CELTIC = HYP_CHARSET_LATIN8,
-	HYP_CHARSET_MAC_CE = HYP_CHARSET_NONE,
-	HYP_CHARSET_HP8 = HYP_CHARSET_NONE,
-	HYP_CHARSET_NEXT = HYP_CHARSET_NONE
+	HYP_CHARSET_CELTIC = HYP_CHARSET_LATIN8
 } HYP_CHARSET;
 
 
@@ -381,6 +383,7 @@ typedef struct {
 	} name;
 	hyp_lineno lineno; /* only valid if type == REF_LABELNAME */
 } REF_ENTRY;
+#define REF_ENTRYSIZE 2 /* type & size */
 
 typedef struct _ref_module REF_MODULE;
 struct _ref_module {
@@ -398,6 +401,7 @@ struct _ref_module {
 	gboolean had_filename;			/* TRUE if module had a FILENAME entry */
 	gboolean had_os;
 	gboolean had_charset;
+	gboolean had_language;
 	gboolean mod_name_matches;		/* TRUE if the module filename matches the file it was loaded from */
 	REF_MODULE *next;
 	REF_ENTRY *entries;
@@ -933,6 +937,7 @@ gboolean ref_write_header(int ref_handle);
 gboolean ref_write_trailer(int ref_handle);
 const char *ref_osname(HYP_OS os);
 void ref_conv_to_utf8(REF_FILE *ref);
+void ref_set_defaultcharset(REF_FILE *ref, HYP_CHARSET charset);
 
 
 /*

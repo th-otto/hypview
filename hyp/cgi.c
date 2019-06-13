@@ -561,6 +561,135 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 
 /* ------------------------------------------------------------------------- */
 
+static char *ref_name(REF_FILE *ref, REF_MODULE *mod, const REF_ENTRY *entry, char **freeme, unsigned int quote_flags)
+{
+	char *tmp;
+	
+	if (ref->is_converted || mod->charset == HYP_CHARSET_UTF8)
+	{
+		tmp = entry->name.utf8;
+		*freeme = NULL;
+	} else
+	{
+		tmp = hyp_conv_to_utf8(mod->charset, entry->name.hyp, STR0TERM);
+		*freeme = tmp;
+	}
+	return html_quote_name(tmp, quote_flags);
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void html_ref_list(REF_FILE *ref, hcp_opts *opts, GString *out, gboolean all)
+{
+	REF_MODULE *mod;
+	long num;
+	char *str;
+	char *freeme;
+	gboolean converror = FALSE;
+	unsigned int quote_flags = opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0;
+	
+	for (mod = ref->modules; mod != NULL; mod = mod->next)
+	{
+		hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _("Hypertext file: %s with %ld entries\n"),
+			mod->filename ? mod->filename : _("<unnamed file>"),
+			mod->num_entries);
+		for (num = 0; num < mod->num_entries; num++)
+		{
+			const REF_ENTRY *entry = &mod->entries[num];
+			
+			switch (entry->type)
+			{
+			case REF_FILENAME:
+				if (all)
+				{
+					str = ref_name(ref, mod, entry, &freeme, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Module         %s\n"), str);
+					g_free(str);
+					g_free(freeme);
+				}
+				break;
+			case REF_NODENAME:
+				if (all)
+				{
+					str = ref_name(ref, mod, entry, &freeme, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Node           %s\n"), str);
+					g_free(str);
+					g_free(freeme);
+				}
+				break;
+			case REF_ALIASNAME:
+				if (all)
+				{
+					str = ref_name(ref, mod, entry, &freeme, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Alias          %s\n"), str);
+					g_free(str);
+					g_free(freeme);
+				}
+				break;
+			case REF_LABELNAME:
+				if (all)
+				{
+					str = ref_name(ref, mod, entry, &freeme, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Label %5u    %s\n"), mod->entries[num].lineno, str);
+					g_free(str);
+					g_free(freeme);
+				}
+				break;
+			case REF_DATABASE:
+				if (all)
+				{
+					str = html_quote_name(mod->database, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Database       %s\n"), str);
+					g_free(str);
+				}
+				break;
+			case REF_OS:
+				if (all)
+				{
+					str = html_quote_name(hyp_osname(mod->os), quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" OS             %s\n"), str);
+					g_free(str);
+				}
+				break;
+			case REF_CHARSET:
+				if (all)
+				{
+					str = html_quote_name(hyp_charset_name(mod->charset), quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Charset        %s\n"), str);
+					g_free(str);
+				}
+				break;
+			case REF_LANGUAGE:
+				if (all)
+				{
+					str = html_quote_name(mod->language, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Language       %s\n"), str);
+					g_free(str);
+				}
+				break;
+			case REF_TITLE:
+				if (all)
+				{
+					str = ref_name(ref, mod, entry, &freeme, quote_flags);
+					hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Title          %s\n"), str);
+					g_free(str);
+					g_free(freeme);
+				}
+				break;
+			case REF_UNKNOWN:
+			default:
+				str = ref_name(ref, mod, entry, &freeme, quote_flags);
+				hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _(" Unknown REF type %u: %s\n"), entry->type, str);
+				g_free(str);
+				g_free(freeme);
+				break;
+			}
+		}
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean recompile(const char *filename, hcp_opts *opts, struct hypfind_opts *search, GString *out, hyp_nodenr node, hyp_pic_format *pic_format)
 {
 	gboolean retval;
@@ -584,28 +713,17 @@ static gboolean recompile(const char *filename, hcp_opts *opts, struct hypfind_o
 	if (hyp == NULL)
 	{
 		REF_FILE *ref = ref_load(filename, handle, FALSE);
-		gboolean ret;
 
+		hyp_utf8_close(handle);
 		if (ref != NULL)
 		{
 			char *title = g_strdup_printf(_("Listing of %s"), hyp_basename(filename));
-			hyp_utf8_close(handle);
-#if 0
-			/* TODO: rewrite ref_list to append to body instead of writing to opts->outfile */
 			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, FALSE, NULL);
-			ret = ref_list(ref, opts->outfile, opts->list_flags != 0);
+			html_ref_list(ref, opts, out, TRUE);
 			ref_close(ref);
-			html_out_trailer(NULL; opts, out, 0, FALSE, FALSE, NULL);
-#else
-			html_out_header(NULL, opts, out, title, HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
-			ref_close(ref);
-			hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("Listing of ref files not yet supported"));
-			html_out_trailer(NULL, opts, out, 0, TRUE, FALSE, NULL);
-			ret = TRUE;
-#endif
-			return ret;
+			html_out_trailer(NULL, opts, out, 0, FALSE, FALSE, NULL);
+			return TRUE;
 		}
-		hyp_utf8_close(handle);
 		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, NULL);
 		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
 		html_out_trailer(NULL, opts, out, 0, TRUE, FALSE, NULL);

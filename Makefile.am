@@ -35,7 +35,7 @@ bindist:
 	mkdir $(DISTDIR)/bin
 	mkdir $(DISTDIR)/defaults
 	mkdir $(DISTDIR)/doc
-	cp -a BUGS hyp/README $(DISTDIR)
+	cp -a BUGS hyp/README NEWS $(DISTDIR)
 	cp -a hyp/reflink$(EXEEXT) hyp/hypfind$(EXEEXT) hyp/hypinfo$(EXEEXT) hyp/refcheck$(EXEEXT) hyp/stool$(EXEEXT) hyp/hcp$(EXEEXT) $(DISTDIR)/bin
 	cp -a tools/pc_conv/pc_conv$(EXEEXT) $(DISTDIR)/bin
 	cp -a tools/1st_conv/1st_conv$(EXEEXT) $(DISTDIR)/bin
@@ -58,6 +58,10 @@ if OS_TOS
 	$(MAKE) -C hyp DESTDIR=../$(DISTDIR) bindir=/bin install-exec-hook
 	for f in pc_conv 1st_conv help_rc; do \
 		mv $(DISTDIR)/bin/$$f $(DISTDIR)/bin/$$f.ttp; \
+	done
+	for f in BUGS README NEWS; do \
+		mv $(DISTDIR)/$f $(DISTDIR)/$f.txt; \
+		cr2nl -d $(DISTDIR)/$f.txt; \
 	done
 	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
 endif

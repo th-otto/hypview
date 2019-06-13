@@ -109,6 +109,49 @@ static char *quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 /* ------------------------------------------------------------------------- */
 
+static gboolean refinfo(REF_FILE *ref, hcp_opts *opts, gboolean print_filename)
+{
+	FILE *outfile = opts->outfile;
+	char *prefix;
+	REF_MODULE *mod;
+
+	prefix = print_filename ? g_strdup_printf("%s: ", ref->filename) : g_strdup("");
+
+	for (mod = ref->modules; mod != NULL; mod = mod->next)
+	{
+		gboolean language_guessed = mod->language == NULL;
+
+		if (language_only)
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s%s%s\n", prefix, mod->language ? mod->language : "unknown", language_guessed ? _(" (guessed)") : "");
+		} else
+		{
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s@filename: %s\n", prefix, mod->had_filename ? mod->filename : "");
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s:name_matches: %d\n", prefix, mod->mod_name_matches);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s:offset: %ld\n", prefix, mod->module_offset);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s:size: %ld\n", prefix, mod->module_len);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s:entries: %ld\n", prefix, mod->num_entries);
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s@os: %s\n", prefix, mod->had_os ? hyp_osname(mod->os) : "unknown");
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s@charset: %s\n", prefix, mod->had_charset ? hyp_charset_name(mod->charset) : "unknown");
+			hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s@lang: %s\n", prefix, mod->language ? mod->language : "unknown");
+			if (mod->language != NULL)
+			{
+				hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s:lang_guessed: %d\n", prefix, language_guessed);
+			}
+			if (mod->database != NULL)
+			{
+				hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s@database: %s\n", prefix, mod->database);
+			}
+		}
+	}
+
+	g_free(prefix);
+
+	return TRUE;
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_filename, LanguageIdentifier *lid)
 {
 	HYP_DOCUMENT *hyp;
@@ -127,7 +170,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 	hyp_nodenr num_unknown;
 	hyp_nodenr node;
 	INDEX_ENTRY *entry;
-	
+
 	handle = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 
 	if (handle < 0)
@@ -139,7 +182,16 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 	hyp = hyp_load(filename, handle, &type);
 	if (hyp == NULL)
 	{
+		REF_FILE *ref = ref_load(filename, handle, FALSE);
+		gboolean ret;
+
 		hyp_utf8_close(handle);
+		if (ref != NULL)
+		{
+			ret = refinfo(ref, opts, print_filename);
+			ref_close(ref);
+			return ret;
+		}
 		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
 		return FALSE;
 	}
@@ -198,7 +250,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 	}
 	if (language_only)
 	{
-		hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s: %s%s\n", prefix, hyp->language ? hyp->language : "unknown", hyp->language_guessed ? _(" (guessed)") : "");
+		hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s%s%s\n", prefix, hyp->language ? hyp->language : "unknown", hyp->language_guessed ? _(" (guessed)") : "");
 	} else
 	{
 		hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%s@os: %s\n", prefix, hyp_osname(hyp->comp_os));
@@ -403,11 +455,172 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 	}
 			
 	g_free(prefix);
-	
+
 	hyp_unref(hyp);
 	hyp_utf8_close(handle);
-	
+
 	return TRUE;
+}
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
+
+static void set_utime(const char *filename, hcp_opts *opts, struct stat *st)
+{
+#ifndef _PUREC_SOURCE
+	struct utimbuf m;
+	m.actime = st->st_atime;
+	m.modtime = st->st_mtime;
+	if (utime(filename, &m) < 0)
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", filename, hyp_utf8_strerror(errno));
+#else
+	UNUSED(filename);
+	UNUSED(opts);
+	UNUSED(st);
+#endif
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void remove_entries(REF_MODULE *mod, hyp_reftype type)
+{
+	long num;
+	size_t size;
+	
+	for (num = 0; num < mod->num_entries; )
+	{
+		REF_ENTRY *entry = &mod->entries[num];
+		if (entry->type == type)
+		{
+			unsigned char *pos = (unsigned char *)entry->name.utf8 - 2;
+			size = pos[1] + 2;
+			mod->module_len -= size;
+			memmove(pos, pos + size, mod->module_len - (pos - mod->data));
+			mod->num_entries--;
+			memmove(entry, entry + 1, (mod->num_entries - num) * sizeof(*entry));
+		} else
+		{
+			num++;
+		}
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean reffix(REF_FILE *ref, hcp_opts *opts, struct stat *st)
+{
+	REF_MODULE *mod;
+	char *tmpname;
+	int ref_handle;
+
+	if (fix_lang == NULL && fix_charset == HYP_CHARSET_NONE)
+		return TRUE;
+	
+	if (ref->modules == NULL)
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, ref->filename, _("no modules"));
+		return FALSE;
+	}
+	
+	if (ref->modules->next != NULL)
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, ref->filename, _("more than 1 module"));
+		return FALSE;
+	}
+	
+	{
+		char *dirname = hyp_path_get_dirname(ref->filename);
+		char *tmp = g_strdup_printf("hy(%u).ref", (int)getpid());
+		tmpname = g_build_filename(dirname, tmp, NULL);
+		g_free(tmp);
+		g_free(dirname);
+	}
+	
+	ref_handle = hyp_utf8_open(tmpname, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, 0644);
+	if (ref_handle < 0)
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, tmpname, hyp_utf8_strerror(errno));
+		g_free(tmpname);
+		return FALSE;
+	}
+	
+	/*
+	 * write the file header
+	 */
+	if (!ref_write_header(ref_handle))
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, tmpname, hyp_utf8_strerror(errno));
+		goto error;
+	}
+
+	for (mod = ref->modules; mod != NULL; mod = mod->next)
+	{
+		if (fix_lang != NULL)
+		{
+			if (mod->language)
+			{
+				remove_entries(mod, REF_LANGUAGE);
+			}
+			g_free(mod->language);
+			mod->language = g_strdup(fix_lang);
+		}
+
+		if (fix_charset != HYP_CHARSET_NONE)
+		{
+			if (mod->had_charset)
+			{
+				remove_entries(mod, REF_CHARSET);
+				mod->had_charset = FALSE;
+			}
+			mod->charset = fix_charset;
+		}
+
+		if (!ref_write_module(ref_handle, mod, opts->verbose))
+		{
+			hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, tmpname, hyp_utf8_strerror(errno));
+			goto error;
+		}
+	}
+
+	/*
+	 * write an empty module header as terminator
+	 */
+	if (!ref_write_trailer(ref_handle))
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, tmpname, hyp_utf8_strerror(errno));
+		goto error;
+	}
+	hyp_utf8_close(ref_handle);
+	ref_handle = -1;
+
+	if (hyp_utf8_unlink(ref->filename) < 0)
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, ref->filename, hyp_utf8_strerror(errno));
+		goto error;
+	}
+	if (hyp_utf8_rename(tmpname, ref->filename) < 0)
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, ref->filename, hyp_utf8_strerror(errno));
+		goto error;
+	}
+	if (preserve)
+	{
+		set_utime(ref->filename, opts, st);
+	}
+
+	g_free(tmpname);
+	return TRUE;
+
+error:
+	if (ref_handle > 0)
+		hyp_utf8_close(ref_handle);
+	if (tmpname)
+	{
+		hyp_utf8_unlink(tmpname);
+		g_free(tmpname);
+	}
+	return FALSE;
 }
 
 /*****************************************************************************/
@@ -570,7 +783,6 @@ static gboolean write_header(HYP_DOCUMENT *hyp, FILE *outfile)
 	head.itable_size = hyp->itable_size;
 	head.itable_num = hyp->num_index;
 	head.compiler_os = hyp->comp_os;
-
 	head.compiler_vers = hyp->comp_vers;
 	
 	long_to_chars(head.magic, rawhead);
@@ -657,7 +869,7 @@ static gboolean hypfix(const char *filename, hcp_opts *opts)
 	INDEX_ENTRY *entry;
 	unsigned long prev_pos, curr_pos, datasize;
 	struct stat st;
-	
+
 	handle = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 
 	if (handle < 0)
@@ -671,7 +883,16 @@ static gboolean hypfix(const char *filename, hcp_opts *opts)
 	hyp = hyp_load(filename, handle, &type);
 	if (hyp == NULL)
 	{
+		REF_FILE *ref = ref_load(filename, handle, FALSE);
+		gboolean ret;
+
 		hyp_utf8_close(handle);
+		if (ref != NULL)
+		{
+			ret = reffix(ref, opts, &st);
+			ref_close(ref);
+			return ret;
+		}
 		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
 		return FALSE;
 	}
@@ -752,13 +973,7 @@ static gboolean hypfix(const char *filename, hcp_opts *opts)
 	}
 	if (preserve)
 	{
-#ifndef _PUREC_SOURCE
-		struct utimbuf m;
-		m.actime = st.st_atime;
-		m.modtime = st.st_mtime;
-		if (utime(filename, &m) < 0)
-			hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", filename, hyp_utf8_strerror(errno));
-#endif
+		set_utime(filename, opts, &st);
 	}
 		
 	g_free(tmpoutname);

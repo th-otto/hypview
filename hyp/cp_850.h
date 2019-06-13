@@ -105,6 +105,7 @@ static unsigned char const cp850_maptab_01[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const cp850_maptab_03[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -139,6 +140,7 @@ static unsigned char const cp850_maptab_03[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const cp850_maptab_20[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -173,6 +175,7 @@ static unsigned char const cp850_maptab_20[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const cp850_maptab_23[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -207,6 +210,7 @@ static unsigned char const cp850_maptab_23[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const cp850_maptab_24[256] = {
 /* 00 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0x0c, 0x0d, 0xff, 0xff,
@@ -241,6 +245,7 @@ static unsigned char const cp850_maptab_24[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static unsigned char const cp850_maptab_25[256] = {
 /* 00 */	0xc4, 0xff, 0xb3, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* 08 */	0xff, 0xff, 0xff, 0xff, 0xda, 0xff, 0xff, 0xff,
@@ -275,38 +280,38 @@ static unsigned char const cp850_maptab_25[256] = {
 /* f0 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 /* f8 */	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+
 static const unsigned char (*const utf16_to_cp850[256])[256] = {
-	&cp850_maptab_00, &cp850_maptab_01, &maptab_ff,       &cp850_maptab_03, &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&cp850_maptab_20, &maptab_ff,       &maptab_ff,       &cp850_maptab_23, &cp850_maptab_24, &cp850_maptab_25, &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
-	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,      
+	&cp850_maptab_00, &cp850_maptab_01, &maptab_ff,       &cp850_maptab_03, &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&cp850_maptab_20, &maptab_ff,       &maptab_ff,       &cp850_maptab_23, &cp850_maptab_24, &cp850_maptab_25, &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
+	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,
 	&maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff,       &maptab_ff
 };
-

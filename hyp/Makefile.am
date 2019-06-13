@@ -245,6 +245,7 @@ endif
 hypinfo_SOURCES = \
 	hypinfo.c \
 	hcp_opts.c \
+	refcmds.c \
 	llangid.c llangid.h \
 	sparse.c sparse.h \
 	outcomm.c outcomm.h \

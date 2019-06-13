@@ -186,6 +186,7 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 
 	doc->data = hyp;
 	hyp->ref = ref;
+	ref_set_defaultcharset(ref, hyp->comp_charset);
 
 	doc->type = HYP_FT_HYP;
 	doc->displayProc = HypDisplayPage;
@@ -236,6 +237,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 				hyp_utf8_close(ret);
 			}
 			g_free(filename);
+			ref_set_defaultcharset(hyp->ref, hyp->comp_charset);
 		}
 
 		if ((nodename = ref_findnode(hyp->ref, chapter, &line, TRUE, &freename)) != NULL)

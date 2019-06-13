@@ -712,14 +712,15 @@ symtab_entry *ref_loadsyms(HYP_DOCUMENT *hyp)
 		}
 		g_free(filename);
 	}
-	ref_conv_to_utf8(hyp->ref);
 	if (hyp->ref != NULL)
 	{
 		hyp_nodenr node_num;
-		REF_MODULE *mod;
 		char *nodename = NULL;
+		REF_MODULE *mod;
 		const REF_ENTRY *entry;
-		
+
+		ref_set_defaultcharset(hyp->ref, hyp->comp_charset);
+		ref_conv_to_utf8(hyp->ref);
 		/* for (mod = hyp->ref->modules; mod != NULL; mod = mod->next) */
 		mod = hyp->ref->modules;
 		if (mod != NULL)

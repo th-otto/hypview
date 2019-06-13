@@ -189,9 +189,6 @@ static struct {
    { "windows-1251",        HYP_CHARSET_CP1251   },
    { "russian",             HYP_CHARSET_CP1251   },
 
-   { "russian-atarist",     HYP_CHARSET_ATARI_RU },
-   { "russianst",           HYP_CHARSET_ATARI_RU },
-   
    { "CP1252",              HYP_CHARSET_CP1252   },
    { "ms-ansi",             HYP_CHARSET_CP1252   },
    { "windows-1252",        HYP_CHARSET_CP1252   },
@@ -362,6 +359,9 @@ static struct {
    { "tos",                 HYP_CHARSET_ATARI    }, /* non-standard iconv name(s); iconv does not know about Atari codepage */
    { "atari",               HYP_CHARSET_ATARI    },
    
+   { "russian-atarist",     HYP_CHARSET_ATARI_RU },
+   { "russianst",           HYP_CHARSET_ATARI_RU },
+
    { "437",                 HYP_CHARSET_CP437    },
    { "cp437",               HYP_CHARSET_CP437    },
    { "ibm437",              HYP_CHARSET_CP437    },
@@ -425,10 +425,26 @@ static const h_unichar_t *get_cset(HYP_CHARSET charset)
 		return macroman_to_unicode;
 	case HYP_CHARSET_CP1250:
 		return cp1250_to_unicode;
+	case HYP_CHARSET_CP1251:
+		return cp1251_to_unicode;
 	case HYP_CHARSET_CP1252:
 		return cp1252_to_unicode;
+	case HYP_CHARSET_CP1253:
+		return cp1253_to_unicode;
+	case HYP_CHARSET_CP1254:
+		return cp1254_to_unicode;
+	case HYP_CHARSET_CP1255:
+		return cp1255_to_unicode;
+	case HYP_CHARSET_CP1256:
+		return cp1256_to_unicode;
+	case HYP_CHARSET_CP1257:
+		return cp1257_to_unicode;
+	case HYP_CHARSET_CP1258:
+		return cp1258_to_unicode;
 	case HYP_CHARSET_LATIN1:
 		return latin1_to_unicode;
+	case HYP_CHARSET_ATARI_RU:
+		return cpstru_to_unicode;
 	case HYP_CHARSET_BINARY:
 		return binary_to_unicode;
 	case HYP_CHARSET_BINARY_TABS:
@@ -436,11 +452,6 @@ static const h_unichar_t *get_cset(HYP_CHARSET charset)
 	case HYP_CHARSET_UTF8:
 		/* not an error, we use utf8 here directly */
 		return NULL;
-	default:
-		/*
-		 * this should not happen at all
-		 */
-		break;
 	}
 	return NULL;
 }
@@ -556,7 +567,7 @@ const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch)
 	return p + 1;
 
   error:
-    *ch = 0xffff;
+	*ch = 0xffff;
 	return last + 1;
 }
 
@@ -924,34 +935,35 @@ int hyp_name_cmp(HYP_CHARSET charset, const unsigned char *str1, const unsigned 
 
 /*** ---------------------------------------------------------------------- ***/
 
-const char *g_utf8_skipchar(const char *p)
+const char *g_utf8_skipchar(const char *_p)
 {
+	const unsigned char *p = (const unsigned char *)_p;
 	const char *last;
 
-	if (*(const unsigned char *) p < 0x80)
-		return p + 1;
-	last = p;
-	if ((*(const unsigned char *) p & 0xe0) == 0xc0)	/* 110xxxxx */
+	if (*p < 0x80)
+		return (const char *)p + 1;
+	last = _p;
+	if ((*p & 0xe0) == 0xc0)	/* 110xxxxx */
 	{
-		if ((*(const unsigned char *) p & 0x1e) == 0)
+		if ((*p & 0x1e) == 0)
 			goto error;
 		p++;
-		if ((*(const unsigned char *) p & 0xc0) != 0x80)	/* 10xxxxxx */
+		if ((*p & 0xc0) != 0x80)	/* 10xxxxxx */
 			goto error;
 	} else
 	{
 		h_unichar_t val = 0;
 		h_unichar_t min = 0;
 		
-		if ((*(const unsigned char *) p & 0xf0) == 0xe0)	/* 1110xxxx */
+		if ((*p & 0xf0) == 0xe0)	/* 1110xxxx */
 		{
 			min = (1 << 11);
 			val = *(const unsigned char *) p & 0x0f;
 			goto TWO_REMAINING;
-		} else if ((*(const unsigned char *) p & 0xf8) == 0xf0)	/* 11110xxx */
+		} else if ((*p & 0xf8) == 0xf0)	/* 11110xxx */
 		{
 			min = ((h_unichar_t)1 << 16);
-			val = *(const unsigned char *) p & 0x07;
+			val = *p & 0x07;
 		} else
 		{
 			goto error;
@@ -972,7 +984,7 @@ const char *g_utf8_skipchar(const char *p)
 			goto error;
 	}
 
-	return p + 1;
+	return (const char *)p + 1;
 
   error:
 	return last + 1;
@@ -1684,50 +1696,52 @@ static char *hyp_conv_to_cpstru(const char *src, size_t len, gboolean *converror
 
 /*** ---------------------------------------------------------------------- ***/
 
-char *hyp_utf8_to_charset(HYP_CHARSET charset, const void *src, size_t len, gboolean *converror)
+char *hyp_utf8_to_charset(HYP_CHARSET charset, const void *_src, size_t len, gboolean *converror)
 {
+	const char *src = (const char *) _src;
+	
 	if (src == NULL)
 		return NULL;
 	if (len == STR0TERM)
-		len = strlen((const char *) src);
+		len = strlen(src);
 	switch (charset)
 	{
 	case HYP_CHARSET_UTF8:
-		return g_strndup((const char *)src, len);
+		return g_strndup(src, len);
 	case HYP_CHARSET_ATARI:
-		return hyp_conv_to_atari((const char *)src, len, converror);
+		return hyp_conv_to_atari(src, len, converror);
 	case HYP_CHARSET_CP850:
-		return hyp_conv_to_cp850((const char *)src, len, converror);
+		return hyp_conv_to_cp850(src, len, converror);
 	case HYP_CHARSET_MACROMAN:
-		return hyp_conv_to_macroman((const char *)src, len, converror);
+		return hyp_conv_to_macroman(src, len, converror);
 	case HYP_CHARSET_CP1250:
-		return hyp_conv_to_cp1250((const char *)src, len, converror);
+		return hyp_conv_to_cp1250(src, len, converror);
 	case HYP_CHARSET_CP1251:
-		return hyp_conv_to_cp1251((const char *)src, len, converror);
+		return hyp_conv_to_cp1251(src, len, converror);
 	case HYP_CHARSET_CP1252:
-		return hyp_conv_to_cp1252((const char *)src, len, converror);
+		return hyp_conv_to_cp1252(src, len, converror);
 	case HYP_CHARSET_CP1253:
-		return hyp_conv_to_cp1253((const char *)src, len, converror);
+		return hyp_conv_to_cp1253(src, len, converror);
 	case HYP_CHARSET_CP1254:
-		return hyp_conv_to_cp1254((const char *)src, len, converror);
+		return hyp_conv_to_cp1254(src, len, converror);
 	case HYP_CHARSET_CP1255:
-		return hyp_conv_to_cp1255((const char *)src, len, converror);
+		return hyp_conv_to_cp1255(src, len, converror);
 	case HYP_CHARSET_CP1256:
-		return hyp_conv_to_cp1256((const char *)src, len, converror);
+		return hyp_conv_to_cp1256(src, len, converror);
 	case HYP_CHARSET_CP1257:
-		return hyp_conv_to_cp1257((const char *)src, len, converror);
+		return hyp_conv_to_cp1257(src, len, converror);
 	case HYP_CHARSET_CP1258:
-		return hyp_conv_to_cp1258((const char *)src, len, converror);
+		return hyp_conv_to_cp1258(src, len, converror);
 	case HYP_CHARSET_LATIN1:
-		return hyp_conv_to_latin1((const char *)src, len, converror);
+		return hyp_conv_to_latin1(src, len, converror);
 	case HYP_CHARSET_ATARI_RU:
-		return hyp_conv_to_cpstru((const char *)src, len, converror);
+		return hyp_conv_to_cpstru(src, len, converror);
 	case HYP_CHARSET_NONE:
 	case HYP_CHARSET_BINARY:
 	case HYP_CHARSET_BINARY_TABS:
 		break;
 	}
-	return g_strndup((const char *)src, len);
+	return g_strndup(src, len);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1750,128 +1764,164 @@ const char *hyp_utf8_conv_char(HYP_CHARSET charset, const char *src, char *buf, 
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_atari[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && atari_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP850:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp850[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp850_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_MACROMAN:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_macroman[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && macroman_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1250:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1250[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1250_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1251:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1251[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1251_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1252:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1252[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1252_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1253:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1253[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1253_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+			/* 0xff is undefined in CP1253 */
+			buf[0] = '?';
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1254:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1254[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1254_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1255:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1255[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1255_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+			/* 0xff is undefined in CP1255 */
+			buf[0] = '?';
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1256:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1256[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1256_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1257:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1257[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1257_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_CP1258:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cp1258[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cp1258_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_LATIN1:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_latin1[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && latin1_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_ATARI_RU:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cpstru[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && cpstru_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_BINARY:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_binary[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && binary_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_BINARY_TABS:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_binary[ch >> 8])[ch & 0xff];
 		if ((unsigned char)buf[0] == 0xff && binarytabs_to_unicode[0xff] != ch)
+		{
 			if (converror)
 				*converror = TRUE;
+		}
 		buf[1] = '\0';
 		return end;
 	case HYP_CHARSET_NONE:

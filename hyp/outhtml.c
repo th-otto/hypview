@@ -2197,6 +2197,18 @@ void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char
 				g_free(str);
 			}
 		}
+		if (opts->for_cgi && hyp->ref)
+		{
+			char *params = html_cgi_params(opts);
+			char *refname = replace_ext(html_referer_url, NULL, HYP_EXT_REF);
+			char *tmp = html_quote_name(refname, QUOTE_URI);
+			char *filename = g_strdup_printf("%s?url=%s%s", cgi_scriptname, tmp, params);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, _("\n<a href=\"%s\">%s</a>"), filename, _("View Ref-File"));
+			g_free(filename);
+			g_free(tmp);
+			g_free(refname);
+			g_free(params);
+		}
 		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "</span></span>");
 		if (opts->showstg && node == 0)
 		{

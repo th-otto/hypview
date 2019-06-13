@@ -70,14 +70,20 @@ gboolean ref_write_module(int handle, REF_MODULE *mod, gboolean verbose)
 
 	if (!mod->had_os)
 	{
-		modsize += 2 + 2;
+		modsize += 2 + REF_ENTRYSIZE;
 		num_entries++;
 	}
 	
 	if (!mod->had_charset)
 	{
 		charsetname = hyp_charset_name(mod->charset);
-		modsize += strlen(charsetname) + 1 + 2;
+		modsize += strlen(charsetname) + 1 + REF_ENTRYSIZE;
+		num_entries++;
+	}
+	
+	if (!mod->had_language && mod->language != NULL)
+	{
+		modsize += strlen(mod->language) + 1 + REF_ENTRYSIZE;
 		num_entries++;
 	}
 	
@@ -89,7 +95,7 @@ gboolean ref_write_module(int handle, REF_MODULE *mod, gboolean verbose)
 	if (!mod->had_filename)
 	{
 		/* write the module_filename out */
-		if (write(handle, mod->module_filename - 2, mod->module_filename[-1]) != mod->module_filename[-1])
+		if (write(handle, mod->module_filename - REF_ENTRYSIZE, mod->module_filename[-1]) != mod->module_filename[-1])
 			return FALSE;
 	}
 	if (!mod->had_os)
@@ -97,7 +103,7 @@ gboolean ref_write_module(int handle, REF_MODULE *mod, gboolean verbose)
 		unsigned char entry[4];
 		ssize_t size;
 		
-		size = 2 + 2;
+		size = 2 + REF_ENTRYSIZE;
 		entry[0] = REF_OS;
 		entry[1] = (unsigned char) size;
 		entry[2] = mod->os + '0';
@@ -107,16 +113,30 @@ gboolean ref_write_module(int handle, REF_MODULE *mod, gboolean verbose)
 	}
 	if (!mod->had_charset)
 	{
-		unsigned char entry[2];
+		unsigned char entry[REF_ENTRYSIZE];
 		ssize_t size;
 		
-		size = 2 + strlen(charsetname) + 1;
+		size = REF_ENTRYSIZE + strlen(charsetname) + 1;
 		entry[0] = REF_CHARSET;
 		entry[1] = (unsigned char) size;
-		if (write(handle, entry, 2) != 2)
+		if (write(handle, entry, REF_ENTRYSIZE) != REF_ENTRYSIZE)
 			return FALSE;
-		size -= 2;
+		size -= REF_ENTRYSIZE;
 		if (write(handle, charsetname, size) != size)
+			return FALSE;
+	}
+	if (!mod->had_language && mod->language != NULL)
+	{
+		unsigned char entry[REF_ENTRYSIZE];
+		ssize_t size;
+		
+		size = REF_ENTRYSIZE + strlen(mod->language) + 1;
+		entry[0] = REF_LANGUAGE;
+		entry[1] = (unsigned char) size;
+		if (write(handle, entry, REF_ENTRYSIZE) != REF_ENTRYSIZE)
+			return FALSE;
+		size -= REF_ENTRYSIZE;
+		if (write(handle, mod->language, size) != size)
 			return FALSE;
 	}
 	
