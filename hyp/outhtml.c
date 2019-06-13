@@ -942,7 +942,7 @@ static const char *html_basename(const char *name)
  * the filesystem or uri escape sequences, and also any non-ascii characters.
  * For simplicity, this is done in-place.
  */
-static void html_convert_filename(char *filename)
+static void html_convert_filename(char *filename, gboolean allow_nonascii)
 {
 	char *p = filename;
 	unsigned char c;
@@ -961,7 +961,8 @@ static void html_convert_filename(char *filename)
 			c == '"' ||
 			c == '\'' ||
 			c == '\\' ||
-			c >= 0x7f ||
+			c == 0x7f ||
+			(c >= 0x80 && !allow_nonascii) ||
 			c < 0x20)
 		{
 			c = '_';
@@ -1022,7 +1023,7 @@ char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 	 */
 	if (entry->type != HYP_NODE_EXTERNAL_REF)
 	{
-		html_convert_filename(filename);
+		html_convert_filename(filename, quote || !opts->for_cgi);
 	}
 	
 	/*
@@ -1733,7 +1734,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				} else
 				{
 					char *htmlbase = replace_ext(base, HYP_EXT_HYP, "");
-					html_convert_filename(htmlbase);
+					html_convert_filename(htmlbase, TRUE);
 					quoted = html_quote_name(htmlbase, QUOTE_CONVSLASH | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0));
 					hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a%s href=\"../%s/%s.html\">%s</a>", style, quoted, quoted, xref->text);
 					g_free(quoted);
