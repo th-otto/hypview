@@ -4,6 +4,18 @@
 #include "hypdefs.h"
 #include <Cocoa/Cocoa.h>
 
+#undef _
+#undef N_
+#ifdef ENABLE_NLS
+#define _(String) xs_dgettext(GETTEXT_PACKAGE, String)
+#define W_(String) [[[NSString alloc] initWithUTF8String: _(String)] autorelease]
+#define N_(String) String
+#else
+#define _(String) String
+#define W_(String) @String
+#define N_(String) String
+#endif
+
 @class HypViewWindow;
 
 /* handle of a window */
@@ -347,6 +359,7 @@ void RecentSaveToDisk(void);
 int gtk_XParseGeometry(const char *string, int *x, int *y, int *width, int *height);
 char *usage_msg(void);
 char *version_msg(void);
+void print_hierarchy(NSView *view);
 
 
 /*

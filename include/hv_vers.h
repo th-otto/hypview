@@ -14,7 +14,10 @@
 /* UTF-8 of \u00a9 */
 #define S_COPYRIGHT_SIGN "\xC2\xA9"
 
-#define HYP_COPYRIGHT "Copyright " S_COPYRIGHT_SIGN " 1991-" HYP_RELEASE_YEAR " by Thorsten Otto"
-#define HYP_URL       "http://www.tho-otto.de/"
+#define HYP_AUTHOR "Thorsten Otto"
+#define HYP_COPYRIGHT "Copyright " S_COPYRIGHT_SIGN " 1991-" HYP_RELEASE_YEAR " by " HYP_AUTHOR
+#define HYP_URL       "https://github.com/th-otto/hypview/"
+#define HYP_HOMEPAGE  "https://www.tho-otto.de/"
+#define HYP_EMAIL     "admin@tho-otto.de"
 #undef PACKAGE_URL
 #define PACKAGE_URL HYP_URL

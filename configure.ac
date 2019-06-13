@@ -6,7 +6,7 @@ dnl TODO: check for Roman-8 system charset on HPUX systems
 dnl
 AC_PREREQ(2.52)
 
-AC_INIT(hcp, 1.0.1, [https://github.com/th-otto/hcp/],,[https://github.com/th-otto/hcp/])
+AC_INIT(hcp, 1.0.1, [https://github.com/th-otto/hypview/],,[https://github.com/th-otto/hypview/issues/])
 AC_CONFIG_SRCDIR(hyp/hcp_comp.c)
 
 AC_CONFIG_MACRO_DIR([m4])

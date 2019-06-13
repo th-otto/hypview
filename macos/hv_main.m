@@ -52,17 +52,7 @@
 
 #if 1
 #undef dprintf
-#define dprintf(x) hyp_debug  x
-#endif
-
-#undef _
-#undef N_
-#ifdef ENABLE_NLS
-#define _(String) [NSString initWithUTF8String: xs_dgettext(GETTEXT_PACKAGE, String)]
-#define N_(String) String
-#else
-#define _(String) @String
-#define N_(String) String
+#define dprintf(x) hyp_debug x
 #endif
 
 #define autorelease self
@@ -1417,38 +1407,38 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"File" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:_("File")] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:W_("File")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateFileMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Edit" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:_("Edit")] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:W_("Edit")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateEditMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Navigate" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:_("Navigate")] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:W_("Navigate")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateNavigationMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Window" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:_("Window")] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:W_("Window")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateWindowMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	[NSApp setWindowsMenu:submenu];
 	
 	item = [mainMenu addItemWithTitle:@"Options" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:_("Options")] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:W_("Options")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateOptionsMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
 	
 	item = [mainMenu addItemWithTitle:@"Help" action:NULL keyEquivalent:@""];
-	submenu = [[[NSMenu alloc] initWithTitle:_("Help")] autorelease];
+	submenu = [[[NSMenu alloc] initWithTitle:W_("Help")] autorelease];
 	[submenu setAutoenablesItems:YES];
 	[self populateHelpMenu:submenu];
 	[mainMenu setSubmenu:submenu forItem:item];
@@ -1465,7 +1455,7 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	NSMutableString *title;
 	NSMenu *servicesMenu;
 	
-	title = [_("About <X>") mutableCopy];
+	title = [W_("About <X>") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(about:)                        keyEquivalent:@""];
 	[item setTarget:NSApp];
@@ -1473,13 +1463,13 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	item.image = load_image_from_data(about_icon_data);
 	
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Preferences...")     action:@selector(openPreferences:)              keyEquivalent:@","];
+	item = [menu addItemWithTitle:W_("Preferences...")    action:@selector(openPreferences:)              keyEquivalent:@","];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(prefs_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
 	
-	item = [menu addItemWithTitle:_("Services")           action:NULL                                     keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Services")          action:NULL                                     keyEquivalent:@""];
 	servicesMenu = [[[NSMenu alloc] initWithTitle:@"Services"] autorelease];
 	[servicesMenu setAutoenablesItems:YES];
 	[menu setSubmenu:servicesMenu forItem:item];
@@ -1487,22 +1477,22 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 	
-	title = [_("Hide <X>") mutableCopy];
+	title = [W_("Hide <X>") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(hide:)                         keyEquivalent:@"h"];
 	[item setTarget:NSApp];
 	[title release];
 	
-	item = [menu addItemWithTitle:_("Hide Others")        action:@selector(hideOtherApplications:)        keyEquivalent:@"h"];
+	item = [menu addItemWithTitle:W_("Hide Others")       action:@selector(hideOtherApplications:)        keyEquivalent:@"h"];
 	[item setKeyEquivalentModifierMask:NSCommandKeyMask | NSAlternateKeyMask];
 	[item setTarget:NSApp];
 	
-	item = [menu addItemWithTitle:_("Show All")           action:@selector(unhideAllApplications:)        keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Show All")          action:@selector(unhideAllApplications:)        keyEquivalent:@""];
 	[item setTarget:NSApp];
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 	
-	title = [_("Quit <X>") mutableCopy];
+	title = [W_("Quit <X>") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
 	item = [menu addItemWithTitle:title                                         action:@selector(terminate:)                    keyEquivalent:@"q"];
 	[item setTarget:NSApp];
@@ -1516,11 +1506,11 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	NSString *title;
 	NSMenu *recent_menu;
 
-	item = [menu addItemWithTitle:_("Open...")            action:@selector(openDocument:)                 keyEquivalent:@"o"];
+	item = [menu addItemWithTitle:W_("Open...")           action:@selector(openDocument:)                 keyEquivalent:@"o"];
 	[item setTarget:NSApp];
-	item.toolTip = _("Load a file");
+	item.toolTip = W_("Load a file");
 	item.image = load_image_from_data(load_icon_data);
-	item = [menu addItemWithTitle:_("Open Recent")        action:nil                                      keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Open Recent")       action:nil                                      keyEquivalent:@""];
 	[item setTarget:NSApp];
 	recent_menu = [[[NSMenu alloc] initWithTitle:@"Open Recent"] autorelease];
 	[recent_menu setAutoenablesItems:YES];
@@ -1529,49 +1519,49 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	m_recent_menu = recent_menu;
 	[recent_menu setDelegate:NSApp];
 
-	title = _("Clear Menu");
+	title = W_("Clear Menu");
 	item = [recent_menu addItemWithTitle:title                                  action:@selector(clearRecentDocuments:)         keyEquivalent:@""];
 	[item setTarget:NSApp];
 	
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Close")              action:@selector(performClose:)                 keyEquivalent:@"w"];
+	item = [menu addItemWithTitle:W_("Close")             action:@selector(performClose:)                 keyEquivalent:@"w"];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(close_icon_data);
-	item = [menu addItemWithTitle:_("Save As...")         action:@selector(saveDocumentAs:)               keyEquivalent:@"s"];
+	item = [menu addItemWithTitle:W_("Save As...")        action:@selector(saveDocumentAs:)               keyEquivalent:@"s"];
 	[item setTarget:NSApp];
-	item.toolTip = _("Save page to file");
+	item.toolTip = W_("Save page to file");
 	item.image = load_image_from_data(save_icon_data);
-	item = [menu addItemWithTitle:_("Recompile...")       action:@selector(recompile:)                    keyEquivalent:@"r"];
+	item = [menu addItemWithTitle:W_("Recompile...")      action:@selector(recompile:)                    keyEquivalent:@"r"];
 	[item setTarget:NSApp];
-	item.toolTip = _("Recompile to ST-Guide format");
+	item.toolTip = W_("Recompile to ST-Guide format");
 	item.image = load_image_from_data(save_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Catalog")            action:@selector(navigateCatalog:)              keyEquivalent:@"k"];
+	item = [menu addItemWithTitle:W_("Catalog")           action:@selector(navigateCatalog:)              keyEquivalent:@"k"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Show catalog of hypertexts");
+	item.toolTip = W_("Show catalog of hypertexts");
 	item.image = load_image_from_data(catalog_icon_data);
-	item = [menu addItemWithTitle:_("Default file")       action:@selector(navigateDefaultFile:)          keyEquivalent:@"d"];
+	item = [menu addItemWithTitle:W_("Default file")      action:@selector(navigateDefaultFile:)          keyEquivalent:@"d"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Show default file");
-	item = [menu addItemWithTitle:_("Run Remarker")       action:@selector(startRemarker:)                keyEquivalent:@"r"];
+	item.toolTip = W_("Show default file");
+	item = [menu addItemWithTitle:W_("Run Remarker")      action:@selector(startRemarker:)                keyEquivalent:@"r"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Start Remarker");
+	item.toolTip = W_("Start Remarker");
 	item.image = load_image_from_data(remarker_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("File info...")       action:@selector(documentInfo:)                 keyEquivalent:@"i"];
+	item = [menu addItemWithTitle:W_("File info...")      action:@selector(documentInfo:)                 keyEquivalent:@"i"];
 	[item setTarget:NSApp];
-	item.toolTip = _("Show info about hypertext");
+	item.toolTip = W_("Show info about hypertext");
 	item.image = load_image_from_data(info_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Page Setup...")      action:@selector(runPageLayout:)                keyEquivalent:@"P"];
+	item = [menu addItemWithTitle:W_("Page Setup...")     action:@selector(runPageLayout:)                keyEquivalent:@"P"];
 	[item setTarget:NSApp];
-	item = [menu addItemWithTitle:_("Print...")           action:@selector(print:)                        keyEquivalent:@"p"];
+	item = [menu addItemWithTitle:W_("Print...")          action:@selector(print:)                        keyEquivalent:@"p"];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(print_icon_data);
 }
@@ -1580,26 +1570,26 @@ static NSImage *load_image_from_data(const unsigned char *data)
 {
 	NSMenuItem *item;
 	
-	item = [menu addItemWithTitle:_("Copy")               action:@selector(copy:)                         keyEquivalent:@"c"];
+	item = [menu addItemWithTitle:W_("Copy")              action:@selector(copy:)                         keyEquivalent:@"c"];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(copy_icon_data);
-	item = [menu addItemWithTitle:_("Paste")              action:@selector(paste:)                        keyEquivalent:@"v"];
+	item = [menu addItemWithTitle:W_("Paste")             action:@selector(paste:)                        keyEquivalent:@"v"];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(paste_icon_data);
-	item = [menu addItemWithTitle:_("Select All")         action:@selector(selectAll:)                    keyEquivalent:@"a"];
+	item = [menu addItemWithTitle:W_("Select All")        action:@selector(selectAll:)                    keyEquivalent:@"a"];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(paste_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Find...")            action:@selector(performFindPanelAction:)       keyEquivalent:@"f"];
+	item = [menu addItemWithTitle:W_("Find...")           action:@selector(performFindPanelAction:)       keyEquivalent:@"f"];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(find_icon_data);
 	[item setTag:NSFindPanelActionShowFindPanel];
-	item = [menu addItemWithTitle:_("Find Next")          action:@selector(performFindPanelAction:)       keyEquivalent:@"g"];
+	item = [menu addItemWithTitle:W_("Find Next")         action:@selector(performFindPanelAction:)       keyEquivalent:@"g"];
 	[item setTarget:NSApp];
 	[item setTag:NSFindPanelActionNext];
 	item.image = load_image_from_data(find_icon_data);
-	item = [menu addItemWithTitle:_("Find Previous")      action:@selector(performFindPanelAction:)       keyEquivalent:@"G"];
+	item = [menu addItemWithTitle:W_("Find Previous")     action:@selector(performFindPanelAction:)       keyEquivalent:@"G"];
 	[item setTarget:NSApp];
 	[item setTag:NSFindPanelActionPrevious];
 	item.image = load_image_from_data(find_icon_data);
@@ -1610,58 +1600,58 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	NSMenuItem *item;
 	NSMenu *bookmarks_menu;
 
-	item = [menu addItemWithTitle:_("Previous logical page")  action:@selector(navigatePrev:)              keyEquivalent:@"\xef\x9c\x82"];
+	item = [menu addItemWithTitle:W_("Previous logical page") action:@selector(navigatePrev:)              keyEquivalent:@"\xef\x9c\x82"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto previous page");
+	item.toolTip = W_("Goto previous page");
 	item.image = load_image_from_data(previous_icon_data);
-	item = [menu addItemWithTitle:_("Next logical page")      action:@selector(navigateNext:)              keyEquivalent:@"\xef\x9c\x83"];
+	item = [menu addItemWithTitle:W_("Next logical page")     action:@selector(navigateNext:)              keyEquivalent:@"\xef\x9c\x83"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto next page");
+	item.toolTip = W_("Goto next page");
 	item.image = load_image_from_data(next_icon_data);
 	
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Previous physical page") action:@selector(navigatePrevPhys:)          keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Previous physical page") action:@selector(navigatePrevPhys:)          keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto previous physical page");
+	item.toolTip = W_("Goto previous physical page");
 	item.image = load_image_from_data(prevphys_icon_data);
-	item = [menu addItemWithTitle:_("Next logical page")      action:@selector(navigateNextPhys:)          keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Next logical page")     action:@selector(navigateNextPhys:)          keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto next physical page");
+	item.toolTip = W_("Goto next physical page");
 	item.image = load_image_from_data(nextphys_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("First page")             action:@selector(navigateFirst:)            keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("First page")            action:@selector(navigateFirst:)            keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto first page");
+	item.toolTip = W_("Goto first page");
 	item.image = load_image_from_data(first_icon_data);
-	item = [menu addItemWithTitle:_("Last page")              action:@selector(navigateLast:)             keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Last page")             action:@selector(navigateLast:)             keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto last page");
+	item.toolTip = W_("Goto last page");
 	item.image = load_image_from_data(last_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Contents")               action:@selector(navigateToc:)              keyEquivalent:@"t"];
+	item = [menu addItemWithTitle:W_("Contents")              action:@selector(navigateToc:)              keyEquivalent:@"t"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Go up one page");
+	item.toolTip = W_("Go up one page");
 	item.image = load_image_from_data(home_icon_data);
-	item = [menu addItemWithTitle:_("Index")                  action:@selector(navigateIndex:)            keyEquivalent:@"x"];
+	item = [menu addItemWithTitle:W_("Index")                 action:@selector(navigateIndex:)            keyEquivalent:@"x"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Goto index page");
+	item.toolTip = W_("Goto index page");
 	item.image = load_image_from_data(index_icon_data);
-	item = [menu addItemWithTitle:_("Show help page")         action:@selector(navigateHelp:)             keyEquivalent:@"h"];
+	item = [menu addItemWithTitle:W_("Show help page")        action:@selector(navigateHelp:)             keyEquivalent:@"h"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Show help page");
+	item.toolTip = W_("Show help page");
 	item.image = load_image_from_data(help_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Bookmarks")              action:nil                                  keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Bookmarks")             action:nil                                  keyEquivalent:@""];
 	[item setTarget:NSApp];
-	item.toolTip = _("Show list of bookmarks");
+	item.toolTip = W_("Show list of bookmarks");
 	item.image = load_image_from_data(bookmark_icon_data);
 	bookmarks_menu = [[[NSMenu alloc] initWithTitle:@"Bookmarks"] autorelease];
 	[bookmarks_menu setAutoenablesItems:YES];
@@ -1670,55 +1660,55 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	[bookmarks_menu setDelegate:NSApp];
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Back one page")          action:@selector(navigateBack:)             keyEquivalent:@"\x0008"];
+	item = [menu addItemWithTitle:W_("Back one page")         action:@selector(navigateBack:)             keyEquivalent:@"\x0008"];
 	[item setKeyEquivalentModifierMask: 0];
 	[item setTarget:NSApp];
-	item.toolTip = _("Back one page");
+	item.toolTip = W_("Back one page");
 	item.image = load_image_from_data(back_icon_data);
-	item = [menu addItemWithTitle:_("Clear stack")            action:@selector(navigateClearstack:)       keyEquivalent:@"e"];
+	item = [menu addItemWithTitle:W_("Clear stack")           action:@selector(navigateClearstack:)       keyEquivalent:@"e"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
-	item.toolTip = _("Clear stack");
+	item.toolTip = W_("Clear stack");
 }
 
 +(void) populateWindowMenu:(NSMenu *)menu
 {
-	[menu addItemWithTitle:_("Minimize")                  action:@selector(performMiniaturize:)           keyEquivalent:@"m"];
-	[menu addItemWithTitle:_("Zoom")                      action:@selector(performZoom:)                  keyEquivalent:@""];
+	[menu addItemWithTitle:W_("Minimize")                 action:@selector(performMiniaturize:)           keyEquivalent:@"m"];
+	[menu addItemWithTitle:W_("Zoom")                     action:@selector(performZoom:)                  keyEquivalent:@""];
 	[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItemWithTitle:_("Bring All to Front")        action:@selector(arrangeInFront:)               keyEquivalent:@""];
+	[menu addItemWithTitle:W_("Bring All to Front")       action:@selector(arrangeInFront:)               keyEquivalent:@""];
 }
 
 +(void) populateOptionsMenu:(NSMenu *)menu
 {
 	NSMenuItem *item;
 
-	item = [menu addItemWithTitle:_("Font...")            action:@selector(selectFont:)                   keyEquivalent:@"z"];
+	item = [menu addItemWithTitle:W_("Font...")           action:@selector(selectFont:)                   keyEquivalent:@"z"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(font_icon_data);
-	item = [menu addItemWithTitle:_("Colors...")          action:@selector(selectColor:)                  keyEquivalent:@"c"];
+	item = [menu addItemWithTitle:W_("Colors...")         action:@selector(selectColor:)                  keyEquivalent:@"c"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(color_icon_data);
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Output...")          action:@selector(configOutput:)                 keyEquivalent:@"o"];
+	item = [menu addItemWithTitle:W_("Output...")         action:@selector(configOutput:)                 keyEquivalent:@"o"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Alternative font")   action:@selector(toggleAltfont:)                keyEquivalent:@"z"];
+	item = [menu addItemWithTitle:W_("Alternative font")  action:@selector(toggleAltfont:)                keyEquivalent:@"z"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->useAltFontMenuItem = item;
-	item = [menu addItemWithTitle:_("Expand multiple spaces") action:@selector(toggleExpandSpaces:)       keyEquivalent:@"l"];
+	item = [menu addItemWithTitle:W_("Expand multiple spaces") action:@selector(toggleExpandSpaces:)       keyEquivalent:@"l"];
 	[item setKeyEquivalentModifierMask: NSControlKeyMask];
 	[item setTarget:NSApp];
 	HypViewApp->expandSpacesMenuItem = item;
 
 	[menu addItem:[NSMenuItem separatorItem]];
-	item = [menu addItemWithTitle:_("Settings...")        action:@selector(openPreferences:)              keyEquivalent:@"s"];
+	item = [menu addItemWithTitle:W_("Settings...")       action:@selector(openPreferences:)              keyEquivalent:@"s"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(prefs_icon_data);
@@ -1730,13 +1720,13 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	NSMenuItem *item;
 	NSMutableString *title;
 	
-	title = [_("<X> Help") mutableCopy];
+	title = [W_("<X> Help") mutableCopy];
 	[title replaceCharactersInRange: [title rangeOfString: @"<X>"] withString: applicationName];
-	item = [menu addItemWithTitle:title                                         action:@selector(showHelp:)                     keyEquivalent:@"?"];
+	item = [menu addItemWithTitle:title                                        action:@selector(showHelp:)                     keyEquivalent:@"?"];
 	[item setTarget:NSApp];
 	[title release];
 	item.image = load_image_from_data(helptoc_icon_data);
-	item = [menu addItemWithTitle:_("Help Index...")                            action:@selector(showHelpIndex:)                keyEquivalent:@""];
+	item = [menu addItemWithTitle:W_("Help Index...")                          action:@selector(showHelpIndex:)                keyEquivalent:@""];
 	[item setTarget:NSApp];
 	item.image = load_image_from_data(helpindex_icon_data);
 }

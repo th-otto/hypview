@@ -1,24 +1,41 @@
+/*
+ * HypView - (c)      - 2019 Thorsten Otto
+ *
+ * A replacement hypertext viewer
+ *
+ * This file is part of HypView.
+ *
+ * HypView is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * HypView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HypView; if not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "hv_defs.h"
 #include "hypdebug.h"
+
+#undef dprintf
+#if 1
+#define dprintf(x) hyp_debug x
+#else
+#define dprintf(x)
+#endif
+
+#define autorelease self
 
 struct color_params {
 	WINDOW_DATA *win;
 	Pixel bg_brush;
 	NSFont *font;
 	struct _viewer_colors colors;
-};
-
-struct pref_params {
-	WINDOW_DATA *win;
-	char *hypfold;
-	char *default_file;
-	char *catalog_file;
-	int startup;
-	gboolean rightback;
-	gboolean transparent_pics;
-	gboolean check_time;
-	gboolean alink_newwin;
-	gboolean marken_save_ask;
 };
 
 struct output_params {
@@ -302,6 +319,283 @@ void hv_config_colors(WINDOW_DATA *win)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+@interface PrefsPanel : NSWindow <NSWindowDelegate>
+{
+@public
+	WINDOW_DATA *parent;
+@private
+	char *hypfold;
+	char *default_file;
+	char *catalog_file;
+	int startup;
+	gboolean rightback;
+	gboolean transparent_pics;
+	gboolean check_time;
+	gboolean alink_newwin;
+	gboolean marken_save_ask;
+	
+	NSTabViewItem *general;
+	NSButton *rightback_button;
+	NSButton *transparent_pics_button;
+	NSButton *check_time_button;
+	NSButton *alink_newwin_button;
+	NSButton *marken_save_ask_button;
+	NSPopUpButton *startup_popup;
+	NSPathControl *hypfold_selector;
+	NSPathControl *default_file_selector;
+	NSPathControl *catalog_file_selector;
+}
+- (void)close;
+@end
+
+@implementation PrefsPanel
+- (void)close
+{
+	dprintf(("close: %s", [[self description] UTF8String]));
+#if 0 
+	[HypViewApp stopModal];
+#endif
+	[super close];
+}
+
+- (void)on_ok:(id)sender
+{
+	dprintf(("on_ok: %s", [[self description] UTF8String]));
+	[self performClose:sender];
+}
+
+- (void)on_hypfold_select:(id)sender
+{
+	dprintf(("on_hypfold_select: %s", [[self description] UTF8String]));
+}
+
+static void _print_hierarchy(NSView *view, int indent)
+{
+	int i;
+	FILE *fp = stdout;
+	NSArray *subviews;
+	const char *classname;
+	
+	for (i = 0; i < (indent * 4); i++)
+		fputc(' ', fp);
+	classname = [[view className] UTF8String];
+	fprintf(fp, "%s", classname);
+	if (strcmp(classname, "NSStackView") == 0)
+	{
+		NSStackView *stack = (NSStackView *)view;
+		fprintf(fp, " %s", [stack orientation] ==  NSUserInterfaceLayoutOrientationVertical ? "vertical" : "horizontal");
+		switch ([stack alignment])
+		{
+			case NSLayoutAttributeLeft: fprintf(fp, " left"); break;
+			case NSLayoutAttributeRight: fprintf(fp, " right"); break;
+			case NSLayoutAttributeTop: fprintf(fp, " top"); break;
+			case NSLayoutAttributeBottom: fprintf(fp, " bottom"); break;
+			case NSLayoutAttributeLeading: fprintf(fp, " leading"); break;
+			case NSLayoutAttributeTrailing: fprintf(fp, " trailing"); break;
+			case NSLayoutAttributeWidth: fprintf(fp, " width"); break;
+			case NSLayoutAttributeHeight: fprintf(fp, " height"); break;
+			case NSLayoutAttributeCenterX: fprintf(fp, " centerx"); break;
+			case NSLayoutAttributeCenterY: fprintf(fp, " centery"); break;
+			case NSLayoutAttributeNotAnAttribute: fprintf(fp, " none"); break;
+			default: fprintf(fp, " <???>"); break;
+		}
+	}
+	fputc('\n', fp);
+	subviews = [view subviews];
+	if (subviews)
+	{
+		for (i = 0; i < [subviews count]; i++)
+			_print_hierarchy([subviews objectAtIndex:i], indent + 1);
+	}
+}
+
+void print_hierarchy(NSView *view)
+{
+	_print_hierarchy(view, 0);
+}
+
+- (id)init
+{
+	NSUInteger windowStyle = NSTitledWindowMask | NSClosableWindowMask;
+	NSBackingStoreType bufferingType = NSBackingStoreBuffered;
+	NSTabView *tabview;
+	NSStackView *vbox, *hbox, *vbox2;
+	NSStackView *general_vbox;
+	NSTextField *label;
+	NSTabViewController *controller;
+	NSButton *button;
+	
+	if ((self = [super initWithContentRect:NSMakeRect(0, 0, 200, 300) styleMask: windowStyle backing: bufferingType defer: NO]) == nil)
+	{
+		return nil;
+	}
+	dprintf(("init: %s", [[self description] UTF8String]));
+	[self setTitle: W_("Preferences")];
+	[self cascadeTopLeftFromPoint:NSMakePoint(20, 20)];
+
+	self->hypfold = path_subst(gl_profile.general.hypfold);
+	self->default_file = path_subst(gl_profile.viewer.default_file);
+	self->catalog_file = path_subst(gl_profile.viewer.catalog_file);
+	self->startup = gl_profile.viewer.startup;
+	self->rightback = gl_profile.viewer.rightback;
+	self->transparent_pics = gl_profile.viewer.transparent_pics;
+	self->check_time = gl_profile.viewer.check_time;
+	self->alink_newwin = gl_profile.viewer.alink_newwin;
+	self->marken_save_ask = gl_profile.viewer.marken_save_ask;
+
+	vbox = [[[NSStackView alloc] init] autorelease];
+	[vbox setSpacing: 10];
+	[vbox setOrientation: NSUserInterfaceLayoutOrientationVertical];
+	[vbox setDistribution: NSStackViewDistributionGravityAreas];
+	[vbox setAlignment: NSLayoutAttributeLeft];
+	[vbox setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+	[vbox setEdgeInsets: NSEdgeInsetsMake(10, 10, 10, 10)];
+	[self setContentView: vbox];
+
+	hbox = [[[NSStackView alloc] init] autorelease];
+	[hbox setAlignment: NSLayoutAttributeTop];
+	tabview = [[[NSTabView alloc] init] autorelease];
+	[tabview setDrawsBackground:YES];
+	[tabview setTabViewType:NSTopTabsBezelBorder];
+	[hbox addView:tabview inGravity: NSStackViewGravityLeading];
+	[vbox addView:hbox inGravity: NSStackViewGravityLeading];
+
+	controller = [[NSTabViewController alloc] init];
+	[controller setTabStyle: NSTabViewControllerTabStyleSegmentedControlOnTop];
+	
+	self->general = [NSTabViewItem tabViewItemWithViewController:controller];
+	[self->general setLabel:W_("General")];
+
+	general_vbox = [[[NSStackView alloc] init] autorelease];
+	[general_vbox setOrientation: NSUserInterfaceLayoutOrientationVertical];
+	[general_vbox setAlignment: NSLayoutAttributeLeft];
+	[general_vbox setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+	[general_vbox setDistribution: NSStackViewDistributionGravityAreas];
+	[general_vbox setEdgeInsets: NSEdgeInsetsMake(10, 10, 10, 10)];
+	[self->general setView: general_vbox];
+	
+	label = [NSTextField labelWithString: [[[NSString alloc] initWithUTF8String: _("Paths")] autorelease]];
+	[label setAlignment: NSLeftTextAlignment];
+	[label setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]];
+	[general_vbox addView:label inGravity: NSStackViewGravityLeading];
+
+	hbox = [[[NSStackView alloc] init] autorelease];
+	[hbox setSpacing: 10];
+	[hbox setEdgeInsets: NSEdgeInsetsMake(10, 10, 10, 10)];
+	vbox2 = [[[NSStackView alloc] init] autorelease];
+	[vbox2 setOrientation: NSUserInterfaceLayoutOrientationVertical];
+	[vbox2 setAlignment: NSLayoutAttributeLeft];
+	[hbox addView:vbox2 inGravity: NSStackViewGravityLeading];
+	[general_vbox addView:hbox inGravity: NSStackViewGravityLeading];
+
+	self->hypfold_selector = [[[NSPathControl alloc] initWithFrame:NSMakeRect(0, 0, 300, 26)] autorelease];
+	[self->hypfold_selector setEditable:NO];
+	[self->hypfold_selector setPathStyle:NSPathStyleStandard];
+	[self->hypfold_selector setURL:[NSURL fileURLWithPath:[[[NSString alloc] initWithUTF8String:self->hypfold] autorelease] isDirectory:YES]];
+	[self->hypfold_selector setDoubleAction:@selector(on_hypfold_select:)];
+	[vbox2 addView:self->hypfold_selector inGravity: NSStackViewGravityLeading];
+	
+	label = [NSTextField labelWithString: [[[NSString alloc] initWithUTF8String: _("At Programstart")] autorelease]];
+	[label setAlignment: NSLeftTextAlignment];
+	[label setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]];
+	[general_vbox addView:label inGravity: NSStackViewGravityLeading];
+
+	hbox = [[[NSStackView alloc] init] autorelease];
+	[hbox setSpacing: 10];
+	[hbox setEdgeInsets: NSEdgeInsetsMake(10, 10, 10, 10)];
+	vbox2 = [[[NSStackView alloc] init] autorelease];
+	[vbox2 setOrientation: NSUserInterfaceLayoutOrientationVertical];
+	[vbox2 setAlignment: NSLayoutAttributeLeft];
+	[hbox addView:vbox2 inGravity: NSStackViewGravityLeading];
+	[general_vbox addView:hbox inGravity: NSStackViewGravityLeading];
+
+	self->startup_popup = [[[NSPopUpButton alloc] initWithFrame:NSMakeRect(0, 0, 300, 26) pullsDown:NO] autorelease];
+	[self->startup_popup addItemWithTitle:W_("Show File Selector")];
+	[self->startup_popup addItemWithTitle:W_("Load default hypertext")];
+	[self->startup_popup addItemWithTitle:W_("Load last file")];
+	[self->startup_popup setObjectValue: [NSNumber numberWithInt:gl_profile.viewer.startup]];
+	
+	[vbox2 addView:self->startup_popup inGravity: NSStackViewGravityLeading];
+	
+	label = [NSTextField labelWithString: [[[NSString alloc] initWithUTF8String: _("Miscellaneous")] autorelease]];
+	[label setAlignment: NSLeftTextAlignment];
+	[label setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]];
+	[general_vbox addView:label inGravity: NSStackViewGravityLeading];
+
+	hbox = [[[NSStackView alloc] init] autorelease];
+	[hbox setSpacing: 10];
+	[hbox setEdgeInsets: NSEdgeInsetsMake(10, 10, 10, 10)];
+	vbox2 = [[[NSStackView alloc] init] autorelease];
+	[vbox2 setOrientation: NSUserInterfaceLayoutOrientationVertical];
+	[vbox2 setAlignment: NSLayoutAttributeLeft];
+	[hbox addView:vbox2 inGravity: NSStackViewGravityLeading];
+	[general_vbox addView:hbox inGravity: NSStackViewGravityLeading];
+
+	self->rightback_button = [NSButton checkboxWithTitle:W_("Right mouse button is 'back'") target:self action:nil];
+	[self->rightback_button setState:self->rightback ? NSOnState : NSOffState];
+	[self->rightback_button setToolTip:W_("If set, a right mouse click is interpreted as a click on the Back icon")];
+	[vbox2 addView:self->rightback_button inGravity: NSStackViewGravityLeading];
+	self->transparent_pics_button = [NSButton checkboxWithTitle:W_("Display pictures transparent") target:self action:nil];
+	[self->transparent_pics_button setState:self->transparent_pics ? NSOnState : NSOffState];
+	[self->transparent_pics_button setToolTip:W_("Draw pictures transparently")];
+	[vbox2 addView:self->transparent_pics_button inGravity: NSStackViewGravityLeading];
+	self->check_time_button = [NSButton checkboxWithTitle:W_("Watch modification times of files") target:self action:nil];
+	[self->check_time_button setState:self->check_time ? NSOnState : NSOffState];
+	[self->check_time_button setToolTip:W_("Check file modification time and date before access")];
+	[vbox2 addView:self->check_time_button inGravity: NSStackViewGravityLeading];
+	self->alink_newwin_button = [NSButton checkboxWithTitle:W_("Open ALINKs in a new window") target:self action:nil];
+	[self->alink_newwin_button setState:self->alink_newwin ? NSOnState : NSOffState];
+	[self->alink_newwin_button setToolTip:W_("If set, ALINKS are opened in a new window\n"
+		"If not set, ALINKS are opened in the current window (as ST-Guide)")];
+	[vbox2 addView:self->alink_newwin_button inGravity: NSStackViewGravityLeading];
+	self->marken_save_ask_button = [NSButton checkboxWithTitle:W_("Ask before saving bookmarks") target:self action:nil];
+	[self->marken_save_ask_button setState:self->marken_save_ask ? NSOnState : NSOffState];
+	[self->marken_save_ask_button setToolTip:W_("Ask before saving bookmarks")];
+	[vbox2 addView:self->marken_save_ask_button inGravity: NSStackViewGravityLeading];
+
+	[general_vbox setNeedsLayout:YES];
+	[general_vbox layout];
+	[tabview addTabViewItem:self->general];
+	
+	/* [controller addTabViewItem:self->general]; */
+	
+	hbox = [[[NSStackView alloc] init] autorelease];
+	[hbox setSpacing: 10];
+	[hbox setAlignment: NSLayoutAttributeCenterY];
+	[hbox setDistribution: NSStackViewDistributionGravityAreas];
+	[hbox setEdgeInsets: NSEdgeInsetsMake(10, 0, 0, 10)];
+	[vbox addView:hbox inGravity: NSStackViewGravityTrailing];
+	
+	button = [NSButton buttonWithTitle:W_("OK") target:self action:@selector(on_ok:)];
+	[button setAutoresizingMask:NSViewMinXMargin|NSViewMaxYMargin];
+	[button resignFirstResponder];
+	[button setKeyEquivalent:@"\015"];
+	[button setHighlighted:YES];
+	[self makeFirstResponder:button];
+	[hbox addView:button inGravity: NSStackViewGravityTrailing];
+
+	button = [NSButton buttonWithTitle:W_("Close") target:self action:@selector(performClose:)];
+	[button setAutoresizingMask:NSViewMinXMargin|NSViewMaxYMargin];
+	[button setKeyEquivalent:@"\033"];
+	[hbox addView:button inGravity: NSStackViewGravityTrailing];
+	[button setHighlighted:NO];
+
+	print_hierarchy([self contentView]);
+
+	return self;
+}
+
+- (void)dealloc
+{
+	dprintf(("dealloc: %s", [[self description] UTF8String]));
+	g_free(self->hypfold);
+	g_free(self->default_file);
+	g_free(self->catalog_file);
+	[super dealloc];
+}
+
+@end
+
 #if 0 /* TODO */
 static INT_PTR CALLBACK preference_dialog(WINDOW_DATA *win, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -312,24 +606,13 @@ static INT_PTR CALLBACK preference_dialog(WINDOW_DATA *win, UINT message, WPARAM
 	params = (struct pref_params *)(DWORD_PTR)GetWindowLongPtr(win, GWLP_USERDATA);
 	switch (message)
 	{
-	case WM_CREATE:
-		break;
 	case WM_INITDIALOG:
-		params = (struct pref_params *)lParam;
-		win = params->win;
-		SetWindowLongPtr(win, GWLP_USERDATA, (DWORD_PTR)params);
-		CenterWindow(win);
 		DlgSetText(win, IDC_HYPFOLD, hyp_basename(params->hypfold));
 		DlgSetText(win, IDC_DEFAULT_FILE, hyp_basename(params->default_file));
 		DlgSetText(win, IDC_CATALOG_FILE, hyp_basename(params->catalog_file));
 		DlgSetButton(win, IDC_PREF_FILE_SELECTOR, params->startup == 0);
 		DlgSetButton(win, IDC_PREF_DEFAULT_TEXT, params->startup == 1);
 		DlgSetButton(win, IDC_PREF_LAST_FILE, params->startup == 2);
-		DlgSetButton(win, IDC_PREF_RIGHTBACK, params->rightback);
-		DlgSetButton(win, IDC_PREF_TRANSPARENT, params->transparent_pics);
-		DlgSetButton(win, IDC_PREF_CHECK_TIME, params->check_time);
-		DlgSetButton(win, IDC_PREF_ALINK_NEWWIN, params->alink_newwin);
-		DlgSetButton(win, IDC_PREF_MARKEN_SAVE_ASK, params->marken_save_ask);
 		return TRUE;
 	case WM_CLOSE:
 		EndDialog(win, IDCANCEL);
@@ -390,14 +673,6 @@ static INT_PTR CALLBACK preference_dialog(WINDOW_DATA *win, UINT message, WPARAM
 			break;
 		}
 		break;
-	case WM_DESTROY:
-		g_free(params->hypfold);
-		g_free(params->default_file);
-		g_free(params->catalog_file);
-		break;
-	default:
-		hv_commdlg_help(win, message, wParam, lParam);
-		break;
 	}
 	return FALSE;
 }
@@ -405,22 +680,22 @@ static INT_PTR CALLBACK preference_dialog(WINDOW_DATA *win, UINT message, WPARAM
 
 /*** ---------------------------------------------------------------------- ***/
 
-void hv_preferences(WINDOW_DATA *win)
+void hv_preferences(WINDOW_DATA *sender)
 {
-	struct pref_params params;
+	PrefsPanel *panel;
 	
-	params.win = win;
-	params.hypfold = path_subst(gl_profile.general.hypfold);
-	params.default_file = path_subst(gl_profile.viewer.default_file);
-	params.catalog_file = path_subst(gl_profile.viewer.catalog_file);
-	params.startup = gl_profile.viewer.startup;
-	params.rightback = gl_profile.viewer.rightback;
-	params.transparent_pics = gl_profile.viewer.transparent_pics;
-	params.check_time = gl_profile.viewer.check_time;
-	params.alink_newwin = gl_profile.viewer.alink_newwin;
-	params.marken_save_ask = gl_profile.viewer.marken_save_ask;
-#if 0 /* TODO */
-	DialogBoxExW(NULL, MAKEINTRESOURCEW(IDD_PREFERENCES), parent, preference_dialog, (LPARAM)&params);
+	panel = [[[PrefsPanel alloc] init] autorelease];
+	panel->parent = sender;
+	[panel makeKeyAndOrderFront: sender];
+	
+#if 0
+	NSModalSession session = [HypViewApp beginModalSessionForWindow: panel];
+	for (;;)
+	{
+		if ([HypViewApp runModalSession:session] != NSModalResponseContinue)
+			break;
+	}
+	[HypViewApp endModalSession:session];
 #endif
 }
 

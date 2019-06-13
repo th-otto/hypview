@@ -139,6 +139,8 @@
 		8C3B572922944D680074375F /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56EE22944CF80074375F /* zlib.h */; };
 		8C3B572A22944D680074375F /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B56EF22944CF80074375F /* zutil.c */; };
 		8C3B572B22944D680074375F /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C3B56F022944CF80074375F /* zutil.h */; };
+		8C7042B722B30997005E0190 /* bm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C7042B422B30935005E0190 /* bm.c */; };
+		8C7042B822B309F2005E0190 /* refcmds.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB712F226B922000116947 /* refcmds.c */; };
 		8CFB707B226AEC0600116947 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFB707A226AEC0600116947 /* Cocoa.framework */; };
 		8CFB7081226AF12400116947 /* hv_main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFB7080226AF12400116947 /* hv_main.m */; };
 		8CFB7091226B7F1200116947 /* casefold.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CFB7090226B7F1200116947 /* casefold.h */; };
@@ -651,6 +653,7 @@
 		8CFE2F1B229F5162005A4516 /* rsrcload.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F07229F5125005A4516 /* rsrcload.c */; };
 		8CFE2F1C229F519A005A4516 /* win32.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CFE2F08229F5125005A4516 /* win32.c */; };
 		8CFE2F1D229F51BE005A4516 /* librsc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CFE2EF2229F50B2005A4516 /* librsc.a */; };
+		8CFE2F1F229FC369005A4516 /* hypview.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8CFE2F1E229FC369005A4516 /* hypview.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -879,6 +882,8 @@
 		8C3B56EE22944CF80074375F /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		8C3B56EF22944CF80074375F /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zutil.c; sourceTree = "<group>"; };
 		8C3B56F022944CF80074375F /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
+		8C7042B422B30935005E0190 /* bm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bm.c; path = ../hyp/bm.c; sourceTree = SOURCE_ROOT; };
+		8C7042B522B30935005E0190 /* bm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bm.h; path = ../hyp/bm.h; sourceTree = SOURCE_ROOT; };
 		8CFB7063226AEA3F00116947 /* HypView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HypView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CFB707A226AEC0600116947 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8CFB7080226AF12400116947 /* hv_main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hv_main.m; sourceTree = "<group>"; };
@@ -1409,6 +1414,7 @@
 		8CFE2F06229F5125005A4516 /* rso.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rso.h; sourceTree = "<group>"; };
 		8CFE2F07229F5125005A4516 /* rsrcload.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsrcload.c; sourceTree = "<group>"; };
 		8CFE2F08229F5125005A4516 /* win32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = win32.c; sourceTree = "<group>"; };
+		8CFE2F1E229FC369005A4516 /* hypview.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = hypview.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1752,6 +1758,7 @@
 		8CFB7078226AEB8000116947 /* HypView Sources */ = {
 			isa = PBXGroup;
 			children = (
+				8CFE2F1E229FC369005A4516 /* hypview.icns */,
 				8CFE2A83229EF8AD005A4516 /* hv_rsc.m */,
 				8CFB71ED2271D9BB00116947 /* pixbuf.c */,
 				8CFB71EE2271D9BB00116947 /* pixbuf.h */,
@@ -1941,6 +1948,8 @@
 		8CFB7191226BFC1900116947 /* hypfind */ = {
 			isa = PBXGroup;
 			children = (
+				8C7042B422B30935005E0190 /* bm.c */,
+				8C7042B522B30935005E0190 /* bm.h */,
 				8CFB7198226BFC5F00116947 /* hypfind.c */,
 			);
 			path = hypfind;
@@ -2912,6 +2921,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CFE2F1F229FC369005A4516 /* hypview.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3179,6 +3189,7 @@
 				8CFE2A6F229EF6B1005A4516 /* outasc.c in Sources */,
 				8CFB7158226BA20C00116947 /* utl_err.c in Sources */,
 				8CFB7150226B9E4F00116947 /* sparse.c in Sources */,
+				8C7042B822B309F2005E0190 /* refcmds.c in Sources */,
 				8CFB7159226BA5DB00116947 /* utl_ngui.c in Sources */,
 				8C3B55FE229418390074375F /* outcomm.c in Sources */,
 				8CFB7157226BA1FF00116947 /* hcp_opts.c in Sources */,
@@ -3223,6 +3234,7 @@
 			files = (
 				8CFB7199226BFC5F00116947 /* hypfind.c in Sources */,
 				8CFB719A226BFC7800116947 /* hcp_opts.c in Sources */,
+				8C7042B722B30997005E0190 /* bm.c in Sources */,
 				8CFB719B226BFC8500116947 /* utl_ngui.c in Sources */,
 				8CFB719C226BFC8900116947 /* utl_err.c in Sources */,
 			);
