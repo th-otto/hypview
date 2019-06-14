@@ -4,6 +4,7 @@
  *****************************************************************************/
 
 #include "config.h"
+#include "windows_.h"
 #include <stdint.h>
 #include <gem.h>
 #include <mobject.h>

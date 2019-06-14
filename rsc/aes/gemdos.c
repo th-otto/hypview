@@ -1,4 +1,5 @@
 #include "config.h"
+#include "windows_.h"
 #include <stdint.h>
 #include <gemdos.h>
 #include <fcntl.h>

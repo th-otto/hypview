@@ -4,6 +4,7 @@ AM_CPPFLAGS =
 AM_CPPFLAGS += -I$(top_srcdir)/include
 AM_CPPFLAGS += -I$(srcdir)
 AM_CPPFLAGS += $(Z_CFLAGS)
+AM_CPPFLAGS += -DZLIB_STATIC
 
 noinst_LIBRARIES = libpng.a
 

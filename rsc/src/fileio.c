@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 
 #include "config.h"
+#include "windows_.h"
 #include <stdint.h>
 #include <gem.h>
 #include <object.h>

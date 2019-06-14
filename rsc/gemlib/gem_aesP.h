@@ -1,6 +1,7 @@
 #ifndef _GEM_AES_P_
 # define _GEM_AES_P_
 
+#include "windows_.h"
 #include <stdint.h>
 
 #if defined(__TOS__) || defined(__atarist__)
