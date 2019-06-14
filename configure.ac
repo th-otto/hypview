@@ -45,7 +45,7 @@ case " [$]$1 " in
 *) AC_MSG_CHECKING([whether the compiler understands] $flag)
    saved_$1="[$]$1"
    $1="[$]$1 $flag -Werror"
-   AC_TRY_COMPILE(, , $1="[$]$1 $flag"; result=yes, $1="$saved_$1"; result=no)
+   AC_TRY_COMPILE(, , $1="$saved_$1 $flag"; result=yes, $1="$saved_$1"; result=no)
    AC_MSG_RESULT([$result])
    ;;
 esac
