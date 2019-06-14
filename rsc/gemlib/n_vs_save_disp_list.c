@@ -9,6 +9,9 @@ short vs_save_disp_list(short handle, const char *name)
 
 	VDI_PARAMS (vdi_control, vdi_intin, vdi_dummy, vdi_intout, vdi_dummy);
 	
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 	vdi_intin_ptr(0, const char *) = name;
 	vdi_intout[0] = 0;
 	VDI_TRAP_ESC (vdi_params, handle, 5,2106, 0, 2);

@@ -98,10 +98,10 @@ hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP)
 hypview_DEPENDENCIES += $(GEMLIB_DEPS)
 hypview_LDADD += $(GEMLIBS)
 if HAVE_PNG
-hypview_DEPENDENCIES += $(LIBPNG_DEP) $(LIBZ_DEP)
-hypview_LDADD += $(LIBPNG) $(LIBZ)
+hypview_DEPENDENCIES += $(LIBPNG_DEP)
+hypview_LDADD += $(LIBPNG)
 endif
-if WITH_PDF
+if NEED_ZLIB
 hypview_DEPENDENCIES += $(LIBZ_DEP)
 hypview_LDADD += $(LIBZ)
 endif

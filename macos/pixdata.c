@@ -114,7 +114,7 @@ gboolean mygdk_pixdata_deserialize(GdkPixdata *pixdata, uint32_t stream_length, 
 	/* deserialize pixel data */
 	if (stream_length < pixdata->length - GDK_PIXDATA_HEADER_LENGTH)
 		return_pixel_corrupt(error);
-	pixdata->pixel_data = (uint8_t *) stream;
+	pixdata->pixel_data = (uint8_t *)NO_CONST(stream);
 
 	return TRUE;
 }
@@ -284,7 +284,7 @@ GdkPixbuf *mygdk_pixbuf_new_from_inline(uint32_t data_length, const uint8_t *dat
 {
 	GdkPixdata pixdata;
 
-	if (data_length != 0 && data_length != -1)
+	if (data_length != 0 && data_length != (uint32_t)-1)
 		if (data_length <= GDK_PIXDATA_HEADER_LENGTH)
 			return NULL;
 	if (data == NULL)

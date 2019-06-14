@@ -12,7 +12,10 @@ noinst_PROGRAMS = pdfid
 noinst_SCRIPTS = 
 
 if HAVE_CURL
+# currently has problems linking the gem libraries; FIXME
+if !OS_MACOS
 noinst_PROGRAMS += hypview.cgi
+endif
 endif
 SRVDIR = /srv/www/htdocs/hypview
 

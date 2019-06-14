@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 
 	encoding = HPDF_GetEncoder(pdf, "ISO8859-2");
 
-	HPDF_Page_CreateTextAnnot(page, rect8, "Annotation with ISO8859 text гдежзий", encoding);
+	HPDF_Page_CreateTextAnnot(page, rect8, "Annotation with ISO8859 text \xd3\xd4\xd5\xd6\xd7\xd8\xd9", encoding);
 
 	HPDF_Page_SetFontAndSize(page, font, 11);
 

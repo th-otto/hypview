@@ -796,6 +796,9 @@ static gboolean refcheck_opts_parse_string(struct refcheck_opts *opts, const cha
 	argv[argc] = NULL;
 #undef isdelim
 
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 	retval = refcheck_opts_parse(opts, argc, (const char **)(const void **)argv, origin);
 	g_strfreev(argv);
 	return retval;

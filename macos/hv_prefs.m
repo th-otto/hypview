@@ -397,7 +397,7 @@ static void _print_hierarchy(NSView *view, int indent)
 			case NSLayoutAttributeCenterX: fprintf(fp, " centerx"); break;
 			case NSLayoutAttributeCenterY: fprintf(fp, " centery"); break;
 			case NSLayoutAttributeNotAnAttribute: fprintf(fp, " none"); break;
-			default: fprintf(fp, " <???>"); break;
+			default: fprintf(fp, " <unknown>"); break;
 		}
 	}
 	fputc('\n', fp);

@@ -4,6 +4,8 @@
 #include "hypdefs.h"
 #include <Cocoa/Cocoa.h>
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 #undef _
 #undef N_
 #ifdef ENABLE_NLS

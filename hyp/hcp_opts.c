@@ -789,6 +789,9 @@ gboolean hcp_opts_parse_string(hcp_opts *opts, const char *argstring, opts_origi
 	argv[argc] = NULL;
 #undef isdelim
 
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
 	retval = hcp_opts_parse(opts, argc, (const char **)(const void **)argv, origin);
 	g_strfreev(argv);
 	return retval;

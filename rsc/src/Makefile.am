@@ -8,7 +8,11 @@ AM_CPPFLAGS += $(GLIB_CFLAGS)
 AM_CPPFLAGS += $(PNG_CFLAGS)
 AM_CPPFLAGS += $(Z_CFLAGS)
 
-noinst_PROGRAMS = rscview
+noinst_PROGRAMS =
+# currently has problems linking the gem libraries; FIXME
+if !OS_MACOS
+noinst_PROGRAMS += rscview
+endif
 noinst_LIBRARIES = librsc.a
 
 librsc_a_SOURCES = \

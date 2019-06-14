@@ -920,11 +920,7 @@ RSCFILE *xrsrc_load(const char *filename, _WORD wchar, _WORD hchar, _UWORD flags
 	CICONBLK *cicon_dst;
 	char headerbuf[max(RSC_SIZEOF_XRS_HEADER, RSC_SIZEOF_RS_HEADER)];
 	RS_HEADER rs_header;
-	XRS_HEADER xrsc_header
-#ifdef __clang__
-	= { 0 } /* pacify compiler */
-#endif
-	;
+	XRS_HEADER xrsc_header;
 	char *buf = NULL;
 	_BOOL swap_flag = FALSE;
 	_BOOL xrsc_flag = FALSE;
@@ -938,6 +934,9 @@ RSCFILE *xrsrc_load(const char *filename, _WORD wchar, _WORD hchar, _UWORD flags
 	const char *whats_wrong = NULL;
 	RSC_RSM_CRC crc_for_string = RSC_CRC_NONE;
 	
+#ifdef __clang__
+	memset(&xrsc_header, 0, sizeof(xrsc_header)); /* pacify compiler */
+#endif
 	cicon_p = NULL;
 	cicon_dst = NULL;
 	fp = hyp_utf8_fopen(filename, "rb");
