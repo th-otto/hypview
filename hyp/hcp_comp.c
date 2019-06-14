@@ -7155,6 +7155,8 @@ static void process_text(hcp_vars *vars, char **linep)
 				break;
 			default:
 				/* sole '@' */
+				if (vars->hcp_pass == 1)
+					hcp_warning(vars, NULL, _("single '@' should be quoted ('@@')"));
 				line++;
 				break;
 			}
