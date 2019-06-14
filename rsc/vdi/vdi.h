@@ -442,7 +442,7 @@ void vditrap(VDIPB *pb);
 int vdi_output_c(_WORD dev, unsigned char c);
 int vdi_phys_handle(void);
 void vdi_change_colors(void);
-gboolean vdi_vq_vgdos(void);
+int32_t vdi_vq_vgdos(void);
 int vdi_cursconf(_WORD func, _WORD rate);
 void vdi_cursblink(void);
 

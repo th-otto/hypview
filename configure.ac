@@ -1002,6 +1002,10 @@ AC_CONFIG_COMMANDS([pofiles],[
         sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile 
       ])
 
+AC_CONFIG_COMMANDS([automake],[
+        rm -rf autom4te.cache
+      ])
+
 AC_OUTPUT([
 	Makefile
 	include/Makefile
@@ -1026,9 +1030,6 @@ AC_OUTPUT([
 	tools/pc_conv/Makefile
 	tools/1st_conv/Makefile
 	rsc/Makefile
-	rsc/aes/Makefile
-	rsc/gemlib/Makefile
-	rsc/vdi/Makefile
 	rsc/src/Makefile
 	po/Makefile.in
 	doc/Makefile

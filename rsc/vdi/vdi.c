@@ -6777,13 +6777,13 @@ static int vdi_vq_ext_devinfo(VDIPB *pb)
 /* -------------------------------------------------------------------------- */
 /******************************************************************************/
 
-gboolean vdi_vq_vgdos(void)
+int32_t vdi_vq_vgdos(void)
 {
 	V("vq_vgdos: %lx", GDOS_VERSION);
 #if SUPPORT_GDOS
 	return GDOS_VERSION;
 #else
-	return 0;
+	return -2;
 #endif
 }
 

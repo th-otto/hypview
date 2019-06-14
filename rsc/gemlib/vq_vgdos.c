@@ -1,6 +1,15 @@
-#include "gem_vdiP.h"
+#if defined(PRIVATE_VDI)
 
-#if defined(__GNUC__) && defined(__mc68000__) && !defined(PRIVATE_VDI)
+#include "../vdi/vdi.h"
+
+long vq_vgdos(void)
+{
+	return vdi_vq_vgdos();
+}
+
+#elif defined(__GNUC__) && defined(__mc68000__)
+
+#include "gem_vdiP.h"
 
 long vq_vgdos(void)
 {
@@ -16,7 +25,9 @@ long vq_vgdos(void)
 	return x;
 }
 
-#elif defined(__VBCC__) && defined(__mc68000__) && !defined(PRIVATE_VDI)
+#elif defined(__VBCC__) && defined(__mc68000__)
+
+#include "gem_vdiP.h"
 
 __regsused("d0/d1/a0/a1") long vq_vgdos(void) =
   "\tmove.l\td2,-(sp)\n"
