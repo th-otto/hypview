@@ -403,7 +403,7 @@ AC_ARG_ENABLE(warnings,
 yes)
      for arg in -Wall -W -Wstrict-prototypes -Wmissing-prototypes \
            -Wmissing-declarations -Wwrite-strings \
-           -Wcast-qual -Wdeclaration-after-statement -Wundef -Wc++-compat -Wno-nonnull-compare
+           -Wcast-qual -Wdeclaration-after-statement -Wundef -Wc++-compat -Wno-nonnull-compare -Wno-address-of-packed-member
      do
          AC_ADD_CFLAG(CFLAGS, $arg)
      done

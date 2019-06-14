@@ -4,7 +4,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-13 04:52+0200\n"
+"POT-Creation-Date: 2019-06-14 05:22+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: Czech <gnome-de@gnome.org>\n"
@@ -143,7 +143,6 @@ msgid  "Open"
 msgstr ""
 
 #: ../gtk/gtk_comp.h:331
-#: ../macos/hv_main.m:1537
 msgid  "Close"
 msgstr ""
 
@@ -192,7 +191,6 @@ msgid  "Add"
 msgstr ""
 
 #: ../gtk/gtk_comp.h:344
-#: ../macos/hv_main.m:1451
 msgid  "Help"
 msgstr ""
 
@@ -407,7 +405,6 @@ msgid  "Alternative font:"
 msgstr ""
 
 #: ../gtk/hv_font.c:159
-#: ../macos/hv_main.m:1711
 #: ../win32/hv_font.c:392
 #: ../win32/hv_font.c:425
 msgid  "Alternative font"
@@ -558,7 +555,8 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_info.c:112
-#: ../hyp/hypinfo.c:201
+#: ../hyp/hypinfo.c:126
+#: ../hyp/hypinfo.c:253
 #: ../macos/hv_info.m:34
 #: ../win32/hv_info.c:55
 msgid  " (guessed)"
@@ -649,7 +647,7 @@ msgstr ""
 
 #: ../gtk/hv_nav.c:77
 #: ../gtk/hv_nav.c:127
-#: ../hyp/hypdoc.c:291
+#: ../hyp/hypdoc.c:293
 #: ../macos/hv_nav.m:58
 #: ../macos/hv_nav.m:107
 #: ../tos/hv_nav.c:92
@@ -660,73 +658,73 @@ msgid  "format not recognized"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:197
-#: ../macos/hv_prefs.m:205
+#: ../macos/hv_prefs.m:222
 #: ../win32/hv_prefs.c:223
 msgid  "Select Colors"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:208
-#: ../macos/hv_prefs.m:113
+#: ../macos/hv_prefs.m:130
 #: ../win32/hv_prefs.c:131
 msgid  "Window background"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:224
-#: ../macos/hv_prefs.m:115
+#: ../macos/hv_prefs.m:132
 #: ../win32/hv_prefs.c:133
 msgid  "Normal text and line graphics"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:239
-#: ../macos/hv_prefs.m:117
+#: ../macos/hv_prefs.m:134
 #: ../win32/hv_prefs.c:135
 msgid  "Ghosted text (attribute @{G})"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:254
-#: ../macos/hv_prefs.m:119
+#: ../macos/hv_prefs.m:136
 #: ../win32/hv_prefs.c:137
 msgid  "Internal nodes (@node)"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:269
-#: ../macos/hv_prefs.m:121
+#: ../macos/hv_prefs.m:138
 #: ../win32/hv_prefs.c:139
 msgid  "Popup nodes (@pnode)"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:284
-#: ../macos/hv_prefs.m:123
+#: ../macos/hv_prefs.m:140
 #: ../win32/hv_prefs.c:141
 msgid  "External references (@{.. link FILE [LINE]})"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:299
-#: ../macos/hv_prefs.m:125
+#: ../macos/hv_prefs.m:142
 #: ../win32/hv_prefs.c:143
 msgid  "SYSTEM-argument (@{... system ARG})"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:314
-#: ../macos/hv_prefs.m:127
+#: ../macos/hv_prefs.m:144
 #: ../win32/hv_prefs.c:145
 msgid  "REXX script (@{... rxs FILE})"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:329
-#: ../macos/hv_prefs.m:129
+#: ../macos/hv_prefs.m:146
 #: ../win32/hv_prefs.c:147
 msgid  "REXX command (@{... rx ARG})"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:344
-#: ../macos/hv_prefs.m:131
+#: ../macos/hv_prefs.m:148
 #: ../win32/hv_prefs.c:149
 msgid  "QUIT entry (@{... quit})"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:359
-#: ../macos/hv_prefs.m:133
+#: ../macos/hv_prefs.m:150
 #: ../win32/hv_prefs.c:151
 msgid  "CLOSE entry (@{... close})"
 msgstr ""
@@ -760,13 +758,13 @@ msgid  "Shadowed"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:511
-#: ../macos/hv_prefs.m:388
+#: ../macos/hv_prefs.m:671
 #: ../win32/hv_prefs.c:403
 msgid  "Preferences"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:521
-#: ../macos/hv_prefs.m:368
+#: ../macos/hv_prefs.m:651
 #: ../win32/hv_prefs.c:383
 msgid  "Path for Hypertexts"
 msgstr ""
@@ -780,7 +778,7 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_prefs.c:542
-#: ../macos/hv_prefs.m:374
+#: ../macos/hv_prefs.m:657
 #: ../win32/hv_prefs.c:389
 msgid  "Default-Hypertext"
 msgstr ""
@@ -792,7 +790,7 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_prefs.c:562
-#: ../macos/hv_prefs.m:380
+#: ../macos/hv_prefs.m:663
 #: ../win32/hv_prefs.c:395
 msgid  "Catalog file"
 msgstr ""
@@ -802,6 +800,7 @@ msgid  "The hypertext file to be loaded via the HypView 'Catalog' option"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:577
+#: ../macos/hv_prefs.m:498
 msgid  "At Programstart"
 msgstr ""
 
@@ -818,6 +817,7 @@ msgid  "Load last file"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:607
+#: ../macos/hv_prefs.m:520
 msgid  "Miscellaneous"
 msgstr ""
 
@@ -861,43 +861,43 @@ msgid  "Ask before saving bookmarks"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:680
-#: ../macos/hv_prefs.m:436
+#: ../macos/hv_prefs.m:711
 #: ../win32/hv_prefs.c:448
 msgid  "System Default"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:681
-#: ../macos/hv_prefs.m:437
+#: ../macos/hv_prefs.m:712
 #: ../win32/hv_prefs.c:449
 msgid  "Windows CP1252"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:682
-#: ../macos/hv_prefs.m:438
+#: ../macos/hv_prefs.m:713
 #: ../win32/hv_prefs.c:450
 msgid  "Atari ST"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:683
-#: ../macos/hv_prefs.m:439
+#: ../macos/hv_prefs.m:714
 #: ../win32/hv_prefs.c:451
 msgid  "Mac-Roman"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:684
-#: ../macos/hv_prefs.m:440
+#: ../macos/hv_prefs.m:715
 #: ../win32/hv_prefs.c:452
 msgid  "OS/2 CP850"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:685
-#: ../macos/hv_prefs.m:441
+#: ../macos/hv_prefs.m:716
 #: ../win32/hv_prefs.c:453
 msgid  "UTF-8"
 msgstr ""
 
 #: ../gtk/hv_prefs.c:737
-#: ../macos/hv_prefs.m:500
+#: ../macos/hv_prefs.m:775
 #: ../win32/hv_prefs.c:512
 msgid  "Output Settings"
 msgstr ""
@@ -929,8 +929,8 @@ msgstr ""
 #: ../gtk/hv_rcomp.c:60
 #: ../hyp/hcpmain.c:167
 #: ../hyp/hypfind.c:573
-#: ../hyp/hypinfo.c:151
-#: ../hyp/hypinfo.c:683
+#: ../hyp/hypinfo.c:203
+#: ../hyp/hypinfo.c:904
 #: ../macos/hv_rcomp.m:39
 #: ../win32/hv_rcomp.c:60
 #, c-format
@@ -938,7 +938,7 @@ msgid  "%s: fatal: protected hypertext: %s\n"
 msgstr ""
 
 #: ../gtk/hv_rcomp.c:64
-#: ../hyp/cgi.c:625
+#: ../hyp/cgi.c:743
 #: ../hyp/hcpmain.c:121
 #: ../hyp/hypfind.c:577
 #: ../macos/hv_rcomp.m:43
@@ -948,16 +948,16 @@ msgid  "%s%s created by compiler version %u\n"
 msgstr ""
 
 #: ../gtk/hv_rcomp.c:64
-#: ../hyp/cgi.c:625
+#: ../hyp/cgi.c:743
 #: ../hyp/hcp_comp.c:653
 #: ../hyp/hcpmain.c:119
 #: ../hyp/hcpmain.c:121
 #: ../hyp/hypfind.c:577
 #: ../hyp/outcomm.c:190
 #: ../hyp/outcomm.c:201
-#: ../hyp/outhtml.c:2234
-#: ../hyp/outhtml.c:2268
-#: ../hyp/outhtml.c:2957
+#: ../hyp/outhtml.c:2247
+#: ../hyp/outhtml.c:2281
+#: ../hyp/outhtml.c:2970
 #: ../macos/hv_rcomp.m:43
 #: ../win32/hv_rcomp.c:64
 #, c-format
@@ -1148,7 +1148,7 @@ msgid  ""
 msgstr ""
 
 #: ../gtk/hv_win.c:1898
-#: ../hyp/outhtml.c:1469
+#: ../hyp/outhtml.c:1470
 msgid  "Back"
 msgstr ""
 
@@ -1160,32 +1160,26 @@ msgstr ""
 #: ../gtk/hv_win.c:1900
 #: ../gtk/hv_win.c:2192
 #: ../gtk/hv_win.c:2214
-#: ../macos/hv_main.m:1662
 msgid  "Bookmarks"
 msgstr ""
 
 #: ../gtk/hv_win.c:1901
 #: ../gtk/hv_win.c:2216
-#: ../macos/hv_main.m:1613
 msgid  "Previous logical page"
 msgstr ""
 
 #: ../gtk/hv_win.c:1902
 #: ../gtk/hv_win.c:2215
-#: ../macos/hv_main.m:1625
 msgid  "Previous physical page"
 msgstr ""
 
 #: ../gtk/hv_win.c:1903
 #: ../gtk/hv_win.c:2217
-#: ../macos/hv_main.m:1645
 msgid  "Contents"
 msgstr ""
 
 #: ../gtk/hv_win.c:1904
 #: ../gtk/hv_win.c:2218
-#: ../macos/hv_main.m:1618
-#: ../macos/hv_main.m:1629
 msgid  "Next logical page"
 msgstr ""
 
@@ -1196,25 +1190,21 @@ msgstr ""
 
 #: ../gtk/hv_win.c:1906
 #: ../gtk/hv_win.c:2220
-#: ../macos/hv_main.m:1635
 msgid  "First page"
 msgstr ""
 
 #: ../gtk/hv_win.c:1907
 #: ../gtk/hv_win.c:2221
-#: ../macos/hv_main.m:1639
 msgid  "Last page"
 msgstr ""
 
 #: ../gtk/hv_win.c:1908
 #: ../gtk/hv_win.c:2222
-#: ../macos/hv_main.m:1650
 msgid  "Index"
 msgstr ""
 
 #: ../gtk/hv_win.c:1909
 #: ../gtk/hv_win.c:2223
-#: ../macos/hv_main.m:1550
 msgid  "Catalog"
 msgstr ""
 
@@ -1225,8 +1215,6 @@ msgstr ""
 
 #: ../gtk/hv_win.c:1911
 #: ../gtk/hv_win.c:2226
-#: ../macos/hv_main.m:1655
-#: ../macos/hv_main.m:1658
 #: ../win32/hv_win.c:44
 msgid  "Show help page"
 msgstr ""
@@ -1264,7 +1252,6 @@ msgid  "_Navigate"
 msgstr ""
 
 #: ../gtk/hv_win.c:2189
-#: ../macos/hv_main.m:1445
 msgid  "Options"
 msgstr ""
 
@@ -1278,7 +1265,6 @@ msgstr ""
 
 #: ../gtk/hv_win.c:2192
 #: ../gtk/hv_win.c:2214
-#: ../macos/hv_main.m:1664
 #: ../win32/hv_win.c:33
 msgid  "Show list of bookmarks"
 msgstr ""
@@ -1292,7 +1278,6 @@ msgid  "_Open Hypertext..."
 msgstr ""
 
 #: ../gtk/hv_win.c:2197
-#: ../macos/hv_main.m:1521
 #: ../win32/hv_win.c:46
 msgid  "Load a file"
 msgstr ""
@@ -1302,7 +1287,6 @@ msgid  "_Save text..."
 msgstr ""
 
 #: ../gtk/hv_win.c:2198
-#: ../macos/hv_main.m:1542
 #: ../win32/hv_win.c:47
 msgid  "Save page to file"
 msgstr ""
@@ -1312,7 +1296,6 @@ msgid  "_Recompile..."
 msgstr ""
 
 #: ../gtk/hv_win.c:2199
-#: ../macos/hv_main.m:1546
 msgid  "Recompile to ST-Guide format"
 msgstr ""
 
@@ -1321,8 +1304,7 @@ msgid  "_File info..."
 msgstr ""
 
 #: ../gtk/hv_win.c:2200
-#: ../hyp/outhtml.c:1609
-#: ../macos/hv_main.m:1568
+#: ../hyp/outhtml.c:1610
 #: ../win32/hv_win.c:45
 msgid  "Show info about hypertext"
 msgstr ""
@@ -1333,7 +1315,6 @@ msgstr ""
 
 #. [ TO_MENU ] = { TO_MENU, 0, IDI_MENU, NULL },
 #: ../gtk/hv_win.c:2201
-#: ../macos/hv_main.m:1562
 #: ../win32/hv_win.c:49
 msgid  "Start Remarker"
 msgstr ""
@@ -1367,15 +1348,11 @@ msgid  "Select _All"
 msgstr ""
 
 #: ../gtk/hv_win.c:2211
-#: ../macos/hv_main.m:1673
-#: ../macos/hv_main.m:1676
 #: ../win32/hv_win.c:31
 msgid  "Back one page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2212
-#: ../macos/hv_main.m:1678
-#: ../macos/hv_main.m:1681
 msgid  "Clear stack"
 msgstr ""
 
@@ -1385,66 +1362,55 @@ msgid  "Show history of pages"
 msgstr ""
 
 #: ../gtk/hv_win.c:2215
-#: ../macos/hv_main.m:1627
 #: ../win32/hv_win.c:35
 msgid  "Goto previous physical page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2216
-#: ../macos/hv_main.m:1616
 #: ../win32/hv_win.c:36
 msgid  "Goto previous page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2217
-#: ../macos/hv_main.m:1648
 #: ../win32/hv_win.c:37
 msgid  "Go up one page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2218
-#: ../macos/hv_main.m:1621
 #: ../win32/hv_win.c:38
 msgid  "Goto next page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2219
-#: ../macos/hv_main.m:1631
 #: ../win32/hv_win.c:39
 msgid  "Goto next physical page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2220
-#: ../macos/hv_main.m:1637
 #: ../win32/hv_win.c:34
 msgid  "Goto first page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2221
-#: ../macos/hv_main.m:1641
 #: ../win32/hv_win.c:40
 msgid  "Goto last page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2222
-#: ../macos/hv_main.m:1653
 #: ../win32/hv_win.c:41
 msgid  "Goto index page"
 msgstr ""
 
 #: ../gtk/hv_win.c:2223
-#: ../macos/hv_main.m:1553
 #: ../win32/hv_win.c:42
 msgid  "Show catalog of hypertexts"
 msgstr ""
 
 #: ../gtk/hv_win.c:2224
-#: ../macos/hv_main.m:1555
 msgid  "Default file"
 msgstr ""
 
 #: ../gtk/hv_win.c:2224
-#: ../macos/hv_main.m:1558
 msgid  "Show default file"
 msgstr ""
 
@@ -2135,8 +2101,8 @@ msgstr ""
 #: ../hyp/bmp2gif.c:277
 #: ../hyp/bmp2img.c:248
 #: ../hyp/gif2bmp.c:285
-#: ../hyp/hcpmain.c:663
-#: ../hyp/hypinfo.c:961
+#: ../hyp/hcpmain.c:667
+#: ../hyp/hypinfo.c:1176
 #: ../hyp/icn2ico.c:303
 #: ../hyp/icn2img.c:255
 #: ../hyp/ico2icn.c:242
@@ -2153,13 +2119,13 @@ msgstr ""
 #: ../hyp/outasc.c:381
 #: ../hyp/outdump.c:276
 #: ../hyp/outdump.c:281
-#: ../hyp/outhtml.c:2776
-#: ../hyp/outhtml.c:2782
+#: ../hyp/outhtml.c:2789
+#: ../hyp/outhtml.c:2795
 #: ../hyp/outstg.c:950
 #: ../hyp/outstg.c:956
 #: ../hyp/outxml.c:792
 #: ../hyp/outxml.c:798
-#: ../hyp/pdf.c:1048
+#: ../hyp/pdf.c:1049
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr ""
@@ -2167,7 +2133,7 @@ msgstr ""
 #: ../hyp/cgi.c:402
 #: ../hyp/cgi.c:551
 #: ../hyp/hypfind.c:529
-#: ../hyp/outhtml.c:3032
+#: ../hyp/outhtml.c:3045
 #: ../hyp/outstg.c:1127
 #: ../hyp/outxml.c:1016
 #, c-format
@@ -2212,58 +2178,125 @@ msgstr ""
 msgid  "node index %u invalid\n"
 msgstr ""
 
-#: ../hyp/cgi.c:577
-#: ../hyp/cgi.c:1172
+#: ../hyp/cgi.c:593
+#: ../hyp/ref.c:35
+#, c-format
+msgid  "Hypertext file: %s with %ld entries\n"
+msgstr ""
+
+#: ../hyp/cgi.c:594
+#: ../hyp/ref.c:36
+msgid  "<unnamed file>"
+msgstr ""
+
+#: ../hyp/cgi.c:606
+#: ../hyp/ref.c:48
+#, c-format
+msgid  " Module         %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:615
+#: ../hyp/ref.c:56
+#, c-format
+msgid  " Node           %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:624
+#: ../hyp/ref.c:64
+#, c-format
+msgid  " Alias          %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:633
+#: ../hyp/ref.c:72
+#, c-format
+msgid  " Label %5u    %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:642
+#: ../hyp/ref.c:78
+#, c-format
+msgid  " Database       %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:650
+#: ../hyp/ref.c:82
+#, c-format
+msgid  " OS             %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:658
+#: ../hyp/ref.c:86
+#, c-format
+msgid  " Charset        %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:666
+#: ../hyp/ref.c:90
+#, c-format
+msgid  " Language       %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:674
+#: ../hyp/ref.c:96
+#, c-format
+msgid  " Title          %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:682
+#: ../hyp/ref.c:105
+#, c-format
+msgid  " Unknown REF type %u: %s\n"
+msgstr ""
+
+#: ../hyp/cgi.c:706
+#: ../hyp/cgi.c:1294
 #: ../hyp/cgirsc.c:75
 #: ../hyp/cgirsc.c:85
 #: ../hyp/cgirsc.c:595
 msgid  "404 Not Found"
 msgstr ""
 
-#: ../hyp/cgi.c:591
+#: ../hyp/cgi.c:720
 #, c-format
 msgid  "Listing of %s"
 msgstr ""
 
-#: ../hyp/cgi.c:602
-msgid  "Listing of ref files not yet supported"
-msgstr ""
-
-#: ../hyp/cgi.c:609
-#: ../hyp/cgi.c:610
+#: ../hyp/cgi.c:727
+#: ../hyp/cgi.c:728
 msgid  "not a HYP file"
 msgstr ""
 
-#: ../hyp/cgi.c:619
-#: ../hyp/cgi.c:620
+#: ../hyp/cgi.c:737
+#: ../hyp/cgi.c:738
 msgid  "protected hypertext"
 msgstr ""
 
-#: ../hyp/cgi.c:620
+#: ../hyp/cgi.c:738
 #, c-format
 msgid  "fatal: %s: %s\n"
 msgstr ""
 
-#: ../hyp/cgi.c:830
+#: ../hyp/cgi.c:948
 msgid  "Download error"
 msgstr ""
 
-#: ../hyp/cgi.c:1015
-#: ../hyp/cgi.c:1057
+#: ../hyp/cgi.c:1137
+#: ../hyp/cgi.c:1179
 msgid  "500 Internal Server Error"
 msgstr ""
 
-#: ../hyp/cgi.c:1016
+#: ../hyp/cgi.c:1138
 msgid  "empty search pattern\n"
 msgstr ""
 
-#: ../hyp/cgi.c:1040
-#: ../hyp/cgi.c:1118
+#: ../hyp/cgi.c:1162
+#: ../hyp/cgi.c:1240
 msgid  "403 Forbidden"
 msgstr ""
 
-#: ../hyp/cgi.c:1042
-#: ../hyp/cgi.c:1120
+#: ../hyp/cgi.c:1164
+#: ../hyp/cgi.c:1242
 #, c-format
 msgid  ""
 "Sorry, this type of\n"
@@ -2273,7 +2306,7 @@ msgid  ""
 "supported by this service. Please check that you entered the URL correctly.\n"
 msgstr ""
 
-#: ../hyp/cgi.c:1058
+#: ../hyp/cgi.c:1180
 msgid  "could not initialize curl\n"
 msgstr ""
 
@@ -2392,8 +2425,8 @@ msgid  "extra arguments ignored"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:710
-#: ../hyp/outhtml.c:2265
-#: ../hyp/outhtml.c:2268
+#: ../hyp/outhtml.c:2278
+#: ../hyp/outhtml.c:2281
 msgid  "Some characters could not be converted"
 msgstr ""
 
@@ -2659,8 +2692,8 @@ msgstr ""
 #: ../hyp/hcp_comp.c:3858
 #: ../hyp/hcp_comp.c:3916
 #: ../hyp/hcp_opts.c:648
-#: ../hyp/hypinfo.c:852
-#: ../hyp/hypinfo.c:885
+#: ../hyp/hypinfo.c:1067
+#: ../hyp/hypinfo.c:1100
 #, c-format
 msgid  "unrecognized character set %s"
 msgstr ""
@@ -3300,8 +3333,8 @@ msgstr ""
 #: ../hyp/hcpmain.c:158
 #: ../hyp/hcpmain.c:280
 #: ../hyp/hypfind.c:566
-#: ../hyp/hypinfo.c:143
-#: ../hyp/hypinfo.c:675
+#: ../hyp/hypinfo.c:195
+#: ../hyp/hypinfo.c:896
 #, c-format
 msgid  "%s: %s: not a HYP file\n"
 msgstr ""
@@ -3396,41 +3429,41 @@ msgstr ""
 msgid  "----------------------------------------------------\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:656
+#: ../hyp/hcpmain.c:660
 msgid  "only one of -lrv may be specified"
 msgstr ""
 
-#: ../hyp/hcpmain.c:680
+#: ../hyp/hcpmain.c:684
 #, c-format
 msgid  "File: %s\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:711
+#: ../hyp/hcpmain.c:715
 #, c-format
 msgid  "@remark File: %s\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:740
-#: ../hyp/hcpmain.c:771
+#: ../hyp/hcpmain.c:744
+#: ../hyp/hcpmain.c:775
 #, c-format
 msgid  "<!-- File: %s -->\n"
 msgstr ""
 
-#: ../hyp/hcpmain.c:803
+#: ../hyp/hcpmain.c:807
 msgid  "this version was compiled without PDF support"
 msgstr ""
 
-#: ../hyp/hcpmain.c:823
+#: ../hyp/hcpmain.c:827
 msgid  "cannot compile multiple input files to single output"
 msgstr ""
 
-#: ../hyp/hcpmain.c:853
-#: ../hyp/hypinfo.c:1017
+#: ../hyp/hcpmain.c:857
+#: ../hyp/hypinfo.c:1232
 msgid  "<press any key>"
 msgstr ""
 
-#: ../hyp/hcpmain.c:857
-#: ../hyp/hypinfo.c:1021
+#: ../hyp/hcpmain.c:861
+#: ../hyp/hypinfo.c:1236
 msgid  "<press RETURN>"
 msgstr ""
 
@@ -3440,7 +3473,7 @@ msgid  "Version %s for %s, %s"
 msgstr ""
 
 #: ../hyp/hyp.c:159
-#: ../hyp/hyp_cset.c:389
+#: ../hyp/hyp_cset.c:393
 #: ../hyp/stool.c:54
 msgid  "Unknown"
 msgstr ""
@@ -3476,7 +3509,7 @@ msgstr ""
 msgid  "%s: could not create directory %s: %s\n"
 msgstr ""
 
-#: ../hyp/hyp_cset.c:393
+#: ../hyp/hyp_cset.c:397
 #, c-format
 msgid  "Charset 0x%02x"
 msgstr ""
@@ -3629,29 +3662,37 @@ msgstr ""
 msgid  "  --fix-charset <set>     fix @charset header field\n"
 msgstr ""
 
-#: ../hyp/hypinfo.c:294
+#: ../hyp/hypinfo.c:346
 #, c-format
 msgid  "%s: EOF entry at %u\n"
 msgstr ""
 
-#: ../hyp/hypinfo.c:300
+#: ../hyp/hypinfo.c:352
 #, c-format
 msgid  "%s: unknown index entry type %u\n"
 msgstr ""
 
-#: ../hyp/hypinfo.c:377
+#: ../hyp/hypinfo.c:429
 #, c-format
 msgid  "%shyptree: datalen is %u, should be %u\n"
 msgstr ""
 
-#: ../hyp/hypinfo.c:383
+#: ../hyp/hypinfo.c:435
 #, c-format
 msgid  "%shyptree: title len is %ld, should be %ld\n"
 msgstr ""
 
-#: ../hyp/hypinfo.c:389
+#: ../hyp/hypinfo.c:441
 #, c-format
 msgid  "%shyptree: %u errors in title bits\n"
+msgstr ""
+
+#: ../hyp/hypinfo.c:522
+msgid  "no modules"
+msgstr ""
+
+#: ../hyp/hypinfo.c:528
+msgid  "more than 1 module"
 msgstr ""
 
 #: ../hyp/outasc.c:193
@@ -3663,7 +3704,7 @@ msgstr ""
 #: ../hyp/outasc.c:414
 #: ../hyp/outcomm.c:401
 #: ../hyp/outdump.c:302
-#: ../hyp/outhtml.c:2868
+#: ../hyp/outhtml.c:2881
 #: ../hyp/outstg.c:1030
 #, c-format
 msgid  "%s: Node %u: failed to decode\n"
@@ -3671,7 +3712,7 @@ msgstr ""
 
 #: ../hyp/outasc.c:514
 #: ../hyp/outdump.c:539
-#: ../hyp/pdf.c:1407
+#: ../hyp/pdf.c:1408
 #, c-format
 msgid  "'%s' not found.\n"
 msgstr ""
@@ -4033,87 +4074,87 @@ msgstr ""
 msgid  "<non-image node #%u>"
 msgstr ""
 
-#: ../hyp/outhtml.c:1098
-#: ../hyp/outhtml.c:1423
-#: ../hyp/outhtml.c:2394
+#: ../hyp/outhtml.c:1099
+#: ../hyp/outhtml.c:1424
+#: ../hyp/outhtml.c:2407
 #, c-format
 msgid  "writing %s\n"
 msgstr ""
 
-#: ../hyp/outhtml.c:1486
+#: ../hyp/outhtml.c:1487
 msgid  "Previous page"
 msgstr ""
 
-#: ../hyp/outhtml.c:1508
+#: ../hyp/outhtml.c:1509
 msgid  "Up"
 msgstr ""
 
-#: ../hyp/outhtml.c:1530
+#: ../hyp/outhtml.c:1531
 msgid  "Next page"
 msgstr ""
 
-#: ../hyp/outhtml.c:1552
+#: ../hyp/outhtml.c:1553
 msgid  "Index page"
 msgstr ""
 
-#: ../hyp/outhtml.c:1566
+#: ../hyp/outhtml.c:1567
 msgid  "Cross references"
 msgstr ""
 
-#: ../hyp/outhtml.c:1595
+#: ../hyp/outhtml.c:1596
 msgid  "Help page"
 msgstr ""
 
-#: ../hyp/outhtml.c:1625
+#: ../hyp/outhtml.c:1626
 msgid  "View a new file"
 msgstr ""
 
-#: ../hyp/outhtml.c:1640
+#: ../hyp/outhtml.c:1641
 msgid  "Search"
 msgstr ""
 
-#: ../hyp/outhtml.c:1831
+#: ../hyp/outhtml.c:1832
 msgid  "Execute REXX command"
 msgstr ""
 
-#: ../hyp/outhtml.c:1836
+#: ../hyp/outhtml.c:1837
 msgid  "Execute REXX script"
 msgstr ""
 
-#: ../hyp/outhtml.c:1841
+#: ../hyp/outhtml.c:1842
 msgid  "Execute command"
 msgstr ""
 
-#: ../hyp/outhtml.c:1858
+#: ../hyp/outhtml.c:1859
 msgid  "link to unknown node type"
 msgstr ""
 
-#: ../hyp/outhtml.c:2026
+#: ../hyp/outhtml.c:2027
 #, c-format
 msgid  "<!-- Node #%u -->\n"
 msgstr ""
 
-#: ../hyp/outhtml.c:2158
+#: ../hyp/outhtml.c:2159
 #, c-format
 msgid  "Topic       : %s\n"
 msgstr ""
 
-#: ../hyp/outhtml.c:2161
+#: ../hyp/outhtml.c:2162
 #, c-format
 msgid  "Author      : %s\n"
 msgstr ""
 
-#: ../hyp/outhtml.c:2164
+#: ../hyp/outhtml.c:2165
 #, c-format
 msgid  "Version     : %s\n"
 msgstr ""
 
-#: ../hyp/outhtml.c:2167
+#: ../hyp/outhtml.c:2168
 #, c-format
 msgid  "Subject     : %s\n"
 msgstr ""
 
-#: ../hyp/outhtml.c:2169
+#: ../hyp/outhtml.c:2170
 #, c-format
 msgid  ""
 "Nodes       : %u\n"
@@ -4128,23 +4169,27 @@ msgid  ""
 "@width      : %u"
 msgstr ""
 
-#: ../hyp/outhtml.c:2196
+#: ../hyp/outhtml.c:2197
 #, c-format
 msgid  ""
 "\n"
 "@hostname   : %s"
 msgstr ""
 
-#: ../hyp/outhtml.c:2234
-#: ../hyp/outhtml.c:2957
-msgid  "writing html output in atari encoding might not work with non-atari browsers"
-msgstr ""
-
-#: ../hyp/outhtml.c:2246
-msgid  "Your browser does not support JavaScript"
+#: ../hyp/outhtml.c:2207
+msgid  "View Ref-File"
 msgstr ""
 
 #: ../hyp/outhtml.c:2247
+#: ../hyp/outhtml.c:2970
+msgid  "writing html output in atari encoding might not work with non-atari browsers"
+msgstr ""
+
+#: ../hyp/outhtml.c:2259
+msgid  "Your browser does not support JavaScript"
+msgstr ""
+
+#: ../hyp/outhtml.c:2260
 msgid  "Graphics commands on this page cannot be displayed"
 msgstr ""
 
@@ -4163,7 +4208,7 @@ msgstr ""
 msgid  "<!-- %s: Node %u: failed to decode -->\n"
 msgstr ""
 
-#: ../hyp/pdf.c:1120
+#: ../hyp/pdf.c:1121
 #, c-format
 msgid  "%s: Node %u: failed to decode"
 msgstr ""
@@ -4312,164 +4357,105 @@ msgstr ""
 msgid  " (corrupted)"
 msgstr ""
 
-#: ../hyp/ref.c:35
-#, c-format
-msgid  "Hypertext file: %s with %ld entries\n"
-msgstr ""
-
-#: ../hyp/ref.c:36
-msgid  "<unnamed file>"
-msgstr ""
-
-#: ../hyp/ref.c:48
-#, c-format
-msgid  " Module         %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:56
-#, c-format
-msgid  " Node           %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:64
-#, c-format
-msgid  " Alias          %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:72
-#, c-format
-msgid  " Label %5u    %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:78
-#, c-format
-msgid  " Database       %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:82
-#, c-format
-msgid  " OS             %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:86
-#, c-format
-msgid  " Charset        %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:90
-#, c-format
-msgid  " Language       %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:96
-#, c-format
-msgid  " Title          %s\n"
-msgstr ""
-
-#: ../hyp/ref.c:105
-#, c-format
-msgid  " Unknown REF type %u: %s\n"
-msgstr ""
-
 #: ../hyp/ref.c:109
 #, c-format
 msgid  " Unknown REF type %u\n"
 msgstr ""
 
-#: ../hyp/ref.c:188
+#: ../hyp/ref.c:202
 #, c-format
 msgid  "module len %ld exceeds file size\n"
 msgstr ""
 
-#: ../hyp/ref.c:220
+#: ../hyp/ref.c:232
 #, c-format
 msgid  "premature end of REF module %s in %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:235
+#: ../hyp/ref.c:247
 #, c-format
 msgid  "more than 1 filename in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:266
+#: ../hyp/ref.c:278
 #, c-format
 msgid  "more than 1 database in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:274
+#: ../hyp/ref.c:286
 #, c-format
 msgid  "more than 1 language in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:286
+#: ../hyp/ref.c:299
 #, c-format
 msgid  "OS specified more than once in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:294
+#: ../hyp/ref.c:307
 #, c-format
 msgid  "unknown OS specified in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:319
+#: ../hyp/ref.c:332
 #, c-format
 msgid  "unknown os type '%c' in module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:324
+#: ../hyp/ref.c:337
 #, c-format
 msgid  "unknown os type '%s' in module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:332
+#: ../hyp/ref.c:345
 #, c-format
 msgid  "character set specified more than once in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:340
+#: ../hyp/ref.c:353
 #, c-format
 msgid  "unknown character set %s in module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:352
+#: ../hyp/ref.c:365
 #, c-format
 msgid  "read beyond end of REF module %s in %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:358
+#: ../hyp/ref.c:371
 #, c-format
 msgid  "REF module %s in %s too short\n"
 msgstr ""
 
-#: ../hyp/ref.c:363
+#: ../hyp/ref.c:376
 #, c-format
 msgid  "only %ld entries out of %ld read for module %s in %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:369
+#: ../hyp/ref.c:382
 #, c-format
 msgid  "no filename found in %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:374
+#: ../hyp/ref.c:387
 #, c-format
 msgid  "No OS specified in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:384
+#: ../hyp/ref.c:394
 #, c-format
 msgid  "No character set specified in REF module %s of %s\n"
 msgstr ""
 
-#: ../hyp/ref.c:502
+#: ../hyp/ref.c:509
 msgid  "ERROR: Illegal REF file. Magic value not found.\n"
 msgstr ""
 
-#: ../hyp/ref.c:519
+#: ../hyp/ref.c:526
 msgid  "Illegal REF file. file too short.\n"
 msgstr ""
 
-#: ../hyp/ref.c:530
+#: ../hyp/ref.c:537
 #, c-format
 msgid  "read error, got %ld of %ld bytes\n"
 msgstr ""
@@ -4610,7 +4596,7 @@ msgstr ""
 
 #: ../hyp/refcheck.c:465
 #: ../hyp/refcheck.c:517
-#: ../hyp/refcmds.c:201
+#: ../hyp/refcmds.c:221
 #, c-format
 msgid  "Deleting %s\n"
 msgstr ""
@@ -4625,33 +4611,33 @@ msgid  "No changes\n"
 msgstr ""
 
 #: ../hyp/refcheck.c:555
-#: ../hyp/refcmds.c:229
+#: ../hyp/refcmds.c:249
 #, c-format
 msgid  "No files left\n"
 msgstr ""
 
-#: ../hyp/refcheck.c:873
-#: ../hyp/refcheck.c:877
+#: ../hyp/refcheck.c:876
+#: ../hyp/refcheck.c:880
 msgid  "only one of -amdeFl may be specified"
 msgstr ""
 
-#: ../hyp/refcheck.c:951
-#: ../hyp/refcheck.c:988
+#: ../hyp/refcheck.c:954
+#: ../hyp/refcheck.c:991
 #: ../hyp/reflink.c:246
 msgid  "too many arguments"
 msgstr ""
 
-#: ../hyp/refcheck.c:966
+#: ../hyp/refcheck.c:969
 #: ../hyp/reflink.c:226
 msgid  "Adding/replacing files\n"
 msgstr ""
 
-#: ../hyp/refcheck.c:984
+#: ../hyp/refcheck.c:987
 #: ../hyp/reflink.c:242
 msgid  "no files to add"
 msgstr ""
 
-#: ../hyp/refcheck.c:1007
+#: ../hyp/refcheck.c:1010
 #: ../hyp/reflink.c:267
 msgid  "no files to delete"
 msgstr ""
@@ -4661,23 +4647,23 @@ msgstr ""
 msgid  "Contents of %s:\n"
 msgstr ""
 
-#: ../hyp/refcmds.c:210
-#: ../hyp/refcmds.c:363
+#: ../hyp/refcmds.c:230
+#: ../hyp/refcmds.c:383
 #, c-format
 msgid  "Not found: %s\n"
 msgstr ""
 
-#: ../hyp/refcmds.c:317
+#: ../hyp/refcmds.c:337
 #, c-format
 msgid  "Extracting %s\n"
 msgstr ""
 
-#: ../hyp/refcmds.c:462
+#: ../hyp/refcmds.c:482
 #, c-format
 msgid  "adding %s\n"
 msgstr ""
 
-#: ../hyp/refcmds.c:519
+#: ../hyp/refcmds.c:539
 #, c-format
 msgid  "adding references for %s\n"
 msgstr ""
@@ -4743,7 +4729,6 @@ msgid  "Version"
 msgstr ""
 
 #: ../hyp/stool.c:57
-#: ../macos/hv_main.m:1420
 msgid  "File"
 msgstr ""
 
@@ -4980,149 +4965,13 @@ msgid  ""
 "*.*|All files (*.*)\n"
 msgstr ""
 
-#: ../macos/hv_main.m:1426
-msgid  "Edit"
-msgstr ""
-
-#: ../macos/hv_main.m:1432
-msgid  "Navigate"
-msgstr ""
-
-#: ../macos/hv_main.m:1438
-msgid  "Window"
-msgstr ""
-
-#: ../macos/hv_main.m:1468
-msgid  "About <X>"
-msgstr ""
-
-#: ../macos/hv_main.m:1476
-msgid  "Preferences..."
-msgstr ""
-
-#: ../macos/hv_main.m:1482
-msgid  "Services"
-msgstr ""
-
-#: ../macos/hv_main.m:1490
-msgid  "Hide <X>"
-msgstr ""
-
-#: ../macos/hv_main.m:1496
-msgid  "Hide Others"
-msgstr ""
-
-#: ../macos/hv_main.m:1500
-msgid  "Show All"
-msgstr ""
-
-#: ../macos/hv_main.m:1505
-msgid  "Quit <X>"
-msgstr ""
-
-#: ../macos/hv_main.m:1519
-msgid  "Open..."
-msgstr ""
-
-#: ../macos/hv_main.m:1523
-msgid  "Open Recent"
-msgstr ""
-
-#: ../macos/hv_main.m:1532
-msgid  "Clear Menu"
-msgstr ""
-
-#: ../macos/hv_main.m:1540
-msgid  "Save As..."
-msgstr ""
-
-#: ../macos/hv_main.m:1544
-msgid  "Recompile..."
-msgstr ""
-
-#: ../macos/hv_main.m:1559
-msgid  "Run Remarker"
-msgstr ""
-
-#: ../macos/hv_main.m:1566
-msgid  "File info..."
-msgstr ""
-
-#: ../macos/hv_main.m:1572
-msgid  "Page Setup..."
-msgstr ""
-
-#: ../macos/hv_main.m:1574
-msgid  "Print..."
-msgstr ""
-
-#: ../macos/hv_main.m:1583
-msgid  "Copy"
-msgstr ""
-
-#: ../macos/hv_main.m:1586
-msgid  "Paste"
-msgstr ""
-
-#: ../macos/hv_main.m:1589
-msgid  "Select All"
-msgstr ""
-
-#: ../macos/hv_main.m:1594
-msgid  "Find..."
-msgstr ""
-
-#: ../macos/hv_main.m:1598
-msgid  "Find Next"
-msgstr ""
-
-#: ../macos/hv_main.m:1602
-msgid  "Find Previous"
-msgstr ""
-
-#: ../macos/hv_main.m:1686
-msgid  "Minimize"
-msgstr ""
-
-#: ../macos/hv_main.m:1687
-msgid  "Zoom"
-msgstr ""
-
-#: ../macos/hv_main.m:1689
-msgid  "Bring All to Front"
-msgstr ""
-
-#: ../macos/hv_main.m:1696
-msgid  "Font..."
-msgstr ""
-
-#: ../macos/hv_main.m:1700
-msgid  "Colors..."
-msgstr ""
-
-#: ../macos/hv_main.m:1706
-msgid  "Output..."
-msgstr ""
-
-#: ../macos/hv_main.m:1715
-msgid  "Expand multiple spaces"
-msgstr ""
-
-#: ../macos/hv_main.m:1721
-msgid  "Settings..."
-msgstr ""
-
-#: ../macos/hv_main.m:1733
-msgid  "<X> Help"
-msgstr ""
-
-#: ../macos/hv_main.m:1739
-msgid  "Help Index..."
-msgstr ""
-
-#: ../macos/hv_prefs.m:74
+#: ../macos/hv_prefs.m:91
 #: ../win32/hv_prefs.c:94
 msgid  "Pick a color"
+msgstr ""
+
+#: ../macos/hv_prefs.m:477
+msgid  "Paths"
 msgstr ""
 
 #: ../macos/hv_rsc.m:27

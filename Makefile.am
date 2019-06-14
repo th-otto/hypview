@@ -26,7 +26,7 @@ EXTRA_DIST = \
 DISTCLEANFILES = intltool-merge intltool-extract intltool-update
 
 
-HYP_VERSION := $(shell sed -n 's/\#define PACKAGE_VERSION "\(.*\)"/\1/p' include/config.h)
+HYP_VERSION := $(shell sed -n 's/\#define PACKAGE_VERSION "\(.*\)"/\1/p' include/config.h | tr -d '.')
 DISTDIR = hcp-$(HYP_VERSION)
 
 bindist:
@@ -59,9 +59,11 @@ if OS_TOS
 	for f in pc_conv 1st_conv help_rc; do \
 		mv $(DISTDIR)/bin/$$f $(DISTDIR)/bin/$$f.ttp; \
 	done
+	cp -a tos/hypview.app tos/utils/call-acc/call-acc.gtp $(DISTDIR)/bin
+	$(STRIP) $(DISTDIR)/bin/*
 	for f in BUGS README NEWS; do \
-		mv $(DISTDIR)/$f $(DISTDIR)/$f.txt; \
-		cr2nl -d $(DISTDIR)/$f.txt; \
+		mv $(DISTDIR)/$$f $(DISTDIR)/$$f.txt; \
+		cr2nl -d $(DISTDIR)/$$f.txt; \
 	done
 	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
 endif

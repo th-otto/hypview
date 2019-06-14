@@ -1,4 +1,4 @@
-# Auto-generated: Di 11. Jun 20:35:54 CEST 2019
+# Auto-generated: Fr 14. Jun 05:51:05 CEST 2019
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -62,6 +62,7 @@ hyp/stool.c
 hyp/win32.c
 hyp/xgetopt.c
 macos/hcp_opts.m
+macos/hv_about.m
 macos/hv_block.m
 macos/hv_eref.m
 macos/hv_error.m
