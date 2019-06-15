@@ -1027,7 +1027,10 @@ static gboolean stg_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hy
 		hyp_node_free(nodeptr);
 	} else
 	{
-		hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node);
+		/*
+		 * error message was already issued in sym_check_links
+		 */
+		/* hyp_utf8_fprintf(opts->errorfile, _("%s: Node %u: failed to decode\n"), hyp->file, node); */
 	}
 
 	return retval;

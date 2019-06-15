@@ -482,14 +482,19 @@ static gboolean recompile_html_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *
 	}
 	
 	node = output_node;
-	entry = hyp->indextable[output_node];
+	entry = hyp->indextable[node];
 	switch ((hyp_indextype) entry->type)
 	{
 	case HYP_NODE_INTERNAL:
-		ret &= html_out_node(hyp, opts, out, node, syms, FALSE, &converror);
-		break;
 	case HYP_NODE_POPUP:
 		ret &= html_out_node(hyp, opts, out, node, syms, FALSE, &converror);
+		fprintf(stderr, "ret=%d\n", ret);
+		if (out->len == 0)
+		{
+			html_out_header(NULL, opts, out, _("Error"), HYP_NOINDEX, NULL, NULL, NULL, TRUE, &converror);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, _("%s: Node %u: failed to decode\n"), hyp_basename(hyp->file), node);
+			html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, &converror);
+		}
 		break;
 	case HYP_NODE_IMAGE:
 		{

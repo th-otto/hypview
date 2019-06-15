@@ -1810,6 +1810,9 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 				if (html_out_node(hyp, opts, tmp, xref->dest_page, syms, TRUE, converror))
 				{
 					g_string_append_len(out, tmp->str, tmp->len);
+				} else
+				{
+					hyp_utf8_sprintf_charset(out, opts->output_charset, converror, _("failed to decode node"));
 				}
 				g_string_free(tmp, TRUE);
 				g_string_append(out, "</span></span>");
