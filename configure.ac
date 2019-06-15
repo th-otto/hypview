@@ -43,9 +43,12 @@ for flag in $2; do
 case " [$]$1 " in
 "* $flag *") ;;
 *) AC_MSG_CHECKING([whether the compiler understands] $flag)
-   saved_$1="[$]$1"
-   $1="[$]$1 $flag -Werror"
-   AC_TRY_COMPILE(, , $1="$saved_$1 $flag"; result=yes, $1="$saved_$1"; result=no)
+   if echo "char strcmp();" | $CC -Wall $flag -x c -c -o - - 2>&1 | grep -q "unrecognized command line option"; then
+     result=no
+   else
+     result=yes
+     $1="[$]$1 $flag"
+   fi
    AC_MSG_RESULT([$result])
    ;;
 esac

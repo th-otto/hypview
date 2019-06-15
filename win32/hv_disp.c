@@ -56,7 +56,10 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		ty = y;
 		if (gfx->islimage)
 		{
-			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
+			/* y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster; */
+			y += gfx->pixheight;
+			/* st-guide leaves an empty line after each @limage */
+			y += win->y_raster;
 		}
 		if (tx >= win->scroll.g_w || (tx + gfx->pixwidth) <= 0)
 			return y;
@@ -135,10 +138,34 @@ static void image_draw_line(HDC hdc, int x, int y, struct hyp_gfx *gfx)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
+static int adjust_for_limage(WINDOW_DATA *win, long lineno, int h)
+{
+	struct hyp_gfx *gfx;
+	int diff = 0;
+	long end = lineno + h / win->y_raster;
+	
+	for (gfx = win->displayed_node->gfx; gfx != NULL; gfx = gfx->next)
+	{
+		if (gfx->type == HYP_ESC_PIC && gfx->islimage && gfx->y_offset >= lineno && gfx->y_offset < end)
+		{
+			int adj = ((gfx->pixheight + HYP_PIC_FONTH - 1) / HYP_PIC_FONTH);
+			if (adj > 0)
+			{
+				diff += adj * (HYP_PIC_FONTH - win->y_raster);
+			}
+		}
+	}
+	return diff;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static long DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	int w, h;
 	HDC hdc = win->draw_hdc;
+	long ret = y;
+	int diff;
 	
 	w = gfx->width * win->x_raster;
 	h = gfx->height * win->y_raster;
@@ -157,7 +184,13 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	} else if (h < 0)
 	{
 		h = -h;
+		diff = adjust_for_limage(win, gfx->y_offset - h / win->y_raster, h);
+		h += diff;
 		y -= h;
+	} else
+	{
+		diff = adjust_for_limage(win, gfx->y_offset, h);
+		h += diff;
 	}
 	gfx->pixwidth = w;
 	gfx->pixheight = h;
@@ -166,21 +199,24 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	y = y + win->scroll.g_y;
 	
 	image_draw_line(hdc, x, y, gfx);
+	return ret;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
+static long DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	GRECT gr;
 	_WORD w, h;
 	WP_UNIT tx, ty;
 	int fillstyle;
 	HDC hdc = win->draw_hdc;
+	long ret = y;
 	
 	tx = (gfx->x_offset - 1) * win->x_raster;
 	w = gfx->width * win->x_raster;
 	h = gfx->height * win->y_raster;
+	h += adjust_for_limage(win, gfx->y_offset, h);
 
 	gfx->pixwidth = w;
 	gfx->pixheight = h;
@@ -189,9 +225,9 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	ty = y;
 	
 	if (tx >= win->scroll.g_w || (tx + w) <= 0)
-		return;
+		return ret;
 	if (ty >= win->scroll.g_h || (ty + h) <= 0)
-		return;
+		return ret;
 
 	/* rectangle */
 	gr.g_x = (_WORD) (tx + win->scroll.g_x);
@@ -217,6 +253,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		W_rounded_box(hdc, &gr, fillstyle, viewer_colors.text);
 	}
+	return ret;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -233,11 +270,11 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 				sy = DrawPicture(win, gfx, sx, sy);
 				break;
 			case HYP_ESC_LINE:
-				DrawLine(win, gfx, sx, sy);
+				sy = DrawLine(win, gfx, sx, sy);
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-				DrawBox(win, gfx, sx, sy);
+				sy = DrawBox(win, gfx, sx, sy);
 				break;
 			}
 		}

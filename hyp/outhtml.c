@@ -753,6 +753,10 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 			
 			if (gfx->islimage)
 			{
+				/*
+				 * the '\n' at the end here shouldn't be there,
+				 * but st-guide leaves an empty line after each @limage
+				 */
 				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<div class=\"%s\"%s style=\"%swidth:%dch; left:%dch\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>\n",
 					html_limage_style,
 					align,

@@ -45,6 +45,8 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		if (gfx->islimage)
 		{
 			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
+			/* st-guide leaves an empty line after each @limage */
+			y += win->y_raster;
 		}
 		if (tx >= win->scroll.g_w || (tx + gfx->pixwidth) <= 0)
 			return y;
@@ -100,11 +102,12 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
+static long DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	_WORD xy[10], w, h;
 	WP_UNIT tx, ty;
-
+	long ret = y;
+	
 	tx = (gfx->x_offset - 1) * win->x_raster;
 	w = gfx->width * win->x_raster;
 	h = gfx->height * win->y_raster;
@@ -113,9 +116,9 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	ty = y;
 	
 	if ((tx >= win->scroll.g_w && (tx + w) >= win->scroll.g_w) || (tx < 0 && (tx + w) < 0))
-		return;
+		return ret;
 	if (ty >= win->scroll.g_h || (ty + h) < 0)
-		return;
+		return ret;
 
 	/* rectangle */
 	xy[0] = (_WORD) (tx + win->scroll.g_x);
@@ -183,15 +186,17 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	v_get_pixel(vdi_handle, 999, 998, &dummy, &dummy);
 	}
 #endif
+	return ret;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
+static long DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 {
 	_WORD xy[4], w, h;
 	WP_UNIT tx, ty;
-
+	long ret = y;
+	
 	tx = (gfx->x_offset - 1) * win->x_raster;
 	w = gfx->width * win->x_raster;
 	h = gfx->height * win->y_raster;
@@ -200,9 +205,9 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	ty = y;
 	
 	if (tx >= win->scroll.g_w || (tx + w) <= 0)
-		return;
+		return ret;
 	if (ty >= win->scroll.g_h || (ty + h) <= 0)
-		return;
+		return ret;
 
 	/* rectangle */
 	xy[0] = (_WORD) (tx + win->scroll.g_x);
@@ -245,6 +250,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	vsf_interior(vdi_handle, FIS_SOLID);
 	vsf_style(vdi_handle, 0);
 	vsf_perimeter(vdi_handle, FALSE);
+	return ret;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -273,11 +279,11 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 				sy = DrawPicture(win, gfx, sx, sy);
 				break;
 			case HYP_ESC_LINE:
-				DrawLine(win, gfx, sx, sy);
+				sy = DrawLine(win, gfx, sx, sy);
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-				DrawBox(win, gfx, sx, sy);
+				sy = DrawBox(win, gfx, sx, sy);
 				break;
 			}
 		}

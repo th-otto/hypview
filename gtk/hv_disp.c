@@ -155,8 +155,11 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 			start = info->iter;
 			gtk_text_buffer_move_mark(info->text_buffer, info->picstart, &info->iter);
 			gtk_text_buffer_insert_pixbuf(info->text_buffer, &info->iter, pixbuf);
-			gtk_text_buffer_insert(info->text_buffer, &info->iter, "\n", 1);
-			y += gfx->pixheight;
+			/*
+			 * two newlines, because the St-guide leaves an empty line after each @limage
+			 */
+			gtk_text_buffer_insert(info->text_buffer, &info->iter, "\n\n", 2);
+			y += gfx->pixheight + win->y_raster;
 			if (gfx->x_offset == 0)
 			{
 				gtk_text_buffer_move_mark(info->text_buffer, info->picend, &info->iter);
@@ -189,11 +192,15 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 			}
 		} else
 		{
+			HYP_NODE *node = win->displayed_node;
+			
 			gfx->window_margin = 0;
 			gfx->window_x = tx;
 			gfx->window_y = y;
 			gfx->surf = convert_pixbuf_to_cairo(pixbuf);
 			add_child_window(win, gfx);
+			if (gfx->window_y + 2 * gfx->window_margin > node->height)
+				node->height = gfx->window_y + 2 * gfx->window_margin;
 		}
 	}
 	return y;
@@ -444,13 +451,36 @@ static void image_draw_line(cairo_t *cr, struct hyp_gfx *gfx)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info)
+static int adjust_for_limage(WINDOW_DATA *win, long lineno, int h)
+{
+	struct hyp_gfx *gfx;
+	int diff = 0;
+	long end = lineno + h / win->y_raster;
+	
+	for (gfx = win->displayed_node->gfx; gfx != NULL; gfx = gfx->next)
+	{
+		if (gfx->type == HYP_ESC_PIC && gfx->islimage && gfx->y_offset >= lineno && gfx->y_offset < end)
+		{
+			int adj = ((gfx->pixheight + HYP_PIC_FONTH - 1) / HYP_PIC_FONTH);
+			if (adj > 0)
+			{
+				diff += adj * (HYP_PIC_FONTH - win->y_raster);
+			}
+		}
+	}
+	return diff;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static long DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info)
 {
 	int w = gfx->width * win->x_raster;
 	int h = gfx->height * win->y_raster;
 	cairo_t *cr;
+	long ret = y;
+	int diff;
 	
-	UNUSED(info);
 	if (w == 0)
 	{
 		w = gfx->pixwidth = 1;
@@ -465,7 +495,13 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, stru
 	} else if (h < 0)
 	{
 		h = -h;
+		diff = adjust_for_limage(win, info->lineno - h / win->y_raster, h);
+		h += diff;
 		y -= h;
+	} else
+	{
+		diff = adjust_for_limage(win, info->lineno, h);
+		h += diff;
 	}
 	gfx->pixwidth = w;
 	gfx->pixheight = h;
@@ -480,6 +516,7 @@ static void DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, stru
 	image_draw_line(cr, gfx);
 	cairo_destroy(cr);
 	add_child_window(win, gfx);
+	return ret;
 }
 
 /******************************************************************************/
@@ -676,14 +713,14 @@ static cairo_surface_t *create_pattern(int w, int h, const unsigned char *patter
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info)
+static long DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info)
 {
 	int w = gfx->width * win->x_raster;
 	int h = gfx->height * win->y_raster;
 	cairo_t *cr;
-	
-	UNUSED(info);
+	long ret = y;
 
+	h += adjust_for_limage(win, info->lineno, h);
 	gfx->pixwidth = w;
 	gfx->pixheight = h;
 	gfx->window_margin = 0;
@@ -733,6 +770,7 @@ static void DrawBox(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struc
 	
 	cairo_destroy(cr);
 	add_child_window(win, gfx);
+	return ret;
 }
 
 /******************************************************************************/
@@ -751,11 +789,14 @@ static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy, struct prep_info *info)
+static long draw_graphics(WINDOW_DATA *win, WP_UNIT sx, WP_UNIT sy, struct prep_info *info)
 {
-	while (gfx != NULL)
+	struct hyp_gfx *gfx;
+	HYP_NODE *node = win->displayed_node;
+	
+	for (gfx = node->gfx; gfx != NULL; gfx = gfx->next)
 	{
-		if (gfx->y_offset == lineno)
+		if (gfx->y_offset == info->lineno)
 		{
 			switch (gfx->type)
 			{
@@ -763,15 +804,18 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 				sy = DrawPicture(win, gfx, sx, sy, info);
 				break;
 			case HYP_ESC_LINE:
-				DrawLine(win, gfx, sx, sy, info);
+				sy = DrawLine(win, gfx, sx, sy, info);
+				if (gfx->window_y + 2 * gfx->window_margin > node->height)
+					node->height = gfx->window_y + 2 * gfx->window_margin;
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-				DrawBox(win, gfx, sx, sy, info);
+				sy = DrawBox(win, gfx, sx, sy, info);
+				if (gfx->window_y + 2 * gfx->window_margin > node->height)
+					node->height = gfx->window_y + 2 * gfx->window_margin;
 				break;
 			}
 		}
-		gfx = gfx->next;
 	}
 	return sy;
 }
@@ -1150,8 +1194,9 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 
 	textstart = src;
 	at_bol = TRUE;
+	node->height = 0;
 
-	sy = draw_graphics(win, node->gfx, info.lineno, sx, sy, &info);
+	sy = draw_graphics(win, sx, sy, &info);
 	
 	while (src < end)
 	{
@@ -1344,7 +1389,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			gtk_text_buffer_insert(info.text_buffer, &info.iter, "\n", 1);
 			gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
 			sy += win->y_raster;
-			sy = draw_graphics(win, node->gfx, info.lineno, sx, sy, &info);
+			sy = draw_graphics(win, sx, sy, &info);
 		} else
 		{
 			src++;
@@ -1372,7 +1417,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			info.maxx = info.x;
 		++info.lineno;
 		sy += win->y_raster;
-		sy = draw_graphics(win, node->gfx, info.lineno, sx, sy, &info);
+		sy = draw_graphics(win, sx, sy, &info);
 	}
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
@@ -1410,7 +1455,8 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		}
 	}
 	
-	node->height = info.lineno * win->y_raster;
+	if (sy > node->height)
+		node->height = sy;
 	node->width = info.maxx * win->x_raster;
 	
 	g_free(win->title);
