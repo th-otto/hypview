@@ -1,3 +1,8 @@
+New in Version 1.0.3:
+=====================
+
+- several bug fixes
+
 New in Version 1.0.2:
 =====================
 
@@ -8,3 +13,7 @@ New in Version 1.0.2:
 - external links to RSC files, using the definitions
   from the @tree command, are now supported in all viewers
   (including linux & win32!)
+- hcp now supports PNG images
+- @{FG color} and @{BG color} are now supported
+
+- several bug fixes

@@ -190,10 +190,10 @@ _WORD shel_xwrite(_WORD sh_wdoex, _WORD sh_wisgr, _WORD sh_wiscr, const void *sh
 _BOOL appl_xsearch(_WORD stype, char *name, _WORD *type, _WORD *id)
 {
 	_BOOL has_appl_search;
-	_WORD dummy, info;
+	_WORD dummy, info = 0;
 	
 	has_appl_search = gl_ap_version >= 0x400 || __magix >= 0x200 ||
-		(appl_xgetinfo(4, &dummy, &dummy, &info, &dummy) && info);
+		(appl_xgetinfo(AES_PROCESS, &dummy, &dummy, &info, &dummy) && info);
 	if (has_appl_search)
 		return appl_search(stype, name, type, id) != 0;
 	*type = 0;
@@ -232,7 +232,7 @@ static _BOOL Protokoll_SendAv(AV_APP *app, _UWORD prot, _UWORD a1, _UWORD a2, _U
 
 _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self)
 {
-	_WORD info, dummy;
+	_WORD info = 0, dummy;
 	char name[9];
 	_WORD id, type;
 	

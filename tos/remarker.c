@@ -48,7 +48,7 @@ int DoAesInit(void)
 	vq_extnd(aes_handle, 1, ext_workout);
 
 	{
-		_WORD dummy, level;
+		_WORD dummy, level = 0;
 		
 		if (appl_xgetinfo(AES_SHELL, &level, &dummy, &dummy, &dummy) && (level & 0x00FF) >= 9)
 			shel_write(SHW_MSGREC, 1, 1, "", "");			/* we understand AP_TERM! */

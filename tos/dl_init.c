@@ -136,46 +136,40 @@ void singletos_fail_loop(void)
    Bit 3:           fslx_xx()-funktions are available (1)
    Bit 4:           pdlg_xx()-funktions are available (1)
  */
-int has_fonts_dialog(void)
+int has_window_dialogs(void)
 {
-	_WORD has, dummy;
-	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
-	return has & 4;
+	_WORD has = 0, dummy;
+	return appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy) && (has & 1);
 }
 
 int has_listbox_dialog(void)
 {
-	_WORD has, dummy;
-	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
-	return has & 3;
+	_WORD has = 0, dummy;
+	return appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy) && (has & 2);
 }
 
-int has_window_dialogs(void)
+int has_fonts_dialog(void)
 {
-	_WORD has, dummy;
-	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
-	return has & 1;
+	_WORD has = 0, dummy;
+	return appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy) && (has & 4);
 }
 
 int has_filesel_dialog(void)
 {
-	_WORD has, dummy;
-	appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy);
-	return has & 8;
+	_WORD has = 0, dummy;
+	return appl_xgetinfo(AES_WDIALOG, &has, &dummy, &dummy, &dummy) && (has & 8);
 }
 
 int has_form_popup(void)
 {
-	_WORD has, dummy;
-	appl_xgetinfo(AES_MENU, &dummy, &has, &dummy, &dummy);
-	return has;
+	_WORD has = 0, dummy;
+	return appl_xgetinfo(AES_MENU, &dummy, &has, &dummy, &dummy) && has;
 }
 
 int has_iconify(void)
 {
 	_WORD has, dummy;
-	appl_xgetinfo(AES_WINDOW, &has, &dummy, &dummy, &dummy);
-	return has & 0x80;
+	return appl_xgetinfo(AES_WINDOW, &has, &dummy, &dummy, &dummy) && (has & 0x80);
 }
 
 /******************************************************************************/
@@ -219,7 +213,7 @@ int DoAesInit(void)
 #endif
 	
 	{
-		_WORD dummy, level;
+		_WORD dummy, level = 0;
 		
 		if (appl_xgetinfo(AES_SHELL, &level, &dummy, &dummy, &dummy) && (level & 0x00FF) >= 9)
 			shel_write(SHW_MSGREC, 1, 1, "", "");			/* we understand AP_TERM! */
