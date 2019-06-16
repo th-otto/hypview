@@ -1403,7 +1403,7 @@ static gboolean follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean draw_images(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
+static gboolean draw_images(GtkWidget *text_view, GdkEventExpose *event, WINDOW_DATA *win)
 {
 	DOCUMENT *doc = win->data;
 
@@ -1415,7 +1415,7 @@ static gboolean draw_images(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean on_button_press(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
+static gboolean on_button_press(GtkWidget *text_view, GdkEventButton *event, WINDOW_DATA *win)
 {
 	UNUSED(text_view);
 	if (event->type == GDK_BUTTON_PRESS)
@@ -1425,7 +1425,7 @@ static gboolean on_button_press(GtkWidget *text_view, GdkEvent *event, WINDOW_DA
 			gtk_widget_destroy(GTK_WIDGET(win->popup));
 			return TRUE;
 		}
-		if (event->button.button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
+		if (event->button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
 		{
 			GoThisButton(win, TO_BACK);
 			return TRUE;
@@ -1436,7 +1436,7 @@ static gboolean on_button_press(GtkWidget *text_view, GdkEvent *event, WINDOW_DA
 
 /*** ---------------------------------------------------------------------- ***/
 
-static gboolean on_button_release(GtkWidget *text_view, GdkEvent *event, WINDOW_DATA *win)
+static gboolean on_button_release(GtkWidget *text_view, GdkEventButton *event, WINDOW_DATA *win)
 {
 	GtkTextIter start, end, iter;
 	GtkTextBuffer *buffer;
@@ -1450,7 +1450,7 @@ static gboolean on_button_release(GtkWidget *text_view, GdkEvent *event, WINDOW_
 			return TRUE;
 		}
 		
-		if (event->button.button == GDK_BUTTON_PRIMARY)
+		if (event->button == GDK_BUTTON_PRIMARY)
 		{
 			CheckFiledate(win);
 			
@@ -1461,7 +1461,7 @@ static gboolean on_button_release(GtkWidget *text_view, GdkEvent *event, WINDOW_
 			if (gtk_text_iter_get_offset(&start) != gtk_text_iter_get_offset(&end))
 				return FALSE;
 		
-			gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->button.x, event->button.y, &x, &y);
+			gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(text_view), GTK_TEXT_WINDOW_WIDGET, event->x, event->y, &x, &y);
 		
 			gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
 		
@@ -2582,8 +2582,8 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		g_signal_connect(G_OBJECT(win->text_view), "drag-drop", G_CALLBACK(drag_drop), (gpointer) win);
 
 		/*
-		 * remove the plain text targets from the drag destion target list;
-		 * our view is not editable and we dont' want to accept them
+		 * remove the plain text targets from the drag destination target list;
+		 * our view is not editable and we do not want to accept them
 		 */
 		{
 			GtkTargetList *newlist;

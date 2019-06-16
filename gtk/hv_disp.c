@@ -85,6 +85,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 	
 	if (win->image_childs == NULL)
 		return;
+
 	cr = gdk_cairo_create(gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT));
 	adj = gtk_text_view_get_vadjustment(GTK_TEXT_VIEW(win->text_view));
 	yoffset = gtk_adjustment_get_value(adj);
@@ -199,8 +200,8 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 			gfx->window_y = y;
 			gfx->surf = convert_pixbuf_to_cairo(pixbuf);
 			add_child_window(win, gfx);
-			if (gfx->window_y + 2 * gfx->window_margin > node->height)
-				node->height = gfx->window_y + 2 * gfx->window_margin;
+			if (gfx->window_y + 2 * gfx->window_margin + gfx->pixheight > node->height)
+				node->height = gfx->window_y + 2 * gfx->window_margin + gfx->pixheight;
 		}
 	}
 	return y;
@@ -483,7 +484,7 @@ static long DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, stru
 	
 	if (w == 0)
 	{
-		w = gfx->pixwidth = 1;
+		w = 1;
 	} else if (w < 0)
 	{
 		w = -w;
@@ -491,7 +492,7 @@ static long DrawLine(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, stru
 	}
 	if (h == 0)
 	{
-		h = gfx->pixheight = 1;
+		h = 1;
 	} else if (h < 0)
 	{
 		h = -h;
@@ -805,14 +806,14 @@ static long draw_graphics(WINDOW_DATA *win, WP_UNIT sx, WP_UNIT sy, struct prep_
 				break;
 			case HYP_ESC_LINE:
 				sy = DrawLine(win, gfx, sx, sy, info);
-				if (gfx->window_y + 2 * gfx->window_margin > node->height)
-					node->height = gfx->window_y + 2 * gfx->window_margin;
+				if (gfx->window_y + 2 * gfx->window_margin + gfx->pixheight > node->height)
+					node->height = gfx->window_y + 2 * gfx->window_margin + gfx->pixheight;
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
 				sy = DrawBox(win, gfx, sx, sy, info);
-				if (gfx->window_y + 2 * gfx->window_margin > node->height)
-					node->height = gfx->window_y + 2 * gfx->window_margin;
+				if (gfx->window_y + 2 * gfx->window_margin + gfx->pixheight > node->height)
+					node->height = gfx->window_y + 2 * gfx->window_margin + gfx->pixheight;
 				break;
 			}
 		}
@@ -1421,6 +1422,11 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	}
 	if (info.tab_array)
 		pango_tab_array_free(info.tab_array);
+
+	if (sy > node->height)
+		node->height = sy;
+	node->width = info.maxx * win->x_raster;
+	
 	/*
 	 * remove trailing empty lines from textbuffer
 	 */
@@ -1454,10 +1460,24 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 				break;
 		}
 	}
-	
-	if (sy > node->height)
-		node->height = sy;
-	node->width = info.maxx * win->x_raster;
+
+	/*
+	 * if there are any floating images who extend beyond the end
+	 * of the last text line, add enough newlines to the textbuffer so
+	 * we can scroll to them
+	 */
+	if (node->height > sy)
+	{
+		GtkTextIter end;
+		int diff = node->height - sy;
+		int i;
+		
+		diff = node->height - sy;
+		diff = (diff + win->y_raster - 1) / win->y_raster;
+		gtk_text_buffer_get_end_iter(win->text_buffer, &end);
+		for (i = 0; i < diff; i++)
+			gtk_text_buffer_insert(win->text_buffer, &end, "\n", 1);
+	}
 	
 	g_free(win->title);
 	if (node->window_title)
