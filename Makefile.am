@@ -26,7 +26,11 @@ EXTRA_DIST = \
 DISTCLEANFILES = intltool-merge intltool-extract intltool-update
 
 
+if OS_TOS
 HYP_VERSION := $(shell sed -n 's/\#define PACKAGE_VERSION "\(.*\)"/\1/p' include/config.h | tr -d '.')
+else
+HYP_VERSION := $(shell sed -n 's/\#define PACKAGE_VERSION "\(.*\)"/\1/p' include/config.h)
+endif
 DISTDIR = hcp-$(HYP_VERSION)
 
 bindist:
@@ -52,7 +56,9 @@ if WITH_GUI_WIN32
 	cp -a win32/hypview$(EXEEXT) $(DISTDIR)/bin
 	$(STRIP) $(DISTDIR)/bin/hypview$(EXEEXT)
 endif
-	zip -r hcp-$(HYP_VERSION)-`if test "$(host_triplet)" = x86_64-w64-mingw32; then echo win64; else echo win32; fi`.zip $(DISTDIR)
+	zip=hcp-$(HYP_VERSION)-`if test "$(host_triplet)" = x86_64-w64-mingw32; then echo win64; else echo win32; fi`.zip; \
+	$(RM) "$$zip"; \
+	zip -r "$$zip" $(DISTDIR)
 endif
 if OS_TOS
 	$(MAKE) -C hyp DESTDIR=../$(DISTDIR) bindir=/bin install-exec-hook
@@ -65,7 +71,9 @@ if OS_TOS
 		mv $(DISTDIR)/$$f $(DISTDIR)/$$f.txt; \
 		cr2nl -d $(DISTDIR)/$$f.txt; \
 	done
-	zip -r hcp`echo $(HYP_VERSION) | tr -d '.'`.zip $(DISTDIR)
+	zip=hcp`echo $(HYP_VERSION)`.zip; \
+	$(RM) "$$zip"; \
+	zip -r "$$zip" $(DISTDIR)
 endif
 if OS_UNIX
 if WITH_GUI_GTK
