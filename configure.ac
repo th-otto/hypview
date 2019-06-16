@@ -43,7 +43,7 @@ for flag in $2; do
 case " [$]$1 " in
 "* $flag *") ;;
 *) AC_MSG_CHECKING([whether the compiler understands] $flag)
-   if echo "char strcmp();" | $CC -Wall $flag -x c -c -o - - 2>&1 | grep -q "unrecognized command line option"; then
+   if echo "char strcmp();" | $CC -Wall $flag -x c -c -o /dev/null - 2>&1 | grep -q -E "unknown warning option|unrecognized command line option"; then
      result=no
    else
      result=yes
