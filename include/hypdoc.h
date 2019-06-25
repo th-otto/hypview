@@ -80,6 +80,7 @@ struct _document_
 	hyp_filetype type;          /* Document type see F_xy constants */
 	int ref_count;				/* usage count */
 	char *path;                 /* Full file access path */
+	/* FIXME: start_line should go to WINDOW_DATA */
 	long start_line;            /* First visible line of document */
 	
 	/* Toolbar button configuration (bit vector) */
