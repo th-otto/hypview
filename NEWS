@@ -1,7 +1,14 @@
 New in Version 1.0.3:
 =====================
 
-- several bug fixes
+- GTK viewer should now correctly display images that extend beyond
+  the last text line
+- large textnodes which are compressed by more than 64k are now
+  stored uncompressed, giving a warning (a restriction of the file
+  format)
+- @limages are now centered according to @width, just like @images
+
+- several smaller bug fixes
 
 New in Version 1.0.2:
 =====================
