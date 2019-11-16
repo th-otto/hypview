@@ -2390,7 +2390,8 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 		
 		{
 			char *title;
-			
+			unsigned int quote_flags;
+
 			if (!for_inline && opts->outfile != stdout && node != hyp->main_page)
 			{
 				char *name = html_filename_for_node(hyp, opts, node, FALSE);
@@ -2418,15 +2419,16 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 			
 			entry = hyp->indextable[node];
 			hyp_node_find_windowtitle(nodeptr);
+			quote_flags = opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0;
 			
 			if (nodeptr->window_title)
 			{
 				char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
-				title = html_quote_name(buf, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+				title = html_quote_name(buf, quote_flags);
 				g_free(buf);
 			} else
 			{
-				title = html_quote_nodename(hyp, node, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
+				title = html_quote_nodename(hyp, node, quote_flags);
 			}
 	
 			/*

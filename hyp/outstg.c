@@ -517,11 +517,19 @@ gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, HYP_N
 	str = stg_quote_nodename(hyp, node);
 	if (nodeptr->window_title)
 	{
-		char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
-		char *title = stg_quote_name(buf, FALSE);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "%s \"%s\" \"%s\"\n", entry->type == HYP_NODE_INTERNAL ? "@node" : "@pnode", str, title);
-		g_free(title);
-		g_free(buf);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "%s \"%s\" \"", entry->type == HYP_NODE_INTERNAL ? "@node" : "@pnode", str);
+		if (opts->for_cgi || opts->recompile_format == HYP_FT_XML || opts->recompile_format == HYP_FT_HTML || opts->recompile_format == HYP_FT_HTML_XML)
+		{
+			stg_out_str(hyp, opts, out, nodeptr->window_title, STR0TERM);
+		} else
+		{
+			char *buf = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+			char *title = stg_quote_name(buf, FALSE);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "%s", title);
+			g_free(title);
+			g_free(buf);
+		}
+		g_string_append(out, "\"\n");
 	} else
 	{
 		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "%s \"%s\"\n", entry->type == HYP_NODE_INTERNAL ? "@node" : "@pnode", str);
