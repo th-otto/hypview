@@ -17,6 +17,7 @@
 #include "cp_1252.h"
 #include "cp_1250.h"
 #include "cp_latin1.h"
+#include "cp_latin2.h"
 #include "cp_binary.h"
 #include "cp_1251.h"
 #include "cp_1253.h"
@@ -443,6 +444,8 @@ static const h_unichar_t *get_cset(HYP_CHARSET charset)
 		return cp1258_to_unicode;
 	case HYP_CHARSET_LATIN1:
 		return latin1_to_unicode;
+	case HYP_CHARSET_LATIN2:
+		return latin2_to_unicode;
 	case HYP_CHARSET_ATARI_RU:
 		return cpstru_to_unicode;
 	case HYP_CHARSET_BINARY:
@@ -1660,6 +1663,42 @@ static char *hyp_conv_to_latin1(const char *src, size_t len, gboolean *converror
 
 /*** ---------------------------------------------------------------------- ***/
 
+static char *hyp_conv_to_latin2(const char *src, size_t len, gboolean *converror)
+{
+	const char *end = src + len;
+	h_unichar_t ch;
+	const char *p;
+	size_t dstlen = 1;
+	char *dst;
+	
+	p = src;
+	while (p < end)
+	{
+		p = g_utf8_skipchar(p);
+		dstlen++;
+	}
+	dst = g_new(char, dstlen);
+	if (dst == NULL)
+		return NULL;
+	dstlen = 0;
+	p = src;
+	while (p < end)
+	{
+		p = hyp_utf8_getchar(p, &ch);
+		dst[dstlen] = (*utf16_to_latin2[ch >> 8])[ch & 0xff];
+		if ((unsigned char)dst[dstlen] == 0xff && latin2_to_unicode[0xff] != ch)
+		{
+			if (converror)
+				*converror = TRUE;
+		}
+		dstlen++;
+	}
+	dst[dstlen] = '\0';
+	return dst;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static char *hyp_conv_to_cpstru(const char *src, size_t len, gboolean *converror)
 {
 	const char *end = src + len;
@@ -1734,6 +1773,8 @@ char *hyp_utf8_to_charset(HYP_CHARSET charset, const void *_src, size_t len, gbo
 		return hyp_conv_to_cp1258(src, len, converror);
 	case HYP_CHARSET_LATIN1:
 		return hyp_conv_to_latin1(src, len, converror);
+	case HYP_CHARSET_LATIN2:
+		return hyp_conv_to_latin2(src, len, converror);
 	case HYP_CHARSET_ATARI_RU:
 		return hyp_conv_to_cpstru(src, len, converror);
 	case HYP_CHARSET_NONE:
@@ -1894,6 +1935,16 @@ const char *hyp_utf8_conv_char(HYP_CHARSET charset, const char *src, char *buf, 
 		}
 		buf[1] = '\0';
 		return end;
+	case HYP_CHARSET_LATIN2:
+		end = hyp_utf8_getchar(src, &ch);
+		buf[0] = (*utf16_to_latin2[ch >> 8])[ch & 0xff];
+		if ((unsigned char)buf[0] == 0xff && latin2_to_unicode[0xff] != ch)
+		{
+			if (converror)
+				*converror = TRUE;
+		}
+		buf[1] = '\0';
+		return end;
 	case HYP_CHARSET_ATARI_RU:
 		end = hyp_utf8_getchar(src, &ch);
 		buf[0] = (*utf16_to_cpstru[ch >> 8])[ch & 0xff];
@@ -1967,6 +2018,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -1997,6 +2049,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2027,6 +2080,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2059,6 +2113,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
@@ -2087,6 +2142,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2117,6 +2173,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2147,6 +2204,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2177,6 +2235,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2207,6 +2266,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2237,6 +2297,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2267,6 +2328,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1256:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2297,6 +2359,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1256:
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 		case HYP_CHARSET_ATARI_RU:
 		case HYP_CHARSET_BINARY:
 		case HYP_CHARSET_BINARY_TABS:
@@ -2329,6 +2392,38 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1256:
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
+		case HYP_CHARSET_LATIN2:
+		case HYP_CHARSET_ATARI_RU:
+			tmp = hyp_conv_to_utf8(from, src, len);
+			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
+			g_free(tmp);
+			return res;
+		case HYP_CHARSET_NONE:
+			break;
+		}
+		break;
+	case HYP_CHARSET_LATIN2:
+		switch (to)
+		{
+		case HYP_CHARSET_UTF8:
+			return hyp_conv_to_utf8(from, src, len);
+		case HYP_CHARSET_LATIN2:
+			break;
+		case HYP_CHARSET_MACROMAN:
+		case HYP_CHARSET_CP850:
+		case HYP_CHARSET_ATARI:
+		case HYP_CHARSET_BINARY:
+		case HYP_CHARSET_BINARY_TABS:
+		case HYP_CHARSET_CP1250:
+		case HYP_CHARSET_CP1251:
+		case HYP_CHARSET_CP1252:
+		case HYP_CHARSET_CP1253:
+		case HYP_CHARSET_CP1254:
+		case HYP_CHARSET_CP1255:
+		case HYP_CHARSET_CP1256:
+		case HYP_CHARSET_CP1257:
+		case HYP_CHARSET_CP1258:
+		case HYP_CHARSET_LATIN1:
 		case HYP_CHARSET_ATARI_RU:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
@@ -2360,6 +2455,7 @@ char *hyp_conv_charset(HYP_CHARSET from, HYP_CHARSET to, const void *src, size_t
 		case HYP_CHARSET_CP1257:
 		case HYP_CHARSET_CP1258:
 		case HYP_CHARSET_LATIN1:
+		case HYP_CHARSET_LATIN2:
 			tmp = hyp_conv_to_utf8(from, src, len);
 			res = hyp_utf8_to_charset(to, tmp, strlen(tmp), converror);
 			g_free(tmp);
@@ -2820,6 +2916,7 @@ void check_charsets(void)
 	check_charset("cp1257", cp1257_to_unicode, utf16_to_cp1257);
 	check_charset("cp1258", cp1258_to_unicode, utf16_to_cp1258);
 	check_charset("latin1", latin1_to_unicode, utf16_to_latin1);
+	check_charset("latin2", latin2_to_unicode, utf16_to_latin2);
 	check_charset("cpstru", cpstru_to_unicode, utf16_to_cpstru);
 	exit(0);
 }

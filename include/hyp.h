@@ -99,15 +99,15 @@ typedef enum {
 	HYP_CHARSET_CP1256 = 11, /* ANSI Arabic */
 	HYP_CHARSET_CP1257 = 12, /* ANSI Baltic */
 	HYP_CHARSET_CP1258 = 13, /* ANSI Viet Nam */
-	HYP_CHARSET_LATIN1 = 14, /* ISO8859-1, Western Europe */
+	HYP_CHARSET_LATIN1 = 14, /* Latin1, ISO8859-1, Western Europe */
+	HYP_CHARSET_LATIN2 = 15, /* Latin2, ISO8859-2, Eastern Europe */
 	/* Non-Standard atari encodings: */
-	HYP_CHARSET_ATARI_RU = 15,
+	HYP_CHARSET_ATARI_RU = 16,
 	/* used internally only for displaying binary data: */
-	HYP_CHARSET_BINARY = 16,
-	HYP_CHARSET_BINARY_TABS = 17,
+	HYP_CHARSET_BINARY = 17,
+	HYP_CHARSET_BINARY_TABS = 18,
 	/* NYI: */
 	HYP_CHARSET_CP28600 = HYP_CHARSET_NONE, /* Nordic */
-	HYP_CHARSET_LATIN2 = HYP_CHARSET_NONE, /* Latin-2, Eastern Europe */
 	HYP_CHARSET_LATIN3 = HYP_CHARSET_NONE, /* Latin-3, South-European */
 	HYP_CHARSET_LATIN4 = HYP_CHARSET_NONE, /* Latin-4, Baltic */
 	HYP_CHARSET_LATIN5 = HYP_CHARSET_NONE, /* Latin-5, ISO8859-9, Turkish */

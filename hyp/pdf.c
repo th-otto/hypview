@@ -554,6 +554,10 @@ PDF *pdf_new(hcp_opts *opts)
 		encoding = HPDF_ENCODING_STANDARD;
 		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
 		break;
+	case HYP_CHARSET_LATIN2:
+		encoding = HPDF_ENCODING_ISO8859_2;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		break;
 	case HYP_CHARSET_NONE:
 	case HYP_CHARSET_BINARY:
 	case HYP_CHARSET_BINARY_TABS:
