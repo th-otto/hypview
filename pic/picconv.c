@@ -1183,9 +1183,12 @@ void pic_getpalette(PALETTE pal, const TOSPALETTE *tospal)
 
 	for (i = 0; i < 16; i++)
 	{
-		pal[i].r = ((((*tospal)[i][0]     ) & 0x07) << 5) | ((((*tospal)[i][0] >> 3) & 0x01) << 4);
-		pal[i].g = ((((*tospal)[i][1] >> 4) & 0x07) << 5) | ((((*tospal)[i][1] >> 7) & 0x01) << 4);
-		pal[i].b = ((((*tospal)[i][1]     ) & 0x07) << 5) | ((((*tospal)[i][1] >> 3) & 0x01) << 4);
+		pal[i].r = ((((*tospal)[i][0]     ) & 0x07) << 1) | ((((*tospal)[i][0] >> 3) & 0x01) << 0);
+		pal[i].r = (pal[i].r << 4) | pal[i].r;
+		pal[i].g = ((((*tospal)[i][1] >> 4) & 0x07) << 1) | ((((*tospal)[i][1] >> 7) & 0x01) << 0);
+		pal[i].g = (pal[i].g << 4) | pal[i].g;
+		pal[i].b = ((((*tospal)[i][1]     ) & 0x07) << 1) | ((((*tospal)[i][1] >> 3) & 0x01) << 0);
+		pal[i].b = (pal[i].b << 4) | pal[i].b;
 	}
 }
 
