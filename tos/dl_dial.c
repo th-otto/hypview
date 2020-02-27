@@ -80,6 +80,10 @@ static DIALOG_DATA *find_dialog_by_whandle(short handle)
 DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, short y, void *data)
 {
 	DIALOG_DATA *ptr;
+	short kind = CLOSER | MOVER | NAME | SMALLER;
+
+	if (!has_iconify())
+		kind &= ~SMALLER;
 
 	ptr = find_dialog_by_obj(tree);
 
@@ -136,7 +140,7 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 			ptr->title = title;
 
 			graf_growbox_grect(&small, &big);
-			whandle = wdlg_open(ptr->dial, ptr->title, CLOSER | MOVER | SMALLER, ptr->last.g_x, ptr->last.g_y, 0, NULL);
+			whandle = wdlg_open(ptr->dial, ptr->title, kind, ptr->last.g_x, ptr->last.g_y, 0, NULL);
 			if (whandle)
 			{
 				ptr->whandle = whandle;
@@ -159,11 +163,7 @@ DIALOG *OpenDialog(HNDL_OBJ proc, OBJECT *tree, const char *title, short x, shor
 		ptr->dial = wdlg_create(proc, tree, ptr, 0, ptr, WDLG_BKGD);
 		if (ptr->dial != NULL)
 		{
-			short kind = CLOSER | MOVER | NAME | SMALLER;
 			GRECT big;
-
-			if (!has_iconify())
-				kind &= ~SMALLER;
 
 			form_center_grect(tree, &big);
 
@@ -345,7 +345,7 @@ static void dialog_uniconify(DIALOG *dialog, GRECT *r)
 			wind_open_grect(ptr2->whandle, &ptr2->last);
 			ptr2->status &= ~WIS_ALLICONIFY;
 			ptr2->status |= WIS_OPEN;
-		};
+		}
 		iconified_list[0] = NULL;
 		iconified_count = 0;
 		ptr->status &= ~WIS_ALLICONIFY;
