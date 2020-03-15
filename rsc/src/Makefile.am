@@ -10,7 +10,7 @@ AM_CPPFLAGS += $(Z_CFLAGS)
 
 noinst_PROGRAMS =
 # currently has problems linking the gem libraries; FIXME
-if !OS_MACOS
+if OS_UNIX
 noinst_PROGRAMS += rscview
 endif
 noinst_LIBRARIES = librsc.a

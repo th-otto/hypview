@@ -13,7 +13,7 @@ noinst_SCRIPTS =
 
 if HAVE_CURL
 # currently has problems linking the gem libraries; FIXME
-if !OS_MACOS
+if OS_UNIX
 noinst_PROGRAMS += hypview.cgi
 endif
 endif

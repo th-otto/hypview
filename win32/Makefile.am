@@ -75,7 +75,7 @@ hypview_LDADD += $(LIBHPDF)
 endif
 hypview_LDADD += $(LIBPIC) $(LIBHYPDOC) $(LIBHYP)
 hypview_DEPENDENCIES += $(GEMLIB_DEPS)
-hypview_LDADD += $(GEMLIBS)
+hypview_LDADD += $(GEMLIBS) $(GEMLIBS)
 if HAVE_PNG
 hypview_DEPENDENCIES += $(LIBPNG_DEP)
 hypview_LDADD += $(LIBPNG)
