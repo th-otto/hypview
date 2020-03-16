@@ -52,7 +52,8 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 			}
 			break;
 		case HYP_NODE_POPUP:
-			OpenPopup(win, info->dest_page, 0, x, y);
+			if (!win->is_popup)
+				OpenPopup(win, info->dest_page, 0, x, y);
 			break;
 		case HYP_NODE_EXTERNAL_REF:
 			{
@@ -67,36 +68,81 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				char *tool = NULL;
 				HYP_HOSTNAME *h;
 				const char *argv[3];
+				char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[info->dest_page]->name, STR0TERM, NULL);
 				
-				/* search for host application */
-				if (hyp->hostname == NULL)
+				if (is_weblink(prog))
 				{
-					show_message(GTK_WIDGET(win), _("Error"), _("No host application defined."), FALSE);
-					break;
-				}
-				for (h = hyp->hostname; h != NULL && tool == NULL; h = h->next)
-					if (Profile_ReadString(gl_profile.profile, "TOOLS", h->name, &tool))
-						break;
-				if (empty(tool))	/* host application found? */
+					argv[0] = "xdg-open";
+					argv[1] = prog;
+					argv[2] = 0;
+					hyp_utf8_spawnvp(P_WAIT, 2, argv);
+				} else
 				{
-					char *str = g_strdup_printf(_("No application defined to handle %s."), hyp->hostname->name);
-					show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
-					g_free(str);
-					break;		/* ... cancel */
+					/* search for host application */
+					if (hyp->hostname == NULL)
+					{
+						show_message(GTK_WIDGET(win), _("Error"), _("No host application defined."), FALSE);
+					} else
+					{
+						for (h = hyp->hostname; h != NULL && tool == NULL; h = h->next)
+							if (Profile_ReadString(gl_profile.profile, "TOOLS", h->name, &tool))
+								break;
+						if (empty(tool))	/* host application found? */
+						{
+							char *str = g_strdup_printf(_("No application defined to handle %s."), hyp->hostname->name);
+							show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
+							g_free(str);
+						} else
+						{
+							char *dir;
+							char *dfn;
+							struct stat s;
+							
+							/* search for file in directory of hypertext */
+							dir = hyp_path_get_dirname(hyp->file);
+							dfn = g_build_filename(dir, prog, NULL);
+							g_free(dir);
+		
+							/* can file be located with shel_find()? */
+							if (hyp_utf8_stat(dfn, &s) != 0)
+							{
+								g_free(dfn);
+								/* use filename as specified */
+								dfn = prog;
+								prog = NULL;
+							}
+		
+							argv[0] = tool;
+							argv[1] = dfn;
+							argv[2] = 0;
+							hyp_utf8_spawnvp(P_NOWAIT, 2, argv);
+							g_free(dfn);
+							g_free(tool);
+						}
+					}
 				}
+				g_free(prog);
+			}
+			break;
+		case HYP_NODE_SYSTEM_ARGUMENT:
+			{
+				char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[info->dest_page]->name, STR0TERM, NULL);
+				const char *argv[4];
 
+				if (is_weblink(prog))
 				{
-					char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[info->dest_page]->name, STR0TERM, NULL);
-					char *dir;
-					char *dfn;
+					argv[0] = "xdg-open";
+					argv[1] = prog;
+					argv[2] = 0;
+					hyp_utf8_spawnvp(P_WAIT, 2, argv);
+				} else
+				{
 					struct stat s;
-					
 					/* search for file in directory of hypertext */
-					dir = hyp_path_get_dirname(hyp->file);
-					dfn = g_build_filename(dir, prog, NULL);
+					char *dir = hyp_path_get_dirname(hyp->file);
+					char *dfn = g_build_filename(dir, prog, NULL);
 					g_free(dir);
-
-					/* can file be located with shel_find()? */
+					
 					if (hyp_utf8_stat(dfn, &s) != 0)
 					{
 						g_free(dfn);
@@ -104,44 +150,14 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 						dfn = prog;
 						prog = NULL;
 					}
-
-					argv[0] = tool;
-					argv[1] = dfn;
-					argv[2] = 0;
-					hyp_utf8_spawnvp(P_NOWAIT, 2, argv);
+					
+					argv[0] = "/bin/sh";
+					argv[1] = "-c";
+					argv[2] = dfn;
+					argv[3] = 0;
+					hyp_utf8_spawnvp(P_WAIT, 3, argv);
 					g_free(dfn);
-					g_free(prog);
-					g_free(tool);
 				}
-			}
-			break;
-		case HYP_NODE_SYSTEM_ARGUMENT:
-			{
-				char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[info->dest_page]->name, STR0TERM, NULL);
-				char *dir;
-				char *dfn;
-				struct stat s;
-				const char *argv[4];
-
-				/* search for file in directory of hypertext */
-				dir = hyp_path_get_dirname(hyp->file);
-				dfn = g_build_filename(dir, prog, NULL);
-				g_free(dir);
-				
-				if (hyp_utf8_stat(dfn, &s) != 0)
-				{
-					g_free(dfn);
-					/* use filename as specified */
-					dfn = prog;
-					prog = NULL;
-				}
-				
-				argv[0] = "/bin/sh";
-				argv[1] = "-c";
-				argv[2] = dfn;
-				argv[3] = 0;
-				hyp_utf8_spawnvp(P_WAIT, 3, argv);
-				g_free(dfn);
 				g_free(prog);
 			}
 			break;

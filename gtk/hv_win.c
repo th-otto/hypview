@@ -1390,7 +1390,24 @@ static gboolean follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 		
 		if (info)
 		{
-			HypClick(win, info);
+			if (win->is_popup)
+			{
+				WINDOW_DATA *parentwin;
+				GSList *l;;
+				
+				for (l = all_list; l; l = l->next)
+				{
+					parentwin = (WINDOW_DATA *)l->data;
+					if (parentwin->popup == win)
+					{
+						HypClick(parentwin, info);
+						break;
+					}
+				}
+			} else
+			{
+				HypClick(win, info);
+			}
 			found = TRUE;
 			break;
 		}
@@ -1420,12 +1437,7 @@ static gboolean on_button_press(GtkWidget *text_view, GdkEventButton *event, WIN
 	UNUSED(text_view);
 	if (event->type == GDK_BUTTON_PRESS)
 	{
-		if (win->popup)
-		{
-			gtk_widget_destroy(GTK_WIDGET(win->popup));
-			return TRUE;
-		}
-		if (event->button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
+		if (!win->popup && event->button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
 		{
 			GoThisButton(win, TO_BACK);
 			return TRUE;
@@ -1444,12 +1456,8 @@ static gboolean on_button_release(GtkWidget *text_view, GdkEventButton *event, W
 
 	if (event->type == GDK_BUTTON_RELEASE)
 	{
-		if (win->is_popup)
-		{
-			gtk_widget_destroy(GTK_WIDGET(win));
-			return TRUE;
-		}
-		
+		gboolean found = FALSE;
+
 		if (event->button == GDK_BUTTON_PRIMARY)
 		{
 			CheckFiledate(win);
@@ -1465,8 +1473,15 @@ static gboolean on_button_release(GtkWidget *text_view, GdkEventButton *event, W
 		
 			gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(text_view), &iter, x, y);
 		
-			follow_if_link(win, &iter);
+			found = follow_if_link(win, &iter);
 		}
+
+		if (win->is_popup)
+		{
+			gtk_widget_destroy(GTK_WIDGET(win));
+			return TRUE;
+		}
+		(void)found;
 	}
 	return FALSE;
 }
@@ -2595,7 +2610,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		if (default_geometry != NULL)
 		{
 			gtk_window_parse_geometry(GTK_WINDOW(win), default_geometry);
-		}	
+		}
 	}
 	
 	return win;

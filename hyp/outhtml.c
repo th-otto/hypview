@@ -121,6 +121,18 @@ char *html_quote_name(const char *name, unsigned int flags)
 	{
 		if (*name != '\0' && (flags & QUOTE_LABEL) && *name != '_' && !g_ascii_isalpha(*name))
 			*str++ = '_';
+		if ((flags & QUOTE_URI) && is_weblink(name))
+		{
+			/*
+			 * do not quoute the protocol part
+			 */
+			while (*name && *name != ':')
+				*str++ = *name++;
+			if (*name == ':')
+				*str++ = *name++;
+			while (*name == '/')
+				*str++ = *name++;
+		}
 		while (*name)
 		{
 			unsigned char c = *name++;
@@ -1048,7 +1060,7 @@ char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node,
 		if (opts->for_cgi)
 		{
 			char *params = html_cgi_params(opts);
-			char *tmp = html_quote_name(html_referer_url, QUOTE_URI);
+			char *tmp = html_quote_name(html_referer_url, QUOTE_URI | QUOTE_NOLTR);
 			p = g_strdup_printf("%s?url=%s%s&amp;index=%u", cgi_scriptname, tmp, params, node);
 			g_free(tmp);
 			g_free(params);
@@ -1699,7 +1711,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					char *params = html_cgi_params(opts);
 					
 					ref = g_strconcat(dir, *dir ? "/" : "", base, NULL);
-					quoted = html_quote_name(ref, QUOTE_CONVSLASH | QUOTE_URI | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
+					quoted = html_quote_name(ref, QUOTE_CONVSLASH | QUOTE_URI | QUOTE_NOLTR | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
 					hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a%s href=\"%s?url=%s%s&amp;index=%u&amp;isrsc=1\">%s</a>", style, cgi_scriptname, quoted, params, xref->line, xref->text);
 					g_free(quoted);
 					g_free(ref);
@@ -1729,7 +1741,7 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 					char *params = html_cgi_params(opts);
 					
 					ref = g_strconcat(dir, *dir ? "/" : "", base, NULL);
-					quoted = html_quote_name(ref, QUOTE_CONVSLASH | QUOTE_URI | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
+					quoted = html_quote_name(ref, QUOTE_CONVSLASH | QUOTE_URI | QUOTE_NOLTR | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
 					hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a%s href=\"%s?url=%s%s\">%s</a>", style, cgi_scriptname, quoted, params, xref->text);
 					g_free(quoted);
 					g_free(ref);
@@ -1835,19 +1847,43 @@ static void html_generate_href(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, 
 		}
 		break;
 	case HYP_NODE_REXX_COMMAND:
-		quoted = html_quote_name(xref->destname, QUOTE_JS);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"javascript:execRx(&quot;%s&quot;, &quot;%s&quot;)\">%s</a>", html_rxs_link_style, _("Execute REXX command"), quoted, xref->text);
-		g_free(quoted);
+		if (is_weblink(xref->destname))
+		{
+			quoted = html_quote_name(xref->destname, QUOTE_NOLTR | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"%s\">%s</a>", html_rx_link_style, quoted, xref->text);
+			g_free(quoted);
+		} else
+		{
+			quoted = html_quote_name(xref->destname, QUOTE_JS);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"javascript:execRx(&quot;%s&quot;, &quot;%s&quot;)\">%s</a>", html_rx_link_style, _("Execute REXX command"), quoted, xref->text);
+			g_free(quoted);
+		}
 		break;
 	case HYP_NODE_REXX_SCRIPT:
-		quoted = html_quote_name(xref->destname, QUOTE_JS);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"javascript:execRxs(&quot;%s&quot;, &quot;%s&quot;)\">%s</a>", html_system_link_style, _("Execute REXX script"), quoted, xref->text);
-		g_free(quoted);
+		if (is_weblink(xref->destname))
+		{
+			quoted = html_quote_name(xref->destname, QUOTE_NOLTR | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"%s\">%s</a>", html_rxs_link_style, quoted, xref->text);
+			g_free(quoted);
+		} else
+		{
+			quoted = html_quote_name(xref->destname, QUOTE_JS);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"javascript:execRxs(&quot;%s&quot;, &quot;%s&quot;)\">%s</a>", html_rxs_link_style, _("Execute REXX script"), quoted, xref->text);
+			g_free(quoted);
+		}
 		break;
 	case HYP_NODE_SYSTEM_ARGUMENT:
-		quoted = html_quote_name(xref->destname, QUOTE_JS);
-		hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"javascript:execSystem(&quot;%s&quot;, &quot;%s&quot;)\">%s</a>", html_rx_link_style, _("Execute command"), quoted, xref->text);
-		g_free(quoted);
+		if (is_weblink(xref->destname))
+		{
+			quoted = html_quote_name(xref->destname, QUOTE_NOLTR | (opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0));
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"%s\">%s</a>", html_system_link_style, quoted, xref->text);
+			g_free(quoted);
+		} else
+		{
+			quoted = html_quote_name(xref->destname, QUOTE_JS);
+			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<a class=\"%s\" href=\"javascript:execSystem(&quot;%s&quot;, &quot;%s&quot;)\">%s</a>", html_system_link_style, _("Execute command"), quoted, xref->text);
+			g_free(quoted);
+		}
 		break;
 	case HYP_NODE_IMAGE:
 		/* that would be an inline image; currently not supported by compiler */
@@ -2209,7 +2245,7 @@ void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char
 		{
 			char *params = html_cgi_params(opts);
 			char *refname = replace_ext(html_referer_url, NULL, HYP_EXT_REF);
-			char *tmp = html_quote_name(refname, QUOTE_URI);
+			char *tmp = html_quote_name(refname, QUOTE_URI | QUOTE_NOLTR);
 			char *filename = g_strdup_printf("%s?url=%s%s", cgi_scriptname, tmp, params);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "\n<a href=\"%s\">%s</a>", filename, _("View Ref-File"));
 			g_free(filename);

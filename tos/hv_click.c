@@ -236,45 +236,50 @@ void HypClick(WINDOW_DATA *win, EVNTDATA *m)
 							{
 								short dst_id = -1;
 								HYP_HOSTNAME *h;
+								char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dest_page]->name, STR0TERM, NULL);
 								
-								/* search for host application */
-								if (hyp->hostname == NULL)
+								if (is_weblink(prog))
 								{
-									form_alert(1, rs_string(HV_ERR_NO_HOSTNAME));
-									break;
-								}
-								for (h = hyp->hostname; h != NULL && dst_id < 0; h = h->next)
-									dst_id = appl_locate(h->name, NULL, FALSE);
-								if (dst_id < 0)	/* host application found? */
+									SendAV_STARTPROG(prog, NULL, 0);
+								} else
 								{
-									form_alert(1, rs_string(HV_ERR_HOST_NOT_FOUND));
-									break;		/* ... cancel */
-								}
-		
-								/* use VA_START to send parameter to host application */
-								{
-									char *prog = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), hyp->indextable[dest_page]->name, STR0TERM, NULL);
-									char *dir;
-									char *dfn;
-		
-									/* search for file in directory of hypertext */
-									dir = hyp_path_get_dirname(hyp->file);
-									dfn = g_build_filename(dir, prog, NULL);
-									g_free(dir);
-		
-									/* can file be located with shel_find()? */
-									if (!shel_find(dfn))
+									/* search for host application */
+									if (hyp->hostname == NULL)
 									{
-										g_free(dfn);
-										/* use filename as specified */
-										dfn = prog;
-										prog = NULL;
+										form_alert(1, rs_string(HV_ERR_NO_HOSTNAME));
+									} else
+									{
+										for (h = hyp->hostname; h != NULL && dst_id < 0; h = h->next)
+											dst_id = appl_locate(h->name, NULL, FALSE);
+										if (dst_id < 0)	/* host application found? */
+										{
+											form_alert(1, rs_string(HV_ERR_HOST_NOT_FOUND));
+										} else
+										{
+											/* use VA_START to send parameter to host application */
+											char *dir;
+											char *dfn;
+				
+											/* search for file in directory of hypertext */
+											dir = hyp_path_get_dirname(hyp->file);
+											dfn = g_build_filename(dir, prog, NULL);
+											g_free(dir);
+				
+											/* can file be located with shel_find()? */
+											if (!shel_find(dfn))
+											{
+												g_free(dfn);
+												/* use filename as specified */
+												dfn = prog;
+												prog = NULL;
+											}
+				
+											SendVA_START(dst_id, dfn, FUNK_NULL);
+											g_free(dfn);
+										}
 									}
-		
-									SendVA_START(dst_id, dfn, FUNK_NULL);
-									g_free(dfn);
-									g_free(prog);
 								}
+								g_free(prog);
 							}
 							break;
 						case HYP_NODE_SYSTEM_ARGUMENT:

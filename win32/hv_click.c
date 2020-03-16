@@ -55,7 +55,8 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 			break;
 		case HYP_NODE_POPUP:
 			GetCursorPos(&p);
-			OpenPopup(win, info->dest_page, 0, p.x, p.y);
+			if (!win->is_popup)
+				OpenPopup(win, info->dest_page, 0, p.x, p.y);
 			break;
 		case HYP_NODE_EXTERNAL_REF:
 			{
@@ -70,52 +71,59 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				char *tool = NULL;
 				HYP_HOSTNAME *h;
 				const char *argv[3];
+				char *prog = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[info->dest_page]->name, STR0TERM);
 				
-				/* search for host application */
-				if (hyp->hostname == NULL)
+				if (is_weblink(prog))
 				{
-					show_message(win ? win->hwnd : NULL, _("Error"), _("No host application defined."), FALSE);
-					break;
-				}
-				for (h = hyp->hostname; h != NULL && tool == NULL; h = h->next)
-					if (Profile_ReadString(gl_profile.profile, "TOOLS", h->name, &tool))
-						break;
-				if (empty(tool))	/* host application found? */
+					argv[0] = prog;
+					argv[1] = 0;
+					hyp_utf8_spawnvp(P_NOWAIT, 1, argv);
+				} else
 				{
-					char *str = g_strdup_printf(_("No application defined to handle %s."), hyp->hostname->name);
-					show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
-					g_free(str);
-					break;		/* ... cancel */
-				}
-
-				{
-					char *prog = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[info->dest_page]->name, STR0TERM);
-					char *dir;
-					char *dfn;
-					struct stat s;
-					
-					/* search for file in directory of hypertext */
-					dir = hyp_path_get_dirname(hyp->file);
-					dfn = g_build_filename(dir, prog, NULL);
-					g_free(dir);
-
-					/* can file be located with shel_find()? */
-					if (hyp_utf8_stat(dfn, &s) != 0)
+					/* search for host application */
+					if (hyp->hostname == NULL)
 					{
-						g_free(dfn);
-						/* use filename as specified */
-						dfn = prog;
-						prog = NULL;
+						show_message(win ? win->hwnd : NULL, _("Error"), _("No host application defined."), FALSE);
+					} else
+					{
+						for (h = hyp->hostname; h != NULL && tool == NULL; h = h->next)
+							if (Profile_ReadString(gl_profile.profile, "TOOLS", h->name, &tool))
+								break;
+						if (empty(tool))	/* host application found? */
+						{
+							char *str = g_strdup_printf(_("No application defined to handle %s."), hyp->hostname->name);
+							show_message(win ? win->hwnd : NULL, _("Error"), str, FALSE);
+							g_free(str);
+						} else
+						{
+							char *dir;
+							char *dfn;
+							struct stat s;
+							
+							/* search for file in directory of hypertext */
+							dir = hyp_path_get_dirname(hyp->file);
+							dfn = g_build_filename(dir, prog, NULL);
+							g_free(dir);
+		
+							/* can file be located with shel_find()? */
+							if (hyp_utf8_stat(dfn, &s) != 0)
+							{
+								g_free(dfn);
+								/* use filename as specified */
+								dfn = prog;
+								prog = NULL;
+							}
+		
+							argv[0] = tool;
+							argv[1] = dfn;
+							argv[2] = 0;
+							hyp_utf8_spawnvp(P_NOWAIT, 2, argv);
+							g_free(dfn);
+							g_free(tool);
+						}
 					}
-
-					argv[0] = tool;
-					argv[1] = dfn;
-					argv[2] = 0;
-					hyp_utf8_spawnvp(P_NOWAIT, 2, argv);
-					g_free(dfn);
-					g_free(prog);
-					g_free(tool);
 				}
+				g_free(prog);
 			}
 			break;
 		case HYP_NODE_SYSTEM_ARGUMENT:
@@ -126,7 +134,10 @@ void HypClick(WINDOW_DATA *win, LINK_INFO *info)
 				
 				argv[0] = prog;
 				argv[1] = 0;
-				ret = hyp_utf8_spawnvp(P_WAIT, 1, argv);
+				if (is_weblink(prog))
+					ret = hyp_utf8_spawnvp(P_NOWAIT, 1, argv);
+				else
+					ret = hyp_utf8_spawnvp(P_WAIT, 1, argv);
 				if (ret < 0)
 				{
 					char *str = g_strdup_printf(_("can't find %s: %s"), prog, hyp_utf8_strerror(errno));

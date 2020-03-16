@@ -861,6 +861,7 @@ gboolean hyp_node_find_windowtitle(HYP_NODE *nodeptr);
 hyp_nodenr hyp_node_find_objref(HYP_NODE *nodeptr, _WORD tree, _WORD obj, hyp_lineno *line);
 hyp_nodenr hyp_first_text_page(HYP_DOCUMENT *hyp_doc);
 hyp_nodenr hyp_last_text_page(HYP_DOCUMENT *hyp_doc);
+gboolean is_weblink(const char *str);
 
 
 /*

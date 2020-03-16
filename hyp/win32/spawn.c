@@ -19,7 +19,14 @@ int hyp_utf8_spawnvp(int mode, int argc, const char *const *argv)
 	for (i = 0; i < argc; i++)
 		new_argv[i] = hyp_utf8_to_wchar(argv[i], STR0TERM, NULL);
 	new_argv[i] = NULL;
-	retval = _wspawnvp(mode, new_argv[0], (const wchar_t *const *)new_argv);
+	if (mode == P_NOWAIT && argc == 1 && is_weblink(argv[0]))
+	{
+		ShellExecuteW(NULL, L"open", new_argv[0], NULL, NULL, SW_SHOW);
+		retval = 0;
+	} else
+	{
+		retval = _wspawnvp(mode, new_argv[0], (const wchar_t *const *)new_argv);
+	}
 	for (i = 0; i < argc; i++)
 		g_free(new_argv[i]);
 	g_free(new_argv);

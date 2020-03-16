@@ -190,3 +190,13 @@ int __my_assert(const char *expr, const char *file, int line)
 	abort();
 	return 1;
 }
+
+/* ------------------------------------------------------------------------- */
+
+gboolean is_weblink(const char *str)
+{
+	return strncmp(str, "http://", 7) == 0 ||
+	       strncmp(str, "https://", 8) == 0 ||
+	       strncmp(str, "ftp://", 6) == 0 ||
+	       strncmp(str, "mailto:", 7) == 0;
+}

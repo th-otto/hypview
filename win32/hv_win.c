@@ -974,12 +974,28 @@ static void set_cursor_if_appropriate(WINDOW_DATA *win, int x, int y)
 static gboolean follow_if_link(WINDOW_DATA *win, int x, int y)
 {
 	LINK_INFO info;
-
+	
 	if (HypFindLink(win, x, y, &info, !gl_profile.viewer.refonly))
 	{
-		if (info.tip)
-			g_free(info.tip);
-		HypClick(win, &info);
+		g_free(info.tip);
+		if (win->is_popup)
+		{
+			WINDOW_DATA *parentwin;
+			GSList *l;;
+			
+			for (l = all_list; l; l = l->next)
+			{
+				parentwin = (WINDOW_DATA *)l->data;
+				if (parentwin->popup == win)
+				{
+					HypClick(parentwin, &info);
+					break;
+				}
+			}
+		} else
+		{
+			HypClick(win->is_popup ? win->parentwin : win, &info);
+		}
 		return TRUE;
 	}
 	return FALSE;
@@ -989,11 +1005,7 @@ static gboolean follow_if_link(WINDOW_DATA *win, int x, int y)
 
 static gboolean on_button_release(WINDOW_DATA *win, int x, int y, int button)
 {
-	if (win->is_popup)
-	{
-		DestroyWindow(win->hwnd);
-		return TRUE;
-	}
+	gboolean found = FALSE;
 	
 	if (button == 1)
 	{
@@ -1003,9 +1015,16 @@ static gboolean on_button_release(WINDOW_DATA *win, int x, int y, int button)
 		if (win->selection.valid)
 			return FALSE;
 	
-		return follow_if_link(win, x, y);
+		found = follow_if_link(win, x, y);
 	}
-	return FALSE;
+
+	if (win->is_popup)
+	{
+		DestroyWindow(win->hwnd);
+		found = TRUE;
+	}
+	
+	return found;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1014,19 +1033,13 @@ static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
 {
 	DOCUMENT *doc = win->data;
 	
-	if (win->popup)
-	{
-		DestroyWindow(win->popup->hwnd);
-		return TRUE;
-	}
-	
 	RemoveSearchBox(win);
 	
 	if (button == 1)
 	{
 		CheckFiledate(win);
 		MouseSelection(win, x, y, (getkeystate() & K_SHIFT) != 0);
-	} else if (button == 2)
+	} else if (button == 2 && !win->popup)
 	{
 		if (gl_profile.viewer.rightback)
 		{
