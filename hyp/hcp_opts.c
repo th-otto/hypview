@@ -21,6 +21,7 @@
 #define DEFAULT_MIN_REF_DISTANCE 1
 #define DEFAULT_ALIAS_TO_INDEX FALSE
 #define DEFAULT_ALABEL_TO_INDEX FALSE
+#define DEFAULT_UNKNOWN_H FALSE
 #define DEFAULT_NODES_TO_INDEX TRUE
 #define DEFAULT_GEN_INDEX TRUE
 #define DEFAULT_INDEX_WIDTH 0
@@ -49,6 +50,8 @@ enum hcp_option {
 	OPT_NO_ALIAS_IN_INDEX = OPT_ALIAS_IN_INDEX + 256,
 	OPT_ALABEL_IN_INDEX = 'g',
 	OPT_NO_ALABEL_IN_INDEX = OPT_ALABEL_IN_INDEX + 256,
+	/* OPT_UNKNOWN_H = 'h', same as help */
+	OPT_NO_UNKNOWN_H = 'h' + 256,
 	OPT_GEN_INDEX = 'i',
 	OPT_NO_GEN_INDEX = OPT_GEN_INDEX + 256,
 	OPT_INDEX_WIDTH = 'j',
@@ -169,6 +172,7 @@ void hcp_opts_init(hcp_opts *opts)
 	opts->min_ref_distance = DEFAULT_MIN_REF_DISTANCE;
 	opts->alias_to_index = DEFAULT_ALIAS_TO_INDEX;
 	opts->alabel_to_index = DEFAULT_ALABEL_TO_INDEX;
+	opts->unknown_h = DEFAULT_UNKNOWN_H;
 	opts->nodes_to_index = DEFAULT_NODES_TO_INDEX;
 	opts->gen_index = DEFAULT_GEN_INDEX;
 	opts->index_width = DEFAULT_INDEX_WIDTH;
@@ -422,6 +426,9 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 		case OPT_NO_ALABEL_IN_INDEX:
 			opts->alabel_to_index = FALSE;
 			break;
+		case OPT_NO_UNKNOWN_H:
+			opts->unknown_h = FALSE;
+			break;
 		case OPT_GEN_INDEX:
 			/*
 			 * FIXME: ST-Guide seems to always write -i to the @options string;
@@ -662,9 +669,10 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 				 * (has it been an option in older versions of hcp?)
 				 * simply ignore it.
 				 */
-#if 0
-				retval = not_here(origin, "--help");
-#endif
+				opts->unknown_h = getopt_on_r(d) ? TRUE : FALSE;
+				/* FIXME: should use hcp_warning to get status column right */
+				fputc('\n', stderr);
+				hcp_usage_warning(_("option not supported -- '%c'"), 'h');
 			} else
 			{
 				opts->do_help = TRUE;

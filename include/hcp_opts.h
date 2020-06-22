@@ -44,6 +44,7 @@ typedef struct {
 	int min_ref_distance;
 	gboolean alias_to_index;
 	gboolean alabel_to_index;
+	gboolean unknown_h;
 	gboolean nodes_to_index;
 	gboolean gen_index;
 	int index_width;
