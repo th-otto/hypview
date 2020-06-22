@@ -95,8 +95,23 @@ void HypDisplayPage(WINDOW_DATA *win)
 	for (l = win->image_childs; l; l = l->next)
 	{
 		struct hyp_gfx *gfx = (struct hyp_gfx *)l->data;
-
-		cairo_set_source_surface(cr, (cairo_surface_t *)gfx->surf, gfx->window_x - xoffset, gfx->window_y - yoffset);
+		int y = gfx->window_y;
+		
+		if (gfx->type == HYP_ESC_LINE)
+		{
+			GtkTextIter line;
+			GdkRectangle line_pos;
+			GtkTextMark *mark;
+			char *markname;
+			
+			markname = g_strdup_printf("hv-line-%u", gfx->y_offset);
+			mark = gtk_text_buffer_get_mark(win->text_buffer, markname);
+			g_free(markname);
+			gtk_text_buffer_get_iter_at_mark(win->text_buffer, &line, mark);
+			gtk_text_view_get_iter_location(GTK_TEXT_VIEW(win->text_view), &line, &line_pos);
+			y = line_pos.y;
+		}
+		cairo_set_source_surface(cr, (cairo_surface_t *)gfx->surf, gfx->window_x - xoffset, y - yoffset);
 		cairo_paint(cr);
 	}
 	cairo_destroy(cr);
@@ -807,7 +822,9 @@ static long draw_graphics(WINDOW_DATA *win, WP_UNIT sx, WP_UNIT sy, struct prep_
 			case HYP_ESC_LINE:
 				sy = DrawLine(win, gfx, sx, sy, info);
 				if (gfx->window_y + 2 * gfx->window_margin + gfx->pixheight > node->height)
+				{
 					node->height = gfx->window_y + 2 * gfx->window_margin + gfx->pixheight;
+				}
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
@@ -1142,7 +1159,9 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	WP_UNIT sx, sy;
 	gboolean at_bol;
 	struct prep_info info;
-	
+	char *markname;
+	long lastlineno;
+
 #define DUMPTEXT(flush_spaces) \
 	if (src > textstart) \
 	{ \
@@ -1196,6 +1215,9 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	textstart = src;
 	at_bol = TRUE;
 	node->height = 0;
+	markname = g_strdup_printf("hv-line-%ld", info.lineno);
+	gtk_text_buffer_create_mark(info.text_buffer, markname, &info.iter, TRUE);
+	g_free(markname);
 
 	sy = draw_graphics(win, sx, sy, &info);
 	
@@ -1389,6 +1411,9 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			at_bol = TRUE;
 			gtk_text_buffer_insert(info.text_buffer, &info.iter, "\n", 1);
 			gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
+			markname = g_strdup_printf("hv-line-%ld", info.lineno);
+			gtk_text_buffer_create_mark(info.text_buffer, markname, &info.iter, TRUE);
+			g_free(markname);
 			sy += win->y_raster;
 			sy = draw_graphics(win, sx, sy, &info);
 		} else
@@ -1417,6 +1442,10 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 		if (info.x > info.maxx)
 			info.maxx = info.x;
 		++info.lineno;
+		gtk_text_buffer_move_mark(info.text_buffer, info.linestart, &info.iter);
+		markname = g_strdup_printf("hv-line-%ld", info.lineno);
+		gtk_text_buffer_create_mark(info.text_buffer, markname, &info.iter, TRUE);
+		g_free(markname);
 		sy += win->y_raster;
 		sy = draw_graphics(win, sx, sy, &info);
 	}
@@ -1428,9 +1457,17 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 	node->width = info.maxx * win->x_raster;
 	
 	/*
-	 * remove trailing empty lines from textbuffer
+	 * remove trailing empty lines from textbuffer,
+	 * unless there are graphics attached to it
 	 */
-	while (info.lineno > 0)
+	lastlineno = 0;
+	{
+		struct hyp_gfx *gfx;
+		for (gfx = node->gfx; gfx != NULL; gfx = gfx->next)
+			if (gfx->y_offset > lastlineno)
+				lastlineno = gfx->y_offset;
+	}
+	while (info.lineno > lastlineno)
 	{
 		GtkTextIter start, end;
 		char *txt;
