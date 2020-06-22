@@ -4664,7 +4664,7 @@ static void c_do_image(hcp_vars *vars, int argc, char **argv, gboolean islimage)
 				adm.dithermask = 0;
 			} else if (f->pic.planes <= 1 || f->pic.planes > 8)
 			{
-				hcp_error(vars, NULL, _("dithermask not applyable to images with %d planes"), f->pic.planes);
+				hcp_warning(vars, NULL, _("dithermask not applyable to images with %d planes"), f->pic.planes);
 				adm.dithermask = 0;
 			} else if (bit > (1 << f->pic.planes))
 			{
