@@ -232,7 +232,7 @@ char *path_unsubst(const char *path, gboolean subst_hypfold)
 
 	x_unsubst_homedir(&filename);
 #ifdef G_OS_TOS
-	if (filename && isupper(filename[0]) == GetBootDrive() && filename[1] == ':' && G_IS_DIR_SEPARATOR(filename[2]))
+	if (filename && toupper(filename[0]) == GetBootDrive() && filename[1] == ':' && G_IS_DIR_SEPARATOR(filename[2]))
 		 filename[0] = '*';
 #endif
 	convslash(filename);

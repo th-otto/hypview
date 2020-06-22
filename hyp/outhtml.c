@@ -3035,6 +3035,8 @@ gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char 
 			ret &= sym_check_links(hyp, opts, node, &syms);
 			break;
 		case HYP_NODE_IMAGE:
+			lowercase_image_name(hyp, node);
+			break;
 		case HYP_NODE_EXTERNAL_REF:
 		case HYP_NODE_SYSTEM_ARGUMENT:
 		case HYP_NODE_REXX_SCRIPT:

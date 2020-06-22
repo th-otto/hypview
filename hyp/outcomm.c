@@ -167,6 +167,44 @@ char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, cons
 
 /* ------------------------------------------------------------------------- */
 
+/*
+ * if an imagename is all uppercase, make it lowercase
+ */
+void lowercase_image_name(HYP_DOCUMENT *hyp, hyp_nodenr node)
+{
+	INDEX_ENTRY *entry;
+	size_t namelen, i;
+	unsigned char *name;
+
+	entry = hyp->indextable[node];
+	namelen = entry->length - SIZEOF_INDEX_ENTRY;
+	if (namelen > 0)
+	{
+		name = entry->name;
+		for (i = 0; i < namelen; i++)
+		{
+			unsigned char ch = name[i];
+			if (ch == 0)
+				break;
+			if (ch >= 0x80 || ch == '.' || ch == '_' || ch == '-' || isdigit(ch))
+				continue;
+			if (!isupper(ch))
+				return;
+		}
+		for (i = 0; i < namelen; i++)
+		{
+			unsigned char ch = name[i];
+			if (ch == 0)
+				break;
+			if (ch >= 0x80)
+				continue;
+			name[i] = tolower(ch);
+		}
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
 hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pic_format default_format)
 {
 	hyp_pic_format format;

@@ -1102,7 +1102,8 @@ gboolean is_allupper(const char *str)
 {
 	while (*str)
 	{
-		if (*str != '.' && *str != '_' && !isupper(*str))
+		unsigned char ch = *str;
+		if (ch != '.' && ch != '_' && !isupper(ch) && !isdigit(ch))
 			return FALSE;
 		str++;
 	}
