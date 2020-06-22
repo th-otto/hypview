@@ -427,6 +427,11 @@ static void rle4_mem_init(RLE4 *rle, const unsigned char *buf, long bufsize)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#define RLE_COMMAND 0
+#define RLE_ENDOFLINE 0
+#define RLE_ENDOFBITMAP 1
+#define RLE_DELTA 2
+
 static gboolean rle4_decode(RLE4 *rle, unsigned char *p)
 {
 	unsigned char cc;
@@ -436,7 +441,7 @@ static gboolean rle4_decode(RLE4 *rle, unsigned char *p)
 		if (rle->enc_count > 0)
 		{
 			cc = rle->c1;
-			rle->c1 =  rle->c2;
+			rle->c1 = rle->c2;
 			rle->c2 = cc;
 			rle->enc_count--;
 		} else if (rle->abs_count > 0)
@@ -463,18 +468,18 @@ static gboolean rle4_decode(RLE4 *rle, unsigned char *p)
 		{
 			if (rle->get_c(rle, &cc) == FALSE)
 				return FALSE;
-			if (cc == 0)
+			if (cc == RLE_COMMAND)
 			{
 				if (rle->get_c(rle, &cc) == FALSE)
 					return FALSE;
 				switch (cc)
 				{
-				case 0:
+				case RLE_ENDOFLINE:
 					continue;
-				case 1:
+				case RLE_ENDOFBITMAP:
 					rle->decode_ok = TRUE;
 					return FALSE;
-				case 2:
+				case RLE_DELTA:
 					if (rle->get_c(rle, &rle->c1) == FALSE)
 						return FALSE;
 					if (rle->get_c(rle, &rle->c2) == FALSE)
