@@ -544,15 +544,7 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 			header_size = iff_header(headerbuf, &pic);
 			if (out)
 			{
-				g_string_set_size(out, header_size + pic.pi_datasize);
-				memcpy(out->str, buf, header_size);
-			} else
-			{
-				if ((long) fwrite(headerbuf, 1, header_size, fp) != header_size)
-				{
-					FileErrorErrno(pic.pi_name);
-					goto error;
-				}
+				g_string_set_size(out, header_size + pic.pi_picsize);
 			}
 			g_free(buf);
 			buf = iff_pack(conv, &pic);
@@ -560,12 +552,16 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 			{
 				goto error;
 			}
+			/* update header with compressed data size */
+			iff_header(headerbuf, &pic);
 			if (out)
 			{
+				memcpy(out->str, headerbuf, header_size);
 				memcpy(out->str + header_size, buf, pic.pi_datasize);
 			} else
 			{
-				if ((long) fwrite(buf, 1, pic.pi_datasize, fp) != pic.pi_datasize)
+				if ((long) fwrite(headerbuf, 1, header_size, fp) != header_size ||
+					(long) fwrite(buf, 1, pic.pi_datasize, fp) != pic.pi_datasize)
 				{
 					FileErrorErrno(pic.pi_name);
 					goto error;
