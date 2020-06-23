@@ -1633,8 +1633,8 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 	case GDK_KEY_Undo:
 		GoThisButton(win, TO_BACK);
 		break;
-	case GDK_KEY_space:
 #if 0 /* for debugging line positions */
+	case GDK_KEY_space:
 		{
 			GtkTextIter line;
 			GdkRectangle line_pos;
@@ -1647,8 +1647,8 @@ static gboolean key_press_event(GtkWidget *text_view, GdkEventKey *event, WINDOW
 				fprintf(stderr, "line %d: %d\n", y, line_pos.y);
 			}
 		}
-#endif
 		break;
+#endif
 	case GDK_KEY_F1:				/* already handled by actions */
 	case GDK_KEY_F2:				/* already handled by actions */
 	case GDK_KEY_F3:				/* already handled by actions */

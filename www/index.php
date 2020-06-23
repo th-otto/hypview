@@ -449,6 +449,15 @@ A file with some @limages
 
 <tr>
 <td>
+<li><a href="javascript: submitUrl(hyptestdir + &quot;limage2.hyp&quot;);">limage2.hyp</a></li>
+</td>
+<td>
+A file with two consecutive @limages
+</td>
+</tr>
+
+<tr>
+<td>
 <li><a href="javascript: submitUrl(hyptestdir + &quot;linkattr.hyp&quot;);">linkattr.hyp</a></li>
 </td>
 <td>
