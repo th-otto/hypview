@@ -134,7 +134,7 @@ static void add_child_window(WINDOW_DATA *win, struct hyp_gfx *gfx)
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
-static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info)
+static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, struct prep_info *info, int need_nl)
 {
 	DOCUMENT *doc = win->data;
 	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
@@ -170,11 +170,19 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y, s
 			
 			start = info->iter;
 			gtk_text_buffer_move_mark(info->text_buffer, info->picstart, &info->iter);
+			if (!need_nl)
+				gtk_text_iter_backward_chars(&info->iter, 2);
 			gtk_text_buffer_insert_pixbuf(info->text_buffer, &info->iter, pixbuf);
 			/*
 			 * two newlines, because the St-guide leaves an empty line after each @limage
 			 */
-			gtk_text_buffer_insert(info->text_buffer, &info->iter, "\n\n", 2);
+			if (need_nl)
+			{
+				gtk_text_buffer_insert(info->text_buffer, &info->iter, "\n\n", 2);
+			} else
+			{
+				gtk_text_iter_forward_chars(&info->iter, 2);
+			}
 			y += gfx->pixheight + win->y_raster;
 			if (gfx->x_offset == 0)
 			{
@@ -809,7 +817,10 @@ static long draw_graphics(WINDOW_DATA *win, WP_UNIT sx, WP_UNIT sy, struct prep_
 {
 	struct hyp_gfx *gfx;
 	HYP_NODE *node = win->displayed_node;
-	
+	WP_UNIT y, max_y;
+	int need_nl = TRUE;
+
+	max_y = sy;
 	for (gfx = node->gfx; gfx != NULL; gfx = gfx->next)
 	{
 		if (gfx->y_offset == info->lineno)
@@ -817,25 +828,33 @@ static long draw_graphics(WINDOW_DATA *win, WP_UNIT sx, WP_UNIT sy, struct prep_
 			switch (gfx->type)
 			{
 			case HYP_ESC_PIC:
-				sy = DrawPicture(win, gfx, sx, sy, info);
+				y = DrawPicture(win, gfx, sx, sy, info, need_nl);
+				need_nl = !gfx->islimage;
 				break;
 			case HYP_ESC_LINE:
-				sy = DrawLine(win, gfx, sx, sy, info);
+				y = DrawLine(win, gfx, sx, sy, info);
 				if (gfx->window_y + 2 * gfx->window_margin + gfx->pixheight > node->height)
 				{
 					node->height = gfx->window_y + 2 * gfx->window_margin + gfx->pixheight;
 				}
+				need_nl = TRUE;
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-				sy = DrawBox(win, gfx, sx, sy, info);
+				y = DrawBox(win, gfx, sx, sy, info);
 				if (gfx->window_y + 2 * gfx->window_margin + gfx->pixheight > node->height)
 					node->height = gfx->window_y + 2 * gfx->window_margin + gfx->pixheight;
+				need_nl = TRUE;
+				break;
+			default:
+				y = sy;
 				break;
 			}
+			if (y > max_y)
+				max_y = y;
 		}
 	}
-	return sy;
+	return max_y;
 }
 
 /*** ---------------------------------------------------------------------- ***/

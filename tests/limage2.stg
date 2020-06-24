@@ -8,12 +8,13 @@
 @width 75
 
 @node "Main"
-@limage "select_box.img" 0
-@limage "title.img" 0
-@endnode
+Two images on the same line:
+@limage "select_box.img" 1
+@limage "title.img" 1
 
-@node "2nd"
-@limage "select_box.img" 0
 
-@limage "title.img" 0
+Two images with a text line in between:
+@limage "select_box.img" 1
+text
+@limage "title.img" 1
 @endnode

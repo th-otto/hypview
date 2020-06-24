@@ -693,10 +693,11 @@ static gboolean html_out_attr(GString *out, struct textattr *attr)
 
 /* ------------------------------------------------------------------------- */
 
-static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, int *gfx_id, gboolean *converror)
+static int html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, int *gfx_id, gboolean *converror)
 {
 	char *id;
-	
+	int need_nl = FALSE;
+
 	switch (gfx->type)
 	{
 	case HYP_ESC_PIC:
@@ -769,7 +770,7 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 				 * the '\n' at the end here shouldn't be there,
 				 * but st-guide leaves an empty line after each @limage
 				 */
-				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<div class=\"%s\"%s style=\"%swidth:%dch; left:%dch\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>\n",
+				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<div class=\"%s\"%s style=\"%swidth:%dch; left:%dch\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>",
 					html_limage_style,
 					align,
 					*align ? "" : "position:relative; ",
@@ -780,6 +781,8 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 					gfx->pixwidth,
 					gfx->pixheight,
 					html_closer);
+				if ((gfx->height % HYP_PIC_FONTH) == 0)
+					need_nl = TRUE;
 			} else
 			{
 				hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<div class=\"%s\" style=\"position:absolute; left:%dch;\"><img src=\"%s\" alt=\"%s\" width=\"%d\" height=\"%d\" style=\"border:0;\"%s</div>",
@@ -841,21 +844,26 @@ static void html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct
 		g_free(id);
 		break;
 	}
+	return need_nl;
 }
 
 /* ------------------------------------------------------------------------- */
 
 static void html_out_graphics(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, struct hyp_gfx *gfx, long lineno, int *gfx_id, gboolean *converror)
 {
+	int need_nl = FALSE;
+
 	while (gfx != NULL)
 	{
 		if (gfx->y_offset == lineno)
 		{
 			gfx->used = TRUE;
-			html_out_gfx(opts, out, hyp, gfx, gfx_id, converror);
+			need_nl |= html_out_gfx(opts, out, hyp, gfx, gfx_id, converror);
 		}
 		gfx = gfx->next;
 	}
+	if (need_nl)
+		g_string_append(out, "\n");
 }
 
 /* ------------------------------------------------------------------------- */

@@ -287,7 +287,7 @@ void SpecialMessageEvents(DIALOG *dialog,EVNT *event);
  * dl_win.c
  */
 WINDOW_DATA *CreateWindow(HNDL_WIN proc, short kind, const char *title, 
-					WP_UNIT max_w, WP_UNIT max_h,void *user_data);
+					WP_UNIT max_w, WP_UNIT max_h, void *user_data);
 void OpenWindow(WINDOW_DATA *win);
 void SendClose(_WORD whandle);
 void SendTop(_WORD whandle);

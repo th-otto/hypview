@@ -46,7 +46,8 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		{
 			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
 			/* st-guide leaves an empty line after each @limage */
-			y += win->y_raster;
+			if ((gfx->pixheight % win->y_raster) == 0)
+				y += win->y_raster;
 		}
 		if (tx >= win->scroll.g_w || (tx + gfx->pixwidth) <= 0)
 			return y;
@@ -269,6 +270,9 @@ static char *pagename(HYP_DOCUMENT *hyp, hyp_nodenr node)
 
 static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
 {
+	long max_y, y;
+	
+	max_y = sy;
 	while (gfx != NULL)
 	{
 		if (gfx->y_offset == lineno)
@@ -276,20 +280,25 @@ static long draw_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 			switch (gfx->type)
 			{
 			case HYP_ESC_PIC:
-				sy = DrawPicture(win, gfx, sx, sy);
+				y = DrawPicture(win, gfx, sx, sy);
 				break;
 			case HYP_ESC_LINE:
-				sy = DrawLine(win, gfx, sx, sy);
+				y = DrawLine(win, gfx, sx, sy);
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-				sy = DrawBox(win, gfx, sx, sy);
+				y = DrawBox(win, gfx, sx, sy);
+				break;
+			default:
+				y = sy;
 				break;
 			}
+			if (y > max_y)
+				max_y = y;
 		}
 		gfx = gfx->next;
 	}
-	return sy;
+	return max_y;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -308,6 +317,8 @@ static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		if (gfx->islimage)
 		{
 			y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster;
+			if ((gfx->pixheight % win->y_raster) == 0)
+				y += win->y_raster;
 		}
 	}
 	return y;
@@ -317,6 +328,9 @@ static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 
 static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP_UNIT sx, WP_UNIT sy)
 {
+	long max_y, y;
+	
+	max_y = sy;
 	while (gfx != NULL)
 	{
 		if (gfx->y_offset == lineno)
@@ -324,7 +338,9 @@ static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 			switch (gfx->type)
 			{
 			case HYP_ESC_PIC:
-				sy = SkipPicture(win, gfx, sx, sy);
+				y = SkipPicture(win, gfx, sx, sy);
+				if (y > max_y)
+					max_y = y;
 				break;
 			case HYP_ESC_LINE:
 				break;
@@ -335,7 +351,7 @@ static long skip_graphics(WINDOW_DATA *win, struct hyp_gfx *gfx, long lineno, WP
 		}
 		gfx = gfx->next;
 	}
-	return sy;
+	return max_y;
 }
 
 /*** ---------------------------------------------------------------------- ***/
