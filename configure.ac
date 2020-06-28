@@ -916,7 +916,7 @@ AH_TEMPLATE([LIBHPDF_WITH_ASIAN_FONTS], [include support for asian character enc
 AC_ARG_WITH(pdf,
   [AS_HELP_STRING([--with-pdf],[include PDF output support])],
   [ ],
-  [with_pdf=yes]
+  [with_pdf=no]
 )
 AM_CONDITIONAL(WITH_PDF, test "$with_pdf" = "yes")
 if test "$with_pdf" = "yes"; then

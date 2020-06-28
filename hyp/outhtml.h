@@ -38,6 +38,7 @@ extern int html_doctype;
 extern const char *cgi_scriptname;
 extern gboolean html_css_written;
 extern gboolean html_js_written;
+extern gboolean html_navimages_written;
 extern char const hypview_lineno_tag[];
 extern char const html_attr_bold_style[];
 

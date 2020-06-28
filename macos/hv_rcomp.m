@@ -97,6 +97,7 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 	is_MASTER = getenv("TO_MASTER") != NULL;
 	html_js_written = FALSE;
 	html_css_written = FALSE;
+	html_navimages_written = FALSE;
 	
 	hcp_opts_init(opts);
 	if (!hcp_opts_parse_string(opts, gl_profile.hcp.options, OPTS_FROM_CONFIG))

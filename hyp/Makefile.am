@@ -154,6 +154,83 @@ htmljs.h: $(top_srcdir)/www/_hypview.js
 	  echo ';' \
 	) > $@
 
+iback_png.h: $(top_srcdir)/www/images/iback.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_back_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+iprev_png.h: $(top_srcdir)/www/images/iprev.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_prev_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+itoc_png.h: $(top_srcdir)/www/images/itoc.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_toc_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+inext_png.h: $(top_srcdir)/www/images/inext.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_next_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+ixref_png.h: $(top_srcdir)/www/images/ixref.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_xref_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+iload_png.h: $(top_srcdir)/www/images/iload.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_load_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+iindex_png.h: $(top_srcdir)/www/images/iindex.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_index_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+ihelp_png.h: $(top_srcdir)/www/images/ihelp.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_help_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+iinfo_png.h: $(top_srcdir)/www/images/iinfo.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_info_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+NAV_IMAGES = \
+	iback_png.h \
+	iprev_png.h \
+	itoc_png.h \
+	inext_png.h \
+	ixref_png.h \
+	iload_png.h \
+	iindex_png.h \
+	ihelp_png.h \
+	iinfo_png.h \
+	$(empty)
+
+outhtml.o: $(NAV_IMAGES)
+
 EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
 MOFILES := $(shell $(EVAL_MOFILES))
 
@@ -490,5 +567,5 @@ EXTTTP = .ttp
 EXTTOS = .tos
 endif
 
-CLEANFILES = *.ttp *.tos *.res
+CLEANFILES = *.ttp *.tos *.res $(NAV_IMAGES)
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT) $(build_triplet)-stool$(EXEEXT) $(build_triplet)-hypfind$(EXEEXT) $(build_triplet)-hypinfo$(EXEEXT)

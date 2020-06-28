@@ -32,20 +32,33 @@
 #include "htmljs.h"
 #include "hv_vers.h"
 
+#include "iback_png.h"
+#include "iprev_png.h"
+#include "itoc_png.h"
+#include "inext_png.h"
+#include "ixref_png.h"
+#include "iload_png.h"
+#include "iindex_png.h"
+#include "ihelp_png.h"
+#include "iinfo_png.h"
+
 char *html_referer_url;
 int html_doctype = HTML_DOCTYPE_XSTRICT;
 gboolean html_css_written = FALSE;
 gboolean html_js_written = FALSE;
+gboolean html_navimages_written = FALSE;
 
-static char const html_nav_back_png[] = "images/iback.png";
-static char const html_nav_prev_png[] = "images/iprev.png";
-static char const html_nav_toc_png[] = "images/itoc.png";
-static char const html_nav_next_png[] = "images/inext.png";
-static char const html_nav_xref_png[] = "images/ixref.png";
-static char const html_nav_load_png[] = "images/iload.png";
-static char const html_nav_index_png[] = "images/iindex.png";
-static char const html_nav_help_png[] = "images/ihelp.png";
-static char const html_nav_info_png[] = "images/iinfo.png";
+#define IMAGES_DIR "images"
+
+static char const html_nav_back_png[] = IMAGES_DIR "/iback.png";
+static char const html_nav_prev_png[] = IMAGES_DIR "/iprev.png";
+static char const html_nav_toc_png[] = IMAGES_DIR "/itoc.png";
+static char const html_nav_next_png[] = IMAGES_DIR "/inext.png";
+static char const html_nav_xref_png[] = IMAGES_DIR "/ixref.png";
+static char const html_nav_load_png[] = IMAGES_DIR "/iload.png";
+static char const html_nav_index_png[] = IMAGES_DIR "/iindex.png";
+static char const html_nav_help_png[] = IMAGES_DIR "/ihelp.png";
+static char const html_nav_info_png[] = IMAGES_DIR "/iinfo.png";
 static char const html_hyp_info_id[] = "hyp_info";
 static char const html_hyp_xrefs_id[] = "hyp_xrefs";
 static char const html_nav_dimensions[] = " width=\"32\" height=\"21\"";
@@ -1473,6 +1486,55 @@ static gboolean html_out_javascript(hcp_opts *opts, GString *outstr, gboolean do
 	
 /* ------------------------------------------------------------------------- */
 
+static void html_out_navimage(const char *dir, const char *name, const unsigned char *data, size_t size)
+{
+	char *filename;
+	FILE *fp;
+	
+	filename = g_build_filename(dir, name, NULL);
+	if (filename == NULL)
+		return;
+	fp = fopen(filename, "wb");
+	if (fp != NULL)
+	{
+		fwrite(data, 1, size, fp);
+		fclose(fp);
+	}
+	g_free(filename);
+}
+
+static void html_out_navimages(hcp_opts *opts)
+{
+	char *dir;
+	
+	if (html_navimages_written)
+		return;
+	/*
+	 * assumes these images are always available on the server
+	 */
+	if (opts->for_cgi)
+		return;
+		
+	dir = g_build_filename(opts->output_dir, IMAGES_DIR, NULL);
+	if (mkdir(dir, 0750) < 0 && errno != EEXIST)
+		fprintf(opts->errorfile, "%s: %s\n", dir, strerror(errno));
+	html_navimages_written = TRUE;
+	
+	html_out_navimage(opts->output_dir, html_nav_back_png, nav_back_data, sizeof(nav_back_data));
+	html_out_navimage(opts->output_dir, html_nav_prev_png, nav_prev_data, sizeof(nav_prev_data));
+	html_out_navimage(opts->output_dir, html_nav_toc_png, nav_toc_data, sizeof(nav_toc_data));
+	html_out_navimage(opts->output_dir, html_nav_next_png, nav_next_data, sizeof(nav_next_data));
+	html_out_navimage(opts->output_dir, html_nav_xref_png, nav_xref_data, sizeof(nav_xref_data));
+	html_out_navimage(opts->output_dir, html_nav_load_png, nav_load_data, sizeof(nav_load_data));
+	html_out_navimage(opts->output_dir, html_nav_index_png, nav_index_data, sizeof(nav_index_data));
+	html_out_navimage(opts->output_dir, html_nav_help_png, nav_help_data, sizeof(nav_help_data));
+	html_out_navimage(opts->output_dir, html_nav_info_png, nav_info_data, sizeof(nav_info_data));
+	
+	g_free(dir);
+}
+
+/* ------------------------------------------------------------------------- */
+
 static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, struct html_xref *xrefs, gboolean *converror)
 {
 	INDEX_ENTRY *entry = hyp->indextable[node];
@@ -2189,6 +2251,7 @@ void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char
 			g_string_append_printf(out, "<div class=\"%s\">\n", html_node_style);
 		} else
 		{
+			html_out_navimages(opts);
 			html_out_nav_toolbar(hyp, opts, out, node, xrefs, converror);
 			g_string_append_printf(out, "<div class=\"%s\" style=\"position:absolute; top:32px;\">\n", html_node_style);
 		}
