@@ -5509,7 +5509,7 @@ static gboolean finish_pass1(hcp_vars *vars)
 					if (lab == NULL)
 					{
 						hcp_warning(vars, &tree->loc,
-							_("label '%s' not found in node %s"),
+							_("label '%s' not found in node '%s'"),
 							vars->label_table[idx]->name,
 							tree->name);
 						tree->lineno = 0;
@@ -5528,21 +5528,23 @@ static gboolean finish_pass1(hcp_vars *vars)
 	vars->p2_real_external_node_counter = vars->p1_node_counter;
 	for (i = 0; i < vars->p1_external_node_counter; i++)
 	{
+		LABIDX idx;
+
 		entry = vars->extern_table[i];
-		
+
 		switch (entry->type)
 		{
 		case HYP_NODE_XLINK:
 			link = find_node(vars, (const char *) entry->name);
+
+			/* fetch label name that was used */
+			idx = entry->xlink_linenolab;
+
 			if (link != NULL)
 			{
 				LABEL *lab;
-				LABIDX idx;
 				
 				/* found. no index entry written */
-				
-				/* fetch label name that was used */
-				idx = entry->xlink_linenolab;
 				
 				/* update target link */
 				entry->xlink_target = link->node_index;
@@ -5569,7 +5571,7 @@ static gboolean finish_pass1(hcp_vars *vars)
 						if (lab == NULL)
 						{
 							hcp_error(vars, &vars->label_table[idx]->source_location,
-								_("label '%s' not found in node %s"),
+								_("label '%s' not found in node '%s'"),
 								vars->label_table[idx]->name,
 								entry->name);
 							entry->xlink_lineno = 0;
@@ -5601,6 +5603,19 @@ static gboolean finish_pass1(hcp_vars *vars)
 			} else
 			{
 				/* not found. turn into external reference */
+				if (idx != HYP_NOINDEX &&
+					vars->label_table[idx]->lineno == HYP_NOINDEX)
+				{
+					/*
+					 * "text" link <node> <label> was used,
+					 * That could only be an internal reference.
+					 */
+					hcp_warning(vars, &vars->label_table[idx]->source_location,
+						_("label '%s' not found in node '%s'"),
+						vars->label_table[idx]->name,
+						entry->name);
+				}
+
 				entry->type = HYP_NODE_EXTERNAL_REF;
 				entry->extern_labindex = 0; /* FIXME? that stores also the lineno for external references */
 				ASSERT(entry->extern_nodeindex == HYP_NOINDEX);
