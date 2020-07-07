@@ -16,7 +16,7 @@
  *
  */
 
-void vr_transfer_bits (short handle, GCBITMAP * src_bm, GCBITMAP * dst_bm, const RECT16 *src_rect, const RECT16 *dst_rect, short mode)
+void vr_transfer_bits (short handle, GCBITMAP * src_bm, GCBITMAP * dst_bm, const short *src_rect, const short *dst_rect, short mode)
 {
 	short vdi_control[VDI_CNTRLMAX]; 
 	short vdi_intin[4];   
@@ -29,8 +29,8 @@ void vr_transfer_bits (short handle, GCBITMAP * src_bm, GCBITMAP * dst_bm, const
 	vdi_intin[2] = 0;
 	vdi_intin[3] = 0;
 
-	*(RECT16 *)(vdi_ptsin +0) = *src_rect;
-	*(RECT16 *)(vdi_ptsin +4) = *dst_rect;
+	*(RECT16 *)(vdi_ptsin +0) = *(const RECT16 *)src_rect;
+	*(RECT16 *)(vdi_ptsin +4) = *(const RECT16 *)dst_rect;
 
 	vdi_control_ptr(0, GCBITMAP *)  = src_bm;
 	vdi_control_ptr(1, GCBITMAP *)  = dst_bm;

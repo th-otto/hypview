@@ -1078,7 +1078,7 @@ int32_t		vqr_bg_color		(_WORD handle, COLOR_ENTRY *fg_color);
 int32_t		vqr_fg_color		(_WORD handle, COLOR_ENTRY *fg_color);
 int32_t		vqt_bg_color		(_WORD handle, COLOR_ENTRY *fg_color);
 int32_t		vqt_fg_color		(_WORD handle, COLOR_ENTRY *fg_color);
-void		vr_transfer_bits	(_WORD handle, GCBITMAP *src_bm, GCBITMAP *dst_bm, const RECT16 *src_rect, const RECT16 *dst_rect, _WORD mode);
+void		vr_transfer_bits	(_WORD handle, GCBITMAP *src_bm, GCBITMAP *dst_bm, const _WORD *src_rect, const _WORD *dst_rect, _WORD mode);
 _WORD		vs_ctab			(_WORD handle, COLOR_TAB *ctab);
 _WORD		vs_ctab_entry		(_WORD handle, _WORD __index, int32_t color_space, COLOR_ENTRY *color);
 _WORD		vs_dflt_ctab		(_WORD handle);

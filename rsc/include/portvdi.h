@@ -42,7 +42,7 @@ extern VDIPB _VdiParBlk;
 
 typedef int32_t fix31;
 
-typedef unsigned short vdi_wchar_t; /* 16bit string, eg. for unicode */
+typedef short vdi_wchar_t; /* 16bit string, eg. for unicode */
 
 #define fix31_to_point(a) ((_WORD)((((a) + 32768L) >> 16)))
 #define point_to_fix31(a) (((fix31)(a)) << 16)
@@ -107,6 +107,7 @@ void    v_rfbox ( _WORD handle, _WORD *pxyarray );
 void    v_justified( _WORD handle, _WORD x, _WORD y, const char *string,
                      _WORD length, _WORD word_space,
                      _WORD char_space );
+void	v_justified16(_WORD handle, _WORD x, _WORD y, const vdi_wchar_t *wstr, _WORD len, _WORD word_space, _WORD char_space);
 void	v_justified16n(_WORD handle, _WORD x, _WORD y, const vdi_wchar_t *wstr, _WORD num, _WORD len, _WORD word_space, _WORD char_space);
 
 
@@ -477,7 +478,8 @@ void vs_grayoverride(_WORD handle, _WORD grayval);
 
 /****** Raster definitions *********************************************/
 
-#ifndef __MFDB
+#if !defined(__MFDB__) && !defined(__MFDB)
+#define __MFDB__
 #define __MFDB
 typedef struct
 {
@@ -682,11 +684,8 @@ _WORD    v_bez_on( _WORD handle );
 void    v_bez_off( _WORD handle );
 _WORD    v_bez_con( _WORD handle, _WORD onoff );
 void    v_set_app_buff( _WORD handle, void **buf_p, _WORD nparagraphs );
-void    v_bez( _WORD handle, _WORD count, _WORD *xyarr,
-                char *bezarr, _WORD *extent, _WORD *totpts, _WORD *totmoves );
-void    v_bez_fill( _WORD handle, _WORD count, _WORD *xyarr,
-                     char *bezarr, _WORD *extent, _WORD *totpts,
-                     _WORD *totmoves );
+void    v_bez( _WORD handle, _WORD count, _WORD *xyarr, char *bezarr, _WORD *extent, _WORD *totpts, _WORD *totmoves );
+void    v_bez_fill( _WORD handle, _WORD count, _WORD *xyarr, char *bezarr, _WORD *extent, _WORD *totpts, _WORD *totmoves );
 _WORD   v_bez_qual( _WORD handle, _WORD prcnt, _WORD *actual );
 
 
@@ -788,10 +787,12 @@ void vqt_real_extent16n(_WORD handle, _WORD x, _WORD y, const vdi_wchar_t *wstri
 #define TGA_MASK	0x00000110
 #define	TGA_TYPE_2	0x4
 
+#if 0
 #define APPL	0
 #define DOC		1
 #define CREAT	2
 #define REM		3
+#endif
 
 typedef struct
 {
@@ -876,9 +877,10 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 /*----------------------------------------------------------------------------------------*/
 /* Konstanten fr Pixelformate																				*/
 /*----------------------------------------------------------------------------------------*/
-#define	PX_1COMP		0x01000000L										/* Pixel besteht aus einer benutzten Komponente: Farbindex */
-#define	PX_3COMP		0x03000000L										/* Pixel besteht aus drei benutzten Komponenten, z.B. RGB */
-#define	PX_4COMP		0x04000000L										/* Pixel besteht aus vier benutzten Komponenten, z.B. CMYK */
+#define	PX_1COMP	0x01000000L										/* Pixel besteht aus einer benutzten Komponente: Farbindex */
+#define	PX_2COMP	0x02000000L										/* Pixel besteht aus zwei benutzten Komponenten, z.B. AG */
+#define	PX_3COMP	0x03000000L										/* Pixel besteht aus drei benutzten Komponenten, z.B. RGB */
+#define	PX_4COMP	0x04000000L										/* Pixel besteht aus vier benutzten Komponenten, z.B. CMYK */
 
 #define	PX_REVERSED	0x00800000L										/* Pixel wird in umgekehrter Bytreihenfolge ausgegeben */
 #define	PX_xFIRST	0x00400000L										/* unbenutzte Bits liegen vor den benutzen (im Motorola-Format betrachtet) */
@@ -889,14 +891,15 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 #define	PX_PLANES	0x00010000L										/* Bits sind auf mehrere Ebenen verteilt (Reihenfolge: 0, 1, ..., n) */
 #define	PX_IPLANES	0x00000000L										/* Bits sind auf mehrere Worte verteilt (Reihenfolge: 0, 1, ..., n) */
 
-#define	PX_USES1		0x00000100L										/* 1 Bit des Pixels wird benutzt */
-#define	PX_USES2		0x00000200L										/* 2 Bit des Pixels werden benutzt */
-#define	PX_USES3		0x00000300L										/* 3 Bit des Pixels werden benutzt */
-#define	PX_USES4		0x00000400L										/* 4 Bit des Pixels werden benutzt */
-#define	PX_USES8		0x00000800L										/* 8 Bit des Pixels werden benutzt */
+#define	PX_USES1	0x00000100L										/* 1 Bit des Pixels wird benutzt */
+#define	PX_USES2	0x00000200L										/* 2 Bit des Pixels werden benutzt */
+#define	PX_USES3	0x00000300L										/* 3 Bit des Pixels werden benutzt */
+#define	PX_USES4	0x00000400L										/* 4 Bit des Pixels werden benutzt */
+#define	PX_USES8	0x00000800L										/* 8 Bit des Pixels werden benutzt */
 #define	PX_USES15	0x00000f00L										/* 15 Bit des Pixels werden benutzt */
 #define	PX_USES16	0x00001000L										/* 16 Bit des Pixels werden benutzt */
 #define	PX_USES24	0x00001800L										/* 24 Bit des Pixels werden benutzt */
+#define	PX_USES30	0x00001e00L										/* 30 Bit des Pixels werden benutzt */
 #define	PX_USES32	0x00002000L										/* 32 Bit des Pixels werden benutzt */
 #define	PX_USES48	0x00003000L										/* 48 Bit des Pixels werden benutzt */
 
@@ -905,13 +908,14 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 #define	PX_3BIT		0x00000003L										/* Pixel besteht aus 3 Bit */
 #define	PX_4BIT		0x00000004L										/* Pixel besteht aus 4 Bit */
 #define	PX_8BIT		0x00000008L										/* Pixel besteht aus 8 Bit */
-#define	PX_16BIT		0x00000010L										/* Pixel besteht aus 16 Bit */
-#define	PX_24BIT		0x00000018L										/* Pixel besteht aus 24 Bit */
-#define	PX_32BIT		0x00000020L										/* Pixel besteht aus 32 Bit */
-#define	PX_48BIT		0x00000030L										/* Pixel besteht aus 48 Bit */
+#define	PX_16BIT	0x00000010L										/* Pixel besteht aus 16 Bit */
+#define	PX_24BIT	0x00000018L										/* Pixel besteht aus 24 Bit */
+#define	PX_32BIT	0x00000020L										/* Pixel besteht aus 32 Bit */
+#define	PX_48BIT	0x00000030L										/* Pixel besteht aus 48 Bit */
+#define	PX_64BIT	0x00000040L										/* Pixel besteht aus 64 Bit */
 
 #define	PX_CMPNTS	0x0f000000L										/* Maske fr Anzahl der Pixelkomponenten */
-#define	PX_FLAGS		0x00f00000L										/* Maske fr diverse Flags */
+#define	PX_FLAGS	0x00f00000L										/* Maske fr diverse Flags */
 #define	PX_PACKING	0x00030000L										/* Maske fr Pixelformat */
 #define	PX_USED		0x00003f00L										/* Maske fr Anzahl der benutzten Bits */
 #define	PX_BITS		0x0000003fL										/* Maske fr Anzahl der Bits pro Pixel */
@@ -931,8 +935,8 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 #define	PX_MAC1		( PX_PACKED | PX_1COMP | PX_USES1 | PX_1BIT )
 #define	PX_MAC4		( PX_PACKED | PX_1COMP | PX_USES4 | PX_4BIT )
 #define	PX_MAC8		( PX_PACKED | PX_1COMP | PX_USES8 | PX_8BIT )
-#define	PX_MAC15		( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES15 | PX_16BIT )
-#define	PX_MAC32		( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
+#define	PX_MAC15	( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES15 | PX_16BIT )
+#define	PX_MAC32	( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
 
 /*----------------------------------------------------------------------------------------*/
 /* Pixelformate fr Grafikkarten																				*/
@@ -940,10 +944,10 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 #define	PX_VGA1		( PX_PACKED | PX_1COMP | PX_USES1 | PX_1BIT )
 #define	PX_VGA4		( PX_PLANES | PX_1COMP | PX_USES4 | PX_4BIT )
 #define	PX_VGA8		( PX_PACKED | PX_1COMP | PX_USES8 | PX_8BIT )
-#define	PX_VGA15		( PX_REVERSED | PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES15 | PX_16BIT )
-#define	PX_VGA16		( PX_REVERSED | PX_PACKED | PX_3COMP | PX_USES16 | PX_16BIT )
-#define	PX_VGA24		( PX_REVERSED | PX_PACKED | PX_3COMP | PX_USES24 | PX_24BIT )
-#define	PX_VGA32		( PX_REVERSED | PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
+#define	PX_VGA15	( PX_REVERSED | PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES15 | PX_16BIT )
+#define	PX_VGA16	( PX_REVERSED | PX_PACKED | PX_3COMP | PX_USES16 | PX_16BIT )
+#define	PX_VGA24	( PX_REVERSED | PX_PACKED | PX_3COMP | PX_USES24 | PX_24BIT )
+#define	PX_VGA32	( PX_REVERSED | PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
 
 #define	PX_MATRIX16	( PX_PACKED | PX_3COMP | PX_USES16 | PX_16BIT )
 
@@ -954,16 +958,16 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 /*----------------------------------------------------------------------------------------*/
 #define	PX_PRN1		( PX_PACKED | PX_1COMP | PX_USES1 | PX_1BIT )
 #define	PX_PRN8		( PX_PACKED | PX_1COMP | PX_USES8 | PX_8BIT )
-#define	PX_PRN32		( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
+#define	PX_PRN32	( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
 
 /*----------------------------------------------------------------------------------------*/
 /* bevorzugte (schnelle) Pixelformate fr Bitmaps 														*/
 /*----------------------------------------------------------------------------------------*/
 
-#define	PX_PREF1		( PX_PACKED | PX_1COMP | PX_USES1 | PX_1BIT )
-#define	PX_PREF2		( PX_PACKED | PX_1COMP | PX_USES2 | PX_2BIT )
-#define	PX_PREF4		( PX_PACKED | PX_1COMP | PX_USES4 | PX_4BIT )
-#define	PX_PREF8		( PX_PACKED | PX_1COMP | PX_USES8 | PX_8BIT )
+#define	PX_PREF1	( PX_PACKED | PX_1COMP | PX_USES1 | PX_1BIT )
+#define	PX_PREF2	( PX_PACKED | PX_1COMP | PX_USES2 | PX_2BIT )
+#define	PX_PREF4	( PX_PACKED | PX_1COMP | PX_USES4 | PX_4BIT )
+#define	PX_PREF8	( PX_PACKED | PX_1COMP | PX_USES8 | PX_8BIT )
 #define	PX_PREF15	( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES15 | PX_16BIT )
 #define	PX_PREF32	( PX_xFIRST | PX_PACKED | PX_3COMP | PX_USES24 | PX_32BIT )
 
@@ -978,39 +982,46 @@ _WORD vst_map_mode   (_WORD handle, _WORD mode);
 
 enum
 {
+	CSPACE_UNKNOWN =	0x0000,
 	CSPACE_RGB		=	0x0001,
 	CSPACE_ARGB		=	0x0002,
-	CSPACE_CMYK		=	0x0004
+	CSPACE_CMYK		=	0x0004,
+	CSPACE_HSL		=	0x0008,	/* ###BETA */
+
+	CSPACE_YCbCr	=	0x0100,	/* ###BETA */
+	CSPACE_YCCK		=	0x0200,	/* ###BETA */
+	CSPACE_GRAY		=	0x0400,	/* ###BETA */
+	CSPACE_AGRAY	=	0x0800	/* ###BETA */
 };
 
 enum
 {
-	CSPACE_1COMPONENT	=	0x0001,
-	CSPACE_2COMPONENTS	=	0x0002,
-	CSPACE_3COMPONENTS	= 	0x0003,
-	CSPACE_4COMPONENTS	=	0x0004
+	CSPACE_1COMPONENT	= 0x0001,
+	CSPACE_2COMPONENTS	= 0x0002,
+	CSPACE_3COMPONENTS	= 0x0003,
+	CSPACE_4COMPONENTS	= 0x0004
 };
 
 typedef struct
 {
-	unsigned short	reserved;
-	unsigned short	red;
-	unsigned short	green;
-	unsigned short	blue;
+	unsigned short reserved;
+	unsigned short red;
+	unsigned short green;
+	unsigned short blue;
 } COLOR_RGB;
 
 typedef struct
 {
-	unsigned short	cyan;
-	unsigned short	magenta;
-	unsigned short	yellow;
-	unsigned short	black;
+	unsigned short cyan;
+	unsigned short magenta;
+	unsigned short yellow;
+	unsigned short black;
 } COLOR_CMYK;
 
 typedef union
 {
-	COLOR_RGB	rgb;
-	COLOR_CMYK	cmyk;
+	COLOR_RGB rgb;
+	COLOR_CMYK cmyk;
 } COLOR_ENTRY;
 
 #define	COLOR_TAB_MAGIC	0x63746162L /* 'ctab' */
@@ -1035,12 +1046,35 @@ typedef struct
 	COLOR_ENTRY	colors[1];
 } COLOR_TAB;
 
+/* vordefinierte Tabelle mit 256 Eintr„gen */
+typedef struct
+{
+	int32_t		magic;				/* 'ctab' */
+	int32_t		length;
+	int32_t		format;
+	int32_t		reserved;
+
+	int32_t		map_id;
+	int32_t		color_space;
+	int32_t		flags;
+	int32_t		no_colors;
+
+	int32_t		reserved1;
+	int32_t		reserved2;
+	int32_t		reserved3;
+	int32_t		reserved4;
+
+	COLOR_ENTRY	colors[256];
+} COLOR_TAB256;
+
 typedef COLOR_TAB *CTAB_PTR;
 typedef COLOR_TAB *CTAB_REF;
 
 
 typedef void INVERSE_CTAB;
 typedef INVERSE_CTAB *ITAB_REF;
+
+#define	CBITMAP_MAGIC	0x6362746dL /* 'cbtm' */
 
 typedef struct _gcbitmap GCBITMAP;
 struct _gcbitmap
@@ -1080,36 +1114,36 @@ struct _gcbitmap
 #define	T_DITHER_MODE		128	/* Konstante frs Dithern */
 
 /* logische Transfermodi */
-#define	T_LOGIC_COPY		T_LOGIC_MODE+0
-#define	T_LOGIC_OR			T_LOGIC_MODE+1
-#define	T_LOGIC_XOR			T_LOGIC_MODE+2
-#define	T_LOGIC_AND			T_LOGIC_MODE+3
-#define	T_LOGIC_NOT_COPY	T_LOGIC_MODE+4
-#define	T_LOGIC_NOT_OR		T_LOGIC_MODE+5
-#define	T_LOGIC_NOT_XOR		T_LOGIC_MODE+6
-#define	T_LOGIC_NOT_AND		T_LOGIC_MODE+7
+#define	T_LOGIC_COPY		(T_LOGIC_MODE+0)
+#define	T_LOGIC_OR			(T_LOGIC_MODE+1)
+#define	T_LOGIC_XOR			(T_LOGIC_MODE+2)
+#define	T_LOGIC_AND			(T_LOGIC_MODE+3)
+#define	T_LOGIC_NOT_COPY	(T_LOGIC_MODE+4)
+#define	T_LOGIC_NOT_OR		(T_LOGIC_MODE+5)
+#define	T_LOGIC_NOT_XOR		(T_LOGIC_MODE+6)
+#define	T_LOGIC_NOT_AND		(T_LOGIC_MODE+7)
 
 /* Zeichenmodi */
-#define	T_REPLACE				T_DRAW_MODE+0
-#define	T_TRANSPARENT			T_DRAW_MODE+1
-#define	T_HILITE				T_DRAW_MODE+2
-#define	T_REVERS_TRANSPARENT	T_DRAW_MODE+3
+#define	T_REPLACE			 (T_DRAW_MODE+0)
+#define	T_TRANSPARENT		 (T_DRAW_MODE+1)
+#define	T_HILITE			 (T_DRAW_MODE+2)
+#define	T_REVERS_TRANSPARENT (T_DRAW_MODE+3)
 
 /* arithmetische Transfermodi */
-#define	T_BLEND				T_ARITH_MODE+0
-#define	T_ADD				T_ARITH_MODE+1
-#define	T_ADD_OVER			T_ARITH_MODE+2
-#define	T_SUB				T_ARITH_MODE+3
-#define	T_MAX				T_ARITH_MODE+5
-#define	T_SUB_OVER			T_ARITH_MODE+6
-#define	T_MIN				T_ARITH_MODE+7
+#define	T_BLEND				(T_ARITH_MODE+0)
+#define	T_ADD				(T_ARITH_MODE+1)
+#define	T_ADD_OVER			(T_ARITH_MODE+2)
+#define	T_SUB				(T_ARITH_MODE+3)
+#define	T_MAX				(T_ARITH_MODE+5)
+#define	T_SUB_OVER			(T_ARITH_MODE+6)
+#define	T_MIN				(T_ARITH_MODE+7)
 
 typedef struct			/* Rechteck fr 16-Bit-Koordinaten */
 {
-	_WORD	x1;
-	_WORD	y1;
-	_WORD	x2;
-	_WORD	y2;
+	int16_t x1;
+	int16_t y1;
+	int16_t x2;
+	int16_t y2;
 } RECT16;
 
 typedef struct			/* Rechteck fr 32-Bit-Koordinaten */
@@ -1157,7 +1191,7 @@ int32_t		vqr_bg_color		(_WORD handle, COLOR_ENTRY *fg_color);
 int32_t		vqr_fg_color		(_WORD handle, COLOR_ENTRY *fg_color);
 int32_t		vqt_bg_color		(_WORD handle, COLOR_ENTRY *fg_color);
 int32_t		vqt_fg_color		(_WORD handle, COLOR_ENTRY *fg_color);
-void		vr_transfer_bits	(_WORD handle, GCBITMAP *src_bm, GCBITMAP *dst_bm, const RECT16 *src_rect, const RECT16 *dst_rect, _WORD mode);
+void		vr_transfer_bits	(_WORD handle, GCBITMAP *src_bm, GCBITMAP *dst_bm, const _WORD *src_rect, const _WORD *dst_rect, _WORD mode);
 _WORD		vs_ctab			(_WORD handle, COLOR_TAB *ctab);
 _WORD		vs_ctab_entry		(_WORD handle, _WORD __index, int32_t color_space, COLOR_ENTRY *color);
 _WORD		vs_dflt_ctab		(_WORD handle);
