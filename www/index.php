@@ -327,6 +327,33 @@ class hyp {
 $localdir = $_SERVER['DOCUMENT_ROOT'] . $hypdir;
 
 $cachefile = $localdir . '/hypinfo.cache';
+$cachecrcfile = $localdir . '/hypinfo.crc32';
+
+$filelist = file_get_contents($cachecrcfile);
+if ($dir = opendir($localdir))
+{
+	$crc32s = '';
+	while (false !== ($entry = readdir($dir))) {
+		if ($entry == ".") continue;
+		if ($entry == "..") continue;
+		if (!fnmatch("*.hyp", $entry)) continue;
+		/* skip subsidiary files from collections (e.g. folder.hyp) */
+		if (fnmatch("_*.hyp", $entry)) continue;
+		/* skip the output result from hypfind tool */
+		if (fnmatch("hypfind.hyp", $entry)) continue;
+		$stat = stat($localdir . "/" . $entry);
+		$crc32s .= $entry . " " . $stat[7] . " " . $stat[9] . "\n";
+	}
+	closedir($dir);
+	$crc = crc32($crc32s);
+	$crc = sprintf("%08x", $crc);
+	if ($filelist === false || $crc != $filelist)
+	{
+		unlink($cachefile);
+		file_put_contents($cachecrcfile, $crc);
+	}
+}
+
 $filelist = file_get_contents($cachefile);
 if ($filelist === false)
 {
