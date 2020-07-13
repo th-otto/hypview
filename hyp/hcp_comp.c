@@ -5319,6 +5319,12 @@ static gboolean hcp_tree_alloc(hcp_vars *vars)
 			hyp_tree_setbit(hyp, node);
 		}
 	}
+	/*
+	 * we have a maximum of 65000 nodes,
+	 * and a title can have 255 chars max,
+	 * so the sum cannot overflow the
+	 * the range of a 32-bit int, and we don't need to check that here
+	 */
 	long_to_chars(titlelen, hyp->hyptree_data);
 	
 	/*

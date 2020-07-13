@@ -190,6 +190,11 @@ typedef struct
 #define HYP_NODENAME_MAX (253U - SIZEOF_INDEX_ENTRY)
 
 /*
+ * Largest value that can be encoded as base-255
+ */
+#define HYP_SHORT_MAX ((unsigned short)65025U)
+
+/*
  * Node numbers are (sometimes) encoded as base-255, in
  * 2 bytes. This gives a theoretical maximum of 65025;
  * leave some place to be on the safe side.
@@ -1052,9 +1057,24 @@ short HypCountExtRefs(HYP_NODE *entry);
 /*
  * hyp_tree.c
  */
+typedef struct {
+	hyp_nodenr next;
+	hyp_nodenr prev;
+	hyp_nodenr parent;
+	hyp_nodenr head;
+	hyp_nodenr tail;
+	hyp_nodenr num_childs;
+	char is_expanded;
+	char *name;
+	char *title;
+} HYPTREE;
+
+
 gboolean hyp_tree_isset(HYP_DOCUMENT *hyp, hyp_nodenr node);
 void hyp_tree_setbit(HYP_DOCUMENT *hyp, hyp_nodenr node);
 gboolean hyp_tree_alloc(HYP_DOCUMENT *hyp);
+HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp);
+void hyp_tree_free(HYP_DOCUMENT *hyp, HYPTREE *tree);
 
 
 /*

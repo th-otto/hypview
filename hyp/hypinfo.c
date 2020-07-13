@@ -27,6 +27,7 @@ static gboolean language_only;
 static int verbose;
 static const char *fix_lang;
 static HYP_CHARSET fix_charset;
+static gboolean show_tree;
 static gboolean fix_tree;
 static gboolean preserve;
 
@@ -86,9 +87,20 @@ static void print_usage(FILE *out)
 	hyp_utf8_fprintf(out, _("  --charset <set>         specify output character set\n"));
 	hyp_utf8_fprintf(out, _("  --language              only output language of file\n"));
 	hyp_utf8_fprintf(out, _("  -p, --preserve          preserve timestamps\n"));
+	hyp_utf8_fprintf(out, _("  -t, --tree              print tree structure\n"));
 	hyp_utf8_fprintf(out, _("  --fix-tree              fix @tree header field\n"));
 	hyp_utf8_fprintf(out, _("  --fix-lang <lang>       fix @language header field\n"));
 	hyp_utf8_fprintf(out, _("  --fix-charset <set>     fix @charset header field\n"));
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void warn_if_empty(HYP_DOCUMENT *hyp, hcp_opts *opts)
+{
+	if (hyp->first_text_page == HYP_NOINDEX)
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s does not have any text pages\n"), _("warning: "), hyp->file);
+	if (hyp->comp_vers > HCP_COMPILER_VERSION)
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
 }
 
 /*****************************************************************************/
@@ -204,6 +216,7 @@ static gboolean hypinfo(const char *filename, hcp_opts *opts, gboolean print_fil
 		return FALSE;
 	}
 	
+	warn_if_empty(hyp, opts);
 	prefix = print_filename ? g_strdup_printf("%s: ", hyp->file) : g_strdup("");
 	
 	if (hyp->language == NULL)
@@ -905,6 +918,8 @@ static gboolean hypfix(const char *filename, hcp_opts *opts)
 		return FALSE;
 	}
 	
+	warn_if_empty(hyp, opts);
+
 	tmpoutname = replace_ext(filename, NULL, ".$$$");
 	out = hyp_utf8_fopen(tmpoutname, "wb");
 	if (out == NULL)
@@ -977,6 +992,7 @@ static gboolean hypfix(const char *filename, hcp_opts *opts)
 	}
 		
 	g_free(tmpoutname);
+	hyp_unref(hyp);
 	return TRUE;
 
 error:
@@ -986,7 +1002,168 @@ error:
 		hyp_utf8_fclose(out);
 	hyp_utf8_unlink(tmpoutname);
 	g_free(tmpoutname);
+	hyp_unref(hyp);
 	return FALSE;
+}
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ *                        |     2502
+ * trv_intersec:          |-    251c 2500
+ *                        |
+ * 
+ *                        |
+ * trv_intersecminus:     O-
+ *                        |
+ * 
+ *                        |
+ * trv_intersecminus_end: O-    2514
+ *
+ * 
+ *                        |
+ * trv_intersecplus:      +-
+ *                        |
+ * 
+ *                        |
+ * trv_intersecplus_end:  +-
+ *
+ *                        |
+ * trv_end:               L-
+ *
+ *
+ */
+
+#define line_down              "\342\224\202"
+#define line_hor               "\342\224\200"
+#define line_intersec          "\342\224\234"
+#define line_collapsed         "\342\224\234"
+#define line_collapsed_end     "\342\224\224"
+#define line_expanded          "\342\224\234"
+#define line_expanded_end      "\342\224\224"
+#define line_end               "\342\224\224"
+
+
+static void print_indent(FILE *outfile, HYPTREE *tree, hyp_nodenr current)
+{
+	hyp_nodenr parent;
+	hyp_nodenr pparent;
+	gboolean is_last;
+	
+	if (current == 0 || current == HYP_NOINDEX)
+		return;
+	parent = tree[current].parent;
+	print_indent(outfile, tree, parent);
+	is_last = FALSE;
+	if (parent == HYP_NOINDEX)
+	{
+		is_last = TRUE;
+	} else
+	{
+		pparent = tree[parent].parent;
+		if (pparent == HYP_NOINDEX || tree[pparent].tail == parent)
+			is_last = TRUE;
+	}
+	if (is_last)
+		fputs(" ", outfile);
+	else
+		fputs(line_down, outfile);
+	fputs(" ", outfile);
+}
+
+static void lstree(hcp_opts *opts, HYPTREE *tree, hyp_nodenr parent, int depth)
+{
+	FILE *outfile = opts->outfile;
+	hyp_nodenr child;
+	
+	print_indent(outfile, tree, parent);
+
+	if (tree[parent].num_childs != 0)
+	{
+		if (tree[parent].is_expanded)
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				fputs(line_expanded_end, outfile);
+			else
+				fputs(line_expanded, outfile);
+		} else
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				fputs(line_collapsed_end, outfile);
+			else
+				fputs(line_collapsed, outfile);
+		}		
+	} else
+	{
+		if (tree[parent].next == HYP_NOINDEX)
+			fputs(line_end, outfile);
+		else
+			fputs(line_intersec, outfile);
+	}
+	hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%u: %s\n", parent, tree[parent].title);
+	child = tree[parent].head;
+	while (child != HYP_NOINDEX)
+	{
+		lstree(opts, tree, child, depth + 1);
+		child = tree[child].next;
+	}
+}
+
+static gboolean print_tree(const char *filename, hcp_opts *opts)
+{
+	HYP_DOCUMENT *hyp;
+	hyp_filetype type = HYP_FT_NONE;
+	int handle;
+	HYPTREE *tree;
+	
+	handle = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+
+	if (handle < 0)
+	{
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s: %s\n", gl_program_name, filename, hyp_utf8_strerror(errno));
+		return FALSE;
+	}
+	
+	hyp = hyp_load(filename, handle, &type);
+	if (hyp == NULL)
+	{
+		hyp_utf8_fprintf(opts->errorfile, _("%s: %s: not a HYP file\n"), gl_program_name, filename);
+		return FALSE;
+	}
+	
+	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
+	{
+		hyp_unref(hyp);
+		hyp_utf8_close(handle);
+		hyp_utf8_fprintf(opts->errorfile, _("%s: fatal: protected hypertext: %s\n"), gl_program_name, filename);
+		return FALSE;
+	}
+	
+	warn_if_empty(hyp, opts);
+	tree = hyp_tree_build(hyp);
+	if (tree == NULL)
+	{
+		hyp_unref(hyp);
+		hyp_utf8_close(handle);
+		hyp_utf8_fprintf(opts->errorfile, "%s\n", strerror(ENOMEM));
+		return FALSE;
+	}
+	
+	hyp_utf8_close(handle);
+	handle = -1;
+	
+	/*
+	 * print tree as ascii
+	 */
+	lstree(opts, tree, 0, 0);
+
+	/*
+	 * cleanup
+	 */
+	hyp_tree_free(hyp, tree);
+	hyp_unref(hyp);
+
+	return TRUE;
 }
 
 /*****************************************************************************/
@@ -998,6 +1175,7 @@ enum hypinfo_option {
 	OPT_VERSION = 'V',
 	OPT_QUIET = 'q',
 	OPT_WAIT = 'w',
+	OPT_TREE = 't',
 	OPT_VERBOSE = 'v',
 	OPT_PRESERVE = 'p',
 
@@ -1018,6 +1196,7 @@ static struct option const long_options[] = {
 	{ "language", no_argument, NULL, OPT_LANGUAGE },
 	{ "verbose", no_argument, NULL, OPT_VERBOSE },
 	{ "preserve", no_argument, NULL, OPT_PRESERVE },
+	{ "tree", no_argument, NULL, OPT_TREE },
 	{ "fix-tree", no_argument, NULL, OPT_FIX_TREE },
 	{ "fix-lang", required_argument, NULL, OPT_FIX_LANG },
 	{ "fix-charset", required_argument, NULL, OPT_FIX_CHARSET },
@@ -1041,7 +1220,7 @@ static gboolean opts_parse(hcp_opts *opts, int argc, const char **argv)
 	int c;
 	
 	getopt_init_r(gl_program_name, &d);
-	while ((c = getopt_long_r(argc, argv, "pqvw::hV?", long_options, NULL, d)) != EOF)
+	while ((c = getopt_long_r(argc, argv, "pqtvw::hV?", long_options, NULL, d)) != EOF)
 	{
 		switch ((enum hypinfo_option)c)
 		{
@@ -1083,6 +1262,10 @@ static gboolean opts_parse(hcp_opts *opts, int argc, const char **argv)
 		
 		case OPT_PRESERVE:
 			preserve = TRUE;
+			break;
+		
+		case OPT_TREE:
+			show_tree = TRUE;
 			break;
 		
 		case OPT_FIX_TREE:
@@ -1197,7 +1380,13 @@ int main(int argc, const char **argv)
 			while (c < argc)
 			{
 				const char *filename = argv[c++];
-				if (fix_tree || fix_lang || fix_charset != HYP_CHARSET_NONE)
+				if (show_tree)
+				{
+					if (!print_tree(filename, opts))
+					{
+						retval = EXIT_FAILURE;
+					}
+				} else if (fix_tree || fix_lang || fix_charset != HYP_CHARSET_NONE)
 				{
 					if (!hypfix(filename, opts))
 					{
