@@ -1379,6 +1379,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, ".fgcolor_red { color: #ff0000; }\n");
 	g_string_append(out, ".fgcolor_green { color: #00ff00; }\n");
 	g_string_append(out, ".fgcolor_blue { color: #0000ff; }\n");
+	g_string_append(out, ".fgcolor_cyan { color: #00ffff; }\n");
 	g_string_append(out, ".fgcolor_yellow { color: #ffff00; }\n");
 	g_string_append(out, ".fgcolor_magenta { color: #ff00ff; }\n");
 	g_string_append(out, ".fgcolor_lgray { color: #cccccc; }\n");
@@ -1394,6 +1395,7 @@ static gboolean html_out_stylesheet(hcp_opts *opts, GString *outstr, gboolean do
 	g_string_append(out, ".bgcolor_red { background-color: #ff0000; }\n");
 	g_string_append(out, ".bgcolor_green { background-color: #00ff00; }\n");
 	g_string_append(out, ".bgcolor_blue { background-color: #0000ff; }\n");
+	g_string_append(out, ".bgcolor_cyan { background-color: #00ffff; }\n");
 	g_string_append(out, ".bgcolor_yellow { background-color: #ffff00; }\n");
 	g_string_append(out, ".bgcolor_magenta { background-color: #ff00ff; }\n");
 	g_string_append(out, ".bgcolor_lgray { background-color: #cccccc; }\n");
