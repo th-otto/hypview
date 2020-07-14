@@ -41,6 +41,7 @@
 #include "iindex_png.h"
 #include "ihelp_png.h"
 #include "iinfo_png.h"
+#include "itreeview_png.h"
 
 char *html_referer_url;
 int html_doctype = HTML_DOCTYPE_XSTRICT;
@@ -49,19 +50,43 @@ gboolean html_js_written = FALSE;
 gboolean html_navimages_written = FALSE;
 
 #define IMAGES_DIR "images"
+#define IMAGES_DIRS IMAGES_DIR "/"
 
-static char const html_nav_back_png[] = IMAGES_DIR "/iback.png";
-static char const html_nav_prev_png[] = IMAGES_DIR "/iprev.png";
-static char const html_nav_toc_png[] = IMAGES_DIR "/itoc.png";
-static char const html_nav_next_png[] = IMAGES_DIR "/inext.png";
-static char const html_nav_xref_png[] = IMAGES_DIR "/ixref.png";
-static char const html_nav_load_png[] = IMAGES_DIR "/iload.png";
-static char const html_nav_index_png[] = IMAGES_DIR "/iindex.png";
-static char const html_nav_help_png[] = IMAGES_DIR "/ihelp.png";
-static char const html_nav_info_png[] = IMAGES_DIR "/iinfo.png";
+static char const html_nav_back_png[] = IMAGES_DIRS "iback.png";
+static char const html_nav_prev_png[] = IMAGES_DIRS "iprev.png";
+static char const html_nav_toc_png[] = IMAGES_DIRS "itoc.png";
+static char const html_nav_next_png[] = IMAGES_DIRS "inext.png";
+static char const html_nav_xref_png[] = IMAGES_DIRS "ixref.png";
+static char const html_nav_load_png[] = IMAGES_DIRS "iload.png";
+static char const html_nav_index_png[] = IMAGES_DIRS "iindex.png";
+static char const html_nav_help_png[] = IMAGES_DIRS "ihelp.png";
+static char const html_nav_info_png[] = IMAGES_DIRS "iinfo.png";
+static char const html_nav_treeview_png[] = IMAGES_DIRS "itreeview.png";
 static char const html_hyp_info_id[] = "hyp_info";
 static char const html_hyp_xrefs_id[] = "hyp_xrefs";
 static char const html_nav_dimensions[] = " width=\"32\" height=\"21\"";
+
+#define USE_TREEVIEW_IMAGES 1
+#define USE_TREEVIEW_SVG 0
+#if USE_TREEVIEW_IMAGES
+static char const html_tv_blank_png[] = IMAGES_DIRS "tv_blank.png";
+static char const html_tv_nointersec_png[] = IMAGES_DIRS "tv_nointersec.png";
+static char const html_tv_expanded_end_png[] = IMAGES_DIRS "tv_expanded_end.png";
+static char const html_tv_expanded_png[] = IMAGES_DIRS "tv_expanded.png";
+static char const html_tv_collapsed_end_png[] = IMAGES_DIRS "tv_collapsed_end.png";
+static char const html_tv_collapsed_png[] = IMAGES_DIRS "tv_collapsed.png";
+static char const html_tv_intersec_png[] = IMAGES_DIRS "tv_intersec.png";
+static char const html_tv_end_png[] = IMAGES_DIRS "tv_end.png";
+static char const html_tv_dimensions[] = " title=\"\" alt=\"\" width=\"16\" height=\"16\" border=\"0\" vspace=\"0\" hspace=\"0\" align=\"top\"";
+#include "tv_blank_png.h"
+#include "tv_intersec_png.h"
+#include "tv_collapsed_png.h"
+#include "tv_collapsed_end_png.h"
+#include "tv_expanded_png.h"
+#include "tv_expanded_end_png.h"
+#include "tv_nointersec_png.h"
+#include "tv_end_png.h"
+#endif
 
 const char *cgi_scriptname = "hypview.cgi";
 char const hypview_lineno_tag[] = "hypview_lineno";
@@ -94,6 +119,7 @@ static char const html_nav_img_style[] = "hypview_nav_img";
 static char const html_nav_search_style[] = "hypview_nav_search";
 static char const html_node_style[] = "hypview_node";
 static char const html_pnode_style[] = "hypview_pnode";
+static char const html_treeview_style[] = "hypview_treeview";
 static char const html_dropdown_pnode_style[] = "hypview_dropdown_pnode";
 static char const html_dropdown_info_style[] = "hypview_dropdown_info";
 static char const html_dropdown_xrefs_style[] = "hypview_dropdown_xrefs";
@@ -137,7 +163,7 @@ char *html_quote_name(const char *name, unsigned int flags)
 		if ((flags & QUOTE_URI) && is_weblink(name))
 		{
 			/*
-			 * do not quoute the protocol part
+			 * do not quote the protocol part
 			 */
 			while (*name && *name != ':')
 				*str++ = *name++;
@@ -1531,6 +1557,17 @@ static void html_out_navimages(hcp_opts *opts)
 	html_out_navimage(opts->output_dir, html_nav_index_png, nav_index_data, sizeof(nav_index_data));
 	html_out_navimage(opts->output_dir, html_nav_help_png, nav_help_data, sizeof(nav_help_data));
 	html_out_navimage(opts->output_dir, html_nav_info_png, nav_info_data, sizeof(nav_info_data));
+	html_out_navimage(opts->output_dir, html_nav_treeview_png, nav_treeview_data, sizeof(nav_treeview_data));
+#if USE_TREEVIEW_IMAGES
+	html_out_navimage(opts->output_dir, html_tv_blank_png, tv_blank_data, sizeof(tv_blank_data));
+	html_out_navimage(opts->output_dir, html_tv_intersec_png, tv_intersec_data, sizeof(tv_intersec_data));
+	html_out_navimage(opts->output_dir, html_tv_collapsed_png, tv_collapsed_data, sizeof(tv_collapsed_data));
+	html_out_navimage(opts->output_dir, html_tv_collapsed_end_png, tv_collapsed_end_data, sizeof(tv_collapsed_end_data));
+	html_out_navimage(opts->output_dir, html_tv_expanded_png, tv_expanded_data, sizeof(tv_expanded_data));
+	html_out_navimage(opts->output_dir, html_tv_expanded_end_png, tv_expanded_end_data, sizeof(tv_expanded_end_data));
+	html_out_navimage(opts->output_dir, html_tv_nointersec_png, tv_nointersec_data, sizeof(tv_nointersec_data));
+	html_out_navimage(opts->output_dir, html_tv_end_png, tv_end_data, sizeof(tv_end_data));
+#endif
 	
 	g_free(dir);
 }
@@ -1648,6 +1685,29 @@ static void html_out_nav_toolbar(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out
 		"</li>\n",
 		xpos,
 		str, html_nav_img_style, disabled, html_nav_index_png, title, title, html_nav_dimensions, html_closer);
+	g_free(title);
+	g_free(str);
+	xpos += button_w;
+
+	if (opts->for_cgi)
+	{
+		char *params = html_cgi_params(opts);
+		char *tmp = html_quote_name(html_referer_url, QUOTE_URI | QUOTE_NOLTR);
+		str = g_strdup_printf("%s?url=%s%s&amp;treeview=1", cgi_scriptname, tmp, params);
+		g_free(tmp);
+		g_free(params);
+	} else
+	{
+		str = html_quote_name("_treeview" HYP_EXT_HTML, 0);
+	}
+	disabled = "";
+	title = g_strdup(_("Tree View"));
+	hyp_utf8_sprintf_charset(out, opts->output_charset, converror,
+		"<li style=\"position:absolute;left:%dpx;top:1px;\">"
+		"<a href=\"%s\" class=\"%s%s\" ><img src=\"%s\" alt=\"&nbsp;%s&nbsp;\" title=\"%s\"%s%s</a>"
+		"</li>\n",
+		xpos,
+		str, html_nav_img_style, disabled, html_nav_treeview_png, title, title, html_nav_dimensions, html_closer);
 	g_free(title);
 	g_free(str);
 	xpos += button_w;
@@ -2055,7 +2115,7 @@ void html_out_entities(GString *out)
 
 /* ------------------------------------------------------------------------- */
 
-void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, struct hyp_gfx *hyp_gfx, struct html_xref *xrefs, symtab_entry *syms, gboolean for_error, gboolean *converror)
+void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, gboolean uses_graphics, struct html_xref *xrefs, symtab_entry *syms, gboolean for_error, gboolean *converror)
 {
 	const char *charset = hyp_charset_name(opts->output_charset);
 	INDEX_ENTRY *entry = hyp ? hyp->indextable[node] : NULL;
@@ -2095,7 +2155,7 @@ void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char
 				g_string_append_printf(out, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", charset);
 			doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n"
 			          "          \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"";
-			if (hyp_gfx != NULL)
+			if (uses_graphics)
 				html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\"", html_lang, html_lang);
 			else
 				html_extra = g_strdup_printf(" xml:lang=\"%s\" lang=\"%s\" xmlns=\"http://www.w3.org/1999/xhtml\"", html_lang, html_lang);
@@ -2260,8 +2320,9 @@ void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char
 		g_string_append(out, "<pre style=\"margin-top:0;\">");
 	} else
 	{
-		g_string_append_printf(out, "<div class=\"%s\">\n", html_pnode_style);
-		g_string_append(out, "<pre>");
+		g_string_append_printf(out, "<div class=\"%s\">\n", opts->treeview ? html_treeview_style : html_pnode_style);
+		if (!opts->treeview)
+			g_string_append(out, "<pre>");
 	}
 
 	if (hyp)
@@ -2397,7 +2458,8 @@ void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_noden
 				hyp_utf8_fprintf(opts->errorfile, "%s%s\n", _("warning: "), _("Some characters could not be converted"));
 			}
 		}
-		g_string_append(out, "</pre>\n");
+		if (!opts->treeview)
+			g_string_append(out, "</pre>\n");
 		g_string_append(out, "</div>\n");
 		if (entry != NULL && entry->type == HYP_NODE_INTERNAL)
 			g_string_append(out, "</div>\n");
@@ -2668,7 +2730,7 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 			}
 			
 			if (!for_inline)
-				html_out_header(hyp, opts, out, title, node, hyp_gfx, xrefs, syms, FALSE, converror);
+				html_out_header(hyp, opts, out, title, node, hyp_gfx != NULL, xrefs, syms, FALSE, converror);
 	
 			g_free(title);
 		}
@@ -2748,7 +2810,6 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 					case HYP_ESC_ALINK_LINE:
 						{
 							unsigned char type;
-							size_t len;
 							gboolean str_equal;
 							struct html_xref xref;
 							
@@ -2780,18 +2841,17 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 								if (hypnode_valid(hyp, xref.dest_page))
 								{
 									INDEX_ENTRY *entry = hyp->indextable[xref.dest_page];
-									len = entry->length - SIZEOF_INDEX_ENTRY;
 									xref.text = html_quote_nodename(hyp, xref.dest_page, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
 									str_equal = entry->type == HYP_NODE_INTERNAL;
 								} else
 								{
 									str_equal = FALSE;
 									xref.text = g_strdup(xref.destname);
-									len = strlen(xref.text);
 								}
 							} else
 							{
 								char *buf;
+								size_t len;
 								
 								len = *src - HYP_STRLEN_OFFSET;
 								src++;
@@ -3190,4 +3250,380 @@ gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char 
 	
 	free_symtab(syms);
 	return ret;
+}
+
+/*****************************************************************************/
+/* ------------------------------------------------------------------------- */
+/*****************************************************************************/
+
+#define line_down              "\342\224\202"
+#define line_hor               "\342\224\200"
+#define line_intersec          "\342\224\234"
+#define line_collapsed         "\342\224\234"
+#define line_collapsed_end     "\342\224\224"
+#define line_expanded          "\342\224\234"
+#define line_expanded_end      "\342\224\224"
+#define line_end               "\342\224\224"
+
+static void print_indent(GString *out, HYPTREE *tree, hyp_nodenr current)
+{
+	hyp_nodenr parent;
+	hyp_nodenr pparent;
+	gboolean is_last;
+	
+	if (current == 0 || current == HYP_NOINDEX)
+		return;
+	parent = tree[current].parent;
+	print_indent(out, tree, parent);
+	is_last = FALSE;
+	if (parent == HYP_NOINDEX)
+	{
+		is_last = TRUE;
+	} else
+	{
+		pparent = tree[parent].parent;
+		if (pparent == HYP_NOINDEX || tree[pparent].tail == parent)
+			is_last = TRUE;
+	}
+#if USE_TREEVIEW_IMAGES
+	if (is_last)
+		g_string_append_printf(out, "<img src=\"%s\"%s%s", html_tv_blank_png, html_tv_dimensions, html_closer);
+	else
+		g_string_append_printf(out, "<img src=\"%s\"%s%s", html_tv_nointersec_png, html_tv_dimensions, html_closer);
+	g_string_append(out, " ");
+#elif USE_TREEVIEW_SVG
+	if (is_last)
+		g_string_append(out, "<span class=\"tv_blank\"></span>");
+	else
+		g_string_append(out, "<span class=\"tv_nointersec\"></span>");
+#else
+	if (is_last)
+		g_string_append(out, "&nbsp;");
+	else
+		g_string_append(out, line_down);
+	g_string_append(out, "&nbsp;");
+#endif
+}
+
+/* ------------------------------------------------------------------------- */
+
+static void html_print_tree(HYP_DOCUMENT *hyp, hcp_opts *opts, HYPTREE *tree, GString *out, hyp_nodenr parent, int depth)
+{
+	hyp_nodenr child;
+	struct html_xref xref;
+	INDEX_ENTRY *entry;
+	const char *img;
+	
+	g_string_append_printf(out, "<div id=\"tv_%u\">\n", parent);
+	
+	g_string_append(out, "<span>");
+	print_indent(out, tree, parent);
+
+#if USE_TREEVIEW_IMAGES
+	if (tree[parent].num_childs != 0)
+	{
+		g_string_append_printf(out, "<span class=\"tv_expand\"><a href=\"#\" onclick=\"return tv_toggleExpand('tv_sub_%u', 'tv_icon_%u');\">\n", parent, parent);
+		if (tree[parent].flags & HYPTREE_IS_EXPANDED)
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				img = html_tv_expanded_end_png;
+			else
+				img = html_tv_expanded_png;
+		} else
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				img = html_tv_collapsed_end_png;
+			else
+				img = html_tv_collapsed_png;
+		}		
+		g_string_append_printf(out, "<img id=\"tv_icon_%u\" src=\"%s\"%s%s", parent, img, html_tv_dimensions, html_closer);
+		g_string_append(out, "</a></span>");
+	} else
+	{
+		if (tree[parent].next == HYP_NOINDEX)
+			img = html_tv_end_png;
+		else
+			img = html_tv_intersec_png;
+		g_string_append_printf(out, "<img src=\"%s\"%s%s", img, html_tv_dimensions, html_closer);
+	}
+	g_string_append(out, " ");
+#elif USE_TREEVIEW_SVG
+	if (tree[parent].num_childs != 0)
+	{
+		g_string_append_printf(out, "<span class=\"tv_expand\"><a href=\"#\" onclick=\"return tv_toggleExpand('tv_sub_%u', 'tv_icon_%u');\">\n", parent, parent);
+		if (tree[parent].flags & HYPTREE_IS_EXPANDED)
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				img = "tv_expanded_end";
+			else
+				img = "tv_expanded";
+		} else
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				img = "tv_collapsed_end";
+			else
+				img = "tv_collapsed";
+		}
+		g_string_append_printf(out, "<span id=\"tv_icon_%u\" class=\"%s\"></span>", parent, img);
+		g_string_append(out, "</a></span>");
+	} else
+	{
+		if (tree[parent].next == HYP_NOINDEX)
+			img = "tv_end";
+		else
+			img = "tv_intersec";
+		g_string_append_printf(out, "<span class=\"%s\"></span>", img);
+	}
+#else
+	if (tree[parent].num_childs != 0)
+	{
+		g_string_append_printf(out, "<span class=\"tv_expand\"><a class=\"tv_expand\" href=\"#\" onclick=\"return tv_toggleExpand('tv_sub_%u', '');\">", parent);
+		if (tree[parent].flags & HYPTREE_IS_EXPANDED)
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				img = line_expanded_end;
+			else
+				img = line_expanded;
+		} else
+		{
+			if (tree[parent].next == HYP_NOINDEX)
+				img = line_collapsed_end;
+			else
+				img = line_collapsed;
+		}		
+		g_string_append(out, img);
+		g_string_append(out, "</a></span>");
+	} else
+	{
+		if (tree[parent].next == HYP_NOINDEX)
+			img = line_end;
+		else
+			img = line_intersec;
+		g_string_append(out, img);
+	}
+	g_string_append(out, "&nbsp;");
+#endif
+	g_string_append(out, "</span>");
+	/* hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "%u: ", parent); */
+	xref.line = 0;
+	xref.dest_page = parent;
+	entry = hyp->indextable[parent];
+	xref.destfilename = html_filename_for_node(hyp, opts, parent, TRUE);
+	xref.destname = tree[parent].name;
+	xref.desttype = (hyp_indextype) entry->type;
+	xref.text = html_quote_name(tree[parent].title, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);
+	html_generate_href(hyp, opts, out, &xref, NULL, FALSE, 0, NULL);
+	g_free(xref.destfilename);
+	g_free(xref.text);
+	g_string_append(out, "\n");
+	if (tree[parent].num_childs != 0 && (tree[parent].flags & HYPTREE_IS_EXPANDED))
+	{
+		g_string_append_printf(out, "<div id=\"tv_sub_%u\" style=\"display:block\">\n", parent);
+		child = tree[parent].head;
+		while (child != HYP_NOINDEX)
+		{
+			html_print_tree(hyp, opts, tree, out, child, depth + 1);
+			child = tree[child].next;
+		}
+		g_string_append(out, "</div>\n");
+	}
+
+	g_string_append_printf(out, "</div>\n");
+}
+
+/* ------------------------------------------------------------------------- */
+
+gboolean html_print_treeview(const char *filename, hcp_opts *opts, GString *out)
+{
+	HYP_DOCUMENT *hyp;
+	hyp_filetype type = HYP_FT_NONE;
+	int handle;
+	hcp_opts hyp_opts;
+	HYPTREE *tree;
+
+	handle = hyp_utf8_open(filename, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
+	if (handle < 0)
+	{
+		html_out_header(NULL, opts, out, _("404 Not Found"), HYP_NOINDEX, FALSE, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "%s: %s\n", hyp_basename(filename), hyp_utf8_strerror(errno));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, NULL);
+		return FALSE;
+	}
+
+	hyp = hyp_load(filename, handle, &type);
+	if (hyp == NULL)
+	{
+		html_out_header(NULL, opts, out, _("not a HYP file"), HYP_NOINDEX, FALSE, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "%s: %s\n", hyp_basename(filename), _("not a HYP file"));
+		html_out_trailer(NULL, opts, out, 0, TRUE, FALSE, NULL);
+		return FALSE;
+	}
+	
+	if ((hyp->st_guide_flags & STG_ENCRYPTED) && !is_MASTER)
+	{
+		hyp_unref(hyp);
+		hyp_utf8_close(handle);
+		html_out_header(NULL, opts, out, _("protected hypertext"), HYP_NOINDEX, FALSE, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("fatal: %s: %s\n"), _("protected hypertext"), hyp_basename(filename));
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, NULL);
+		return FALSE;
+	}
+
+	tree = hyp_tree_build(hyp);
+	if (tree == NULL)
+	{
+		const char *err = hyp_utf8_strerror(errno);
+		hyp_utf8_fprintf(opts->errorfile, "%s: %s\n", filename, err);
+		hyp_unref(hyp);
+		hyp_utf8_close(handle);
+		html_out_header(NULL, opts, out, _("503 Service Unavailable"), HYP_NOINDEX, FALSE, NULL, NULL, TRUE, NULL);
+		hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, _("fatal: %s: %s\n"), hyp_basename(filename), err);
+		html_out_trailer(NULL, opts, out, HYP_NOINDEX, TRUE, FALSE, NULL);
+		return FALSE;
+	}
+
+	if (hyp->comp_vers > HCP_COMPILER_VERSION && opts->errorfile != stdout)
+		hyp_utf8_fprintf(opts->errorfile, _("%s%s created by compiler version %u\n"), _("warning: "), hyp->file, hyp->comp_vers);
+	opts->long_filenames = TRUE;
+	if (opts->long_filenames)
+	{
+		g_free(opts->image_name_prefix);
+		opts->image_name_prefix = replace_ext(hyp_basename(filename), NULL, "_img_");
+	}
+
+	hcp_opts_copy(&hyp_opts, opts);
+	if (hyp->hcp_options != NULL)
+	{
+		/* TODO: redirect error messages from option parsing to HTML body */
+		hcp_opts_parse_string(&hyp_opts, hyp->hcp_options, OPTS_FROM_SOURCE);
+	}
+	g_freep(&hyp_opts.output_filename);
+
+	html_out_header(NULL, opts, out, _("TreeView"), HYP_NOINDEX, FALSE, NULL, NULL, FALSE, NULL);
+	g_string_append(out, "\
+<style type=\"text/css\">\n"
+#if USE_TREEVIEW_SVG
+".tv_blank {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-size: cover;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_intersec {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_intersec.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_collapsed {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_collapsed.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_collapsed_end {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_collapsed_end.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_expanded {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_expanded.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_expanded_end {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_expanded_end.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_nointersec {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_nointersec.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+".tv_end {\n"
+"  display: inline-block;\n"
+"  width: 32px;\n"
+"  background-image: url(\"" IMAGES_DIRS "tv_end.svg\");\n"
+"  background-size: cover;\n"
+"  background-position: left top;\n"
+"  background-repeat: no-repeat;\n"
+"}\n"
+#endif
+".tv_expand, .tv_expand a:link, .tv_expand a:visited, .tv_expand a:active, .tv_expand:hover, .tv_expand:hover a:hover {\n"
+"  display: inline;\n"
+"  text-align: left;\n"
+"  text-decoration: none;\n"
+"  color: black;\n"
+"}\n"
+".hypview_treeview {\n"
+#if USE_TREEVIEW_SVG
+"  font-family: monospace;\n"
+"  font-size: 14pt;\n"
+#else
+"  font-family: monospace;\n"
+"  font-size: 12px;\n"
+#endif
+"  z-index:2;\n"
+"}\n"
+"</style>\n"
+"<script type=\"text/javascript\">\n"
+"function tv_toggleExpand(subelement, iconelement) {\n"
+"	var tv_var = document.getElementById(subelement).style.display;\n"
+"\n"
+"	if (tv_var == \"none\") {\n"
+"		tv_var = \"block\";\n"
+"	} else {\n"
+"		tv_var = \"none\";\n"
+"	}\n"
+"\n"
+"	document.getElementById(subelement).style.display = tv_var;\n"
+"\n"
+"	if (iconelement != \"\") {\n"
+"		var src = document.images[iconelement].src;\n"
+"		var lastslash = src.lastIndexOf(\"/\");\n"
+"		var dir = src.substr(0, lastslash + 1);\n"
+"		var img = src.substring(lastslash + 1);\n"
+"		var newimg = img;\n"
+"		if (img == \"tv_expanded_end.png\")\n"
+"			newimg = \"tv_collapsed_end.png\";\n"
+"		if (img == \"tv_collapsed_end.png\")\n"
+"			newimg = \"tv_expanded_end.png\";\n"
+"		if (img == \"tv_expanded.png\")\n"
+"			newimg = \"tv_collapsed.png\";\n"
+"		if (img == \"tv_collapsed.png\")\n"
+"			newimg = \"tv_expanded.png\";\n"
+"		document.images[iconelement].src = dir + newimg;\n"
+"	}\n"
+"	return false;\n"
+"}\n"
+"</script>\n");
+
+	html_print_tree(hyp, opts, tree, out, 0, 0);
+	html_out_trailer(NULL, opts, out, HYP_NOINDEX, FALSE, FALSE, NULL);
+
+	hyp_opts.outfile = NULL;
+	hyp_opts.errorfile = NULL;
+	hcp_opts_free(&hyp_opts);
+	hyp_tree_free(hyp, tree);
+	hyp_unref(hyp);
+	hyp_utf8_close(handle);
+	
+	return TRUE;
 }

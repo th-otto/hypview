@@ -128,7 +128,7 @@ HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp)
 		tree[node].parent = HYP_NOINDEX;
 		tree[node].head = HYP_NOINDEX;
 		tree[node].tail = HYP_NOINDEX;
-		tree[node].is_expanded = TRUE;
+		tree[node].flags = HYPTREE_IS_EXPANDED;
 		tree[node].num_childs = 0;
 		tree[node].name = NULL;
 		tree[node].title = NULL;
@@ -145,6 +145,7 @@ HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp)
 			HYP_NODE *nodeptr;
 			size_t namelen;
 			
+			tree[node].flags |= HYPTREE_IS_NODE;
 			namelen = entry->length - SIZEOF_INDEX_ENTRY;
 			tree[node].name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
 			if (hyp_tree_isset(hyp, node) && (nodeptr = hyp_loadtext(hyp, node)) != NULL)

@@ -217,6 +217,69 @@ iinfo_png.h: $(top_srcdir)/www/images/iinfo.png
 	  echo '};' \
 	) > $@
 
+itreeview_png.h: $(top_srcdir)/www/images/itreeview.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const nav_treeview_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_blank_png.h: $(top_srcdir)/www/images/tv_blank.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_blank_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_intersec_png.h: $(top_srcdir)/www/images/tv_intersec.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_intersec_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_collapsed_png.h: $(top_srcdir)/www/images/tv_collapsed.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_collapsed_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_collapsed_end_png.h: $(top_srcdir)/www/images/tv_collapsed_end.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_collapsed_end_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_expanded_png.h: $(top_srcdir)/www/images/tv_expanded.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_expanded_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_expanded_end_png.h: $(top_srcdir)/www/images/tv_expanded_end.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_expanded_end_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_nointersec_png.h: $(top_srcdir)/www/images/tv_nointersec.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_nointersec_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
+tv_end_png.h: $(top_srcdir)/www/images/tv_end.png
+	$(AM_V_GEN)( \
+	  echo 'static unsigned char const tv_end_data[] = {'; \
+	  xxd -i < $<; \
+	  echo '};' \
+	) > $@
+
 NAV_IMAGES = \
 	iback_png.h \
 	iprev_png.h \
@@ -227,6 +290,15 @@ NAV_IMAGES = \
 	iindex_png.h \
 	ihelp_png.h \
 	iinfo_png.h \
+	itreeview_png.h \
+	tv_blank_png.h \
+	tv_intersec_png.h \
+	tv_collapsed_png.h \
+	tv_collapsed_end_png.h \
+	tv_expanded_png.h \
+	tv_expanded_end_png.h \
+	tv_nointersec_png.h \
+	tv_end_png.h \
 	$(empty)
 
 outhtml.o: $(NAV_IMAGES)

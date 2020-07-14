@@ -1080,7 +1080,7 @@ static void lstree(hcp_opts *opts, HYPTREE *tree, hyp_nodenr parent, int depth)
 
 	if (tree[parent].num_childs != 0)
 	{
-		if (tree[parent].is_expanded)
+		if (tree[parent].flags & HYPTREE_IS_EXPANDED)
 		{
 			if (tree[parent].next == HYP_NOINDEX)
 				fputs(line_expanded_end, outfile);

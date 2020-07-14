@@ -30,3 +30,12 @@ inext_png.h
 iprev_png.h
 itoc_png.h
 ixref_png.h
+itreeview_png.h
+tv_blank_png.h
+tv_intersec_png.h
+tv_collapsed_png.h
+tv_collapsed_end_png.h
+tv_expanded_png.h
+tv_expanded_end_png.h
+tv_nointersec_png.h
+tv_end_png.h

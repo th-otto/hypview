@@ -1064,7 +1064,9 @@ typedef struct {
 	hyp_nodenr head;
 	hyp_nodenr tail;
 	hyp_nodenr num_childs;
-	char is_expanded;
+	unsigned short flags;
+#define HYPTREE_IS_NODE     0x0001
+#define HYPTREE_IS_EXPANDED 0x0002
 	char *name;
 	char *title;
 } HYPTREE;

@@ -77,6 +77,7 @@ typedef struct {
 	gboolean hideimages;
 	gboolean cgi_cached;
 	gboolean showstg;
+	gboolean treeview;
 } hcp_opts;
 
 /*

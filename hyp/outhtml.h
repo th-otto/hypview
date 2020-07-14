@@ -66,11 +66,12 @@ char *html_quote_name(const char *name, unsigned int flags);
 char *html_quote_nodename(HYP_DOCUMENT *hyp, hyp_nodenr node, unsigned int flags);
 char *html_filename_for_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, gboolean quote);
 void html_out_entities(GString *out);
-void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, struct hyp_gfx *hyp_gfx, struct html_xref *xrefs, symtab_entry *syms, gboolean for_error, gboolean *converror);
+void html_out_header(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, const char *title, hyp_nodenr node, gboolean uses_graphics, struct html_xref *xrefs, symtab_entry *syms, gboolean for_error, gboolean *converror);
 void html_out_trailer(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, gboolean for_error, gboolean warn_gfx, gboolean *converror);
 gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_nodenr node, symtab_entry *syms, gboolean for_inline, gboolean *converror);
 void html_init(hcp_opts *opts);
 void html_out_stg_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, char *fname, gboolean *converror);
 gboolean recompile_html(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv);
+gboolean html_print_treeview(const char *filename, hcp_opts *opts, GString *out);
 
 #endif /* __HYPOUTHTML_H__ */
