@@ -119,6 +119,17 @@ void HypDisplayPage(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void destroy_surf(struct hyp_gfx *gfx)
+{
+	if (gfx && gfx->surf)
+	{
+		cairo_surface_destroy((cairo_surface_t *)gfx->surf);
+		gfx->surf = NULL;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void add_child_window(WINDOW_DATA *win, struct hyp_gfx *gfx)
 {
 	cairo_status_t status = cairo_surface_status((cairo_surface_t *)gfx->surf);
@@ -127,6 +138,7 @@ static void add_child_window(WINDOW_DATA *win, struct hyp_gfx *gfx)
 	{
 		HYP_DBG(("gfx: %s", cairo_status_to_string(status)));
 	}
+	gfx->destroy = destroy_surf;
 	win->image_childs = g_slist_append(win->image_childs, gfx);
 }
 
@@ -249,6 +261,7 @@ static cairo_t *gfx_create_surface(struct hyp_gfx *gfx)
 	cairo_t *cr;
 	
 	gfx->surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, gfx->pixwidth + gfx->window_margin * 2, gfx->pixheight + gfx->window_margin * 2);
+	gfx->destroy = destroy_surf;
 	cr = cairo_create((cairo_surface_t *)gfx->surf);
 	
 	/*
@@ -1358,6 +1371,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 					linkinfo->tip = tip;
 					linkinfo->dest_page = dest_page;
 					linkinfo->line_nr = line_nr;
+					linkinfo->window_id = 0;
 					g_object_set_data(G_OBJECT(target_tag), "hv-linkinfo", linkinfo);
 					
 					textstart = src;

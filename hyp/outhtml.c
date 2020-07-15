@@ -3335,7 +3335,7 @@ static void html_print_tree(HYP_DOCUMENT *hyp, hcp_opts *opts, HYPTREE *tree, GS
 				img = html_tv_collapsed_end_png;
 			else
 				img = html_tv_collapsed_png;
-		}		
+		}
 		g_string_append_printf(out, "<img id=\"tv_icon_%u\" src=\"%s\"%s%s", parent, img, html_tv_dimensions, html_closer);
 		g_string_append(out, "</a></span>");
 	} else
@@ -3390,7 +3390,7 @@ static void html_print_tree(HYP_DOCUMENT *hyp, hcp_opts *opts, HYPTREE *tree, GS
 				img = line_collapsed_end;
 			else
 				img = line_collapsed;
-		}		
+		}
 		g_string_append(out, img);
 		g_string_append(out, "</a></span>");
 	} else

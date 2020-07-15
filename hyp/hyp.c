@@ -115,6 +115,8 @@ void hyp_free_graphics(HYP_NODE *node)
 	
 	for (gfx = node->gfx; gfx != NULL; gfx = next)
 	{
+		if (gfx->destroy)
+			gfx->destroy(gfx);
 		next = gfx->next;
 		g_free(gfx);
 	}

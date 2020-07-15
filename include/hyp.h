@@ -765,6 +765,7 @@ struct hyp_gfx
 	int window_margin;
 	void /* cairo_surface_t */ *surf;
 #endif
+	void (*destroy)(struct hyp_gfx *gfx);
 };
 
 

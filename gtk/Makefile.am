@@ -73,6 +73,7 @@ hypview_SOURCES = \
 	hv_srch.c \
 	hv_tbar.c \
 	hv_win.c \
+	hv_treeview.c \
 	autoloc.c \
 	hcp_opts.c \
 	../hyp/outcomm.c \

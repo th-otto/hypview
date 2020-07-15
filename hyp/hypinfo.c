@@ -1092,7 +1092,7 @@ static void lstree(hcp_opts *opts, HYPTREE *tree, hyp_nodenr parent, int depth)
 				fputs(line_collapsed_end, outfile);
 			else
 				fputs(line_collapsed, outfile);
-		}		
+		}
 	} else
 	{
 		if (tree[parent].next == HYP_NOINDEX)

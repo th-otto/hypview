@@ -158,7 +158,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 		new_window = 0;
 		if (!win)
 		{
-			win = gtk_hypview_window_new(doc, FALSE);
+			win = gtk_hypview_window_new(doc, FALSE, FALSE);
 			new_window = 1;
 			add_to_hist = FALSE;
 			prev_doc = NULL;
@@ -226,8 +226,14 @@ void CheckFiledate(WINDOW_DATA *win)
 	
 	if (!gl_profile.viewer.check_time)
 		return;
-	
-	if (rpl_stat(doc->path, &st) == 0)
+	/*
+	 * FIXME: current cannot be checked,
+	 * since mtime is maintained in two different doc structures
+	 */
+	if (win->tree_view)
+		return;
+
+	if (hyp_utf8_stat(doc->path, &st) == 0)
 	{
 		/* Modification time or date has changed ? */
 		if (st.st_mtime != doc->mtime)

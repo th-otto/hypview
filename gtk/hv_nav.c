@@ -306,6 +306,9 @@ void GoThisButton(WINDOW_DATA *win, enum toolbutton obj)
 	case TO_INDEX:
 		GotoIndex(win);
 		break;
+	case TO_TREEVIEW:
+		ShowTreeview(win);
+		break;
 	case TO_HELP:
 		GotoHelp(win);
 		break;

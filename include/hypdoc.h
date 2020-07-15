@@ -60,6 +60,7 @@ typedef struct _hyp_nav_buttons
 	unsigned int save : 1;       /* TO_SAVE; currently enable only when displaying ASCII */
 	unsigned int help : 1;       /* TO_HELP; enabled if file contains help entry */
 	unsigned int index : 1;      /* TO_INDEX; enabled if file contains Index entry */
+	unsigned int treeview : 1;   /* TO_TREEVIEW; always enabled */
 	unsigned int prevphys : 1;   /* TO_PREV_PHYS; disabled if current node has no predecessor */
 	unsigned int previous : 1;   /* TO_PREV; disabled if current node has no predecessor */
 	unsigned int next : 1;       /* TO_NEXT; disabled if current node has no successor */

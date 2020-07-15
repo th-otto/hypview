@@ -53,6 +53,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;
 	doc->buttons.bookmarks = TRUE;
+	doc->buttons.treeview = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
 	doc->buttons.save = TRUE;
@@ -86,6 +87,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "firstpage"), doc->buttons.first);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "lastpage"), doc->buttons.last);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "index"), doc->buttons.index);
+		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "treeview"), doc->buttons.treeview);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "xref"), doc->buttons.references);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "help"), doc->buttons.help);
 		gtk_action_set_sensitive(gtk_action_group_get_action(win->action_group, "save"), doc->buttons.save);
@@ -148,6 +150,9 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button, guint32 eve
 		break;
 	case TO_INDEX:
 		GotoIndex(win);
+		break;
+	case TO_TREEVIEW:
+		ShowTreeview(win);
 		break;
 	case TO_CATALOG:
 		GotoCatalog(win);

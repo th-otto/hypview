@@ -14,6 +14,7 @@ EXTRA_DIST = \
 	catalog.h  catalog.ico \
 	load.h     load.ico \
 	bookmark.h bookmark.ico \
+	treeview.h treeview.ico \
 	menu.h     menu.ico \
 	history.h  history.ico \
 	next.h     next.ico \
@@ -39,6 +40,7 @@ icons: \
 	$(srcdir)/catalog.h \
 	$(srcdir)/load.h \
 	$(srcdir)/bookmark.h \
+	$(srcdir)/treeview.h \
 	$(srcdir)/menu.h \
 	$(srcdir)/history.h \
 	$(srcdir)/next.h \
@@ -80,6 +82,9 @@ $(srcdir)/load.h: $(srcdir)/load.ico
 
 $(srcdir)/bookmark.h: $(srcdir)/bookmark.ico
 	$(AM_V_GEN)$(GEN_PIXBUF_CSOURCE) --raw --static --name=bookmark_icon_data $< > $@.tmp && mv $@.tmp $@ || { $(RM) $@.tmp; false; }
+
+$(srcdir)/treeview.h: $(srcdir)/treeview.ico
+	$(AM_V_GEN)$(GEN_PIXBUF_CSOURCE) --raw --static --name=treeview_icon_data $< > $@.tmp && mv $@.tmp $@ || { $(RM) $@.tmp; false; }
 
 $(srcdir)/menu.h: $(srcdir)/menu.ico
 	$(AM_V_GEN)$(GEN_PIXBUF_CSOURCE) --raw --static --name=menu_icon_data $< > $@.tmp && mv $@.tmp $@ || { $(RM) $@.tmp; false; }

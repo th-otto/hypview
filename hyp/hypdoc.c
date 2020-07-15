@@ -322,7 +322,8 @@ DOCUMENT *hypdoc_unref(DOCUMENT *doc)
 	if (doc->data && doc->type == HYP_FT_HYP)
 	{
 		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
-		doc->data = hyp_unref(hyp);
+		doc->data = NULL; /* prevent HypCloseFile from dereferencing it again */
+		hyp_unref(hyp);
 	}
 	if (--doc->ref_count == 0)
 	{

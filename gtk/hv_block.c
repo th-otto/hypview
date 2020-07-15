@@ -125,6 +125,8 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 {
 	DOCUMENT *doc = win->data;
 
+	if (!win->text_view)
+		return;
 	switch (num)
 	{
 	case CO_SAVE:
@@ -250,7 +252,7 @@ static void paste_clipboard(GtkClipboard *clipboard, const char *txt, void *user
 	new_window = FALSE;
 	if (!win)
 	{
-		win = gtk_hypview_window_new(doc, FALSE);
+		win = gtk_hypview_window_new(doc, FALSE, FALSE);
 		new_window = TRUE;
 		add_to_hist = FALSE;
 		prev_doc = NULL;

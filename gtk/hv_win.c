@@ -1,5 +1,5 @@
 /*
- * HypView - (c)      - 2019 Thorsten Otto
+ * HypView - (c)      - 2020 Thorsten Otto
  *
  * A replacement hypertext viewer
  *
@@ -44,6 +44,7 @@
 #include "../icons/referenc.h"
 #include "../icons/save.h"
 #include "../icons/remarker.h"
+#include "../icons/treeview.h"
 #include "../icons/gtk/color.h"
 
 GSList *all_list;
@@ -60,6 +61,7 @@ static const char *const tb_action_names[TO_MAX] = {
 	[TO_NEXT_PHYS] = "nextphyspage",
 	[TO_LAST] = "lastpage",
 	[TO_INDEX] = "index",
+	[TO_TREEVIEW] = "treeview",
 	[TO_CATALOG] = "catalog",
 	[TO_REFERENCES] = "xref",
 	[TO_REMARKER] = "remarker",
@@ -155,8 +157,8 @@ static gint gtk_hypview_window_expose(GtkWidget *widget, GdkEventExpose *event)
 	{
 		if (GTK_WIDGET_CLASS(gtk_hypview_window_parent_class)->expose_event)
 			GTK_WIDGET_CLASS(gtk_hypview_window_parent_class)->expose_event(widget, event);
-    }
-  
+	}
+
 	return FALSE;
 }
 
@@ -282,6 +284,8 @@ static void g_application_impl_method_call(
 		do_action(win, "lastpage");
 	else if (strcmp(method_name, "Index") == 0)
 		do_action(win, "index");
+	else if (strcmp(method_name, "Treeview") == 0)
+		do_action(win, "treeview");
 	else if (strcmp(method_name, "Catalog") == 0)
 		do_action(win, "catalog");
 
@@ -420,17 +424,21 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 		
 	win->title = NULL;
 	win->object_path = NULL;
+	win->window_id = ++window_id;
+	win->treeview_window_id = 0;
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
 	win->data = NULL;
 	win->is_popup = FALSE;
+	win->treeview_parent = 0;
 	win->action_group = NULL;
 	win->curlink_mark = NULL;
 	win->recent_menu = NULL;
 	win->bookmarks_menu = NULL;
 	win->text_buffer = NULL;
 	win->text_window = NULL;
-	win->text_view = NULL;
+ 	win->text_view = NULL;
+ 	win->tree_view = NULL;
 	win->toolbar = NULL;
 	for (i = 0; i < TO_MAX; i++)
 		win->m_buttons[i] = NULL;
@@ -468,7 +476,7 @@ static void gtk_hypview_window_init(GtkHypviewWindow *win)
 	if (org_gtk_hypview != NULL)
 	{
 		session_bus = g_application_get_dbus_connection(app);
-		win->object_path = g_strdup_printf("%s/Window/%u", g_application_get_dbus_object_path(app), ++window_id);
+		win->object_path = g_strdup_printf("%s/Window/%u", g_application_get_dbus_object_path(app), win->window_id);
 		win->object_id = g_dbus_connection_register_object(session_bus, win->object_path, org_gtk_hypview, &vtable, win, NULL, &error);
 		if (win->object_id == 0)
 		{
@@ -824,17 +832,10 @@ static guint8 *text_buffer_serialize_text (GtkTextBuffer     *register_buffer,
 
 void hv_win_destroy_images(WINDOW_DATA *win)
 {
-	GSList *l;
-	
-	for (l = win->image_childs; l; l = l->next)
-	{
-		struct hyp_gfx *gfx = (struct hyp_gfx *)l->data;
-		if (gfx->surf)
-		{
-			cairo_surface_destroy((cairo_surface_t *)gfx->surf);
-			gfx->surf = NULL;
-		}
-	}
+	/*
+	 * we cannot access the gfx nodes any longer;
+	 * they have already been deleted in hyp_free_graphics
+	 */
 	g_slist_free(win->image_childs);
 	win->image_childs = NULL;
 }
@@ -1160,6 +1161,14 @@ static void on_index(GtkAction *action, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static void on_treeview(GtkAction *action, WINDOW_DATA *win)
+{
+	UNUSED(action);
+	ShowTreeview(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void on_xref(GtkAction *action, WINDOW_DATA *win)
 {
 	UNUSED(action);
@@ -1316,6 +1325,8 @@ static void set_cursor_if_appropriate(WINDOW_DATA *win, gint x, gint y)
 	GtkTextIter iter;
 	gboolean hovering = FALSE;
 
+	if (!text_view)
+		return;
 	gtk_text_view_get_iter_at_location(text_view, &iter, x, y);
 
 	tags = gtk_text_iter_get_tags(&iter);
@@ -1371,6 +1382,42 @@ static gboolean motion_notify_event(GtkWidget *text_view, GdkEventMotion *event,
 
 /*** ---------------------------------------------------------------------- ***/
 
+/*
+ * if the link was from a different window
+ * like the treeview, find the window were the
+ * actual hypertext is displayed.
+ * Only used that if it is still displaying the
+ * same hypertext
+ */
+WINDOW_DATA *hv_link_targetwin(WINDOW_DATA *win, LINK_INFO *info)
+{
+	if (info->window_id != 0)
+	{
+		GSList *l;
+		WINDOW_DATA *parentwin;
+		
+		for (l = all_list; l; l = l->next)
+		{
+			parentwin = (WINDOW_DATA *)l->data;
+			if (parentwin->window_id == info->window_id)
+			{
+				DOCUMENT *doc1, *doc2;
+				
+				doc1 = win->data;
+				doc2 = parentwin->data;
+				win = parentwin;
+				if (doc2->type != HYP_FT_HYP ||
+					strcmp(doc1->path, doc2->path) != 0)
+					win = NULL;
+				break;
+			}
+		}
+	}
+	return win;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 /* Looks at all tags covering the position of iter in the text view, 
  * and if one of them is a link, follow it by showing the page identified
  * by the data attached to it.
@@ -1406,7 +1453,9 @@ static gboolean follow_if_link(WINDOW_DATA *win, GtkTextIter *iter)
 				}
 			} else
 			{
-				HypClick(win, info);
+				win = hv_link_targetwin(win, info);
+				if (win)
+					HypClick(win, info);
 			}
 			found = TRUE;
 			break;
@@ -1437,7 +1486,7 @@ static gboolean on_button_press(GtkWidget *text_view, GdkEventButton *event, WIN
 	UNUSED(text_view);
 	if (event->type == GDK_BUTTON_PRESS)
 	{
-		if (!win->popup && event->button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
+		if (!win->popup && win->text_view && event->button == GDK_BUTTON_SECONDARY && gl_profile.viewer.rightback)
 		{
 			GoThisButton(win, TO_BACK);
 			return TRUE;
@@ -1937,6 +1986,7 @@ static void register_stock_icons(void)
 		{ "hv-first", N_("First page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-last", N_("Last page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-index", N_("Index"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
+		{ "hv-treeview", N_("Tree View"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-catalog", N_("Catalog"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-xref", N_("References"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
 		{ "hv-help", N_("Show help page"), (GdkModifierType)0, 0, GETTEXT_PACKAGE },
@@ -1966,6 +2016,7 @@ static void register_stock_icons(void)
 	register_icon(factory, "hv-first", first_icon_data);
 	register_icon(factory, "hv-last", last_icon_data);
 	register_icon(factory, "hv-index", index_icon_data);
+	register_icon(factory, "hv-treeview", treeview_icon_data);
 	register_icon(factory, "hv-catalog", catalog_icon_data);
 	register_icon(factory, "hv-xref", reference_icon_data);
 	register_icon(factory, "hv-help", help_icon_data);
@@ -2170,14 +2221,19 @@ static void set_default_tabs(WINDOW_DATA *win)
 
 static void set_font_attributes(WINDOW_DATA *win)
 {
-	PangoFontDescription *desc = pango_font_description_from_string(gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name);
+	const char *fontname;
+	PangoFontDescription *desc;
 	PangoFontMap *font_map;
 	PangoFont *font;
 	PangoContext *context;
 	GdkScreen *screen;
 	PangoFontMetrics *metrics = NULL;
 	GdkColor color;
-	
+
+	if (!win->text_view)
+		return;	
+	fontname = (gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_name) ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name;
+	desc = pango_font_description_from_string(fontname);
 	gdk_color_parse(gl_profile.colors.text, &color);
 	gtk_widget_modify_text(win->text_view, GTK_STATE_NORMAL, &color);
 	gdk_color_parse(gl_profile.colors.background, &color);
@@ -2251,6 +2307,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "firstpage",          "hv-first",              N_("First page"),                      NULL,          N_("Goto first page"),                               G_CALLBACK(on_first) },
 	{ "lastpage",           "hv-last",               N_("Last page"),                       NULL,          N_("Goto last page"),                                G_CALLBACK(on_last) },
 	{ "index",              "hv-index",              N_("Index"),                           "<Alt>X",      N_("Goto index page"),                               G_CALLBACK(on_index) },
+	{ "treeview",           "hv-treeview",           N_("Tree View"),                       "<Alt>V",      N_("Show a treeview"),                               G_CALLBACK(on_treeview) },
 	{ "catalog",            "hv-catalog",            N_("Catalog"),                         "<Alt>K",      N_("Show catalog of hypertexts"),                    G_CALLBACK(on_catalog) },
 	{ "defaultfile",        NULL,                    N_("Default file"),                    "<Alt>D",      N_("Show default file"),                             G_CALLBACK(on_defaultfile) },
 	{ "xref",               "hv-xref",               N_("References"),                      NULL,          N_("Show list of cross references"),                 G_CALLBACK(on_xref) },
@@ -2346,6 +2403,7 @@ static char const ui_info[] =
 "      <separator/>\n"
 "      <menuitem action='toc'/>\n"
 "      <menuitem action='index'/>\n"
+"      <menuitem action='treeview'/>\n"
 "      <menuitem action='help'/>\n"
 "      <separator/>\n"
 "      <menu action='BookmarksMenu'>\n"
@@ -2399,6 +2457,7 @@ static char const ui_info[] =
 "    <toolitem action='lastpage'/>\n"
 "    <separator/>\n"
 "    <toolitem action='index'/>\n"
+"    <toolitem action='treeview'/>\n"
 "    <toolitem action='catalog'/>\n"
 "    <toolitem action='xref'/>\n"
 "    <toolitem action='help'/>\n"
@@ -2412,7 +2471,7 @@ static char const ui_info[] =
 "  </toolbar>\n"
 "</ui>\n";
 
-WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
+WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup, gboolean treeview)
 {
 	WINDOW_DATA *win;
 	GtkWidget *vbox, *hbox, *vbox2, *hbox2;
@@ -2445,9 +2504,9 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(win), vbox);
- 	
- 	if (!popup)
- 	{
+
+	if (!popup && !treeview)
+	{
 		win->action_group = gtk_action_group_new("AppWindowActions");
 		gtk_action_group_set_translation_domain(win->action_group, GETTEXT_PACKAGE);
 		gtk_action_group_add_actions(win->action_group, action_entries, G_N_ELEMENTS(action_entries), win);
@@ -2508,6 +2567,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		AppendButton(win, TO_NEXT_PHYS);
 		AppendButton(win, TO_LAST);
 		AppendButton(win, TO_INDEX);
+		AppendButton(win, TO_TREEVIEW);
 		AppendButton(win, TO_CATALOG);
 		AppendButton(win, TO_REFERENCES);
 		AppendButton(win, TO_HELP);
@@ -2541,24 +2601,34 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, TRUE, TRUE, 0);
 
-	tagtable = create_tags();
-	win->text_buffer = gtk_text_buffer_new(tagtable);
-	g_object_unref(tagtable);
-	win->serialize_text = gtk_text_buffer_register_serialize_format(win->text_buffer, "text/plain", text_buffer_serialize_text, win, FUNK_NULL);
-	
-	win->text_view = gtk_text_view_new_with_buffer(win->text_buffer);
-	g_object_unref(win->text_buffer);
-	gtk_widget_set_can_default(win->text_view, TRUE);
-	gtk_widget_set_receives_default(win->text_view, TRUE);
-	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_LEFT, gl_profile.viewer.text_xoffset);
-	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_RIGHT, gl_profile.viewer.text_xoffset);
-	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TOP, gl_profile.viewer.text_yoffset);
-	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_BOTTOM, gl_profile.viewer.text_yoffset);
-	gtk_widget_show(win->text_view);
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);
-	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(win->text_view), FALSE);
-	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(win->text_view), GTK_WRAP_NONE); 
-	gtk_widget_set_can_focus(win->text_view, TRUE);
+	if (treeview)
+	{
+		win->tree_view = gtk_tree_view_new();
+		gtk_widget_set_can_default(win->tree_view, TRUE);
+		gtk_widget_set_receives_default(win->tree_view, TRUE);
+		gtk_widget_set_can_focus(win->tree_view, TRUE);
+		gtk_widget_show(win->tree_view);
+	} else
+	{
+		tagtable = create_tags();
+		win->text_buffer = gtk_text_buffer_new(tagtable);
+		g_object_unref(tagtable);
+		win->serialize_text = gtk_text_buffer_register_serialize_format(win->text_buffer, "text/plain", text_buffer_serialize_text, win, FUNK_NULL);
+		
+		win->text_view = gtk_text_view_new_with_buffer(win->text_buffer);
+		g_object_unref(win->text_buffer);
+		gtk_widget_set_can_default(win->text_view, TRUE);
+		gtk_widget_set_receives_default(win->text_view, TRUE);
+		gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_LEFT, gl_profile.viewer.text_xoffset);
+		gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_RIGHT, gl_profile.viewer.text_xoffset);
+		gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TOP, gl_profile.viewer.text_yoffset);
+		gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_BOTTOM, gl_profile.viewer.text_yoffset);
+		gtk_widget_show(win->text_view);
+		gtk_text_view_set_editable(GTK_TEXT_VIEW(win->text_view), FALSE);
+		gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(win->text_view), FALSE);
+		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(win->text_view), GTK_WRAP_NONE); 
+		gtk_widget_set_can_focus(win->text_view, TRUE);
+	}
 
 	if (popup)
 	{
@@ -2572,7 +2642,7 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(win->text_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(win->text_window), GTK_SHADOW_IN);
 		gtk_widget_show(win->text_window);
-		gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view);
+		gtk_container_add(GTK_CONTAINER(win->text_window), win->text_view ? win->text_view : win->tree_view);
 		gtk_box_pack_start(GTK_BOX(hbox2), win->text_window, TRUE, TRUE, 0);
 	}
 	
@@ -2582,23 +2652,26 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	{
 		GtkSettings *settings;
 	
-		settings = gtk_widget_get_settings(win->text_view);
+		settings = gtk_widget_get_settings(win->text_view ? win->text_view : win->tree_view);
 		if (settings)
 			g_object_set(settings, "gtk-error-bell", FALSE, NULL);
 	}
 	
 	g_signal_connect(G_OBJECT(win), "window-state-event", G_CALLBACK(state_changed), (gpointer) win);
 	g_signal_connect(G_OBJECT(win), "frame-event", G_CALLBACK(state_changed), (gpointer) win);
-	g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
-	g_signal_connect(G_OBJECT(win->text_view), "button-press-event", G_CALLBACK(on_button_press), win);
-	g_signal_connect(G_OBJECT(win->text_view), "button-release-event", G_CALLBACK(on_button_release), win);
-	g_signal_connect(G_OBJECT(win->text_view), "key-press-event", G_CALLBACK(key_press_event), win);
-	g_signal_connect(G_OBJECT(win->text_view), "populate-popup", G_CALLBACK(populate_popup), win);
-	g_signal_connect(G_OBJECT(win->text_view), "paste-clipboard", G_CALLBACK(paste_clipboard), win);
-	g_signal_connect(G_OBJECT(win->text_view), "copy-clipboard", G_CALLBACK(copy_clipboard), win);
-	g_signal_connect_after(G_OBJECT(win->text_view), "expose_event", G_CALLBACK(draw_images), win);
+	if (win->text_view)
+	{
+		g_signal_connect(G_OBJECT(win->text_view), "motion-notify-event",  G_CALLBACK(motion_notify_event), win);
+		g_signal_connect(G_OBJECT(win->text_view), "button-press-event", G_CALLBACK(on_button_press), win);
+		g_signal_connect(G_OBJECT(win->text_view), "button-release-event", G_CALLBACK(on_button_release), win);
+		g_signal_connect(G_OBJECT(win->text_view), "key-press-event", G_CALLBACK(key_press_event), win);
+		g_signal_connect(G_OBJECT(win->text_view), "populate-popup", G_CALLBACK(populate_popup), win);
+		g_signal_connect(G_OBJECT(win->text_view), "paste-clipboard", G_CALLBACK(paste_clipboard), win);
+		g_signal_connect(G_OBJECT(win->text_view), "copy-clipboard", G_CALLBACK(copy_clipboard), win);
+		g_signal_connect_after(G_OBJECT(win->text_view), "expose_event", G_CALLBACK(draw_images), win);
+	}
 	
-    set_font_attributes(win);
+	set_font_attributes(win);
 	
 	if (!popup)
 	{
@@ -2608,20 +2681,23 @@ WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup)
 
 		ToolbarUpdate(win, FALSE);
 
-		g_signal_connect(G_OBJECT(win->text_view), "drag-data-received", G_CALLBACK(drag_data_received), (gpointer) win);
-		g_signal_connect(G_OBJECT(win->text_view), "drag-motion", G_CALLBACK(drag_motion), (gpointer) win);
-		g_signal_connect(G_OBJECT(win->text_view), "drag-drop", G_CALLBACK(drag_drop), (gpointer) win);
-
-		/*
-		 * remove the plain text targets from the drag destination target list;
-		 * our view is not editable and we do not want to accept them
-		 */
+		if (win->text_view)
 		{
-			GtkTargetList *newlist;
-			
-			newlist = gtk_target_list_new(NULL, 0);
-			gtk_target_list_add_uri_targets(newlist, 0);
-			gtk_drag_dest_set_target_list(win->text_view, newlist);
+			g_signal_connect(G_OBJECT(win->text_view), "drag-data-received", G_CALLBACK(drag_data_received), (gpointer) win);
+			g_signal_connect(G_OBJECT(win->text_view), "drag-motion", G_CALLBACK(drag_motion), (gpointer) win);
+			g_signal_connect(G_OBJECT(win->text_view), "drag-drop", G_CALLBACK(drag_drop), (gpointer) win);
+
+			/*
+			 * remove the plain text targets from the drag destination target list;
+			 * our view is not editable and we do not want to accept them
+			 */
+			{
+				GtkTargetList *newlist;
+				
+				newlist = gtk_target_list_new(NULL, 0);
+				gtk_target_list_add_uri_targets(newlist, 0);
+				gtk_drag_dest_set_target_list(win->text_view, newlist);
+			}
 		}
 		if (default_geometry != NULL)
 		{
@@ -2675,8 +2751,10 @@ long hv_win_topline(WINDOW_DATA *win)
 {
 	GtkTextIter iter;
 	long lineno;
-	
 	int x, y;
+	
+	if (!win->text_view)
+		return 0;
 	gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT, 0, 0, &x, &y);
 	gtk_text_view_get_line_at_y(GTK_TEXT_VIEW(win->text_view), &iter, y, NULL);
 	lineno = gtk_text_iter_get_line(&iter);
@@ -2695,6 +2773,8 @@ void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 	GtkAdjustment *adj;
 	gdouble val;
 	
+	if (!win->text_view)
+		return;
 	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
 	if (window)
 		gdk_window_process_updates(window, TRUE);
@@ -2740,12 +2820,19 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 {
 	DOCUMENT *doc = win->data;
 	GdkWindow *window;
-	
+
 	win->hovering_over_link = FALSE;
-	window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
-	if (window)
-		gdk_window_set_cursor(window, regular_cursor);
-	gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
+	if (win->text_view)
+	{
+		window = gtk_text_view_get_window(GTK_TEXT_VIEW(win->text_view), GTK_TEXT_WINDOW_TEXT);
+		if (window)
+			gdk_window_set_cursor(window, regular_cursor);
+		gtk_widget_set_tooltip_text(GTK_WIDGET(win->text_view), NULL);
+	}
+	if (win->tree_view)
+	{
+		gtk_widget_set_tooltip_text(GTK_WIDGET(win->tree_view), NULL);
+	}
 	set_font_attributes(win);
 	if (prep)
 		doc->prepNode(win, win->displayed_node);

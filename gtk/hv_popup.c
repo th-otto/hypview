@@ -67,7 +67,7 @@ gboolean OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, hyp_lineno line, int 
 	
 	if (parentwin->popup)
 		gtk_widget_destroy(GTK_WIDGET(parentwin->popup));
-	win = gtk_hypview_window_new(newdoc, TRUE);
+	win = gtk_hypview_window_new(newdoc, TRUE, FALSE);
 	if (win != NULL)
 	{
 		g_signal_connect(G_OBJECT(win), "destroy", G_CALLBACK(popup_destroyed), (gpointer) parentwin);

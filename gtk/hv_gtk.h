@@ -58,6 +58,7 @@ enum toolbutton {
 	TO_NEXT_PHYS,
 	TO_LAST,
 	TO_INDEX,
+	TO_TREEVIEW,
 	TO_CATALOG,
 	TO_REFERENCES,
 	TO_HELP,
@@ -100,8 +101,13 @@ struct _window_data_
 	int y_raster;
 	DOCUMENT *data;
 	gboolean is_popup;
+	unsigned int treeview_parent;
+	unsigned int treeview_window_id;
+	gboolean treeview_prepped;
+
 	char *object_path;					/* D-Bus object path */
 	guint object_id;
+	guint window_id;
 	
 	GtkActionGroup *action_group;
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */
@@ -112,6 +118,7 @@ struct _window_data_
 	GtkTextBuffer *text_buffer;
 	GtkWidget *text_window;				/* GtkScrolledWindow */
 	GtkWidget *text_view;				/* GtkTextView */
+	GtkWidget *tree_view;				/* GtkTreeView */
 	GtkWidget *toolbar;					/* GtkToolbar */
 	GtkWidget *m_buttons[TO_MAX];		/* GtkToolItem */
 	GtkWidget *searchbox;				/* GtkHBox */
@@ -135,6 +142,7 @@ typedef struct _link_info {
 	char *tip;
 	hyp_nodenr dest_page;
 	hyp_lineno line_nr;
+	unsigned int window_id;
 } LINK_INFO;
 
 
@@ -213,7 +221,7 @@ extern GSList *all_list;
 
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
-WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup);
+WINDOW_DATA *gtk_hypview_window_new(DOCUMENT *doc, gboolean popup, gboolean treeview);
 void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 void hv_set_title(WINDOW_DATA *win, const char *wintitle);
 void SendRedraw(WINDOW_DATA *win);
@@ -225,6 +233,7 @@ GtkTextTag *gtk_text_table_create_tag(GtkTextTagTable *table, const gchar *tag_n
 void hv_win_destroy_images(WINDOW_DATA *win);
 void hv_win_update_attributes(WINDOW_DATA *win);
 void hv_win_reset_text(WINDOW_DATA *win);
+WINDOW_DATA *hv_link_targetwin(WINDOW_DATA *win, LINK_INFO *info);
 
 
 /*
@@ -308,6 +317,13 @@ void GotoIndex(WINDOW_DATA *win);
 void GoThisButton(WINDOW_DATA *win, enum toolbutton obj);
 void GotoCatalog(WINDOW_DATA *win);
 void GotoDefaultFile(WINDOW_DATA *win);
+
+
+/*
+ * hv_tree.c
+ */
+WINDOW_DATA *ShowTreeview(WINDOW_DATA *win);
+WINDOW_DATA *HaveTreeview(WINDOW_DATA *orig);
 
 
 /*
