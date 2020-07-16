@@ -767,13 +767,13 @@ static void toolbar_paint(HDC hdc, WINDOW_DATA *win, const GRECT *gr)
 	TOOL_DATA *td = win->td;
 	
 	oldmode = SetBkMode(hdc, OPAQUE);
-	W_TDFrame(hdc, gr, 1, FILL | OUTLINE);
-
-	dw.hdc = hdc;
-	dw.win = win;
 	r1 = *gr;
 	GetClientRect(td->hwnd, &r);
 	RectToGrect(&r1, &r);
+	W_TDFrame(hdc, &r1, 1, FILL | OUTLINE);
+
+	dw.hdc = hdc;
+	dw.win = win;
 	dw.x_off = r1.g_x;
 	dw.y_off = r1.g_y;
 	toolbar_enum(td, td->definitions, td->num_definitions, r1.g_w, toolbar_draw, &dw);
