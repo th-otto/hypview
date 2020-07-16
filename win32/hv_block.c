@@ -120,6 +120,8 @@ void BlockOperation(WINDOW_DATA *win, enum blockop num)
 {
 	DOCUMENT *doc = win->data;
 
+	if (!win->textwin)
+		return;
 	switch (num)
 	{
 	case CO_SAVE:
@@ -364,7 +366,7 @@ gboolean BlockPaste(WINDOW_DATA *win, gboolean new_window)
 					new_window = FALSE;
 					if (!win)
 					{
-						win = win32_hypview_window_new(doc, FALSE);
+						win = win32_hypview_window_new(doc, FALSE, FALSE);
 						new_window = TRUE;
 						add_to_hist = FALSE;
 						prev_doc = NULL;

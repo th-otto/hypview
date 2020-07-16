@@ -23,6 +23,7 @@
 #define IDI_REFERENCE                  18
 #define IDI_SAVE                       19
 #define IDI_REMARKER                   20
+#define IDI_TREEVIEW                   21
 
 #define IDB_WEBLINK                     130
 #define IDB_EMAIL                       131
@@ -88,6 +89,7 @@
 #define IDM_NAV_BOOKMARK_10 324
 #define IDM_NAV_BOOKMARK_11 325
 #define IDM_NAV_BOOKMARK_12 326
+#define IDM_NAV_TREEVIEW    327
 
 
 #define IDM_OPT_MENU         400

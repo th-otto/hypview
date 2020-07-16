@@ -1,5 +1,5 @@
 /*
- * HypView - (c)      - 2019 Thorsten Otto
+ * HypView - (c) 2019 - 2020 Thorsten Otto
  *
  * A replacement hypertext viewer
  *
@@ -24,6 +24,20 @@
 #include "windebug.h"
 #include "resource.rh"
 #include "w_draw.h"
+#include <commctrl.h>
+#include "windows.rh"
+
+#ifndef TVN_ITEMCHANGING
+  typedef struct tagTVITEMCHANGE {
+    NMHDR hdr;
+    UINT uChanged;
+    HTREEITEM hItem;
+    UINT uStateNew;
+    UINT uStateOld;
+    LPARAM lParam;
+  } NMTVITEMCHANGE;
+#endif
+
 
 static char *default_geometry;
 
@@ -39,6 +53,7 @@ static TOOLBAR_ENTRY const tb_entries[] = {
 	[ TO_NEXT_PHYS ] = { TO_NEXT_PHYS, IDM_NAV_NEXTPHYS, IDI_NEXTPHYS, N_("Goto next physical page") },
 	[ TO_LAST ] = { TO_LAST, IDM_NAV_LAST, IDI_LAST, N_("Goto last page") },
 	[ TO_INDEX ] = { TO_INDEX, IDM_NAV_INDEX, IDI_INDEX, N_("Goto index page") },
+	[ TO_TREEVIEW ] = { TO_TREEVIEW, IDM_NAV_TREEVIEW, IDI_TREEVIEW, N_("Tree View") },
 	[ TO_CATALOG ] = { TO_CATALOG, IDM_FILE_CATALOG, IDI_CATALOG, N_("Show catalog of hypertexts") },
 	[ TO_REFERENCES ] = { TO_REFERENCES, IDM_NAV_XREF, IDI_REFERENCE, N_("Show list of cross references") },
 	[ TO_HELP ] = { TO_HELP, IDM_NAV_HELP, IDI_HELP, N_("Show help page") },
@@ -57,7 +72,7 @@ static int const tb_defs[] = {
 #define indexof(i) i
 	indexof(TO_BACK), indexof(TO_HISTORY), indexof(TO_BOOKMARKS), TB_SEPARATOR,
 	indexof(TO_FIRST), indexof(TO_PREV_PHYS), indexof(TO_PREV), indexof(TO_HOME), indexof(TO_NEXT), indexof(TO_NEXT_PHYS), indexof(TO_LAST), TB_SEPARATOR,
-	indexof(TO_INDEX), indexof(TO_CATALOG), indexof(TO_REFERENCES), indexof(TO_HELP), TB_SEPARATOR,
+	indexof(TO_INDEX), indexof(TO_TREEVIEW), indexof(TO_CATALOG), indexof(TO_REFERENCES), indexof(TO_HELP), TB_SEPARATOR,
 	indexof(TO_INFO), indexof(TO_LOAD), indexof(TO_SAVE), TB_SEPARATOR,
 	indexof(TO_REMARKER), TB_ENDMARK
 #undef indexof
@@ -197,6 +212,16 @@ void WindowCalcScroll(WINDOW_DATA *win)
 		win->scroll.g_w = (r.right - r.left) - win->x_margin_left - win->x_margin_right;
 		win->scroll.g_h = (r.bottom - r.top) - win->y_margin_top - win->y_margin_bottom;
 	}
+
+	if (win->treewin)
+	{
+		MoveWindow(win->treewin, r.left, r.top, r.right - r.left, r.bottom - r.top, TRUE);
+		GetClientRect(win->treewin, &r);
+		win->scroll.g_x = r.left + win->x_margin_left;
+		win->scroll.g_y = r.top + win->y_margin_top;
+		win->scroll.g_w = (r.right - r.left) - win->x_margin_left - win->x_margin_right;
+		win->scroll.g_h = (r.bottom - r.top) - win->y_margin_top - win->y_margin_bottom;
+	}
 }
 
 /******************************************************************************/
@@ -228,6 +253,8 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 	
 	if (win != NULL)
 	{
+		WINDOW_DATA *tree;
+
 		doc = win->data;
 		if (win->popup)
 		{
@@ -240,6 +267,11 @@ static void win32_hypview_window_finalize(WINDOW_DATA *win)
 			HWND rscfile = win->rscfile;
 			win->rscfile = NO_WINDOW;
 			DestroyWindow(rscfile);
+		}
+		if ((tree = HaveTreeview(win)) != NULL)
+		{
+			win->treeview_window_id = 0;
+			DestroyWindow(tree->hwnd);
 		}
 		if (win->parentwin)
 			win->parentwin->popup = NULL;
@@ -298,6 +330,8 @@ gboolean hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount)
 {
 	WP_UNIT old_x, old_y;
 	
+	if (!win->textwin)
+		return FALSE;
 	old_x = win->docsize.x;
 	old_y = win->docsize.y;
 	
@@ -552,6 +586,40 @@ gboolean hv_commdlg_help(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static gboolean hv_show_item(WINDOW_DATA *win, HTREEITEM hItem)
+{
+	if (hItem)
+	{
+		TVITEMW item;
+		LINK_INFO linkinfo;
+		HYP_DOCUMENT *hyp;
+		INDEX_ENTRY *entry;
+		WINDOW_DATA *target;
+		
+		item.hItem = hItem;
+		item.mask = TVIF_HANDLE;
+		if (SendMessage(win->treewin, TVM_GETITEMW, 0, (LPARAM)&item))
+		{
+			linkinfo.dest_page = item.lParam;
+			target = hv_link_targetwin(win, win->treeview_parent);
+			if (target == NULL)
+				return FALSE;
+			hyp = (HYP_DOCUMENT *)target->data->data;
+			entry = hyp->indextable[linkinfo.dest_page];
+			linkinfo.link_type = HYP_ESC_LINK_LINE;
+			linkinfo.dst_type = (hyp_indextype) entry->type;
+			linkinfo.tip = NULL;
+			linkinfo.line_nr = 0;
+			linkinfo.window_id = win->treeview_parent;
+			HypClick(target, &linkinfo);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
@@ -738,6 +806,9 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		case IDM_NAV_INDEX:
 			GotoIndex(win);
 			break;
+		case IDM_NAV_TREEVIEW:
+			ShowTreeview(win);
+			break;
 		case IDM_NAV_XREF:
 			HypExtRefPopup(win, 1);
 			break;
@@ -842,7 +913,10 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			long yamount = 0;
 			SCROLLINFO si;
 			
-			UpdateWindow(win->textwin);
+			if (win->textwin)
+				UpdateWindow(win->textwin);
+			if (win->treewin)
+				UpdateWindow(win->treewin);
 
 			si.cbSize = sizeof(si);
 			si.fMask = SIF_PAGE|SIF_RANGE|SIF_POS|SIF_TRACKPOS;
@@ -928,7 +1002,98 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 			return 0;
 		}
 		break;
-		
+	
+	case WM_NOTIFY:
+		{
+			NMHDR *hdr = (NMHDR *)lParam;
+			
+			switch (hdr->code)
+			{
+			case NM_DBLCLK:
+				return 1;
+			case TVN_GETINFOTIPW:
+				{
+					NMTVGETINFOTIPW *tip = (NMTVGETINFOTIPW *)lParam;
+					WINDOW_DATA *target;
+					char *text;
+					wchar_t *str;
+					hyp_nodenr node;
+					HYP_DOCUMENT *hyp;
+					INDEX_ENTRY *entry;
+					
+					target = hv_link_targetwin(win, win->treeview_parent);
+					if (target == NULL)
+						return FALSE;
+					node = tip->lParam;
+					hyp = (HYP_DOCUMENT *)target->data->data;
+					entry = hyp->indextable[node];
+					text = hyp_conv_to_utf8(hyp->comp_charset, entry->name, entry->length - SIZEOF_INDEX_ENTRY);
+					str = hyp_utf8_to_wchar(text, STR0TERM, NULL);
+					wcscpy_s(tip->pszText, tip->cchTextMax, str);
+					g_free(str);
+					g_free(text);
+				}
+				return TRUE;
+			case TVN_GETINFOTIPA:
+				{
+					NMTVGETINFOTIPA *tip = (NMTVGETINFOTIPA *)lParam;
+					WINDOW_DATA *target;
+					char *str;
+					hyp_nodenr node;
+					HYP_DOCUMENT *hyp;
+					INDEX_ENTRY *entry;
+
+					target = hv_link_targetwin(win, win->treeview_parent);
+					if (target == NULL)
+						return FALSE;
+					node = tip->lParam;
+					hyp = (HYP_DOCUMENT *)target->data->data;
+					entry = hyp->indextable[node];
+					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), entry->name, entry->length - SIZEOF_INDEX_ENTRY, NULL);
+					strcpy_s(tip->pszText, tip->cchTextMax, str);
+					g_free(str);
+				}
+				return TRUE;
+			case NM_CLICK:
+				/*
+				 * some sources recommend to use TVN_ITEMCHANGED instead.
+				 * But that message is also send when navigating with the
+				 * cursors keys, not only when clicking the item.
+				 */
+				{
+					TVHITTESTINFO info;
+					DWORD pos = GetMessagePos();
+					
+					info.pt.x = LOWORD(pos);
+					info.pt.y = HIWORD(pos);
+					ScreenToClient(win->treewin, &info.pt);
+					info.flags = 0;
+					info.hItem = 0;
+					SendMessage(win->treewin, TVM_HITTEST, 0, (LPARAM)&info);
+					hv_show_item(win, info.hItem);
+				}
+				return 0;
+			case NM_RETURN:
+				{
+					HTREEITEM item;
+					item = (HTREEITEM)SendMessage(win->treewin, TVM_GETNEXTITEM, TVGN_CARET, 0);
+					printf("return %p\n", item);
+					hv_show_item(win, item);
+				}
+				return 0;
+			case TVN_ITEMCHANGEDA:
+			case TVN_ITEMCHANGEDW:
+				{
+#if 0
+					NMTVITEMCHANGE *item = (NMTVITEMCHANGE *)lParam;
+					printf("itemchange %x %x\n", item->uStateOld, item->uStateNew);
+#endif
+				}
+				return 0;
+			}
+		}
+		break;
+
 	default:
 		hv_commdlg_help(hwnd, message, wParam, lParam);
 		break;
@@ -946,6 +1111,8 @@ static void set_cursor_if_appropriate(WINDOW_DATA *win, int x, int y)
 	LINK_INFO info;
 	gboolean hovering = FALSE;
 	
+	if (!win->textwin)
+		return;
 	if (HypFindLink(win, x, y, &info, FALSE))
 	{
 		if (info.tip)
@@ -967,6 +1134,42 @@ static void set_cursor_if_appropriate(WINDOW_DATA *win, int x, int y)
 			set_tooltip_text(win->textwin, NULL);
 		}
 	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/*
+ * if the link was from a different window
+ * like the treeview, find the window were the
+ * actual hypertext is displayed.
+ * Only use that if it is still displaying the
+ * same hypertext
+ */
+WINDOW_DATA *hv_link_targetwin(WINDOW_DATA *win, unsigned int window_id)
+{
+	if (window_id != 0)
+	{
+		GSList *l;
+		WINDOW_DATA *parentwin;
+
+		for (l = all_list; l; l = l->next)
+		{
+			parentwin = (WINDOW_DATA *)l->data;
+			if (parentwin->window_id == window_id)
+			{
+				DOCUMENT *doc1, *doc2;
+
+				doc1 = win->data;
+				doc2 = parentwin->data;
+				win = parentwin;
+				if (doc2->type != HYP_FT_HYP ||
+					strcmp(doc1->path, doc2->path) != 0)
+					win = NULL;
+				break;
+			}
+		}
+	}
+	return win;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -994,7 +1197,7 @@ static gboolean follow_if_link(WINDOW_DATA *win, int x, int y)
 			}
 		} else
 		{
-			HypClick(win->is_popup ? win->parentwin : win, &info);
+			HypClick(win, &info);
 		}
 		return TRUE;
 	}
@@ -1038,8 +1241,9 @@ static gboolean on_button_press(WINDOW_DATA *win, int x, int y, int button)
 	if (button == 1)
 	{
 		CheckFiledate(win);
-		MouseSelection(win, x, y, (getkeystate() & K_SHIFT) != 0);
-	} else if (button == 2 && !win->popup)
+		if (win->textwin)
+			MouseSelection(win, x, y, (getkeystate() & K_SHIFT) != 0);
+	} else if (button == 2 && !win->popup && win->textwin)
 	{
 		if (gl_profile.viewer.rightback)
 		{
@@ -1175,6 +1379,82 @@ static LRESULT CALLBACK textWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 
 /*** ---------------------------------------------------------------------- ***/
 
+static LRESULT CALLBACK treeWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	WINDOW_DATA *win = (WINDOW_DATA *)(DWORD_PTR)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+	win32debug_msg_print(stderr, "treeWndProc", hwnd, message, wParam, lParam);
+	switch (message)
+	{
+	case WM_NCCREATE:
+		win = (WINDOW_DATA *)(((CREATESTRUCT *)lParam)->lpCreateParams);
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, (DWORD_PTR)win);
+		win->treewin = hwnd;
+		break;
+
+	case WM_DESTROY:
+		win->treewin = NULL;
+		win32debug_msg_end("treeWndProc", message, "FALSE");
+		return FALSE;
+
+	case WM_ERASEBKGND:
+		{
+			RECT r;
+			HBRUSH brush = CreateSolidBrush(viewer_colors.background);
+			GetClientRect(hwnd, &r);
+			FillRect((HDC)wParam, &r, brush);
+			DeleteObject(brush);
+		}
+		win32debug_msg_end("treeWndProc", message, "TRUE");
+		return TRUE;
+
+	case WM_PAINT:
+		/* nothing to do; the treeview control will repaint itself */
+		break;
+
+	case WM_MOUSEWHEEL:
+		{
+			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+
+			UpdateWindow(win->treewin);
+
+			hv_scroll_window(win, 0, -amount * win->y_raster);
+		}
+		win32debug_msg_end("treeWndProc", message, "0");
+		return 0;
+
+	case WM_MOUSEHWHEEL:
+		{
+			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+
+			UpdateWindow(win->treewin);
+
+			hv_scroll_window(win, -amount * win->x_raster, 0);
+		}
+		win32debug_msg_end("treeWndProc", message, "0");
+		return 0;
+
+	case WM_MOUSEMOVE:
+		break;
+
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+		break;
+
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP:
+		break;
+	}
+
+	win32debug_msg_end("treeWndProc", message, "DefWindowProc");
+
+	return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 DOCUMENT *hypwin_doc(WINDOW_DATA *win)
 {
 	return win->data;
@@ -1184,12 +1464,16 @@ DOCUMENT *hypwin_doc(WINDOW_DATA *win)
 
 void hv_set_font(WINDOW_DATA *win)
 {
-	const char *name = gl_profile.viewer.use_xfont ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name;
-	HDC hdc = GetDC(win->textwin);
+	const char *name;
+	HDC hdc;
 	TEXTMETRIC tm;
 	HFONT oldfont;
 	int i;
 	
+	if (!win->textwin)
+		return;
+	name = gl_profile.viewer.use_xfont && gl_profile.viewer.xfont_name ? gl_profile.viewer.xfont_name : gl_profile.viewer.font_name;
+	hdc = GetDC(win->textwin);
 	for (i = 0; i <= HYP_TXT_MASK; i++)
 	{
 		if (win->fonts[i])
@@ -1214,9 +1498,10 @@ void hv_set_font(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
-WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
+WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup, gboolean treeview)
 {
 	static int registered;
+	static unsigned int window_id;
 	WINDOW_DATA *win;
 	DWORD style;
 	DWORD exstyle = 0;
@@ -1254,6 +1539,14 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 		if (RegisterClassA(&wndclass) == 0)
 			hyp_debug("can't register %s window class: %s", "text", win32_errstring(GetLastError()));
 
+		wndclass.style = CS_DBLCLKS | CS_PARENTDC | CS_HREDRAW | CS_VREDRAW;
+		wndclass.lpfnWndProc = treeWndProc;
+		wndclass.hIcon = NULL;
+		wndclass.hbrBackground = NULL;
+		wndclass.lpszClassName = "hyptree";
+		if (RegisterClassA(&wndclass) == 0)
+			hyp_debug("can't register %s window class: %s", "text", win32_errstring(GetLastError()));
+
 		toolbar_register_classes(inst);
 		
 		registered = TRUE;
@@ -1265,10 +1558,20 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	win->data = doc;
 	win->is_popup = popup;
 	win->title = g_strdup(doc->path);
+	win->window_id = ++window_id;
+	win->treeview_window_id = 0;
+	win->treeview_parent = 0;
+	/* to avoid divisions by zero */
+	win->x_raster = HYP_PIC_FONTW;
+	win->y_raster = HYP_PIC_FONTH;
 	
 	if (popup)
 	{
 		style = WS_POPUP | WS_BORDER | WS_CLIPCHILDREN;
+	} else if (treeview)
+	{
+		exstyle = WS_EX_OVERLAPPEDWINDOW;
+		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_SIZEBOX | WS_CLIPCHILDREN;
 	} else
 	{
 		MENUITEMINFO info;
@@ -1319,21 +1622,42 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 	if (win->td && win->td->visible)
 		win->td->toolbar_open(win);
 
-	CreateWindowExA(
-		0,
-		"hyptext",
-		NULL,
-		WS_CHILD|WS_VISIBLE,
-		x, y, w, h,
-		hwnd,
-		NULL,
-		inst,
-		(LPVOID)win);
-	if (win->textwin == 0)
+	if (treeview)
 	{
-		g_free(win);
-		hyp_debug("can't create %s window: %s", "text", win32_errstring(GetLastError()));
-		return NULL;
+		win->treewin = CreateWindowExW(
+			0,
+			WC_TREEVIEWW,
+			NULL,
+			WS_CHILD|WS_VISIBLE|TVS_HASLINES|TVS_HASBUTTONS|TVS_LINESATROOT|TVS_INFOTIP,
+			x, y, w, h,
+			hwnd,
+			NULL,
+			inst,
+			(LPVOID)win);
+		if (win->treewin == 0)
+		{
+			g_free(win);
+			hyp_debug("can't create %s window: %s", "tree", win32_errstring(GetLastError()));
+			return NULL;
+		}
+	} else
+	{
+		CreateWindowExA(
+			0,
+			"hyptext",
+			NULL,
+			WS_CHILD|WS_VISIBLE,
+			x, y, w, h,
+			hwnd,
+			NULL,
+			inst,
+			(LPVOID)win);
+		if (win->textwin == 0)
+		{
+			g_free(win);
+			hyp_debug("can't create %s window: %s", "text", win32_errstring(GetLastError()));
+			return NULL;
+		}
 	}
 	
 	win->y_margin_top = gl_profile.viewer.text_yoffset;
@@ -1359,6 +1683,8 @@ WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup)
 
 long hv_win_topline(WINDOW_DATA *win)
 {
+	if (!win->textwin)
+		return 0;
 	return win->docsize.y / win->y_raster;
 }
 
@@ -1375,7 +1701,10 @@ void hv_set_title(HWND hwnd, const char *title)
 
 void SendRedraw(WINDOW_DATA *win)
 {
-	InvalidateRect(win->textwin, NULL, TRUE);
+	if (win->textwin)
+		InvalidateRect(win->textwin, NULL, TRUE);
+	if (win->treewin)
+		InvalidateRect(win->treewin, NULL, TRUE);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -1403,6 +1732,8 @@ void SendClose(HWND w)
  */
 void hv_win_scroll_to_line(WINDOW_DATA *win, long line)
 {
+	if (!win->textwin)
+		return;
 	hv_scroll_window(win, 0, line * win->y_raster - win->docsize.y);
 }
 
@@ -1413,6 +1744,8 @@ void SetWindowSlider(WINDOW_DATA *win)
 	SCROLLINFO si;
 	WP_UNIT pos, range;
 	
+	if (!win->textwin)
+		return;
 	pos = win->docsize.x;
 	range = win->docsize.w - 1;
 	if (range < 0)
@@ -1458,8 +1791,11 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	int visible_lines;
 	
 	win->hovering_over_link = FALSE;
-	SetWindowCursor(win->textwin, regular_cursor);
-	hv_set_font(win);
+	if (win->textwin)
+	{
+		SetWindowCursor(win->textwin, regular_cursor);
+		hv_set_font(win);
+	}
 	if (prep)
 		doc->prepNode(win, win->displayed_node);
 	hv_set_title(win->hwnd, win->title);

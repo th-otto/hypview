@@ -200,7 +200,6 @@ static void TreeviewPrep(WINDOW_DATA *win, HYP_NODE *node)
 	win->treeview_prepped = TRUE;
 }
 
-
 /*** ---------------------------------------------------------------------- ***/
 
 static void TreeviewGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *pos)

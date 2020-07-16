@@ -185,7 +185,8 @@ gboolean W_Fontname(const char *name, FONT_ATTR *attr)
 	attr->name[0] = '\0';
 	if (name == NULL)
 		return FALSE;
-	strncpy(namebuf, name, sizeof(namebuf));
+	strncpy(namebuf, name, sizeof(namebuf) - 1);
+	namebuf[sizeof(namebuf) - 1] = '\0';
 	p = strchr(namebuf, ',');
 	if (p != NULL)
 	{
@@ -228,7 +229,8 @@ void W_FontCreate(const char *name, HFONT *fonts)
 	lf.lfCharSet = DEFAULT_CHARSET;
 	if (W_Fontname(name, &attr))
 	{
-		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName) - 1);
+		lf.lfFaceName[sizeof(lf.lfFaceName) - 1] = '\0';
 		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
 		for (i = 0; i <= HYP_TXT_MASK; i++)
 		{
@@ -262,7 +264,8 @@ HFONT W_FontCreate1(const char *name)
 	lf.lfCharSet = DEFAULT_CHARSET;
 	if (W_Fontname(name, &attr))
 	{
-		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName) - 1);
+		lf.lfFaceName[sizeof(lf.lfFaceName) - 1] = '\0';
 		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
 		font = CreateFontIndirect(&lf);
 	} else
@@ -320,7 +323,8 @@ static gboolean Choose1Font(HWND parent, char **desc, const char *title)
 	lf.lfWeight = FW_NORMAL;
 	if (W_Fontname(*desc, &attr))
 	{
-		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName));
+		strncpy(lf.lfFaceName, attr.name, sizeof(lf.lfFaceName) - 1);
+		lf.lfFaceName[sizeof(lf.lfFaceName) - 1] = '\0';
 		lf.lfHeight = -((MulDiv(attr.size, h, 72) + 5) / 10);
 		if (attr.textstyle & HYP_TXT_BOLD)
 		{

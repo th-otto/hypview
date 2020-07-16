@@ -42,6 +42,7 @@ enum toolbutton {
 	TO_NEXT_PHYS,
 	TO_LAST,
 	TO_INDEX,
+	TO_TREEVIEW,
 	TO_CATALOG,
 	TO_REFERENCES,
 	TO_HELP,
@@ -170,7 +171,11 @@ struct _window_data_
 	GRECT scroll;
 	DOCUMENT *data;
 	gboolean is_popup;
-	
+	unsigned int treeview_parent;
+	unsigned int treeview_window_id;
+	gboolean treeview_prepped;
+	unsigned int window_id;
+
 	WINDOW_DATA *popup;
 	HWND rscfile;
 	HISTORY *history;
@@ -180,6 +185,7 @@ struct _window_data_
 	HMENU recent_menu;
 	DWORD m_buttons[TO_MAX];
 	HWND textwin;
+	HWND treewin;
 	HDC draw_hdc;
 	HRGN cliprgn;
 	HFONT fonts[HYP_TXT_MASK + 1];
@@ -206,6 +212,7 @@ typedef struct _link_info {
 	char *tip;
 	hyp_nodenr dest_page;
 	hyp_lineno line_nr;
+	unsigned int window_id;
 } LINK_INFO;
 
 
@@ -302,7 +309,7 @@ extern UINT commdlg_help;
 
 void hv_win_set_geometry(const char *geometry);
 void hv_win_open(WINDOW_DATA *win);
-WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup);
+WINDOW_DATA *win32_hypview_window_new(DOCUMENT *doc, gboolean popup, gboolean treeview);
 void ReInitWindow(WINDOW_DATA *win, gboolean prep);
 void hv_set_title(HWND hwnd, const char *wintitle);
 void hv_set_font(WINDOW_DATA *win);
@@ -317,6 +324,14 @@ void WindowCalcScroll(WINDOW_DATA *win);
 void SetWindowSlider(WINDOW_DATA *win);
 gboolean hv_scroll_window(WINDOW_DATA *win, long xamount, long yamount);
 gboolean hv_commdlg_help(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+WINDOW_DATA *hv_link_targetwin(WINDOW_DATA *win, unsigned int window_id);
+
+
+/*
+ * hv_treeview.c
+ */
+WINDOW_DATA *ShowTreeview(WINDOW_DATA *win);
+WINDOW_DATA *HaveTreeview(WINDOW_DATA *orig);
 
 
 /*

@@ -144,6 +144,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 	doc->buttons.back = TRUE;
 	doc->buttons.history = TRUE;
 	doc->buttons.bookmarks = TRUE;
+	doc->buttons.treeview = TRUE;
 	doc->buttons.menu = TRUE;
 	doc->buttons.info = TRUE;
 	doc->buttons.save = TRUE;
@@ -167,6 +168,7 @@ void ToolbarUpdate(WINDOW_DATA *win, gboolean redraw)
 
 		EnableButton(TO_REMARKER, doc->buttons.remarker);
 		EnableButton(TO_BOOKMARKS, doc->buttons.bookmarks);
+		EnableButton(TO_TREEVIEW, doc->buttons.treeview);
 		EnableButton(TO_INFO, doc->buttons.info);
 		EnableButton(TO_BACK, doc->buttons.back);
 		EnableButton(TO_HISTORY, doc->buttons.history);
@@ -328,6 +330,9 @@ void ToolbarClick(WINDOW_DATA *win, enum toolbutton obj, int button)
 		break;
 	case TO_INDEX:
 		GotoIndex(win);
+		break;
+	case TO_TREEVIEW:
+		ShowTreeview(win);
 		break;
 	case TO_CATALOG:
 		GotoCatalog(win);

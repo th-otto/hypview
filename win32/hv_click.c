@@ -284,7 +284,9 @@ gboolean HypFindLink(WINDOW_DATA *win, int x, int y, LINK_INFO *info, gboolean s
 	
 	if (doc->type != HYP_FT_HYP)
 		return FALSE;
-	
+	if (!win->textwin)
+		return FALSE;
+
 	hyp = (HYP_DOCUMENT *)doc->data;
 
 	node = win->displayed_node;
@@ -292,6 +294,7 @@ gboolean HypFindLink(WINDOW_DATA *win, int x, int y, LINK_INFO *info, gboolean s
 	if (node == NULL)					/* stop if no page loaded */
 		return FALSE;
 	info->tip = NULL;
+	info->window_id = 0;
 	
 	WindowCalcScroll(win);
 

@@ -107,7 +107,7 @@ struct _window_data_
 
 	char *object_path;					/* D-Bus object path */
 	guint object_id;
-	guint window_id;
+	unsigned int window_id;
 	
 	GtkActionGroup *action_group;
 	GtkTextMark *curlink_mark;			/* link currently selected with <tab> */

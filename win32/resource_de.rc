@@ -54,6 +54,7 @@ BEGIN
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM "Zum Inhaltsverzeichnis\tAlt+T",      IDM_NAV_TOC
 		MENUITEM "Zum Index\tAlt+X",                   IDM_NAV_INDEX
+		MENUITEM "Zur Baum-Übersicht\tAlt+V",          IDM_NAV_TREEVIEW
 		MENUITEM "Zur Hilfeseite\tAlt+H",              IDM_NAV_HELP
 		MENUITEM "", -1, MFT_SEPARATOR
 		POPUP "&Lesezeichen", IDM_NAV_BOOKMARKSMENU

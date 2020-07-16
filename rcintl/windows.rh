@@ -1553,6 +1553,25 @@
 
 
 /*
+ * control window class names
+ */
+#ifndef WC_LISTVIEWA
+#define WC_LISTVIEWA "SysListView32"
+#endif
+#ifndef WC_LISTVIEWW
+#define WC_LISTVIEWW L"SysListView32"
+#endif
+
+#ifndef WC_TREEVIEWA
+#define WC_TREEVIEWA "SysListView32"
+#endif
+#ifndef WC_TREEVIEWW
+#define WC_TREEVIEWW L"SysListView32"
+#endif
+
+
+
+/*
  * animate styles
  */
 #ifndef ACS_CENTER

@@ -54,6 +54,7 @@ BEGIN
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM N_("Contents\tAlt+T"),                       IDM_NAV_TOC
 		MENUITEM N_("Index\tAlt+X"),                          IDM_NAV_INDEX
+		MENUITEM N_("Treeview\tAlt+V"),                       IDM_NAV_TREEVIEW
 		MENUITEM N_("Show help page\tAlt+H"),                 IDM_NAV_HELP
 		MENUITEM "", -1, MFT_SEPARATOR
 		POPUP N_("&Bookmarks"), IDM_NAV_BOOKMARKSMENU

@@ -1,5 +1,5 @@
 /*
- * HypView - (c)      - 2020 Thorsten Otto
+ * HypView - (c) 2019 - 2020 Thorsten Otto
  *
  * A replacement hypertext viewer
  *
@@ -1386,7 +1386,7 @@ static gboolean motion_notify_event(GtkWidget *text_view, GdkEventMotion *event,
  * if the link was from a different window
  * like the treeview, find the window were the
  * actual hypertext is displayed.
- * Only used that if it is still displaying the
+ * Only use that if it is still displaying the
  * same hypertext
  */
 WINDOW_DATA *hv_link_targetwin(WINDOW_DATA *win, LINK_INFO *info)

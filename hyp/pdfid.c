@@ -144,9 +144,9 @@ struct pdf {
 	struct {
 		int state;
 		int digitlen1;
-		char digits1[100];
+		char digits1[40];
 		int digitlen2;
-		char digits2[100];
+		char digits2[40];
 		char date[100];
 		char TZ[2];
 	} date;
@@ -665,10 +665,9 @@ static int date_parse(struct pdf *pdf, int byte)
 					pdf->date.state = 0;
 					pdf->date.digits1[pdf->date.digitlen1] = '\0';
 					pdf->date.digits2[pdf->date.digitlen2] = '\0';
+					pdf->date.TZ[1] = '\0';
 					strcpy(pdf->date.date, "D:");
-					strcat(pdf->date.date, pdf->date.digits1);
-					strcat(pdf->date.date, pdf->date.TZ);
-					strcat(pdf->date.date, pdf->date.digits2);
+					strcat(strcat(strcat(pdf->date.date, pdf->date.digits1), pdf->date.TZ), pdf->date.digits2);
 					return TRUE;
 				} else
 				{

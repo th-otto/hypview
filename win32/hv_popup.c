@@ -35,7 +35,7 @@ gboolean OpenPopup(WINDOW_DATA *parentwin, hyp_nodenr num, hyp_lineno line, int 
 	
 	if (parentwin->popup)
 		DestroyWindow(parentwin->popup->hwnd);
-	win = win32_hypview_window_new(newdoc, TRUE);
+	win = win32_hypview_window_new(newdoc, TRUE, FALSE);
 	if (win != NULL)
 	{
 		win->parentwin = parentwin;
