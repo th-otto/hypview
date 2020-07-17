@@ -21,6 +21,7 @@
 
 #include "hv_gtk.h"
 #include "hypdebug.h"
+#include "gdkkeysyms.h"
 
 struct prep_info {
 	int target_link_id;
@@ -255,6 +256,35 @@ WINDOW_DATA *HaveTreeview(WINDOW_DATA *orig)
 
 /*** ---------------------------------------------------------------------- ***/
 
+static gboolean key_press(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+	GtkTreePath *path;
+	gboolean handled = FALSE;
+	
+	UNUSED(user_data);
+	gtk_tree_view_get_cursor(GTK_TREE_VIEW(widget), &path, NULL);
+	if (path)
+	{
+		switch (event->key.keyval)
+		{
+		case GDK_KEY_Left:
+		case GDK_KEY_KP_Left:
+			gtk_tree_view_collapse_row(GTK_TREE_VIEW(widget), path);
+			handled = TRUE;
+			break;
+		case GDK_KEY_Right:
+		case GDK_KEY_KP_Right:
+			gtk_tree_view_expand_row(GTK_TREE_VIEW(widget), path, FALSE);
+			handled = TRUE;
+			break;
+		}
+		gtk_tree_path_free(path);
+	}
+	return handled;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 WINDOW_DATA *ShowTreeview(WINDOW_DATA *orig)
 {
 	DOCUMENT *doc;
@@ -305,6 +335,8 @@ WINDOW_DATA *ShowTreeview(WINDOW_DATA *orig)
 	doc->data = NULL; /* no longer used */
 
 	g_signal_connect(G_OBJECT(orig), "destroy", G_CALLBACK(hyp_destroyed), win);
+
+	g_signal_connect(G_OBJECT(win->tree_view), "key-press-event", G_CALLBACK(key_press), win);
 
 	return win;
 }
