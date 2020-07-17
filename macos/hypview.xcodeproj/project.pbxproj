@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C1A24CC24C1FFF7004125B2 /* csetname.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C1A24CA24C1FFBA004125B2 /* csetname.c */; };
 		8C2B0144229A3B3C00B409C3 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2B012E229A3B3C00B409C3 /* png.c */; };
 		8C2B0145229A3B3C00B409C3 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2B012F229A3B3C00B409C3 /* png.h */; };
 		8C2B0146229A3B3C00B409C3 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C2B0130229A3B3C00B409C3 /* pngconf.h */; };
@@ -903,6 +904,7 @@
 		8CFB70A6226B818100116947 /* ext_refs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ext_refs.c; path = ../hyp/ext_refs.c; sourceTree = SOURCE_ROOT; };
 		8CFB70A7226B818100116947 /* hyp_cfg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hyp_cfg.c; path = ../hyp/hyp_cfg.c; sourceTree = SOURCE_ROOT; };
 		8CFB70A8226B818100116947 /* hyp_cset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hyp_cset.c; path = ../hyp/hyp_cset.c; sourceTree = SOURCE_ROOT; };
+		8C1A24CA24C1FFBA004125B2 /* csetname.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = csetname.c; path = ../hyp/csetname.c; sourceTree = SOURCE_ROOT; };
 		8CFB70A9226B818100116947 /* hyp_err.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hyp_err.c; path = ../hyp/hyp_err.c; sourceTree = SOURCE_ROOT; };
 		8CFB70AA226B818100116947 /* hyp_file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hyp_file.c; path = ../hyp/hyp_file.c; sourceTree = SOURCE_ROOT; };
 		8CFB70AB226B818100116947 /* hyp_glib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hyp_glib.c; path = ../hyp/hyp_glib.c; sourceTree = SOURCE_ROOT; };
@@ -1818,6 +1820,7 @@
 				8CFB70A5226B818100116947 /* cache.c */,
 				8CFB70A6226B818100116947 /* ext_refs.c */,
 				8CFB70A7226B818100116947 /* hyp_cfg.c */,
+				8C1A24CA24C1FFBA004125B2 /* csetname.c */,
 				8CFB70A8226B818100116947 /* hyp_cset.c */,
 				8CFB70A9226B818100116947 /* hyp_err.c */,
 				8CFB70AA226B818100116947 /* hyp_file.c */,
@@ -3121,6 +3124,7 @@
 				8CFB70D3226B818200116947 /* rpl_stat.c in Sources */,
 				8CFB70C7226B818200116947 /* hyp_load.c in Sources */,
 				8CFB70D6226B818200116947 /* utl_dbg.c in Sources */,
+				8C1A24CC24C1FFF7004125B2 /* csetname.c in Sources */,
 				8CFB70CF226B818200116947 /* localenm.c in Sources */,
 				8CFB70CB226B818200116947 /* hypgfx.c in Sources */,
 			);

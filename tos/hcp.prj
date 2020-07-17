@@ -42,6 +42,7 @@ cstartv.o
 ..\hyp\hyp_err.c
 ..\hyp\hyp_glib.c
 ..\hyp\hyp_cset.c
+..\hyp\csetname.c
 ..\hyp\hyp_tree.c
 ..\hyp\utl_dbg.c
 ..\hyp\rpl_stat.c

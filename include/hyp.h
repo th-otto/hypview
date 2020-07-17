@@ -1009,8 +1009,6 @@ typedef uint32_t h_unichar_t;
 		p += 6; \
 	}
 
-const char *hyp_charset_name(HYP_CHARSET charset);
-HYP_CHARSET hyp_charset_from_name(const char *name);
 HYP_CHARSET hyp_default_charset(HYP_OS os);
 HYP_CHARSET hyp_get_current_charset(void);
 HYP_CHARSET hyp_get_filename_charset(void);
@@ -1047,6 +1045,13 @@ const char *hyp_utf8_getchar(const char *p, h_unichar_t *ch);
 int hyp_utf8_strcasecmp(const char *s1, const char *s2);
 int hyp_utf8_strncasecmp(const char *s1, const char *s2, size_t n);
 const char *hyp_utf8_strcasestr(const char *searchee, const char *lookfor);
+
+
+/*
+ * csetname.c
+ */
+const char *hyp_charset_name(HYP_CHARSET charset);
+HYP_CHARSET hyp_charset_from_name(const char *name);
 
 
 /*

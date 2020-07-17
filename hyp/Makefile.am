@@ -82,6 +82,7 @@ libhyp_a_SOURCES = \
 	hyp_file.c \
 	hyp_err.c \
 	hyp_cset.c \
+	csetname.c \
 	hyp_intl.c \
 	hyp_glib.c \
 	hypgfx.c \
@@ -300,6 +301,8 @@ NAV_IMAGES = \
 	tv_nointersec_png.h \
 	tv_end_png.h \
 	$(empty)
+
+icons: $(NAV_IMAGES)
 
 outhtml.o: $(NAV_IMAGES)
 

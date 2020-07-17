@@ -683,10 +683,16 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 					return NULL;
 				}
 				hyp->indextable[i] = (INDEX_ENTRY *)current_pos;
+				/*
+				 * should better check for length being at least SIZEOF_INDEX_ENTRY
+				 */
 				current_pos += current_pos[0];
 			}
 		} else
 		{
+			/*
+			 * have to do it the hard way
+			 */
 			for (i = 0; i < hyp->num_index; i++)
 			{
 				INDEX_ENTRY *entry;
@@ -730,6 +736,10 @@ HYP_DOCUMENT *hyp_load(const char *filename, int handle, hyp_filetype *err)
 		if (hyp->indextable[hyp->num_index - 1]->type == HYP_NODE_EOF)
 			hyp->indextable[hyp->num_index - 1]->comp_diff = 0;
 		
+		/*
+		 * allocate an entry beyond the table
+		 * where we can store the seek offset of the end-of-file
+		 */
 		hyp->indextable[hyp->num_index] = g_new0(INDEX_ENTRY, 1);
 		if (hyp->indextable[hyp->num_index] == NULL)
 		{
