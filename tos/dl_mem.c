@@ -54,7 +54,7 @@ void *g_alloc_shared(size_t size)
 	 * not to crash others.
 	 */
 	mxmask = Mxmask();
-	ptr = mxmask ? Mxalloc(size, (MX_PREFTTRAM | MX_GLOBAL) & mxmask) : Malloc(size);
+	ptr = mxmask ? (void *)Mxalloc(size, (MX_PREFTTRAM | MX_GLOBAL) & mxmask) : (void *)Malloc(size);
 	RestorePD();
 	return ptr;
 }

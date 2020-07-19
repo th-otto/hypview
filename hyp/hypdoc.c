@@ -10,6 +10,7 @@
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
 
+#ifndef HYPTREE_APP
 static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr node_num)
 {
 	DOCUMENT *doc = hypwin_doc(win);
@@ -54,7 +55,11 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 		node_num = HYP_NOINDEX;
 	}
 
+#ifdef HYPTREE_APP
+	node = NULL;
+#else
 	node = AskCache(hyp, node_num);
+#endif
 
 	if (hypnode_valid(hyp, node_num) && node == NULL)
 	{
@@ -66,9 +71,11 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 			node_num = HYP_NOINDEX;
 		} else
 		{
+#ifndef HYPTREE_APP
 			TellCache(hyp, node_num, node);
-			hyp_node_find_windowtitle(node);
 			hyp_prep_graphics(hyp, node);
+#endif
+			hyp_node_find_windowtitle(node);
 		}
 	}
 
@@ -82,7 +89,9 @@ static gboolean HypGotoNode(WINDOW_DATA *win, const char *chapter, hyp_nodenr no
 	doc->buttons.first = hypnode_valid(hyp, hyp->first_text_page) && node_num != hyp->first_text_page;
 	doc->buttons.last = hypnode_valid(hyp, hyp->last_text_page) && node_num != hyp->last_text_page;
 	doc->buttons.home = hypnode_valid(hyp, node_num) && hypnode_valid(hyp, hyp->indextable[node_num]->toc_index) && node_num != hyp->indextable[node_num]->toc_index;
+#ifndef HYPTREE_APP
 	doc->buttons.references = HypCountExtRefs(node) != 0;
+#endif
 	doc->buttons.remarker = FALSE;
 	
 	/* ASCII Export supported */
@@ -117,6 +126,7 @@ static hyp_nodenr HypGetNode(WINDOW_DATA *win)
 	HYP_DBG(("Document %s has no open page", printnull(hypwin_doc(win)->path)));
 	return HYP_NOINDEX;
 }
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 
@@ -138,6 +148,10 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	ftype = hyp_guess_filetype(doc->path);
 	if (ftype == HYP_FT_REF)	/* REF file? */
 	{
+#ifdef HYPTREE_APP
+		UNUSED(return_if_ref);
+		return HYP_FT_UNKNOWN;
+#else
 		char *f;
 		
 		ref = ref_load(doc->path, handle, FALSE);
@@ -160,6 +174,7 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 		g_free(doc->path);
 		doc->path = f;
 		ftype = HYP_FT_HYP;
+#endif
 	} else
 	{
 		ref = NULL;
@@ -167,28 +182,37 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	
 	if (ftype != HYP_FT_HYP)	/* no .HYP file? */
 	{
+#ifndef HYPTREE_APP
 		if (ref != NULL)
 			hyp_utf8_close(handle);
 		ref_close(ref);
+#endif
 		return HYP_FT_UNKNOWN;
 	}
 
 	if ((hyp = hyp_load(doc->path, handle, &ftype)) == NULL)
 	{
+#ifndef HYPTREE_APP
 		if (ref != NULL)
 			hyp_utf8_close(handle);
 		ref_close(ref);
+#endif
 		return ftype;
 	}
 	
 	/* initialize cache of node data */
+#ifndef HYPTREE_APP
 	InitCache(hyp);
+#endif
 
 	doc->data = hyp;
 	hyp->ref = ref;
+#ifndef HYPTREE_APP
 	ref_set_defaultcharset(ref, hyp->comp_charset);
+#endif
 
 	doc->type = HYP_FT_HYP;
+#ifndef HYPTREE_APP
 	doc->displayProc = HypDisplayPage;
 	doc->closeProc = HypClose;
 	doc->gotoNodeProc = HypGotoNode;
@@ -197,6 +221,7 @@ hyp_filetype HypLoad(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	doc->getCursorProc = HypGetCursorPosition;
 	doc->blockProc = HypBlockOperations;
 	doc->prepNode = HypPrepNode;
+#endif
 	
 	doc->start_line = 0;
 
@@ -212,15 +237,16 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 {
 	HYP_DOCUMENT *hyp = (HYP_DOCUMENT *) doc->data;
 	hyp_nodenr node_num;
-	char *nodename;
-	gboolean freename;
 	
 	/* try to find in node names first */
 	node_num = find_nr_by_title(hyp, chapter, FALSE);
 
 	if (!hypnode_valid(hyp, node_num))
 	{
+#ifndef HYPTREE_APP
 		hyp_lineno line;
+		gboolean freename;
+		char *nodename;
 		
 		/* load REF if not done already */
 		if (hyp->ref == NULL)
@@ -247,6 +273,7 @@ hyp_nodenr HypFindNode(DOCUMENT *doc, const char *chapter)
 				g_free(nodename);
 			doc->start_line = line;
 		}
+#endif
 	}
 	return node_num;
 }
@@ -258,8 +285,10 @@ hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref)
 	hyp_filetype type;
 
 	type = HypLoad(doc, handle, return_if_ref);
+#ifndef HYPTREE_APP
 	if (type == HYP_FT_UNKNOWN)
 		type = AsciiLoad(doc, handle);
+#endif
 
 	return type;
 }

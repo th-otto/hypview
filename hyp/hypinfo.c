@@ -1044,15 +1044,15 @@ error:
 #define line_end               "\342\224\224"
 
 
-static void print_indent(FILE *outfile, HYPTREE *tree, hyp_nodenr current)
+static void print_indent(FILE *outfile, HYPTREE *tree, hyp_nodenr node)
 {
 	hyp_nodenr parent;
 	hyp_nodenr pparent;
 	gboolean is_last;
 	
-	if (current == 0 || current == HYP_NOINDEX)
+	if (node == 0 || node == HYP_NOINDEX)
 		return;
-	parent = tree[current].parent;
+	parent = tree[node].parent;
 	print_indent(outfile, tree, parent);
 	is_last = FALSE;
 	if (parent == HYP_NOINDEX)
@@ -1065,43 +1065,49 @@ static void print_indent(FILE *outfile, HYPTREE *tree, hyp_nodenr current)
 			is_last = TRUE;
 	}
 	if (is_last)
+	{
 		fputs(" ", outfile);
-	else
+	} else
+	{
 		fputs(line_down, outfile);
+	}
 	fputs(" ", outfile);
 }
 
-static void lstree(hcp_opts *opts, HYPTREE *tree, hyp_nodenr parent, int depth)
+static void lstree(hcp_opts *opts, HYPTREE *tree, hyp_nodenr node, int depth)
 {
 	FILE *outfile = opts->outfile;
 	hyp_nodenr child;
 	
-	print_indent(outfile, tree, parent);
+	print_indent(outfile, tree, node);
 
-	if (tree[parent].num_childs != 0)
+	if (tree[node].num_childs != 0)
 	{
-		if (tree[parent].flags & HYPTREE_IS_EXPANDED)
+		if (tree[node].flags & HYPTREE_IS_EXPANDED)
 		{
-			if (tree[parent].next == HYP_NOINDEX)
+			if (tree[node].next == HYP_NOINDEX)
 				fputs(line_expanded_end, outfile);
 			else
 				fputs(line_expanded, outfile);
 		} else
 		{
-			if (tree[parent].next == HYP_NOINDEX)
+			if (tree[node].next == HYP_NOINDEX)
 				fputs(line_collapsed_end, outfile);
 			else
 				fputs(line_collapsed, outfile);
 		}
 	} else
 	{
-		if (tree[parent].next == HYP_NOINDEX)
+		if (tree[node].next == HYP_NOINDEX)
+		{
 			fputs(line_end, outfile);
-		else
+		} else
+		{
 			fputs(line_intersec, outfile);
+		}
 	}
-	hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%u: %s\n", parent, tree[parent].title);
-	child = tree[parent].head;
+	hyp_utf8_fprintf_charset(outfile, opts->output_charset, NULL, "%u: %s\n", node, tree[node].title);
+	child = tree[node].head;
 	while (child != HYP_NOINDEX)
 	{
 		lstree(opts, tree, child, depth + 1);

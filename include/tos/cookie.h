@@ -28,4 +28,10 @@ _BOOL CK_ReadJar(_ULONG id, _LONG *value);
 _BOOL CK_WriteJar(_ULONG id, _LONG value);
 void CK_SetOptions(_WORD increment, _ULONG xbra_id);
 
+int Cookie_ReadJar(unsigned long id, long *value);
+int Cookie_JarInstalled(void);
+int Cookie_UsedEntries(void);
+int Cookie_JarSize(void);
+int Cookie_ResizeJar(int newsize);
+
 #endif /* __COOKIE_H__ */

@@ -25,7 +25,6 @@
 #include "hypdebug.h"
 #include "hypview.h"
 
-
 static RSHDR *skin_rsh;
 
 /******************************************************************************/

@@ -2,6 +2,12 @@
 #include "hypdebug.h"
 #include "picture.h"
 
+#ifndef ICOLSPEC_GET_DATACOL
+#define ICOLSPEC_GET_DATACOL(color)   ( ((color) >> 12) & 0x0f )
+#define ICOLSPEC_GET_MASKCOL(color)   ( ((color) >>  8) & 0x0f )
+#define ICOLSPEC_GET_CHARACTER(color) ( ((color)      ) & 0xff )
+#endif
+
 struct userdef {
 	OBJECT orig;
 	USERBLK user;
@@ -160,7 +166,7 @@ static void save_textattr(_WORD handle, _WORD attrib[10])
 	
 	vqt_attributes(handle, attrib);
 	vst_effects(handle, 0);
-	vst_alignment(handle, ALI_LEFT, ALI_TOP, &dummy, &dummy);
+	vst_alignment(handle, TA_LEFT, TA_TOP, &dummy, &dummy);
 	vst_rotation(handle, 0);
 }
 
@@ -1061,25 +1067,6 @@ static _WORD _CDECL draw_cicon(PARMBLK *pb)
 	return pb->pb_currstate & ~OS_SELECTED;
 }
 
-static _WORD const rgb_to_vdi_tab[256] = {
-   0,    4,    8,   12,   16,   20,   24,   28,   32,   36,   40,   43,   47,   51,   55,   59,
-  63,   67,   71,   75,   79,   83,   86,   90,   94,   98,  102,  106,  110,  114,  118,  122,
- 126,  129,  133,  137,  141,  145,  149,  153,  157,  161,  165,  168,  172,  176,  180,  184,
- 188,  192,  196,  200,  204,  208,  211,  215,  219,  223,  227,  231,  235,  239,  243,  247,
- 251,  254,  258,  262,  266,  270,  274,  278,  282,  286,  290,  294,  298,  301,  305,  309,
- 313,  317,  321,  325,  329,  333,  337,  341,  345,  349,  352,  356,  360,  364,  368,  372,
- 376,  380,  384,  388,  392,  396,  400,  403,  407,  411,  415,  419,  423,  427,  431,  435,
- 439,  443,  447,  450,  454,  458,  462,  466,  470,  474,  478,  482,  486,  490,  494,  498,
- 501,  505,  509,  513,  517,  521,  525,  529,  533,  537,  541,  545,  549,  552,  556,  560,
- 564,  568,  572,  576,  580,  584,  588,  592,  596,  600,  603,  607,  611,  615,  619,  623,
- 627,  631,  635,  639,  643,  647,  650,  654,  658,  662,  666,  670,  674,  678,  682,  686,
- 690,  694,  698,  701,  705,  709,  713,  717,  721,  725,  729,  733,  737,  741,  745,  749,
- 752,  756,  760,  764,  768,  772,  776,  780,  784,  788,  792,  796,  800,  803,  807,  811,
- 815,  819,  823,  827,  831,  835,  839,  843,  847,  850,  854,  858,  862,  866,  870,  874,
- 878,  882,  886,  890,  894,  898,  901,  905,  909,  913,  917,  921,  925,  929,  933,  937,
- 941,  945,  949,  952,  956,  960,  964,  968,  972,  976,  980,  984,  988,  992,  996, 1000
-};
-
 PALETTE const std256_palette = {
 	{ 0xff, 0xff, 0xff }, /*   0 == WHITE (0) */
 	{ 0xff, 0x00, 0x00 }, /*   1 == RED (2) */
@@ -1341,13 +1328,6 @@ PALETTE const std256_palette = {
 
 /*** ---------------------------------------------------------------------- ***/
 
-_WORD pic_rgb_to_vdi(unsigned char c)
-{
-	return rgb_to_vdi_tab[c];
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 void pic_stdpalette(PALETTE pal, _WORD planes)
 {
 	_WORD i;
@@ -1415,7 +1395,7 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 	{
 		OBJECT *ob = &objects[i];
 		
-		switch (ob->ob_type & OBTYPEMASK)
+		switch (ob->ob_type & 0xff)
 		{
 		case G_ICON:
 			break;
@@ -1481,7 +1461,7 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 	{
 		OBJECT *ob = &objects[i];
 		
-		switch (ob->ob_type & OBTYPEMASK)
+		switch (ob->ob_type & 0xff)
 		{
 		case G_ICON:
 			break;
@@ -1525,7 +1505,7 @@ void *hfix_objs(RSHDR *hdr, OBJECT *objects, _WORD num_objs)
 				} else
 				{
 					ob->ob_spec.iconblk = &ciconblk->monoblk;
-					ob->ob_type = (ob->ob_type & OBEXTTYPEMASK) | G_ICON;
+					ob->ob_type = (ob->ob_type & 0xff00) | G_ICON;
 				}
 			}
 			break;
@@ -1574,7 +1554,7 @@ static void release_list(struct userdef_list *list)
 	{
 		OBJECT *ob = &tree[i];
 		
-		switch (ob->ob_type & OBTYPEMASK)
+		switch (ob->ob_type & 0xff)
 		{
 		case G_ICON:
 			break;
@@ -1590,7 +1570,7 @@ static void release_list(struct userdef_list *list)
 	for (i = 0; i < list->nuserobjs; i++)
 	{
 		tree[list->userobjs[i].obj] = list->userobjs[i].orig;
-		switch (list->userobjs[i].orig.ob_type & OBTYPEMASK)
+		switch (list->userobjs[i].orig.ob_type & 0xff)
 		{
 		case G_CICON:
 			{

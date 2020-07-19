@@ -263,7 +263,9 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		win->docsize.x = 0;
 		win->docsize.y = doc->start_line * win->y_raster;
 
+#if USE_DOCUMENTHISTORY
 		DhstAddFile(doc->path);
+#endif
 		break;
 		
 	case WIND_EXIT:
@@ -286,8 +288,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			{
 				Protokoll_Send(remarker, AP_TERM, 0, 0, AP_TERM, 0, 0);
 			}
+#if !USE_MENU
 			if (_app)
 				quitApp = TRUE;
+#endif
 		}
 		break;
 		
@@ -690,17 +694,14 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_DRAGDROPFORMAT:
-		{
-			_WORD i;
-			long *format = (long *)data;
-	
-			for (i = 0; i < MAX_DDFORMAT; i++)
-				format[i] = 0L;
-	
-			format[0] = 0x41524753L;		/* 'ARGS' */
-		}
+#if USE_DRAGDROP
+		DD_DialogGetFormat(NULL, 0, (unsigned long *)data);
 		break;
+#else
+		return FALSE;
+#endif
 		
+#if USE_DRAGDROP
 	case WIND_DRAGDROP:
 		{
 			char *ptr = hyp_conv_to_utf8(hyp_get_current_charset(), data, STR0TERM);
@@ -716,6 +717,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			g_free(ptr);
 		}
 		break;
+#endif
 		
 	case WIND_CLICK:
 		{
@@ -739,7 +741,7 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				d.bstate = event->mbutton;
 				d.kstate = event->kstate;
 				if ((event->mbutton & 1) ||		/* button still pressed? */
-					(event->kstate & KbSHIFT))	/* or shift pressee? */
+					(event->kstate & KbSHIFT))	/* or shift pressed? */
 				{
 					MouseSelection(win, &d);
 				} else

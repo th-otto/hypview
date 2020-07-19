@@ -1,9 +1,10 @@
-hypview.app
-;c:\hypview.acc
+hyptree.app
 .C[-I..\include\tos]
 .C[-I..\include]
 .C[-I..\rcintl]
 .C[-Ic:\pc\include]
+.C[-DHYPTREE_APP=1]
+.C[-DNO_UTF8=1]
 .C[-P]
 .C[-K] ; default char unsigned, but FIXME
 
@@ -29,76 +30,56 @@ hypview.app
 cstartv.o
 ;lib\gemstart.o
 
-..\tos\hypview.c
+..\tos\hyptree.c
+..\tos\tv_win.c
+..\tos\tv_cset.c
 ..\tos\hv_globl.c
-..\tos\hv_fsel.c
-..\tos\hv_file.c
-..\tos\hv_error.c
-..\tos\hv_win.c
-..\tos\hv_tbar.c
-..\tos\hv_init.c
 ..\tos\hv_color.c
-..\tos\hv_asc.c
-..\tos\hv_bin.c
-..\tos\hv_hist.c
-..\tos\hv_nav.c
-..\tos\hv_autol.c
-..\tos\hv_selec.c
-..\tos\hv_font.c
-..\tos\hv_block.c
-..\tos\hv_mark.c
-..\tos\hv_info.c
-..\tos\hv_click.c
-..\tos\hv_popup.c
-..\tos\hv_curs.c
-..\tos\hv_srch.c
-..\tos\hv_hfind.c
-..\tos\hv_disp.c
-..\tos\hv_eref.c
-..\tos\hv_user.c
-..\tos\autoloc.c
-..\tos\hv_rsc.c
+..\tos\hv_error.c
+..\tos\hv_fsel.c
 
 ..\hyp\hyp.c
-..\hyp\ref.c
+;..\hyp\ref.c
 ..\hyp\hyp_load.c
 ..\hyp\lh5d.c
-..\hyp\lh5c.c
+;..\hyp\lh5c.c
 ..\hyp\lh5crc.c
-..\hyp\prepare.c
-..\hyp\gfx.s
-..\hyp\cache.c
-..\hyp\hyp_save.c
+;..\hyp\prepare.c
+;..\hyp\gfx.s
+;..\hyp\cache.c
+;..\hyp\hyp_save.c
 ..\hyp\tool.c
-..\hyp\block.c
-..\hyp\ext_refs.c
+;..\hyp\block.c
+;..\hyp\ext_refs.c
 ..\hyp\hyp_intl.c
 ..\hyp\hyp_file.c
-..\hyp\hyp_asc.c
-..\hyp\hyp_bin.c
+;..\hyp\hyp_asc.c
+;..\hyp\hyp_bin.c
 ..\hyp\hyp_err.c
 ..\hyp\hyp_glib.c
-..\hyp\hyp_cset.c
+;..\hyp\hyp_cset.c
 ..\hyp\csetname.c
+..\hyp\hyp_tree.c
+
 ..\hyp\utl_dbg.c
 ..\hyp\rpl_stat.c
 ..\hyp\profile.c
 ..\hyp\hyp_cfg.c
 ..\hyp\hypdoc.c
-..\hyp\hypgfx.c
+;..\hyp\hypgfx.c
 ..\hyp\localenm.c
 
 ..\hyp\tos\cookie.c
 ..\hyp\tos\mkdir.c
-..\hyp\tos\spawn.c
+;..\hyp\tos\spawn.c
 
-..\pic\piccolor.c
+;..\pic\piccolor.c
 
 ..\tos\dl_user.c
 ..\tos\dl_init.c
 ..\tos\dl_event.c
 ..\tos\dl_items.c
-;..\tos\dl_menu.c
+..\tos\dl_menu.c
 ..\tos\dl_dial.c
 ..\tos\dl_win.c
 ..\tos\dl_filsl.c
@@ -113,7 +94,7 @@ cstartv.o
 ;..\tos\dl_bubbl.c
 ;..\tos\dl_help.c
 ;..\tos\dl_ledit.c
-..\tos\dl_dhst.c
+;..\tos\dl_dhst.c
 ..\tos\dl_apinf.c
 ..\tos\dl_mem.c
 ..\tos\dirent.c
@@ -124,11 +105,6 @@ cstartv.o
 ..\tos\nf_shutd.c
 ..\tos\nf_stder.c
 ..\tos\nf_vers.c
-
-..\tos\dragdrop\dragdrop.c
-..\tos\bubble\bgh.c
-..\tos\gscript.c
-..\tos\dbgwin.c
 
 ..\hyp\tos\malloc.c
 

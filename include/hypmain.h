@@ -52,7 +52,7 @@ int main(int argc, const char **argv)
 	int i;
 	int ret;
 	
-	static DTA mydta;
+	static _DTA mydta;
 	Fsetdta(&mydta);
 	
 	Pdomain(1); /* DOM_MINT */

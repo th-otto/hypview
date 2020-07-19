@@ -53,7 +53,7 @@ typedef unsigned short wchar_t;
 #endif
 
 #ifdef __TOS__
-#include "tos/gem.h"
+#include "tos/mygem.h"
 #else
 #include "tos/nogem.h"
 #endif

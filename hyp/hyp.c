@@ -137,6 +137,7 @@ void hyp_node_free(HYP_NODE *node)
 
 /* ------------------------------------------------------------------------- */
 
+#ifndef HYPTREE_APP
 void hyp_image_free(HYP_IMAGE *image)
 {
 	if (image)
@@ -148,6 +149,7 @@ void hyp_image_free(HYP_IMAGE *image)
 		g_free(image);
 	}
 }
+#endif
 
 /* ------------------------------------------------------------------------- */
 
@@ -409,8 +411,13 @@ static char *load_string(HYP_CHARSET charset, int handle, unsigned short len)
 	{
 		HYP_DBG(("str not zero-terminated: %s", printnull(str)));
 	}
+#ifdef NO_UTF8
+	UNUSED(charset);
+	res = str;
+#else
 	res = hyp_conv_to_utf8(charset, str, len);
 	g_free(str);
+#endif
 	return res;
 }
 
@@ -450,8 +457,10 @@ void hyp_delete(HYP_DOCUMENT *hyp)
 	if (hyp == NULL)
 		return;
 	ASSERT(hyp->ref_count == 0);
+#ifndef HYPTREE_APP
 	ClearCache(hyp);
 	ref_close(hyp->ref);
+#endif
 	g_free(hyp->database);
 	{
 		HYP_HOSTNAME *h, *next;

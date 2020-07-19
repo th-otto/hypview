@@ -25,6 +25,10 @@
 #include <signal.h>
 #include "tos/dragdrop.h"
 
+#ifndef ETOS_ACCES
+#define ETOS_ACCES (-36)
+#endif
+
 /*
  * we use Psignal() directly, not signal(),
  * so make sure we get the correct definitions for MiNT,

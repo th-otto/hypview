@@ -4,7 +4,6 @@
 #undef HAVE_GLIB
 
 #include "hv_defs.h"
-#include "diallib.h"
 #include "tos/av.h"
 #include "tos/mem.h"
 
@@ -33,7 +32,7 @@ static _WORD Appl_init(void)
 	acc_memsave = !_app && _AESnumapps == 1;
 	
 	if (appl_xgetinfo(AES_SHELL, &level, &dummy, &dummy, &dummy) && (level & 0x00FF) >= 9)
-		shel_write(SHW_MSGREC, 1, 1, "", "");			/* wir koennen AP_TERM! */
+		shel_write(SWM_NEWMSG, 1, 1, "", "");			/* wir koennen AP_TERM! */
 	
 	return gl_apid;
 }

@@ -30,6 +30,36 @@
 #define	AP_DRAGDROP	63
 #endif
 
+#ifndef DD_FNAME
+#define DD_FNAME	"U:\\PIPE\\DRAGDROP.AA"
+#define DD_NAMEMAX	128			/* Maximum length of a format name */
+#define DD_HDRMIN	9			/* Minimum length of Drag&Drop headers */
+#define DD_HDRMAX	( 8 + DD_NAMEMAX )	/* Maximum length */
+#endif
+
+#ifndef DD_NAK
+/* AP_DRAGDROP return codes */
+#define DD_OK        0
+#define DD_NAK       1
+#define DD_EXT       2
+#define DD_LEN       3
+#define DD_TRASH     4
+#define DD_PRINTER   5
+#define DD_CLIPBOARD 6
+#endif
+
+#ifndef DD_TIMEOUT
+#define DD_TIMEOUT	4000		/* Timeout in ms */
+#endif
+
+#ifndef DD_EXTSIZE
+#define DD_NUMEXTS	8			/* Number of formats */
+#define DD_EXTLEN   4
+#define DD_EXTSIZE	(DD_NUMEXTS * DD_EXTLEN)
+#define DD_NAMEMAX	128
+#define DD_TIMEOUT	4000
+#endif
+
 short	ddcreate( short	app_id, short rcvr_id, short window, short mx, short my, short kbstate, unsigned long format[8], void **oldpipesig );
 short	ddstry( short handle, unsigned long format, char *name, long size );
 short	ddopen( char *pipe, unsigned long *format, void **oldpipesig );

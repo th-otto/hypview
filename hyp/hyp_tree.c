@@ -129,6 +129,7 @@ HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp)
 		tree[node].head = HYP_NOINDEX;
 		tree[node].tail = HYP_NOINDEX;
 		tree[node].flags = HYPTREE_IS_EXPANDED;
+		tree[node].level = 0;
 		tree[node].num_childs = 0;
 		tree[node].name = NULL;
 		tree[node].title = NULL;
@@ -147,13 +148,21 @@ HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp)
 			
 			tree[node].flags |= HYPTREE_IS_NODE;
 			namelen = entry->length - SIZEOF_INDEX_ENTRY;
+#ifdef NO_UTF8
+			tree[node].name = g_strndup((const char *)entry->name, namelen);
+#else
 			tree[node].name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
+#endif
 			if (hyp_tree_isset(hyp, node) && (nodeptr = hyp_loadtext(hyp, node)) != NULL)
 			{
 				hyp_node_find_windowtitle(nodeptr);
 				if (nodeptr->window_title)
 				{
+#ifdef NO_UTF8
+					tree[node].title = g_strdup((const char *)nodeptr->window_title);
+#else
 					tree[node].title = hyp_conv_to_utf8(hyp->comp_charset, nodeptr->window_title, STR0TERM);
+#endif
 				}
 				hyp_node_free(nodeptr);
 			}

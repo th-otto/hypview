@@ -16,6 +16,10 @@ extern int _XltErr(unsigned int err);
 extern int _unx2dos(const char *unx, char *dos, size_t len);
 extern char **environ;
 
+#ifndef ETOS_NOEXEC
+#define ETOS_NOEXEC (-66)
+#endif
+
 #define TOS_ARGS 126
 
 /* comment this out, if you don't want script execution */

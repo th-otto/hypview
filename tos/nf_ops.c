@@ -2,6 +2,7 @@
 #include <mint/arch/nf_ops.h>
 #include <mint/cookie.h>
 #include <stdint.h>
+#include "tos/cookie.h"
 
 #define NATFEAT_ID   0x7300
 #define NATFEAT_CALL 0x7301

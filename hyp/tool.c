@@ -20,9 +20,14 @@ hyp_nodenr find_nr_by_title(HYP_DOCUMENT *hyp, const char *title, gboolean last)
 	{
 		if (HYP_NODE_IS_TEXT(hyp->indextable[i]->type))
 		{
-			char *name = hyp_conv_to_utf8(hyp->comp_charset, hyp->indextable[i]->name, STR0TERM);
+			INDEX_ENTRY *entry = hyp->indextable[i];
+#ifdef NO_UTF8
+			res = strncasecmp(title, (const char *)entry->name, entry->length - SIZEOF_INDEX_ENTRY);
+#else
+			char *name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, entry->length - SIZEOF_INDEX_ENTRY);
 			res = hyp_utf8_strcasecmp(name, title);
 			g_free(name);
+#endif
 			if (res == 0)
 			{
 				found = i;

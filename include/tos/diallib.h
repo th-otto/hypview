@@ -127,7 +127,7 @@ struct _window_data_
 	char titlebuf[80];
 	short	kind;
 #if OPEN_VDI_WORKSTATION
-	short	vdi_handle;
+	_WORD vdi_handle;
 	_WORD workout[57];
 	_WORD ext_workout[57];
 #endif
@@ -154,6 +154,9 @@ struct _window_data_
 	WINDOW_DATA *popup;
 	HISTORY *history;
 	HYP_NODE *displayed_node;
+	unsigned int treeview_parent;
+	unsigned int treeview_window_id;
+	gboolean treeview_prepped;
 };
 
 typedef struct _filesel_data_ FILESEL_DATA;
@@ -211,10 +214,11 @@ extern	_WORD ext_workout[57];
 #endif
 extern OBJECT *dial_library_tree;
 extern OBJECT *toolbar_tree;
+extern OBJECT *about_tree;
 #if USE_MENU
 extern	OBJECT	*menu_tree;
 #endif
-extern	KEYTAB *key_table;
+extern	_KEYTAB *key_table;
 
 OBJECT *rs_tree(_WORD nr);
 char *rs_string(_WORD nr);

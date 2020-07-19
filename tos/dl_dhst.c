@@ -22,18 +22,23 @@
  */
 
 #include "hv_defs.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
 #include "hypview.h"
+#endif
 #include <mint/cookie.h>
 #include "dhst.h"
 #include "tos/mem.h"
+#include "tos/cookie.h"
+
+#if USE_DOCUMENTHISTORY
 
 static DHSTINFO *dhst_info;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
-
-#if USE_DOCUMENTHISTORY
 
 void DhstAddFile(const char *path)
 {

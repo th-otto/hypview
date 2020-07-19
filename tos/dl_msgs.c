@@ -14,6 +14,27 @@
 #include "tos/seproto.h"
 #include "tos/viewprot.h"
 
+#ifndef WM_OFFTOP
+#define WM_OFFTOP       32
+#endif
+#ifndef WM_ISTOP
+#define WM_ISTOP        43
+#endif
+#ifndef SH_EXIT
+#define SH_EXIT         68
+#endif
+#ifndef SH_START
+#define SH_START        69
+#endif
+#ifndef COLORS_CHANGED
+#define COLORS_CHANGED  84
+#endif
+#ifndef WM_BACKDROP
+#define WM_BACKDROP             WM_M_BDROPPED
+#endif
+#undef WM_MOUSEWHEEL /* clashes with Win32 */
+#define WM_MOUSEWHEEL   2352
+
 
 const char *gem_message_name(_UWORD id)
 {

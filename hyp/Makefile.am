@@ -96,9 +96,8 @@ libhyp_a_SOURCES = \
 	win32.c \
 	$(empty)
 
-EXTRA_DIST += tos/cookie.c
 if OS_TOS
-#libhyp_a_SOURCES += tos/cookie.c
+libhyp_a_SOURCES += tos/cookie.c
 libhyp_a_SOURCES += tos/mkdir.c
 libhyp_a_SOURCES += tos/spawn.c
 libhyp_a_SOURCES += tos/malloc.c

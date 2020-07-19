@@ -73,7 +73,7 @@ void RemoveNodes(HYP_DOCUMENT *hyp)
 {
 	hyp_nodenr i;
 
-	if (hyp->cache == NULL)
+	if (hyp == NULL || hyp->cache == NULL)
 		return;
 	for (i = 0; i < hyp->num_index; i++)
 	{
@@ -94,7 +94,7 @@ void RemovePictures(HYP_DOCUMENT *hyp, gboolean reload)
 {
 	hyp_nodenr i;
 
-	if (hyp->cache == NULL)
+	if (hyp == NULL || hyp->cache == NULL)
 		return;
 	for (i = 0; i < hyp->num_index; i++)
 	{

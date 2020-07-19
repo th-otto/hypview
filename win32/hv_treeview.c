@@ -56,11 +56,7 @@ static hyp_nodenr TreeviewGetNode(WINDOW_DATA *win)
 
 static void TreeviewClose(DOCUMENT *doc)
 {
-	HYP_DOCUMENT *hyp;
-
-	hyp = (HYP_DOCUMENT *) doc->data;
 	doc->data = NULL;
-	(void)hyp;
 }
 
 static HTREEITEM add_items(struct prep_info *info, HYP_DOCUMENT *hyp, HYPTREE *tree, hyp_nodenr node, TVINSERTSTRUCTW *parent)
@@ -151,7 +147,10 @@ static void TreeviewGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *
 	UNUSED(win);
 	UNUSED(x);
 	UNUSED(y);
-	UNUSED(pos);
+	pos->line = 0;
+	pos->y = 0;
+	pos->offset = 0;
+	pos->x = 0;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -199,7 +198,7 @@ WINDOW_DATA *ShowTreeview(WINDOW_DATA *orig)
 
 	doc = g_new0(DOCUMENT, 1);
 	doc->path = g_strdup(path);
-	doc->type = HYP_FT_HYP;
+	doc->type = HYP_FT_TREEVIEW;
 	doc->ref_count = 1;
 	doc->data = hyp; /* only while preparing the view */
 

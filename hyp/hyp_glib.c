@@ -118,7 +118,11 @@ char *g_get_current_dir(void)
 
 	if (cwd[0] == '\0')
 		strcpy(cwd, ".");
+#ifdef NO_UTF8
+	return g_strdup(cwd);
+#else
 	return hyp_conv_to_utf8(HYP_CHARSET_ATARI, cwd, STR0TERM);
+#endif
 #elif defined(__WIN32__)
 	size_t len;
 	wchar_t *wcwd;

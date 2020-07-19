@@ -1364,6 +1364,7 @@ const char *gl_locale_name_environ(int category, const char *categoryname)
 #include <mint/mintbind.h>
 #include <mint/sysvars.h>
 #include <mint/ssystem.h>
+#include "tos/cookie.h"
 static long get_oshdr(void)
 {
 	OSHEADER *hdr = *((OSHEADER **)0x4f2l);

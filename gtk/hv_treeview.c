@@ -69,37 +69,31 @@ static hyp_nodenr TreeviewGetNode(WINDOW_DATA *win)
 
 static void TreeviewClose(DOCUMENT *doc)
 {
-	HYP_DOCUMENT *hyp;
-
-	hyp = (HYP_DOCUMENT *) doc->data;
 	doc->data = NULL;
-	/* no need to unref here, that is already done in gtk_hypview_window_finalize */
-	/* hyp_unref(hyp); */
-	(void)hyp;
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void gtk_print_tree(struct prep_info *info, HYP_DOCUMENT *hyp, HYPTREE *tree, hyp_nodenr parent, GtkTreeIter *parent_iter)
+static void add_items(struct prep_info *info, HYP_DOCUMENT *hyp, HYPTREE *tree, hyp_nodenr node, GtkTreeIter *parent_iter)
 {
 	hyp_nodenr child;
 	GtkTreeIter iter;
 	
 	gtk_tree_store_append(info->model, &iter, parent_iter);
 	gtk_tree_store_set(info->model, &iter,
-		TITLE_COLUMN, tree[parent].title,
-		NAME_COLUMN, tree[parent].name,
-		TOOLTIP_COLUMN, tree[parent].name, /* FIXME: must quote some chars */
-		PAGE_COLUMN, parent,
+		TITLE_COLUMN, tree[node].title,
+		NAME_COLUMN, tree[node].name,
+		TOOLTIP_COLUMN, tree[node].name, /* FIXME: must quote some chars */
+		PAGE_COLUMN, node,
 		VISIBLE_COLUMN, FALSE,
 		-1);
 	
-	if (tree[parent].num_childs != 0)
+	if (tree[node].num_childs != 0)
 	{
-		child = tree[parent].head;
+		child = tree[node].head;
 		while (child != HYP_NOINDEX)
 		{
-			gtk_print_tree(info, hyp, tree, child, &iter);
+			add_items(info, hyp, tree, child, &iter);
 			child = tree[child].next;
 		}
 	}
@@ -183,7 +177,7 @@ static void TreeviewPrep(WINDOW_DATA *win, HYP_NODE *node)
 	info.window_id = win->treeview_parent;
 	info.model = gtk_tree_store_new(NUM_COLUMNS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_BOOLEAN);
 	
-	gtk_print_tree(&info, hyp, tree, 0, NULL);
+	add_items(&info, hyp, tree, 0, NULL);
 	hyp_tree_free(hyp, tree);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(win->tree_view), GTK_TREE_MODEL(info.model));
 
@@ -208,7 +202,10 @@ static void TreeviewGetCursorPosition(WINDOW_DATA *win, int x, int y, TEXT_POS *
 	UNUSED(win);
 	UNUSED(x);
 	UNUSED(y);
-	UNUSED(pos);
+	pos->line = 0;
+	pos->y = 0;
+	pos->offset = 0;
+	pos->x = 0;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -310,7 +307,7 @@ WINDOW_DATA *ShowTreeview(WINDOW_DATA *orig)
 
 	doc = g_new0(DOCUMENT, 1);
 	doc->path = g_strdup(path);
-	doc->type = HYP_FT_HYP;
+	doc->type = HYP_FT_TREEVIEW;
 	doc->ref_count = 1;
 	doc->data = hyp; /* only while preparing the view */
 

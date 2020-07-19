@@ -38,6 +38,13 @@ void form_size(OBJECT *tree, _WORD idx, GRECT *gr);
 FD_DRAW *draw_popup(OBJECT *tree, _WORD start);
 void undraw_popup(FD_DRAW *dial);
 
+#define OBTYPEMASK    0x00ff
+#ifndef G_EXTBOX
+#define G_EXTBOX                40
+#endif
+#define OBSPEC_GET_FRAMESIZE(obspec)   ((signed char)   ( (((obspec).index) >> 16) & 0xff ))
+ 
+
 
 /*****************************************************************************
  *	handle popup dialogs
@@ -572,7 +579,7 @@ static _BOOL popup_button(EVNT *event, POPUP *popup)
 	{
 		if (event->mclicks == 2)
 			popup->index |= 0x8000;
-		if (event->mbutton & MOB_RIGHT)
+		if (event->mbutton & 0x02)
 			popup->index |= 0x4000;
 	}
 	return TRUE;
@@ -624,7 +631,7 @@ _WORD popup_select(OBJECT *tree, _WORD mx, _WORD my)
 	wind_update(BEG_MCTRL);
 	memset(&event, 0, sizeof(event));
 	graf_mkstate(&event.mx, &event.my, &event.mbutton, &event.kstate);
-	if (event.mbutton & (MOB_LEFT|MOB_RIGHT))
+	if (event.mbutton & 0x03)
 	{
 		mask = 1;
 		bmask = event.mbutton;

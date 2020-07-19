@@ -608,7 +608,8 @@ typedef enum {
 	HYP_FT_HTML,				/* some HTML format */
 	HYP_FT_XML,					/* XML format */
 	HYP_FT_HTML_XML,			/* application/xhtml+xml */
-	HYP_FT_PDF					/* PDF format */
+	HYP_FT_PDF,					/* PDF format */
+	HYP_FT_TREEVIEW,			/* Tree view of hypertext */
 } hyp_filetype;
 
 
@@ -827,6 +828,19 @@ DIR *hyp_utf8_opendir(const char *dirname);
 char *hyp_utf8_readdir(DIR *dir);
 void hyp_utf8_closedir(DIR *dir);
 ssize_t hyp_utf8_write(int fd, const void *buf, size_t len);
+
+#ifdef NO_UTF8
+#define hyp_utf8_fopen fopen
+#define hyp_utf8_open open
+#define hyp_utf8_close close
+#define hyp_utf8_unlink unlink
+#define hyp_utf8_rename rename
+#define hyp_utf8_opendir opendir
+#define hyp_utf8_closedir closedir
+#define hyp_utf8_write write
+#define hyp_utf8_strcasecmp strcasecmp
+#endif
+
 
 /*
  * hyp_load.c
@@ -1069,6 +1083,7 @@ typedef struct {
 	hyp_nodenr parent;
 	hyp_nodenr head;
 	hyp_nodenr tail;
+	unsigned short level;
 	hyp_nodenr num_childs;
 	unsigned short flags;
 #define HYPTREE_IS_NODE     0x0001

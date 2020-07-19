@@ -8,6 +8,10 @@
 #include <mintbind.h>
 #include "stat_.h"
 
+#ifndef ETOS_NOSYS
+#define ETOS_NOSYS (-32)
+#endif
+
 #if !defined(__PUREC__) || defined(__USE_GEMLIB)
 #define _XltErr(r) ((int)(-(r)))
 #else
@@ -51,7 +55,7 @@ int mkdir(const char *_path, mode_t mode)
 		return -1;
 	}
 
-	if ((umask = Pumask(0)) != -ETOS_NOSYS)
+	if ((umask = Pumask(0)) != ETOS_NOSYS)
 	{
 		(void) Pumask(umask);
 		(void) Fchmod(path, (int)(mode & ~umask));

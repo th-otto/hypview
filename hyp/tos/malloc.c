@@ -63,8 +63,8 @@ void _mallocChunkSize(size_t chunksize)
 		if ((long) hdr > 0)
 		{
 			if (hdr->os_version >= 0x102)
-				tospd = (BASEPAGE **) hdr->_run;
-			else if ((hdr->os_palmode & 0xfffe) == 8)
+				tospd = (BASEPAGE **) hdr->p_run;
+			else if ((hdr->os_conf & 0xfffe) == 8)
 				tospd = (BASEPAGE **) 0x873c; /* Spanish ROM */
 			else
 				tospd = (BASEPAGE **) 0x602C;

@@ -232,6 +232,7 @@ char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 	case HYP_FT_XML:
 	case HYP_FT_HTML_XML:
 	case HYP_FT_PDF:
+	case HYP_FT_TREEVIEW:
 	default:
 		unreachable();
 		return NULL;

@@ -24,6 +24,15 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
 #include "tos/pchelp.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
+#include "hypview.h"
+#endif
+
+#ifdef HYPTREE_APP
+#define OpenFileInWindow(win, path, chapter, node, find_default, new_window, no_message) tv_open_window(path)
+#endif
 
 
 /******************************************************************************/
@@ -53,6 +62,7 @@ void DoUserEvents(EVNT *event)
 				WINDOW_DATA *win;
 				_WORD id = -1;
 				
+#ifndef HYPTREE_APP
 				/*
 				 * if we have to start remarker, do that now:
 				 * when we are on SingleTOS,
@@ -67,9 +77,12 @@ void DoUserEvents(EVNT *event)
 					if (id < 0)
 						id = StartRemarker(NULL, remarker_startup, FALSE);
 				}
+#endif
 				if (id < 0 || _AESnumapps != 1)
 				{
+#ifndef HYPTREE_APP
 					hfix_palette(vdi_handle);
+#endif
 					va_proto_init(NULL);
 					win = top_window();
 					if (win == NULL && !empty(gl_profile.viewer.last_file))
@@ -114,11 +127,14 @@ void DoUserEvents(EVNT *event)
 			}
 			RemoveItems();
 			modal_items = -1;
+#ifndef HYPTREE_APP
 			MarkerSaveToDisk(FALSE);
+#endif
 			va_proto_init(NULL);
 			break;
 
 		case AC_HELP:
+#ifndef HYPTREE_APP
 			{
 				char **pdata = (char **) &event->msg[3];
 				char *data = *pdata;
@@ -133,11 +149,14 @@ void DoUserEvents(EVNT *event)
 					g_free(name);
 				}
 			}
+#endif
 			event->mwhich &= ~MU_MESAG;
 			break;
 
 		case CH_EXIT:
+#ifndef HYPTREE_APP
 			HypfindFinish(event->msg[3], event->msg[4]);
+#endif
 			event->mwhich &= ~MU_MESAG;
 			break;
 		}
@@ -172,25 +191,48 @@ void DoUserEvents(EVNT *event)
 /******************************************************************************/
 
 #if USE_MENU
+
+static _WORD __CDECL HandleAbout(struct HNDL_OBJ_args args)
+{
+	OBJECT	*tree;
+	GRECT rect;
+
+	wdlg_get_tree(args.dialog, &tree, &rect);		/* get tree address */
+
+	if (args.obj < 0)								/* event or object? */
+	{
+		if (args.obj == HNDL_CLSD)					/* closer selected? */
+			return 0;								/* quit */ 
+		if (args.obj == HNDL_MESG)
+			SpecialMessageEvents(args.dialog, args.events);
+	} else
+	{
+		tree[args.obj].ob_state &= ~OS_SELECTED;
+		switch(args.obj)
+		{
+		case PR_OK: 
+			return 0;
+		}
+	}
+	return 1;										/* continue */
+}
+
+
 void SelectMenu(short title, short entry)
 {
-	switch (title)
+	UNUSED(title);
+	switch (entry)
 	{
-	case ME_PROGRAM:
-		switch (entry)
-		{
-		case ME_ABOUT:
-			OpenDialog(HandleAbout, about_tree, rs_string(WDLG_ABOUT), -1, -1, NULL);
-			break;
-		}
+	case ME_ABOUT:
+		OpenDialog(HandleAbout, about_tree, rs_string(WDLG_ABOUT), -1, -1, NULL);
 		break;
-	case ME_FILE:
-		switch (entry)
-		{
-		case ME_QUIT:
-			doneFlag = TRUE;
-			break;
-		}
+	case ME_CLOSE:
+		SendCloseWindow(top_window());
+		break;
+	case ME_QUIT:
+		doneFlag = TRUE;
+		if (_app)
+			quitApp = TRUE;
 		break;
 	}
 }
@@ -253,7 +295,7 @@ void DD_DialogGetFormat(OBJECT *tree, short obj, unsigned long format[])
 	UNUSED(tree);
 
 	for (i = 0; i < MAX_DDFORMAT; i++)
-		format[i] = 0L;
+		format[i] = 0;
 
 	format[0] = 0x41524753L;			/* 'ARGS' */
 }
@@ -285,7 +327,11 @@ void DoVA_START(_WORD msg[8])
 			gboolean start_if_empty = TRUE;
 			hyp_nodenr nodenr = HYP_NOINDEX;
 			
+#ifdef NO_UTF8
+			arg = g_strdup(data);
+#else
 			arg = hyp_conv_to_utf8(hyp_get_current_charset(), data, STR0TERM);
+#endif
 			SendAV_STARTED(msg);
 			win = top_window();
 			argv = split_av_parameter(arg);
@@ -294,6 +340,7 @@ void DoVA_START(_WORD msg[8])
 			if (argc > 0)
 			{
 				filename = path_subst(argv[i++]);
+#ifndef HYPTREE_APP
 				if (strcmp(filename, "-S1") == 0 ||
 					strcmp(filename, "-s1") == 0||
 					strcmp(filename, "-t") == 0)
@@ -335,6 +382,7 @@ void DoVA_START(_WORD msg[8])
 						ToolbarUpdate(win, TRUE);
 					}
 				}
+#endif
 				if (i < argc)
 					chapter = argv[i];
 			} else
@@ -349,7 +397,9 @@ void DoVA_START(_WORD msg[8])
 				{
 					/* no filename, but have window: just put in on top */
 					filename = NULL;
+#ifndef HYPTREE_APP
 					StartRemarker(win, remarker_update, TRUE);
+#endif
 					if (win)
 						SendTop(win->whandle);
 				} else
@@ -418,7 +468,11 @@ void DoVA_DRAGACCWIND(_WORD msg[8])
 			char **argv;
 			
 			HYP_DBG(("VA_DRAGACCWIND from %d: <%s>", msg[1], printnull(data)));
+#ifdef NO_UTF8
+			arg = g_strdup(data);
+#else
 			arg = hyp_conv_to_utf8(hyp_get_current_charset(), data, STR0TERM);
+#endif
 			argv = split_av_parameter(arg);
 
 			win = find_window_by_whandle(msg[3]);

@@ -29,6 +29,10 @@
 /* files and paths */
 static char file_extensions[DL_PATHMAX] = "*.HYP\0*.*\0";
 
+#ifdef HYPTREE_APP
+#define OpenFileInWindow(win, path, chapter, node, find_default, new_window, no_message) tv_open_window(path)
+#endif
+
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
 /******************************************************************************/
@@ -75,9 +79,8 @@ static void OpenFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 	UNUSED(nfiles);
 	if (fslx->button && *fslx->name)
 	{
-		WINDOW_DATA *win = (WINDOW_DATA *)fslx->data;
 		char *path = g_build_filename(fslx->path, fslx->name, NULL);
-		OpenFileInWindow(win, path, NULL, 0, TRUE, FALSE, FALSE);
+		OpenFileInWindow((WINDOW_DATA *)fslx->data, path, NULL, 0, TRUE, FALSE, FALSE);
 		g_free(path);
 	}
 }
@@ -98,6 +101,7 @@ void SelectFileLoad(WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#ifndef HYPTREE_APP
 static void SaveFile_FSLX(FILESEL_DATA *fslx, short nfiles)
 {
 	WINDOW_DATA *win = (WINDOW_DATA *)fslx->data;
@@ -141,3 +145,4 @@ void SelectFileSave(WINDOW_DATA *win)
 	g_free(filepath);
 	g_free(subst);
 }
+#endif

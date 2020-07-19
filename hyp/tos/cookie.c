@@ -2,6 +2,7 @@
 #include <mintbind.h>
 #include <mint/cookie.h>
 #include <mint/ssystem.h>
+#include "tos/cookie.h"
 
 typedef struct {
 	union {

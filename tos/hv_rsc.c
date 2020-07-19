@@ -22,7 +22,7 @@
 #include "hv_defs.h"
 #include "hypdebug.h"
 #include "hypview.h"
-#include <xrsrc.h>
+#include "tos/xrsrc.h"
 
 
 static void show_rsc(WINDOW_DATA *win, RSHDR *rsh, _UWORD treenr)

@@ -27,6 +27,7 @@ extern struct _viewer_colors viewer_colors;
 
 void hv_init(void);
 void hv_exit(void);
+void hv_init_colors(void);
 
 /*
  * hv_fsel.c
@@ -39,6 +40,7 @@ void SelectFileSave(WINDOW_DATA *win);
  * hv_file.c
  */
 WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *chapter, hyp_nodenr node, gboolean find_default, int new_window, gboolean no_message);
+WINDOW_DATA *tv_open_window(const char *path);
 
 
 /*

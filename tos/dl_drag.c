@@ -22,7 +22,11 @@
  */
 
 #include "hv_defs.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
 #include "hypview.h"
+#endif
 #include "dragdrop.h"
 
 /******************************************************************************/

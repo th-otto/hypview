@@ -241,9 +241,9 @@ _BOOL Protokoll_Broadcast(_WORD *message, _BOOL send_to_self)
 	/* is shel_write() broadcast available? */
 	if (_AESversion >= 0x400 ||
 		__magix >= 0x500 ||
-		(appl_xgetinfo(AES_SHELL, &info, &dummy, &dummy, &dummy) && ((info & 0xff) >= SHW_GLOBMSG)))
+		(appl_xgetinfo(AES_SHELL, &info, &dummy, &dummy, &dummy) && ((info & 0xff) >= SWM_BROADCAST)))
 	{
-		shel_xwrite(SHW_GLOBMSG, 0, 1, (char *)message, NULL);
+		shel_xwrite(SWM_BROADCAST, 0, 1, (char *)message, NULL);
 		if (send_to_self)
 			appl_write(gl_apid, 16, message);
 	} else if (appl_xsearch(APP_FIRST, name, &type, &id))

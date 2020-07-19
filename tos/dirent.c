@@ -19,6 +19,19 @@ extern int _enoent (const char *path);
 extern int _unx2dos(const char *unx, char *dos, size_t len);
 extern int _dos2unx(const char *dos, char *unx, size_t len);
 
+#ifndef ETOS_NOSYS
+#define ETOS_NOSYS (-32)
+#endif
+#ifndef ETOS_NOENT
+#define ETOS_NOENT (-33)
+#endif
+#ifndef ETOS_NOTDIR
+#define ETOS_NOTDIR (-34)
+#endif
+#ifndef ETOS_NMFILES
+#define ETOS_NMFILES (-49)
+#endif
+
 
 /* Important note: Metados can have opendir for some device and do not
  * have it for others, so there is no point in having a status variable

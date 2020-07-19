@@ -22,7 +22,13 @@
  */
 
 #include "hv_defs.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
 #include "hypview.h"
+#endif
+
+#if	USE_FONTSELECTOR
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -154,3 +160,5 @@ void FontselectorEvents(FONTSEL_DATA *ptr, EVNT *event)
 			RemoveFontselector(ptr);
 	}
 }
+
+#endif

@@ -58,6 +58,8 @@ int purec_fclose(FILE *fp)
 
 #else
 
+#ifndef NO_UTF8
+
 int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 {
 	char *str;
@@ -149,14 +151,6 @@ int hyp_utf8_rename(const char *oldname, const char *newname)
 
 /*** ---------------------------------------------------------------------- ***/
 
-char *hyp_utf8_strerror(int err)
-{
-	const char *str = strerror(err);
-	return hyp_conv_to_utf8(hyp_get_current_charset(), str, STR0TERM);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 DIR *hyp_utf8_opendir(const char *dirname)
 {
 	char *str;
@@ -173,24 +167,43 @@ DIR *hyp_utf8_opendir(const char *dirname)
 
 /*** ---------------------------------------------------------------------- ***/
 
+void hyp_utf8_closedir(DIR *dir)
+{
+	closedir(dir);
+}
+
+#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
 char *hyp_utf8_readdir(DIR *dir)
 {
 	struct dirent *ent;
+#ifdef NO_UTF8
+	ent = readdir(dir);
+	if (ent == NULL)
+		return NULL;
+	return g_strdup(ent->d_name);
+#else
 	gboolean converror = FALSE;
-	char *str;
 	
 	ent = readdir(dir);
 	if (ent == NULL)
 		return NULL;
-	str = hyp_conv_charset(hyp_get_filename_charset(), HYP_CHARSET_UTF8, ent->d_name, STR0TERM, &converror);
-	return str;
+	return hyp_conv_charset(hyp_get_filename_charset(), HYP_CHARSET_UTF8, ent->d_name, STR0TERM, &converror);
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-void hyp_utf8_closedir(DIR *dir)
+char *hyp_utf8_strerror(int err)
 {
-	closedir(dir);
+	const char *str = strerror(err);
+#ifdef NO_UTF8
+	return g_strdup(str);
+#else
+	return hyp_conv_to_utf8(hyp_get_current_charset(), str, STR0TERM);
+#endif
 }
 
 #endif
@@ -288,10 +301,12 @@ gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, voi
 /*
  * just for consistency
  */
+#ifndef NO_UTF8
 int hyp_utf8_close(int fd)
 {
 	return close(fd);
 }
+#endif
 
 /*** ---------------------------------------------------------------------- ***/
 

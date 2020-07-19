@@ -23,7 +23,11 @@
 
 #include "hv_defs.h"
 #include "hypdebug.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
 #include "hypview.h"
+#endif
 
 
 #include "av.h"
@@ -37,7 +41,8 @@
 #include "gscript.h"
 #endif
 
-short doneFlag = FALSE, quitApp = FALSE;
+short doneFlag = FALSE;
+short quitApp = FALSE;
 
 #define setmsg(a,d,e,f,g,h) \
 	msg[0] = a; \
@@ -98,14 +103,8 @@ static void DoKeybd(EVNT *event)
 			event->mwhich &= ~MU_KEYBD;
 			break;
 		case 'U':
-			{
-				_WORD msg[8];
-				_WORD top;
-				wind_get_int(DESK, WF_TOP, &top);
-				setmsg(WM_CLOSED, top, 0, 0, 0, 0);
-				appl_write(gl_apid, 16, &msg[0]);
-				event->mwhich &= ~MU_KEYBD;
-			}
+			SendCloseWindow(top_window());
+			event->mwhich &= ~MU_KEYBD;
 			break;
 		}
 	} else if (kstate == 0)
@@ -272,7 +271,10 @@ void DoEvent(void)
 	EVNT event;
 
 	memset(&event, 0, sizeof(event));
-	event.mwhich = evnt_multi(EVENTS, MBCLICKS, MBMASK, MBSTATE, MBLOCK1, MBLOCK2, event.msg, WAIT,
+	event.mwhich = evnt_multi(EVENTS, MBCLICKS, MBMASK, MBSTATE,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		event.msg, WAIT,
 		&event.mx, &event.my, &event.mbutton, &event.kstate, &event.key, &event.mclicks);
 	DoEventDispatch(&event);
 	if (doneFlag)

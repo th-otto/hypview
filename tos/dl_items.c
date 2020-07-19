@@ -22,7 +22,11 @@
  */
 
 #include "hv_defs.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
 #include "hypview.h"
+#endif
 #include <mint/arch/nf_ops.h>
 
 
@@ -290,9 +294,11 @@ void RemoveItems(void)
 		case WIN_FILESEL:
 			RemoveFileselector((FILESEL_DATA *) all_list);
 			break;
+#if	USE_FONTSELECTOR
 		case WIN_FONTSEL:
 			RemoveFontselector((FONTSEL_DATA *) all_list);
 			break;
+#endif
 		}
 	}
 }
@@ -313,7 +319,7 @@ static void SetMenu(short enable)
 	if (menu_tree)
 	{
 		title = menu_tree[3].ob_next;
-		if (enable == ((menu_tree[title].ob_state & DISABLED) != 0))
+		if (enable == ((menu_tree[title].ob_state & OS_DISABLED) != 0))
 		{
 			width = menu_tree[3].ob_width;
 			do
@@ -390,8 +396,10 @@ void ItemEvent(EVNT *event)
 			DialogEvents((DIALOG_DATA *) ptr, event);
 		else if (ptr->type == WIN_FILESEL)
 			FileselectorEvents((FILESEL_DATA *) ptr, event);
+#if	USE_FONTSELECTOR
 		else if (ptr->type == WIN_FONTSEL)
 			FontselectorEvents((FONTSEL_DATA *) ptr, event);
+#endif
 	} else
 	{
 		/*

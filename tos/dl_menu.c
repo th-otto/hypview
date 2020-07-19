@@ -31,8 +31,8 @@
 
 void ChooseMenu(short title, short entry)
 {
-	if ((menu_tree[title].ob_state & DISABLED) ||
-		(menu_tree[entry].ob_state & DISABLED))	/* if menu title or entry inactive... */
+	if ((menu_tree[title].ob_state & OS_DISABLED) ||
+		(menu_tree[entry].ob_state & OS_DISABLED))	/* if menu title or entry inactive... */
 		return;									/* ... bye */
 
 	menu_tnormal(menu_tree, title, 0);

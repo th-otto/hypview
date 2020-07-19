@@ -22,9 +22,14 @@
  */
 
 #include "hv_defs.h"
+#if defined(HYPTREE_APP)
+#include "hyptree.h"
+#else
 #include "hypview.h"
+#endif
 #include <mint/cookie.h>
 #include <mint/arch/nf_ops.h>
+#include "tos/cookie.h"
 
 _WORD aes_fontid;
 _WORD aes_fontsize;
@@ -38,11 +43,8 @@ _WORD __geneva = 0;
 
 #if USE_GLOBAL_VDI
 _WORD vdi_handle;
-
 _WORD workin[16];
-
 _WORD workout[57];
-
 _WORD ext_workout[57];
 
 #if SAVE_COLORS
@@ -50,8 +52,11 @@ static RGB1000 save_palette[256];
 #endif
 #endif
 
+#ifndef AES_WDIALOG
+#define AES_WDIALOG 7
+#endif
+
 OBJECT *dial_library_tree;
-OBJECT *toolbar_tree;
 static char **string_addr;
 
 static char const rsc_name[] = "hypview.rsc";
@@ -59,7 +64,7 @@ char const iconified_name[] = "HYPVIEW";
 char const prghelp_name[] = "hypview.hyp";
 
 
-KEYTAB *key_table;
+_KEYTAB *key_table;
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -68,7 +73,11 @@ KEYTAB *key_table;
 OBJECT *rs_tree(_WORD nr)
 {
 	OBJECT *tree = NULL;
+#if defined(HYPTREE_APP)
+	hyptree_rsc_gaddr(R_TREE, nr, &tree);
+#else
 	hypview_rsc_gaddr(R_TREE, nr, &tree);
+#endif
 	return tree;
 }
 
@@ -192,7 +201,11 @@ int DoAesInit(void)
 	vq_extnd(aes_handle, 0, workout);
 	vq_extnd(aes_handle, 1, ext_workout);
 
+#if defined(HYPTREE_APP)
+	if (hyptree_rsc_load(pwchar, phchar) == 0)
+#else
 	if (hypview_rsc_load(pwchar, phchar) == 0)
+#endif
 	{
 		char *str = g_strdup_printf(_("[1][Error while loading |'%s'.][Cancel]"), rsc_name);
 		form_alert(1, str);
@@ -201,22 +214,18 @@ int DoAesInit(void)
 		appl_exit();
 		return FALSE;
 	}
+#if defined(HYPTREE_APP)
+	hyptree_rsc_gaddr(R_FRSTR, 0, &string_addr);
+#else
 	hypview_rsc_gaddr(R_FRSTR, 0, &string_addr);
-	dial_library_tree = rs_tree(DIAL_LIBRARY);
-	toolbar_tree = rs_tree(TOOLBAR);
-
-#ifdef TO_NEXT_PHYS
-	toolbar_tree[TO_NEXT_PHYS].ob_flags |= OF_HIDETREE;
-	toolbar_tree[TO_PREV_PHYS].ob_flags |= OF_HIDETREE;
-	toolbar_tree[TO_FIRST].ob_flags |= OF_HIDETREE;
-	toolbar_tree[TO_LAST].ob_flags |= OF_HIDETREE;
 #endif
-	
+	dial_library_tree = rs_tree(DIAL_LIBRARY);
+
 	{
 		_WORD dummy, level = 0;
 		
 		if (appl_xgetinfo(AES_SHELL, &level, &dummy, &dummy, &dummy) && (level & 0x00FF) >= 9)
-			shel_write(SHW_MSGREC, 1, 1, "", "");			/* we understand AP_TERM! */
+			shel_write(SWM_NEWMSG, 1, 1, "", "");			/* we understand AP_TERM! */
 	}
 
 	{
@@ -268,7 +277,11 @@ int DoInitSystem(void)
 		if (!vdi_handle)
 		{
 			form_alert(1, rs_string(DI_VDI_WKS_ERROR));
+#if defined(HYPTREE_APP)
+			hyptree_rsc_free();
+#else
 			hypview_rsc_free();
+#endif
 			return FALSE;
 		}
 		vq_extnd(vdi_handle, 1, ext_workout);
@@ -277,7 +290,9 @@ int DoInitSystem(void)
 		for (i = 0; i < 256; i++)
 			vq_color(vdi_handle, i, 1, &save_palette[i].red);
 #endif
+#ifndef HYPTREE_APP
 		hfix_palette(vdi_handle);
+#endif
 	}
 #endif
 #if USE_LONGEDITFIELDS
@@ -287,7 +302,7 @@ int DoInitSystem(void)
 	DoInitBubble();
 #endif
 
-	key_table = (KEYTAB *)Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/* fetch keytable */
+	key_table = (_KEYTAB *)Keytbl(((void *) -1), ((void *) -1), ((void *) -1));	/* fetch keytable */
 
 	return TRUE;
 }
@@ -318,6 +333,10 @@ void DoExitSystem(void)
 	}
 #endif
 
+#if defined(HYPTREE_APP)
+	hyptree_rsc_free();
+#else
 	hypview_rsc_free();
+#endif
 	appl_exit();
 }

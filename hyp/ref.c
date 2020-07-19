@@ -1,6 +1,7 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
 
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
@@ -9,14 +10,18 @@ static char *ref_name(REF_FILE *ref, REF_MODULE *mod, const REF_ENTRY *entry, ch
 {
 	char *str;
 	
-	if (ref->is_converted || mod->charset == HYP_CHARSET_UTF8)
-	{
-		str = entry->name.utf8;
-		*freeme = NULL;
-	} else
+	(void)ref;
+	(void)mod;
+#ifndef NO_UTF8
+	if (!ref->is_converted && mod->charset != HYP_CHARSET_UTF8)
 	{
 		str = hyp_conv_to_utf8(mod->charset, entry->name.hyp, STR0TERM);
 		*freeme = str;
+	} else
+#endif
+	{
+		str = entry->name.utf8;
+		*freeme = NULL;
 	}
 	return str;
 }
@@ -425,17 +430,21 @@ static gboolean ref_load_modules(REF_FILE *ref, gboolean verbose)
 			char *p;
 			size_t size;
 			unsigned char *entry;
-			gboolean converror = FALSE;
 			
 			/*
 			 * if module did not contain a filename, add one
 			 */
-			g_free(module->filename);
+#ifdef NO_UTF8
+			str = g_strdup(hyp_basename(ref->filename));
+#else
+			gboolean converror = FALSE;
 			str = hyp_utf8_to_charset(module->charset, hyp_basename(ref->filename), STR0TERM, &converror);
+#endif
 			p = strrchr(str, '.');
 			if (p != NULL)
 				*p = '\0';
 			size = strlen(str) + sizeof(HYP_EXT_HYP) + REF_ENTRYSIZE + strlen(str) + sizeof(HYP_EXT_HYP);
+			g_free(module->filename);
 			module->filename = g_new(char, size);
 			strcat(strcpy(module->filename, str), HYP_EXT_HYP);
 			size = strlen(str) + sizeof(HYP_EXT_HYP) + REF_ENTRYSIZE;

@@ -348,6 +348,7 @@ void HypProfile_Load(gboolean save_if_new)
 	if (!Profile_ReadBool(profile, "HypView", "USE_XFONT", &gl_profile.viewer.use_xfont))
 		setdefault(gl_profile.viewer.use_xfont = FALSE);
 
+#ifndef NO_UTF8
 	if (!Profile_ReadString(profile, "Output", "OUTPUT_DIR", &gl_profile.output.output_dir))
 		gl_profile.output.output_dir = NULL;
 	{
@@ -360,6 +361,7 @@ void HypProfile_Load(gboolean save_if_new)
 			gl_profile.output.output_charset = hyp_charset_from_name(s);
 		g_free(s);
 	}
+#endif
 	if (!Profile_ReadBool(profile, "Output", "bracket_links", &gl_profile.output.bracket_links))
 		setdefault(gl_profile.output.bracket_links = FALSE);
 	if (!Profile_ReadBool(profile, "Output", "all_links", &gl_profile.output.all_links))
@@ -659,7 +661,9 @@ gboolean HypProfile_Save(gboolean report_error)
 	Profile_WriteString(profile, "Colors", "ghosted", gl_profile.colors.ghosted);
 
 	Profile_WriteString(profile, "Output", "OUTPUT_DIR", gl_profile.output.output_dir);
+#ifndef NO_UTF8
 	Profile_WriteString(profile, "Output", "OUTPUT_CHARSET", gl_profile.output.output_charset == HYP_CHARSET_NONE ? "system" : hyp_charset_name(gl_profile.output.output_charset));
+#endif
 	Profile_WriteBool(profile, "Output", "bracket_links", gl_profile.output.bracket_links);
 	Profile_WriteBool(profile, "Output", "all_links", gl_profile.output.all_links);
 	Profile_WriteBool(profile, "Output", "output_index", gl_profile.output.output_index);

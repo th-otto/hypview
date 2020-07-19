@@ -170,6 +170,7 @@ gboolean hv_recompile(HYP_DOCUMENT *hyp, const char *output_filename, hyp_filety
 		case HYP_FT_REF:
 		case HYP_FT_RSC:
 		case HYP_FT_IMAGE:
+		case HYP_FT_TREEVIEW:
 		default:
 			retval = FALSE;
 			break;

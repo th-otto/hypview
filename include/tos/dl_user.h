@@ -31,14 +31,16 @@
 /* Save color palette on init? */
 #define	SAVE_COLORS				0
 
-/* Install/remove menubar on initialization? (Needs a resource object MENU) */
-#define	USE_MENU		0
-
 /* Use window dialog management routines? (Based on WDialog) */
 #define	USE_DIALOG		1
 
 /* Open a separate VDI workstation for each new window */
 #define	OPEN_VDI_WORKSTATION	0
+
+#ifndef HYPTREE_APP
+/* Install/remove menubar on initialization? (Needs a resource object MENU) */
+#define	USE_MENU		0
+
 /* Use toolbar routines */
 #define	USE_TOOLBAR		1
 
@@ -56,6 +58,19 @@
 
 /* Document history protocol */
 #define	USE_DOCUMENTHISTORY	1
+
+#define	USE_FONTSELECTOR	1
+
+#else
+#define	USE_MENU		1
+#define	USE_TOOLBAR		0
+#define	USE_DRAGDROP        0
+#define	USE_LONGEDITFIELDS  0
+#define	USE_BUBBLEGEM       0
+#define	USE_GEMSCRIPT       0
+#define	USE_DOCUMENTHISTORY	0
+#define	USE_FONTSELECTOR	0
+#endif
 
 /* Number of supported Drag&Drop formats */
 #define	MAX_DDFORMAT		8
