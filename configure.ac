@@ -447,7 +447,7 @@ AM_CONDITIONAL([HAVE_GETTEXTPO], test "$have_gettextpo" = yes)
 
 if test "$TARGET_OS" = "mac"; then
 	# Make sure libpng (and other 3rd party libs installed by MacPorts) are found
-	LDFLAGS="$LDFLAGS -L/opt/local/lib"
+	LIBS="$LIBS -L/opt/local/lib"
 	CPPFLAGS="$CPPFLAGS -I/opt/local/include"
 fi
 
@@ -951,7 +951,7 @@ AM_CONDITIONAL(NEED_ZLIB, test "$with_png" != "no" -o "$with_pdf" = "yes")
 AH_TEMPLATE([GETTEXT_PACKAGE], [define to the name of the gettext package])
 
 AC_PROG_INTLTOOL
-GETTEXT_PACKAGE=udo
+GETTEXT_PACKAGE=hypview
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_DEFINE_UNQUOTED(PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
@@ -965,6 +965,10 @@ AC_SUBST(MKINSTALLDIRS)
 AM_CONDITIONAL(USE_NLS, test "$USE_NLS" = yes)
 if test "$USE_NLS" = yes -a "$TARGET_OS" = win32; then
 	INTLLIBS='$(top_builddir)/rcintl/librcintl.a'
+fi
+if test "$USE_NLS" = no; then
+	INTLLIBS=''
+	LIBINTL=''
 fi
 
 
