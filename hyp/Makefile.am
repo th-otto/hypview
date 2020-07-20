@@ -641,5 +641,5 @@ EXTTTP = .ttp
 EXTTOS = .tos
 endif
 
-CLEANFILES = *.ttp *.tos *.res $(NAV_IMAGES)
+CLEANFILES = *.ttp *.tos *.res
 DISTCLEANFILES = $(build_triplet)-hcp$(EXEEXT) $(build_triplet)-stool$(EXEEXT) $(build_triplet)-hypfind$(EXEEXT) $(build_triplet)-hypinfo$(EXEEXT)
