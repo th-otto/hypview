@@ -313,7 +313,7 @@ extern void *hfix_objs(RSHDR *_hdr, OBJECT *_ob, _WORD _num_objs);
 #undef NUM_OBS
 #undef NUM_TREE
 #undef NUM_UD
-#define NUM_STRINGS 24
+#define NUM_STRINGS 28
 #define NUM_BB		0
 #define NUM_IB		0
 #define NUM_CIB     1
@@ -321,7 +321,7 @@ extern void *hfix_objs(RSHDR *_hdr, OBJECT *_ob, _WORD _num_objs);
 #define NUM_TI		0
 #define NUM_FRSTR	8
 #define NUM_FRIMG	0
-#define NUM_OBS     24
+#define NUM_OBS     28
 #define NUM_TREE	3
 #define NUM_UD		0
 #endif
@@ -343,14 +343,18 @@ static char hyptree_string_12[] = "  Close    ^U";
 static char hyptree_string_13[] = "--------------";
 static char hyptree_string_14[] = "  Quit     ^Q";
 static char hyptree_string_15[] = "OK";
-static char hyptree_string_16[] = "Select hypertext to load:";
-static char hyptree_string_17[] = "[1][Command could not be executed.|There is not enough memory.][Cancel]";
-static char hyptree_string_18[] = "[1][Please install the system|extension WDIALOG.PRG][Cancel]";
-static char hyptree_string_19[] = "[1][Can\'t open a VDI workstation.][Cancel]";
-static char hyptree_string_20[] = "from: %s";
-static char hyptree_string_21[] = "Programinfo...";
-static char hyptree_string_22[] = "[1][Tree %u not found!][Abort]";
-static char hyptree_string_23[] = "About HypTree";
+static char hyptree_string_16[] = "ProgrammnameXXXXXXXXXXXXXXXXXXXXXXXX";
+static char hyptree_string_17[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+static char hyptree_string_18[] = "Program to display the tree";
+static char hyptree_string_19[] = "structure of ST-Guide hypertexts.";
+static char hyptree_string_20[] = "Select hypertext to load:";
+static char hyptree_string_21[] = "[1][Command could not be executed.|There is not enough memory.][Cancel]";
+static char hyptree_string_22[] = "[1][Please install the system|extension WDIALOG.PRG][Cancel]";
+static char hyptree_string_23[] = "[1][Can\'t open a VDI workstation.][Cancel]";
+static char hyptree_string_24[] = "from: %s";
+static char hyptree_string_25[] = "Programinfo...";
+static char hyptree_string_26[] = "[1][Tree %u not found!][Abort]";
+static char hyptree_string_27[] = "About HypTree";
 
 
 /* mask of DI_ICON */
@@ -422,14 +426,14 @@ static _UBYTE hyptree_RS0_4CMASK[] = {
 0x7F, 0xFF, 0xFF, 0xFE, 0x7F, 0xFF, 0xFF, 0xFE, 0x3F, 0xFF, 0xFF, 0xFE, 0x00, 0x00, 0x00, 0x00};
 
 static char *rs_frstr[NUM_FRSTR] = {
-	hyptree_string_16,
-	hyptree_string_17,
-	hyptree_string_18,
-	hyptree_string_19,
 	hyptree_string_20,
 	hyptree_string_21,
 	hyptree_string_22,
-	hyptree_string_23
+	hyptree_string_23,
+	hyptree_string_24,
+	hyptree_string_25,
+	hyptree_string_26,
+	hyptree_string_27
 };
 
 
@@ -474,8 +478,12 @@ static OBJECT rs_object[NUM_OBS] = {
 
 /* ABOUT_DIALOG */
 
-	{ -1, 1, 1, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 0,0, 52,9 },
-	{ 0, -1, -1, G_BUTTON, 0x627, OS_WHITEBAK, C_UNION(hyptree_string_15), 40,7, 8,1 } /* PR_OK */
+	{ -1, 1, 5, G_BOX, OF_FL3DBAK, OS_OUTLINED, C_UNION(0x21100L), 0,0, 38,10 },
+	{ 2, -1, -1, G_BUTTON, 0x607, OS_WHITEBAK, C_UNION(hyptree_string_15), 28,8, 8,1 }, /* PROG_OK */
+	{ 3, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hyptree_string_16), 1,2, 36,1 }, /* PROG_NAME */
+	{ 4, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hyptree_string_17), 1,3, 36,1 }, /* PROG_DATE */
+	{ 5, -1, -1, G_STRING, OF_NONE, OS_NORMAL, C_UNION(hyptree_string_18), 1,5, 36,1 },
+	{ 0, -1, -1, G_STRING, OF_LASTOB, OS_NORMAL, C_UNION(hyptree_string_19), 1,6, 33,1 }
 };
 
 
@@ -680,7 +688,7 @@ _WORD hyptree_rsc_free()
 
 #else /* !RSC_STATIC_FILE */
 #if 0
-_WORD rs_numstrings = 24;
+_WORD rs_numstrings = 28;
 _WORD rs_numfrstr = 8;
 
 _WORD rs_nuser = 0;
@@ -690,7 +698,7 @@ _WORD rs_numfrimg = 0;
 _WORD rs_numib = 0;
 _WORD rs_numcib = 1;
 _WORD rs_numti = 0;
-_WORD rs_numobs = 24;
+_WORD rs_numobs = 28;
 _WORD rs_numtree = 3;
 
 char rs_name[] = "hyptree.rsc";

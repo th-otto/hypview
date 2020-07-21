@@ -5,7 +5,7 @@
  */
 
 /*
- * Number of Strings:        24
+ * Number of Strings:        28
  * Number of Bitblks:        0
  * Number of Iconblks:       0
  * Number of Color Iconblks: 1
@@ -13,11 +13,11 @@
  * Number of Tedinfos:       0
  * Number of Free Strings:   8
  * Number of Free Images:    0
- * Number of Objects:        24
+ * Number of Objects:        28
  * Number of Trees:          3
  * Number of Userblks:       0
  * Number of Images:         0
- * Total file size:          2198
+ * Total file size:          2378
  */
 
 #undef RSC_NAME
@@ -35,7 +35,7 @@
 # define RSC_STATIC_FILE 0
 #endif
 #if !RSC_STATIC_FILE
-#define NUM_STRINGS 24
+#define NUM_STRINGS 28
 #define NUM_FRSTR 8
 #define NUM_UD 0
 #define NUM_IMAGES 0
@@ -44,7 +44,7 @@
 #define NUM_IB 0
 #define NUM_CIB 1
 #define NUM_TI 0
-#define NUM_OBS 24
+#define NUM_OBS 28
 #define NUM_TREE 3
 #endif
 
@@ -61,7 +61,9 @@
 #define ME_QUIT                           19 /* STRING in tree MAINMENU */
 
 #define ABOUT_DIALOG                       2 /* form/dialog */
-#define PR_OK                              1 /* BUTTON in tree ABOUT_DIALOG */
+#define PROG_OK                            1 /* BUTTON in tree ABOUT_DIALOG */
+#define PROG_NAME                          2 /* STRING in tree ABOUT_DIALOG */
+#define PROG_DATE                          3 /* STRING in tree ABOUT_DIALOG */
 
 #define FSLX_LOAD                          0 /* Free string */
 

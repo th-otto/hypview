@@ -10,7 +10,6 @@ char const gl_program_version[] = HYPVIEW_VERSION;
 char const gl_compile_date[12] = __DATE__;
 
 _WORD aes_handle;
-OBJECT *about_tree;
 OBJECT *menu_tree;
 
 static void tv_init(void)
@@ -126,7 +125,6 @@ int main(int argc, const char **argv)
 	if (DoAesInit() == FALSE)
 		return 1;
 
-	about_tree = rs_tree(ABOUT_DIALOG);
 	menu_tree = rs_tree(MAINMENU);
 
 	if (DoInitSystem() == FALSE)

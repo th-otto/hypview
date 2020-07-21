@@ -210,11 +210,44 @@ static _WORD __CDECL HandleAbout(struct HNDL_OBJ_args args)
 		tree[args.obj].ob_state &= ~OS_SELECTED;
 		switch(args.obj)
 		{
-		case PR_OK: 
+		case PROG_OK: 
 			return 0;
 		}
 	}
 	return 1;										/* continue */
+}
+
+
+static void do_about(void)
+{
+	OBJECT *tree = rs_tree(ABOUT_DIALOG);
+	GRECT big, little;
+	
+	sprintf(tree[PROG_NAME].ob_spec.free_string, "%s %s", gl_program_name, gl_program_version);
+	sprintf(tree[PROG_DATE].ob_spec.free_string, rs_string(PROGINFO_FROM), gl_compile_date);
+
+	if (has_window_dialogs())
+	{
+		OpenDialog(HandleAbout, tree, rs_string(WDLG_ABOUT), -1, -1, NULL);
+	} else
+	{
+		_WORD obj;
+		
+		little.g_x = little.g_y = little.g_w = little.g_h = 0;
+		do {
+			form_center_grect(tree, &big);
+			wind_update(BEG_UPDATE);
+			form_dial_grect(FMD_START, &little, &big);
+			objc_draw_grect(tree, ROOT, MAX_DEPTH, &big);
+			obj = form_do(tree, 0);
+			form_dial_grect(FMD_FINISH, &little, &big);
+			wind_update(END_UPDATE);
+			if (obj > 0)
+			{
+				tree[obj].ob_state &= ~OS_SELECTED;
+			}
+		} while (obj > 0 && obj != PROG_OK);
+	}
 }
 
 
@@ -224,7 +257,7 @@ void SelectMenu(short title, short entry)
 	switch (entry)
 	{
 	case ME_ABOUT:
-		OpenDialog(HandleAbout, about_tree, rs_string(WDLG_ABOUT), -1, -1, NULL);
+		do_about();
 		break;
 	case ME_CLOSE:
 		SendCloseWindow(top_window());

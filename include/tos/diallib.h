@@ -214,7 +214,6 @@ extern	_WORD ext_workout[57];
 #endif
 extern OBJECT *dial_library_tree;
 extern OBJECT *toolbar_tree;
-extern OBJECT *about_tree;
 #if USE_MENU
 extern	OBJECT	*menu_tree;
 #endif
