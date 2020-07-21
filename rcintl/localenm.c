@@ -1682,8 +1682,10 @@ char *gl_locale_name_posify(const char *locale)
 			if (kernel32 == 0)
 			{
 				kernel32 = GetModuleHandle("kernel32");
+#pragma GCC diagnostic ignored "-Wcast-function-type"
 				pEnumSystemLocalesEx = (LPENUMSYSTEMLOCALESEX)GetProcAddress(kernel32, "EnumSystemLocalesEx");
 				pLocaleNameToLCID = (LPLOCALENAMETOLCID)GetProcAddress(kernel32, "LocaleNameToLCID");
+#pragma GCC diagnostic warning "-Wcast-function-type"
 			}
 			
 			if (pEnumSystemLocalesEx && pLocaleNameToLCID)

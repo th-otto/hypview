@@ -357,7 +357,7 @@ void DoVA_START(_WORD msg[8])
 						/*
 						 * hyptree seems to always send the chapter name unquoted :(
 						 */
-						chapter = av_cmdline(argv, i, FALSE, FALSE);
+						chapter = av_cmdline((const char *const*)argv, i, FALSE, FALSE);
 						freeme = chapter;
 					}
 				} else if (strcmp(filename, "-S0") == 0 || strcmp(filename, "-s0") == 0)
