@@ -121,7 +121,7 @@ static void TreeviewPrep(WINDOW_DATA *win, HYP_NODE *node)
 	if (hyp == NULL)
 		return;
 
-	tree = hyp_tree_build(hyp);
+	tree = hyp_tree_build(hyp, -1);
 	if (tree == NULL)
 	{
 		char *msg = g_strdup_printf(_("Error reading hyp tree: %s"), hyp_utf8_strerror(errno));

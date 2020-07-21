@@ -235,7 +235,7 @@ void MarkerSaveToDisk(gboolean ask)
 		if (ret >= 0)
 		{
 			write(ret, marken, sizeof(MARKEN) * MAX_MARKEN);
-			close(ret);
+			hyp_utf8_close(ret);
 			marken_change = FALSE;
 		} else
 		{

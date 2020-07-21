@@ -156,6 +156,16 @@ static void calc_opensize(WINDOW_DATA *win, GRECT *curr)
 		curr->g_w = ((curr->g_w - minw + win->x_raster - 1) / win->x_raster) * win->x_raster + minw;
 		curr->g_h = ((curr->g_h - minh + win->y_raster - 1) / win->y_raster) * win->y_raster + minh;
 		wind_calc_grect(WC_BORDER, win->kind, curr, curr);
+		/*
+		 * make it one line smaller if rounding up
+		 * causes the bottom window gadgets to be outside the screen
+		 */
+		if (curr->g_h > screen.g_h)
+		{
+			wind_calc_grect(WC_WORK, win->kind, curr, curr);
+			curr->g_h = (((curr->g_h - minh) / win->y_raster) - 1) * win->y_raster + minh;
+			wind_calc_grect(WC_BORDER, win->kind, curr, curr);
+		}
 	}
 }
 

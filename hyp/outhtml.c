@@ -3469,7 +3469,7 @@ gboolean html_print_treeview(const char *filename, hcp_opts *opts, GString *out)
 		return FALSE;
 	}
 
-	tree = hyp_tree_build(hyp);
+	tree = hyp_tree_build(hyp, handle);
 	if (tree == NULL)
 	{
 		const char *err = hyp_utf8_strerror(errno);

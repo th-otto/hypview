@@ -7889,7 +7889,7 @@ static gboolean write_images(hcp_vars *vars)
 				if (format == HYP_PIC_UNKNOWN)
 					retval = FALSE;
 				entry->pic_entry_type = format; /* used only for recompiling */
-				close(fd);
+				hyp_utf8_close(fd);
 			}
 			if (!finish_page(vars, i))
 				retval = FALSE;

@@ -301,12 +301,10 @@ gboolean walk_pathlist(const char *list, gboolean (*f)(const char *filename, voi
 /*
  * just for consistency
  */
-#ifndef NO_UTF8
 int hyp_utf8_close(int fd)
 {
-	return close(fd);
+	return (close)(fd);
 }
-#endif
 
 /*** ---------------------------------------------------------------------- ***/
 

@@ -353,7 +353,7 @@ void va_proto_exit(void);
 /*
  * dl_avcmd.c
  */
-char *av_cmdline(const char *const argv[], int firstarg, gboolean for_remarker);
+char *av_cmdline(const char *const argv[], int firstarg, gboolean quote, gboolean for_remarker);
 _BOOL SendAV_GETSTATUS(void);
 _BOOL SendAV_STATUS(const char *string);
 _BOOL SendAV_SENDKEY(short kbd_state, short code);
@@ -378,6 +378,7 @@ _BOOL SendAV_COPYFILE(const char *file_list, const char *dest_path, short bits);
 _BOOL SendAV_DELFILE(const char *file_list);
 _BOOL SendAV_SETWINDPOS(short x, short y, short w, short h);
 _BOOL SendAV_SENDCLICK(EVNTDATA *mouse, short ev_return);
+_BOOL av_can_quote(_WORD id);
 
 /*
  * dl_drag.c

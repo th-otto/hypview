@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 		form_alert(1, "[1][Application not found][ OK ]");
 	} else
 	{
-		char *cmd = av_cmdline(argv, 1, TRUE);
+		char *cmd = av_cmdline(argv, 1, TRUE, TRUE);
 		SendVA_START(recipient, cmd, va_started);
 		g_free(cmd);
 		while (!_app || !doneFlag)

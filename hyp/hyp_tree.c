@@ -76,7 +76,8 @@ gboolean hyp_tree_alloc(HYP_DOCUMENT *hyp)
 	if (hyp->hyptree_data == NULL)
 		return FALSE;
 	hyp->hyptree_len = bitlen;
-	
+	hyp->handle = -1;
+
 	for (node = 0; node < hyp->num_index; node++)
 	{
 		if ((nodeptr = hyp_loadtext(hyp, node)) != NULL)
@@ -109,12 +110,13 @@ gboolean hyp_tree_alloc(HYP_DOCUMENT *hyp)
 
 /* ------------------------------------------------------------------------- */
 
-HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp)
+HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp, int handle)
 {
 	hyp_nodenr node;
 	HYPTREE *tree;
 	INDEX_ENTRY *entry;
 
+	hyp->handle = handle;
 	tree = g_new(HYPTREE, hyp->num_index);
 	if (tree == NULL)
 	{

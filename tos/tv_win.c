@@ -50,6 +50,8 @@ struct prep_info {
 #define line_expanded_end      UTF8_BOM "\342\224\224"
 #define line_end               UTF8_BOM "\342\224\224"
 
+#define INDENT(win) max(2 * win->x_raster, win->y_raster)
+
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
 /*****************************************************************************/
@@ -157,7 +159,7 @@ static void draw_expander(_WORD x, _WORD y, _WORD size, unsigned short expanded)
 		v_pline(vdi_handle, 4, pxy);
 	} else
 	{
-		pxy[0] = x + 1;
+		pxy[0] = x + (size >> 1);
 		pxy[1] = y + 2;
 		pxy[2] = pxy[0];
 		pxy[3] = y + size - 2;
@@ -231,7 +233,7 @@ static void draw_lines(HYPTREE *tree, hyp_nodenr node, _WORD x, _WORD y, _WORD h
 	}
 	if (is_last)
 	{
-		nf_debugprintf("  ");
+		/* nf_debugprintf("  "); */
 	} else
 	{
 		pxy[0] = x;
@@ -239,27 +241,40 @@ static void draw_lines(HYPTREE *tree, hyp_nodenr node, _WORD x, _WORD y, _WORD h
 		pxy[2] = x;
 		pxy[3] = y + h - 1;
 		v_pline(vdi_handle, 2, pxy);
-		nf_debugprintf(line_down " ");
+		/* nf_debugprintf(line_down " "); */
 	}
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
-static WP_UNIT calc_docsize(HYPTREE *tree, hyp_nodenr node, WP_UNIT y, _WORD linesize)
+static void _calc_docsize(WINDOW_DATA *win, HYPTREE *tree, hyp_nodenr node)
 {
 	hyp_nodenr child;
 	
-	y += linesize;
+	win->docsize.h += win->y_raster;
+	if (tree[node].flags & HYPTREE_IS_NODE)
+	{
+		_WORD indent = INDENT(win);
+		_WORD w = tree[node].level * indent + indent + win->x_raster + win->x_raster * (_WORD)strlen(tree[node].title);
+		if (w > win->docsize.w)
+			win->docsize.w = 0;
+	}
 	if (tree[node].num_childs != 0 && (tree[node].flags & HYPTREE_IS_EXPANDED))
 	{
 		child = tree[node].head;
 		while (child != HYP_NOINDEX)
 		{
-			y = calc_docsize(tree, child, y, linesize);
+			_calc_docsize(win, tree, child);
 			child = tree[child].next;
 		}
 	}
-	return y;
+}
+
+static void calc_docsize(WINDOW_DATA *win, HYPTREE *tree)
+{
+	win->docsize.w = 0;
+	win->docsize.h = 0;
+	_calc_docsize(win, tree, 0);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -284,7 +299,7 @@ static HYPTREE *tv_hyptree(WINDOW_DATA *win, hyp_nodenr *num_index)
 
 static void tv_display_page(WINDOW_DATA *win)
 {
-	_WORD x, y;
+	_WORD x;
 	WP_UNIT y_offset, end_y;
 	hyp_nodenr node;
 	hyp_nodenr num_index;
@@ -297,9 +312,9 @@ static void tv_display_page(WINDOW_DATA *win)
 		return;
 
 	x = (_WORD)(win->scroll.g_x - win->docsize.x);
-	y = win->scroll.g_y;
-	nf_debugprintf("size %ld %ld\n", win->docsize.h, calc_docsize(tree, 0, 0, win->y_raster));
 	end_y = win->docsize.y + win->scroll.g_h;
+	if (end_y > win->docsize.h)
+		end_y = win->docsize.h;
 	vswr_mode(vdi_handle, MD_TRANS);
 	vst_color(vdi_handle, viewer_colors.text);
 	vsl_color(vdi_handle, viewer_colors.text);
@@ -316,11 +331,11 @@ static void tv_display_page(WINDOW_DATA *win)
 		{
 			if (y_offset >= win->docsize.y && y_offset < end_y)
 			{
-				_WORD indent = max(2 * win->x_raster, win->y_raster);
+				_WORD indent = INDENT(win);
 				_WORD x1 = x + depth * indent;
 				_WORD w = (indent >> 1);
 				_WORD x2 = x1 + w;
-				y = (_WORD)(y_offset - win->docsize.y) + win->scroll.g_y;
+				_WORD y = (_WORD)(y_offset - win->docsize.y) + win->scroll.g_y;
 				draw_lines(tree, node, x2, y, win->y_raster, indent, depth);
 				if (tree[node].num_childs != 0)
 				{
@@ -328,30 +343,44 @@ static void tv_display_page(WINDOW_DATA *win)
 					if (tree[node].flags & HYPTREE_IS_EXPANDED)
 					{
 						if (tree[node].next == HYP_NOINDEX)
-							nf_debugprintf(line_expanded_end);
-						else
-							nf_debugprintf(line_expanded);
+						{
+							/* nf_debugprintf(line_expanded_end); */
+						} else
+						{
+							/* nf_debugprintf(line_expanded); */
+						}
 					} else
 					{
 						if (tree[node].next == HYP_NOINDEX)
-							nf_debugprintf(line_collapsed_end);
-						else
-							nf_debugprintf(line_collapsed);
+						{
+							/* nf_debugprintf(line_collapsed_end); */
+						} else
+						{
+							/* nf_debugprintf(line_collapsed); */
+						}
 					}
 				} else
 				{
 					if (tree[node].next == HYP_NOINDEX)
 					{
 						draw_lineend(x2, y, indent - w, win->y_raster);
-						nf_debugprintf(line_end);
+						/* nf_debugprintf(line_end); */
 					} else
 					{
 						draw_intersec(x2, y, indent - w, win->y_raster);
-						nf_debugprintf(line_intersec);
+						/* nf_debugprintf(line_intersec); */
 					}
 				}
-				nf_debugprintf("%u: %s\n", node, tree[node].name);
-				v_gtext(vdi_handle, x1 + indent + win->x_raster, y, tree[node].name);
+				/* nf_debugprintf("%u: %s\n", node, tree[node].name); */
+				if (win->selection.valid && y_offset == win->selection.start.y)
+				{
+					vswr_mode(vdi_handle, MD_ERASE);
+					v_gtext(vdi_handle, x1 + indent + win->x_raster, y, tree[node].title);
+					vswr_mode(vdi_handle, MD_TRANS);
+				} else
+				{
+					v_gtext(vdi_handle, x1 + indent + win->x_raster, y, tree[node].title);
+				}
 			}
 			y_offset += win->y_raster;
 			if (tree[node].num_childs != 0 && (tree[node].flags & HYPTREE_IS_EXPANDED))
@@ -487,7 +516,9 @@ static void tv_prep_node(WINDOW_DATA *win, HYP_NODE *node)
 	win->docsize.w = 0;
 	win->docsize.h = 0;
 	
-	tree = hyp_tree_build(hyp);
+	tree = hyp_tree_build(hyp, hyp->handle);
+	hyp_utf8_close(hyp->handle);
+	hyp->handle = -1;
 	if (tree == NULL)
 	{
 		char *msg = g_strdup_printf(_("[1][Error reading hyp tree|%s][Cancel]"), hyp_utf8_strerror(errno));
@@ -528,7 +559,7 @@ WINDOW_DATA *tv_open_window(const char *path)
 	}
 
 	/* load and initialize hypertext file if neccessary */
-	doc = HypOpenFile(real_path, FALSE);
+	doc = HypOpenFile(real_path, FALSE, TRUE);
 	g_free(real_path);
 	
 	if (doc)
@@ -605,6 +636,16 @@ static void calc_opensize(WINDOW_DATA *win, GRECT *curr)
 		curr->g_w = ((curr->g_w - minw + win->x_raster - 1) / win->x_raster) * win->x_raster + minw;
 		curr->g_h = ((curr->g_h - minh + win->y_raster - 1) / win->y_raster) * win->y_raster + minh;
 		wind_calc_grect(WC_BORDER, win->kind, curr, curr);
+		/*
+		 * make it one line smaller if rounding up
+		 * causes the bottom window gadgets to be outside the screen
+		 */
+		if (curr->g_h > screen.g_h)
+		{
+			wind_calc_grect(WC_WORK, win->kind, curr, curr);
+			curr->g_h = (((curr->g_h - minh) / win->y_raster) - 1) * win->y_raster + minh;
+			wind_calc_grect(WC_BORDER, win->kind, curr, curr);
+		}
 	}
 }
 
@@ -619,9 +660,11 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 	win->x_raster = font_cw;
 	win->y_raster = font_ch;
 	if (prep)
+	{
+		win->selection.valid = FALSE;
 		doc->prepNode(win, win->displayed_node);
+	}
 	hv_set_title(win, win->title);
-	win->selection.valid = FALSE;
 
 	if (!(win->status & WIS_OPEN))
 		return;
@@ -655,6 +698,342 @@ void ReInitWindow(WINDOW_DATA *win, gboolean prep)
 
 	SetWindowSlider(win);
 	SendRedraw(win);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void redraw_line(WINDOW_DATA *win, WP_UNIT line)
+{
+	GRECT gr;
+	GRECT box;
+	
+	line *= win->y_raster;
+	if (line < win->docsize.y)
+		return;
+	if (line >= win->docsize.y + win->scroll.g_h)
+		return;
+	gr.g_x = win->scroll.g_x;
+	gr.g_y = (_WORD)(line - win->docsize.y) + win->scroll.g_y;
+	gr.g_w = win->scroll.g_w;
+	gr.g_h = win->y_raster;
+	wind_update(BEG_UPDATE);
+	graf_mouse(M_OFF, NULL);
+	wind_get_grect(win->whandle, WF_FIRSTXYWH, &box);
+	while (box.g_w && box.g_h)
+	{
+		if (rc_intersect(&gr, &box))
+		{
+			win->proc(win, WIND_REDRAW, (void *) &box);
+		}
+		wind_get_grect(win->whandle, WF_NEXTXYWH, &box);
+	}
+	graf_mouse(M_ON, NULL);
+	wind_update(END_UPDATE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+struct clickinfo {
+	WP_UNIT y;
+	_WORD linesize;
+	WP_UNIT line;
+	WP_UNIT to;
+	hyp_nodenr node;
+};
+
+static gboolean tv_findline(HYPTREE *tree, hyp_nodenr node, struct clickinfo *info)
+{
+	hyp_nodenr child;
+	
+	if (info->y == info->line)
+	{
+		info->node = node;
+		return TRUE;
+	}
+	info->y++;
+	if (tree[node].num_childs != 0 && (tree[node].flags & HYPTREE_IS_EXPANDED))
+	{
+		child = tree[node].head;
+		while (child != HYP_NOINDEX)
+		{
+			if (tv_findline(tree, child, info))
+				return TRUE;
+			child = tree[child].next;
+		}
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void tv_sendclick(WINDOW_DATA *win, HYPTREE *tree, hyp_nodenr node)
+{
+	const char *argv[4];
+	char *cmd;
+	_WORD viewer;
+	
+	if ((viewer = help_viewer_id()) < 0)
+		return;
+	argv[0] = "-s1";
+	argv[1] = win->data->path;
+	argv[2] = tree[node].name;
+	argv[3] = NULL;
+	cmd = av_cmdline(argv, 0, TRUE, FALSE);
+	SendVA_START(viewer, cmd, 0);
+	g_free(cmd);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void tv_click(WINDOW_DATA *win, EVNT *event)
+{
+	_WORD mx, my;
+	HYPTREE *tree;
+	hyp_nodenr num_index;
+	struct clickinfo info;
+	
+	tree = tv_hyptree(win, &num_index);
+	if (tree == NULL)
+		return;
+	WindowCalcScroll(win);
+	mx = event->mx - win->scroll.g_x;
+	my = event->my - win->scroll.g_y;
+	info.y = 0;
+	info.line = (win->docsize.y + my) / win->y_raster;
+	info.linesize = win->y_raster;
+	info.node = HYP_NOINDEX;
+	if (tv_findline(tree, 0, &info))
+	{
+		_WORD indent = INDENT(win);
+		hyp_nodenr node = info.node;
+		_WORD x1 = (_WORD)(tree[node].level * indent - win->docsize.x);
+		_WORD x2 = x1 + win->y_raster;
+		gboolean on_expander = mx >= x1 && mx < x2;
+		if (win->selection.valid)
+		{
+			win->selection.valid = FALSE;
+			redraw_line(win, win->selection.start.line);
+		}
+		win->selection.valid = TRUE;
+		win->selection.start.line = info.line;
+		win->selection.start.y = info.line * info.linesize;
+		if (on_expander && tree[node].num_childs != 0)
+		{
+			tree[node].flags ^= HYPTREE_IS_EXPANDED;
+			calc_docsize(win, tree);
+			SetWindowSlider(win);
+		} else if (event->mclicks >= 2)
+		{
+			tv_sendclick(win, tree, node);
+		}
+		/* SendRedraw(win); */
+		redraw_line(win, win->selection.start.line);
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean ensure_visible(WINDOW_DATA *win, WP_UNIT y)
+{
+	if (y < win->docsize.y)
+	{
+		ScrollWindow(win, 0, (y - win->docsize.y) / win->y_raster);
+		return FALSE;
+	}
+	if (y >= win->docsize.y + win->scroll.g_h)
+	{
+		ScrollWindow(win, 0, (win->docsize.y + win->scroll.g_h - y) / win->y_raster + 1);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean tv_nextline(WINDOW_DATA *win)
+{
+	HYPTREE *tree;
+	hyp_nodenr num_index;
+	struct clickinfo info;
+	
+	tree = tv_hyptree(win, &num_index);
+	if (tree == NULL)
+		return FALSE;
+	if (!win->selection.valid)
+		return FALSE;
+	info.y = 0;
+	info.line = win->selection.start.line;
+	info.linesize = win->y_raster;
+	info.node = HYP_NOINDEX;
+	if (tv_findline(tree, 0, &info))
+	{
+		hyp_nodenr node = info.node;
+
+		if (tree[node].num_childs != 0 && (tree[node].flags & HYPTREE_IS_EXPANDED))
+		{
+			node = tree[node].head;
+		} else
+		{
+			for (;;)
+			{
+				if (tree[node].next != HYP_NOINDEX)
+				{
+					node = tree[node].next;
+					break;
+				} else
+				{
+					node = tree[node].parent;
+					if (node == HYP_NOINDEX)
+						break;
+				}
+			}
+		}
+		if (node != HYP_NOINDEX)
+		{
+			win->selection.valid = FALSE;
+			redraw_line(win, win->selection.start.line);
+			win->selection.valid = TRUE;
+			win->selection.start.y += win->y_raster;
+			win->selection.start.line += 1;
+			if (!ensure_visible(win, win->selection.start.y))
+				SendRedraw(win);
+			else
+				redraw_line(win, win->selection.start.line);
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean tv_prevline(WINDOW_DATA *win)
+{
+	HYPTREE *tree;
+	hyp_nodenr num_index;
+	struct clickinfo info;
+	
+	tree = tv_hyptree(win, &num_index);
+	if (tree == NULL)
+		return FALSE;
+	if (!win->selection.valid)
+		return FALSE;
+	info.y = 0;
+	info.line = win->selection.start.line;
+	info.linesize = win->y_raster;
+	info.node = HYP_NOINDEX;
+	if (tv_findline(tree, 0, &info))
+	{
+		hyp_nodenr node = info.node;
+
+		if (tree[node].prev == HYP_NOINDEX)
+			node = tree[node].parent;
+		else
+			node = tree[node].prev;
+		if (node != HYP_NOINDEX)
+		{
+			win->selection.valid = FALSE;
+			redraw_line(win, win->selection.start.line);
+			win->selection.valid = TRUE;
+			win->selection.start.y -= win->y_raster;
+			win->selection.start.line -= 1;
+			if (!ensure_visible(win, win->selection.start.y))
+				SendRedraw(win);
+			else
+				redraw_line(win, win->selection.start.line);
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean tv_expand(WINDOW_DATA *win)
+{
+	HYPTREE *tree;
+	hyp_nodenr num_index;
+	struct clickinfo info;
+	
+	tree = tv_hyptree(win, &num_index);
+	if (tree == NULL)
+		return FALSE;
+	if (!win->selection.valid)
+		return FALSE;
+	info.y = 0;
+	info.line = win->selection.start.line;
+	info.linesize = win->y_raster;
+	info.node = HYP_NOINDEX;
+	if (tv_findline(tree, 0, &info))
+	{
+		hyp_nodenr node = info.node;
+
+		if (!(tree[node].flags & HYPTREE_IS_EXPANDED))
+		{
+			tree[node].flags ^= HYPTREE_IS_EXPANDED;
+			SendRedraw(win);
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean tv_collapse(WINDOW_DATA *win)
+{
+	HYPTREE *tree;
+	hyp_nodenr num_index;
+	struct clickinfo info;
+	
+	tree = tv_hyptree(win, &num_index);
+	if (tree == NULL)
+		return FALSE;
+	if (!win->selection.valid)
+		return FALSE;
+	info.y = 0;
+	info.line = win->selection.start.line;
+	info.linesize = win->y_raster;
+	info.node = HYP_NOINDEX;
+	if (tv_findline(tree, 0, &info))
+	{
+		hyp_nodenr node = info.node;
+
+		if (tree[node].flags & HYPTREE_IS_EXPANDED)
+		{
+			tree[node].flags ^= HYPTREE_IS_EXPANDED;
+			SendRedraw(win);
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static gboolean tv_select(WINDOW_DATA *win)
+{
+	HYPTREE *tree;
+	hyp_nodenr num_index;
+	struct clickinfo info;
+	
+	tree = tv_hyptree(win, &num_index);
+	if (tree == NULL)
+		return FALSE;
+	if (!win->selection.valid)
+		return FALSE;
+	info.y = 0;
+	info.line = win->selection.start.line;
+	info.linesize = win->y_raster;
+	info.node = HYP_NOINDEX;
+	if (tv_findline(tree, 0, &info))
+	{
+		hyp_nodenr node = info.node;
+
+		tv_sendclick(win, tree, node);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -745,6 +1124,8 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		if (win->whandle > 0)
 		{
 			GRECT gr;
+			_WORD viewer;
+			
 			wind_get_grect(win->whandle, WF_CURRXYWH, &gr);
 			gl_profile.viewer.win_x = gr.g_x;
 			gl_profile.viewer.win_y = gr.g_y;
@@ -752,6 +1133,10 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 			gl_profile.viewer.win_h = gr.g_h;
 			HypProfile_SetChanged();
 			SendAV_ACCWINDCLOSED(win->whandle);
+			if ((viewer = help_viewer_id()) >= 0)
+			{
+				SendVA_START(viewer, "-s0", 0);
+			}
 		}
 		/*
 		 * save the path of the last window closed,
@@ -858,29 +1243,17 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 		break;
 		
 	case WIND_KEYPRESS:
-#if 0
 		{
 			EVNT *event = (EVNT *) data;
 			_WORD scan = (event->key >> 8) & 0xff;
-			_WORD ascii = event->key & 0xff;
+			/* _WORD ascii = event->key & 0xff; */
 	
 			WindowCalcScroll(win);
 	
 			event->mwhich &= ~MU_KEYBD;
 	
-			if ((event->kstate & KbSHIFT) && (event->kstate & KbCTRL))
+			if (event->kstate & KbSHIFT)
 			{
-				if (scan == KbUP || scan == KbLEFT)
-					ToolbarClick(win, TO_PREV);
-				else if (scan == KbDOWN || scan == KbRIGHT)
-					ToolbarClick(win, TO_NEXT);
-				else if (ascii == 'V')
-					BlockPaste(win, !gl_profile.viewer.clipbrd_new_window);
-				else
-					event->mwhich |= MU_KEYBD;
-			} else if (event->kstate & KbSHIFT)
-			{
-				WindowCalcScroll(win);
 				switch (scan)
 				{
 				case KbLEFT:
@@ -908,121 +1281,32 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				case KbPAGEDOWN:
 					ScrollWindow(win, 0, win->scroll.g_h / win->y_raster);
 					break;
-				case KbF11:
-				case KbF12:
-				case KbF13:
-				case KbF14:
-				case KbF15:
-				case KbF16:
-				case KbF17:
-				case KbF18:
-				case KbF19:
-				case KbF20:
-					MarkerSave(win, scan - KbF11);
-					break;
 				default:
 					event->mwhich |= MU_KEYBD;
 					break;
 				}
-			} else if (event->kstate & KbALT)
-			{
-				switch (ascii)
-				{
-				case 'D':
-					GotoDefaultFile(win);
-					break;
-				case 'E':
-					RemoveAllHistoryEntries(win);
-					ToolbarUpdate(win, TRUE);
-					break;
-				case 'K':
-					GotoCatalog(win);
-					break;
-				case 'R':
-					BlockOperation(win, CO_REMARKER);
-					break;
-				case 'T':
-					GoThisButton(win, TO_HOME);
-					break;
-				case 'X':
-					GotoIndex(win);
-					break;
-				case 'Z':
-					BlockOperation(win, CO_SELECT_FONT);
-					break;
-				}	
 			} else if (event->kstate & KbCTRL)
 			{
-				if (ascii == 'A')
-				{
-					BlockOperation(win, CO_SELECT_ALL);
-				} else if (ascii == 'C')
-				{
-					BlockOperation(win, CO_COPY);
-				} else if (ascii == 'I')
-				{
-					DocumentInfos(win);
-				} else if (ascii == 'F')
-				{
-					BlockOperation(win, CO_SEARCH);
-				} else if (ascii == 'G')
-				{
-					BlockOperation(win, CO_SEARCH_AGAIN);
-				} else if (ascii == 'O')
-				{
-					ToolbarClick(win, TO_LOAD);
-				} else if (ascii == 'V')
-				{
-					if (doc->buttons.searchbox)
-						AutoLocatorPaste(win);
-					else
-						BlockOperation(win, CO_PASTE);
-				} else if (ascii == 'Z')
-				{
-					BlockOperation(win, CO_SWITCH_FONT);
-				} else if (scan == KbUP)
-				{
-					ScrollWindow(win, 0, -win->scroll.g_h / win->y_raster);
-				} else if (scan == KbDOWN)
-				{
-					ScrollWindow(win, 0, win->scroll.g_h / win->y_raster);
-				} else if (scan == KbLEFT)
-				{
-					ToolbarClick(win, TO_PREV);
-				} else if (scan == KbRIGHT)
-				{
-					ToolbarClick(win, TO_NEXT);
-				} else if (scan >= KbF1 && scan <= KbF10)
-				{
-					MarkerShow(win, scan - KbF1, TRUE);
-				} else
-				{
-					event->mwhich |= MU_KEYBD;
-				}
-			} else if (event->kstate & KbNUM)
-			{
-				if (ascii == '-')
-					ToolbarClick(win, TO_PREV);
-				else if (ascii == '+')
-					ToolbarClick(win, TO_NEXT);
-				else
-					event->mwhich |= MU_KEYBD;
+				event->mwhich |= MU_KEYBD;
 			} else if (event->kstate == 0)
 			{
-				WindowCalcScroll(win);
 				switch (scan)
 				{
 				case KbLEFT:
-					ScrollWindow(win, -win->x_speed, 0);
+					if (!tv_collapse(win))
+						ScrollWindow(win, -win->x_speed, 0);
 					break;
 				case KbRIGHT:
-					ScrollWindow(win, win->x_speed, 0);
+					if (!tv_expand(win))
+						ScrollWindow(win, win->x_speed, 0);
 					break;
 				case KbUP:
-					ScrollWindow(win, 0, -win->y_speed);
+					if (!tv_prevline(win))
+						ScrollWindow(win, 0, -win->y_speed);
 					break;
 				case KbDOWN:
-					ScrollWindow(win, 0, win->y_speed);
+					if (!tv_nextline(win))
+						ScrollWindow(win, 0, win->y_speed);
 					break;
 				case KbPAGEUP:
 					ScrollWindow(win, 0, -win->scroll.g_h / win->y_raster);
@@ -1045,29 +1329,14 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 					SetWindowSlider(win);
 					SendRedraw(win);
 					break;
+				case KbRETURN:
+				case KbENTER:
+					tv_select(win);
+					break;
 				case KbHELP:
-					ToolbarClick(win, TO_HELP);
-					break;
-				case KbUNDO:
-					ToolbarClick(win, TO_BACK);
-					break;
-				case KbF1:
-				case KbF2:
-				case KbF3:
-				case KbF4:
-				case KbF5:
-				case KbF6:
-				case KbF7:
-				case KbF8:
-				case KbF9:
-				case KbF10:
-					MarkerShow(win, scan - KbF1, FALSE);
 					break;
 				default:
-					if ((ascii == 27 || ascii == 8) && !(doc->buttons.searchbox))
-						ToolbarClick(win, TO_BACK);
-					else
-						event->mwhich |= MU_KEYBD;
+					event->mwhich |= MU_KEYBD;
 					break;
 				}
 			} else
@@ -1075,7 +1344,6 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 				event->mwhich |= MU_KEYBD;
 			}
 		}
-#endif
 		break;
 		
 	case WIND_DRAGDROPFORMAT:
@@ -1104,33 +1372,18 @@ gboolean HelpWindow(WINDOW_DATA *win, _WORD obj, void *data)
 #endif
 		
 	case WIND_CLICK:
-#if 0
 		{
 			EVNT *event = (EVNT *) data;
 	
 			if (event->mbutton & 1)			/* left button */
 			{
-				EVNTDATA d;
-
 				graf_mkstate(&event->mx, &event->my, &event->mbutton, &event->kstate);
 	
-				d.x = event->mx;
-				d.y = event->my;
-				d.bstate = event->mbutton;
-				d.kstate = event->kstate;
-				if ((event->mbutton & 1) ||		/* button still pressed? */
-					(event->kstate & KbSHIFT))	/* or shift pressed? */
-				{
-					MouseSelection(win, &d);
-				} else
-				{
-					RemoveSelection(win);
-					if (doc->type == HYP_FT_HYP)
-						HypClick(win, &d);
-				}
+				if (event->mbutton & 1)
+					evnt_button(1, 1, 0, event->reserved, event->reserved, event->reserved, event->reserved);
+				tv_click(win, event);
 			}
 		}
-#endif
 		break;
 		
 	case WIND_TBUPDATE:

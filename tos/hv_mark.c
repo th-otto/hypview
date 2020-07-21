@@ -243,11 +243,11 @@ void MarkerSaveToDisk(gboolean ask)
 				return;
 		}
 		filename = path_subst(gl_profile.viewer.marker_path);
-		ret = open(filename, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0644);
+		ret = hyp_utf8_open(filename, O_WRONLY | O_TRUNC | O_CREAT | O_BINARY, 0644);
 		if (ret >= 0)
 		{
 			write(ret, marken, sizeof(MARKEN) * MAX_MARKEN);
-			close(ret);
+			hyp_utf8_close(ret);
 			marken_change = FALSE;
 		} else
 		{

@@ -832,7 +832,6 @@ ssize_t hyp_utf8_write(int fd, const void *buf, size_t len);
 #ifdef NO_UTF8
 #define hyp_utf8_fopen fopen
 #define hyp_utf8_open open
-#define hyp_utf8_close close
 #define hyp_utf8_unlink unlink
 #define hyp_utf8_rename rename
 #define hyp_utf8_opendir opendir
@@ -1096,7 +1095,7 @@ typedef struct {
 gboolean hyp_tree_isset(HYP_DOCUMENT *hyp, hyp_nodenr node);
 void hyp_tree_setbit(HYP_DOCUMENT *hyp, hyp_nodenr node);
 gboolean hyp_tree_alloc(HYP_DOCUMENT *hyp);
-HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp);
+HYPTREE *hyp_tree_build(HYP_DOCUMENT *hyp, int handle);
 void hyp_tree_free(HYP_DOCUMENT *hyp, HYPTREE *tree);
 
 

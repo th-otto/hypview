@@ -321,6 +321,7 @@ void DoVA_START(_WORD msg[8])
 			char **argv;
 			char *chapter = NULL;
 			char *filename = NULL;
+			char *freeme = NULL;
 			WINDOW_DATA *win;
 			int argc;
 			int i;
@@ -351,6 +352,14 @@ void DoVA_START(_WORD msg[8])
 					start_if_empty = FALSE;
 					if (empty(filename) && StartRemarker(NULL, remarker_check, FALSE) == msg[1])
 						start_if_empty = TRUE;
+					if (i < argc && !av_can_quote(msg[1]))
+					{
+						/*
+						 * hyptree seems to always send the chapter name unquoted :(
+						 */
+						chapter = av_cmdline(argv, i, FALSE, FALSE);
+						freeme = chapter;
+					}
 				} else if (strcmp(filename, "-S0") == 0 || strcmp(filename, "-s0") == 0)
 				{
 					/* stop message from remarker or hyptree */
@@ -383,7 +392,7 @@ void DoVA_START(_WORD msg[8])
 					}
 				}
 #endif
-				if (i < argc)
+				if (i < argc && chapter == NULL)
 					chapter = argv[i];
 			} else
 			{
@@ -425,7 +434,10 @@ void DoVA_START(_WORD msg[8])
 				nodenr = 0;
 			}
 			if (!empty(filename))
+			{
 				win = OpenFileInWindow(win, filename, chapter, nodenr, TRUE, gl_profile.viewer.va_start_newwin, FALSE);
+			}
+			g_free(freeme);
 			g_strfreev(argv);
 			g_free(filename);
 			g_free(arg);

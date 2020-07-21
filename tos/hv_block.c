@@ -71,7 +71,7 @@ _WORD StartRemarker(WINDOW_DATA *win, remarker_mode mode, gboolean quiet)
 				argv[argc++] = nodename;
 			}
 			argv[argc] = NULL;
-			cmd = av_cmdline(argv, 0, TRUE);
+			cmd = av_cmdline(argv, 0, TRUE, TRUE);
 			SendVA_START(id, cmd, FUNK_NULL);
 			g_free(cmd);
 			g_free(nodename);

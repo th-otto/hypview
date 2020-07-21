@@ -115,7 +115,7 @@ DOCUMENT *hypdoc_unref(DOCUMENT *doc);
 DOCUMENT *hypdoc_ref(DOCUMENT *doc);
 DOCUMENT *hypwin_doc(WINDOW_DATA *win);
 HYP_NODE *hypwin_node(WINDOW_DATA *win);
-DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref);
+DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref, gboolean keep_open);
 hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref);
 void HypCloseFile(DOCUMENT *doc);
 

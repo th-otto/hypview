@@ -1146,7 +1146,7 @@ static gboolean print_tree(const char *filename, hcp_opts *opts)
 	}
 	
 	warn_if_empty(hyp, opts);
-	tree = hyp_tree_build(hyp);
+	tree = hyp_tree_build(hyp, handle);
 	if (tree == NULL)
 	{
 		hyp_unref(hyp);

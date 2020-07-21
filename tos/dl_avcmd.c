@@ -162,6 +162,17 @@ static AV_APP *av_new_app(_WORD id)
 	return app;
 }
 
+/*** ---------------------------------------------------------------------- ***/
+
+_BOOL av_can_quote(_WORD id)
+{
+	AV_APP *app;
+	
+	app = av_find_app(id);
+	if (app == NULL)
+		return FALSE;
+	return (app->av_proto_cfg & AV_PROTOKOLL_QUOTING) != 0;
+}
 
 /******************************************************************************/
 /*** ---------------------------------------------------------------------- ***/
@@ -495,7 +506,7 @@ _BOOL SendAV_OPENWIND(const char *path, const char *wildcard)
  * some servers (like GEMINI) otherwise don't
  * parse the parameters correctly
  */
-char *av_cmdline(const char *const argv[], int first, gboolean for_remarker)
+char *av_cmdline(const char *const argv[], int first, gboolean quote, gboolean for_remarker)
 {
 	int i;
 	size_t cmlen = 0;
@@ -523,8 +534,9 @@ char *av_cmdline(const char *const argv[], int first, gboolean for_remarker)
 		 * otherwise it generates garbage.
 		 * Another hack: it must not have switches quoted
 		 */
-		if (*src == '\0' || strchr(src, '\'') || strchr(src, ' ') ||
-			(for_remarker && *src != '-'))
+		if (quote &&
+			(*src == '\0' || strchr(src, '\'') || strchr(src, ' ') ||
+			 (for_remarker && *src != '-')))
 		{
 			*dst++ = '\'';
 			while (*src)
@@ -871,6 +883,7 @@ void DoAV_PROTOKOLL(short flags)
 	char servername[9];
 	_WORD type;
 	_WORD msg[8];
+	char **p;
 	
 	if (av_server_app == NULL)
 	{
@@ -905,8 +918,8 @@ void DoAV_PROTOKOLL(short flags)
 	msg[3] = flags;
 	msg[4] = 0;
 	msg[5] = 0;
-	msg[6] = (_UWORD)((_ULONG)(av_name) >> 16);
-	msg[7] = (_UWORD)(_ULONG)(av_name);
+	p = (char **)&msg[6];
+	*p = av_name;
 	Protokoll_Broadcast(msg, FALSE);
 }
 

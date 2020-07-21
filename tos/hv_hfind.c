@@ -108,7 +108,7 @@ static void hypfind_run_hypfind(OBJECT *tree, DOCUMENT *doc, gboolean all_hyp)
 				 * This will only work if the main application
 				 * is really the AV-Server
 				 */
-				char *cmd = av_cmdline(argv, 1, FALSE);
+				char *cmd = av_cmdline(argv, 1, TRUE, FALSE);
 				if (SendAV_STARTPROG(filename, cmd, av_hypfind_finish) < 0)
 					av_hypfind_finish(-1);
 				g_free(cmd);

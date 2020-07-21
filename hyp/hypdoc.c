@@ -295,10 +295,11 @@ hyp_filetype LoadFile(DOCUMENT *doc, int handle, gboolean return_if_ref)
 
 /*** ---------------------------------------------------------------------- ***/
 
-DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
+DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref, gboolean keep_open)
 {
 	DOCUMENT *doc = NULL;
 	int handle;
+	hyp_filetype type;
 
 	handle = hyp_utf8_open(path, O_RDONLY | O_BINARY, HYP_DEFAULT_FILEMODE);
 
@@ -317,7 +318,7 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 	doc->ref_count = 1;
 	
 	/* type-spezific loading follows */
-	if (LoadFile(doc, handle, return_if_ref) < 0)
+	if ((type = LoadFile(doc, handle, return_if_ref)) < 0)
 	{
 		FileError(hyp_basename(doc->path), _("format not recognized"));
 		hypdoc_unref(doc);
@@ -336,7 +337,10 @@ DOCUMENT *HypOpenFile(const char *path, gboolean return_if_ref)
 		}
 	}
 
-	hyp_utf8_close(handle);
+	if (keep_open && type == HYP_FT_HYP)
+		((HYP_DOCUMENT *)doc->data)->handle = handle;
+	else
+		hyp_utf8_close(handle);
 
 	return doc;
 }
@@ -351,7 +355,8 @@ DOCUMENT *hypdoc_unref(DOCUMENT *doc)
 	if (doc->data && doc->type == HYP_FT_HYP)
 	{
 		HYP_DOCUMENT *hyp = (HYP_DOCUMENT *)doc->data;
-		doc->data = NULL; /* prevent HypCloseFile from dereferencing it again */
+		if (doc->ref_count == 1)
+			doc->data = NULL; /* prevent HypCloseFile from dereferencing it again */
 		hyp_unref(hyp);
 	}
 	if (--doc->ref_count == 0)

@@ -92,7 +92,7 @@ cstartv.o
 ..\tos\dl_avcmd.c
 ..\tos\dl_drag.c
 ;..\tos\dl_bubbl.c
-;..\tos\dl_help.c
+..\tos\dl_help.c
 ;..\tos\dl_ledit.c
 ;..\tos\dl_dhst.c
 ..\tos\dl_apinf.c

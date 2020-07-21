@@ -386,6 +386,8 @@ void HypDisplayPage(WINDOW_DATA *win)
 	unsigned char bgcolor;
 	char *str;
 	
+	if (hyp == NULL)
+		return;
 	if (node == NULL)					/* stop if no page loaded */
 		return;
 

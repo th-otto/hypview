@@ -106,7 +106,7 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 	/* load and initialize hypertext file if neccessary */
 	if (doc == NULL)
 	{
-		doc = HypOpenFile(real_path, FALSE);
+		doc = HypOpenFile(real_path, FALSE, FALSE);
 	}
 	g_free(real_path);
 	

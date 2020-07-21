@@ -129,14 +129,14 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 
 	/* load and initialize hypertext file if neccessary */
 	if (doc == NULL)
-		doc = HypOpenFile(real_path, FALSE);
+		doc = HypOpenFile(real_path, FALSE, FALSE);
 	g_free(real_path);
 	
 	if (doc != NULL)
 	{
 		gboolean found = FALSE;
 		DOCUMENT *prev_doc = NULL;
-		
+
 		if (!doc->data)
 		{
 			int ret;
@@ -167,7 +167,9 @@ WINDOW_DATA *OpenFileInWindow(WINDOW_DATA *win, const char *path, const char *ch
 			win->data = doc;
 		}
 		if (add_to_hist)
+		{
 			AddHistoryEntry(win, prev_doc);
+		}
 		if (doc->gotoNodeProc(win, chapter, node))
 		{
 			found = TRUE;
