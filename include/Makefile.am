@@ -32,7 +32,7 @@ EXTRA_DIST = \
 	tos/diallib.h \
 	tos/dl_user.h \
 	tos/dragdrop.h \
-	tos/gem.h \
+	tos/mygem.h \
 	tos/gscript.h \
 	tos/magx.h \
 	tos/mem.h \
@@ -45,6 +45,7 @@ EXTRA_DIST = \
 	tos/viewprot.h \
 	tos/xacc.h \
 	tos/xattr.h \
+	tos/xrsrc.h \
 	windows_.h \
 	xgetopt.h \
 	$(empty)

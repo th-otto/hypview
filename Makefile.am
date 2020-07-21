@@ -65,7 +65,7 @@ if OS_TOS
 	for f in pc_conv 1st_conv help_rc; do \
 		mv $(DISTDIR)/bin/$$f $(DISTDIR)/bin/$$f.ttp; \
 	done
-	cp -a tos/hypview.app tos/utils/call-acc/call-acc.gtp $(DISTDIR)/bin
+	cp -a tos/hypview.app tos/hyptree.app tos/utils/call-acc/call-acc.gtp $(DISTDIR)/bin
 	$(STRIP) $(DISTDIR)/bin/*
 	for f in BUGS README NEWS; do \
 		mv $(DISTDIR)/$$f $(DISTDIR)/$$f.txt; \

@@ -28,7 +28,7 @@ a few new commands:
   character set.
 
 - @os <name>
-  Defines the OS the hypertext was generated on. Hypertext file created by
+  Defines the OS the hypertext was generated on. Hypertext files created by
   ST-Guide already contain an (informational) field for this. This command
   can be used to override the default.
 

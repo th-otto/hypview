@@ -58,6 +58,7 @@ libhyp_a_SOURCES = \
 	cp_1258.h \
 	cp_st_ru.h \
 	cp_latin1.h \
+	cp_latin2.h \
 	cp_850.h \
 	cp_atari.h \
 	cp_mac.h \
@@ -300,6 +301,8 @@ NAV_IMAGES = \
 	tv_nointersec_png.h \
 	tv_end_png.h \
 	$(empty)
+
+libhyp_a_SOURCES += $(NAV_IMAGES)
 
 icons: $(NAV_IMAGES)
 

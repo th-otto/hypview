@@ -41,5 +41,5 @@ Known bugs in this version:
 
 - Not all viewers currently support lines with arrow endings
 
-- hypinfo.tpp is way too large (~16MB), and may not work on TOS.
+- hypinfo.ttp is way too large (~16MB), and may not work on TOS.
   Main reason is the builtin database to identify languages.

@@ -1,3 +1,18 @@
+New in Version 1.0.4:
+=====================
+
+- new: viewers now have a feature to display
+  the structure as a treeview (separate application
+  for tos, embedded in others)
+- web links are now better handled
+- some more encodings added
+- some fixes to most viewers when last image
+  extends beyond the last text line
+- the macos command line tool now uses static libraries,
+  to avoid problems with unavailable shared libraries
+
+- several smaller bug fixes
+
 New in Version 1.0.3:
 =====================
 
