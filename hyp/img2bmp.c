@@ -161,7 +161,7 @@ static gboolean conv_file(const char *filename)
 		oom();
 		goto error;
 	}
-	datalen = bmp_pack(buf, dest, &pic, TRUE, pic.pi_planes == 4 ? bmp_revtab4 : bmp_revtab8);
+	datalen = bmp_pack(buf, dest, &pic, TRUE);
 	
 	outname = replace_ext(filename, ".img", ".bmp");
 	if (outname == NULL)

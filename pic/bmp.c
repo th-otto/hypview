@@ -293,7 +293,7 @@ gboolean pic_type_bmp(PICTURE *pic, const unsigned char *buf, long size)
 		clrused = get_long();
 		buf += 4; /* skip ClrImportant */
 		
-		buf += bmphsize - 40; /* skip remaining header */
+		buf += bmphsize - BMP_STD_HSIZE; /* skip remaining header */
 		switch (pic->pi_planes)
 		{
 		case 1:
@@ -896,7 +896,7 @@ gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic,
 
 /*** ---------------------------------------------------------------------- ***/
 
-long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab)
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header)
 {
 	short i, j, k;
 	unsigned char *rp;
@@ -906,10 +906,13 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic
 	long datasize = 0;
 	unsigned char *buf = dest;
 	unsigned long dstrowsize;
+	unsigned long srcrowsize;
+	const unsigned char *maptab = pic->pi_planes == 4 ? bmp_revtab4 : bmp_revtab8;
 	
 	dest += pic->pi_dataoffset;
 	
 	dstrowsize = bmp_rowsize(pic, pic->pi_planes);
+	srcrowsize = pic_rowsize(pic, pic->pi_planes);
 	if (pic->pi_compressed != BMP_RGB)
 	{
 	} else
@@ -920,7 +923,7 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic
 		 * BMP is stored upside down,
 		 * start from the end
 		 */
-		src += pic->pi_picsize;
+		src += srcrowsize * pic->pi_height;
 		switch (pic->pi_planes)
 		{
 		case 8:
@@ -1067,12 +1070,55 @@ long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic
 
 /*** ---------------------------------------------------------------------- ***/
 
+static long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic, unsigned long dstrowsize)
+{
+	short i, j;
+	long datasize = 0;
+	unsigned long k;
+	unsigned char *rp;
+
+	dest += pic->pi_dataoffset;
+	
+	k = pic_rowsize(pic, 1);
+	if (pic->pi_compressed != BMP_RGB)
+	{
+	} else
+	{
+		/* uncompressed data */
+		
+		/*
+		 * BMP is stored upside down,
+		 * start from the end
+		 */
+		src += k * pic->pi_height;
+		{
+			short l;
+
+			j = (((pic->pi_width) + 7) >> 3);
+			for (i = pic->pi_height; --i >= 0; )
+			{
+				src -= k;
+				rp = dest;
+				memset(rp, 0, dstrowsize);
+				for (l = 0; l < j; l++)
+					*rp++ = ~src[l];
+				dest += dstrowsize;
+			}
+		}
+		datasize = (long)pic->pi_height * dstrowsize;
+	}
+
+	return datasize;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
 /*
  * specialized version for writing icon data:
  * we need to use a pixel value of zero for transparent
  * pixels, no matter what color[0] actually maps to
  */
-long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const unsigned char *masksrc, PICTURE *pic, gboolean update_header, const unsigned char *maptab)
+long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const unsigned char *masksrc, PICTURE *pic, gboolean update_header)
 {
 	short i, j, k;
 	unsigned char *rp;
@@ -1084,19 +1130,22 @@ long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const
 	long masksize = 0;
 	unsigned char *buf = dest;
 	unsigned long dstrowsize;
+	unsigned long srcrowsize;
 	unsigned long maskrowsize;
-	
+	const unsigned char *maptab = pic->pi_planes == 4 ? bmp_revtab4 : bmp_revtab8;
+
 	maskrowsize = bmp_rowsize(pic, 1);
 	masksize = maskrowsize * pic->pi_height;
 	dstrowsize = bmp_rowsize(pic, pic->pi_planes);
+	srcrowsize = pic_rowsize(pic, pic->pi_planes);
 	if (masksrc == NULL)
 	{
-		datasize = bmp_pack_planes(dest, src, pic, update_header, maptab);
+		datasize = bmp_pack_planes(dest, src, pic, update_header);
 		memset(dest + pic->pi_dataoffset + datasize, 0, masksize);
 	} else
 	{
 		datasize = (long)pic->pi_height * dstrowsize;
-		bmp_pack_mask(dest + datasize, masksrc, pic);
+		bmp_pack_mask(dest + datasize, masksrc, pic, maskrowsize);
 		dest += pic->pi_dataoffset;
 		masksrc = dest + datasize;
 		
@@ -1110,7 +1159,7 @@ long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const
 			 * BMP is stored upside down,
 			 * start from the end
 			 */
-			src += pic->pi_picsize;
+			src += srcrowsize * pic->pi_height;
 			switch (pic->pi_planes)
 			{
 			case 8:
@@ -1284,52 +1333,7 @@ long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const
 
 /*** ---------------------------------------------------------------------- ***/
 
-long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic)
-{
-	short i, j;
-	long datasize = 0;
-	unsigned long dstrowsize;
-	unsigned long k;
-	unsigned char *rp;
-	
-	dest += pic->pi_dataoffset;
-	
-	dstrowsize = bmp_rowsize(pic, 1);
-	k = pic_rowsize(pic, 1);
-	if (pic->pi_compressed != BMP_RGB)
-	{
-	} else
-	{
-		/* uncompressed data */
-		
-		/*
-		 * BMP is stored upside down,
-		 * start from the end
-		 */
-		src += k * pic->pi_height;
-		{
-			short l;
-
-			j = (((pic->pi_width) + 7) >> 3);
-			for (i = pic->pi_height; --i >= 0; )
-			{
-				src -= k;
-				rp = dest;
-				memset(rp, 0, dstrowsize);
-				for (l = 0; l < j; l++)
-					*rp++ = ~src[l];
-				dest += dstrowsize;
-			}
-		}
-		datasize = (long)pic->pi_height * dstrowsize;
-	}
-
-	return datasize;
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab)
+long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header)
 {
 	_WORD planes = pic->pi_planes;
 	long datasize;
@@ -1347,7 +1351,7 @@ long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gbool
 	{
 		pic->pi_compressed = BMP_RGB;
 	}
-	datasize = bmp_pack_planes(dest, src, pic, update_header, maptab);
+	datasize = bmp_pack_planes(dest, src, pic, update_header);
 	pic->pi_datasize = datasize;
 	return datasize;
 }
@@ -1414,7 +1418,7 @@ long bmp_header(unsigned char **dest_p, PICTURE *pic, const unsigned char *mapta
 	cmapsize = 4 * ncolors;
 
 	pic->pi_compressed = 0; /* compression NYI */
-	headlen = 14 + 40 + cmapsize;
+	headlen = 14 + BMP_STD_HSIZE + cmapsize;
 	bmp_bytes = bmp_rowsize(pic, pic->pi_planes);
 	if (bmp_bytes == 0)
 		return 0;
@@ -1438,7 +1442,7 @@ long bmp_header(unsigned char **dest_p, PICTURE *pic, const unsigned char *mapta
 	put_long(0l);
 	put_long(headlen);
 
-	put_long(40l); /* biSize */
+	put_long(BMP_STD_HSIZE); /* biSize */
 	put_long((long)(pic->pi_width)); /* biWidth */
 	put_long((long)(pic->pi_height)); /* biHeight */
 	put_word(1);					/* biPlanes */

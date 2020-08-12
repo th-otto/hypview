@@ -187,7 +187,7 @@ static gboolean conv_file(const char *filename)
 		oom();
 		goto error;
 	}
-	datalen = bmp_pack(buf, dest, &pic, TRUE, pic.pi_planes == 4 ? bmp_revtab4 : bmp_revtab8);
+	datalen = bmp_pack(buf, dest, &pic, TRUE);
 	if ((long)fwrite(buf, 1, headerlen + datalen, out) != headerlen + datalen ||
 		ferror(out))
 	{

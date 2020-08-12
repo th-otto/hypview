@@ -618,7 +618,7 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 			oom();
 			goto error;
 		}
-		data_size = bmp_pack(buf, conv, &pic, TRUE, pic.pi_planes == 4 ? bmp_revtab4 : bmp_revtab8);
+		data_size = bmp_pack(buf, conv, &pic, TRUE);
 		if (out)
 		{
 			g_string_set_size(out, header_size + data_size);

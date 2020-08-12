@@ -293,12 +293,15 @@ long imagic_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic);
 /*** Windows Icons -------------------------------------------------------- ***/
 
 gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size);
-long ico_header(unsigned char **buf, PICTURE *pic, const unsigned char *maptab);
+long ico_header(unsigned char **buf, PICTURE *pic);
+long ico_multi_header(unsigned char **buf, PICTURE *pic, const _WORD *planetab, _WORD planecount);
 
 gboolean ico_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean with_mask);
-long ico_pack(unsigned char *dest, const unsigned char *data, const _UBYTE *mask, PICTURE *pic, const unsigned char *maptab);
+long ico_pack(unsigned char *dest, const unsigned char *data, const unsigned char *mask, PICTURE *pic);
 
 /*** BMP ------------------------------------------------------------------ ***/
+
+#define BMP_STD_HSIZE 40
 
 unsigned char *bmp_put_palette(unsigned char *buf, PICTURE *pic, const unsigned char *maptab);
 extern unsigned char const bmp_coltab8[256];
@@ -312,10 +315,9 @@ long bmp_header(unsigned char **buf, PICTURE *pic, const unsigned char *maptab);
 long bmp_rowsize(PICTURE *pic, _WORD planes);
 
 gboolean bmp_unpack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean with_mask);
-long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
-long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
-long bmp_pack_mask(unsigned char *dest, const unsigned char *src, PICTURE *pic);
-long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const unsigned char *mask, PICTURE *pic, gboolean update_header, const unsigned char *maptab);
+long bmp_pack(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
+long bmp_pack_planes(unsigned char *dest, const unsigned char *src, PICTURE *pic, gboolean update_header);
+long bmp_pack_data_and_mask(unsigned char *dest, const unsigned char *src, const unsigned char *mask, PICTURE *pic, gboolean update_header);
 
 /*** GIF ------------------------------------------------------------------ ***/
 
@@ -361,8 +363,8 @@ void pic_2to256   (unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD 
 /* misc helper functions */
 
 void pic_invert(unsigned char *, long size);
-void pic_planes_to_interleaved(unsigned char *dst, unsigned char *src, PICTURE *pic);
-void pic_interleaved_to_planes(_UBYTE *dst, const _UBYTE *src, _WORD width, _WORD height, _WORD planes);
+void pic_planes_to_interleaved(unsigned char *dst, const unsigned char *src, PICTURE *pic);
+void pic_interleaved_to_planes(unsigned char *dst, const unsigned char *src, _WORD width, _WORD height, _WORD planes);
 void pic_savepalette(PALETTE);
 void pic_showpalette(PALETTE);
 void pic_getpalette(PALETTE, const TOSPALETTE *);

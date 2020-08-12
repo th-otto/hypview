@@ -27,6 +27,7 @@ static struct option const long_options[] = {
 	{ NULL, no_argument, NULL, 0 }
 };
 
+#if 0
 static unsigned char const ico_coltab8[256] = {
  255,	0,	 1,   2,   4,	6,	 3,   5,   7,	8,	 9,  10,  12,  14,	11,  13,
   16,  17,	18,  19,  20,  21,	22,  23,  24,  25,	26,  27,  28,  29,	30,  31,
@@ -66,6 +67,7 @@ static unsigned char const ico_revtab8[256] = {
 
 static unsigned char const ico_coltab4[16] = { 15, 9, 10, 11, 12, 13, 14, 8, 7, 1, 2, 3, 4, 5, 6, 0 };
 static unsigned char const ico_revtab4[16] = { 15, 9, 10, 11, 12, 13, 14, 8, 7, 1, 2, 3, 4, 5, 6, 0 };
+#endif
 
 /*****************************************************************************/
 /* ------------------------------------------------------------------------- */
@@ -137,8 +139,10 @@ static gboolean conv_file(const char *filename)
 	long headerlen;
 	long datalen;
 	long masksize;
+#if 0
 	const unsigned char *maptab;
 	const unsigned char *revtab;
+#endif
 	
 	fp = fopen(filename, "rb");
 	if (fp == NULL)
@@ -212,10 +216,12 @@ static gboolean conv_file(const char *filename)
 		goto error;
 	}
 	
+#if 0
 	maptab = pic.pi_planes == 4 ? ico_coltab4 : ico_coltab8;
 	revtab = pic.pi_planes == 4 ? ico_revtab4 : ico_revtab8;
-	headerlen = ico_header(&buf, &pic, maptab);
-	datalen = ico_pack(buf, dest, dest + pic.pi_picsize, &pic, revtab);
+#endif
+	headerlen = ico_header(&buf, &pic);
+	datalen = ico_pack(buf, dest, dest + pic.pi_picsize, &pic);
 	if ((long) fwrite(buf, 1, headerlen + datalen, out) != headerlen + datalen ||
 		fflush(out) != 0 ||
 		ferror(out))

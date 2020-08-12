@@ -20,8 +20,8 @@ typedef struct {
 		_UBYTE height;		/* height in pixel */
 		_UBYTE colors;		/* number of colors: 2, 8, 16, 256 */
 		_UBYTE dummy;
-		_UBYTE xhotspot[2];
-		_UBYTE yhotspot[2];
+		_UBYTE xhotspot[2]; /* for CUR only; planes for ICO */
+		_UBYTE yhotspot[2]; /* for CUR only; bits/pixel for ICO */
 		_UBYTE datasize[4]; /* size of BITMAPINFO + data */
 		_UBYTE offset[4];	/* offset to BITMAPINFO (22 for 1 icon) */
 	} ico[1]; /* repeated for #count */
@@ -177,7 +177,7 @@ gboolean pic_type_ico(PICTURE *pic, const unsigned char *buf, long size)
 		clrused = get_long();
 		buf += 4; /* skip ClrImportant */
 		
-		buf += bmphsize - 40; /* skip remaining header */
+		buf += bmphsize - BMP_STD_HSIZE; /* skip remaining header */
 		switch (pic->pi_planes)
 		{
 		case 1:
@@ -263,9 +263,12 @@ gboolean ico_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic, gboolean with
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG ico_header(_UBYTE **dest_p, PICTURE *pic, const unsigned char *maptab)
+/*
+ * returns size of icon file header, *not* including any bitmap info header
+ */
+static _LONG _ico_multi_header(_UBYTE **dest_p, PICTURE *pic, const _WORD *planetab, _WORD count, _BOOL multi)
 {
-	_ULONG len, headlen;
+	_ULONG len, headlen, offset;
 	_WORD ncolors;
 	_ULONG cmapsize;
 	unsigned char *buf;
@@ -274,34 +277,25 @@ _LONG ico_header(_UBYTE **dest_p, PICTURE *pic, const unsigned char *maptab)
 		_UBYTE g;
 		_UBYTE b;
 	};
-#if 0
-	static struct _rgb const win16_palette[16] = {
-		{	0,	 0,   0 },
-		{ 128,	 0,   0 },
-		{	0, 128,   0 },
-		{ 128, 128,   0 },
-		{	0,	 0, 128 },
-		{ 128,	 0, 128 },
-		{	0, 128, 128 },
-		{ 128, 128, 128 },
-		{ 192, 192, 192 },
-		{ 255,	 0,   0 },
-		{	0, 255,   0 },
-		{ 255, 255,   0 },
-		{	0,	 0, 255 },
-		{ 255,	 0, 255 },
-		{	0, 255, 255 },
-		{ 255, 255, 255 }
-	};
-#endif
+	_WORD i;
+	_WORD planes;
+	const unsigned char *maptab;
+	_LONG planesize;
 
-	ncolors = 1 << pic->pi_planes;
-	cmapsize = 4 * ncolors;
-	headlen = ICO_FILE_HEADER_SIZE + 40 + cmapsize;
-	len = headlen + pic->pi_datasize;
+	len = 0;
+	for (i = 0; i < count; i++)
+	{
+		planes = planetab[i];
+		ncolors = 1 << planes;
+		cmapsize = 4 * ncolors;
+		planesize = bmp_rowsize(pic, planes) * pic->pi_height;
+		planesize += bmp_rowsize(pic, 1) * pic->pi_height;
+		len += BMP_STD_HSIZE + cmapsize + planesize;
+	}
+	headlen = 6 + 16 * count;
 
 	if (*dest_p == NULL)
-		buf = g_new(unsigned char, len);
+		buf = g_new(unsigned char, headlen + len);
 	else
 		buf = *dest_p;
 	if (buf == NULL)
@@ -309,42 +303,96 @@ _LONG ico_header(_UBYTE **dest_p, PICTURE *pic, const unsigned char *maptab)
 	*dest_p = buf;
 	pic->pi_dataoffset = headlen;
 	
+	/*
+	 * write the icon file header
+	 */
 	put_word(0); /* magic */
 	put_word(1); /* type */
-	put_word(1); /* count */
-	put_byte(pic->pi_width);
-	put_byte(pic->pi_height);
-	put_byte(ncolors);
-	put_byte(0);
-	put_word(1);					/* planes */
-	put_word(pic->pi_planes);		/* bits per pixel */
-	put_long(len - ICO_FILE_HEADER_SIZE);
-	put_long((int32_t)ICO_FILE_HEADER_SIZE);
-	
-	put_long(40l);
-	put_long((_LONG)(pic->pi_width));
-	put_long((_LONG)(pic->pi_height * 2)); 	/* 1 for data, 1 for mask */
-	put_word(1);					/* planes */
-	put_word(pic->pi_planes);		/* bits per pixel */
-	put_long((_LONG)(pic->pi_compressed));
-	put_long((_LONG)(pic->pi_datasize));
-	put_long(0l);					/* pix_width */
-	put_long(0l);					/* pix_height */
-	put_long((_LONG)(ncolors));
-	put_long(0l);
+	put_word(count);
+	/*
+	 * write the icon info table
+	 */
+	offset = headlen;
+	for (i = 0; i < count; i++)
+	{
+		planes = planetab[i];
+		ncolors = 1 << planes;
+		cmapsize = 4 * ncolors;
 
-	bmp_put_palette(buf, pic, maptab);
+		put_byte(pic->pi_width);
+		put_byte(pic->pi_height);
+		put_byte(ncolors);
+		put_byte(0);
+		put_word(1);					/* planes */
+		put_word(planes);		/* bits per pixel */
+		planesize = bmp_rowsize(pic, planes) * pic->pi_height;
+		planesize += bmp_rowsize(pic, 1) * pic->pi_height;
+		len = planesize + BMP_STD_HSIZE + cmapsize;
+		put_long(len);
+		put_long((int32_t)offset);
+		offset += len;
+	}
+	
+	/*
+	 * write the bitmap info headers
+	 */
+	offset = headlen;
+	for (i = 0; i < count; i++)
+	{
+		planes = planetab[i];
+		ncolors = 1 << planes;
+		cmapsize = 4 * ncolors;
+
+		pic->pi_planes = planes;
+		buf = *dest_p + offset;
+		put_long(BMP_STD_HSIZE);
+		put_long((_LONG)(pic->pi_width));
+		put_long((_LONG)(pic->pi_height * 2)); 	/* 1 for data, 1 for mask */
+		put_word(1);					/* planes */
+		put_word(planes);		/* bits per pixel */
+		put_long((_LONG)(pic->pi_compressed));
+		planesize = bmp_rowsize(pic, planes) * pic->pi_height;
+		planesize += bmp_rowsize(pic, 1) * pic->pi_height;
+		len = planesize;
+		put_long(len);
+		put_long(0l);					/* pix_width */
+		put_long(0l);					/* pix_height */
+		put_long((_LONG)(ncolors));
+		put_long(0l);
+		maptab = planes == 4 ? bmp_revtab4 : bmp_revtab8;
+		if (multi)
+			pic_stdpalette(pic->pi_palette, pic->pi_planes);
+		bmp_put_palette(buf, pic, maptab);
+		offset += len + BMP_STD_HSIZE + cmapsize;
+	}
 	
 	return headlen;
 }
 
+_LONG ico_multi_header(_UBYTE **dest_p, PICTURE *pic, const _WORD *planetab, _WORD count)
+{
+	return _ico_multi_header(dest_p, pic, planetab, count, TRUE);
+}
+
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG ico_pack(_UBYTE *dest, const _UBYTE *data, const _UBYTE *mask, PICTURE *pic, const unsigned char *maptab)
+/*
+ * returns size of header, including bitmap info header
+ */
+_LONG ico_header(_UBYTE **dest_p, PICTURE *pic)
+{
+	pic->pi_dataoffset = _ico_multi_header(dest_p, pic, &pic->pi_planes, 1, FALSE);
+	pic->pi_dataoffset += BMP_STD_HSIZE + 4 * (1 << pic->pi_planes);
+	return pic->pi_dataoffset;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+_LONG ico_pack(_UBYTE *dest, const _UBYTE *data, const _UBYTE *mask, PICTURE *pic)
 {
 	long datasize;
 	
 	pic->pi_compressed = 0 /* BMP_RGB */;
-	datasize = bmp_pack_data_and_mask(dest, data, mask, pic, FALSE, maptab);
+	datasize = bmp_pack_data_and_mask(dest, data, mask, pic, FALSE);
 	return datasize;
 }

@@ -11,7 +11,7 @@
 #include <osbind.h>
 #endif
 
-LOCAL _UBYTE const masktab[8] = {
+LOCAL unsigned char const masktab[8] = {
 	0xC0, 0x30, 0x0C, 0x03, 0xC0, 0x30, 0x0C, 0x03
 };
 
@@ -294,7 +294,7 @@ PALETTE const std256_palette = {
 };
 
 
-LOCAL _UBYTE const pattern1[16 * 16] = {
+LOCAL unsigned char const pattern1[16 * 16] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x88, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00,
@@ -329,7 +329,7 @@ LOCAL _UBYTE const pattern1[16 * 16] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
 
-LOCAL _UBYTE const pattern2[16 * 16] = {
+LOCAL unsigned char const pattern2[16 * 16] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x88, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00,
@@ -363,8 +363,8 @@ LOCAL _UBYTE const pattern2[16 * 16] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
-LOCAL const _UBYTE *patptr1[16];
-LOCAL const _UBYTE *patptr2[16];
+LOCAL const unsigned char *patptr1[16];
+LOCAL const unsigned char *patptr2[16];
 
 #define toword(pixels) (((pixels) + 15) >> 4)
 #define tobyte(pixels) (toword(pixels) << 1)
@@ -606,18 +606,18 @@ LOCAL void convinit(PALETTE pal)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_16to2(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_16to2(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	_WORD lines;
 	_WORD planes;
 	_WORD words;
-	_UBYTE p1, p2, p3, p4;
-	_UBYTE *line0;
-	_UBYTE *line1;
+	unsigned char p1, p2, p3, p4;
+	unsigned char *line0;
+	unsigned char *line1;
 	_WORD dots;
 	_WORD pix;
-	const _UBYTE *pat;
-	const _UBYTE *mask;
+	const unsigned char *pat;
+	const unsigned char *mask;
 
 	convinit(pic->pi_palette);
 
@@ -715,17 +715,17 @@ void pic_16to2(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD heigh
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_4to2(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_4to2(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	_WORD lines;
 	_WORD planes;
 	_WORD words;
 	_WORD p1, p2;
-	_UBYTE *line0;
-	_UBYTE *line1;
+	unsigned char *line0;
+	unsigned char *line1;
 	_UWORD mask;
 	_WORD pix;
-	const _UBYTE *pat;
+	const unsigned char *pat;
 
 	convinit(pic->pi_palette);
 
@@ -787,17 +787,17 @@ void pic_4to2(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_16to4(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_16to4(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	_WORD lines;
 	_WORD planes;
 	_WORD words;
-	_UBYTE p1, p2, p3, p4;
-	_UBYTE *line0;
+	unsigned char p1, p2, p3, p4;
+	unsigned char *line0;
 	_WORD dots;
 	_WORD pix;
-	const _UBYTE *pat;
-	const _UBYTE *mask;
+	const unsigned char *pat;
+	const unsigned char *mask;
 
 	convinit(pic->pi_palette);
 	pic->pi_palette[0].r = 0x00;
@@ -894,13 +894,13 @@ void pic_16to4(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD heigh
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_2to16(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_2to16(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	_WORD words;
-	_UBYTE p1;
-	_UBYTE *line0;
-	_UBYTE *line1;
-	_UBYTE pix1, pix2;
+	unsigned char p1;
+	unsigned char *line0;
+	unsigned char *line1;
+	unsigned char pix1, pix2;
 	_WORD mask;
 
 	convinit(pic->pi_palette);
@@ -1029,12 +1029,12 @@ void pic_2to16(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD heigh
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_2to4(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_2to4(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	_WORD lines;
 	_WORD words;
-	_UBYTE *line0;
-	_UBYTE *line1;
+	unsigned char *line0;
+	unsigned char *line1;
 
 	convinit(pic->pi_palette);
 	pic->pi_palette[0].r = 0xe0;
@@ -1072,11 +1072,11 @@ void pic_2to4(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_4to16(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_4to16(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	_WORD lines;
 	_WORD words;
-	_UBYTE p1, p2, p3, p4;
+	unsigned char p1, p2, p3, p4;
 	_WORD dots;
 	_WORD pix1, pix2;
 
@@ -1262,7 +1262,7 @@ void pic_showpalette(PALETTE pal)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_invert(_UBYTE *buf, _LONG size)
+void pic_invert(unsigned char *buf, _LONG size)
 {
 	while (--size >= 0)
 	{
@@ -1379,12 +1379,12 @@ LOCAL gboolean is_palette(const TOSPALETTE pal)
 /*** ---------------------------------------------------------------------- ***/
 
 typedef struct {                /* Header fuer Neochrome-Bilder */
-	_UBYTE stuff1[4];
+	unsigned char stuff1[4];
 	TOSPALETTE palette;         /* Farbpalette */
-	_UBYTE stuff2[92];
+	unsigned char stuff2[92];
 } NEO_HEADER;
 
-gboolean pic_type_neo(PICTURE *pic, const _UBYTE *buf, _LONG size)
+gboolean pic_type_neo(PICTURE *pic, const unsigned char *buf, _LONG size)
 {
 	const NEO_HEADER *header = (const NEO_HEADER *)buf;
 
@@ -1407,7 +1407,7 @@ gboolean pic_type_neo(PICTURE *pic, const _UBYTE *buf, _LONG size)
 
 /*** ---------------------------------------------------------------------- ***/
 
-_LONG neo_header(_UBYTE *buf, PICTURE *pic)
+_LONG neo_header(unsigned char *buf, PICTURE *pic)
 {
 	NEO_HEADER *header = (NEO_HEADER *)buf;
 
@@ -1423,7 +1423,7 @@ typedef struct {                /* Header fuer Colorstar-Bilder */
 	TOSPALETTE palette;         /* Farbpalette */
 } COLOR_HEADER;
 
-gboolean pic_type_colorstar(PICTURE *pic, const _UBYTE *buf, _LONG size)
+gboolean pic_type_colorstar(PICTURE *pic, const unsigned char *buf, _LONG size)
 {
 	const COLOR_HEADER *header = (const COLOR_HEADER *)buf;
 
@@ -1444,7 +1444,7 @@ gboolean pic_type_colorstar(PICTURE *pic, const _UBYTE *buf, _LONG size)
 }
 
 
-_LONG colstar_header(_UBYTE *buf, PICTURE *pic)
+_LONG colstar_header(unsigned char *buf, PICTURE *pic)
 {
 	COLOR_HEADER *header = (COLOR_HEADER *)buf;
 
@@ -1455,7 +1455,7 @@ _LONG colstar_header(_UBYTE *buf, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-gboolean pic_type_monostar(PICTURE *pic, const _UBYTE *buf, _LONG size)
+gboolean pic_type_monostar(PICTURE *pic, const unsigned char *buf, _LONG size)
 {
 	UNUSED(buf);
 	UNUSED(size);
@@ -1472,7 +1472,7 @@ gboolean pic_type_monostar(PICTURE *pic, const _UBYTE *buf, _LONG size)
 	return FALSE;
 }
 
-_LONG monostar_header(_UBYTE *buf, PICTURE *pic)
+_LONG monostar_header(unsigned char *buf, PICTURE *pic)
 {
 	UNUSED(buf);
 	pic->pi_datasize = 32000l;
@@ -1481,16 +1481,16 @@ _LONG monostar_header(_UBYTE *buf, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-void pic_planes_to_interleaved(_UBYTE *dst, _UBYTE *src, PICTURE *pic)
+void pic_planes_to_interleaved(unsigned char *dst, const unsigned char *src, PICTURE *pic)
 {
 	long planesize;
-	_UWORD *row1, *row2, *row3, *row4, *row5, *row6, *row7, *row8;
+	const _UWORD *row1, *row2, *row3, *row4, *row5, *row6, *row7, *row8;
 	_UWORD *p;
 	_WORD x, y;
 	
 	planesize = (_LONG)pic->pi_height * toword(pic->pi_width);
 	p = (_UWORD *)dst;
-	row1 = (_UWORD *)src;
+	row1 = (const _UWORD *)src;
 	
 	switch (pic->pi_planes)
 	{
@@ -1621,7 +1621,7 @@ void pic_interleaved_to_planes(unsigned char *dst, const unsigned char *src, _WO
 
 /*** ---------------------------------------------------------------------- ***/
 
-pic_filetype pic_type(PICTURE *pic, _UBYTE *buf, _LONG size)
+pic_filetype pic_type(PICTURE *pic, unsigned char *buf, _LONG size)
 {
 	pic_filetype type;
 
@@ -1698,7 +1698,7 @@ void pic_free(PICTURE *pic)
 }
 
 
-void pic_256to2(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_256to2(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	UNUSED(dest);
 	UNUSED(src);
@@ -1706,7 +1706,7 @@ void pic_256to2(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD heig
 	UNUSED(bytes);
 	UNUSED(height);
 }
-void pic_256to4(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_256to4(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	UNUSED(dest);
 	UNUSED(src);
@@ -1714,7 +1714,7 @@ void pic_256to4(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD heig
 	UNUSED(bytes);
 	UNUSED(height);
 }
-void pic_256to16(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_256to16(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	UNUSED(dest);
 	UNUSED(src);
@@ -1722,7 +1722,7 @@ void pic_256to16(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD hei
 	UNUSED(bytes);
 	UNUSED(height);
 }
-void pic_16to256(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_16to256(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	UNUSED(dest);
 	UNUSED(src);
@@ -1730,7 +1730,7 @@ void pic_16to256(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD hei
 	UNUSED(bytes);
 	UNUSED(height);
 }
-void pic_4to256(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_4to256(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	UNUSED(dest);
 	UNUSED(src);
@@ -1738,7 +1738,7 @@ void pic_4to256(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD heig
 	UNUSED(bytes);
 	UNUSED(height);
 }
-void pic_2to256(_UBYTE *dest, _UBYTE *src, PICTURE *pic, _WORD bytes, _WORD height)
+void pic_2to256(unsigned char *dest, unsigned char *src, PICTURE *pic, _WORD bytes, _WORD height)
 {
 	UNUSED(dest);
 	UNUSED(src);
