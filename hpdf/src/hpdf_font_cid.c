@@ -234,7 +234,7 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 	HPDF_Font font;
 	HPDF_Array array;
 	HPDF_UINT i;
-	HPDF_UNICODE tmp_map[65536];
+	HPDF_UNICODE *tmp_map;
 	HPDF_Dict cid_system_info;
 
 	HPDF_UINT16 max = 0;
@@ -265,10 +265,13 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 	ret += HPDF_Array_AddNumber(array, (HPDF_INT32) (fontdef->font_bbox.bottom));
 	ret += HPDF_Array_AddNumber(array, (HPDF_INT32) (fontdef->font_bbox.bottom - fontdef->font_bbox.top));
 
-	memset(tmp_map, 0, sizeof(HPDF_UNICODE) * 65536);
-
 	if (ret != HPDF_OK)
 		return NULL;
+
+	tmp_map = (HPDF_UNICODE *)HPDF_GetMem(font->mmgr, sizeof(*tmp_map) * 65536L);
+	if (tmp_map == NULL)
+		return NULL;
+	memset(tmp_map, 0, sizeof(*tmp_map) * 65536L);
 
 	for (i = 0; i < 256; i++)
 	{
@@ -310,10 +313,16 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 		/* add 'W' element */
 		array = HPDF_Array_New(font->mmgr);
 		if (!array)
+		{
+			HPDF_FreeMem(font->mmgr, tmp_map);
 			return NULL;
+		}
 
 		if (HPDF_Dict_Add(font, "W", array) != HPDF_OK)
+		{
+			HPDF_FreeMem(font->mmgr, tmp_map);
 			return NULL;
+		}
 
 		for (i = 0; i < max; i++, ptmp_map++)
 		{
@@ -324,18 +333,30 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 				if (!tmp_array)
 				{
 					if (HPDF_Array_AddNumber(array, i) != HPDF_OK)
+					{
+						HPDF_FreeMem(font->mmgr, tmp_map);
 						return NULL;
+					}
 
 					tmp_array = HPDF_Array_New(font->mmgr);
 					if (!tmp_array)
+					{
+						HPDF_FreeMem(font->mmgr, tmp_map);
 						return NULL;
+					}
 
 					if (HPDF_Array_Add(array, tmp_array) != HPDF_OK)
+					{
+						HPDF_FreeMem(font->mmgr, tmp_map);
 						return NULL;
+					}
 				}
 
 				if ((ret = HPDF_Array_AddNumber(tmp_array, w)) != HPDF_OK)
+				{
+					HPDF_FreeMem(font->mmgr, tmp_map);
 					return NULL;
+				}
 			} else
 			{
 				tmp_array = NULL;
@@ -347,10 +368,16 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 		{
 			attr->map_stream = HPDF_DictStream_New(font->mmgr, xref);
 			if (!attr->map_stream)
+			{
+				HPDF_FreeMem(font->mmgr, tmp_map);
 				return NULL;
+			}
 
 			if (HPDF_Dict_Add(font, "CIDToGIDMap", attr->map_stream) != HPDF_OK)
+			{
+				HPDF_FreeMem(font->mmgr, tmp_map);
 				return NULL;
+			}
 
 			for (i = 0; i < max; i++)
 			{
@@ -364,13 +391,18 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 			}
 
 			if ((ret = HPDF_Stream_Write(attr->map_stream->stream, tmp_map, max * 2)) != HPDF_OK)
+			{
+				HPDF_FreeMem(font->mmgr, tmp_map);
 				return NULL;
+			}
 		}
 	} else
 	{
+		HPDF_FreeMem(font->mmgr, tmp_map);
 		HPDF_SetError(font->error, HPDF_INVALID_FONTDEF_DATA, 0);
 		return 0;
 	}
+	HPDF_FreeMem(font->mmgr, tmp_map);
 
 	/* create CIDSystemInfo dictionary */
 	cid_system_info = HPDF_Dict_New(parent->mmgr);
@@ -623,7 +655,7 @@ static char *UINT16ToHex(char *s, HPDF_UINT16 val, char *eptr, HPDF_BYTE width)
 
 	/* align byte-order */
 	memcpy(b, &val, 2);
-	val2 = (HPDF_UINT16) ((HPDF_UINT16) b[0] << 8 | (HPDF_UINT16) b[1]);
+	val2 = (HPDF_UINT16) (((HPDF_UINT16) b[0] << 8) | (HPDF_UINT16) b[1]);
 
 	memcpy(b, &val2, 2);
 
