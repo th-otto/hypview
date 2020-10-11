@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_fontdef.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/fontdef.h"
 #include <string.h>
 
 static const HPDF_CharData CHAR_DATA_COURIER[316] = {

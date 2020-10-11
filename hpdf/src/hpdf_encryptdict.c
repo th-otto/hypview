@@ -15,12 +15,12 @@
  *
  */
 
-#include "hpdf_conf.h"
+#include "hpdf/conf.h"
 #include "hpdf.h"
-#include "hpdf_utils.h"
-#include "hpdf_objects.h"
-#include "hpdf_encryptdict.h"
-#include "hpdf_info.h"
+#include "hpdf/utils.h"
+#include "hpdf/objects.h"
+#include "hpdf/encryptd.h"
+#include "hpdf/info.h"
 
 #include <time.h>
 #include <string.h>

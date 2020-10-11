@@ -16,9 +16,9 @@
  * 2006.08.24 fixed for composite glyph description.
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_fontdef.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/fontdef.h"
 #include <string.h>
 
 

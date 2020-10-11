@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
 #include "hpdf.h"
-#include "hpdf_destination.h"
+#include "hpdf/destinat.h"
 
 static const char *const HPDF_DESTINATION_TYPE_NAMES[] = {
 	"XYZ",

@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_font.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/font.h"
 #include <string.h>
 
 static HPDF_STATUS OnWrite(HPDF_Dict obj, HPDF_Stream stream)

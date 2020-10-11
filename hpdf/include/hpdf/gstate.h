@@ -18,7 +18,7 @@
 #ifndef _HPDF_GSTATE_H
 #define _HPDF_GSTATE_H
 
-#include "hpdf_font.h"
+#include "hpdf/font.h"
 
 #ifdef __cplusplus
 extern "C" {

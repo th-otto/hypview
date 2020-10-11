@@ -18,8 +18,8 @@
 #ifndef _HPDF_PAGES_H
 #define _HPDF_PAGES_H
 
-#include "hpdf_gstate.h"
-#include "hpdf_ext_gstate.h"
+#include "hpdf/gstate.h"
+#include "hpdf/extgstat.h"
 
 #ifdef __cplusplus
 extern "C" {

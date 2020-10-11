@@ -1,5 +1,5 @@
 /*
- * << Haru Free PDF Library >> -- hpdf_ext_gstate.h
+ * << Haru Free PDF Library >> -- hpdf_pdfa.h
  *
  * URL: http://libharu.org
  *
@@ -15,23 +15,26 @@
  *
  */
 
-#ifndef _HPDF_EXT_GSTATE_H
-#define _HPDF_EXT_GSTATE_H
+#ifndef _HPDF_PDFA_H
+#define _HPDF_PDFA_H
 
-#include "hpdf_objects.h"
+#include "hpdf/doc.h"
+#include "hpdf/objects.h"
+
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-HPDF_Dict HPDF_ExtGState_New(HPDF_MMgr mmgr, HPDF_Xref xref);
+HPDF_STATUS HPDF_PDFA_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdict);
 
+HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype);
 
-HPDF_BOOL HPDF_ExtGState_Validate(HPDF_ExtGState ext_gstate);
-
+HPDF_STATUS HPDF_PDFA_GenerateID(HPDF_Doc);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HPDF_EXT_GSTATE_H */
+#endif

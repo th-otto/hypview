@@ -14,10 +14,10 @@
  * It is provided "as is" without express or implied warranty.
  *
  */
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
 #include "hpdf.h"
-#include "hpdf_u3d.h"
+#include "hpdf/u3d.h"
 
 #include <string.h>
 

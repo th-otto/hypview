@@ -21,11 +21,11 @@
 
 #define HPDF_SIG_BYTES 0x41504446L
 
-#include "hpdf_catalog.h"
-#include "hpdf_image.h"
-#include "hpdf_pages.h"
-#include "hpdf_outline.h"
-#include "hpdf_ext_gstate.h"
+#include "hpdf/catalog.h"
+#include "hpdf/image.h"
+#include "hpdf/pages.h"
+#include "hpdf/outline.h"
+#include "hpdf/extgstat.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,7 +62,7 @@ typedef struct _HPDF_Doc_Rec
 	HPDF_Encoder cur_encoder;
 
 	/* default compression mode */
-	HPDF_BOOL compression_mode;
+	HPDF_UINT compression_mode;
 
 	HPDF_BOOL encrypt_on;
 	HPDF_EncryptDict encrypt_dict;

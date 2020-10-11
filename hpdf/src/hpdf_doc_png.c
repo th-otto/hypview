@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
 #include "hpdf.h"
-#include "hpdf_image.h"
+#include "hpdf/image.h"
 
 
 static HPDF_Image LoadPngImageFromStream(HPDF_Doc pdf, HPDF_Stream imagedata, HPDF_BOOL delayed_loading)

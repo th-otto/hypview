@@ -18,7 +18,8 @@
 #ifndef _HPDF_CONF_H
 #define _HPDF_CONF_H
 
-#include "config.h"
+#define HAVE_PNG
+#undef LIBHPDF_HAVE_NOZLIB
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -75,10 +76,6 @@
 #define HPDF_MPOOL_BUF_SIZ          8192
 #define HPDF_MIN_MPOOL_BUF_SIZ      256
 #define HPDF_MAX_MPOOL_BUF_SIZ      1048576
-
-/* alignment size of memory-pool-object
- */
-#define HPDF_ALIGN_SIZ sizeof int;
 
 
 #endif /* _HPDF_CONF_H */

@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_consts.h"
-#include "hpdf_mmgr.h"
-#include "hpdf_utils.h"
+#include "hpdf/conf.h"
+#include "hpdf/consts.h"
+#include "hpdf/mmgr.h"
+#include "hpdf/utils.h"
 
 static void *InternalGetMem(HPDF_UINT size)
 {

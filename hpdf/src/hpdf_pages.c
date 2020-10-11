@@ -15,14 +15,14 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
 #include "hpdf.h"
-#include "hpdf_annotation.h"
-#include "hpdf_destination.h"
-#include "hpdf_3dmeasure.h"
-#include "hpdf_exdata.h"
-#include "hpdf_u3d.h"
+#include "hpdf/annotat.h"
+#include "hpdf/destinat.h"
+#include "hpdf/3dmeasur.h"
+#include "hpdf/exdata.h"
+#include "hpdf/u3d.h"
 #include <string.h>
 
 /*----------------------------------------------------------------------------*/

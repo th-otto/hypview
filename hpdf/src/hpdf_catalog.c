@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_catalog.h"
-#include "hpdf_pages.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/catalog.h"
+#include "hpdf/pages.h"
 #include <string.h>
 
 static const char *const HPDF_PAGE_LAYOUT_NAMES[] = {

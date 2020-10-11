@@ -15,8 +15,8 @@
  *
  */
 
-#include "hpdf_utils.h"
-#include "hpdf_consts.h"
+#include "hpdf/utils.h"
+#include "hpdf/consts.h"
 #include <stdlib.h>
 #include <string.h>
 

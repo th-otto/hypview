@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_gstate.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/gstate.h"
 
 HPDF_GState HPDF_GState_New(HPDF_MMgr mmgr, HPDF_GState current)
 {

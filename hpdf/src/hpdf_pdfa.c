@@ -19,9 +19,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "hpdf_conf.h"
+#include "hpdf/conf.h"
 #include <time.h>
-#include "hpdf_utils.h"
+#include "hpdf/utils.h"
 #include "hpdf.h"
 #include <string.h>
 

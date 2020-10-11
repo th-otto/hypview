@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_page_label.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/pagelab.h"
 
 
 HPDF_Dict HPDF_PageLabel_New(HPDF_Doc pdf, HPDF_PageNumStyle style, HPDF_INT first_page, const char *prefix)

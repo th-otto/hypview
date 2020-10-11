@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
+#include "hpdf/conf.h"
 #include <string.h>
-#include "hpdf_utils.h"
-#include "hpdf_objects.h"
+#include "hpdf/utils.h"
+#include "hpdf/objects.h"
 
 static const HPDF_BYTE UNICODE_HEADER[] = {
 	0xFE, 0xFF

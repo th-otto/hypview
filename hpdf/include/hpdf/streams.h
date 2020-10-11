@@ -20,8 +20,8 @@
 #ifndef _HPDF_STREAMS_H
 #define _HPDF_STREAMS_H
 
-#include "hpdf_list.h"
-#include "hpdf_encrypt.h"
+#include "hpdf/list.h"
+#include "hpdf/encrypt.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -18,15 +18,15 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "hpdf_conf.h"
+#include "hpdf/conf.h"
 #ifndef UNDER_CE
 #include <errno.h>
 #endif
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_consts.h"
-#include "hpdf_utils.h"
-#include "hpdf_streams.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/consts.h"
+#include "hpdf/utils.h"
+#include "hpdf/streams.h"
 #include <string.h>
 
 #ifndef LIBHPDF_HAVE_NOZLIB

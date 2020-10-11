@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_pages.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/pages.h"
 #include "hpdf.h"
 #include <string.h>
 

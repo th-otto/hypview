@@ -18,7 +18,7 @@
 #ifndef _HPDF_ANNOTATION_H
 #define _HPDF_ANNOTATION_H
 
-#include "hpdf_objects.h"
+#include "hpdf/objects.h"
 
 #ifdef __cplusplus
 extern "C" {

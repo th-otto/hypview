@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_ext_gstate.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/extgstat.h"
 #include "hpdf.h"
 
 static const char *const HPDF_BM_NAMES[] = {

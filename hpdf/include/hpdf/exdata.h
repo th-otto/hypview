@@ -1,5 +1,5 @@
 /*
- * << Haru Free PDF Library >> -- hpdf_destination.c
+ * << Haru Free PDF Library >> -- hpdf_annotation.h
  *
  * URL: http://libharu.org
  *
@@ -15,25 +15,24 @@
  *
  */
 
-#ifndef _HPDF_DESTINATION_H
-#define _HPDF_DESTINATION_H
+#ifndef _HPDF_EXDATA_H
+#define _HPDF_EXDATA_H
 
-#include "hpdf_objects.h"
+#include "hpdf/objects.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*----------------------------------------------------------------------------*/
-/*----- HPDF_Destination -----------------------------------------------------*/
+/*------ HPDF_ExData -----------------------------------------------------*/
 
-HPDF_Destination HPDF_Destination_New(HPDF_MMgr mmgr, HPDF_Page target, HPDF_Xref xref);
+HPDF_ExData HPDF_3DAnnotExData_New(HPDF_MMgr mmgr, HPDF_Xref xref);
 
 
-HPDF_BOOL HPDF_Destination_Validate(HPDF_Destination dst);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HPDF_DESTINATION_H */
+#endif /* _HPDF_EXDATA_H */

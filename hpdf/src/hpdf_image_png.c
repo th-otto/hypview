@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_image.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/image.h"
 #include <string.h>
 
 #ifdef HAVE_PNG

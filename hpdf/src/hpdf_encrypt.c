@@ -37,10 +37,10 @@
  *---------------------------------------------------------------------------
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_consts.h"
-#include "hpdf_utils.h"
-#include "hpdf_encrypt.h"
+#include "hpdf/conf.h"
+#include "hpdf/consts.h"
+#include "hpdf/utils.h"
+#include "hpdf/encrypt.h"
 #include <string.h>
 
 static const HPDF_BYTE HPDF_PADDING_STRING[] = {

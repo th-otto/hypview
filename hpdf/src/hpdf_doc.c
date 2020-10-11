@@ -15,13 +15,13 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_encryptdict.h"
-#include "hpdf_namedict.h"
-#include "hpdf_destination.h"
-#include "hpdf_info.h"
-#include "hpdf_page_label.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/encryptd.h"
+#include "hpdf/namedict.h"
+#include "hpdf/destinat.h"
+#include "hpdf/info.h"
+#include "hpdf/pagelab.h"
 #include "hpdf.h"
 #include <string.h>
 

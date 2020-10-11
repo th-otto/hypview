@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_consts.h"
-#include "hpdf_list.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/consts.h"
+#include "hpdf/list.h"
 #include <string.h>
 
 

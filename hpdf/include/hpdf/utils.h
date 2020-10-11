@@ -18,7 +18,7 @@
 #ifndef _HPDF_UTILS_H
 #define _HPDF_UTILS_H
 
-#include "hpdf_types.h"
+#include "hpdf/types.h"
 
 #ifdef __cplusplus
 extern "C" {

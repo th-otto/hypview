@@ -1,5 +1,5 @@
 /*
- * << Haru Free PDF Library >> -- hpdf_info.c
+ * << Haru Free PDF Library >> -- hpdf_ext_gstate.h
  *
  * URL: http://libharu.org
  *
@@ -15,27 +15,23 @@
  *
  */
 
+#ifndef _HPDF_EXT_GSTATE_H
+#define _HPDF_EXT_GSTATE_H
 
-#ifndef _HPDF_INFO_H
-#define _HPDF_INFO_H
-
-#include "hpdf_objects.h"
+#include "hpdf/objects.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-HPDF_STATUS HPDF_Info_SetInfoAttr(HPDF_Dict info, HPDF_InfoType type, const char *value, HPDF_Encoder encoder);
-
-
-const char *HPDF_Info_GetInfoAttr(HPDF_Dict info, HPDF_InfoType type);
+HPDF_Dict HPDF_ExtGState_New(HPDF_MMgr mmgr, HPDF_Xref xref);
 
 
-HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_Date value);
+HPDF_BOOL HPDF_ExtGState_Validate(HPDF_ExtGState ext_gstate);
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HPDF_INFO_H */
+#endif /* _HPDF_EXT_GSTATE_H */

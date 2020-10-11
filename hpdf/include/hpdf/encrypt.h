@@ -40,7 +40,7 @@
 #ifndef HPDF_ENCRYPT_H
 #define HPDF_ENCRYPT_H
 
-#include "hpdf_mmgr.h"
+#include "hpdf/mmgr.h"
 
 #ifdef __cplusplus
 extern "C" {

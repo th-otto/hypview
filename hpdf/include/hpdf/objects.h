@@ -18,7 +18,7 @@
 #ifndef _HPDF_OBJECTS_H
 #define _HPDF_OBJECTS_H
 
-#include "hpdf_encoder.h"
+#include "hpdf/encoder.h"
 
 #ifdef __cplusplus
 extern "C" {

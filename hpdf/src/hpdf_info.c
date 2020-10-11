@@ -15,9 +15,9 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_info.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/info.h"
 #include <string.h>
 
 static const char *const HPDF_INFO_ATTR_NAMES[] = {

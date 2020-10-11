@@ -17,12 +17,12 @@
 #ifndef _HPDF_H
 #define _HPDF_H
 
-#include "hpdf_version.h"
+#include "hpdf/version.h"
 
-#include "hpdf_consts.h"
-#include "hpdf_doc.h"
-#include "hpdf_error.h"
-#include "hpdf_pdfa.h"
+#include "hpdf/consts.h"
+#include "hpdf/doc.h"
+#include "hpdf/error.h"
+#include "hpdf/pdfa.h"
 
 #ifdef __cplusplus
 extern "C" {

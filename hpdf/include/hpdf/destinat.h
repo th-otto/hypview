@@ -1,5 +1,5 @@
 /*
- * << Haru Free PDF Library >> -- hpdf_pdfa.h
+ * << Haru Free PDF Library >> -- hpdf_destination.c
  *
  * URL: http://libharu.org
  *
@@ -15,26 +15,25 @@
  *
  */
 
-#ifndef _HPDF_PDFA_H
-#define _HPDF_PDFA_H
+#ifndef _HPDF_DESTINATION_H
+#define _HPDF_DESTINATION_H
 
-#include "hpdf_doc.h"
-#include "hpdf_objects.h"
-
-
+#include "hpdf/objects.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-HPDF_STATUS HPDF_PDFA_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdict);
+/*----------------------------------------------------------------------------*/
+/*----- HPDF_Destination -----------------------------------------------------*/
 
-HPDF_STATUS HPDF_PDFA_SetPDFAConformance(HPDF_Doc pdf, HPDF_PDFAType pdfatype);
+HPDF_Destination HPDF_Destination_New(HPDF_MMgr mmgr, HPDF_Page target, HPDF_Xref xref);
 
-HPDF_STATUS HPDF_PDFA_GenerateID(HPDF_Doc);
+
+HPDF_BOOL HPDF_Destination_Validate(HPDF_Destination dst);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* _HPDF_DESTINATION_H */

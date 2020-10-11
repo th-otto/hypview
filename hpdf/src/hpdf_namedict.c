@@ -15,10 +15,10 @@
  *
  */
 
-#include "hpdf_conf.h"
-#include "hpdf_utils.h"
-#include "hpdf_consts.h"
-#include "hpdf_namedict.h"
+#include "hpdf/conf.h"
+#include "hpdf/utils.h"
+#include "hpdf/consts.h"
+#include "hpdf/namedict.h"
 
 static const char *const HPDF_NAMEDICT_KEYS[] = {
 	"EmbeddedFiles"
