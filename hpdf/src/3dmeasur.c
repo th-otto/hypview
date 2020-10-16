@@ -24,7 +24,7 @@
 /*----------------------------------------------------------------------------*/
 /*------ HPDF_3DMeasure -----------------------------------------------------*/
 
-static HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, HPDF_Point3D point)
+static HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, const HPDF_Point3D *point)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
@@ -36,9 +36,9 @@ static HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, HPDF_Po
 	if (HPDF_Dict_Add(dict, key, array) != HPDF_OK)
 		return HPDF_Error_GetCode(dict->error);
 
-	ret += HPDF_Array_AddReal(array, point.x);
-	ret += HPDF_Array_AddReal(array, point.y);
-	ret += HPDF_Array_AddReal(array, point.z);
+	ret += HPDF_Array_AddReal(array, point->x);
+	ret += HPDF_Array_AddReal(array, point->y);
+	ret += HPDF_Array_AddReal(array, point->z);
 
 	return ret;
 }
@@ -46,7 +46,7 @@ static HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, HPDF_Po
 
 
 
-HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Point3D firstanchorpoint, HPDF_Point3D textanchorpoint)
+HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Point3D *firstanchorpoint, const HPDF_Point3D *textanchorpoint)
 {
 	HPDF_3DMeasure measure;
 	HPDF_STATUS ret = HPDF_OK;
@@ -166,12 +166,12 @@ HPDF_STATUS HPDF_3DC3DMeasure_SetProjectionAnotation(HPDF_3DMeasure measure, HPD
 
 HPDF_3DMeasure HPDF_PD33DMeasure_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
-	HPDF_Point3D annotationPlaneNormal,
-	HPDF_Point3D firstAnchorPoint,
-	HPDF_Point3D secondAnchorPoint,
-	HPDF_Point3D leaderLinesDirection,
-	HPDF_Point3D measurementValuePoint,
-	HPDF_Point3D textYDirection,
+	const HPDF_Point3D *annotationPlaneNormal,
+	const HPDF_Point3D *firstAnchorPoint,
+	const HPDF_Point3D *secondAnchorPoint,
+	const HPDF_Point3D *leaderLinesDirection,
+	const HPDF_Point3D *measurementValuePoint,
+	const HPDF_Point3D *textYDirection,
 	HPDF_REAL value,
 	const char *unitsString)
 {

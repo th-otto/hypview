@@ -46,7 +46,7 @@ HPDF_STATUS HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPDF_REAL mag);
 HPDF_STATUS HPDF_3DView_SetCamera(HPDF_Dict view, HPDF_REAL coox, HPDF_REAL cooy, HPDF_REAL cooz,
 	HPDF_REAL c2cx, HPDF_REAL c2cy, HPDF_REAL c2cz, HPDF_REAL roo, HPDF_REAL roll);
 HPDF_STATUS HPDF_3DView_SetCameraByMatrix(HPDF_Dict view, HPDF_3DMatrix Mat3D, HPDF_REAL co);
-HPDF_STATUS HPDF_3DView_SetCrossSectionOn(HPDF_Dict view, HPDF_Point3D center, HPDF_REAL Roll,
+HPDF_STATUS HPDF_3DView_SetCrossSectionOn(HPDF_Dict view, const HPDF_Point3D *center, HPDF_REAL Roll,
 	HPDF_REAL Pitch, HPDF_REAL opacity, HPDF_BOOL showintersection);
 HPDF_STATUS HPDF_3DView_SetCrossSectionOff(HPDF_Dict view);
 

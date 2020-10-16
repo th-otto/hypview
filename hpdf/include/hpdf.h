@@ -383,15 +383,15 @@ HPDF_STATUS HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData ex
 
 /*--------------------------------------------------------------------------*/
 /*----- 3D Measure ---------------------------------------------------------*/
-HPDF_3DMeasure HPDF_Page_Create3DC3DMeasure(HPDF_Page page, HPDF_Point3D firstanchorpoint, HPDF_Point3D textanchorpoint);
+HPDF_3DMeasure HPDF_Page_Create3DC3DMeasure(HPDF_Page page, const HPDF_Point3D *firstanchorpoint, const HPDF_Point3D *textanchorpoint);
 
 HPDF_3DMeasure HPDF_Page_CreatePD33DMeasure(HPDF_Page page,
-	HPDF_Point3D annotationPlaneNormal,
-	HPDF_Point3D firstAnchorPoint,
-	HPDF_Point3D secondAnchorPoint,
-	HPDF_Point3D leaderLinesDirection,
-	HPDF_Point3D measurementValuePoint,
-	HPDF_Point3D textYDirection,
+	const HPDF_Point3D *annotationPlaneNormal,
+	const HPDF_Point3D *firstAnchorPoint,
+	const HPDF_Point3D *secondAnchorPoint,
+	const HPDF_Point3D *leaderLinesDirection,
+	const HPDF_Point3D *measurementValuePoint,
+	const HPDF_Point3D *textYDirection,
 	HPDF_REAL value, const char *unitsString);
 
 HPDF_STATUS HPDF_3DMeasure_SetName(HPDF_3DMeasure measure, const char *name);

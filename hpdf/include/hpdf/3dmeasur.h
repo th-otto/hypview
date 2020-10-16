@@ -28,17 +28,17 @@ extern "C" {
 /*------ HPDF_3DMeasure -----------------------------------------------------*/
 
 
-HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Point3D firstanchorpoint, HPDF_Point3D textanchorpoint);
+HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Point3D *firstanchorpoint, const HPDF_Point3D *textanchorpoint);
 
 HPDF_3DMeasure HPDF_PD33DMeasure_New(
 	HPDF_MMgr mmgr,
 	HPDF_Xref xref,
-	HPDF_Point3D annotationPlaneNormal,
-	HPDF_Point3D firstAnchorPoint,
-	HPDF_Point3D secondAnchorPoint,
-	HPDF_Point3D leaderLinesDirection,
-	HPDF_Point3D measurementValuePoint,
-	HPDF_Point3D textYDirection,
+	const HPDF_Point3D *annotationPlaneNormal,
+	const HPDF_Point3D *firstAnchorPoint,
+	const HPDF_Point3D *secondAnchorPoint,
+	const HPDF_Point3D *leaderLinesDirection,
+	const HPDF_Point3D *measurementValuePoint,
+	const HPDF_Point3D *textYDirection,
 	HPDF_REAL value,
 	const char *unitsString);
 

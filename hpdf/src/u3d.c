@@ -956,7 +956,7 @@ HPDF_STATUS HPDF_3DView_SetCameraByMatrix(HPDF_Dict view, HPDF_3DMatrix Mat3D, H
 
 HPDF_STATUS HPDF_3DView_SetCrossSectionOn(
 	HPDF_Dict view,
-	HPDF_Point3D center,
+	const HPDF_Point3D *center,
 	HPDF_REAL Roll,
 	HPDF_REAL Pitch,
 	HPDF_REAL opacity,
@@ -998,9 +998,9 @@ HPDF_STATUS HPDF_3DView_SetCrossSectionOn(
 		return HPDF_INVALID_U3D_DATA;
 	}
 
-	ret += HPDF_Array_AddReal(array_b, center.x);
-	ret += HPDF_Array_AddReal(array_b, center.y);
-	ret += HPDF_Array_AddReal(array_b, center.z);
+	ret += HPDF_Array_AddReal(array_b, center->x);
+	ret += HPDF_Array_AddReal(array_b, center->y);
+	ret += HPDF_Array_AddReal(array_b, center->z);
 
 	array_b = HPDF_Array_New(view->mmgr);
 	if (!array_b)
