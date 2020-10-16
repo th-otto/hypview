@@ -452,10 +452,7 @@ HPDF_Image HPDF_LoadRawImageFromMem(HPDF_Doc pdf, const HPDF_BYTE *buf,
 
 HPDF_STATUS HPDF_Image_AddSMask(HPDF_Image image, HPDF_Image smask);
 
-HPDF_Point HPDF_Image_GetSize(HPDF_Image image);
-
-
-HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point *size);
+HPDF_STATUS HPDF_Image_GetSize(HPDF_Image image, HPDF_UINT *x, HPDF_UINT *y);
 
 
 HPDF_UINT HPDF_Image_GetWidth(HPDF_Image image);

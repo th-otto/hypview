@@ -401,35 +401,13 @@ HPDF_BOOL HPDF_Image_Validate(HPDF_Image image)
 }
 
 
-HPDF_Point HPDF_Image_GetSize(HPDF_Image image)
-{
-	HPDF_Number width;
-	HPDF_Number height;
-	HPDF_Point ret = { 0, 0 };
-
-	if (!HPDF_Image_Validate(image))
-		return ret;
-
-	width = (HPDF_Number) HPDF_Dict_GetItem(image, "Width", HPDF_OCLASS_NUMBER);
-	height = (HPDF_Number) HPDF_Dict_GetItem(image, "Height", HPDF_OCLASS_NUMBER);
-
-	if (width && height)
-	{
-		ret.x = (HPDF_REAL) width->value;
-		ret.y = (HPDF_REAL) height->value;
-	}
-
-	return ret;
-}
-
-
-HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point *size)
+HPDF_STATUS HPDF_Image_GetSize(HPDF_Image image, HPDF_UINT *x, HPDF_UINT *y)
 {
 	HPDF_Number width;
 	HPDF_Number height;
 
-	size->x = 0;
-	size->y = 0;
+	*x = 0;
+	*y = 0;
 
 	if (!HPDF_Image_Validate(image))
 		return HPDF_INVALID_IMAGE;
@@ -439,8 +417,8 @@ HPDF_STATUS HPDF_Image_GetSize2(HPDF_Image image, HPDF_Point *size)
 
 	if (width && height)
 	{
-		size->x = (HPDF_REAL) width->value;
-		size->y = (HPDF_REAL) height->value;
+		*x = width->value;
+		*y = height->value;
 	}
 
 	return HPDF_OK;
@@ -495,13 +473,17 @@ const char *HPDF_Image_GetColorSpace(HPDF_Image image)
 
 HPDF_UINT HPDF_Image_GetWidth(HPDF_Image image)
 {
-	return (HPDF_UINT) HPDF_Image_GetSize(image).x;
+	HPDF_UINT width, height;
+	HPDF_Image_GetSize(image, &width, &height);
+	return width;
 }
 
 
 HPDF_UINT HPDF_Image_GetHeight(HPDF_Image image)
 {
-	return (HPDF_UINT) HPDF_Image_GetSize(image).y;
+	HPDF_UINT width, height;
+	HPDF_Image_GetSize(image, &width, &height);
+	return height;
 }
 
 
