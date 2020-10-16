@@ -1133,6 +1133,7 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_B
 	HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr) fontdef->attr;
 	HPDF_STATUS ret;
 	HPDF_TTFTable *tbl;
+	HPDF_Box box;
 
 	attr->stream = stream;
 	attr->embedding = embedding;
@@ -1176,8 +1177,10 @@ static HPDF_STATUS LoadFontData(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_B
 		return HPDF_SetError(fontdef->error, HPDF_TTF_MISSING_TABLE, 4);
 
 	attr->glyph_tbl.base_offset = tbl->offset;
-	fontdef->cap_height = (HPDF_UINT16) HPDF_TTFontDef_GetCharBBox(fontdef, (HPDF_UINT16) 'H').top;
-	fontdef->x_height = (HPDF_UINT16) HPDF_TTFontDef_GetCharBBox(fontdef, (HPDF_UINT16) 'x').top;
+	HPDF_TTFontDef_GetCharBBox(fontdef, 'H', &box);
+	fontdef->cap_height = box.top;
+	HPDF_TTFontDef_GetCharBBox(fontdef, 'x', &box);
+	fontdef->x_height = box.top;
 	fontdef->missing_width = (HPDF_INT16) ((HPDF_UINT32) attr->h_metric[0].advance_width * 1000 / attr->header.units_per_em);
 
 	if (!embedding)
@@ -1283,19 +1286,18 @@ HPDF_FontDef HPDF_TTFontDef_Load2(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_UINT 
 }
 
 
-HPDF_Box HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode)
+void HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode, HPDF_Box *bbox)
 {
 	HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr) fontdef->attr;
 	HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid(fontdef, unicode);
 	HPDF_STATUS ret;
-	HPDF_Box bbox;
 	HPDF_INT16 i;
 	HPDF_INT m;
 
-	HPDF_ToBox(&bbox, 0, 0, 0, 0);
+	HPDF_ToBox(bbox, 0, 0, 0, 0);
 	if (gid == 0)
 	{
-		return bbox;
+		return;
 	}
 
 	if (attr->header.index_to_loc_format == 0)
@@ -1307,24 +1309,22 @@ HPDF_Box HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode)
 						   attr->glyph_tbl.offsets[gid] * m + 2, HPDF_SEEK_SET);
 
 	if (ret != HPDF_OK)
-		return bbox;
+		return;
 
 	ret += GetINT16(attr->stream, &i);
-	bbox.left = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
+	bbox->left = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
 
 	ret += GetINT16(attr->stream, &i);
-	bbox.bottom = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
+	bbox->bottom = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
 
 	ret += GetINT16(attr->stream, &i);
-	bbox.right = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
+	bbox->right = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
 
 	ret += GetINT16(attr->stream, &i);
-	bbox.top = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
+	bbox->top = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
 
 	if (ret != HPDF_OK)
-		HPDF_ToBox(&bbox, 0, 0, 0, 0);
-
-	return bbox;
+		HPDF_ToBox(bbox, 0, 0, 0, 0);
 }
 
 

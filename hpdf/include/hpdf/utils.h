@@ -33,7 +33,7 @@ HPDF_INT HPDF_AToI(const char *s);
 HPDF_DOUBLE HPDF_AToF(const char *s);
 
 
-char *HPDF_IToA(char *s, HPDF_INT32 val, char *eptr);
+char *HPDF_IToA(char *s, long val, char *eptr);
 
 
 char *HPDF_IToA2(char *s, HPDF_UINT32 val, HPDF_UINT len);

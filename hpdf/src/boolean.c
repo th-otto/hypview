@@ -27,8 +27,7 @@ HPDF_Boolean HPDF_Boolean_New(HPDF_MMgr mmgr, HPDF_BOOL value)
 
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_BOOLEAN;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_BOOLEAN);
 		obj->value = value;
 	}
 

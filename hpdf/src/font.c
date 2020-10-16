@@ -148,14 +148,14 @@ HPDF_INT HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code)
 }
 
 
-HPDF_Box HPDF_Font_GetBBox(HPDF_Font font)
+void HPDF_Font_GetBBox(HPDF_Font font, HPDF_Box *box)
 {
-	HPDF_Box bbox = { 0, 0, 0, 0 };
-
 	if (HPDF_Font_Validate(font))
-		return ((HPDF_FontAttr) font->attr)->fontdef->font_bbox;
-
-	return bbox;
+	{
+		*box = ((HPDF_FontAttr) font->attr)->fontdef->font_bbox;
+		return;
+	}
+	box->left = box->bottom = box->right = box->top = 0;
 }
 
 

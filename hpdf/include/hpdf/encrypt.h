@@ -53,7 +53,7 @@ extern "C" {
 #define HPDF_PASSWD_LEN          32
 #define HPDF_ENCRYPT_KEY_MAX     16
 #define HPDF_MD5_KEY_LEN         16
-#define HPDF_PERMISSION_PAD      0xFFFFFFC0
+#define HPDF_PERMISSION_PAD      0xFFFFFFC0UL
 #define HPDF_ARC4_BUF_SIZE       256
 
 

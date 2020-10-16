@@ -125,7 +125,7 @@ HPDF_DOUBLE HPDF_AToF(const char *s)
 }
 
 
-char *HPDF_IToA(char *s, HPDF_INT32 val, char *eptr)
+char *HPDF_IToA(char *s, long val, char *eptr)
 {
 	char *t;
 	char buf[HPDF_INT_LEN + 1];

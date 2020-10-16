@@ -88,7 +88,7 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 				return HPDF_Error_GetCode(stream->error);
 
 			break;
-		} else if ((tag | 0x00FF) != 0xFFFF)
+		} else if ((tag | 0x00FFU) != 0xFFFFU)
 			/* lost marker */
 			return HPDF_SetError(image->error, HPDF_UNSUPPORTED_JPEG_FORMAT, 0);
 

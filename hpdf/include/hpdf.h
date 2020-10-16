@@ -518,7 +518,7 @@ const char *HPDF_Font_GetEncodingName(HPDF_Font font);
 
 HPDF_INT HPDF_Font_GetUnicodeWidth(HPDF_Font font, HPDF_UNICODE code);
 
-HPDF_Box HPDF_Font_GetBBox(HPDF_Font font);
+void HPDF_Font_GetBBox(HPDF_Font font, HPDF_Box *box);
 
 
 HPDF_INT HPDF_Font_GetAscent(HPDF_Font font);

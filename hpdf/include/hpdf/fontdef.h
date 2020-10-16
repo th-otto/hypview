@@ -45,9 +45,9 @@ extern "C" {
 	   Reserved                    8192
 	   Reserved                    16384
 	   Reserved                    32768 */
-#define HPDF_FONT_ALL_CAP        65536
-#define HPDF_FONT_SMALL_CAP      131072
-#define HPDF_FONT_FOURCE_BOLD    262144
+#define HPDF_FONT_ALL_CAP        65536L
+#define HPDF_FONT_SMALL_CAP      131072L
+#define HPDF_FONT_FOURCE_BOLD    262144L
 
 #define HPDF_CID_W_TYPE_FROM_TO     0
 #define HPDF_CID_W_TYPE_FROM_ARRAY  1
@@ -336,7 +336,7 @@ HPDF_INT16 HPDF_TTFontDef_GetGidWidth(HPDF_FontDef fontdef, HPDF_UINT16 gid);
 HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream);
 
 
-HPDF_Box HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode);
+void HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode, HPDF_Box *bbox);
 
 
 void HPDF_TTFontDef_SetTagName(HPDF_FontDef fontdef, char *tag);

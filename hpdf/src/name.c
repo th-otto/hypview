@@ -29,8 +29,7 @@ HPDF_Name HPDF_Name_New(HPDF_MMgr mmgr, const char *value)
 
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_NAME;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_NAME);
 		obj->error = mmgr->error;
 		if (HPDF_Name_SetValue(obj, value) == HPDF_NAME_INVALID_VALUE)
 		{
@@ -65,5 +64,5 @@ HPDF_STATUS HPDF_Name_SetValue(HPDF_Name obj, const char *value)
 
 const char *HPDF_Name_GetValue(HPDF_Name obj)
 {
-	return (const char *) obj->value;
+	return obj->value;
 }

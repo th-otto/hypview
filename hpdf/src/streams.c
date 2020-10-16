@@ -484,9 +484,9 @@ static HPDF_STATUS HPDF_Stream_WriteToStreamWithDeflate(HPDF_Stream src, HPDF_St
 	/* initialize decompression stream. */
 	memset(&strm, 0, sizeof(z_stream));
 	strm.next_out = otbuf;
-	strm.avail_out = DEFLATE_BUF_SIZ;
+	strm.avail_out = (uInt)DEFLATE_BUF_SIZ;
 
-	ret = deflateInit_(&strm, Z_DEFAULT_COMPRESSION, ZLIB_VERSION, sizeof(z_stream));
+	ret = deflateInit_(&strm, Z_DEFAULT_COMPRESSION, ZLIB_VERSION, (int)sizeof(z_stream));
 	if (ret != Z_OK)
 		return HPDF_SetError(src->error, HPDF_ZLIB_ERROR, ret);
 
@@ -501,7 +501,7 @@ static HPDF_STATUS HPDF_Stream_WriteToStreamWithDeflate(HPDF_Stream src, HPDF_St
 		ret = HPDF_Stream_Read(src, inbuf, &size);
 
 		strm.next_in = inbuf;
-		strm.avail_in = size;
+		strm.avail_in = (uInt)size;
 
 		if (ret != HPDF_OK)
 		{
@@ -544,7 +544,7 @@ static HPDF_STATUS HPDF_Stream_WriteToStreamWithDeflate(HPDF_Stream src, HPDF_St
 				}
 
 				strm.next_out = otbuf;
-				strm.avail_out = DEFLATE_BUF_SIZ;
+				strm.avail_out = (uInt)DEFLATE_BUF_SIZ;
 			}
 		}
 
@@ -585,7 +585,7 @@ static HPDF_STATUS HPDF_Stream_WriteToStreamWithDeflate(HPDF_Stream src, HPDF_St
 			}
 
 			strm.next_out = otbuf;
-			strm.avail_out = DEFLATE_BUF_SIZ;
+			strm.avail_out = (uInt)DEFLATE_BUF_SIZ;
 		}
 
 		if (flg)
@@ -724,7 +724,7 @@ static HPDF_STATUS HPDF_FileReader_ReadFunc(HPDF_Stream stream, void *ptr, HPDF_
 static HPDF_STATUS HPDF_FileReader_SeekFunc(HPDF_Stream stream, HPDF_INT pos, HPDF_WhenceMode mode)
 {
 	HPDF_FILEP fp = (HPDF_FILEP) stream->attr;
-	HPDF_INT whence;
+	int whence;
 
 	switch (mode)
 	{
@@ -921,7 +921,7 @@ static HPDF_STATUS HPDF_MemStream_InWrite(HPDF_Stream stream, const void **ptr, 
 		if (rsize > 0)
 		{
 			memcpy(attr->w_ptr, *ptr, rsize);
-			*ptr += rsize;
+			*ptr = (const char *)*ptr + rsize;
 			*count -= rsize;
 		}
 		attr->w_ptr = (HPDF_BYTE *) HPDF_GetMem(stream->mmgr, attr->buf_siz);
@@ -1138,7 +1138,7 @@ static HPDF_STATUS HPDF_MemStream_ReadFunc(HPDF_Stream stream, void *buf, HPDF_U
 		} else
 		{
 			memcpy(buf, attr->r_ptr, tmp_len);
-			buf += tmp_len;
+			buf = (char *)buf + tmp_len;
 			rlen -= tmp_len;
 			*size += tmp_len;
 
@@ -1286,16 +1286,17 @@ HPDF_Stream HPDF_CallbackReader_New(
 
 	if (stream)
 	{
-		memset(stream, 0, sizeof(*stream));
 		stream->sig_bytes = HPDF_STREAM_SIG_BYTES;
-		stream->error = mmgr->error;
+		stream->type = HPDF_STREAM_CALLBACK;
 		stream->mmgr = mmgr;
+		stream->error = mmgr->error;
+		stream->size = 0;
 		stream->read_fn = read_fn;
 		stream->seek_fn = seek_fn;
+		stream->free_fn = 0;
 		stream->tell_fn = tell_fn;
 		stream->size_fn = size_fn;
 		stream->attr = data;
-		stream->type = HPDF_STREAM_CALLBACK;
 	}
 
 	return stream;
@@ -1325,11 +1326,12 @@ HPDF_Stream HPDF_CallbackWriter_New(HPDF_MMgr mmgr, HPDF_Stream_Write_Func write
 	{
 		memset(stream, 0, sizeof(*stream));
 		stream->sig_bytes = HPDF_STREAM_SIG_BYTES;
-		stream->error = mmgr->error;
+		stream->type = HPDF_STREAM_CALLBACK;
 		stream->mmgr = mmgr;
+		stream->error = mmgr->error;
+		stream->size = 0;
 		stream->write_fn = write_fn;
 		stream->attr = data;
-		stream->type = HPDF_STREAM_CALLBACK;
 	}
 
 	return stream;

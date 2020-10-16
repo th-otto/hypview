@@ -302,7 +302,7 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 
 static HPDF_STATUS CreatePallet(HPDF_Dict image, png_structp png_ptr, png_infop info_ptr)
 {
-	HPDF_INT num_pl = 0;
+	png_int_t num_pl = 0;
 	png_color *src_pl = NULL;
 	HPDF_BYTE *ppallet;
 	HPDF_BYTE *p;

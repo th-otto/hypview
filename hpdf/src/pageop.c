@@ -64,7 +64,7 @@ HPDF_STATUS HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
 		return ret;
 
 	if (line_cap >= HPDF_LINECAP_EOF)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, (HPDF_STATUS) line_cap);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, line_cap);
 
 	attr = (HPDF_PageAttr) page->attr;
 
@@ -90,7 +90,7 @@ HPDF_STATUS HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
 		return ret;
 
 	if (line_join >= HPDF_LINEJOIN_EOF)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, (HPDF_STATUS) line_join);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, line_join);
 
 	attr = (HPDF_PageAttr) page->attr;
 
@@ -1024,7 +1024,7 @@ HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMod
 		return ret;
 
 	if (mode >= HPDF_RENDERING_MODE_EOF)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, (HPDF_STATUS) mode);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, mode);
 
 	attr = (HPDF_PageAttr) page->attr;
 
@@ -2042,17 +2042,17 @@ HPDF_STATUS HPDF_Page_DrawImage(HPDF_Page page, HPDF_Image image, HPDF_REAL x, H
  * Absolute values are passed in xAbs and yAbs, relative values are returned
  * to xRel and yRel. The latter two must not be NULL.
  */
-static void TextPos_AbsToRel(HPDF_TransMatrix text_matrix, HPDF_REAL xAbs, HPDF_REAL yAbs, HPDF_REAL *xRel, HPDF_REAL *yRel)
+static void TextPos_AbsToRel(const HPDF_TransMatrix *text_matrix, HPDF_REAL xAbs, HPDF_REAL yAbs, HPDF_REAL *xRel, HPDF_REAL *yRel)
 {
-	if (text_matrix.a == 0)
+	if (text_matrix->a == 0)
 	{
-		*xRel = (yAbs - text_matrix.y - (xAbs - text_matrix.x) * text_matrix.d / text_matrix.c) / text_matrix.b;
-		*yRel = (xAbs - text_matrix.x) / text_matrix.c;
+		*xRel = (yAbs - text_matrix->y - (xAbs - text_matrix->x) * text_matrix->d / text_matrix->c) / text_matrix->b;
+		*yRel = (xAbs - text_matrix->x) / text_matrix->c;
 	} else
 	{
-		HPDF_REAL y = (yAbs - text_matrix.y - (xAbs - text_matrix.x) *
-					   text_matrix.b / text_matrix.a) / (text_matrix.d - text_matrix.c * text_matrix.b / text_matrix.a);
-		*xRel = (xAbs - text_matrix.x - y * text_matrix.c) / text_matrix.a;
+		HPDF_REAL y = (yAbs - text_matrix->y - (xAbs - text_matrix->x) *
+					   text_matrix->b / text_matrix->a) / (text_matrix->d - text_matrix->c * text_matrix->b / text_matrix->a);
+		*xRel = (xAbs - text_matrix->x - y * text_matrix->c) / text_matrix->a;
 		*yRel = y;
 	}
 }
@@ -2069,7 +2069,7 @@ HPDF_STATUS HPDF_Page_TextOut(HPDF_Page page, HPDF_REAL xpos, HPDF_REAL ypos, co
 		return ret;
 
 	attr = (HPDF_PageAttr) page->attr;
-	TextPos_AbsToRel(attr->text_matrix, xpos, ypos, &x, &y);
+	TextPos_AbsToRel(&attr->text_matrix, xpos, ypos, &x, &y);
 	if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
 		return ret;
 
@@ -2173,7 +2173,7 @@ HPDF_STATUS HPDF_Page_TextRect(
 		return HPDF_RaiseError(page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
 	}
 
-	bbox = HPDF_Font_GetBBox(attr->gstate->font);
+	HPDF_Font_GetBBox(attr->gstate->font, &bbox);
 
 	if (len)
 		*len = 0;
@@ -2232,7 +2232,7 @@ HPDF_STATUS HPDF_Page_TextRect(
 		{
 
 		case HPDF_TALIGN_RIGHT:
-			TextPos_AbsToRel(attr->text_matrix, right - rw, top, &x, &y);
+			TextPos_AbsToRel(&attr->text_matrix, right - rw, top, &x, &y);
 			if (!pos_initialized)
 			{
 				pos_initialized = HPDF_TRUE;
@@ -2245,7 +2245,7 @@ HPDF_STATUS HPDF_Page_TextRect(
 			break;
 
 		case HPDF_TALIGN_CENTER:
-			TextPos_AbsToRel(attr->text_matrix, left + (right - left - rw) / 2, top, &x, &y);
+			TextPos_AbsToRel(&attr->text_matrix, left + (right - left - rw) / 2, top, &x, &y);
 			if (!pos_initialized)
 			{
 				pos_initialized = HPDF_TRUE;
@@ -2261,7 +2261,7 @@ HPDF_STATUS HPDF_Page_TextRect(
 			if (!pos_initialized)
 			{
 				pos_initialized = HPDF_TRUE;
-				TextPos_AbsToRel(attr->text_matrix, left, top, &x, &y);
+				TextPos_AbsToRel(&attr->text_matrix, left, top, &x, &y);
 				if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
 					return ret;
 			}
@@ -2305,7 +2305,7 @@ HPDF_STATUS HPDF_Page_TextRect(
 			if (!pos_initialized)
 			{
 				pos_initialized = HPDF_TRUE;
-				TextPos_AbsToRel(attr->text_matrix, left, top, &x, &y);
+				TextPos_AbsToRel(&attr->text_matrix, left, top, &x, &y);
 				if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
 					return ret;
 			}
@@ -2351,10 +2351,10 @@ HPDF_STATUS HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HP
 		return HPDF_INVALID_PAGE;
 
 	if (disp_time < 0)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_DISPLAY_TIME, (HPDF_STATUS) disp_time);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_DISPLAY_TIME, disp_time);
 
 	if (trans_time < 0)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_TRANSITION_TIME, (HPDF_STATUS) trans_time);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_TRANSITION_TIME, trans_time);
 
 	dict = HPDF_Dict_New(page->mmgr);
 

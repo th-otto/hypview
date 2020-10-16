@@ -108,23 +108,23 @@
 /*---------------------------------------------------------------------------*/
 /*------ limitation of object implementation (PDF1.4) -----------------------*/
 
-#define HPDF_LIMIT_MAX_INT             2147483647
-#define HPDF_LIMIT_MIN_INT             -2147483647
+#define HPDF_LIMIT_MAX_INT             2147483647L
+#define HPDF_LIMIT_MIN_INT             -2147483647L
 
 #define HPDF_LIMIT_MAX_REAL             3.4E38f	/* per PDF 1.7 spec, Annex C, old value  32767 */
 #define HPDF_LIMIT_MIN_REAL            -3.4E38f	/* per PDF 1.7 spec, Annex C, old value -32767 */
 
-#define HPDF_LIMIT_MAX_STRING_LEN      2147483646	/* per PDF 1.7 spec, limit 32767 is for strings in content stream and no limit in other cases => open the limit to max Integer, old value 65535 */
+#define HPDF_LIMIT_MAX_STRING_LEN      2147483646L	/* per PDF 1.7 spec, limit 32767 is for strings in content stream and no limit in other cases => open the limit to max Integer, old value 65535 */
 #define HPDF_LIMIT_MAX_NAME_LEN        127
 
-#define HPDF_LIMIT_MAX_ARRAY           8388607	/* per PDF 1.7 spec, "Maximum number of indirect objects in a PDF file" is 8388607, old value 8191 */
-#define HPDF_LIMIT_MAX_DICT_ELEMENT    8388607	/* per PDF 1.7 spec, "Maximum number of indirect objects in a PDF file" is 8388607, old value 4095 */
-#define HPDF_LIMIT_MAX_XREF_ELEMENT    8388607
+#define HPDF_LIMIT_MAX_ARRAY           8388607UL	/* per PDF 1.7 spec, "Maximum number of indirect objects in a PDF file" is 8388607, old value 8191 */
+#define HPDF_LIMIT_MAX_DICT_ELEMENT    8388607UL	/* per PDF 1.7 spec, "Maximum number of indirect objects in a PDF file" is 8388607, old value 4095 */
+#define HPDF_LIMIT_MAX_XREF_ELEMENT    8388607UL
 #define HPDF_LIMIT_MAX_GSTATE          28
 #define HPDF_LIMIT_MAX_DEVICE_N        8
 #define HPDF_LIMIT_MAX_DEVICE_N_V15    32
-#define HPDF_LIMIT_MAX_CID             65535
-#define HPDF_MAX_GENERATION_NUM        65535
+#define HPDF_LIMIT_MAX_CID             65535UL
+#define HPDF_MAX_GENERATION_NUM        65535UL
 
 #define HPDF_MIN_PAGE_HEIGHT           3
 #define HPDF_MIN_PAGE_WIDTH            3

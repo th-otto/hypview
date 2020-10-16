@@ -36076,7 +36076,7 @@ static HPDF_STATUS GBK_EUC_H_Init(HPDF_Encoder encoder)
 	if ((ret = GBK_EUC_AddCodeSpaceRange(encoder)) != HPDF_OK)
 		return ret;
 
-	if (HPDF_CMapEncoder_AddNotDefRange(encoder, GBK_EUC_NOTDEF_RANGE) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddNotDefRange(encoder, &GBK_EUC_NOTDEF_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
 	HPDF_CMapEncoder_SetUnicodeArray(encoder, CP936_UNICODE_ARRAY);
@@ -36116,7 +36116,7 @@ static HPDF_STATUS GBK_EUC_V_Init(HPDF_Encoder encoder)
 	if ((ret = GBK_EUC_AddCodeSpaceRange(encoder)) != HPDF_OK)
 		return ret;
 
-	if (HPDF_CMapEncoder_AddNotDefRange(encoder, GBK_EUC_NOTDEF_RANGE) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddNotDefRange(encoder, &GBK_EUC_NOTDEF_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
 	HPDF_CMapEncoder_SetUnicodeArray(encoder, CP936_UNICODE_ARRAY);
@@ -36158,10 +36158,10 @@ static HPDF_STATUS GB_EUC_AddCodeSpaceRange(HPDF_Encoder encoder)
 	HPDF_CidRange_Rec code_space_range1 = { 0x00, 0x80, 0 };
 	HPDF_CidRange_Rec code_space_range2 = { 0xA1A1, 0xFEFE, 0 };
 
-	if (HPDF_CMapEncoder_AddCodeSpaceRange(encoder, code_space_range1) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddCodeSpaceRange(encoder, &code_space_range1) != HPDF_OK)
 		return encoder->error->error_no;
 
-	if (HPDF_CMapEncoder_AddCodeSpaceRange(encoder, code_space_range2) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddCodeSpaceRange(encoder, &code_space_range2) != HPDF_OK)
 		return encoder->error->error_no;
 
 	return HPDF_OK;
@@ -36184,7 +36184,7 @@ static HPDF_STATUS GB_EUC_H_Init(HPDF_Encoder encoder)
 	if ((ret = GB_EUC_AddCodeSpaceRange(encoder)) != HPDF_OK)
 		return ret;
 
-	if (HPDF_CMapEncoder_AddNotDefRange(encoder, GB_EUC_NOTDEF_RANGE) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddNotDefRange(encoder, &GB_EUC_NOTDEF_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
 	HPDF_CMapEncoder_SetUnicodeArray(encoder, EUC_CN_UNICODE_ARRAY);
@@ -36224,7 +36224,7 @@ static HPDF_STATUS GB_EUC_V_Init(HPDF_Encoder encoder)
 	if ((ret = GB_EUC_AddCodeSpaceRange(encoder)) != HPDF_OK)
 		return ret;
 
-	if (HPDF_CMapEncoder_AddNotDefRange(encoder, GB_EUC_NOTDEF_RANGE) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddNotDefRange(encoder, &GB_EUC_NOTDEF_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
 	HPDF_CMapEncoder_SetUnicodeArray(encoder, EUC_CN_UNICODE_ARRAY);

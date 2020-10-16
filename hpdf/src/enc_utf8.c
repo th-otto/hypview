@@ -125,7 +125,7 @@ static HPDF_UNICODE UTF8_Encoder_ToUnicode_Func(HPDF_Encoder encoder, HPDF_UINT1
 
 	HPDF_CMapEncoderAttr encoder_attr;
 	UTF8_EncoderAttr utf8_attr;
-	unsigned int val;
+	HPDF_UINT val;
 
 	HPDF_UNUSED(code);
 	encoder_attr = (HPDF_CMapEncoderAttr) encoder->attr;
@@ -134,29 +134,29 @@ static HPDF_UNICODE UTF8_Encoder_ToUnicode_Func(HPDF_Encoder encoder, HPDF_UINT1
 	switch (utf8_attr->end_byte)
 	{
 	case 3:
-		val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0x7) << 18) +
-			(unsigned int) ((utf8_attr->utf8_bytes[1]) << 12) +
-			(unsigned int) ((utf8_attr->utf8_bytes[2] & 0x3f) << 6) +
-			(unsigned int) ((utf8_attr->utf8_bytes[3] & 0x3f));
+		val = (((HPDF_UINT)utf8_attr->utf8_bytes[0] & 0x7) << 18) |
+			(((HPDF_UINT)utf8_attr->utf8_bytes[1] & 0x3f) << 12) |
+			(((HPDF_UINT)utf8_attr->utf8_bytes[2] & 0x3f) << 6) |
+			(((HPDF_UINT)utf8_attr->utf8_bytes[3] & 0x3f));
 		break;
 	case 2:
-		val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0xf) << 12) +
-			(unsigned int) ((utf8_attr->utf8_bytes[1] & 0x3f) << 6) +
-			(unsigned int) ((utf8_attr->utf8_bytes[2] & 0x3f));
+		val = (((HPDF_UINT)utf8_attr->utf8_bytes[0] & 0xf) << 12) |
+			(((HPDF_UINT)utf8_attr->utf8_bytes[1] & 0x3f) << 6) |
+			(((HPDF_UINT)utf8_attr->utf8_bytes[2] & 0x3f));
 		break;
 	case 1:
-		val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0x1f) << 6) +
-			(unsigned int) ((utf8_attr->utf8_bytes[1] & 0x3f));
+		val = (((HPDF_UINT)utf8_attr->utf8_bytes[0] & 0x1f) << 6) |
+			(((HPDF_UINT)utf8_attr->utf8_bytes[1] & 0x3f));
 		break;
 	case 0:
-		val = (unsigned int) utf8_attr->utf8_bytes[0];
+		val = utf8_attr->utf8_bytes[0];
 		break;
 	default:
 		val = 32;						/* Unknown character */
 		break;
 	}
 
-	if (val > 65535)					/* Convert everything outside UCS-2 to space */
+	if (val > 65535L)					/* Convert everything outside UCS-2 to space */
 		val = 32;
 
 	return val;

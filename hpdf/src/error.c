@@ -89,7 +89,7 @@ void HPDF_Error_Reset(HPDF_Error error)
 
 const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 {
-	switch (error_no)
+	switch ((int)error_no)
 	{
 		case HPDF_NOERROR: return _("no error");
 		case HPDF_ARRAY_COUNT_ERR: return _("Array count error");

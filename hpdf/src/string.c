@@ -32,8 +32,7 @@ HPDF_String HPDF_String_New(HPDF_MMgr mmgr, const char *value, HPDF_Encoder enco
 	obj = (HPDF_String) HPDF_GetMem(mmgr, sizeof(HPDF_String_Rec));
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_STRING;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_STRING);
 
 		obj->mmgr = mmgr;
 		obj->error = mmgr->error;

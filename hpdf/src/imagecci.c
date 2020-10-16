@@ -24,8 +24,8 @@
 #define	G3CODES
 #include "t4.h"
 
-typedef unsigned int uint32;
-typedef int int32;
+typedef HPDF_UINT32 uint32;
+typedef HPDF_INT32 int32;
 typedef unsigned short uint16;
 typedef int32 tsize_t;					/* i/o size in bytes */
 
@@ -302,7 +302,7 @@ static void HPDF_Fax3PutBits(struct _HPDF_CCITT_Data *pData, unsigned int bits, 
 {
 	HPDF_Fax3CodecState *sp = EncoderState(pData);
 	unsigned int bit = sp->bit;
-	int data = sp->data;
+	uint32 data = sp->data;
 
 	_PutBits(pData, bits, length);
 
@@ -327,7 +327,7 @@ static void putspan(struct _HPDF_CCITT_Data *pData, int32 span, const tableentry
 {
 	HPDF_Fax3CodecState *sp = EncoderState(pData);
 	unsigned int bit = sp->bit;
-	int data = sp->data;
+	uint32 data = sp->data;
 	unsigned int code, length;
 
 	while (span >= 2624)
@@ -415,7 +415,7 @@ static int32 find0span(const unsigned char *bp, int32 bs, int32 be)
 	/*
 	 * Check partial byte on lhs.
 	 */
-	if (bits > 0 && (n = (bs & 7)))
+	if (bits > 0 && (n = (bs & 7)) != 0)
 	{
 		span = zeroruns[(*bp << n) & 0xff];
 		if (span > 8 - n)				/* table value too generous */
@@ -483,7 +483,7 @@ static int32 find1span(const unsigned char *bp, int32 bs, int32 be)
 	/*
 	 * Check partial byte on lhs.
 	 */
-	if (bits > 0 && (n = (bs & 7)))
+	if (bits > 0 && (n = (bs & 7)) != 0)
 	{
 		span = oneruns[(*bp << n) & 0xff];
 		if (span > 8 - n)				/* table value too generous */
@@ -684,7 +684,7 @@ static HPDF_STATUS HPDF_Stream_CcittToStream(
 {
 	const HPDF_BYTE *pBufPos;
 	const HPDF_BYTE *pBufEnd;			/* end marker */
-	int lineIncrement;
+	HPDF_INT lineIncrement;
 	struct _HPDF_CCITT_Data data;
 
 	HPDF_UNUSED(e);
@@ -700,7 +700,7 @@ static HPDF_STATUS HPDF_Stream_CcittToStream(
 	{
 		pBufPos = buf + (line_width * (height - 1));
 		pBufEnd = buf - line_width;
-		lineIncrement = -((int) line_width);
+		lineIncrement = -((HPDF_INT) line_width);
 	}
 
 	memset(&data, 0, sizeof(struct _HPDF_CCITT_Data));

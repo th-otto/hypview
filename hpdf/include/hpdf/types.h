@@ -29,14 +29,24 @@ extern "C" {
 
 
 /*  native OS integer types */
+#if defined(__PUREC__) || defined(__MSHORT__)
+typedef signed long HPDF_INT;
+typedef unsigned long HPDF_UINT;
+#else
 typedef signed int HPDF_INT;
 typedef unsigned int HPDF_UINT;
+#endif
 
 
 /*  32bit integer types
  */
+#if defined(__PUREC__) || defined(__MSHORT__)
+typedef signed long HPDF_INT32;
+typedef unsigned long HPDF_UINT32;
+#else
 typedef signed int HPDF_INT32;
 typedef unsigned int HPDF_UINT32;
+#endif
 
 
 /*  16bit integer types

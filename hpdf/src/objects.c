@@ -82,7 +82,7 @@ HPDF_STATUS HPDF_Obj_Write(void *obj, HPDF_Stream stream, HPDF_Encrypt e)
 
 		header = (HPDF_Obj_Header *) p->obj;
 
-		pbuf = HPDF_IToA(pbuf, header->obj_id & 0x00FFFFFF, eptr);
+		pbuf = HPDF_IToA(pbuf, header->obj_id & 0x00FFFFFFUL, eptr);
 		*pbuf++ = ' ';
 		pbuf = HPDF_IToA(pbuf, header->gen_no, eptr);
 		HPDF_StrCpy(pbuf, " R", eptr);
@@ -145,8 +145,7 @@ HPDF_Proxy HPDF_Proxy_New(HPDF_MMgr mmgr, void *obj)
 
 	if (p)
 	{
-		memset(&p->header, 0, sizeof(HPDF_Obj_Header));
-		p->header.obj_class = HPDF_OCLASS_PROXY;
+		OBJ_SET_NEW(p, HPDF_OCLASS_PROXY);
 		p->obj = obj;
 	}
 

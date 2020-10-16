@@ -29,8 +29,7 @@ HPDF_Binary HPDF_Binary_New(HPDF_MMgr mmgr, HPDF_BYTE *value, HPDF_UINT len)
 
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_BINARY;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_BINARY);
 
 		obj->mmgr = mmgr;
 		obj->error = mmgr->error;

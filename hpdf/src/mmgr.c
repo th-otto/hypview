@@ -126,7 +126,7 @@ void HPDF_MMgr_Free(HPDF_MMgr mmgr)
 }
 
 
-void *HPDF_GetMem(HPDF_MMgr mmgr, HPDF_UINT size)
+void *HPDF_GetMem(HPDF_MMgr mmgr, size_t size)
 {
 	void *ptr;
 

@@ -91,6 +91,7 @@ typedef struct _HPDF_Obj_Header
 	HPDF_UINT16 obj_class;
 } HPDF_Obj_Header;
 
+#define OBJ_SET_NEW(obj, klass) ((obj)->header.obj_id = 0, (obj)->header.gen_no = 0, (obj)->header.obj_class = klass)
 
 
 HPDF_STATUS HPDF_Obj_WriteValue(void *obj, HPDF_Stream stream, HPDF_Encrypt e);

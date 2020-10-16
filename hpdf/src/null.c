@@ -27,8 +27,7 @@ HPDF_Null HPDF_Null_New(HPDF_MMgr mmgr)
 
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_NULL;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_NULL);
 	}
 
 	return obj;

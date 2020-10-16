@@ -27,8 +27,7 @@ HPDF_Real HPDF_Real_New(HPDF_MMgr mmgr, HPDF_REAL value)
 
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_REAL;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_REAL);
 		obj->error = mmgr->error;
 		HPDF_Real_SetValue(obj, value);
 	}

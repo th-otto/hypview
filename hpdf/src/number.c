@@ -27,8 +27,7 @@ HPDF_Number HPDF_Number_New(HPDF_MMgr mmgr, HPDF_INT32 value)
 
 	if (obj)
 	{
-		memset(&obj->header, 0, sizeof(HPDF_Obj_Header));
-		obj->header.obj_class = HPDF_OCLASS_NUMBER;
+		OBJ_SET_NEW(obj, HPDF_OCLASS_NUMBER);
 		obj->value = value;
 	}
 
