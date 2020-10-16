@@ -637,16 +637,16 @@ HPDF_TextRenderingMode HPDF_Page_GetTextRenderingMode(HPDF_Page page);
 HPDF_REAL HPDF_Page_GetTextRise(HPDF_Page page);
 
 
-HPDF_RGBColor HPDF_Page_GetRGBFill(HPDF_Page page);
+void HPDF_Page_GetRGBFill(HPDF_Page page, HPDF_RGBColor *color);
 
 
-HPDF_RGBColor HPDF_Page_GetRGBStroke(HPDF_Page page);
+void HPDF_Page_GetRGBStroke(HPDF_Page page, HPDF_RGBColor *color);
 
 
-HPDF_CMYKColor HPDF_Page_GetCMYKFill(HPDF_Page page);
+void HPDF_Page_GetCMYKFill(HPDF_Page page, HPDF_CMYKColor *color);
 
 
-HPDF_CMYKColor HPDF_Page_GetCMYKStroke(HPDF_Page page);
+void HPDF_Page_GetCMYKStroke(HPDF_Page page, HPDF_CMYKColor *color);
 
 
 HPDF_REAL HPDF_Page_GetGrayFill(HPDF_Page page);

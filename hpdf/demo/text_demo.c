@@ -51,8 +51,9 @@ static void show_description(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, const cha
 {
 	float fsize = HPDF_Page_GetCurrentFontSize(page);
 	HPDF_Font font = HPDF_Page_GetCurrentFont(page);
-	HPDF_RGBColor c = HPDF_Page_GetRGBFill(page);
+	HPDF_RGBColor c;
 
+	HPDF_Page_GetRGBFill(page, &c);
 	HPDF_Page_BeginText(page);
 	HPDF_Page_SetRGBFill(page, 0, 0, 0);
 	HPDF_Page_SetTextRenderingMode(page, HPDF_FILL);

@@ -1138,59 +1138,71 @@ HPDF_REAL HPDF_Page_GetTextRise(HPDF_Page page)
 }
 
 
-HPDF_RGBColor HPDF_Page_GetRGBFill(HPDF_Page page)
+void HPDF_Page_GetRGBFill(HPDF_Page page, HPDF_RGBColor *color)
 {
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
 		if (attr->gstate->cs_fill == HPDF_CS_DEVICE_RGB)
-			return attr->gstate->rgb_fill;
+		{
+			*color = attr->gstate->rgb_fill;
+			return;
+		}
 	}
 
-	return DEF_RGB_COLOR;
+	*color = DEF_RGB_COLOR;
 }
 
 
-HPDF_RGBColor HPDF_Page_GetRGBStroke(HPDF_Page page)
+void HPDF_Page_GetRGBStroke(HPDF_Page page, HPDF_RGBColor *color)
 {
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
 		if (attr->gstate->cs_stroke == HPDF_CS_DEVICE_RGB)
-			return attr->gstate->rgb_stroke;
+		{
+			*color = attr->gstate->rgb_stroke;
+			return;
+		}
 	}
 
-	return DEF_RGB_COLOR;
+	*color = DEF_RGB_COLOR;
 }
 
 
-HPDF_CMYKColor HPDF_Page_GetCMYKFill(HPDF_Page page)
+void HPDF_Page_GetCMYKFill(HPDF_Page page, HPDF_CMYKColor *color)
 {
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
 		if (attr->gstate->cs_fill == HPDF_CS_DEVICE_CMYK)
-			return attr->gstate->cmyk_fill;
+		{
+			*color = attr->gstate->cmyk_fill;
+			return;
+		}
 	}
 
-	return DEF_CMYK_COLOR;
+	*color = DEF_CMYK_COLOR;
 }
 
 
-HPDF_CMYKColor HPDF_Page_GetCMYKStroke(HPDF_Page page)
+void HPDF_Page_GetCMYKStroke(HPDF_Page page, HPDF_CMYKColor *color)
 {
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
 		if (attr->gstate->cs_stroke == HPDF_CS_DEVICE_CMYK)
-			return attr->gstate->cmyk_stroke;
+		{
+			*color = attr->gstate->cmyk_stroke;
+			return;
+		}
 	}
 
-	return DEF_CMYK_COLOR;
+	*color = DEF_CMYK_COLOR;
 }
 
 
@@ -1374,7 +1386,7 @@ HPDF_STATUS HPDF_Page_SetRotate(HPDF_Page page, HPDF_UINT16 angle)
 		return HPDF_INVALID_PAGE;
 
 	if (angle % 90 != 0)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_ROTATE_VALUE, (HPDF_STATUS) angle);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_ROTATE_VALUE, angle);
 
 	n = (HPDF_Number) HPDF_Page_GetInheritableItem(page, "Rotate", HPDF_OCLASS_NUMBER);
 
@@ -1438,7 +1450,7 @@ HPDF_STATUS HPDF_Page_SetSize(HPDF_Page page, HPDF_PageSizes size, HPDF_PageDire
 		return HPDF_INVALID_PAGE;
 
 	if ((unsigned int)size > HPDF_PAGE_SIZE_EOF)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, (HPDF_STATUS) direction);
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, direction);
 
 	if (direction == HPDF_PAGE_LANDSCAPE)
 	{
