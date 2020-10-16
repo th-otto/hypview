@@ -754,7 +754,7 @@ HPDF_STATUS HPDF_MarkupAnnot_SetSubject(HPDF_Annotation annot, const char *name)
 }
 
 
-HPDF_STATUS HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, HPDF_Date value)
+HPDF_STATUS HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, const HPDF_Date *value)
 {
 	return HPDF_Info_SetInfoDateAttr(annot, HPDF_INFO_CREATION_DATE, value);
 }

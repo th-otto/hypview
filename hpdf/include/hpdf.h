@@ -333,7 +333,7 @@ HPDF_STATUS HPDF_MarkupAnnot_SetTitle(HPDF_Annotation annot, const char *name);
 
 HPDF_STATUS HPDF_MarkupAnnot_SetSubject(HPDF_Annotation annot, const char *name);
 
-HPDF_STATUS HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, HPDF_Date value);
+HPDF_STATUS HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, const HPDF_Date *value);
 
 HPDF_STATUS HPDF_MarkupAnnot_SetTransparency(HPDF_Annotation annot, HPDF_REAL value);
 
@@ -486,7 +486,7 @@ HPDF_STATUS HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, const char *value
 const char *HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type);
 
 
-HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, HPDF_Date value);
+HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, const HPDF_Date *value);
 
 
 /*--------------------------------------------------------------------------*/

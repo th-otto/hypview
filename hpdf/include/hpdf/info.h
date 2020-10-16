@@ -32,7 +32,7 @@ HPDF_STATUS HPDF_Info_SetInfoAttr(HPDF_Dict info, HPDF_InfoType type, const char
 const char *HPDF_Info_GetInfoAttr(HPDF_Dict info, HPDF_InfoType type);
 
 
-HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_Date value);
+HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, const HPDF_Date *value);
 
 #ifdef __cplusplus
 }

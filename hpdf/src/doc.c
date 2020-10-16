@@ -328,7 +328,7 @@ const char *HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type)
 }
 
 
-HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, HPDF_Date value)
+HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, const HPDF_Date *value)
 {
 	HPDF_STATUS ret;
 	HPDF_Dict info = GetInfo(pdf);
@@ -704,7 +704,7 @@ HPDF_BOOL HPDF_HasDoc(HPDF_Doc pdf)
 
 HPDF_Doc HPDF_New(HPDF_Error_Handler user_error_fn, void *user_data)
 {
-	return HPDF_NewEx(user_error_fn, NULL, NULL, 0, user_data);
+	return HPDF_NewEx(user_error_fn, 0, 0, 0, user_data);
 }
 
 
@@ -1080,7 +1080,7 @@ HPDF_STATUS HPDF_Doc_SetEncryptOff(HPDF_Doc pdf)
 
 			HPDF_Dict_RemoveElement(pdf->trailer, "Encrypt");
 
-			entry = HPDF_Xref_GetEntryByObjectId(pdf->xref, obj_id & 0x00FFFFFF);
+			entry = HPDF_Xref_GetEntryByObjectId(pdf->xref, obj_id & 0x00FFFFFFUL);
 
 			if (!entry)
 			{

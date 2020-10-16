@@ -78,7 +78,7 @@ const char *HPDF_Info_GetInfoAttr(HPDF_Dict info, HPDF_InfoType type)
 }
 
 
-HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_Date value)
+HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, const HPDF_Date *value)
 {
 	char tmp[HPDF_DATE_TIME_STR_LEN + 1];
 	char *ptmp;
@@ -88,18 +88,18 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_D
 		return HPDF_SetError(info->error, HPDF_INVALID_PARAMETER, 0);
 
 	memset(tmp, 0, HPDF_DATE_TIME_STR_LEN + 1);
-	if (value.month < 1 || 12 < value.month ||
-		value.day < 1 ||
-		23 < value.hour ||
-		59 < value.minutes ||
-		59 < value.seconds ||
-		(value.ind != '+' && value.ind != '-' && value.ind != 'Z' &&
-		 value.ind != ' ') || 23 < value.off_hour || 59 < value.off_minutes)
+	if (value->month < 1 || 12 < value->month ||
+		value->day < 1 ||
+		23 < value->hour ||
+		59 < value->minutes ||
+		59 < value->seconds ||
+		(value->ind != '+' && value->ind != '-' && value->ind != 'Z' &&
+		 value->ind != ' ') || 23 < value->off_hour || 59 < value->off_minutes)
 	{
 		return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
 	}
 
-	switch (value.month)
+	switch ((int)value->month)
 	{
 	case 1:
 	case 3:
@@ -108,19 +108,19 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_D
 	case 8:
 	case 10:
 	case 12:
-		if (value.day > 31)
+		if (value->day > 31)
 			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
 		break;
 	case 4:
 	case 6:
 	case 9:
 	case 11:
-		if (value.day > 30)
+		if (value->day > 30)
 			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
 		break;
 	case 2:
-		if (value.day > 29 || (value.day == 29 &&
-							   (value.year % 4 != 0 || (value.year % 100 == 0 && value.year % 400 != 0))))
+		if (value->day > 29 || (value->day == 29 &&
+							   (value->year % 4 != 0 || (value->year % 100 == 0 && value->year % 400 != 0))))
 			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
 		break;
 	default:
@@ -129,18 +129,18 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, HPDF_D
 
 	memcpy(tmp, "D:", 2);
 	ptmp = tmp + 2;
-	ptmp = HPDF_IToA2(ptmp, value.year, 5);
-	ptmp = HPDF_IToA2(ptmp, value.month, 3);
-	ptmp = HPDF_IToA2(ptmp, value.day, 3);
-	ptmp = HPDF_IToA2(ptmp, value.hour, 3);
-	ptmp = HPDF_IToA2(ptmp, value.minutes, 3);
-	ptmp = HPDF_IToA2(ptmp, value.seconds, 3);
-	if (value.ind != ' ')
+	ptmp = HPDF_IToA2(ptmp, value->year, 5);
+	ptmp = HPDF_IToA2(ptmp, value->month, 3);
+	ptmp = HPDF_IToA2(ptmp, value->day, 3);
+	ptmp = HPDF_IToA2(ptmp, value->hour, 3);
+	ptmp = HPDF_IToA2(ptmp, value->minutes, 3);
+	ptmp = HPDF_IToA2(ptmp, value->seconds, 3);
+	if (value->ind != ' ')
 	{
-		*ptmp++ = value.ind;
-		ptmp = HPDF_IToA2(ptmp, value.off_hour, 3);
+		*ptmp++ = value->ind;
+		ptmp = HPDF_IToA2(ptmp, value->off_hour, 3);
 		*ptmp++ = '\'';
-		ptmp = HPDF_IToA2(ptmp, value.off_minutes, 3);
+		ptmp = HPDF_IToA2(ptmp, value->off_minutes, 3);
 		*ptmp++ = '\'';
 	}
 	*ptmp = 0;
