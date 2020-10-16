@@ -51,7 +51,7 @@ HPDF_UINT HPDF_StrLen(const char *s, HPDF_INT maxlen);
 HPDF_BYTE *HPDF_StrCpy(char *out, const char *in, char *eptr);
 
 
-HPDF_Box HPDF_ToBox(HPDF_INT16 left, HPDF_INT16 bottom, HPDF_INT16 right, HPDF_INT16 top);
+void HPDF_ToBox(HPDF_Box *out, HPDF_INT16 left, HPDF_INT16 bottom, HPDF_INT16 right, HPDF_INT16 top);
 
 
 void HPDF_UInt16Swap(HPDF_UINT16 *value);

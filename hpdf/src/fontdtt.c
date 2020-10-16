@@ -125,7 +125,7 @@ HPDF_FontDef HPDF_TTFontDef_New(HPDF_MMgr mmgr)
 	if (!fontdef)
 		return NULL;
 
-	memset(fontdef, 0, sizeof(HPDF_FontDef_Rec));
+	memset(fontdef, 0, sizeof(*fontdef));
 	fontdef->sig_bytes = HPDF_FONTDEF_SIG_BYTES;
 	fontdef->mmgr = mmgr;
 	fontdef->error = mmgr->error;
@@ -141,7 +141,7 @@ HPDF_FontDef HPDF_TTFontDef_New(HPDF_MMgr mmgr)
 	}
 
 	fontdef->attr = fontdef_attr;
-	memset((HPDF_BYTE *) fontdef_attr, 0, sizeof(HPDF_TTFontDefAttr_Rec));
+	memset(fontdef_attr, 0, sizeof(*fontdef_attr));
 	fontdef->flags = HPDF_FONT_STD_CHARSET;
 
 	return fontdef;
@@ -153,7 +153,7 @@ static void UINT32Swap(HPDF_UINT32 *value)
 	HPDF_BYTE b[4];
 
 	memcpy(b, value, 4);
-	*value = (HPDF_UINT32) ((HPDF_UINT32) b[0] << 24 | (HPDF_UINT32) b[1] << 16 | (HPDF_UINT32) b[2] << 8 | (HPDF_UINT32) b[3]);
+	*value = ((HPDF_UINT32) b[0] << 24) | ((HPDF_UINT32) b[1] << 16) | ((HPDF_UINT32) b[2] << 8) | (HPDF_UINT32) b[3];
 }
 
 
@@ -162,7 +162,7 @@ static void UINT16Swap(HPDF_UINT16 *value)
 	HPDF_BYTE b[2];
 
 	memcpy(b, value, 2);
-	*value = (HPDF_UINT16) ((HPDF_UINT16) b[0] << 8 | (HPDF_UINT16) b[1]);
+	*value = ((HPDF_UINT16) b[0] << 8) | (HPDF_UINT16) b[1];
 }
 
 
@@ -171,7 +171,7 @@ static void INT16Swap(HPDF_INT16 *value)
 	HPDF_BYTE b[2];
 
 	memcpy(b, value, 2);
-	*value = (HPDF_INT16) ((HPDF_INT16) b[0] << 8 | (HPDF_INT16) b[1]);
+	*value = ((HPDF_INT16) b[0] << 8) | (HPDF_INT16) b[1];
 }
 
 
@@ -1288,10 +1288,11 @@ HPDF_Box HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode)
 	HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr) fontdef->attr;
 	HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid(fontdef, unicode);
 	HPDF_STATUS ret;
-	HPDF_Box bbox = HPDF_ToBox(0, 0, 0, 0);
+	HPDF_Box bbox;
 	HPDF_INT16 i;
 	HPDF_INT m;
 
+	HPDF_ToBox(&bbox, 0, 0, 0, 0);
 	if (gid == 0)
 	{
 		return bbox;
@@ -1321,7 +1322,7 @@ HPDF_Box HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode)
 	bbox.top = (HPDF_REAL) ((HPDF_INT32) i * 1000 / attr->header.units_per_em);
 
 	if (ret != HPDF_OK)
-		return HPDF_ToBox(0, 0, 0, 0);
+		HPDF_ToBox(&bbox, 0, 0, 0, 0);
 
 	return bbox;
 }
@@ -1704,7 +1705,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 	HPDF_UINT32 check_sum_ptr = 0;
 	HPDF_STATUS ret;
 	HPDF_UINT32 offset_base;
-	HPDF_UINT32 tmp_check_sum = 0xB1B0AFBA;
+	HPDF_UINT32 tmp_check_sum = 0xB1B0AFBAUL;
 	HPDF_TTFTable emptyTable;
 
 	emptyTable.length = 0;
@@ -1769,7 +1770,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 		{
 			HPDF_UINT j;
 
-			memset(&value, 0, 4);
+			value = 0;
 			poffset = new_offsets;
 
 			if (attr->header.index_to_loc_format == 0)

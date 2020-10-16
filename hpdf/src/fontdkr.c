@@ -1229,7 +1229,7 @@ static HPDF_STATUS DotumChe_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 858;
 	fontdef->descent = -141;
 	fontdef->cap_height = 679;
-	fontdef->font_bbox = HPDF_ToBox(0, -150, 1000, 863);
+	HPDF_ToBox(&fontdef->font_bbox, 0, -150, 1000, 863);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -1285,7 +1285,7 @@ static HPDF_STATUS Dotum_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 858;
 	fontdef->descent = -141;
 	fontdef->cap_height = 679;
-	fontdef->font_bbox = HPDF_ToBox(0, -150, 1000, 863);
+	HPDF_ToBox(&fontdef->font_bbox, 0, -150, 1000, 863);
 	fontdef->flags = HPDF_FONT_SYMBOLIC;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -1341,7 +1341,7 @@ static HPDF_STATUS BatangChe_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 858;
 	fontdef->descent = -141;
 	fontdef->cap_height = 769;
-	fontdef->font_bbox = HPDF_ToBox(-0, -154, 1000, 861);
+	HPDF_ToBox(&fontdef->font_bbox, -0, -154, 1000, 861);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH + HPDF_FONT_SERIF;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -1397,7 +1397,7 @@ static HPDF_STATUS Batang_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 858;
 	fontdef->descent = -141;
 	fontdef->cap_height = 679;
-	fontdef->font_bbox = HPDF_ToBox(0, -154, 1000, 861);
+	HPDF_ToBox(&fontdef->font_bbox, 0, -154, 1000, 861);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_SERIF;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;

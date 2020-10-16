@@ -161,7 +161,7 @@ static HPDF_STATUS MingLiU_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 800;
 	fontdef->descent = -199;
 	fontdef->cap_height = 769;
-	fontdef->font_bbox = HPDF_ToBox(0, -199, 1000, 800);
+	HPDF_ToBox(&fontdef->font_bbox, 0, -199, 1000, 800);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH + HPDF_FONT_SERIF;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;

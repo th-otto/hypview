@@ -106,7 +106,7 @@ HPDF_DOUBLE HPDF_AToF(const char *s)
 		s++;
 		while (*s >= '0' && *s <= '9')
 		{
-			if (i > 214748364)
+			if (i > 214748364L)
 				break;
 
 			i *= 10;
@@ -213,7 +213,7 @@ char *HPDF_FToA(char *s, HPDF_REAL val, char *eptr)
 
 	/* separate an integer part and a decimal part. */
 	int_val = (HPDF_INT32) (val + 0.000005);
-	fpart_val = (HPDF_INT32) ((HPDF_REAL) (val - int_val + 0.000005) * 100000);
+	fpart_val = (HPDF_INT32) ((HPDF_REAL) (val - int_val + 0.000005) * 100000L);
 
 	/* process decimal part */
 	for (i = 0; i < 5; i++)
@@ -255,7 +255,7 @@ char *HPDF_FToA(char *s, HPDF_REAL val, char *eptr)
 		s--;
 	}
 
-	return (*s == 0) ? s : ++s;
+	return *s == 0 ? s : ++s;
 }
 
 
@@ -286,7 +286,7 @@ HPDF_UINT HPDF_StrLen(const char *s, HPDF_INT maxlen)
 		len++;
 	}
 
-	return (HPDF_UINT) len;
+	return len;
 }
 
 
@@ -322,16 +322,12 @@ const char *HPDF_StrStr(const char *s1, const char *s2, HPDF_UINT maxlen)
 }
 
 
-HPDF_Box HPDF_ToBox(HPDF_INT16 left, HPDF_INT16 bottom, HPDF_INT16 right, HPDF_INT16 top)
+void HPDF_ToBox(HPDF_Box *box, HPDF_INT16 left, HPDF_INT16 bottom, HPDF_INT16 right, HPDF_INT16 top)
 {
-	HPDF_Box box;
-
-	box.left = left;
-	box.bottom = bottom;
-	box.right = right;
-	box.top = top;
-
-	return box;
+	box->left = left;
+	box->bottom = bottom;
+	box->right = right;
+	box->top = top;
 }
 
 
@@ -340,5 +336,5 @@ void HPDF_UInt16Swap(HPDF_UINT16 *value)
 	HPDF_BYTE u[2];
 
 	memcpy(u, (HPDF_BYTE *) value, 2);
-	*value = (HPDF_UINT16) ((HPDF_UINT16) u[0] << 8 | (HPDF_UINT16) u[1]);
+	*value = ((HPDF_UINT16) u[0] << 8) | (HPDF_UINT16) u[1];
 }

@@ -1561,7 +1561,7 @@ static HPDF_STATUS MS_Gothic_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 769;
-	fontdef->font_bbox = HPDF_ToBox(-0, -136, 1000, 859);
+	HPDF_ToBox(&fontdef->font_bbox, -0, -136, 1000, 859);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -1617,7 +1617,7 @@ static HPDF_STATUS MS_PGothic_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 679;
-	fontdef->font_bbox = HPDF_ToBox(-121, -136, 996, 859);
+	HPDF_ToBox(&fontdef->font_bbox, -121, -136, 996, 859);
 	fontdef->flags = HPDF_FONT_SYMBOLIC;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -1672,7 +1672,7 @@ static HPDF_STATUS MS_Mincho_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 769;
-	fontdef->font_bbox = HPDF_ToBox(-0, -136, 1000, 859);
+	HPDF_ToBox(&fontdef->font_bbox, -0, -136, 1000, 859);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH + HPDF_FONT_SERIF;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -1728,7 +1728,7 @@ static HPDF_STATUS MS_PMincho_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 679;
-	fontdef->font_bbox = HPDF_ToBox(-82, -136, 996, 859);
+	HPDF_ToBox(&fontdef->font_bbox, -82, -136, 996, 859);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_SERIF;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;

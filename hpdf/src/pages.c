@@ -131,7 +131,7 @@ HPDF_Pages HPDF_Pages_New(HPDF_MMgr mmgr, HPDF_Pages parent, HPDF_Xref xref)
 	if (HPDF_Xref_Add(xref, pages) != HPDF_OK)
 		return NULL;
 
-	/* add requiered elements */
+	/* add required elements */
 	ret += HPDF_Dict_AddName(pages, "Type", "Pages");
 	ret += HPDF_Dict_Add(pages, "Kids", HPDF_Array_New(pages->mmgr));
 	ret += HPDF_Dict_Add(pages, "Count", HPDF_Number_New(pages->mmgr, 0));
@@ -306,6 +306,7 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	HPDF_STATUS ret;
 	HPDF_PageAttr attr;
 	HPDF_Page page;
+	HPDF_Box box;
 
 	page = HPDF_Dict_New(mmgr);
 	if (!page)
@@ -345,8 +346,8 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 
 	/* add requiered elements */
 	ret += HPDF_Dict_AddName(page, "Type", "Page");
-	ret += HPDF_Dict_Add(page, "MediaBox",
-		HPDF_Box_Array_New(page->mmgr, HPDF_ToBox(0, 0, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].x, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].y)));
+	HPDF_ToBox(&box, 0, 0, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].x, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].y);
+	ret += HPDF_Dict_Add(page, "MediaBox", HPDF_Box_Array_New(page->mmgr, box));
 	ret += HPDF_Dict_Add(page, "Contents", attr->contents);
 
 	ret += AddResource(page);
@@ -459,7 +460,7 @@ const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font)
 	key = HPDF_Dict_GetKeyByObj(attr->fonts, font);
 	if (!key)
 	{
-		/* if the font is not resisterd in font-resource, register font to
+		/* if the font is not registered in font-resource, register font to
 		 * font-resource.
 		 */
 		char fontName[HPDF_LIMIT_MAX_NAME_LEN + 1];

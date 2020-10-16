@@ -296,7 +296,7 @@ static HPDF_STATUS SimSun_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 683;
-	fontdef->font_bbox = HPDF_ToBox(0, -140, 996, 855);
+	HPDF_ToBox(&fontdef->font_bbox, 0, -140, 996, 855);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH + HPDF_FONT_SERIF;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
@@ -352,7 +352,7 @@ static HPDF_STATUS SimHei_Init(HPDF_FontDef fontdef)
 	fontdef->ascent = 859;
 	fontdef->descent = -140;
 	fontdef->cap_height = 769;
-	fontdef->font_bbox = HPDF_ToBox(-0, -140, 996, 855);
+	HPDF_ToBox(&fontdef->font_bbox, -0, -140, 996, 855);
 	fontdef->flags = HPDF_FONT_SYMBOLIC + HPDF_FONT_FIXED_WIDTH;
 	fontdef->italic_angle = 0;
 	fontdef->stemv = 78;
