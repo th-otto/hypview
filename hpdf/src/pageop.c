@@ -919,7 +919,7 @@ HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 
 
 /* Tz */
-HPDF_STATUS HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value)
+HPDF_STATUS HPDF_Page_SetHorizontalScaling(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
 	HPDF_PageAttr attr;
@@ -938,7 +938,7 @@ HPDF_STATUS HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value)
 	if (HPDF_Stream_WriteStr(attr->stream, " Tz\012") != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
-	attr->gstate->h_scalling = value;
+	attr->gstate->h_scaling = value;
 
 	return ret;
 }

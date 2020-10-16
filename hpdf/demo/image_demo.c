@@ -158,16 +158,16 @@ int main(int argc, char **argv)
 
 	x += 150;
 
-	/* Scalling image (X direction) */
+	/* Scaling image (X direction) */
 	HPDF_Page_DrawImage(page, image, x, y, iw * 1.5, ih);
 
-	show_description(page, x, y, "Scalling image (X direction)");
+	show_description(page, x, y, "Scaling image (X direction)");
 
 	x += 150;
 
-	/* Scalling image (Y direction). */
+	/* Scaling image (Y direction). */
 	HPDF_Page_DrawImage(page, image, x, y, iw, ih * 1.5);
-	show_description(page, x, y, "Scalling image (Y direction)");
+	show_description(page, x, y, "Scaling image (Y direction)");
 
 	x = 100;
 	y -= 120;

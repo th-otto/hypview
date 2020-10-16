@@ -1087,13 +1087,13 @@ HPDF_REAL HPDF_Page_GetCharSpace(HPDF_Page page)
 }
 
 
-HPDF_REAL HPDF_Page_GetHorizontalScalling(HPDF_Page page)
+HPDF_REAL HPDF_Page_GetHorizontalScaling(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
-		return attr->gstate->h_scalling;
+		return attr->gstate->h_scaling;
 	}
 	return HPDF_DEF_HSCALING;
 }

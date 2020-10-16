@@ -625,7 +625,7 @@ HPDF_REAL HPDF_Page_GetCharSpace(HPDF_Page page);
 HPDF_REAL HPDF_Page_GetWordSpace(HPDF_Page page);
 
 
-HPDF_REAL HPDF_Page_GetHorizontalScalling(HPDF_Page page);
+HPDF_REAL HPDF_Page_GetHorizontalScaling(HPDF_Page page);
 
 
 HPDF_REAL HPDF_Page_GetTextLeading(HPDF_Page page);
@@ -791,7 +791,7 @@ HPDF_STATUS HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value);
 HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value);
 
 /* Tz */
-HPDF_STATUS HPDF_Page_SetHorizontalScalling(HPDF_Page page, HPDF_REAL value);
+HPDF_STATUS HPDF_Page_SetHorizontalScaling(HPDF_Page page, HPDF_REAL value);
 
 /* TL */
 HPDF_STATUS HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value);

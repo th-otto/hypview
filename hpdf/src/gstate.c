@@ -46,7 +46,7 @@ HPDF_GState HPDF_GState_New(HPDF_MMgr mmgr, HPDF_GState current)
 
 		gstate->char_space = current->char_space;
 		gstate->word_space = current->word_space;
-		gstate->h_scalling = current->h_scalling;
+		gstate->h_scaling = current->h_scaling;
 		gstate->text_leading = current->text_leading;
 		gstate->rendering_mode = current->rendering_mode;
 		gstate->text_rise = current->text_rise;
@@ -83,7 +83,7 @@ HPDF_GState HPDF_GState_New(HPDF_MMgr mmgr, HPDF_GState current)
 
 		gstate->char_space = HPDF_DEF_CHARSPACE;
 		gstate->word_space = HPDF_DEF_WORDSPACE;
-		gstate->h_scalling = HPDF_DEF_HSCALING;
+		gstate->h_scaling = HPDF_DEF_HSCALING;
 		gstate->text_leading = HPDF_DEF_LEADING;
 		gstate->rendering_mode = HPDF_DEF_RENDERING_MODE;
 		gstate->text_rise = HPDF_DEF_RISE;

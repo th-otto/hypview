@@ -42,7 +42,7 @@ typedef struct _HPDF_GState_Rec
 
 	HPDF_REAL char_space;
 	HPDF_REAL word_space;
-	HPDF_REAL h_scalling;
+	HPDF_REAL h_scaling;
 	HPDF_REAL text_leading;
 	HPDF_TextRenderingMode rendering_mode;
 	HPDF_REAL text_rise;
