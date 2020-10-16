@@ -431,10 +431,10 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		smask->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
 		ret = HPDF_Dict_AddName(smask, "Type", "XObject");
 		ret += HPDF_Dict_AddName(smask, "Subtype", "Image");
-		ret += HPDF_Dict_AddNumber(smask, "Width", (HPDF_UINT) width);
-		ret += HPDF_Dict_AddNumber(smask, "Height", (HPDF_UINT) height);
+		ret += HPDF_Dict_AddNumber(smask, "Width", width);
+		ret += HPDF_Dict_AddNumber(smask, "Height", height);
 		ret += HPDF_Dict_AddName(smask, "ColorSpace", "DeviceGray");
-		ret += HPDF_Dict_AddNumber(smask, "BitsPerComponent", (HPDF_UINT) bit_depth);
+		ret += HPDF_Dict_AddNumber(smask, "BitsPerComponent", bit_depth);
 
 		if (ret != HPDF_OK)
 		{
@@ -470,9 +470,9 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 
 
 		ret += CreatePallet(image, png_ptr, info_ptr);
-		ret += HPDF_Dict_AddNumber(image, "Width", (HPDF_UINT) width);
-		ret += HPDF_Dict_AddNumber(image, "Height", (HPDF_UINT) height);
-		ret += HPDF_Dict_AddNumber(image, "BitsPerComponent", (HPDF_UINT) bit_depth);
+		ret += HPDF_Dict_AddNumber(image, "Width", width);
+		ret += HPDF_Dict_AddNumber(image, "Height", height);
+		ret += HPDF_Dict_AddNumber(image, "BitsPerComponent", bit_depth);
 		ret += HPDF_Dict_Add(image, "SMask", smask);
 
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
@@ -498,10 +498,10 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		smask->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
 		ret = HPDF_Dict_AddName(smask, "Type", "XObject");
 		ret += HPDF_Dict_AddName(smask, "Subtype", "Image");
-		ret += HPDF_Dict_AddNumber(smask, "Width", (HPDF_UINT) width);
-		ret += HPDF_Dict_AddNumber(smask, "Height", (HPDF_UINT) height);
+		ret += HPDF_Dict_AddNumber(smask, "Width", width);
+		ret += HPDF_Dict_AddNumber(smask, "Height", height);
 		ret += HPDF_Dict_AddName(smask, "ColorSpace", "DeviceGray");
-		ret += HPDF_Dict_AddNumber(smask, "BitsPerComponent", (HPDF_UINT) bit_depth);
+		ret += HPDF_Dict_AddNumber(smask, "BitsPerComponent", bit_depth);
 
 		if (ret != HPDF_OK)
 		{
@@ -542,9 +542,9 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		{
 			ret += HPDF_Dict_AddName(image, "ColorSpace", "DeviceRGB");
 		}
-		ret += HPDF_Dict_AddNumber(image, "Width", (HPDF_UINT) width);
-		ret += HPDF_Dict_AddNumber(image, "Height", (HPDF_UINT) height);
-		ret += HPDF_Dict_AddNumber(image, "BitsPerComponent", (HPDF_UINT) bit_depth);
+		ret += HPDF_Dict_AddNumber(image, "Width", width);
+		ret += HPDF_Dict_AddNumber(image, "Height", height);
+		ret += HPDF_Dict_AddNumber(image, "BitsPerComponent", bit_depth);
 		ret += HPDF_Dict_Add(image, "SMask", smask);
 
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
@@ -584,13 +584,13 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 	}
 
 	/* setting the info of the image. */
-	if (HPDF_Dict_AddNumber(image, "Width", (HPDF_UINT) width) != HPDF_OK)
+	if (HPDF_Dict_AddNumber(image, "Width", width) != HPDF_OK)
 		goto Exit;
 
-	if (HPDF_Dict_AddNumber(image, "Height", (HPDF_UINT) height) != HPDF_OK)
+	if (HPDF_Dict_AddNumber(image, "Height", height) != HPDF_OK)
 		goto Exit;
 
-	if (HPDF_Dict_AddNumber(image, "BitsPerComponent", (HPDF_UINT) bit_depth) != HPDF_OK)
+	if (HPDF_Dict_AddNumber(image, "BitsPerComponent", bit_depth) != HPDF_OK)
 		goto Exit;
 
 	/* clean up */
