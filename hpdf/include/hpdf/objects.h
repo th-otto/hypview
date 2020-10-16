@@ -29,11 +29,11 @@ extern "C" {
  * object. if HPDF_OTYPE_INDIRECT bit is set, the object managed by xref.
  */
 
-#define  HPDF_OTYPE_NONE              0x00000000
-#define  HPDF_OTYPE_DIRECT            0x80000000
-#define  HPDF_OTYPE_INDIRECT          0x40000000
+#define  HPDF_OTYPE_NONE              0x00000000UL
+#define  HPDF_OTYPE_DIRECT            0x80000000UL
+#define  HPDF_OTYPE_INDIRECT          0x40000000UL
 #define  HPDF_OTYPE_ANY               (HPDF_OTYPE_DIRECT | HPDF_OTYPE_INDIRECT)
-#define  HPDF_OTYPE_HIDDEN            0x10000000
+#define  HPDF_OTYPE_HIDDEN            0x10000000UL
 
 #define  HPDF_OCLASS_UNKNOWN          0x0001
 #define  HPDF_OCLASS_NULL             0x0002
@@ -291,7 +291,7 @@ typedef HPDF_Array_Rec *HPDF_Array;
 HPDF_Array HPDF_Array_New(HPDF_MMgr mmgr);
 
 
-HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, HPDF_Box box);
+HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, const HPDF_Box *box);
 
 
 void HPDF_Array_Free(HPDF_Array array);

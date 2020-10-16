@@ -191,7 +191,7 @@ static HPDF_STATUS Type1Font_CreateDescriptor(HPDF_MMgr mmgr, HPDF_Font font, HP
 		ret += HPDF_Dict_AddNumber(descriptor, "Descent", def->descent);
 		ret += HPDF_Dict_AddNumber(descriptor, "Flags", def->flags);
 
-		array = HPDF_Box_Array_New(mmgr, def->font_bbox);
+		array = HPDF_Box_Array_New(mmgr, &def->font_bbox);
 		ret += HPDF_Dict_Add(descriptor, "FontBBox", array);
 
 		ret += HPDF_Dict_AddName(descriptor, "FontName", font_attr->fontdef->base_font);

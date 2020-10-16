@@ -84,7 +84,7 @@ static HPDF_STATUS CreateDescriptor(HPDF_Font font)
 		ret += HPDF_Dict_AddNumber(descriptor, "CapHeight", def->cap_height);
 		ret += HPDF_Dict_AddNumber(descriptor, "Flags", def->flags);
 
-		array = HPDF_Box_Array_New(font->mmgr, def->font_bbox);
+		array = HPDF_Box_Array_New(font->mmgr, &def->font_bbox);
 		ret += HPDF_Dict_Add(descriptor, "FontBBox", array);
 
 		ret += HPDF_Dict_AddName(descriptor, "FontName", def_attr->base_font);

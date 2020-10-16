@@ -120,7 +120,7 @@ static HPDF_Font CIDFontType0_New(HPDF_Font parent, HPDF_Xref xref)
 	if (ret != HPDF_OK)
 		return NULL;
 
-	array = HPDF_Box_Array_New(parent->mmgr, fontdef->font_bbox);
+	array = HPDF_Box_Array_New(parent->mmgr, &fontdef->font_bbox);
 	if (!array)
 		return NULL;
 
@@ -198,7 +198,7 @@ static HPDF_STATUS CIDFontType2_BeforeWrite_Func(HPDF_Dict obj)
 		ret += HPDF_Dict_AddNumber(descriptor, "Descent", def->descent);
 		ret += HPDF_Dict_AddNumber(descriptor, "Flags", def->flags);
 
-		array = HPDF_Box_Array_New(obj->mmgr, def->font_bbox);
+		array = HPDF_Box_Array_New(obj->mmgr, &def->font_bbox);
 		ret += HPDF_Dict_Add(descriptor, "FontBBox", array);
 
 		ret += HPDF_Dict_AddName(descriptor, "FontName", def_attr->base_font);

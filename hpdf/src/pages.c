@@ -347,7 +347,7 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	/* add requiered elements */
 	ret += HPDF_Dict_AddName(page, "Type", "Page");
 	HPDF_ToBox(&box, 0, 0, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].x, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].y);
-	ret += HPDF_Dict_Add(page, "MediaBox", HPDF_Box_Array_New(page->mmgr, box));
+	ret += HPDF_Dict_Add(page, "MediaBox", HPDF_Box_Array_New(page->mmgr, &box));
 	ret += HPDF_Dict_Add(page, "Contents", attr->contents);
 
 	ret += AddResource(page);

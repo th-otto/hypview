@@ -43,7 +43,7 @@ HPDF_Array HPDF_Array_New(HPDF_MMgr mmgr)
 }
 
 
-HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, HPDF_Box box)
+HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, const HPDF_Box *box)
 {
 	HPDF_Array obj;
 	HPDF_STATUS ret = HPDF_OK;
@@ -52,10 +52,10 @@ HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, HPDF_Box box)
 	if (!obj)
 		return NULL;
 
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box.left));
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box.bottom));
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box.right));
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box.top));
+	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->left));
+	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->bottom));
+	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->right));
+	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->top));
 
 	if (ret != HPDF_OK)
 	{
