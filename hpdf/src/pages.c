@@ -325,8 +325,10 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	page->attr = attr;
 	memset(attr, 0, sizeof(HPDF_PageAttr_Rec));
 	attr->gmode = HPDF_GMODE_PAGE_DESCRIPTION;
-	attr->cur_pos = HPDF_ToPoint(0, 0);
-	attr->text_pos = HPDF_ToPoint(0, 0);
+	attr->cur_pos.x = 0;
+	attr->cur_pos.y = 0;
+	attr->text_pos.x = 0;
+	attr->text_pos.y = 0;
 
 	ret = HPDF_Xref_Add(xref, page);
 	if (ret != HPDF_OK)

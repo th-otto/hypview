@@ -335,30 +335,6 @@ HPDF_Box HPDF_ToBox(HPDF_INT16 left, HPDF_INT16 bottom, HPDF_INT16 right, HPDF_I
 }
 
 
-HPDF_Point HPDF_ToPoint(HPDF_INT16 x, HPDF_INT16 y)
-{
-	HPDF_Point point;
-
-	point.x = x;
-	point.y = y;
-
-	return point;
-}
-
-
-HPDF_Rect HPDF_ToRect(HPDF_REAL left, HPDF_REAL bottom, HPDF_REAL right, HPDF_REAL top)
-{
-	HPDF_Rect rect;
-
-	rect.left = left;
-	rect.bottom = bottom;
-	rect.right = right;
-	rect.top = top;
-
-	return rect;
-}
-
-
 void HPDF_UInt16Swap(HPDF_UINT16 *value)
 {
 	HPDF_BYTE u[2];
