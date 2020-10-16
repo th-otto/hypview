@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[0]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_NO_HIGHLIGHT);
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[1]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[2]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BORDER);
 
@@ -171,7 +171,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[3]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_DOWN_APPEARANCE);
 
@@ -189,7 +189,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[4]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetBorderStyle(annot, 1, 3, 2);
 
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[5]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 
@@ -225,7 +225,7 @@ int main(int argc, char **argv)
 
 	dst = HPDF_Page_CreateDestination(page[6]);
 
-	annot = HPDF_Page_CreateLinkAnnot(index_page, rect, dst);
+	annot = HPDF_Page_CreateLinkAnnot(index_page, &rect, dst);
 
 	HPDF_LinkAnnot_SetBorderStyle(annot, 2, 0, 0);
 
@@ -242,7 +242,7 @@ int main(int argc, char **argv)
 	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
 
-	HPDF_Page_CreateURILinkAnnot(index_page, rect, uri);
+	HPDF_Page_CreateURILinkAnnot(index_page, &rect, uri);
 
 	HPDF_Page_EndText(index_page);
 

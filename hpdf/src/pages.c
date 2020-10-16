@@ -519,14 +519,14 @@ HPDF_Box HPDF_Page_GetMediaBox(HPDF_Page page)
 }
 
 
-HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, HPDF_Rect rect, HPDF_Image image, HPDF_Boolean zoom)
+HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect, HPDF_Image image, HPDF_Boolean zoom)
 {
 	HPDF_Dict resource;
 	HPDF_Dict fromxobject;
 	HPDF_Dict xobject;
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array procset;
-	HPDF_REAL tmp;
+	HPDF_REAL top, bottom;
 	HPDF_Array array1;
 	HPDF_Array array2;
 
@@ -574,17 +574,20 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, HPDF
 	if (HPDF_Dict_Add(fromxobject, "BBox", array1) != HPDF_OK)
 		return NULL;
 
-	if (rect.top < rect.bottom)
+	if (rect->top < rect->bottom)
 	{
-		tmp = rect.top;
-		rect.top = rect.bottom;
-		rect.bottom = tmp;
+		top = rect->bottom;
+		bottom = rect->top;
+	} else
+	{
+		top = rect->top;
+		bottom = rect->bottom;
 	}
 
-	ret += HPDF_Array_AddReal(array1, rect.left);
-	ret += HPDF_Array_AddReal(array1, rect.bottom);
-	ret += HPDF_Array_AddReal(array1, rect.right);
-	ret += HPDF_Array_AddReal(array1, rect.top);
+	ret += HPDF_Array_AddReal(array1, rect->left);
+	ret += HPDF_Array_AddReal(array1, bottom);
+	ret += HPDF_Array_AddReal(array1, rect->right);
+	ret += HPDF_Array_AddReal(array1, top);
 
 	array2 = HPDF_Array_New(page->mmgr);
 	if (!array2)
@@ -616,11 +619,11 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, HPDF
 
 	if (zoom)
 	{
-		if (HPDF_Stream_WriteReal(fromxobject->stream, rect.right - rect.left) != HPDF_OK)
+		if (HPDF_Stream_WriteReal(fromxobject->stream, rect->right - rect->left) != HPDF_OK)
 			return NULL;
 		if (HPDF_Stream_WriteStr(fromxobject->stream, " 0 0 ") != HPDF_OK)
 			return NULL;
-		if (HPDF_Stream_WriteReal(fromxobject->stream, rect.top - rect.bottom) != HPDF_OK)
+		if (HPDF_Stream_WriteReal(fromxobject->stream, top - bottom) != HPDF_OK)
 			return NULL;
 		if (HPDF_Stream_WriteStr(fromxobject->stream, " 0 0 cm") != HPDF_OK)
 			return NULL;
@@ -644,7 +647,7 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, HPDF
 }
 
 
-HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, HPDF_Rect rect)
+HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect)
 {
 
 	HPDF_Dict resource;
@@ -652,7 +655,7 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, HP
 	HPDF_Dict xobject;
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Array procset;
-	HPDF_REAL tmp;
+	HPDF_REAL bottom, top;
 	HPDF_Array array1;
 	HPDF_Array array2;
 
@@ -697,17 +700,20 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, HP
 	if (HPDF_Dict_Add(fromxobject, "BBox", array1) != HPDF_OK)
 		return NULL;
 
-	if (rect.top < rect.bottom)
+	if (rect->top < rect->bottom)
 	{
-		tmp = rect.top;
-		rect.top = rect.bottom;
-		rect.bottom = tmp;
+		bottom = rect->top;
+		top = rect->bottom;
+	} else
+	{
+		top = rect->top;
+		bottom = rect->bottom;
 	}
 
 	ret += HPDF_Array_AddReal(array1, 0.0);
 	ret += HPDF_Array_AddReal(array1, 0.0);
-	ret += HPDF_Array_AddReal(array1, rect.right - rect.left);
-	ret += HPDF_Array_AddReal(array1, rect.top - rect.bottom);
+	ret += HPDF_Array_AddReal(array1, rect->right - rect->left);
+	ret += HPDF_Array_AddReal(array1, top - bottom);
 
 	array2 = HPDF_Array_New(page->mmgr);
 	if (!array2)
@@ -739,11 +745,11 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, HP
 	if (HPDF_Stream_WriteStr(fromxobject->stream, "0 0 ") != HPDF_OK)
 		return NULL;
 
-	if (HPDF_Stream_WriteReal(fromxobject->stream, rect.right - rect.left) != HPDF_OK)
+	if (HPDF_Stream_WriteReal(fromxobject->stream, rect->right - rect->left) != HPDF_OK)
 		return NULL;
 	if (HPDF_Stream_WriteStr(fromxobject->stream, " ") != HPDF_OK)
 		return NULL;
-	if (HPDF_Stream_WriteReal(fromxobject->stream, rect.top - rect.bottom) != HPDF_OK)
+	if (HPDF_Stream_WriteReal(fromxobject->stream, top - bottom) != HPDF_OK)
 		return NULL;
 	if (HPDF_Stream_WriteStr(fromxobject->stream, " re") != HPDF_OK)
 		return NULL;
@@ -971,7 +977,8 @@ HPDF_REAL HPDF_Page_GetCurrentFontSize(HPDF_Page page)
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
-		return (attr->gstate->font) ? attr->gstate->font_size : 0;
+		if (attr->gstate->font)
+			return attr->gstate->font_size;
 	}
 	return 0;
 }
@@ -1504,7 +1511,7 @@ HPDF_Destination HPDF_Page_CreateDestination(HPDF_Page page)
 }
 
 
-HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap)
+HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1531,7 +1538,7 @@ HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_BOO
 }
 
 
-HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1564,7 +1571,7 @@ HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, HPDF_Rect rect, const 
 }
 
 
-HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1614,7 +1621,7 @@ HPDF_Annotation HPDF_Page_CreateLineAnnot(HPDF_Page page, const char *text, HPDF
 		return NULL;
 	}
 
-	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_LINE);
+	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, &rect, text, encoder, HPDF_ANNOT_LINE);
 	if (annot)
 	{
 		if (AddAnnotation(page, annot) != HPDF_OK)
@@ -1631,7 +1638,7 @@ HPDF_Annotation HPDF_Page_CreateLineAnnot(HPDF_Page page, const char *text, HPDF
 }
 
 
-HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, HPDF_Rect rect)
+HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, const HPDF_Rect *rect)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1659,7 +1666,7 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, HPDF_Rect rect)
 }
 
 
-HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HPDF_Page page, HPDF_Rect rect)
+HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect)
 {
 	HPDF_XObject fxobj;
 	HPDF_Annotation annot;
@@ -1721,7 +1728,7 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HP
 }
 
 
-HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst)
+HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1757,7 +1764,7 @@ HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_D
 }
 
 
-HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst)
+HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1793,7 +1800,7 @@ HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_D
 }
 
 
-HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow)
+HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1820,7 +1827,7 @@ HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, HPDF_Rect rect, const
 }
 
 
-HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, HPDF_Rect rect, const char *type)
+HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *type)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1847,7 +1854,7 @@ HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, HPDF_Rect rect, const
 }
 
 
-HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *args, const char *type)
+HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *file, const char *args, const char *type)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1874,7 +1881,7 @@ HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, HPDF_Rect rect, cons
 }
 
 
-HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, HPDF_Rect rect, const char *uri)
+HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *uri)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1907,7 +1914,7 @@ HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, HPDF_Rect rect, con
 }
 
 
-HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1940,7 +1947,7 @@ HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, HPDF_Rect rect, cons
 }
 
 
-HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -1996,7 +2003,7 @@ HPDF_Dict HPDF_Page_Create3DView(HPDF_Page page, HPDF_U3D u3d, HPDF_Annotation a
 
 HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(
 	HPDF_Page page,
-	HPDF_Rect rect,
+	const HPDF_Rect *rect,
 	const char *text,
 	HPDF_Encoder encoder,
 	HPDF_AnnotType subType)
@@ -2032,31 +2039,31 @@ HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(
 }
 
 
-HPDF_Annotation HPDF_Page_CreateHighlightAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateHighlightAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_HIGHLIGHT);
 }
 
 
-HPDF_Annotation HPDF_Page_CreateSquigglyAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateSquigglyAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_SQUIGGLY);
 }
 
 
-HPDF_Annotation HPDF_Page_CreateUnderlineAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateUnderlineAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_UNDERLINE);
 }
 
 
-HPDF_Annotation HPDF_Page_CreateStrikeOutAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateStrikeOutAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_STRIKE_OUT);
 }
 
 
-HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Annotation parent)
+HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Annotation parent)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
@@ -2085,7 +2092,7 @@ HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_
 
 HPDF_Annotation HPDF_Page_CreateStampAnnot(
 	HPDF_Page page,
-	HPDF_Rect rect,
+	const HPDF_Rect *rect,
 	HPDF_StampAnnotName name,
 	const char *text,
 	HPDF_Encoder encoder)
@@ -2115,7 +2122,7 @@ HPDF_Annotation HPDF_Page_CreateStampAnnot(
 }
 
 
-HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;

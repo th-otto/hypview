@@ -78,33 +78,33 @@ int main(int argc, char **argv)
 	HPDF_Page_EndText(page);
 
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect1, "Annotation with Comment "
+	annot = HPDF_Page_CreateTextAnnot(page, &rect1, "Annotation with Comment "
 									  "Icon. \n This annotation set to be opened initially.", NULL);
 
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_COMMENT);
 	HPDF_TextAnnot_SetOpened(annot, HPDF_TRUE);
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect2, "Annotation with Key Icon", NULL);
+	annot = HPDF_Page_CreateTextAnnot(page, &rect2, "Annotation with Key Icon", NULL);
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_PARAGRAPH);
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect3, "Annotation with Note Icon", NULL);
+	annot = HPDF_Page_CreateTextAnnot(page, &rect3, "Annotation with Note Icon", NULL);
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_NOTE);
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect4, "Annotation with Help Icon", NULL);
+	annot = HPDF_Page_CreateTextAnnot(page, &rect4, "Annotation with Help Icon", NULL);
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_HELP);
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect5, "Annotation with NewParagraph Icon", NULL);
+	annot = HPDF_Page_CreateTextAnnot(page, &rect5, "Annotation with NewParagraph Icon", NULL);
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_NEW_PARAGRAPH);
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect6, "Annotation with Paragraph Icon", NULL);
+	annot = HPDF_Page_CreateTextAnnot(page, &rect6, "Annotation with Paragraph Icon", NULL);
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_PARAGRAPH);
 
-	annot = HPDF_Page_CreateTextAnnot(page, rect7, "Annotation with Insert Icon", NULL);
+	annot = HPDF_Page_CreateTextAnnot(page, &rect7, "Annotation with Insert Icon", NULL);
 	HPDF_TextAnnot_SetIcon(annot, HPDF_ANNOT_ICON_INSERT);
 
 	encoding = HPDF_GetEncoder(pdf, "ISO8859-2");
 
-	HPDF_Page_CreateTextAnnot(page, rect8, "Annotation with ISO8859 text \xd3\xd4\xd5\xd6\xd7\xd8\xd9", encoding);
+	HPDF_Page_CreateTextAnnot(page, &rect8, "Annotation with ISO8859 text \xd3\xd4\xd5\xd6\xd7\xd8\xd9", encoding);
 
 	HPDF_Page_SetFontAndSize(page, font, 11);
 

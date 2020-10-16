@@ -234,10 +234,10 @@ HPDF_ByteType HPDF_CMapEncoder_ByteType(HPDF_Encoder encoder, HPDF_ParseText_Rec
 HPDF_STATUS HPDF_CMapEncoder_AddCMap(HPDF_Encoder encoder, const HPDF_CidRange_Rec *range);
 
 
-HPDF_STATUS HPDF_CMapEncoder_AddNotDefRange(HPDF_Encoder encoder, HPDF_CidRange_Rec range);
+HPDF_STATUS HPDF_CMapEncoder_AddNotDefRange(HPDF_Encoder encoder, const HPDF_CidRange_Rec *range);
 
 
-HPDF_STATUS HPDF_CMapEncoder_AddCodeSpaceRange(HPDF_Encoder encoder, HPDF_CidRange_Rec range);
+HPDF_STATUS HPDF_CMapEncoder_AddCodeSpaceRange(HPDF_Encoder encoder, const HPDF_CidRange_Rec *range);
 
 
 void HPDF_CMapEncoder_SetUnicodeArray(HPDF_Encoder encoder, const HPDF_UnicodeMap_Rec *array1);

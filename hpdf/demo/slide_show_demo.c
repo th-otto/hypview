@@ -75,7 +75,7 @@ static void print_page(HPDF_Page page, const char *caption, HPDF_Font font,
 		rect.bottom = 50;
 		dst = HPDF_Page_CreateDestination(next);
 		HPDF_Destination_SetFit(dst);
-		annot = HPDF_Page_CreateLinkAnnot(page, rect, dst);
+		annot = HPDF_Page_CreateLinkAnnot(page, &rect, dst);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 	}
@@ -92,7 +92,7 @@ static void print_page(HPDF_Page page, const char *caption, HPDF_Font font,
 		rect.bottom = 50;
 		dst = HPDF_Page_CreateDestination(prev);
 		HPDF_Destination_SetFit(dst);
-		annot = HPDF_Page_CreateLinkAnnot(page, rect, dst);
+		annot = HPDF_Page_CreateLinkAnnot(page, &rect, dst);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 	}

@@ -111,12 +111,12 @@ static const char *const HPDF_STAMP_ANNOT_NAME_NAMES[] = {
 /*------ HPDF_Annotation -----------------------------------------------------*/
 
 
-HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotType type, HPDF_Rect rect)
+HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotType type, const HPDF_Rect *rect)
 {
 	HPDF_Annotation annot;
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
-	HPDF_REAL tmp;
+	HPDF_REAL bottom, top;
 
 	annot = HPDF_Dict_New(mmgr);
 	if (!annot)
@@ -132,17 +132,20 @@ HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotTy
 	if (HPDF_Dict_Add(annot, "Rect", array) != HPDF_OK)
 		return NULL;
 
-	if (rect.top < rect.bottom)
+	if (rect->top < rect->bottom)
 	{
-		tmp = rect.top;
-		rect.top = rect.bottom;
-		rect.bottom = tmp;
+		top = rect->bottom;
+		bottom = rect->top;
+	} else
+	{
+		top = rect->top;
+		bottom = rect->bottom;
 	}
 
-	ret += HPDF_Array_AddReal(array, rect.left);
-	ret += HPDF_Array_AddReal(array, rect.bottom);
-	ret += HPDF_Array_AddReal(array, rect.right);
-	ret += HPDF_Array_AddReal(array, rect.top);
+	ret += HPDF_Array_AddReal(array, rect->left);
+	ret += HPDF_Array_AddReal(array, bottom);
+	ret += HPDF_Array_AddReal(array, rect->right);
+	ret += HPDF_Array_AddReal(array, top);
 
 	ret += HPDF_Dict_AddName(annot, "Type", "Annot");
 	ret += HPDF_Dict_AddName(annot, "Subtype", HPDF_ANNOT_TYPE_NAMES[(HPDF_INT) type]);
@@ -222,7 +225,7 @@ HPDF_STATUS HPDF_Annotation_SetBorderStyle(HPDF_Annotation annot,
 }
 
 
-HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect)
+HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect)
 {
 	HPDF_Annotation annot;
 
@@ -234,7 +237,7 @@ HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect r
 }
 
 
-HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Destination dst)
+HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	HPDF_Annotation annot;
 
@@ -252,7 +255,7 @@ HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rec
 }
 
 
-static HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *type, const char *dst, void *obj)
+static HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type, const char *dst, void *obj)
 {
 	HPDF_Annotation annot;
 	HPDF_Dict action;
@@ -282,19 +285,19 @@ static HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF
 }
 
 
-HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *uri)
+HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *uri)
 {
 	return HPDF_ActionAnnot_New(mmgr, xref, rect, "URI", "URI", HPDF_String_New(mmgr, uri, NULL));
 }
 
 
-HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Destination dst)
+HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	return HPDF_ActionAnnot_New(mmgr, xref, rect, "GoTo", "D", dst);
 }
 
 
-HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow)
+HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow)
 {
 	HPDF_Annotation annot;
 	HPDF_String dst = NULL;
@@ -315,7 +318,7 @@ HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rec
 }
 
 
-HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *type)
+HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type)
 {
 	HPDF_Annotation annot;
 	HPDF_Dict action;
@@ -344,7 +347,7 @@ HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rec
 }
 
 
-HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *file, const char *args, const char *type)
+HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *args, const char *type)
 {
 	HPDF_Annotation annot;
 	HPDF_Dict win;
@@ -499,7 +502,7 @@ HPDF_STATUS HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHig
 
 HPDF_Annotation HPDF_3DAnnot_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
-	HPDF_Rect rect,
+	const HPDF_Rect *rect,
 	HPDF_BOOL tb,
 	HPDF_BOOL np,
 	HPDF_U3D u3d,
@@ -598,7 +601,7 @@ HPDF_Annotation HPDF_3DAnnot_New(HPDF_MMgr mmgr,
 
 HPDF_Annotation HPDF_MarkupAnnot_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
-	HPDF_Rect rect,
+	const HPDF_Rect *rect,
 	const char *text,
 	HPDF_Encoder encoder, HPDF_AnnotType subtype)
 {
@@ -888,7 +891,7 @@ HPDF_STATUS HPDF_Annot_Set3DView(HPDF_MMgr mmgr, HPDF_Annotation annot, HPDF_Ann
 }
 
 
-HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Annotation parent)
+HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Annotation parent)
 {
 	HPDF_Annotation annot;
 
@@ -905,7 +908,7 @@ HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect re
 
 HPDF_Annotation HPDF_StampAnnot_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
-	HPDF_Rect rect,
+	const HPDF_Rect *rect,
 	HPDF_StampAnnotName name,
 	const char *text,
 	HPDF_Encoder encoder)
@@ -931,7 +934,7 @@ HPDF_Annotation HPDF_StampAnnot_New(HPDF_MMgr mmgr,
 }
 
 
-HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *text, HPDF_Encoder encoder)
+HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_Annotation annot;
 	HPDF_String s;
@@ -1005,11 +1008,11 @@ HPDF_STATUS HPDF_FreeTextAnnot_SetLineEndingStyle(
 
 
 /* RD entry : this is the difference between Rect and the text annotation rectangle */
-HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPDF_Rect rect)
+HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, const HPDF_Rect *rect)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
-	HPDF_REAL tmp;
+	HPDF_REAL bottom, top;
 
 	array = HPDF_Array_New(annot->mmgr);
 	if (!array)
@@ -1018,17 +1021,20 @@ HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPDF_Rect rect)
 	if ((ret = HPDF_Dict_Add(annot, "RD", array)) != HPDF_OK)
 		return ret;
 
-	if (rect.top < rect.bottom)
+	if (rect->top < rect->bottom)
 	{
-		tmp = rect.top;
-		rect.top = rect.bottom;
-		rect.bottom = tmp;
+		top = rect->bottom;
+		bottom = rect->top;
+	} else
+	{
+		top = rect->top;
+		bottom = rect->bottom;
 	}
 
-	ret += HPDF_Array_AddReal(array, rect.left);
-	ret += HPDF_Array_AddReal(array, rect.bottom);
-	ret += HPDF_Array_AddReal(array, rect.right);
-	ret += HPDF_Array_AddReal(array, rect.top);
+	ret += HPDF_Array_AddReal(array, rect->left);
+	ret += HPDF_Array_AddReal(array, bottom);
+	ret += HPDF_Array_AddReal(array, rect->right);
+	ret += HPDF_Array_AddReal(array, top);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(array->error);

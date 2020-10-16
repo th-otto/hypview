@@ -2610,7 +2610,7 @@ HPDF_STATUS HPDF_CMapEncoder_AddCMap(HPDF_Encoder encoder, const HPDF_CidRange_R
 }
 
 
-static HPDF_STATUS AddCidRange(HPDF_MMgr mmgr, HPDF_CidRange_Rec range, HPDF_List target)
+static HPDF_STATUS AddCidRange(HPDF_MMgr mmgr, const HPDF_CidRange_Rec *range, HPDF_List target)
 {
 	HPDF_CidRange_Rec *prange;
 	HPDF_STATUS ret;
@@ -2619,9 +2619,9 @@ static HPDF_STATUS AddCidRange(HPDF_MMgr mmgr, HPDF_CidRange_Rec range, HPDF_Lis
 	if (!prange)
 		return mmgr->error->error_no;
 
-	prange->from = range.from;
-	prange->to = range.to;
-	prange->cid = range.cid;
+	prange->from = range->from;
+	prange->to = range->to;
+	prange->cid = range->cid;
 
 	if ((ret = HPDF_List_Add(target, prange)) != HPDF_OK)
 	{
@@ -2633,7 +2633,7 @@ static HPDF_STATUS AddCidRange(HPDF_MMgr mmgr, HPDF_CidRange_Rec range, HPDF_Lis
 }
 
 
-HPDF_STATUS HPDF_CMapEncoder_AddNotDefRange(HPDF_Encoder encoder, HPDF_CidRange_Rec range)
+HPDF_STATUS HPDF_CMapEncoder_AddNotDefRange(HPDF_Encoder encoder, const HPDF_CidRange_Rec *range)
 {
 	HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr) encoder->attr;
 
@@ -2641,7 +2641,7 @@ HPDF_STATUS HPDF_CMapEncoder_AddNotDefRange(HPDF_Encoder encoder, HPDF_CidRange_
 }
 
 
-HPDF_STATUS HPDF_CMapEncoder_AddCodeSpaceRange(HPDF_Encoder encoder, HPDF_CidRange_Rec range)
+HPDF_STATUS HPDF_CMapEncoder_AddCodeSpaceRange(HPDF_Encoder encoder, const HPDF_CidRange_Rec *range)
 {
 	HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr) encoder->attr;
 

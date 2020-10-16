@@ -28,28 +28,28 @@ extern "C" {
 /*------ HPDF_Annotation -----------------------------------------------------*/
 
 
-HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotType type, HPDF_Rect rect);
+HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotType type, const HPDF_Rect *rect);
 
-HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect);
+HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect);
 
-HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst);
 
-HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *uri);
-HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Destination dst);
-HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow);
-HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *type);
-HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *file, const char *args, const char *type);
+HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *uri);
+HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow);
+HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type);
+HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *args, const char *type);
 
 
-HPDF_Annotation	HPDF_3DAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap);
+HPDF_Annotation	HPDF_3DAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap);
 
-HPDF_Annotation	HPDF_MarkupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *text, HPDF_Encoder encoder, HPDF_AnnotType subtype);
+HPDF_Annotation	HPDF_MarkupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder, HPDF_AnnotType subtype);
 
-HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_Annotation parent);
+HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Annotation parent);
 
-HPDF_Annotation HPDF_StampAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, HPDF_StampAnnotName name, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_StampAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_StampAnnotName name, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
 HPDF_BOOL HPDF_Annotation_Validate(HPDF_Annotation annot);
 

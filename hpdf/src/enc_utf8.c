@@ -215,10 +215,10 @@ static HPDF_STATUS UTF8_Init(HPDF_Encoder encoder)
 	if (HPDF_CMapEncoder_AddCMap(encoder, UTF8_CID_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
-	if (HPDF_CMapEncoder_AddCodeSpaceRange(encoder, UTF8_SPACE_RANGE) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddCodeSpaceRange(encoder, &UTF8_SPACE_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
-	if (HPDF_CMapEncoder_AddNotDefRange(encoder, UTF8_NOTDEF_RANGE) != HPDF_OK)
+	if (HPDF_CMapEncoder_AddNotDefRange(encoder, &UTF8_NOTDEF_RANGE) != HPDF_OK)
 		return encoder->error->error_no;
 
 	attr->is_lead_byte_fn = NULL;

@@ -260,54 +260,54 @@ HPDF_STATUS HPDF_UseUTF8Encodings(HPDF_Doc pdf);
 /*--------------------------------------------------------------------------*/
 /*----- XObject ------------------------------------------------------------*/
 
-HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, HPDF_Rect rect, HPDF_Image image, HPDF_Boolean zoom);
+HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect, HPDF_Image image, HPDF_Boolean zoom);
 
-HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, HPDF_Rect rect);
+HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect);
 
 /*--------------------------------------------------------------------------*/
 /*----- annotation ---------------------------------------------------------*/
 
-HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap);
+HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap);
 
-HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
 HPDF_Annotation HPDF_Page_CreateLineAnnot(HPDF_Page page, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HPDF_Page page, HPDF_Rect rect);
+HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect);
 
-HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, HPDF_Rect rect);
+HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, const HPDF_Rect *rect);
 
-HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst);
-HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Destination dst);
-HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *destname, HPDF_BOOL newwindow);
-HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, HPDF_Rect rect, const char *type);
-HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, HPDF_Rect rect, const char *file, const char *args, const char *type);
-
-
-HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, HPDF_Rect rect, const char *uri);
+HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow);
+HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *type);
+HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *file, const char *args, const char *type);
 
 
-HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder, HPDF_AnnotType subType);
+HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *uri);
 
-HPDF_Annotation HPDF_Page_CreateHighlightAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateUnderlineAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder, HPDF_AnnotType subType);
 
-HPDF_Annotation HPDF_Page_CreateSquigglyAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateHighlightAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateStrikeOutAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateUnderlineAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_Annotation parent);
+HPDF_Annotation HPDF_Page_CreateSquigglyAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateStampAnnot(HPDF_Page page, HPDF_Rect rect, HPDF_StampAnnotName name, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateStrikeOutAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Annotation parent);
 
-HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateStampAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_StampAnnotName name, const char *text, HPDF_Encoder encoder);
 
-HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, HPDF_Rect rect, const char *text, HPDF_Encoder encoder);
+HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
+
+HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
+
+HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder);
 
 HPDF_STATUS HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHighlightMode mode);
 
@@ -341,7 +341,7 @@ HPDF_STATUS HPDF_MarkupAnnot_SetIntent(HPDF_Annotation annot, HPDF_AnnotIntent i
 
 HPDF_STATUS HPDF_MarkupAnnot_SetPopup(HPDF_Annotation annot, HPDF_Annotation popup);
 
-HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, HPDF_Rect rect);	/* RD entry */
+HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, const HPDF_Rect *rect);	/* RD entry */
 
 HPDF_STATUS HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, HPDF_INT cloudIntensity);	/* BE entry */
 
