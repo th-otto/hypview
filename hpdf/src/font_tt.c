@@ -168,10 +168,9 @@ static HPDF_INT CharWidth(HPDF_Font font, HPDF_BYTE code)
 }
 
 
-static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
+static HPDF_STATUS TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len, HPDF_TextWidth *tw)
 {
 	HPDF_FontAttr attr = (HPDF_FontAttr) font->attr;
-	HPDF_TextWidth ret = { 0, 0, 0, 0 };
 	HPDF_UINT i;
 	HPDF_BYTE b = 0;
 
@@ -180,27 +179,27 @@ static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT
 		for (i = 0; i < len; i++)
 		{
 			b = text[i];
-			ret.numchars++;
-			ret.width += CharWidth(font, b);
+			tw->numchars++;
+			tw->width += CharWidth(font, b);
 
 			if (HPDF_IS_WHITE_SPACE(b))
 			{
-				ret.numspace++;
-				ret.numwords++;
+				tw->numspace++;
+				tw->numwords++;
 			}
 		}
 	} else
 	{
-		HPDF_SetError(font->error, HPDF_FONT_INVALID_WIDTHS_TABLE, 0);
+		return HPDF_SetError(font->error, HPDF_FONT_INVALID_WIDTHS_TABLE, 0);
 	}
 
 	/* 2006.08.19 add. */
 	if (HPDF_IS_WHITE_SPACE(b))
 		;								/* do nothing. */
 	else
-		ret.numwords++;
+		tw->numwords++;
 
-	return ret;
+	return 0;
 }
 
 

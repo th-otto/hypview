@@ -123,7 +123,7 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 		HPDF_BYTE *pbuf = buf;
 		HPDF_INT32 len = obj->len;
 		HPDF_ParseText_Rec parse_state;
-		HPDF_UINT i;
+		HPDF_INT32 i;
 
 		if ((ret = HPDF_Stream_WriteChar(stream, '<')) != HPDF_OK)
 			return ret;
@@ -133,7 +133,7 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 
 		HPDF_Encoder_SetParseText(obj->encoder, &parse_state, src, len);
 
-		for (i = 0; (HPDF_INT32) i < len; i++)
+		for (i = 0; i < len; i++)
 		{
 			HPDF_BYTE b = src[i];
 			HPDF_UNICODE tmp_unicode;
@@ -153,7 +153,7 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 				if (btype == HPDF_BYTE_TYPE_LEAD)
 				{
 					HPDF_BYTE b2 = src[i + 1];
-					HPDF_UINT16 char_code = (HPDF_UINT16) ((HPDF_UINT) b * 256 + b2);
+					HPDF_UINT16 char_code = ((HPDF_UINT16) b << 8) + b2;
 
 					tmp_unicode = HPDF_Encoder_ToUnicode(obj->encoder, char_code);
 				} else
@@ -161,8 +161,8 @@ HPDF_STATUS HPDF_String_Write(HPDF_String obj, HPDF_Stream stream, HPDF_Encrypt 
 					tmp_unicode = HPDF_Encoder_ToUnicode(obj->encoder, b);
 				}
 
-				*pbuf++ = (tmp_unicode >> 8) & 0xff;
-				*pbuf++ = (tmp_unicode) & 0xff;
+				*pbuf++ = tmp_unicode >> 8;
+				*pbuf++ = tmp_unicode;
 				tmp_len++;
 			}
 		}

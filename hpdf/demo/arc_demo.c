@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	HPDF_Page_MoveTo(page, 100, 100);
 	HPDF_Page_LineTo(page, 100, 180);
 	HPDF_Page_Arc(page, 100, 100, 80, 0, 360 * 0.45);
-	pos = HPDF_Page_GetCurrentPos(page);
+	HPDF_Page_GetCurrentPos(page, &pos);
 	HPDF_Page_LineTo(page, 100, 100);
 	HPDF_Page_Fill(page);
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	HPDF_Page_MoveTo(page, 100, 100);
 	HPDF_Page_LineTo(page, pos.x, pos.y);
 	HPDF_Page_Arc(page, 100, 100, 80, 360 * 0.45, 360 * 0.7);
-	pos = HPDF_Page_GetCurrentPos(page);
+	HPDF_Page_GetCurrentPos(page, &pos);
 	HPDF_Page_LineTo(page, 100, 100);
 	HPDF_Page_Fill(page);
 
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 	HPDF_Page_MoveTo(page, 100, 100);
 	HPDF_Page_LineTo(page, pos.x, pos.y);
 	HPDF_Page_Arc(page, 100, 100, 80, 360 * 0.7, 360 * 0.85);
-	pos = HPDF_Page_GetCurrentPos(page);
+	HPDF_Page_GetCurrentPos(page, &pos);
 	HPDF_Page_LineTo(page, 100, 100);
 	HPDF_Page_Fill(page);
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 	HPDF_Page_MoveTo(page, 100, 100);
 	HPDF_Page_LineTo(page, pos.x, pos.y);
 	HPDF_Page_Arc(page, 100, 100, 80, 360 * 0.85, 360);
-	pos = HPDF_Page_GetCurrentPos(page);
+	HPDF_Page_GetCurrentPos(page, &pos);
 	HPDF_Page_LineTo(page, 100, 100);
 	HPDF_Page_Fill(page);
 

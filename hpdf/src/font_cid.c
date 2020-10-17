@@ -423,9 +423,8 @@ static HPDF_Font CIDFontType2_New(HPDF_Font parent, HPDF_Xref xref)
 }
 
 
-static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
+static HPDF_STATUS TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len, HPDF_TextWidth *tw)
 {
-	HPDF_TextWidth tw = { 0, 0, 0, 0 };
 	HPDF_FontAttr attr = (HPDF_FontAttr) font->attr;
 	HPDF_ParseText_Rec parse_state;
 	HPDF_Encoder encoder = attr->encoder;
@@ -482,16 +481,16 @@ static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT
 				w = -dw2;
 			}
 
-			tw.numchars++;
+			tw->numchars++;
 		}
 
 		if (HPDF_IS_WHITE_SPACE(code))
 		{
-			tw.numwords++;
-			tw.numspace++;
+			tw->numwords++;
+			tw->numspace++;
 		}
 
-		tw.width += w;
+		tw->width += w;
 		i++;
 	}
 
@@ -499,9 +498,9 @@ static HPDF_TextWidth TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT
 	if (HPDF_IS_WHITE_SPACE(b))
 		;								/* do nothing. */
 	else
-		tw.numwords++;
+		tw->numwords++;
 
-	return tw;
+	return 0;
 }
 
 

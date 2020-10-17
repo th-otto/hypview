@@ -27,8 +27,9 @@
 
 void HPDF_Error_Init(HPDF_Error error, void *user_data)
 {
-	memset(error, 0, sizeof(HPDF_Error_Rec));
-
+	error->error_no = 0;
+	error->detail_no = 0;
+	error->error_fn = 0;
 	error->user_data = user_data;
 }
 

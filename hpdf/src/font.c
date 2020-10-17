@@ -20,31 +20,30 @@
 #include "hpdf.h"
 
 
-HPDF_TextWidth HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len)
+HPDF_STATUS HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len, HPDF_TextWidth *tw)
 {
-	HPDF_TextWidth tw = { 0, 0, 0, 0 };
 	HPDF_FontAttr attr;
 
+	tw->numchars = 0;
+	tw->numwords = 0;
+	tw->width = 0;
+	tw->numspace = 0;
 	if (!HPDF_Font_Validate(font))
-		return tw;
+		return HPDF_INVALID_FONT;
 
 	if (len > HPDF_LIMIT_MAX_STRING_LEN)
 	{
-		HPDF_RaiseError(font->error, HPDF_STRING_OUT_OF_RANGE, 0);
-		return tw;
+		return HPDF_RaiseError(font->error, HPDF_STRING_OUT_OF_RANGE, 0);
 	}
 
 	attr = (HPDF_FontAttr) font->attr;
 
 	if (!attr->text_width_fn)
 	{
-		HPDF_SetError(font->error, HPDF_INVALID_OBJECT, 0);
-		return tw;
+		return HPDF_SetError(font->error, HPDF_INVALID_OBJECT, 0);
 	}
 
-	tw = attr->text_width_fn(font, text, len);
-
-	return tw;
+	return attr->text_width_fn(font, text, len, tw);
 }
 
 

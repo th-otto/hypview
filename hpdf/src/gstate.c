@@ -68,17 +68,26 @@ HPDF_GState HPDF_GState_New(HPDF_MMgr mmgr, HPDF_GState current)
 		gstate->depth = current->depth + 1;
 	} else
 	{
-		HPDF_TransMatrix DEF_MATRIX = { 1, 0, 0, 1, 0, 0 };
-		HPDF_RGBColor DEF_RGB_COLOR = { 0, 0, 0 };
-		HPDF_CMYKColor DEF_CMYK_COLOR = { 0, 0, 0, 0 };
-		HPDF_DashMode DEF_DASH_MODE = { {0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 };
-
-		gstate->trans_matrix = DEF_MATRIX;
+		gstate->trans_matrix.a = 1;
+		gstate->trans_matrix.b = 0;
+		gstate->trans_matrix.c = 0;
+		gstate->trans_matrix.d = 1;
+		gstate->trans_matrix.x = 0;
+		gstate->trans_matrix.y = 0;
 		gstate->line_width = HPDF_DEF_LINEWIDTH;
 		gstate->line_cap = HPDF_DEF_LINECAP;
 		gstate->line_join = HPDF_DEF_LINEJOIN;
 		gstate->miter_limit = HPDF_DEF_MITERLIMIT;
-		gstate->dash_mode = DEF_DASH_MODE;
+		gstate->dash_mode.ptn[0] = 0;
+		gstate->dash_mode.ptn[1] = 0;
+		gstate->dash_mode.ptn[2] = 0;
+		gstate->dash_mode.ptn[3] = 0;
+		gstate->dash_mode.ptn[4] = 0;
+		gstate->dash_mode.ptn[5] = 0;
+		gstate->dash_mode.ptn[6] = 0;
+		gstate->dash_mode.ptn[7] = 0;
+		gstate->dash_mode.num_ptn = 0;
+		gstate->dash_mode.phase = 0;
 		gstate->flatness = HPDF_DEF_FLATNESS;
 
 		gstate->char_space = HPDF_DEF_CHARSPACE;
@@ -90,10 +99,20 @@ HPDF_GState HPDF_GState_New(HPDF_MMgr mmgr, HPDF_GState current)
 
 		gstate->cs_stroke = HPDF_CS_DEVICE_GRAY;
 		gstate->cs_fill = HPDF_CS_DEVICE_GRAY;
-		gstate->rgb_fill = DEF_RGB_COLOR;
-		gstate->rgb_stroke = DEF_RGB_COLOR;
-		gstate->cmyk_fill = DEF_CMYK_COLOR;
-		gstate->cmyk_stroke = DEF_CMYK_COLOR;
+		gstate->rgb_fill.r = 0;
+		gstate->rgb_fill.g = 0;
+		gstate->rgb_fill.b = 0;
+		gstate->rgb_stroke.r = 0;
+		gstate->rgb_stroke.g = 0;
+		gstate->rgb_stroke.b = 0;
+		gstate->cmyk_fill.c = 0;
+		gstate->cmyk_fill.m = 0;
+		gstate->cmyk_fill.y = 0;
+		gstate->cmyk_fill.k = 0;
+		gstate->cmyk_stroke.c = 0;
+		gstate->cmyk_stroke.m = 0;
+		gstate->cmyk_stroke.y = 0;
+		gstate->cmyk_stroke.k = 0;
 		gstate->gray_fill = 0;
 		gstate->gray_stroke = 0;
 

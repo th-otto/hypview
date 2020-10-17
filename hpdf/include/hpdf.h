@@ -530,7 +530,7 @@ HPDF_UINT HPDF_Font_GetXHeight(HPDF_Font font);
 HPDF_UINT HPDF_Font_GetCapHeight(HPDF_Font font);
 
 
-HPDF_TextWidth HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len);
+HPDF_STATUS HPDF_Font_TextWidth(HPDF_Font font, const HPDF_BYTE *text, HPDF_UINT len, HPDF_TextWidth *tw);
 
 
 HPDF_UINT HPDF_Font_MeasureText(HPDF_Font font, const HPDF_BYTE *text,
@@ -577,13 +577,10 @@ HPDF_REAL HPDF_Page_GetHeight(HPDF_Page page);
 HPDF_UINT16 HPDF_Page_GetGMode(HPDF_Page page);
 
 
-HPDF_Point HPDF_Page_GetCurrentPos(HPDF_Page page);
+HPDF_STATUS HPDF_Page_GetCurrentPos(HPDF_Page page, HPDF_Point *pos);
 
 
-HPDF_STATUS HPDF_Page_GetCurrentPos2(HPDF_Page page, HPDF_Point *pos);
-
-
-HPDF_Point HPDF_Page_GetCurrentTextPos(HPDF_Page page);
+void HPDF_Page_GetCurrentTextPos(HPDF_Page page, HPDF_Point *pos);
 
 
 HPDF_STATUS HPDF_Page_GetCurrentTextPos2(HPDF_Page page, HPDF_Point *pos);
@@ -595,7 +592,7 @@ HPDF_Font HPDF_Page_GetCurrentFont(HPDF_Page page);
 HPDF_REAL HPDF_Page_GetCurrentFontSize(HPDF_Page page);
 
 
-HPDF_TransMatrix HPDF_Page_GetTransMatrix(HPDF_Page page);
+void HPDF_Page_GetTransMatrix(HPDF_Page page, HPDF_TransMatrix *matrix);
 
 
 HPDF_REAL HPDF_Page_GetLineWidth(HPDF_Page page);
@@ -610,7 +607,7 @@ HPDF_LineJoin HPDF_Page_GetLineJoin(HPDF_Page page);
 HPDF_REAL HPDF_Page_GetMiterLimit(HPDF_Page page);
 
 
-HPDF_DashMode HPDF_Page_GetDash(HPDF_Page page);
+void HPDF_Page_GetDash(HPDF_Page page, HPDF_DashMode *mode);
 
 
 HPDF_REAL HPDF_Page_GetFlat(HPDF_Page page);
@@ -658,7 +655,7 @@ HPDF_ColorSpace HPDF_Page_GetStrokingColorSpace(HPDF_Page page);
 HPDF_ColorSpace HPDF_Page_GetFillingColorSpace(HPDF_Page page);
 
 
-HPDF_TransMatrix HPDF_Page_GetTextMatrix(HPDF_Page page);
+void HPDF_Page_GetTextMatrix(HPDF_Page page, HPDF_TransMatrix *matrix);
 
 
 HPDF_UINT HPDF_Page_GetGStateDepth(HPDF_Page page);

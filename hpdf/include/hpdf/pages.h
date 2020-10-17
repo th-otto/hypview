@@ -83,7 +83,7 @@ const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font);
 const char *HPDF_Page_GetExtGStateName(HPDF_Page page, HPDF_ExtGState gstate);
 
 
-HPDF_Box HPDF_Page_GetMediaBox(HPDF_Page page);
+void HPDF_Page_GetMediaBox(HPDF_Page page, HPDF_Box *box);
 
 
 HPDF_STATUS HPDF_Page_SetBoxValue(HPDF_Page page, const char *name, HPDF_UINT index, HPDF_REAL value);

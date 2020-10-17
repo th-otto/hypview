@@ -105,13 +105,14 @@ int main(int argc, char **argv)
 	HPDF_Page_SetTextLeading(index_page, 23);
 
 	/* page1 (HPDF_ANNOT_NO_HIGHLIGHT) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page1 (HilightMode=HPDF_ANNOT_NO_HIGHLIGHT)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -123,13 +124,14 @@ int main(int argc, char **argv)
 
 
 	/* page2 (HPDF_ANNOT_INVERT_BOX) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page2 (HilightMode=HPDF_ANNOT_INVERT_BOX)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -141,13 +143,14 @@ int main(int argc, char **argv)
 
 
 	/* page3 (HPDF_ANNOT_INVERT_BORDER) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page3 (HilightMode=HPDF_ANNOT_INVERT_BORDER)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -159,13 +162,14 @@ int main(int argc, char **argv)
 
 
 	/* page4 (HPDF_ANNOT_DOWN_APPEARANCE) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page4 (HilightMode=HPDF_ANNOT_DOWN_APPEARANCE)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -177,13 +181,14 @@ int main(int argc, char **argv)
 
 
 	/* page5 (dash border) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page5 (dash border)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -195,13 +200,14 @@ int main(int argc, char **argv)
 
 
 	/* page6 (no border) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page6 (no border)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -213,13 +219,14 @@ int main(int argc, char **argv)
 
 
 	/* page7 (bold border) */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "Jump to Page7 (bold border)");
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_MoveToNextLine(index_page);
 
@@ -231,16 +238,17 @@ int main(int argc, char **argv)
 
 
 	/* URI link */
-	tp = HPDF_Page_GetCurrentTextPos(index_page);
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
 
 	HPDF_Page_ShowText(index_page, "URI (");
 	HPDF_Page_ShowText(index_page, uri);
 	HPDF_Page_ShowText(index_page, ")");
 
 	rect.left = tp.x - 4;
-	rect.bottom = tp.y - 4;
-	rect.right = HPDF_Page_GetCurrentTextPos(index_page).x + 4;
 	rect.top = tp.y + 10;
+	HPDF_Page_GetCurrentTextPos(index_page, &tp);
+	rect.right = tp.x + 4;
+	rect.bottom = tp.y - 4;
 
 	HPDF_Page_CreateURILinkAnnot(index_page, &rect, uri);
 

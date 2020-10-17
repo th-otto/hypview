@@ -21,7 +21,6 @@
 #include "hpdf.h"
 #include <string.h>
 
-static const HPDF_TransMatrix INIT_MATRIX = { 1, 0, 0, 1, 0, 0 };
 static const HPDF_Point INIT_POS = { 0, 0 };
 static const HPDF_DashMode INIT_MODE = { {0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 };
 
@@ -838,7 +837,12 @@ HPDF_STATUS HPDF_Page_BeginText(HPDF_Page page)
 
 	attr->gmode = HPDF_GMODE_TEXT_OBJECT;
 	attr->text_pos = INIT_POS;
-	attr->text_matrix = INIT_MATRIX;
+	attr->text_matrix.a = 1;
+	attr->text_matrix.b = 0;
+	attr->text_matrix.c = 0;
+	attr->text_matrix.d = 1;
+	attr->text_matrix.x = 0;
+	attr->text_matrix.y = 0;
 
 	return ret;
 }

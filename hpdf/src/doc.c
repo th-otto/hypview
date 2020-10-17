@@ -962,6 +962,7 @@ static HPDF_STATUS PrepareTrailer(HPDF_Doc pdf)
 }
 
 
+__attribute__((__noinline__))
 HPDF_STATUS HPDF_Doc_SetEncryptOn(HPDF_Doc pdf)
 {
 	if (pdf->encrypt_on)

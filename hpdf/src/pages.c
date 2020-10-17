@@ -480,9 +480,12 @@ const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font)
 }
 
 
-HPDF_Box HPDF_Page_GetMediaBox(HPDF_Page page)
+void HPDF_Page_GetMediaBox(HPDF_Page page, HPDF_Box *media_box)
 {
-	HPDF_Box media_box = { 0, 0, 0, 0 };
+	media_box->left = 0;
+	media_box->bottom = 0;
+	media_box->right = 0;
+	media_box->top = 0;
 
 	if (HPDF_Page_Validate(page))
 	{
@@ -494,19 +497,19 @@ HPDF_Box HPDF_Page_GetMediaBox(HPDF_Page page)
 
 			r = (HPDF_Real) HPDF_Array_GetItem(array, 0, HPDF_OCLASS_REAL);
 			if (r)
-				media_box.left = r->value;
+				media_box->left = r->value;
 
 			r = (HPDF_Real) HPDF_Array_GetItem(array, 1, HPDF_OCLASS_REAL);
 			if (r)
-				media_box.bottom = r->value;
+				media_box->bottom = r->value;
 
 			r = (HPDF_Real) HPDF_Array_GetItem(array, 2, HPDF_OCLASS_REAL);
 			if (r)
-				media_box.right = r->value;
+				media_box->right = r->value;
 
 			r = (HPDF_Real) HPDF_Array_GetItem(array, 3, HPDF_OCLASS_REAL);
 			if (r)
-				media_box.top = r->value;
+				media_box->top = r->value;
 
 			HPDF_CheckError(page->error);
 		} else
@@ -514,8 +517,6 @@ HPDF_Box HPDF_Page_GetMediaBox(HPDF_Page page)
 			HPDF_RaiseError(page->error, HPDF_PAGE_CANNOT_FIND_OBJECT, 0);
 		}
 	}
-
-	return media_box;
 }
 
 
@@ -907,7 +908,7 @@ HPDF_REAL HPDF_Page_TextWidth(HPDF_Page page, const char *text)
 		return 0;
 	}
 
-	tw = HPDF_Font_TextWidth(attr->gstate->font, (const HPDF_BYTE *) text, len);
+	HPDF_Font_TextWidth(attr->gstate->font, (const HPDF_BYTE *) text, len, &tw);
 
 	ret += attr->gstate->word_space * tw.numspace;
 	ret += tw.width * attr->gstate->font_size / 1000;
@@ -949,13 +950,17 @@ HPDF_UINT HPDF_Page_MeasureText(HPDF_Page page, const char *text, HPDF_REAL widt
 
 HPDF_REAL HPDF_Page_GetWidth(HPDF_Page page)
 {
-	return HPDF_Page_GetMediaBox(page).right;
+	HPDF_Box box;
+	HPDF_Page_GetMediaBox(page, &box);
+	return box.right;
 }
 
 
 HPDF_REAL HPDF_Page_GetHeight(HPDF_Page page)
 {
-	return HPDF_Page_GetMediaBox(page).top;
+	HPDF_Box box;
+	HPDF_Page_GetMediaBox(page, &box);
+	return box.top;
 }
 
 
@@ -984,17 +989,22 @@ HPDF_REAL HPDF_Page_GetCurrentFontSize(HPDF_Page page)
 }
 
 
-HPDF_TransMatrix HPDF_Page_GetTransMatrix(HPDF_Page page)
+void HPDF_Page_GetTransMatrix(HPDF_Page page, HPDF_TransMatrix *matrix)
 {
-	HPDF_TransMatrix DEF_MATRIX = { 1, 0, 0, 1, 0, 0 };
-
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
-		return attr->gstate->trans_matrix;
+		*matrix = attr->gstate->trans_matrix;
+		return;
 	}
-	return DEF_MATRIX;
+
+	matrix->a = 1;
+	matrix->b = 0;
+	matrix->c = 0;
+	matrix->d = 1;
+	matrix->x = 0;
+	matrix->y = 0;
 }
 
 
@@ -1046,18 +1056,26 @@ HPDF_REAL HPDF_Page_GetMiterLimit(HPDF_Page page)
 }
 
 
-HPDF_DashMode HPDF_Page_GetDash(HPDF_Page page)
+void HPDF_Page_GetDash(HPDF_Page page, HPDF_DashMode *mode)
 {
-	HPDF_DashMode mode = { {0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 };
-
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
-		mode = attr->gstate->dash_mode;
+		*mode = attr->gstate->dash_mode;
+		return;
 	}
 
-	return mode;
+	mode->ptn[0] = 0;
+	mode->ptn[1] = 0;
+	mode->ptn[2] = 0;
+	mode->ptn[3] = 0;
+	mode->ptn[4] = 0;
+	mode->ptn[5] = 0;
+	mode->ptn[6] = 0;
+	mode->ptn[7] = 0;
+	mode->num_ptn = 0;
+	mode->phase = 0;
 }
 
 
@@ -1259,17 +1277,22 @@ HPDF_ColorSpace HPDF_Page_GetFillingColorSpace(HPDF_Page page)
 }
 
 
-HPDF_TransMatrix HPDF_Page_GetTextMatrix(HPDF_Page page)
+void HPDF_Page_GetTextMatrix(HPDF_Page page, HPDF_TransMatrix *matrix)
 {
-	HPDF_TransMatrix DEF_MATRIX = { 1, 0, 0, 1, 0, 0 };
-
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
-		return attr->text_matrix;
+		*matrix = attr->text_matrix;
+		return;
 	}
-	return DEF_MATRIX;
+
+	matrix->a = 1;
+	matrix->b = 0;
+	matrix->c = 0;
+	matrix->d = 1;
+	matrix->x = 0;
+	matrix->y = 0;
 }
 
 
@@ -1294,23 +1317,7 @@ HPDF_UINT16 HPDF_Page_GetGMode(HPDF_Page page)
 }
 
 
-HPDF_Point HPDF_Page_GetCurrentPos(HPDF_Page page)
-{
-	HPDF_Point pos = { 0, 0 };
-
-	if (HPDF_Page_Validate(page))
-	{
-		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
-
-		if (attr->gmode & HPDF_GMODE_PATH_OBJECT)
-			pos = attr->cur_pos;
-	}
-
-	return pos;
-}
-
-
-HPDF_STATUS HPDF_Page_GetCurrentPos2(HPDF_Page page, HPDF_Point *pos)
+HPDF_STATUS HPDF_Page_GetCurrentPos(HPDF_Page page, HPDF_Point *pos)
 {
 	HPDF_PageAttr attr;
 
@@ -1328,19 +1335,21 @@ HPDF_STATUS HPDF_Page_GetCurrentPos2(HPDF_Page page, HPDF_Point *pos)
 }
 
 
-HPDF_Point HPDF_Page_GetCurrentTextPos(HPDF_Page page)
+void HPDF_Page_GetCurrentTextPos(HPDF_Page page, HPDF_Point *pos)
 {
-	HPDF_Point pos = { 0, 0 };
-
 	if (HPDF_Page_Validate(page))
 	{
 		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
 
 		if (attr->gmode & HPDF_GMODE_TEXT_OBJECT)
-			pos = attr->text_pos;
+		{
+			*pos = attr->text_pos;
+			return;
+		}
 	}
 
-	return pos;
+	pos->x = 0;
+	pos->y = 0;
 }
 
 

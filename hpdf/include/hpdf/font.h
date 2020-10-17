@@ -44,7 +44,7 @@ typedef enum _HPDF_FontType
 typedef HPDF_Dict HPDF_Font;
 
 
-typedef HPDF_TextWidth(*HPDF_Font_TextWidths_Func) (HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len);
+typedef HPDF_STATUS (*HPDF_Font_TextWidths_Func) (HPDF_Font font, const HPDF_BYTE * text, HPDF_UINT len, HPDF_TextWidth *tw);
 
 
 typedef HPDF_UINT (*HPDF_Font_MeasureText_Func) (HPDF_Font font, const HPDF_BYTE *text,

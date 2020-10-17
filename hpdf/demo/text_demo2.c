@@ -35,7 +35,9 @@ static void error_handler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *use
 static void PrintText(HPDF_Page page)
 {
 	char buf[512];
-	HPDF_Point pos = HPDF_Page_GetCurrentTextPos(page);
+	HPDF_Point pos;
+	
+	HPDF_Page_GetCurrentTextPos(page, &pos);
 
 	no++;
 	sprintf(buf, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);

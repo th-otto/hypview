@@ -157,7 +157,7 @@ int main(int argc, char **argv)
 		HPDF_Page_SetFontAndSize(page, detail_font[i], 30);
 		HPDF_Page_ShowText(page, samp_text);
 
-		p = HPDF_Page_GetCurrentTextPos(page);
+		HPDF_Page_GetCurrentTextPos(page, &p);
 
 		/* finish to print text. */
 		HPDF_Page_EndText(page);
