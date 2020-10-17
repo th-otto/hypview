@@ -94,7 +94,7 @@ typedef struct _HPDF_Encrypt_Rec
 
 	HPDF_INT permission;
 	HPDF_BYTE encrypt_id[HPDF_ID_LEN];
-	HPDF_BYTE encryption_key[HPDF_MD5_KEY_LEN + 5];
+	HPDF_BYTE encryption_key[HPDF_MD5_KEY_LEN + 8];
 	HPDF_BYTE md5_encryption_key[HPDF_MD5_KEY_LEN];
 	HPDF_ARC4_Ctx_Rec arc4ctx;
 } HPDF_Encrypt_Rec;
