@@ -28,6 +28,7 @@ extern "C" {
 /*------ HPDF_3DMeasure -----------------------------------------------------*/
 
 
+HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, const HPDF_Point3D *point);
 HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Point3D *firstanchorpoint, const HPDF_Point3D *textanchorpoint);
 
 HPDF_3DMeasure HPDF_PD33DMeasure_New(

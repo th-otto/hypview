@@ -21,10 +21,16 @@
 #include "hpdf/3dmeasur.h"
 #include "hpdf.h"
 
+#ifdef __PUREC__
+# define MEASURE3D_ALL
+#endif
+
+
 /*----------------------------------------------------------------------------*/
 /*------ HPDF_3DMeasure -----------------------------------------------------*/
 
-static HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, const HPDF_Point3D *point)
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_ADDPOINT)
+HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, const HPDF_Point3D *point)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
@@ -42,10 +48,12 @@ static HPDF_STATUS HPDF_Dict_AddPoint3D(HPDF_Dict dict, const char *key, const H
 
 	return ret;
 }
+#endif
 
 
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_NEW)
 HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Point3D *firstanchorpoint, const HPDF_Point3D *textanchorpoint)
 {
 	HPDF_3DMeasure measure;
@@ -69,9 +77,11 @@ HPDF_3DMeasure HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_
 
 	return measure;
 }
+#endif
 
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_SETCOLOR)
 HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, const HPDF_RGBColor *color)
 {
 	HPDF_Array array;
@@ -92,8 +102,10 @@ HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, const HPDF_RGBColor 
 
 	return ret;
 }
+#endif
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_SETTEXTSIZE)
 HPDF_STATUS HPDF_3DMeasure_SetTextSize(HPDF_3DMeasure measure, HPDF_REAL textsize)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -102,8 +114,10 @@ HPDF_STATUS HPDF_3DMeasure_SetTextSize(HPDF_3DMeasure measure, HPDF_REAL textsiz
 
 	return ret;
 }
+#endif
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_SETNAME)
 HPDF_STATUS HPDF_3DMeasure_SetName(HPDF_3DMeasure measure, const char *name)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -117,8 +131,10 @@ HPDF_STATUS HPDF_3DMeasure_SetName(HPDF_3DMeasure measure, const char *name)
 
 	return ret;
 }
+#endif
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_SETTEXTBOXSIZE)
 HPDF_STATUS HPDF_3DC3DMeasure_SetTextBoxSize(HPDF_3DMeasure measure, HPDF_INT32 x, HPDF_INT32 y)
 {
 	HPDF_Array array;
@@ -137,8 +153,10 @@ HPDF_STATUS HPDF_3DC3DMeasure_SetTextBoxSize(HPDF_3DMeasure measure, HPDF_INT32 
 
 	return ret;
 }
+#endif
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_SETTEXT)
 HPDF_STATUS HPDF_3DC3DMeasure_SetText(HPDF_3DMeasure measure, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -152,18 +170,22 @@ HPDF_STATUS HPDF_3DC3DMeasure_SetText(HPDF_3DMeasure measure, const char *text, 
 
 	return ret;
 }
+#endif
 
 
-HPDF_STATUS HPDF_3DC3DMeasure_SetProjectionAnotation(HPDF_3DMeasure measure, HPDF_Annotation projectionanotation)
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_SETPROJECTIONANNOTATION)
+HPDF_STATUS HPDF_3DC3DMeasure_SetProjectionAnnotation(HPDF_3DMeasure measure, HPDF_Annotation projectionannotation)
 {
 	HPDF_STATUS ret = HPDF_OK;
 
-	ret = HPDF_Dict_Add(measure, "S", projectionanotation);
+	ret = HPDF_Dict_Add(measure, "S", projectionannotation);
 
 	return ret;
 }
+#endif
 
 
+#if defined(MEASURE3D_ALL) || defined(MEASURE3D_PD33DMEASURE_NEW)
 HPDF_3DMeasure HPDF_PD33DMeasure_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
 	const HPDF_Point3D *annotationPlaneNormal,
@@ -209,3 +231,4 @@ HPDF_3DMeasure HPDF_PD33DMeasure_New(HPDF_MMgr mmgr,
 
 	return measure;
 }
+#endif

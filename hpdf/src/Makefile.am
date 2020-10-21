@@ -57,7 +57,6 @@ libhpdf_a_SOURCES = \
 	utils.c \
 	xref.c \
 	pdfa.c \
-	3dmeasur.c \
 	exdata.c \
 	enc_utf8.c \
 	t4.h \
@@ -75,6 +74,15 @@ libhpdf_a_LIBADD = \
 	catalog_addpagelabel.o \
 	catalog_setviewerpreferences.o \
 	catalog_getviewerpreferences.o \
+	3dmeasur_addpoint.o \
+	3dmeasur_new.o \
+	3dmeasur_setcolor.o \
+	3dmeasur_settextsize.o \
+	3dmeasur_setname.o \
+	3dmeasur_settextboxsize.o \
+	3dmeasur_settext.o \
+	3dmeasur_setprojectionannotation.o \
+	3dmeasur_pd33dmeasure_new.o \
 	$(empty)
 
 catalog_new.o: catalog.c
@@ -111,8 +119,38 @@ catalog_getviewerpreferences.o: catalog.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_GETVIEWERPREFERENCES
 
 
+3dmeasur_addpoint.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_ADDPOINT
+
+3dmeasur_new.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_NEW
+
+3dmeasur_setcolor.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_SETCOLOR
+
+3dmeasur_settextsize.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_SETTEXTSIZE
+
+3dmeasur_setname.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_SETNAME
+
+3dmeasur_settextboxsize.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_SETTEXTBOXSIZE
+
+3dmeasur_settext.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_SETTEXT
+
+3dmeasur_setprojectionannotation.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_SETPROJECTIONANNOTATION
+
+3dmeasur_pd33dmeasure_new.o: 3dmeasur.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_PD33DMEASURE_NEW
+
+
+
 EXTRADIST = \
 	catalog.c \
+	3dmeasur.c \
 	$(empty)
 
 AM_CPPFLAGS = -I$(srcdir)/../include -I$(top_srcdir)/include

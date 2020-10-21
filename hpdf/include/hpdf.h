@@ -404,7 +404,7 @@ HPDF_STATUS HPDF_3DC3DMeasure_SetTextBoxSize(HPDF_3DMeasure measure, HPDF_INT32 
 
 HPDF_STATUS HPDF_3DC3DMeasure_SetText(HPDF_3DMeasure measure, const char *text, HPDF_Encoder encoder);
 
-HPDF_STATUS HPDF_3DC3DMeasure_SetProjectionAnotation(HPDF_3DMeasure measure, HPDF_Annotation projectionanotation);
+HPDF_STATUS HPDF_3DC3DMeasure_SetProjectionAnnotation(HPDF_3DMeasure measure, HPDF_Annotation projectionannotation);
 
 /*--------------------------------------------------------------------------*/
 /*----- External Data ---------------------------------------------------------*/
