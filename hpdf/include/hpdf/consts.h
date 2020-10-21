@@ -84,12 +84,16 @@
 /*----------------------------------------------------------------------------*/
 /*----- permission flags (only Revision 2 is supported)-----------------------*/
 
-#define HPDF_ENABLE_READ         0
-#define HPDF_ENABLE_PRINT        4
-#define HPDF_ENABLE_EDIT_ALL     8
-#define HPDF_ENABLE_COPY         16
-#define HPDF_ENABLE_EDIT         32
-
+#define HPDF_ENABLE_READ         0x0000
+#define HPDF_ENABLE_PRINT        0x0004
+#define HPDF_ENABLE_EDIT_ALL     0x0008
+#define HPDF_ENABLE_COPY         0x0010
+#define HPDF_ENABLE_EDIT         0x0020
+/* revision 3 */
+#define HPDF_ENABLE_FILL_FORM    0x0100
+#define HPDF_ENABLE_EXTRACT_TEXT 0x0200
+#define HPDF_ENABLE_ASSEMBLE     0x0400
+#define HPDF_ENABLE_PRINTLOW     0x0800
 
 /*----------------------------------------------------------------------------*/
 /*------ viewer preferences definitions --------------------------------------*/

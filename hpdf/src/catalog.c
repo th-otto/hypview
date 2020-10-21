@@ -21,28 +21,14 @@
 #include "hpdf/pages.h"
 #include <string.h>
 
-static const char *const HPDF_PAGE_LAYOUT_NAMES[] = {
-	"SinglePage",
-	"OneColumn",
-	"TwoColumnLeft",
-	"TwoColumnRight",
-	"TwoPageLeft",
-	"TwoPageRight",
-	NULL
-};
+
+#ifdef __PUREC__
+# define CATALOG_ALL
+#endif
 
 
-static const char *const HPDF_PAGE_MODE_NAMES[] = {
-	"UseNone",
-	"UseOutlines",
-	"UseThumbs",
-	"FullScreen",
-	"UseOC",
-	"UseAttachments",
-	NULL
-};
 
-
+#if defined(CATALOG_ALL) || defined(CATALOG_NEW)
 HPDF_Catalog HPDF_Catalog_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 {
 	HPDF_Catalog catalog;
@@ -57,7 +43,7 @@ HPDF_Catalog HPDF_Catalog_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	if (HPDF_Xref_Add(xref, catalog) != HPDF_OK)
 		return NULL;
 
-	/* add requiered elements */
+	/* add required elements */
 	ret += HPDF_Dict_AddName(catalog, "Type", "Catalog");
 	ret += HPDF_Dict_Add(catalog, "Pages", HPDF_Pages_New(mmgr, NULL, xref));
 
@@ -66,8 +52,10 @@ HPDF_Catalog HPDF_Catalog_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 
 	return catalog;
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_GETROOT)
 HPDF_Pages HPDF_Catalog_GetRoot(HPDF_Catalog catalog)
 {
 	HPDF_Dict pages;
@@ -81,20 +69,37 @@ HPDF_Pages HPDF_Catalog_GetRoot(HPDF_Catalog catalog)
 
 	return pages;
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_GETNAMES)
 HPDF_NameDict HPDF_Catalog_GetNames(HPDF_Catalog catalog)
 {
 	if (!catalog)
 		return NULL;
 	return (HPDF_NameDict) HPDF_Dict_GetItem(catalog, "Names", HPDF_OCLASS_DICT);
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_SETNAMES)
 HPDF_STATUS HPDF_Catalog_SetNames(HPDF_Catalog catalog, HPDF_NameDict dict)
 {
 	return HPDF_Dict_Add(catalog, "Names", dict);
 }
+#endif
+
+
+#if defined(CATALOG_ALL) || defined(CATALOG_PAGELAYOUT)
+static const char *const HPDF_PAGE_LAYOUT_NAMES[] = {
+	"SinglePage",
+	"OneColumn",
+	"TwoColumnLeft",
+	"TwoColumnRight",
+	"TwoPageLeft",
+	"TwoPageRight",
+	NULL
+};
 
 
 HPDF_PageLayout HPDF_Catalog_GetPageLayout(HPDF_Catalog catalog)
@@ -119,8 +124,21 @@ HPDF_PageLayout HPDF_Catalog_GetPageLayout(HPDF_Catalog catalog)
 
 HPDF_STATUS HPDF_Catalog_SetPageLayout(HPDF_Catalog catalog, HPDF_PageLayout layout)
 {
-	return HPDF_Dict_AddName(catalog, "PageLayout", HPDF_PAGE_LAYOUT_NAMES[(HPDF_INT) layout]);
+	return HPDF_Dict_AddName(catalog, "PageLayout", HPDF_PAGE_LAYOUT_NAMES[layout]);
 }
+#endif
+
+
+#if defined(CATALOG_ALL) || defined(CATALOG_PAGEMODE)
+static const char *const HPDF_PAGE_MODE_NAMES[] = {
+	"UseNone",
+	"UseOutlines",
+	"UseThumbs",
+	"FullScreen",
+	"UseOC",
+	"UseAttachments",
+	NULL
+};
 
 
 HPDF_PageMode HPDF_Catalog_GetPageMode(HPDF_Catalog catalog)
@@ -147,8 +165,10 @@ HPDF_STATUS HPDF_Catalog_SetPageMode(HPDF_Catalog catalog, HPDF_PageMode mode)
 {
 	return HPDF_Dict_AddName(catalog, "PageMode", HPDF_PAGE_MODE_NAMES[(HPDF_INT) mode]);
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_SETOPENACTION)
 HPDF_STATUS HPDF_Catalog_SetOpenAction(HPDF_Catalog catalog, HPDF_Destination open_action)
 {
 	if (!open_action)
@@ -159,8 +179,10 @@ HPDF_STATUS HPDF_Catalog_SetOpenAction(HPDF_Catalog catalog, HPDF_Destination op
 
 	return HPDF_Dict_Add(catalog, "OpenAction", open_action);
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_VALIDATE)
 HPDF_BOOL HPDF_Catalog_Validate(HPDF_Catalog catalog)
 {
 	if (!catalog)
@@ -174,8 +196,10 @@ HPDF_BOOL HPDF_Catalog_Validate(HPDF_Catalog catalog)
 
 	return HPDF_TRUE;
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_ADDPAGELABEL)
 HPDF_STATUS HPDF_Catalog_AddPageLabel(HPDF_Catalog catalog, HPDF_UINT page_num, HPDF_Dict page_label)
 {
 	HPDF_STATUS ret;
@@ -211,8 +235,10 @@ HPDF_STATUS HPDF_Catalog_AddPageLabel(HPDF_Catalog catalog, HPDF_UINT page_num, 
 
 	return HPDF_Array_Add(nums, page_label);
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_SETVIEWERPREFERENCES)
 HPDF_STATUS HPDF_Catalog_SetViewerPreference(HPDF_Catalog catalog, HPDF_UINT value)
 {
 	HPDF_STATUS ret;
@@ -327,8 +353,10 @@ HPDF_STATUS HPDF_Catalog_SetViewerPreference(HPDF_Catalog catalog, HPDF_UINT val
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(CATALOG_ALL) || defined(CATALOG_GETVIEWERPREFERENCES)
 HPDF_UINT HPDF_Catalog_GetViewerPreference(HPDF_Catalog catalog)
 {
 	HPDF_Dict preferences;
@@ -396,3 +424,4 @@ HPDF_UINT HPDF_Catalog_GetViewerPreference(HPDF_Catalog catalog)
 
 	return value;
 }
+#endif

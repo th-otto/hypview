@@ -344,7 +344,7 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	attr->stream = attr->contents->stream;
 	attr->xref = xref;
 
-	/* add requiered elements */
+	/* add required elements */
 	ret += HPDF_Dict_AddName(page, "Type", "Page");
 	HPDF_ToBox(&box, 0, 0, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].x, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].y);
 	ret += HPDF_Dict_Add(page, "MediaBox", HPDF_Box_Array_New(page->mmgr, &box));
@@ -537,7 +537,7 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, cons
 
 	fromxobject->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
 
-	/* add requiered elements */
+	/* add required elements */
 	fromxobject->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
 	resource = HPDF_Dict_New(page->mmgr);
@@ -666,7 +666,7 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, co
 
 	fromxobject->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
 
-	/* add requiered elements */
+	/* add required elements */
 	fromxobject->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
 	resource = HPDF_Dict_New(page->mmgr);
@@ -1401,7 +1401,7 @@ HPDF_STATUS HPDF_Page_SetRotate(HPDF_Page page, HPDF_UINT16 angle)
 	if (!HPDF_Page_Validate(page))
 		return HPDF_INVALID_PAGE;
 
-	if (angle % 90 != 0)
+	if ((angle % 90) != 0)
 		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_ROTATE_VALUE, angle);
 
 	n = (HPDF_Number) HPDF_Page_GetInheritableItem(page, "Rotate", HPDF_OCLASS_NUMBER);
@@ -1465,20 +1465,20 @@ HPDF_STATUS HPDF_Page_SetSize(HPDF_Page page, HPDF_PageSizes size, HPDF_PageDire
 	if (!HPDF_Page_Validate(page))
 		return HPDF_INVALID_PAGE;
 
-	if ((unsigned int)size > HPDF_PAGE_SIZE_EOF)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, direction);
+	if ((unsigned int)size >= HPDF_PAGE_SIZE_EOF)
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, size);
 
 	if (direction == HPDF_PAGE_LANDSCAPE)
 	{
-		ret += HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[(HPDF_UINT) size].x);
-		ret += HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[(HPDF_UINT) size].y);
+		ret += HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[size].x);
+		ret += HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[size].y);
 	} else if (direction == HPDF_PAGE_PORTRAIT)
 	{
-		ret += HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[(HPDF_UINT) size].y);
-		ret += HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[(HPDF_UINT) size].x);
+		ret += HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[size].y);
+		ret += HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[size].x);
 	} else
 	{
-		ret = HPDF_SetError(page->error, HPDF_PAGE_INVALID_DIRECTION, (HPDF_STATUS) direction);
+		ret = HPDF_SetError(page->error, HPDF_PAGE_INVALID_DIRECTION, direction);
 	}
 
 	if (ret != HPDF_OK)

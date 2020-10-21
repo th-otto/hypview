@@ -8,7 +8,6 @@ libhpdf_a_SOURCES = \
 	array.c \
 	binary.c \
 	boolean.c \
-	catalog.c \
 	destinat.c \
 	dict.c \
 	doc.c \
@@ -62,6 +61,58 @@ libhpdf_a_SOURCES = \
 	exdata.c \
 	enc_utf8.c \
 	t4.h \
+	$(empty)
+
+libhpdf_a_LIBADD = \
+	catalog_new.o \
+	catalog_getroot.o \
+	catalog_getnames.o \
+	catalog_setnames.o \
+	catalog_pagelayout.o \
+	catalog_pagemode.o \
+	catalog_setopenaction.o \
+	catalog_validate.o \
+	catalog_addpagelabel.o \
+	catalog_setviewerpreferences.o \
+	catalog_getviewerpreferences.o \
+	$(empty)
+
+catalog_new.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_NEW
+
+catalog_getroot.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_GETROOT
+
+catalog_getnames.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_GETNAMES
+
+catalog_setnames.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_SETNAMES
+
+catalog_pagelayout.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_PAGELAYOUT
+
+catalog_pagemode.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_PAGEMODE
+
+catalog_setopenaction.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_SETOPENACTION
+
+catalog_validate.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_VALIDATE
+
+catalog_addpagelabel.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_ADDPAGELABEL
+
+catalog_setviewerpreferences.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_SETVIEWERPREFERENCES
+
+catalog_getviewerpreferences.o: catalog.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_GETVIEWERPREFERENCES
+
+
+EXTRADIST = \
+	catalog.c \
 	$(empty)
 
 AM_CPPFLAGS = -I$(srcdir)/../include -I$(top_srcdir)/include
