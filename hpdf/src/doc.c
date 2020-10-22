@@ -2179,7 +2179,7 @@ HPDF_EmbeddedFile HPDF_AttachFile(HPDF_Doc pdf, const char *file)
 	if (!name)
 		return NULL;
 
-	ret = HPDF_NameTree_Add(ntree, name, efile);
+	ret = HPDF_NameTree_Add(ntree, name, &efile->header);
 	if (ret != HPDF_OK)
 		return NULL;
 

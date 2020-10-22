@@ -304,7 +304,7 @@ HPDF_STATUS HPDF_Array_Write(HPDF_Array array, HPDF_Stream stream, HPDF_Encrypt 
 HPDF_STATUS HPDF_Array_Add(HPDF_Array array, void *obj);
 
 
-HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj);
+HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, HPDF_Obj_Header *obj);
 
 
 void *HPDF_Array_GetItem(HPDF_Array array, HPDF_UINT index, HPDF_UINT16 obj_class);

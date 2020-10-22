@@ -201,7 +201,7 @@ HPDF_STATUS HPDF_Page_InsertBefore(HPDF_Page page, HPDF_Page target)
 	attr = (HPDF_PageAttr) page->attr;
 	attr->parent = parent;
 
-	return HPDF_Array_Insert(kids, target, page);
+	return HPDF_Array_Insert(kids, target, &page->header);
 }
 
 

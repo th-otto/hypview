@@ -38,7 +38,7 @@ HPDF_BOOL HPDF_NameDict_Validate(HPDF_NameDict namedict);
 
 HPDF_NameTree HPDF_NameTree_New(HPDF_MMgr mmgr, HPDF_Xref xref);
 
-HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj);
+HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, HPDF_Obj_Header *obj);
 
 HPDF_BOOL HPDF_NameTree_Validate(HPDF_NameTree tree);
 

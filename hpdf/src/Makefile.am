@@ -4,7 +4,6 @@ include $(top_srcdir)/Makefile.common
 noinst_LIBRARIES = libhpdf.a
 
 libhpdf_a_SOURCES = \
-	array.c \
 	binary.c \
 	boolean.c \
 	destinat.c \
@@ -113,6 +112,19 @@ libhpdf_a_LIBADD = \
 	annotat_line_setleader.o \
 	annotat_line_setcaption.o \
 	annotat_projection_setexdata.o \
+	array_new.o \
+	array_box_new.o \
+	array_free.o \
+	array_write.o \
+	array_addnumber.o \
+	array_addreal.o \
+	array_addnull.o \
+	array_addname.o \
+	array_add.o \
+	array_items.o \
+	array_insert.o \
+	array_getitem.o \
+	array_clear.o \
 	catalog_new.o \
 	catalog_getroot.o \
 	catalog_getnames.o \
@@ -292,6 +304,47 @@ annotat_projection_setexdata.o: annotat.c
 
 
 
+array_new.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_NEW
+
+array_box_new.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_BOX_NEW
+
+array_free.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_FREE
+
+array_write.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_WRITE
+
+array_addnumber.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_ADDNUMBER
+
+array_addreal.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_ADDREAL
+
+array_addnull.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_ADDNULL
+
+array_addname.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_ADDNAME
+
+array_add.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_ADD
+
+array_items.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_ITEMS
+
+array_insert.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_INSERT
+
+array_getitem.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_GETITEM
+
+array_clear.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DARRAY_CLEAR
+
+
+
 catalog_new.o: catalog.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_NEW
 
@@ -357,6 +410,7 @@ catalog_getviewerpreferences.o: catalog.c
 
 EXTRADIST = \
 	annotat.c \
+	array.c \
 	catalog.c \
 	3dmeasur.c \
 	$(empty)

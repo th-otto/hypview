@@ -20,6 +20,12 @@
 #include "hpdf/objects.h"
 #include <string.h>
 
+#ifdef __PUREC__
+# define ARRAY_ALL
+#endif
+
+
+#if defined(ARRAY_ALL) || defined(ARRAY_NEW)
 HPDF_Array HPDF_Array_New(HPDF_MMgr mmgr)
 {
 	HPDF_Array obj;
@@ -41,8 +47,10 @@ HPDF_Array HPDF_Array_New(HPDF_MMgr mmgr)
 
 	return obj;
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_BOX_NEW)
 HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, const HPDF_Box *box)
 {
 	HPDF_Array obj;
@@ -52,10 +60,10 @@ HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, const HPDF_Box *box)
 	if (!obj)
 		return NULL;
 
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->left));
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->bottom));
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->right));
-	ret += HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->top));
+	ret |= HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->left));
+	ret |= HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->bottom));
+	ret |= HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->right));
+	ret |= HPDF_Array_Add(obj, HPDF_Real_New(mmgr, box->top));
 
 	if (ret != HPDF_OK)
 	{
@@ -65,8 +73,10 @@ HPDF_Array HPDF_Box_Array_New(HPDF_MMgr mmgr, const HPDF_Box *box)
 
 	return obj;
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_FREE)
 void HPDF_Array_Free(HPDF_Array array)
 {
 	if (!array)
@@ -80,8 +90,10 @@ void HPDF_Array_Free(HPDF_Array array)
 
 	HPDF_FreeMem(array->mmgr, array);
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_WRITE)
 HPDF_STATUS HPDF_Array_Write(HPDF_Array array, HPDF_Stream stream, HPDF_Encrypt e)
 {
 	HPDF_UINT i;
@@ -108,8 +120,10 @@ HPDF_STATUS HPDF_Array_Write(HPDF_Array array, HPDF_Stream stream, HPDF_Encrypt 
 
 	return ret;
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_ADDNUMBER)
 HPDF_STATUS HPDF_Array_AddNumber(HPDF_Array array, HPDF_INT32 value)
 {
 	HPDF_Number n = HPDF_Number_New(array->mmgr, value);
@@ -119,8 +133,10 @@ HPDF_STATUS HPDF_Array_AddNumber(HPDF_Array array, HPDF_INT32 value)
 	else
 		return HPDF_Array_Add(array, n);
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_ADDREAL)
 HPDF_STATUS HPDF_Array_AddReal(HPDF_Array array, HPDF_REAL value)
 {
 	HPDF_Real r = HPDF_Real_New(array->mmgr, value);
@@ -130,8 +146,10 @@ HPDF_STATUS HPDF_Array_AddReal(HPDF_Array array, HPDF_REAL value)
 	else
 		return HPDF_Array_Add(array, r);
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_ADDNULL)
 HPDF_STATUS HPDF_Array_AddNull(HPDF_Array array)
 {
 	HPDF_Null n = HPDF_Null_New(array->mmgr);
@@ -141,8 +159,10 @@ HPDF_STATUS HPDF_Array_AddNull(HPDF_Array array)
 	else
 		return HPDF_Array_Add(array, n);
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_ADDNAME)
 HPDF_STATUS HPDF_Array_AddName(HPDF_Array array, const char *value)
 {
 	HPDF_Name n = HPDF_Name_New(array->mmgr, value);
@@ -152,8 +172,10 @@ HPDF_STATUS HPDF_Array_AddName(HPDF_Array array, const char *value)
 	else
 		return HPDF_Array_Add(array, n);
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_ADD)
 HPDF_STATUS HPDF_Array_Add(HPDF_Array array, void *obj)
 {
 	HPDF_Obj_Header *header;
@@ -201,15 +223,19 @@ HPDF_STATUS HPDF_Array_Add(HPDF_Array array, void *obj)
 
 	return ret;
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_ITEMS)
 HPDF_UINT HPDF_Array_Items(HPDF_Array array)
 {
 	return array->list->count;
 }
+#endif
 
 
-HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
+#if defined(ARRAY_ALL) || defined(ARRAY_INSERT)
+HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, HPDF_Obj_Header *obj)
 {
 	HPDF_Obj_Header *header;
 	HPDF_STATUS ret;
@@ -223,7 +249,7 @@ HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
 			return HPDF_INVALID_OBJECT;
 	}
 
-	header = (HPDF_Obj_Header *) obj;
+	header = obj;
 
 	if (header->obj_id & HPDF_OTYPE_DIRECT)
 	{
@@ -247,8 +273,8 @@ HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
 			return HPDF_Error_GetCode(array->error);
 		}
 
-		proxy->header.obj_id |= HPDF_OTYPE_DIRECT;
-		obj = proxy;
+		obj = &proxy->header;
+		obj->obj_id |= HPDF_OTYPE_DIRECT;
 	} else
 	{
 		header->obj_id |= HPDF_OTYPE_DIRECT;
@@ -262,7 +288,7 @@ HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
 		void *ptr = HPDF_List_ItemAt(array->list, i);
 		void *obj_ptr;
 
-		header = (HPDF_Obj_Header *) obj;
+		header = obj;
 		if (header->obj_class == HPDF_OCLASS_PROXY)
 			obj_ptr = ((HPDF_Proxy) ptr)->obj;
 		else
@@ -282,8 +308,10 @@ HPDF_STATUS HPDF_Array_Insert(HPDF_Array array, void *target, void *obj)
 
 	return HPDF_ARRAY_ITEM_NOT_FOUND;
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_GETITEM)
 void *HPDF_Array_GetItem(HPDF_Array array, HPDF_UINT index, HPDF_UINT16 obj_class)
 {
 	void *obj;
@@ -314,8 +342,10 @@ void *HPDF_Array_GetItem(HPDF_Array array, HPDF_UINT index, HPDF_UINT16 obj_clas
 
 	return obj;
 }
+#endif
 
 
+#if defined(ARRAY_ALL) || defined(ARRAY_CLEAR)
 void HPDF_Array_Clear(HPDF_Array array)
 {
 	HPDF_UINT i;
@@ -335,3 +365,4 @@ void HPDF_Array_Clear(HPDF_Array array)
 
 	HPDF_List_Clear(array->list);
 }
+#endif

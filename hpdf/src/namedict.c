@@ -100,7 +100,7 @@ HPDF_NameTree HPDF_NameTree_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 }
 
 
-HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
+HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, HPDF_Obj_Header *obj)
 {
 	HPDF_Array items;
 	HPDF_INT32 i, icount;
@@ -118,7 +118,7 @@ HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
 	 * 'obj' into the items.
 	 */
 
-	icount = HPDF_Array_Items(items);
+	icount = items->list->count;
 
 	/* If we're larger than the last element, append */
 	if (icount)
@@ -142,7 +142,7 @@ HPDF_STATUS HPDF_NameTree_Add(HPDF_NameTree tree, HPDF_String name, void *obj)
 
 		if (i == 0 || HPDF_String_Cmp(name, elem) < 0)
 		{
-			HPDF_Array_Insert(items, elem, name);
+			HPDF_Array_Insert(items, elem, &name->header);
 			HPDF_Array_Insert(items, elem, obj);
 			return HPDF_OK;
 		}
