@@ -20,21 +20,15 @@
 #include "hpdf.h"
 #include "hpdf/destinat.h"
 
-static const char *const HPDF_DESTINATION_TYPE_NAMES[] = {
-	"XYZ",
-	"Fit",
-	"FitH",
-	"FitV",
-	"FitR",
-	"FitB",
-	"FitBH",
-	"FitBV",
-	NULL
-};
+#ifdef __PUREC__
+# define DESTINAT_ALL
+#endif
+
 
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_Destination -----------------------------------------------------*/
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_NEW)
 HPDF_Destination HPDF_Destination_New(HPDF_MMgr mmgr, HPDF_Page target, HPDF_Xref xref)
 {
 	HPDF_Destination dst;
@@ -59,13 +53,15 @@ HPDF_Destination HPDF_Destination_New(HPDF_MMgr mmgr, HPDF_Page target, HPDF_Xre
 		return NULL;
 
 	/* default type is HPDF_FIT */
-	if (HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT]) != HPDF_OK)
+	if (HPDF_Array_AddName(dst, "Fit") != HPDF_OK)
 		return NULL;
 
 	return dst;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_VALIDATE)
 HPDF_BOOL HPDF_Destination_Validate(HPDF_Destination dst)
 {
 	HPDF_Obj_Header *header = (HPDF_Obj_Header *) dst;
@@ -87,8 +83,10 @@ HPDF_BOOL HPDF_Destination_Validate(HPDF_Destination dst)
 
 	return HPDF_TRUE;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETXYZ)
 HPDF_STATUS HPDF_Destination_SetXYZ(HPDF_Destination dst, HPDF_REAL left, HPDF_REAL top, HPDF_REAL zoom)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -106,21 +104,23 @@ HPDF_STATUS HPDF_Destination_SetXYZ(HPDF_Destination dst, HPDF_REAL left, HPDF_R
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_XYZ]);
-	ret += HPDF_Array_AddReal(dst, left);
-	ret += HPDF_Array_AddReal(dst, top);
-	ret += HPDF_Array_AddReal(dst, zoom);
+	ret |= HPDF_Array_AddName(dst, "XYZ");
+	ret |= HPDF_Array_AddReal(dst, left);
+	ret |= HPDF_Array_AddReal(dst, top);
+	ret |= HPDF_Array_AddReal(dst, zoom);
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFIT)
 HPDF_STATUS HPDF_Destination_SetFit(HPDF_Destination dst)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -134,18 +134,20 @@ HPDF_STATUS HPDF_Destination_SetFit(HPDF_Destination dst)
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT]);
+	ret |= HPDF_Array_AddName(dst, "Fit");
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFITH)
 HPDF_STATUS HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -159,19 +161,21 @@ HPDF_STATUS HPDF_Destination_SetFitH(HPDF_Destination dst, HPDF_REAL top)
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT_H]);
-	ret += HPDF_Array_AddReal(dst, top);
+	ret |= HPDF_Array_AddName(dst, "FitH");
+	ret |= HPDF_Array_AddReal(dst, top);
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFITV)
 HPDF_STATUS HPDF_Destination_SetFitV(HPDF_Destination dst, HPDF_REAL left)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -185,19 +189,21 @@ HPDF_STATUS HPDF_Destination_SetFitV(HPDF_Destination dst, HPDF_REAL left)
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT_V]);
-	ret += HPDF_Array_AddReal(dst, left);
+	ret |= HPDF_Array_AddName(dst, "FitV");
+	ret |= HPDF_Array_AddReal(dst, left);
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFITR)
 HPDF_STATUS HPDF_Destination_SetFitR(HPDF_Destination dst, HPDF_REAL left, HPDF_REAL bottom, HPDF_REAL right, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -211,22 +217,24 @@ HPDF_STATUS HPDF_Destination_SetFitR(HPDF_Destination dst, HPDF_REAL left, HPDF_
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT_R]);
-	ret += HPDF_Array_AddReal(dst, left);
-	ret += HPDF_Array_AddReal(dst, bottom);
-	ret += HPDF_Array_AddReal(dst, right);
-	ret += HPDF_Array_AddReal(dst, top);
+	ret |= HPDF_Array_AddName(dst, "FitR");
+	ret |= HPDF_Array_AddReal(dst, left);
+	ret |= HPDF_Array_AddReal(dst, bottom);
+	ret |= HPDF_Array_AddReal(dst, right);
+	ret |= HPDF_Array_AddReal(dst, top);
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFITB)
 HPDF_STATUS HPDF_Destination_SetFitB(HPDF_Destination dst)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -240,18 +248,20 @@ HPDF_STATUS HPDF_Destination_SetFitB(HPDF_Destination dst)
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT_B]);
+	ret |= HPDF_Array_AddName(dst, "FitB");
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFITBH)
 HPDF_STATUS HPDF_Destination_SetFitBH(HPDF_Destination dst, HPDF_REAL top)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -265,19 +275,21 @@ HPDF_STATUS HPDF_Destination_SetFitBH(HPDF_Destination dst, HPDF_REAL top)
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT_BH]);
-	ret += HPDF_Array_AddReal(dst, top);
+	ret |= HPDF_Array_AddName(dst, "FitBH");
+	ret |= HPDF_Array_AddReal(dst, top);
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DESTINAT_ALL) || defined(DESTINAT_SETFITBV)
 HPDF_STATUS HPDF_Destination_SetFitBV(HPDF_Destination dst, HPDF_REAL left)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -291,11 +303,11 @@ HPDF_STATUS HPDF_Destination_SetFitBV(HPDF_Destination dst, HPDF_REAL left)
 	if (dst->list->count > 1)
 	{
 		HPDF_Array_Clear(dst);
-		ret += HPDF_Array_Add(dst, target);
+		ret |= HPDF_Array_Add(dst, target);
 	}
 
-	ret += HPDF_Array_AddName(dst, HPDF_DESTINATION_TYPE_NAMES[(HPDF_INT) HPDF_FIT_BV]);
-	ret += HPDF_Array_AddReal(dst, left);
+	ret |= HPDF_Array_AddName(dst, "FitBV");
+	ret |= HPDF_Array_AddReal(dst, left);
 
 	if (ret != HPDF_OK)
 		return HPDF_CheckError(dst->error);
@@ -303,3 +315,4 @@ HPDF_STATUS HPDF_Destination_SetFitBV(HPDF_Destination dst, HPDF_REAL left)
 	return HPDF_OK;
 
 }
+#endif

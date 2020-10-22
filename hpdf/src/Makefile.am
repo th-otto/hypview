@@ -6,7 +6,6 @@ noinst_LIBRARIES = libhpdf.a
 libhpdf_a_SOURCES = \
 	binary.c \
 	boolean.c \
-	destinat.c \
 	dict.c \
 	doc.c \
 	doc_png.c \
@@ -136,6 +135,16 @@ libhpdf_a_LIBADD = \
 	catalog_addpagelabel.o \
 	catalog_setviewerpreferences.o \
 	catalog_getviewerpreferences.o \
+	destinat_new.o \
+	destinat_validate.o \
+	destinat_setxyz.o \
+	destinat_setfit.o \
+	destinat_setfith.o \
+	destinat_setfitv.o \
+	destinat_setfitr.o \
+	destinat_setfitb.o \
+	destinat_setfitbh.o \
+	destinat_setfitbv.o \
 	3dmeasur_addpoint.o \
 	3dmeasur_new.o \
 	3dmeasur_setcolor.o \
@@ -379,6 +388,40 @@ catalog_getviewerpreferences.o: catalog.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_GETVIEWERPREFERENCES
 
 
+
+destinat_new.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_NEW
+
+destinat_validate.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_VALIDATE
+
+destinat_setxyz.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETXYZ
+
+destinat_setfit.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFIT
+
+destinat_setfith.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFITH
+
+destinat_setfitv.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFITV
+
+destinat_setfitr.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFITR
+
+destinat_setfitb.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFITB
+
+destinat_setfitbh.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFITBH
+
+destinat_setfitbv.o: destinat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDESTINAT_SETFITBV
+
+
+
+
 3dmeasur_addpoint.o: 3dmeasur.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_ADDPOINT
 
@@ -412,6 +455,7 @@ EXTRADIST = \
 	annotat.c \
 	array.c \
 	catalog.c \
+	destinat.c \
 	3dmeasur.c \
 	$(empty)
 

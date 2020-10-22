@@ -39,10 +39,7 @@ HPDF_STATUS HPDF_Boolean_Write(HPDF_Boolean obj, HPDF_Stream stream)
 {
 	HPDF_STATUS ret;
 
-	if (obj->value)
-		ret = HPDF_Stream_WriteStr(stream, "true");
-	else
-		ret = HPDF_Stream_WriteStr(stream, "false");
+	ret = HPDF_Stream_WriteStr(stream, obj->value ? "true" : "false");
 
 	return ret;
 }
