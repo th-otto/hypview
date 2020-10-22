@@ -4,7 +4,6 @@ include $(top_srcdir)/Makefile.common
 noinst_LIBRARIES = libhpdf.a
 
 libhpdf_a_SOURCES = \
-	annotat.c \
 	array.c \
 	binary.c \
 	boolean.c \
@@ -63,6 +62,57 @@ libhpdf_a_SOURCES = \
 	$(empty)
 
 libhpdf_a_LIBADD = \
+	annotat_type_names.o \
+	annotat_ending_names.o \
+	annotat_new.o \
+	annotat_setborderstyle.o \
+	annotat_widgetannot_new.o \
+	annotat_linkannot_new.o \
+	annotat_actionannot_new.o \
+	annotat_urilinkannot_new.o \
+	annotat_gotolinkannot_new.o \
+	annotat_gotorlinkannot_new.o \
+	annotat_namedlinkannot_new.o \
+	annotat_launchlinkannot_new.o \
+	annotat_checksubtype.o \
+	annotat_linkannot_setjavascript.o \
+	annotat_linkannot_setborderstyle.o \
+	annotat_linkannot_sethighlightmode.o \
+	annotat_3dannot_new.o \
+	annotat_markupannot_new.o \
+	annotat_setrgbcolor.o \
+	annotat_setcmykcolor.o \
+	annotat_setgraycolor.o \
+	annotat_setnocolor.o \
+	annotat_text_seticon.o \
+	annotat_text_setopened.o \
+	annotat_popup_setopened.o \
+	annotat_settitle.o \
+	annotat_setsubject.o \
+	annotat_setcreationdate.o \
+	annotat_settransparency.o \
+	annotat_setintent.o \
+	annotat_setpopup.o \
+	annotat_setinteriorrgb.o \
+	annotat_setinteriorcmyk.o \
+	annotat_setinteriorgray.o \
+	annotat_setinteriortransparent.o \
+	annotat_validate.o \
+	annotat_set3dview.o \
+	annotat_popupannot_new.o \
+	annotat_stampannot_new.o \
+	annotat_projectionannot_new.o \
+	annotat_textmarkup_setquad.o \
+	annotat_freetext_setlineending.o \
+	annotat_markup_setrectdiff.o \
+	annotat_freetext_setdefaultstyle.o \
+	annotat_freetext_set3pointcalloutline.o \
+	annotat_freetext_set2pointcalloutline.o \
+	annotat_markup_setcloudeffect.o \
+	annotat_line_setposition.o \
+	annotat_line_setleader.o \
+	annotat_line_setcaption.o \
+	annotat_projection_setexdata.o \
 	catalog_new.o \
 	catalog_getroot.o \
 	catalog_getnames.o \
@@ -84,6 +134,163 @@ libhpdf_a_LIBADD = \
 	3dmeasur_setprojectionannotation.o \
 	3dmeasur_pd33dmeasure_new.o \
 	$(empty)
+
+
+
+annotat_type_names.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TYPE_NAMES
+
+annotat_ending_names.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_ENDING_NAMES
+
+annotat_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_NEW
+
+annotat_setborderstyle.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETBORDERSTYLE
+
+annotat_widgetannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_WIDGETANNOT_NEW
+
+annotat_linkannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINKANNOT_NEW
+
+annotat_actionannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_ACTIONANNOT_NEW
+
+annotat_urilinkannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_URILINKANNOT_NEW
+
+annotat_gotolinkannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_GOTOLINKANNOT_NEW
+
+annotat_gotorlinkannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_GOTORLINKANNOT_NEW
+
+annotat_namedlinkannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_NAMEDLINKANNOT_NEW
+
+annotat_launchlinkannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LAUNCHLINKANNOT_NEW
+
+annotat_checksubtype.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_CHECKSUBTYPE
+
+annotat_linkannot_setjavascript.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINK_SETJAVASCRIPT
+
+annotat_linkannot_setborderstyle.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINK_SETBORDERSTYLE
+
+annotat_linkannot_sethighlightmode.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINK_SETHIGHLIGHT
+
+annotat_3dannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_3DANNOT_NEW
+
+annotat_markupannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_MARKUPANNOT_NEW
+
+annotat_setrgbcolor.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETRGBCOLOR
+
+annotat_setcmykcolor.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETCMYKCOLOR
+
+annotat_setgraycolor.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETGRAYCOLOR
+
+annotat_setnocolor.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETNOCOLOR
+
+annotat_text_seticon.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TEXT_SETICON
+
+annotat_text_setopened.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TEXT_SETOPENED
+
+annotat_popup_setopened.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_POPUP_SETOPENED
+
+annotat_settitle.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETITLE
+
+annotat_setsubject.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETSUBJECT
+
+annotat_setcreationdate.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETCREATIONDATE
+
+annotat_settransparency.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETTRANSPARENCY
+
+annotat_setintent.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETINTENT
+
+annotat_setpopup.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETPOPUP
+
+annotat_setinteriorrgb.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETINTERIORRGB
+
+annotat_setinteriorcmyk.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETINTERIORCMYK
+
+annotat_setinteriorgray.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETINTERIORGRAY
+
+annotat_setinteriortransparent.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SETINTERIORTRANSPARENT
+
+annotat_validate.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_VALIDATE
+
+annotat_set3dview.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_SET3DVIEW
+
+annotat_popupannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_POPUPANNOT_NEW
+
+annotat_stampannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_STAMPANNOT_NEW
+
+annotat_projectionannot_new.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_PROJECTIONANNOT_NEW
+
+annotat_textmarkup_setquad.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TEXT_SETQUAD
+
+annotat_freetext_setlineending.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TEXT_SETLINEENDING
+
+annotat_markup_setrectdiff.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_MARKUP_SETRECTDIFF
+
+annotat_freetext_setdefaultstyle.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TEXT_SETDEFAULTSTYLE
+
+annotat_freetext_set3pointcalloutline.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_TEXT_SET3POINTCALLOUTLINE
+
+annotat_freetext_set2pointcalloutline.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT__TEXT_SET2POINTCALLOUTLINE
+
+annotat_markup_setcloudeffect.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_MARKUP_SETCLOUDEFFECT
+
+annotat_line_setposition.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINE_SETPOSITION
+
+annotat_line_setleader.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINE_SETLEADER
+
+annotat_line_setcaption.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_LINE_SETCAPTION
+
+annotat_projection_setexdata.o: annotat.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DANNOTAT_PROJECTION_SETEXDATA
+
+
 
 catalog_new.o: catalog.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DCATALOG_NEW
@@ -149,6 +356,7 @@ catalog_getviewerpreferences.o: catalog.c
 
 
 EXTRADIST = \
+	annotat.c \
 	catalog.c \
 	3dmeasur.c \
 	$(empty)

@@ -33,12 +33,14 @@ HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotTy
 HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect);
 
 HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst);
+HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type, const char *dst, void *obj);
 
 HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *uri);
 HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst);
 HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow);
 HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type);
 HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *args, const char *type);
+HPDF_BOOL HPDF_Annot_CheckSubType(HPDF_Annotation annot, HPDF_AnnotType type);
 
 
 HPDF_Annotation	HPDF_3DAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap);

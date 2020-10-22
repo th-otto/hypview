@@ -22,7 +22,14 @@
 #include "hpdf.h"
 #include <string.h>
 
-static const char *const HPDF_ANNOT_TYPE_NAMES[] = {
+#ifdef __PUREC__
+# define ANNOTAT_ALL
+#endif
+
+extern const char *const HPDF_ANNOT_TYPE_NAMES[27];
+
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TYPE_NAMES)
+const char *const HPDF_ANNOT_TYPE_NAMES[27] = {
 	"Text",
 	"Link",
 	"FreeText",
@@ -51,28 +58,12 @@ static const char *const HPDF_ANNOT_TYPE_NAMES[] = {
 	"Redact",
 	"Projection",
 };
+#endif
 
-static const char *const HPDF_ANNOT_ICON_NAMES_NAMES[] = {
-	"Comment",
-	"Key",
-	"Note",
-	"Help",
-	"NewParagraph",
-	"Paragraph",
-	"Insert"
-};
+extern const char *const HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[10];
 
-static const char *const HPDF_ANNOT_INTENT_NAMES[] = {
-	"FreeTextCallout",
-	"FreeTextTypeWriter",
-	"LineArrow",
-	"LineDimension",
-	"PolygonCloud",
-	"PolyLineDimension",
-	"PolygonDimension"
-};
-
-static const char *const HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[] = {
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_ENDING_NAMES)
+const char *const HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[10] = {
 	"None",
 	"Square",
 	"Circle",
@@ -84,33 +75,13 @@ static const char *const HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[] = {
 	"RClosedArrow",
 	"Slash"
 };
-
-static const char *const HPDF_LINE_ANNOT_CAP_POSITION_NAMES[] = {
-	"Inline",
-	"Top"
-};
-
-static const char *const HPDF_STAMP_ANNOT_NAME_NAMES[] = {
-	"Approved",
-	"Experimental",
-	"NotApproved",
-	"AsIs",
-	"Expired",
-	"NotForPublicRelease",
-	"Confidential",
-	"Final",
-	"Sold",
-	"Departmental",
-	"ForComment",
-	"TopSecret",
-	"Draft",
-	"ForPublicRelease"
-};
+#endif
 
 /*----------------------------------------------------------------------------*/
 /*------ HPDF_Annotation -----------------------------------------------------*/
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_NEW)
 HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotType type, const HPDF_Rect *rect)
 {
 	HPDF_Annotation annot;
@@ -148,7 +119,7 @@ HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotTy
 	ret += HPDF_Array_AddReal(array, top);
 
 	ret += HPDF_Dict_AddName(annot, "Type", "Annot");
-	ret += HPDF_Dict_AddName(annot, "Subtype", HPDF_ANNOT_TYPE_NAMES[(HPDF_INT) type]);
+	ret += HPDF_Dict_AddName(annot, "Subtype", HPDF_ANNOT_TYPE_NAMES[type]);
 
 	if (ret != HPDF_OK)
 		return NULL;
@@ -157,8 +128,10 @@ HPDF_Annotation HPDF_Annotation_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_AnnotTy
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETBORDERSTYLE)
 HPDF_STATUS HPDF_Annotation_SetBorderStyle(HPDF_Annotation annot,
 	HPDF_BSSubtype subtype,
 	HPDF_REAL width,
@@ -223,8 +196,10 @@ HPDF_STATUS HPDF_Annotation_SetBorderStyle(HPDF_Annotation annot,
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_WIDGETANNOT_NEW)
 HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect)
 {
 	HPDF_Annotation annot;
@@ -235,8 +210,10 @@ HPDF_Annotation HPDF_WidgetAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINKANNOT_NEW)
 HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	HPDF_Annotation annot;
@@ -253,9 +230,11 @@ HPDF_Annotation HPDF_LinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Re
 
 	return annot;
 }
+#endif
 
 
-static HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type, const char *dst, void *obj)
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_ACTIONANNOT_NEW)
+HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type, const char *dst, void *obj)
 {
 	HPDF_Annotation annot;
 	HPDF_Dict action;
@@ -283,20 +262,26 @@ static HPDF_Annotation HPDF_ActionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, cons
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_URILINKANNOT_NEW)
 HPDF_Annotation HPDF_URILinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *uri)
 {
 	return HPDF_ActionAnnot_New(mmgr, xref, rect, "URI", "URI", HPDF_String_New(mmgr, uri, NULL));
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_GOTOLINKANNOT_NEW)
 HPDF_Annotation HPDF_GoToLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	return HPDF_ActionAnnot_New(mmgr, xref, rect, "GoTo", "D", dst);
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_GOTORLINKANNOT_NEW)
 HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow)
 {
 	HPDF_Annotation annot;
@@ -316,8 +301,10 @@ HPDF_Annotation HPDF_GoToRLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HP
 	}
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_NAMEDLINKANNOT_NEW)
 HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *type)
 {
 	HPDF_Annotation annot;
@@ -345,8 +332,10 @@ HPDF_Annotation HPDF_NamedLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HP
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LAUNCHLINKANNOT_NEW)
 HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *file, const char *args, const char *type)
 {
 	HPDF_Annotation annot;
@@ -374,9 +363,11 @@ HPDF_Annotation HPDF_LaunchLinkAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const H
 	}
 	return annot;
 }
+#endif
 
 
-static HPDF_BOOL CheckSubType(HPDF_Annotation annot, HPDF_AnnotType type)
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_CHECKSUBTYPE)
+HPDF_BOOL HPDF_Annot_CheckSubType(HPDF_Annotation annot, HPDF_AnnotType type)
 {
 	HPDF_Name subtype;
 
@@ -385,7 +376,7 @@ static HPDF_BOOL CheckSubType(HPDF_Annotation annot, HPDF_AnnotType type)
 
 	subtype = (HPDF_Name) HPDF_Dict_GetItem(annot, "Subtype", HPDF_OCLASS_NAME);
 
-	if (!subtype || strcmp(subtype->value, HPDF_ANNOT_TYPE_NAMES[(HPDF_INT) type]) != 0)
+	if (!subtype || strcmp(subtype->value, HPDF_ANNOT_TYPE_NAMES[type]) != 0)
 	{
 		HPDF_RaiseError(annot->error, HPDF_INVALID_ANNOTATION, 0);
 		return HPDF_FALSE;
@@ -393,14 +384,16 @@ static HPDF_BOOL CheckSubType(HPDF_Annotation annot, HPDF_AnnotType type)
 
 	return HPDF_TRUE;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINK_SETJAVASCRIPT)
 HPDF_STATUS HPDF_LinkAnnot_SetJavaScript(HPDF_Annotation annot, HPDF_JavaScript javascript)
 {
 	HPDF_Dict action;
 	HPDF_STATUS ret;
 
-	if (!CheckSubType(annot, HPDF_ANNOT_LINK))
+	if (!HPDF_Annot_CheckSubType(annot, HPDF_ANNOT_LINK))
 		return HPDF_INVALID_ANNOTATION;
 
 	/* create action dictionary */
@@ -420,14 +413,16 @@ HPDF_STATUS HPDF_LinkAnnot_SetJavaScript(HPDF_Annotation annot, HPDF_JavaScript 
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINK_SETBORDERSTYLE)
 HPDF_STATUS HPDF_LinkAnnot_SetBorderStyle(HPDF_Annotation annot, HPDF_REAL width, HPDF_UINT16 dash_on, HPDF_UINT16 dash_off)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret;
 
-	if (!CheckSubType(annot, HPDF_ANNOT_LINK))
+	if (!HPDF_Annot_CheckSubType(annot, HPDF_ANNOT_LINK))
 		return HPDF_INVALID_ANNOTATION;
 
 	if (width < 0)
@@ -466,13 +461,15 @@ HPDF_STATUS HPDF_LinkAnnot_SetBorderStyle(HPDF_Annotation annot, HPDF_REAL width
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINK_SETHIGHLIGHT)
 HPDF_STATUS HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHighlightMode mode)
 {
 	HPDF_STATUS ret;
 
-	if (!CheckSubType(annot, HPDF_ANNOT_LINK))
+	if (!HPDF_Annot_CheckSubType(annot, HPDF_ANNOT_LINK))
 		return HPDF_INVALID_ANNOTATION;
 
 	switch (mode)
@@ -498,8 +495,10 @@ HPDF_STATUS HPDF_LinkAnnot_SetHighlightMode(HPDF_Annotation annot, HPDF_AnnotHig
 
 	return ret;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_3DANNOT_NEW)
 HPDF_Annotation HPDF_3DAnnot_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
 	const HPDF_Rect *rect,
@@ -597,8 +596,10 @@ HPDF_Annotation HPDF_3DAnnot_New(HPDF_MMgr mmgr,
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_MARKUPANNOT_NEW)
 HPDF_Annotation HPDF_MarkupAnnot_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
 	const HPDF_Rect *rect,
@@ -621,8 +622,10 @@ HPDF_Annotation HPDF_MarkupAnnot_New(HPDF_MMgr mmgr,
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETRGBCOLOR)
 HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *color)
 {
 	HPDF_Array cArray;
@@ -642,8 +645,10 @@ HPDF_STATUS HPDF_Annot_SetRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *c
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETCMYKCOLOR)
 HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor *color)
 {
 	HPDF_Array cArray;
@@ -664,8 +669,10 @@ HPDF_STATUS HPDF_Annot_SetCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor 
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETGRAYCOLOR)
 HPDF_STATUS HPDF_Annot_SetGrayColor(HPDF_Annotation annot, HPDF_REAL color)
 {
 	HPDF_Array cArray;
@@ -683,8 +690,10 @@ HPDF_STATUS HPDF_Annot_SetGrayColor(HPDF_Annotation annot, HPDF_REAL color)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETNOCOLOR)
 HPDF_STATUS HPDF_Annot_SetNoColor(HPDF_Annotation annot)
 {
 	HPDF_Array cArray;
@@ -698,28 +707,42 @@ HPDF_STATUS HPDF_Annot_SetNoColor(HPDF_Annotation annot)
 
 	return ret;
 }
+#endif
 
+
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SETICON)
+static const char *const HPDF_ANNOT_ICON_NAMES_NAMES[HPDF_ANNOT_ICON_EOF] = {
+	"Comment",
+	"Key",
+	"Note",
+	"Help",
+	"NewParagraph",
+	"Paragraph",
+	"Insert"
+};
 
 HPDF_STATUS HPDF_TextAnnot_SetIcon(HPDF_Annotation annot, HPDF_AnnotIcon icon)
 {
-	if (!CheckSubType(annot, HPDF_ANNOT_TEXT))
+	if (!HPDF_Annot_CheckSubType(annot, HPDF_ANNOT_TEXT))
 		return HPDF_INVALID_ANNOTATION;
 
 	if (icon >= HPDF_ANNOT_ICON_EOF)
 		return HPDF_RaiseError(annot->error, HPDF_ANNOT_INVALID_ICON, (HPDF_STATUS) icon);
 
-	if (HPDF_Dict_AddName(annot, "Name", HPDF_ANNOT_ICON_NAMES_NAMES[(HPDF_INT) icon]) != HPDF_OK)
+	if (HPDF_Dict_AddName(annot, "Name", HPDF_ANNOT_ICON_NAMES_NAMES[icon]) != HPDF_OK)
 		return HPDF_CheckError(annot->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SETOPENED)
 HPDF_STATUS HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 {
 	HPDF_Boolean b;
 
-	if (!CheckSubType(annot, HPDF_ANNOT_TEXT))
+	if (!HPDF_Annot_CheckSubType(annot, HPDF_ANNOT_TEXT))
 		return HPDF_INVALID_ANNOTATION;
 
 	b = HPDF_Boolean_New(annot->mmgr, opened);
@@ -728,13 +751,15 @@ HPDF_STATUS HPDF_TextAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 
 	return HPDF_Dict_Add(annot, "Open", b);
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_POPUP_SETOPENED)
 HPDF_STATUS HPDF_PopupAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 {
 	HPDF_Boolean b;
 
-	if (!CheckSubType(annot, HPDF_ANNOT_POPUP))
+	if (!HPDF_Annot_CheckSubType(annot, HPDF_ANNOT_POPUP))
 		return HPDF_INVALID_ANNOTATION;
 
 	b = HPDF_Boolean_New(annot->mmgr, opened);
@@ -743,47 +768,71 @@ HPDF_STATUS HPDF_PopupAnnot_SetOpened(HPDF_Annotation annot, HPDF_BOOL opened)
 
 	return HPDF_Dict_Add(annot, "Open", b);
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETTITLE)
 HPDF_STATUS HPDF_MarkupAnnot_SetTitle(HPDF_Annotation annot, const char *name)
 {
 	return HPDF_Dict_Add(annot, "T", HPDF_String_New(annot->mmgr, name, NULL));
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETSUBJECT)
 HPDF_STATUS HPDF_MarkupAnnot_SetSubject(HPDF_Annotation annot, const char *name)
 {
 	return HPDF_Dict_Add(annot, "Subj", HPDF_String_New(annot->mmgr, name, NULL));
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETCREATIONDATE)
 HPDF_STATUS HPDF_MarkupAnnot_SetCreationDate(HPDF_Annotation annot, const HPDF_Date *value)
 {
 	return HPDF_Info_SetInfoDateAttr(annot, HPDF_INFO_CREATION_DATE, value);
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETTRANSPARENCY)
 HPDF_STATUS HPDF_MarkupAnnot_SetTransparency(HPDF_Annotation annot, HPDF_REAL value)
 {
 	return HPDF_Dict_AddReal(annot, "CA", value);
 }
+#endif
 
+
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETINTENT)
+static const char *const HPDF_ANNOT_INTENT_NAMES[7] = {
+	"FreeTextCallout",
+	"FreeTextTypeWriter",
+	"LineArrow",
+	"LineDimension",
+	"PolygonCloud",
+	"PolyLineDimension",
+	"PolygonDimension"
+};
 
 HPDF_STATUS HPDF_MarkupAnnot_SetIntent(HPDF_Annotation annot, HPDF_AnnotIntent intent)
 {
-	if (HPDF_Dict_AddName(annot, "IT", HPDF_ANNOT_INTENT_NAMES[(HPDF_INT) intent]) != HPDF_OK)
+	if (HPDF_Dict_AddName(annot, "IT", HPDF_ANNOT_INTENT_NAMES[intent]) != HPDF_OK)
 		return HPDF_CheckError(annot->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETPOPUP)
 HPDF_STATUS HPDF_MarkupAnnot_SetPopup(HPDF_Annotation annot, HPDF_Annotation popup)
 {
 	return HPDF_Dict_Add(annot, "Popup", popup);
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETINTERIORRGB)
 HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, const HPDF_RGBColor *color)	/* IC with RGB entry */
 {
 	HPDF_Array cArray;
@@ -803,8 +852,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorRGBColor(HPDF_Annotation annot, const HP
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETINTERIORCMYK)
 HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, const HPDF_CMYKColor *color)	/* IC with CMYK entry */
 {
 	HPDF_Array cArray;
@@ -825,8 +876,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorCMYKColor(HPDF_Annotation annot, const H
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETINTERIORGRAY)
 HPDF_STATUS HPDF_MarkupAnnot_SetInteriorGrayColor(HPDF_Annotation annot, HPDF_REAL color)	/* IC with Gray entry */
 {
 	HPDF_Array cArray;
@@ -844,8 +897,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorGrayColor(HPDF_Annotation annot, HPDF_RE
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SETINTERIORTRANSPARENT)
 HPDF_STATUS HPDF_MarkupAnnot_SetInteriorTransparent(HPDF_Annotation annot)	/* IC with No Color entry */
 {
 	HPDF_Array cArray;
@@ -859,8 +914,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetInteriorTransparent(HPDF_Annotation annot)	/* IC
 
 	return ret;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_VALIDATE)
 HPDF_BOOL HPDF_Annotation_Validate(HPDF_Annotation annot)
 {
 	if (!annot)
@@ -871,8 +928,10 @@ HPDF_BOOL HPDF_Annotation_Validate(HPDF_Annotation annot)
 
 	return HPDF_TRUE;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_SET3DVIEW)
 HPDF_STATUS HPDF_Annot_Set3DView(HPDF_MMgr mmgr, HPDF_Annotation annot, HPDF_Annotation annot3d, HPDF_Dict view3d)
 {
 	HPDF_Proxy proxyView3d;
@@ -889,8 +948,10 @@ HPDF_STATUS HPDF_Annot_Set3DView(HPDF_MMgr mmgr, HPDF_Annotation annot, HPDF_Ann
 	retS += HPDF_Dict_Add(annot, "ExData", exData);
 	return retS;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_POPUPANNOT_NEW)
 HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, HPDF_Annotation parent)
 {
 	HPDF_Annotation annot;
@@ -904,7 +965,26 @@ HPDF_Annotation HPDF_PopupAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_R
 
 	return annot;
 }
+#endif
 
+
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_STAMPANNOT_NEW)
+static const char *const HPDF_STAMP_ANNOT_NAME_NAMES[14] = {
+	"Approved",
+	"Experimental",
+	"NotApproved",
+	"AsIs",
+	"Expired",
+	"NotForPublicRelease",
+	"Confidential",
+	"Final",
+	"Sold",
+	"Departmental",
+	"ForComment",
+	"TopSecret",
+	"Draft",
+	"ForPublicRelease"
+};
 
 HPDF_Annotation HPDF_StampAnnot_New(HPDF_MMgr mmgr,
 	HPDF_Xref xref,
@@ -932,8 +1012,10 @@ HPDF_Annotation HPDF_StampAnnot_New(HPDF_MMgr mmgr,
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_PROJECTIONANNOT_NEW)
 HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_Annotation annot;
@@ -952,8 +1034,10 @@ HPDF_Annotation HPDF_ProjectionAnnot_New(HPDF_MMgr mmgr, HPDF_Xref xref, const H
 
 	return annot;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SETQUAD)
 HPDF_STATUS HPDF_TextMarkupAnnot_SetQuadPoints(HPDF_Annotation annot, HPDF_Point lb, HPDF_Point rb, HPDF_Point lt, HPDF_Point rt)	/* l-left, r-right, b-bottom, t-top positions */
 {
 	HPDF_Array quadPoints;
@@ -980,8 +1064,10 @@ HPDF_STATUS HPDF_TextMarkupAnnot_SetQuadPoints(HPDF_Annotation annot, HPDF_Point
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SETLINEENDING)
 HPDF_STATUS HPDF_FreeTextAnnot_SetLineEndingStyle(
 	HPDF_Annotation annot,
 	HPDF_LineAnnotEndingStyle startStyle,
@@ -997,16 +1083,18 @@ HPDF_STATUS HPDF_FreeTextAnnot_SetLineEndingStyle(
 	if ((ret = HPDF_Dict_Add(annot, "LE", lineEndStyles)) != HPDF_OK)
 		return ret;
 
-	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT) startStyle]);
-	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT) endStyle]);
+	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[startStyle]);
+	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[endStyle]);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(lineEndStyles->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_MARKUP_SETRECTDIFF)
 /* RD entry : this is the difference between Rect and the text annotation rectangle */
 HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, const HPDF_Rect *rect)
 {
@@ -1041,8 +1129,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetRectDiff(HPDF_Annotation annot, const HPDF_Rect 
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SETDEFAULTSTYLE)
 HPDF_STATUS HPDF_FreeTextAnnot_SetDefaultStyle(HPDF_Annotation annot, const char *style)
 {
 	HPDF_String s;
@@ -1056,8 +1146,10 @@ HPDF_STATUS HPDF_FreeTextAnnot_SetDefaultStyle(HPDF_Annotation annot, const char
 
 	return ret;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SET3POINTCALLOUTLINE)
 HPDF_STATUS HPDF_FreeTextAnnot_Set3PointCalloutLine(HPDF_Annotation annot, HPDF_Point startPoint, HPDF_Point kneePoint, HPDF_Point endPoint)	/* Callout line will be in default user space */
 {
 	HPDF_Array clPoints;
@@ -1082,8 +1174,10 @@ HPDF_STATUS HPDF_FreeTextAnnot_Set3PointCalloutLine(HPDF_Annotation annot, HPDF_
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_TEXT_SET2POINTCALLOUTLINE)
 HPDF_STATUS HPDF_FreeTextAnnot_Set2PointCalloutLine(HPDF_Annotation annot, HPDF_Point startPoint, HPDF_Point endPoint)	/* Callout line will be in default user space */
 {
 	HPDF_Array clPoints;
@@ -1106,8 +1200,10 @@ HPDF_STATUS HPDF_FreeTextAnnot_Set2PointCalloutLine(HPDF_Annotation annot, HPDF_
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_MARKUP_SETCLOUDEFFECT)
 HPDF_STATUS HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, HPDF_INT cloudIntensity)	/* BE entry */
 {
 	HPDF_Dict borderEffect;
@@ -1126,8 +1222,10 @@ HPDF_STATUS HPDF_MarkupAnnot_SetCloudEffect(HPDF_Annotation annot, HPDF_INT clou
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINE_SETPOSITION)
 HPDF_STATUS HPDF_LineAnnot_SetPosition(
 	HPDF_Annotation annot,
 	HPDF_Point startPoint,
@@ -1161,16 +1259,18 @@ HPDF_STATUS HPDF_LineAnnot_SetPosition(
 	if ((ret = HPDF_Dict_Add(annot, "LE", lineEndStyles)) != HPDF_OK)
 		return ret;
 
-	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT) startStyle]);
-	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT) endStyle]);
+	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[startStyle]);
+	ret += HPDF_Array_AddName(lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[endStyle]);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(lineEndStyles->error);
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINE_SETLEADER)
 HPDF_STATUS HPDF_LineAnnot_SetLeader(
 	HPDF_Annotation annot,
 	HPDF_INT leaderLen,
@@ -1188,7 +1288,14 @@ HPDF_STATUS HPDF_LineAnnot_SetLeader(
 
 	return HPDF_OK;
 }
+#endif
 
+
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_LINE_SETCAPTION)
+static const char *const HPDF_LINE_ANNOT_CAP_POSITION_NAMES[2] = {
+	"Inline",
+	"Top"
+};
 
 HPDF_STATUS HPDF_LineAnnot_SetCaption(
 	HPDF_Annotation annot,
@@ -1201,7 +1308,7 @@ HPDF_STATUS HPDF_LineAnnot_SetCaption(
 	HPDF_Array capOffset;
 
 	ret += HPDF_Dict_AddBoolean(annot, "Cap", showCaption);
-	ret += HPDF_Dict_AddName(annot, "CP", HPDF_LINE_ANNOT_CAP_POSITION_NAMES[(HPDF_INT) position]);
+	ret += HPDF_Dict_AddName(annot, "CP", HPDF_LINE_ANNOT_CAP_POSITION_NAMES[position]);
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(annot->error);
@@ -1221,8 +1328,10 @@ HPDF_STATUS HPDF_LineAnnot_SetCaption(
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(ANNOTAT_ALL) || defined(ANNOTAT_PROJECTION_SETEXDATA)
 HPDF_STATUS HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -1231,3 +1340,4 @@ HPDF_STATUS HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData ex
 
 	return ret;
 }
+#endif
