@@ -19,7 +19,6 @@
 #include "hpdf/utils.h"
 #include "hpdf.h"
 #include <string.h>
-#include <assert.h>
 
 #define	G3CODES
 #include "t4.h"
@@ -218,7 +217,6 @@ static HPDF_STATUS HPDF_Fax3PreEncode(struct _HPDF_CCITT_Data *pData /*, tsample
 {
 	HPDF_Fax3CodecState *sp = EncoderState(pData);
 
-	/* assert(sp != NULL); */
 	sp->bit = 8;
 	sp->data = 0;
 	/* sp->tag = G3_1D; */
@@ -345,7 +343,6 @@ static void putspan(struct _HPDF_CCITT_Data *pData, int32 span, const tableentry
 	{
 		const tableentry *te = &tab[63 + (span >> 6)];
 
-		assert(te->runlen == 64 * (span >> 6));
 		code = te->code, length = te->length;
 #ifdef FAX3_DEBUG
 		DEBUG_PRINT("MakeUp", te->runlen);

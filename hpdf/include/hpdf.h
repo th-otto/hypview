@@ -813,6 +813,8 @@ HPDF_STATUS HPDF_Page_MoveToNextLine(HPDF_Page page);
 
 /*--- Text showing -------------------------------------------------------*/
 
+HPDF_STATUS HPDF_Page_InternalWriteText(HPDF_PageAttr attr, HPDF_MMgr mmgr, const char *text);
+
 /* Tj */
 HPDF_STATUS HPDF_Page_ShowText(HPDF_Page page, const char *text);
 
@@ -900,6 +902,7 @@ HPDF_STATUS HPDF_Page_Ellipse(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REA
 HPDF_STATUS HPDF_Page_Arc(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray, HPDF_REAL ang1, HPDF_REAL ang2);
 
 
+void HPDF_Page_TextPos_AbsToRel(const HPDF_TransMatrix *text_matrix, HPDF_REAL xAbs, HPDF_REAL yAbs, HPDF_REAL *xRel, HPDF_REAL *yRel);
 HPDF_STATUS HPDF_Page_TextOut(HPDF_Page page, HPDF_REAL xpos, HPDF_REAL ypos, const char *text);
 
 

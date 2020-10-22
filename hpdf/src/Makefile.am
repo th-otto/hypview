@@ -45,7 +45,6 @@ libhpdf_a_SOURCES = \
 	objects.c \
 	outline.c \
 	pagelab.c \
-	pageop.c \
 	real.c \
 	streams.c \
 	string.c \
@@ -144,6 +143,68 @@ libhpdf_a_LIBADD = \
 	destinat_setfitb.o \
 	destinat_setfitbh.o \
 	destinat_setfitbv.o \
+	page_setlinewidth.o \
+	page_setlinecap.o \
+	page_setlinejoin.o \
+	page_setmiterlimit.o \
+	page_setdash.o \
+	page_setflat.o \
+	page_setextgstate.o \
+	page_gsave.o \
+	page_grestore.o \
+	page_concat.o \
+	page_moveto.o \
+	page_lineto.o \
+	page_curveto.o \
+	page_curveto2.o \
+	page_curveto3.o \
+	page_closepath.o \
+	page_rectangle.o \
+	page_stroke.o \
+	page_closepathstroke.o \
+	page_fill.o \
+	page_eofill.o \
+	page_fillstroke.o \
+	page_eofillstroke.o \
+	page_closepathfillstroke.o \
+	page_closepatheofillstroke.o \
+	page_endpath.o \
+	page_clip.o \
+	page_eoclip.o \
+	page_begintext.o \
+	page_endtext.o \
+	page_setcharspace.o \
+	page_setwordspace.o \
+	page_sethorizontalscaling.o \
+	page_settextleading.o \
+	page_setfontandsize.o \
+	page_settextrenderingmode.o \
+	page_settextrise.o \
+	page_movetextpos.o \
+	page_movetextpos2.o \
+	page_settextmatrix.o \
+	page_movetonextline.o \
+	page_internalwritetext.o \
+	page_showtext.o \
+	page_showtextnextline.o \
+	page_showtextnextlineex.o \
+	page_setgrayfill.o \
+	page_setgraystroke.o \
+	page_setrgbfill.o \
+	page_setrgbstroke.o \
+	page_setcmykfill.o \
+	page_setcmykstroke.o \
+	page_executexobject.o \
+	page_circle.o \
+	page_llipse.o \
+	page_arc.o \
+	page_drawimage.o \
+	page_textpos_abstorel.o \
+	page_textout.o \
+	page_textrect.o \
+	page_setslideshow.o \
+	page_new_content_stream.o \
+	page_insert_shared_content_stream.o \
 	pages_sizes.o \
 	pages_new.o \
 	pages_addkids.o \
@@ -752,6 +813,195 @@ page_setfilter.o: pages.c
 
 
 
+page_setlinewidth.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETLINEWIDTH
+
+page_setlinecap.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETLINECAP
+
+page_setlinejoin.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETLINEJOIN
+
+page_setmiterlimit.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETMITERLIMIT
+
+page_setdash.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETDASH
+
+page_setflat.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETFLAT
+
+page_setextgstate.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETEXTGSTATE
+
+page_gsave.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GSAVE
+
+page_grestore.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GRESTORE
+
+page_concat.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CONCAT
+
+page_moveto.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_MOVETO
+
+page_lineto.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_LINETO
+
+page_curveto.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CURVETO
+
+page_curveto2.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CURVETO2
+
+page_curveto3.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CURVETO3
+
+page_closepath.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CLOSEPATH
+
+page_rectangle.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_RECTANGLE
+
+page_stroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_STROKE
+
+page_closepathstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CLOSEPATHSTROKE
+
+page_fill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_FILL
+
+page_eofill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_EOFILL
+
+page_fillstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_FILLSTROKE
+
+page_eofillstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_EOFILLSTROKE
+
+page_closepathfillstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CLOSEPATHFILLSTROKE
+
+page_closepatheofillstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CLOSEPATHEOFILLSTROKE
+
+page_endpath.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_ENDPATH
+
+page_clip.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CLIP
+
+page_eoclip.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_EOCLIP
+
+page_begintext.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_BEGINTEXT
+
+page_endtext.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_ENDTEXT
+
+page_setcharspace.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETCHARSPACE
+
+page_setwordspace.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETWORDSPACE
+
+page_sethorizontalscaling.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETHORIZONTALSCALING
+
+page_settextleading.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETTEXTLEADING
+
+page_setfontandsize.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETFONTANDSIZE
+
+page_settextrenderingmode.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETTEXTRENDERINGMODE
+
+page_settextrise.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETTEXTRISE
+
+page_movetextpos.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_MOVETEXTPOS
+
+page_movetextpos2.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_MOVETEXTPOS2
+
+page_settextmatrix.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETTEXTMATRIX
+
+page_movetonextline.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_MOVETONEXTLINE
+
+page_internalwritetext.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_INTERNALWRITETEXT
+
+page_showtext.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SHOWTEXT
+
+page_showtextnextline.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SHOWTEXTNEXTLINE
+
+page_showtextnextlineex.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SHOWTEXTNEXTLINEEX
+
+page_setgrayfill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETGRAYFILL
+
+page_setgraystroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETGRAYSTROKE
+
+page_setrgbfill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETRGBFILL
+
+page_setrgbstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETRGBSTROKE
+
+page_setcmykfill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETCMYKFILL
+
+page_setcmykstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETCMYKSTROKE
+
+page_executexobject.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_EXECUTEXOBJECT
+
+page_circle.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CIRCLE
+
+page_llipse.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_ELLIPSE
+
+page_arc.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_ARC
+
+page_drawimage.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_DRAWIMAGE
+
+page_textpos_abstorel.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_TEXTPOS_ABSTOREL
+
+page_textout.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_TEXTOUT
+
+page_textrect.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_TEXTRECT
+
+page_setslideshow.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETSLIDESHOW
+
+page_new_content_stream.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_NEW_CONTENT_STREAM
+
+page_insert_shared_content_stream.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_INSERT_SHARED_CONTENT_STREAM
+
+
+
+
 3dmeasur_addpoint.o: 3dmeasur.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_ADDPOINT
 
@@ -787,6 +1037,7 @@ EXTRADIST = \
 	catalog.c \
 	destinat.c \
 	pages.c \
+	pageop.c \
 	3dmeasur.c \
 	$(empty)
 

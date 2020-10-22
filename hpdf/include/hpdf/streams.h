@@ -118,6 +118,7 @@ HPDF_Stream HPDF_FileReader_New(HPDF_MMgr mmgr, const char *fname);
 
 
 HPDF_Stream HPDF_FileWriter_New(HPDF_MMgr mmgr, const char *fname);
+HPDF_Stream HPDF_FileWriter_Newfp(HPDF_MMgr mmgr, FILE *fp);
 
 
 HPDF_Stream HPDF_CallbackReader_New(HPDF_MMgr mmgr,

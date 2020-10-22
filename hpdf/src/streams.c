@@ -19,9 +19,7 @@
 #endif
 
 #include "hpdf/conf.h"
-#ifndef UNDER_CE
 #include <errno.h>
-#endif
 #include "hpdf/conf.h"
 #include "hpdf/utils.h"
 #include "hpdf/consts.h"
@@ -822,11 +820,7 @@ HPDF_Stream HPDF_FileReader_New(HPDF_MMgr mmgr, const char *fname)
 
 	if (!fp)
 	{
-#ifdef UNDER_CE
-		HPDF_SetError(mmgr->error, HPDF_FILE_OPEN_ERROR, GetLastError());
-#else
 		HPDF_SetError(mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
-#endif
 		return NULL;
 	}
 
@@ -871,15 +865,40 @@ static HPDF_STATUS HPDF_FileWriter_WriteFunc(HPDF_Stream stream, const void *ptr
 HPDF_Stream HPDF_FileWriter_New(HPDF_MMgr mmgr, const char *fname)
 {
 	HPDF_Stream stream;
-	HPDF_FILEP fp = strcmp(fname, "-") == 0 ? stdout : HPDF_FOPEN(fname, "wb");
+	HPDF_FILEP fp = HPDF_FOPEN(fname, "wb");
 
 	if (!fp)
 	{
-#ifdef UNDER_CE
-		HPDF_SetError(mmgr->error, HPDF_FILE_OPEN_ERROR, GetLastError());
-#else
 		HPDF_SetError(mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
-#endif
+		return NULL;
+	}
+
+	stream = (HPDF_Stream) HPDF_GetMem(mmgr, sizeof(*stream));
+
+	if (stream)
+	{
+		memset(stream, 0, sizeof(*stream));
+		stream->sig_bytes = HPDF_STREAM_SIG_BYTES;
+		stream->error = mmgr->error;
+		stream->mmgr = mmgr;
+		stream->write_fn = HPDF_FileWriter_WriteFunc;
+		stream->free_fn = HPDF_FileStream_FreeFunc;
+		stream->tell_fn = HPDF_FileStream_TellFunc;
+		stream->attr = fp;
+		stream->type = HPDF_STREAM_FILE;
+	}
+
+	return stream;
+}
+
+
+HPDF_Stream HPDF_FileWriter_Newfp(HPDF_MMgr mmgr, FILE *fp)
+{
+	HPDF_Stream stream;
+
+	if (!fp)
+	{
+		HPDF_SetError(mmgr->error, HPDF_INVALID_PARAMETER, 0);
 		return NULL;
 	}
 
