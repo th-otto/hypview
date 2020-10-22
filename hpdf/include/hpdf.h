@@ -92,8 +92,6 @@ HPDF_Page HPDF_GetPageByIndex(HPDF_Doc pdf, HPDF_UINT index);
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
 
-HPDF_MMgr HPDF_GetPageMMgr(HPDF_Page page);
-
 HPDF_PageLayout HPDF_GetPageLayout(HPDF_Doc pdf);
 
 
@@ -266,6 +264,8 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, co
 
 /*--------------------------------------------------------------------------*/
 /*----- annotation ---------------------------------------------------------*/
+
+HPDF_STATUS HPDF_Page_AddAnnotation(HPDF_Page page, HPDF_Annotation annot);
 
 HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap);
 
@@ -580,10 +580,7 @@ HPDF_UINT16 HPDF_Page_GetGMode(HPDF_Page page);
 HPDF_STATUS HPDF_Page_GetCurrentPos(HPDF_Page page, HPDF_Point *pos);
 
 
-void HPDF_Page_GetCurrentTextPos(HPDF_Page page, HPDF_Point *pos);
-
-
-HPDF_STATUS HPDF_Page_GetCurrentTextPos2(HPDF_Page page, HPDF_Point *pos);
+HPDF_STATUS HPDF_Page_GetCurrentTextPos(HPDF_Page page, HPDF_Point *pos);
 
 
 HPDF_Font HPDF_Page_GetCurrentFont(HPDF_Page page);

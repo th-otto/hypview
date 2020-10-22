@@ -25,6 +25,11 @@
 #include "hpdf/u3d.h"
 #include <string.h>
 
+#ifdef __PUREC__
+# define PAGES_ALL
+#endif
+
+
 /*----------------------------------------------------------------------------*/
 
 typedef struct _HPDF_PageSizeValue
@@ -33,7 +38,10 @@ typedef struct _HPDF_PageSizeValue
 	HPDF_REAL y;
 } HPDF_PageSizeValue;
 
-static const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
+extern const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[12];
+
+#if defined(PAGES_ALL) || defined(PAGES_SIZES)
+const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[12] = {
 	{ 612.0, 792.0 },		/* HPDF_PAGE_SIZE_LETTER */
 	{ 612.0, 1008.0 },		/* HPDF_PAGE_SIZE_LEGAL */
 	{ 841.89, 1190.551 },	/* HPDF_PAGE_SIZE_A3 */
@@ -47,25 +55,14 @@ static const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
 	{ 360.0, 504.0 },		/* HPDF_PAGE_SIZE_US5x7 */
 	{ 297.0, 684.0 }		/* HPDF_PAGE_SIZE_COMM10 */
 };
-
-
-static const HPDF_RGBColor DEF_RGB_COLOR = { 0, 0, 0 };
-static const HPDF_CMYKColor DEF_CMYK_COLOR = { 0, 0, 0, 0 };
-
-
-static const char *const HPDF_INHERITABLE_ENTRIES[5] = {
-	"Resources",
-	"MediaBox",
-	"CropBox",
-	"Rotate",
-	NULL
-};
+#endif
 
 
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_Pages -----------------------------------------------------------*/
 
 
+#if defined(PAGES_ALL) || defined(PAGES_NEW)
 static HPDF_UINT GetPageCount(HPDF_Dict pages)
 {
 	HPDF_UINT i;
@@ -132,20 +129,22 @@ HPDF_Pages HPDF_Pages_New(HPDF_MMgr mmgr, HPDF_Pages parent, HPDF_Xref xref)
 		return NULL;
 
 	/* add required elements */
-	ret += HPDF_Dict_AddName(pages, "Type", "Pages");
-	ret += HPDF_Dict_Add(pages, "Kids", HPDF_Array_New(pages->mmgr));
-	ret += HPDF_Dict_Add(pages, "Count", HPDF_Number_New(pages->mmgr, 0));
+	ret |= HPDF_Dict_AddName(pages, "Type", "Pages");
+	ret |= HPDF_Dict_Add(pages, "Kids", HPDF_Array_New(pages->mmgr));
+	ret |= HPDF_Dict_Add(pages, "Count", HPDF_Number_New(pages->mmgr, 0));
 
 	if (ret == HPDF_OK && parent)
-		ret += HPDF_Pages_AddKids(parent, pages);
+		ret |= HPDF_Pages_AddKids(parent, pages);
 
 	if (ret != HPDF_OK)
 		return NULL;
 
 	return pages;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGES_ADDKIDS)
 HPDF_STATUS HPDF_Pages_AddKids(HPDF_Pages parent, HPDF_Dict kid)
 {
 	HPDF_Array kids;
@@ -170,8 +169,10 @@ HPDF_STATUS HPDF_Pages_AddKids(HPDF_Pages parent, HPDF_Dict kid)
 
 	return HPDF_Array_Add(kids, kid);
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGES_INSERTBEFORE)
 HPDF_STATUS HPDF_Page_InsertBefore(HPDF_Page page, HPDF_Page target)
 {
 	HPDF_Page parent;
@@ -202,6 +203,39 @@ HPDF_STATUS HPDF_Page_InsertBefore(HPDF_Page page, HPDF_Page target)
 	attr->parent = parent;
 
 	return HPDF_Array_Insert(kids, target, &page->header);
+}
+#endif
+
+
+#if defined(PAGES_ALL) || defined(PAGES_VALIDATE)
+HPDF_BOOL HPDF_Pages_Validate(HPDF_Pages pages)
+{
+	HPDF_Obj_Header *header = (HPDF_Obj_Header *) pages;
+
+	if (!pages || header->obj_class != (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_PAGES))
+		return HPDF_FALSE;
+
+	return HPDF_TRUE;
+}
+#endif
+
+
+/*----------------------------------------------------------------------------*/
+/*----- HPDF_Page ------------------------------------------------------------*/
+
+
+#if defined(PAGES_ALL) || defined(PAGE_NEW)
+static void Page_OnFree(HPDF_Dict obj)
+{
+	HPDF_PageAttr attr = (HPDF_PageAttr) obj->attr;
+
+	if (attr)
+	{
+		if (attr->gstate)
+			HPDF_GState_Free(obj->mmgr, attr->gstate);
+
+		HPDF_FreeMem(obj->mmgr, attr);
+	}
 }
 
 
@@ -236,35 +270,6 @@ static HPDF_STATUS Page_BeforeWrite(HPDF_Dict obj)
 }
 
 
-HPDF_BOOL HPDF_Pages_Validate(HPDF_Pages pages)
-{
-	HPDF_Obj_Header *header = (HPDF_Obj_Header *) pages;
-
-	if (!pages || header->obj_class != (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_PAGES))
-		return HPDF_FALSE;
-
-	return HPDF_TRUE;
-}
-
-
-/*----------------------------------------------------------------------------*/
-/*----- HPDF_Page ------------------------------------------------------------*/
-
-
-static void Page_OnFree(HPDF_Dict obj)
-{
-	HPDF_PageAttr attr = (HPDF_PageAttr) obj->attr;
-
-	if (attr)
-	{
-		if (attr->gstate)
-			HPDF_GState_Free(obj->mmgr, attr->gstate);
-
-		HPDF_FreeMem(obj->mmgr, attr);
-	}
-}
-
-
 static HPDF_STATUS AddResource(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -279,7 +284,7 @@ static HPDF_STATUS AddResource(HPDF_Page page)
 	 * compatibility
 	 */
 
-	ret += HPDF_Dict_Add(page, "Resources", resources);
+	ret |= HPDF_Dict_Add(page, "Resources", resources);
 
 	procset = HPDF_Array_New(page->mmgr);
 	if (!procset)
@@ -288,11 +293,11 @@ static HPDF_STATUS AddResource(HPDF_Page page)
 	if (HPDF_Dict_Add(resources, "ProcSet", procset) != HPDF_OK)
 		return HPDF_Error_GetCode(resources->error);
 
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "Text"));
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageB"));
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageC"));
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageI"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "Text"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageB"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageC"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageI"));
 
 	if (ret != HPDF_OK)
 		return HPDF_Error_GetCode(procset->error);
@@ -345,26 +350,22 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 	attr->xref = xref;
 
 	/* add required elements */
-	ret += HPDF_Dict_AddName(page, "Type", "Page");
+	ret |= HPDF_Dict_AddName(page, "Type", "Page");
 	HPDF_ToBox(&box, 0, 0, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].x, HPDF_PREDEFINED_PAGE_SIZES[HPDF_DEF_PAGE_SIZE].y);
-	ret += HPDF_Dict_Add(page, "MediaBox", HPDF_Box_Array_New(page->mmgr, &box));
-	ret += HPDF_Dict_Add(page, "Contents", attr->contents);
+	ret |= HPDF_Dict_Add(page, "MediaBox", HPDF_Box_Array_New(page->mmgr, &box));
+	ret |= HPDF_Dict_Add(page, "Contents", attr->contents);
 
-	ret += AddResource(page);
+	ret |= AddResource(page);
 
 	if (ret != HPDF_OK)
 		return NULL;
 
 	return page;
 }
+#endif
 
 
-HPDF_MMgr HPDF_GetPageMMgr(HPDF_Page page)
-{
-	return page->mmgr;
-}
-
-
+#if defined(PAGES_ALL) || defined(PAGE_CHECKSTATE)
 HPDF_STATUS HPDF_Page_CheckState(HPDF_Page page, HPDF_UINT mode)
 {
 	if (!page)
@@ -378,23 +379,32 @@ HPDF_STATUS HPDF_Page_CheckState(HPDF_Page page, HPDF_UINT mode)
 
 	return HPDF_OK;
 }
+#endif
+
+
+#if defined(PAGES_ALL) || defined(PAGE_GETINHERITABLEITEM)
+static const char *const HPDF_INHERITABLE_ENTRIES[4] = {
+	"Resources",
+	"MediaBox",
+	"CropBox",
+	"Rotate"
+};
 
 
 void *HPDF_Page_GetInheritableItem(HPDF_Page page, const char *key, HPDF_UINT16 obj_class)
 {
 	HPDF_BOOL chk = HPDF_FALSE;
-	HPDF_INT i = 0;
+	int i;
 	void *obj;
 
 	/* check whether the specified key is valid */
-	while (HPDF_INHERITABLE_ENTRIES[i])
+	for (i = 0; i < (int)(sizeof(HPDF_INHERITABLE_ENTRIES) / sizeof(HPDF_INHERITABLE_ENTRIES[0])); i++)
 	{
 		if (strcmp(key, HPDF_INHERITABLE_ENTRIES[i]) == 0)
 		{
 			chk = HPDF_TRUE;
 			break;
 		}
-		i++;
 	}
 
 	/* the key is not inheritable */
@@ -426,8 +436,10 @@ void *HPDF_Page_GetInheritableItem(HPDF_Page page, const char *key, HPDF_UINT16 
 
 	return obj;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETLOCALFONTNAME)
 const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font)
 {
 	HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
@@ -478,8 +490,10 @@ const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font)
 
 	return key;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETMEDIABOX)
 void HPDF_Page_GetMediaBox(HPDF_Page page, HPDF_Box *media_box)
 {
 	media_box->left = 0;
@@ -518,8 +532,10 @@ void HPDF_Page_GetMediaBox(HPDF_Page page, HPDF_Box *media_box)
 		}
 	}
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEXOBJECTFROMIMAGE)
 HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect, HPDF_Image image, HPDF_Boolean zoom)
 {
 	HPDF_Dict resource;
@@ -548,15 +564,15 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, cons
 	 * compatibility
 	 */
 
-	ret += HPDF_Dict_Add(fromxobject, "Resources", resource);
+	ret |= HPDF_Dict_Add(fromxobject, "Resources", resource);
 
 	procset = HPDF_Array_New(page->mmgr);
 	if (!procset)
 		return NULL;
 
-	ret += HPDF_Dict_Add(resource, "ProcSet", procset);
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageC"));
+	ret |= HPDF_Dict_Add(resource, "ProcSet", procset);
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageC"));
 
 	xobject = HPDF_Dict_New(page->mmgr);
 	if (!xobject)
@@ -585,10 +601,10 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, cons
 		bottom = rect->bottom;
 	}
 
-	ret += HPDF_Array_AddReal(array1, rect->left);
-	ret += HPDF_Array_AddReal(array1, bottom);
-	ret += HPDF_Array_AddReal(array1, rect->right);
-	ret += HPDF_Array_AddReal(array1, top);
+	ret |= HPDF_Array_AddReal(array1, rect->left);
+	ret |= HPDF_Array_AddReal(array1, bottom);
+	ret |= HPDF_Array_AddReal(array1, rect->right);
+	ret |= HPDF_Array_AddReal(array1, top);
 
 	array2 = HPDF_Array_New(page->mmgr);
 	if (!array2)
@@ -597,12 +613,12 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, cons
 	if (HPDF_Dict_Add(fromxobject, "Matrix", array2) != HPDF_OK)
 		return NULL;
 
-	ret += HPDF_Array_AddReal(array2, 1.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
-	ret += HPDF_Array_AddReal(array2, 1.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 1.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 1.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
 
 	if (HPDF_Dict_AddNumber(fromxobject, "FormType", 1) != HPDF_OK)
 		return NULL;
@@ -646,11 +662,12 @@ HPDF_XObject HPDF_Page_CreateXObjectFromImage(HPDF_Doc pdf, HPDF_Page page, cons
 
 	return fromxobject;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEXOBJECTASWHITERECT)
 HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect)
 {
-
 	HPDF_Dict resource;
 	HPDF_Dict fromxobject;
 	HPDF_Dict xobject;
@@ -677,15 +694,15 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, co
 	 * compatibility
 	 */
 
-	ret += HPDF_Dict_Add(fromxobject, "Resources", resource);
+	ret |= HPDF_Dict_Add(fromxobject, "Resources", resource);
 
 	procset = HPDF_Array_New(page->mmgr);
 	if (!procset)
 		return NULL;
 
-	ret += HPDF_Dict_Add(resource, "ProcSet", procset);
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
-	ret += HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageC"));
+	ret |= HPDF_Dict_Add(resource, "ProcSet", procset);
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "PDF"));
+	ret |= HPDF_Array_Add(procset, HPDF_Name_New(page->mmgr, "ImageC"));
 
 	xobject = HPDF_Dict_New(page->mmgr);
 	if (!xobject)
@@ -711,10 +728,10 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, co
 		bottom = rect->bottom;
 	}
 
-	ret += HPDF_Array_AddReal(array1, 0.0);
-	ret += HPDF_Array_AddReal(array1, 0.0);
-	ret += HPDF_Array_AddReal(array1, rect->right - rect->left);
-	ret += HPDF_Array_AddReal(array1, top - bottom);
+	ret |= HPDF_Array_AddReal(array1, 0.0);
+	ret |= HPDF_Array_AddReal(array1, 0.0);
+	ret |= HPDF_Array_AddReal(array1, rect->right - rect->left);
+	ret |= HPDF_Array_AddReal(array1, top - bottom);
 
 	array2 = HPDF_Array_New(page->mmgr);
 	if (!array2)
@@ -723,12 +740,12 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, co
 	if (HPDF_Dict_Add(fromxobject, "Matrix", array2) != HPDF_OK)
 		return NULL;
 
-	ret += HPDF_Array_AddReal(array2, 1.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
-	ret += HPDF_Array_AddReal(array2, 1.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
-	ret += HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 1.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 1.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
+	ret |= HPDF_Array_AddReal(array2, 0.0);
 
 	if (HPDF_Dict_AddNumber(fromxobject, "FormType", 1) != HPDF_OK)
 		return NULL;
@@ -762,8 +779,10 @@ HPDF_XObject HPDF_Page_CreateXObjectAsWhiteRect(HPDF_Doc pdf, HPDF_Page page, co
 
 	return fromxobject;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETXOBJECTNAME)
 const char *HPDF_Page_GetXObjectName(HPDF_Page page, HPDF_XObject xobj)
 {
 	HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
@@ -810,8 +829,10 @@ const char *HPDF_Page_GetXObjectName(HPDF_Page page, HPDF_XObject xobj)
 
 	return key;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETEXTGSTATENAME)
 const char *HPDF_Page_GetExtGStateName(HPDF_Page page, HPDF_ExtGState state)
 {
 	HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
@@ -858,9 +879,11 @@ const char *HPDF_Page_GetExtGStateName(HPDF_Page page, HPDF_ExtGState state)
 
 	return key;
 }
+#endif
 
 
-static HPDF_STATUS AddAnnotation(HPDF_Page page, HPDF_Annotation annot)
+#if defined(PAGES_ALL) || defined(PAGE_ADDANNOTATION)
+HPDF_STATUS HPDF_Page_AddAnnotation(HPDF_Page page, HPDF_Annotation annot)
 {
 	HPDF_Array array;
 	HPDF_STATUS ret = HPDF_OK;
@@ -887,8 +910,10 @@ static HPDF_STATUS AddAnnotation(HPDF_Page page, HPDF_Annotation annot)
 
 	return ret;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_TEXTWIDTH)
 HPDF_REAL HPDF_Page_TextWidth(HPDF_Page page, const char *text)
 {
 	HPDF_PageAttr attr;
@@ -918,8 +943,10 @@ HPDF_REAL HPDF_Page_TextWidth(HPDF_Page page, const char *text)
 
 	return ret;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_MEASURETEXT)
 HPDF_UINT HPDF_Page_MeasureText(HPDF_Page page, const char *text, HPDF_REAL width, HPDF_BOOL wordwrap, HPDF_REAL *real_width)
 {
 	HPDF_PageAttr attr;
@@ -946,24 +973,30 @@ HPDF_UINT HPDF_Page_MeasureText(HPDF_Page page, const char *text, HPDF_REAL widt
 
 	return ret;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETWIDTH)
 HPDF_REAL HPDF_Page_GetWidth(HPDF_Page page)
 {
 	HPDF_Box box;
 	HPDF_Page_GetMediaBox(page, &box);
 	return box.right;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETHEIGHT)
 HPDF_REAL HPDF_Page_GetHeight(HPDF_Page page)
 {
 	HPDF_Box box;
 	HPDF_Page_GetMediaBox(page, &box);
 	return box.top;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETCURRENTFONT)
 HPDF_Font HPDF_Page_GetCurrentFont(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -974,8 +1007,10 @@ HPDF_Font HPDF_Page_GetCurrentFont(HPDF_Page page)
 	}
 	return NULL;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETCURRENTFONTSIZE)
 HPDF_REAL HPDF_Page_GetCurrentFontSize(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -987,8 +1022,10 @@ HPDF_REAL HPDF_Page_GetCurrentFontSize(HPDF_Page page)
 	}
 	return 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETTRANSMATRIX)
 void HPDF_Page_GetTransMatrix(HPDF_Page page, HPDF_TransMatrix *matrix)
 {
 	if (HPDF_Page_Validate(page))
@@ -1006,8 +1043,10 @@ void HPDF_Page_GetTransMatrix(HPDF_Page page, HPDF_TransMatrix *matrix)
 	matrix->x = 0;
 	matrix->y = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETLINEWIDTH)
 HPDF_REAL HPDF_Page_GetLineWidth(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1018,8 +1057,10 @@ HPDF_REAL HPDF_Page_GetLineWidth(HPDF_Page page)
 	}
 	return HPDF_DEF_LINEWIDTH;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETLINECAP)
 HPDF_LineCap HPDF_Page_GetLineCap(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1030,8 +1071,10 @@ HPDF_LineCap HPDF_Page_GetLineCap(HPDF_Page page)
 	}
 	return HPDF_DEF_LINECAP;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETLINEJOIN)
 HPDF_LineJoin HPDF_Page_GetLineJoin(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1042,8 +1085,10 @@ HPDF_LineJoin HPDF_Page_GetLineJoin(HPDF_Page page)
 	}
 	return HPDF_DEF_LINEJOIN;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETMITERLIMIT)
 HPDF_REAL HPDF_Page_GetMiterLimit(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1054,8 +1099,10 @@ HPDF_REAL HPDF_Page_GetMiterLimit(HPDF_Page page)
 	}
 	return HPDF_DEF_MITERLIMIT;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETDASH)
 void HPDF_Page_GetDash(HPDF_Page page, HPDF_DashMode *mode)
 {
 	if (HPDF_Page_Validate(page))
@@ -1077,8 +1124,10 @@ void HPDF_Page_GetDash(HPDF_Page page, HPDF_DashMode *mode)
 	mode->num_ptn = 0;
 	mode->phase = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETFLAT)
 HPDF_REAL HPDF_Page_GetFlat(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1089,8 +1138,10 @@ HPDF_REAL HPDF_Page_GetFlat(HPDF_Page page)
 	}
 	return HPDF_DEF_FLATNESS;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETWORDSPACE)
 HPDF_REAL HPDF_Page_GetWordSpace(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1101,8 +1152,10 @@ HPDF_REAL HPDF_Page_GetWordSpace(HPDF_Page page)
 	}
 	return HPDF_DEF_WORDSPACE;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETCHARSPACE)
 HPDF_REAL HPDF_Page_GetCharSpace(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1113,8 +1166,10 @@ HPDF_REAL HPDF_Page_GetCharSpace(HPDF_Page page)
 	}
 	return HPDF_DEF_CHARSPACE;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETHORIZONTALSCALING)
 HPDF_REAL HPDF_Page_GetHorizontalScaling(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1125,8 +1180,10 @@ HPDF_REAL HPDF_Page_GetHorizontalScaling(HPDF_Page page)
 	}
 	return HPDF_DEF_HSCALING;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETTEXTLEADING)
 HPDF_REAL HPDF_Page_GetTextLeading(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1137,8 +1194,10 @@ HPDF_REAL HPDF_Page_GetTextLeading(HPDF_Page page)
 	}
 	return HPDF_DEF_LEADING;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETTEXTRENDERINGMODE)
 HPDF_TextRenderingMode HPDF_Page_GetTextRenderingMode(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1149,8 +1208,10 @@ HPDF_TextRenderingMode HPDF_Page_GetTextRenderingMode(HPDF_Page page)
 	}
 	return HPDF_DEF_RENDERING_MODE;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETTEXTRISE)
 HPDF_REAL HPDF_Page_GetTextRise(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1161,8 +1222,10 @@ HPDF_REAL HPDF_Page_GetTextRise(HPDF_Page page)
 	}
 	return HPDF_DEF_RISE;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETRGBFILL)
 void HPDF_Page_GetRGBFill(HPDF_Page page, HPDF_RGBColor *color)
 {
 	if (HPDF_Page_Validate(page))
@@ -1176,10 +1239,12 @@ void HPDF_Page_GetRGBFill(HPDF_Page page, HPDF_RGBColor *color)
 		}
 	}
 
-	*color = DEF_RGB_COLOR;
+	color->r = color->g = color->b = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETRGBSTROKE)
 void HPDF_Page_GetRGBStroke(HPDF_Page page, HPDF_RGBColor *color)
 {
 	if (HPDF_Page_Validate(page))
@@ -1193,10 +1258,12 @@ void HPDF_Page_GetRGBStroke(HPDF_Page page, HPDF_RGBColor *color)
 		}
 	}
 
-	*color = DEF_RGB_COLOR;
+	color->r = color->g = color->b = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETCMYKFILL)
 void HPDF_Page_GetCMYKFill(HPDF_Page page, HPDF_CMYKColor *color)
 {
 	if (HPDF_Page_Validate(page))
@@ -1210,10 +1277,12 @@ void HPDF_Page_GetCMYKFill(HPDF_Page page, HPDF_CMYKColor *color)
 		}
 	}
 
-	*color = DEF_CMYK_COLOR;
+	color->c = color->m = color->y = color->k = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETCMYKSTROKE)
 void HPDF_Page_GetCMYKStroke(HPDF_Page page, HPDF_CMYKColor *color)
 {
 	if (HPDF_Page_Validate(page))
@@ -1227,10 +1296,12 @@ void HPDF_Page_GetCMYKStroke(HPDF_Page page, HPDF_CMYKColor *color)
 		}
 	}
 
-	*color = DEF_CMYK_COLOR;
+	color->c = color->m = color->y = color->k = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETGRAYFILL)
 HPDF_REAL HPDF_Page_GetGrayFill(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1243,8 +1314,10 @@ HPDF_REAL HPDF_Page_GetGrayFill(HPDF_Page page)
 
 	return 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETGRAYSTROKE)
 HPDF_REAL HPDF_Page_GetGrayStroke(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1257,8 +1330,10 @@ HPDF_REAL HPDF_Page_GetGrayStroke(HPDF_Page page)
 
 	return 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETSTROKINGCOLORSPACE)
 HPDF_ColorSpace HPDF_Page_GetStrokingColorSpace(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1266,8 +1341,10 @@ HPDF_ColorSpace HPDF_Page_GetStrokingColorSpace(HPDF_Page page)
 
 	return HPDF_CS_EOF;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETFILLINGCOLORSPACE)
 HPDF_ColorSpace HPDF_Page_GetFillingColorSpace(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1275,8 +1352,10 @@ HPDF_ColorSpace HPDF_Page_GetFillingColorSpace(HPDF_Page page)
 
 	return HPDF_CS_EOF;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETTEXTMATRIX)
 void HPDF_Page_GetTextMatrix(HPDF_Page page, HPDF_TransMatrix *matrix)
 {
 	if (HPDF_Page_Validate(page))
@@ -1294,8 +1373,10 @@ void HPDF_Page_GetTextMatrix(HPDF_Page page, HPDF_TransMatrix *matrix)
 	matrix->x = 0;
 	matrix->y = 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETGSTATEDEPTH)
 HPDF_UINT HPDF_Page_GetGStateDepth(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1306,8 +1387,10 @@ HPDF_UINT HPDF_Page_GetGStateDepth(HPDF_Page page)
 	}
 	return 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETGMODE)
 HPDF_UINT16 HPDF_Page_GetGMode(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
@@ -1315,8 +1398,10 @@ HPDF_UINT16 HPDF_Page_GetGMode(HPDF_Page page)
 
 	return 0;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETCURRENTPOS)
 HPDF_STATUS HPDF_Page_GetCurrentPos(HPDF_Page page, HPDF_Point *pos)
 {
 	HPDF_PageAttr attr;
@@ -1333,27 +1418,11 @@ HPDF_STATUS HPDF_Page_GetCurrentPos(HPDF_Page page, HPDF_Point *pos)
 
 	return HPDF_OK;
 }
+#endif
 
 
-void HPDF_Page_GetCurrentTextPos(HPDF_Page page, HPDF_Point *pos)
-{
-	if (HPDF_Page_Validate(page))
-	{
-		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
-
-		if (attr->gmode & HPDF_GMODE_TEXT_OBJECT)
-		{
-			*pos = attr->text_pos;
-			return;
-		}
-	}
-
-	pos->x = 0;
-	pos->y = 0;
-}
-
-
-HPDF_STATUS HPDF_Page_GetCurrentTextPos2(HPDF_Page page, HPDF_Point *pos)
+#if defined(PAGES_ALL) || defined(PAGE_GETCURRENTTEXTPOS)
+HPDF_STATUS HPDF_Page_GetCurrentTextPos(HPDF_Page page, HPDF_Point *pos)
 {
 	HPDF_PageAttr attr;
 
@@ -1369,8 +1438,10 @@ HPDF_STATUS HPDF_Page_GetCurrentTextPos2(HPDF_Page page, HPDF_Point *pos)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETBOXVALUE)
 HPDF_STATUS HPDF_Page_SetBoxValue(HPDF_Page page, const char *name, HPDF_UINT index, HPDF_REAL value)
 {
 	HPDF_Real r;
@@ -1391,8 +1462,10 @@ HPDF_STATUS HPDF_Page_SetBoxValue(HPDF_Page page, const char *name, HPDF_UINT in
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETROTATE)
 HPDF_STATUS HPDF_Page_SetRotate(HPDF_Page page, HPDF_UINT16 angle)
 {
 	HPDF_Number n;
@@ -1413,8 +1486,10 @@ HPDF_STATUS HPDF_Page_SetRotate(HPDF_Page page, HPDF_UINT16 angle)
 
 	return ret;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETZOOM)
 HPDF_STATUS HPDF_Page_SetZoom(HPDF_Page page, HPDF_REAL zoom)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -1432,8 +1507,10 @@ HPDF_STATUS HPDF_Page_SetZoom(HPDF_Page page, HPDF_REAL zoom)
 	ret = HPDF_Dict_AddReal(page, "PZ", zoom);
 	return ret;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETWIDTH)
 HPDF_STATUS HPDF_Page_SetWidth(HPDF_Page page, HPDF_REAL value)
 {
 	if (value < 3 || value > 14400)
@@ -1444,8 +1521,10 @@ HPDF_STATUS HPDF_Page_SetWidth(HPDF_Page page, HPDF_REAL value)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETHEIGHT)
 HPDF_STATUS HPDF_Page_SetHeight(HPDF_Page page, HPDF_REAL value)
 {
 	if (value < 3 || value > 14400)
@@ -1456,8 +1535,10 @@ HPDF_STATUS HPDF_Page_SetHeight(HPDF_Page page, HPDF_REAL value)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETSIZE)
 HPDF_STATUS HPDF_Page_SetSize(HPDF_Page page, HPDF_PageSizes size, HPDF_PageDirection direction)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -1470,12 +1551,12 @@ HPDF_STATUS HPDF_Page_SetSize(HPDF_Page page, HPDF_PageSizes size, HPDF_PageDire
 
 	if (direction == HPDF_PAGE_LANDSCAPE)
 	{
-		ret += HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[size].x);
-		ret += HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[size].y);
+		ret |= HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[size].x);
+		ret |= HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[size].y);
 	} else if (direction == HPDF_PAGE_PORTRAIT)
 	{
-		ret += HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[size].y);
-		ret += HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[size].x);
+		ret |= HPDF_Page_SetHeight(page, HPDF_PREDEFINED_PAGE_SIZES[size].y);
+		ret |= HPDF_Page_SetWidth(page, HPDF_PREDEFINED_PAGE_SIZES[size].x);
 	} else
 	{
 		ret = HPDF_SetError(page->error, HPDF_PAGE_INVALID_DIRECTION, direction);
@@ -1486,8 +1567,10 @@ HPDF_STATUS HPDF_Page_SetSize(HPDF_Page page, HPDF_PageSizes size, HPDF_PageDire
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_VALIDATE)
 HPDF_BOOL HPDF_Page_Validate(HPDF_Page page)
 {
 	HPDF_Obj_Header *header = (HPDF_Obj_Header *) page;
@@ -1500,8 +1583,10 @@ HPDF_BOOL HPDF_Page_Validate(HPDF_Page page)
 
 	return HPDF_TRUE;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEDESTINATION)
 HPDF_Destination HPDF_Page_CreateDestination(HPDF_Page page)
 {
 	HPDF_PageAttr attr;
@@ -1518,8 +1603,10 @@ HPDF_Destination HPDF_Page_CreateDestination(HPDF_Page page)
 
 	return dst;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATE3DANNOT)
 HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_BOOL tb, HPDF_BOOL np, HPDF_U3D u3d, HPDF_Image ap)
 {
 	HPDF_PageAttr attr;
@@ -1533,7 +1620,7 @@ HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, const HPDF_Rect *rect, H
 	annot = HPDF_3DAnnot_New(page->mmgr, attr->xref, rect, tb, np, u3d, ap);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1545,8 +1632,10 @@ HPDF_Annotation HPDF_Page_Create3DAnnot(HPDF_Page page, const HPDF_Rect *rect, H
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATETEXTANNOT)
 HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
@@ -1566,7 +1655,7 @@ HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, const HPDF_Rect *rect,
 	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_TEXT);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1578,8 +1667,10 @@ HPDF_Annotation HPDF_Page_CreateTextAnnot(HPDF_Page page, const HPDF_Rect *rect,
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEFREETEXTANNOT)
 HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
@@ -1599,7 +1690,7 @@ HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, const HPDF_Rect *r
 	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_FREE_TEXT);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1611,8 +1702,10 @@ HPDF_Annotation HPDF_Page_CreateFreeTextAnnot(HPDF_Page page, const HPDF_Rect *r
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATELINEANNOT)
 HPDF_Annotation HPDF_Page_CreateLineAnnot(HPDF_Page page, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
@@ -1633,7 +1726,7 @@ HPDF_Annotation HPDF_Page_CreateLineAnnot(HPDF_Page page, const char *text, HPDF
 	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, &rect, text, encoder, HPDF_ANNOT_LINE);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1645,8 +1738,10 @@ HPDF_Annotation HPDF_Page_CreateLineAnnot(HPDF_Page page, const char *text, HPDF
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEWIDGETANNOT)
 HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, const HPDF_Rect *rect)
 {
 	HPDF_PageAttr attr;
@@ -1661,7 +1756,7 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, const HPDF_Rect *rec
 
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1673,8 +1768,10 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot(HPDF_Page page, const HPDF_Rect *rec
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEWIDGETANNOT_WHITEONLYWHILEPRINT)
 HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HPDF_Page page, const HPDF_Rect *rect)
 {
 	HPDF_XObject fxobj;
@@ -1718,10 +1815,10 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HP
 		return NULL;
 
 	ret = HPDF_Array_AddReal(array_bg, 1.0);
-	ret += HPDF_Array_AddReal(array_bg, 1.0);
-	ret += HPDF_Array_AddReal(array_bg, 1.0);
+	ret |= HPDF_Array_AddReal(array_bg, 1.0);
+	ret |= HPDF_Array_AddReal(array_bg, 1.0);
 
-	ret += HPDF_Dict_AddName(annot, "FT", "Btn");
+	ret |= HPDF_Dict_AddName(annot, "FT", "Btn");
 	if (ret != HPDF_OK)
 		return NULL;
 
@@ -1735,8 +1832,10 @@ HPDF_Annotation HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint(HPDF_Doc pdf, HP
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATELINKANNOT)
 HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	HPDF_PageAttr attr;
@@ -1759,7 +1858,7 @@ HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, const HPDF_Rect *rect,
 	annot = HPDF_LinkAnnot_New(page->mmgr, attr->xref, rect, dst);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1771,8 +1870,10 @@ HPDF_Annotation HPDF_Page_CreateLinkAnnot(HPDF_Page page, const HPDF_Rect *rect,
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEGOTOANNOT)
 HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Destination dst)
 {
 	HPDF_PageAttr attr;
@@ -1795,7 +1896,7 @@ HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, const HPDF_Rect *rect,
 	annot = HPDF_GoToLinkAnnot_New(page->mmgr, attr->xref, rect, dst);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1807,8 +1908,10 @@ HPDF_Annotation HPDF_Page_CreateGoToAnnot(HPDF_Page page, const HPDF_Rect *rect,
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEGOTORANNOT)
 HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *file, const char *destname, HPDF_BOOL newwindow)
 {
 	HPDF_PageAttr attr;
@@ -1822,7 +1925,7 @@ HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, const HPDF_Rect *rect
 	annot = HPDF_GoToRLinkAnnot_New(page->mmgr, attr->xref, rect, file, destname, newwindow);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1834,8 +1937,10 @@ HPDF_Annotation HPDF_Page_CreateGoToRAnnot(HPDF_Page page, const HPDF_Rect *rect
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATENAMEDANNOT)
 HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *type)
 {
 	HPDF_PageAttr attr;
@@ -1849,7 +1954,7 @@ HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, const HPDF_Rect *rect
 	annot = HPDF_NamedLinkAnnot_New(page->mmgr, attr->xref, rect, type);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1861,8 +1966,10 @@ HPDF_Annotation HPDF_Page_CreateNamedAnnot(HPDF_Page page, const HPDF_Rect *rect
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATELAUNCHANNOT)
 HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *file, const char *args, const char *type)
 {
 	HPDF_PageAttr attr;
@@ -1876,7 +1983,7 @@ HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, const HPDF_Rect *rec
 	annot = HPDF_LaunchLinkAnnot_New(page->mmgr, attr->xref, rect, file, args, type);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1888,8 +1995,10 @@ HPDF_Annotation HPDF_Page_CreateLaunchAnnot(HPDF_Page page, const HPDF_Rect *rec
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEURILINKANNOT)
 HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *uri)
 {
 	HPDF_PageAttr attr;
@@ -1909,7 +2018,7 @@ HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, const HPDF_Rect *re
 	annot = HPDF_URILinkAnnot_New(page->mmgr, attr->xref, rect, uri);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1921,8 +2030,10 @@ HPDF_Annotation HPDF_Page_CreateURILinkAnnot(HPDF_Page page, const HPDF_Rect *re
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATECIRCLEANNOT)
 HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
@@ -1942,7 +2053,7 @@ HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, const HPDF_Rect *rec
 	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_CIRCLE);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1954,8 +2065,10 @@ HPDF_Annotation HPDF_Page_CreateCircleAnnot(HPDF_Page page, const HPDF_Rect *rec
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATESQUAREANNOT)
 HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
@@ -1975,7 +2088,7 @@ HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, const HPDF_Rect *rec
 	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_SQUARE);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -1987,8 +2100,10 @@ HPDF_Annotation HPDF_Page_CreateSquareAnnot(HPDF_Page page, const HPDF_Rect *rec
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATE3DVIEW)
 HPDF_Dict HPDF_Page_Create3DView(HPDF_Page page, HPDF_U3D u3d, HPDF_Annotation annot3d, const char *name)
 {
 	HPDF_PageAttr attr;
@@ -2008,8 +2123,10 @@ HPDF_Dict HPDF_Page_Create3DView(HPDF_Page page, HPDF_U3D u3d, HPDF_Annotation a
 	}
 	return view;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATETEXTMARKUPANNOT)
 HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(
 	HPDF_Page page,
 	const HPDF_Rect *rect,
@@ -2034,7 +2151,7 @@ HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(
 	annot = HPDF_MarkupAnnot_New(page->mmgr, attr->xref, rect, text, encoder, subType);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -2046,32 +2163,42 @@ HPDF_Annotation HPDF_Page_CreateTextMarkupAnnot(
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEHIGHLIGHTANNOT)
 HPDF_Annotation HPDF_Page_CreateHighlightAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_HIGHLIGHT);
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATESQUIGGLYANNOT)
 HPDF_Annotation HPDF_Page_CreateSquigglyAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_SQUIGGLY);
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEUNDERLINEANNOT)
 HPDF_Annotation HPDF_Page_CreateUnderlineAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_UNDERLINE);
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATESTRIKEOUTANNOT)
 HPDF_Annotation HPDF_Page_CreateStrikeOutAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	return HPDF_Page_CreateTextMarkupAnnot(page, rect, text, encoder, HPDF_ANNOT_STRIKE_OUT);
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEPOPUPANNOT)
 HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, const HPDF_Rect *rect, HPDF_Annotation parent)
 {
 	HPDF_PageAttr attr;
@@ -2085,7 +2212,7 @@ HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, const HPDF_Rect *rect
 	annot = HPDF_PopupAnnot_New(page->mmgr, attr->xref, rect, parent);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -2097,8 +2224,10 @@ HPDF_Annotation HPDF_Page_CreatePopupAnnot(HPDF_Page page, const HPDF_Rect *rect
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATESTAMPANNOT)
 HPDF_Annotation HPDF_Page_CreateStampAnnot(
 	HPDF_Page page,
 	const HPDF_Rect *rect,
@@ -2117,7 +2246,7 @@ HPDF_Annotation HPDF_Page_CreateStampAnnot(
 	annot = HPDF_StampAnnot_New(page->mmgr, attr->xref, rect, name, text, encoder);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -2129,8 +2258,10 @@ HPDF_Annotation HPDF_Page_CreateStampAnnot(
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEPROJECTIONANNOT)
 HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, const HPDF_Rect *rect, const char *text, HPDF_Encoder encoder)
 {
 	HPDF_PageAttr attr;
@@ -2144,7 +2275,7 @@ HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, const HPDF_Rect 
 	annot = HPDF_ProjectionAnnot_New(page->mmgr, attr->xref, rect, text, encoder);
 	if (annot)
 	{
-		if (AddAnnotation(page, annot) != HPDF_OK)
+		if (HPDF_Page_AddAnnotation(page, annot) != HPDF_OK)
 		{
 			HPDF_CheckError(page->error);
 			annot = NULL;
@@ -2156,8 +2287,10 @@ HPDF_Annotation HPDF_Page_CreateProjectionAnnot(HPDF_Page page, const HPDF_Rect 
 
 	return annot;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATE3DC3DMEASURE)
 HPDF_3DMeasure HPDF_Page_Create3DC3DMeasure(HPDF_Page page, const HPDF_Point3D *firstanchorpoint, const HPDF_Point3D *textanchorpoint)
 {
 	HPDF_PageAttr attr;
@@ -2174,8 +2307,10 @@ HPDF_3DMeasure HPDF_Page_Create3DC3DMeasure(HPDF_Page page, const HPDF_Point3D *
 
 	return measure;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATEPD33DMEASURE)
 HPDF_3DMeasure HPDF_Page_CreatePD33DMeasure(
 	HPDF_Page page,
 	const HPDF_Point3D *annotationPlaneNormal,
@@ -2206,8 +2341,10 @@ HPDF_3DMeasure HPDF_Page_CreatePD33DMeasure(
 
 	return measure;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_CREATE3DANNOTEXDATA)
 HPDF_ExData HPDF_Page_Create3DAnnotExData(HPDF_Page page)
 {
 	HPDF_PageAttr attr;
@@ -2224,8 +2361,10 @@ HPDF_ExData HPDF_Page_Create3DAnnotExData(HPDF_Page page)
 
 	return exData;
 }
+#endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_SETFILTER)
 void HPDF_Page_SetFilter(HPDF_Page page, HPDF_UINT filter)
 {
 	HPDF_PageAttr attr;
@@ -2233,3 +2372,4 @@ void HPDF_Page_SetFilter(HPDF_Page page, HPDF_UINT filter)
 	attr = (HPDF_PageAttr) page->attr;
 	attr->contents->filter = filter;
 }
+#endif

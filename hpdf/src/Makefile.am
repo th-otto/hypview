@@ -46,7 +46,6 @@ libhpdf_a_SOURCES = \
 	outline.c \
 	pagelab.c \
 	pageop.c \
-	pages.c \
 	real.c \
 	streams.c \
 	string.c \
@@ -145,6 +144,88 @@ libhpdf_a_LIBADD = \
 	destinat_setfitb.o \
 	destinat_setfitbh.o \
 	destinat_setfitbv.o \
+	pages_sizes.o \
+	pages_new.o \
+	pages_addkids.o \
+	pages_insertbefore.o \
+	pages_validate.o \
+	page_new.o \
+	page_checkstate.o \
+	page_getinheritableitem.o \
+	page_getlocalfontname.o \
+	page_getmediabox.o \
+	page_createxobjectfromimage.o \
+	page_createxobjectaswhiterect.o \
+	page_getxobjectname.o \
+	page_getextgstatename.o \
+	page_addannotation.o \
+	page_textsize.o \
+	page_measuretext.o \
+	page_getwidth.o \
+	page_getheight.o \
+	page_getcurrentfont.o \
+	page_getcurrentfontsize.o \
+	page_gettransmatrix.o \
+	page_getlinewidth.o \
+	page_getlinecap.o \
+	page_getlinejoin.o \
+	page_getmiterlimit.o \
+	page_getdash.o \
+	page_getflat.o \
+	page_getwordspae.o \
+	page_getcharspae.o \
+	page_gethorizontalscaling.o \
+	page_gettextleading.o \
+	page_gettextrenderingmode.o \
+	page_gettextrise.o \
+	page_getrgbfill.o \
+	page_getrgbstroke.o \
+	page_getcmykfill.o \
+	page_getcmykstroke.o \
+	page_getgrayfill.o \
+	page_getgraystroke.o \
+	page_getstrokingcolorspace.o \
+	page_getfillingcolorspace.o \
+	page_gettextmatrix.o \
+	page_getgstatedepth.o \
+	page_getgmode.o \
+	page_getcurrentpos.o \
+	page_getcurrenttextpos.o \
+	page_setboxvalue.o \
+	page_setrotate.o \
+	page_setzoom.o \
+	page_setwidth.o \
+	page_setheight.o \
+	page_setsize.o \
+	page_validate.o \
+	page_createdestination.o \
+	page_create3dannot.o \
+	page_createtextannot.o \
+	page_createfreetextannot.o \
+	page_createlineannot.o \
+	page_createwidgetannot.o \
+	page_createwidgetannot_whiteonlywhileprint.o \
+	page_createlinkannot.o \
+	page_creategotoannot.o \
+	page_creategotorannot.o \
+	page_createnamedannot.o \
+	page_createlaunchannot.o \
+	page_createurilinkannot.o \
+	page_createcircleannot.o \
+	page_createsquareannot.o \
+	page_create3dview.o \
+	page_createtextmarkupannot.o \
+	page_createhighlightannot.o \
+	page_createsquigglyannot.o \
+	page_createunderlineannot.o \
+	page_createstrikeoutannot.o \
+	page_createpopupannot.o \
+	page_createstampannot.o \
+	page_createprojectionannot.o \
+	page_create3dc3dmeasure.o \
+	page_createpd33dmeasure.o \
+	page_create3dannotexdata.o \
+	page_setfilter.o \
 	3dmeasur_addpoint.o \
 	3dmeasur_new.o \
 	3dmeasur_setcolor.o \
@@ -422,6 +503,255 @@ destinat_setfitbv.o: destinat.c
 
 
 
+pages_sizes.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGES_SIZES
+
+pages_new.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGES_NEW
+
+pages_addkids.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGES_ADDKIDS
+
+pages_insertbefore.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGES_INSERTBEFORE
+
+pages_validate.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGES_VALIDATE
+
+page_new.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_NEW
+
+page_checkstate.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CHECKSTATE
+
+page_getinheritableitem.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETINHERITABLEITEM
+
+page_getlocalfontname.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLOCALFONTNAME
+
+page_getmediabox.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETMEDIABOX
+
+page_createxobjectfromimage.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEXOBJECTFROMIMAGE
+
+page_createxobjectaswhiterect.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEXOBJECTASWHITERECT
+
+page_getxobjectname.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETXOBJECTNAME
+
+page_getextgstatename.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETEXTGSTATENAME
+
+page_addannotation.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_ADDANNOTATION
+
+page_textsize.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_TEXTWIDTH
+
+page_measuretext.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_MEASURETEXT
+
+page_getwidth.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETWIDTH
+
+page_getheight.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETHEIGHT
+
+page_getcurrentfont.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCURRENTFONT
+
+page_getcurrentfontsize.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCURRENTFONTSIZE
+
+page_gettransmatrix.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETTRANSMATRIX
+
+page_getlinewidth.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLINEWIDTH
+
+page_getlinecap.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLINECAP
+
+page_getlinejoin.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLINEJOIN
+
+page_getmiterlimit.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETMITERLIMIT
+
+page_getdash.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETDASH
+
+page_getflat.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETFLAT
+
+page_getwordspae.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETWORDSPACE
+
+page_getcharspae.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCHARSPACE
+
+page_gethorizontalscaling.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETHORIZONTALSCALING
+
+page_gettextleading.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETTEXTLEADING
+
+page_gettextrenderingmode.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETTEXTRENDERINGMODE
+
+page_gettextrise.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETTEXTRISE
+
+page_getrgbfill.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETRGBFILL
+
+page_getrgbstroke.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETRGBSTROKE
+
+page_getcmykfill.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCMYKFILL
+
+page_getcmykstroke.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCMYKSTROKE
+
+page_getgrayfill.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETGRAYFILL
+
+page_getgraystroke.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETGRAYSTROKE
+
+page_getstrokingcolorspace.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETSTROKINGCOLORSPACE
+
+page_getfillingcolorspace.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETFILLINGCOLORSPACE
+
+page_gettextmatrix.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETTEXTMATRIX
+
+page_getgstatedepth.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETGSTATEDEPTH
+
+page_getgmode.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETGMODE
+
+page_getcurrentpos.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCURRENTPOS
+
+page_getcurrenttextpos.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETCURRENTTEXTPOS
+
+page_setboxvalue.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETBOXVALUE
+
+page_setrotate.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETROTATE
+
+page_setzoom.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETZOOM
+
+page_setwidth.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETWIDTH
+
+page_setheight.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETHEIGHT
+
+page_setsize.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETSIZE
+
+page_validate.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_VALIDATE
+
+page_createdestination.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEDESTINATION
+
+page_create3dannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATE3DANNOT
+
+page_createtextannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATETEXTANNOT
+
+page_createfreetextannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEFREETEXTANNOT
+
+page_createlineannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATELINEANNOT
+
+page_createwidgetannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEWIDGETANNOT
+
+page_createwidgetannot_whiteonlywhileprint.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEWIDGETANNOT_WHITEONLYWHILEPRINT
+
+page_createlinkannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATELINKANNOT
+
+page_creategotoannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEGOTOANNOT
+
+page_creategotorannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEGOTORANNOT
+
+page_createnamedannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATENAMEDANNOT
+
+page_createlaunchannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATELAUNCHANNOT
+
+page_createurilinkannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEURILINKANNOT
+
+page_createcircleannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATECIRCLEANNOT
+
+page_createsquareannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATESQUAREANNOT
+
+page_create3dview.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATE3DVIEW
+
+page_createtextmarkupannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATETEXTMARKUPANNOT
+
+page_createhighlightannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEHIGHLIGHTANNOT
+
+page_createsquigglyannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATESQUIGGLYANNOT
+
+page_createunderlineannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEUNDERLINEANNOT
+
+page_createstrikeoutannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATESTRIKEOUTANNOT
+
+page_createpopupannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEPOPUPANNOT
+
+page_createstampannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATESTAMPANNOT
+
+page_createprojectionannot.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEPROJECTIONANNOT
+
+page_create3dc3dmeasure.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATE3DC3DMEASURE
+
+page_createpd33dmeasure.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATEPD33DMEASURE
+
+page_create3dannotexdata.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_CREATE3DANNOTEXDATA
+
+page_setfilter.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETFILTER
+
+
+
+
 3dmeasur_addpoint.o: 3dmeasur.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DMEASURE3D_ADDPOINT
 
@@ -456,6 +786,7 @@ EXTRADIST = \
 	array.c \
 	catalog.c \
 	destinat.c \
+	pages.c \
 	3dmeasur.c \
 	$(empty)
 
