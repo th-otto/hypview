@@ -50,7 +50,6 @@ HPDF_Encoder HPDF_Doc_FindEncoder(HPDF_Doc pdf, const char *encoding_name)
 
 		if (strcmp(encoding_name, encoder->name) == 0)
 		{
-
 			/* if encoder is uninitialize, call init_fn() */
 			if (encoder->type == HPDF_ENCODER_TYPE_UNINITIALIZED)
 			{
@@ -1781,7 +1780,7 @@ static const char *LoadTTFontFromStream(HPDF_Doc pdf, HPDF_Stream font_data, HPD
 			}
 		}
 
-		HPDF_TTFontDef_SetTagName(def, (char *) pdf->ttfont_tag);
+		HPDF_TTFontDef_SetTagName(def, pdf->ttfont_tag);
 	}
 
 	return def->base_font;
@@ -1836,7 +1835,7 @@ static const char *LoadTTFontFromStream2(HPDF_Doc pdf,
 			}
 		}
 
-		HPDF_TTFontDef_SetTagName(def, (char *) pdf->ttfont_tag);
+		HPDF_TTFontDef_SetTagName(def, pdf->ttfont_tag);
 	}
 
 	return def->base_font;

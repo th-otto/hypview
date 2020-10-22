@@ -78,7 +78,6 @@ HPDF_Image HPDF_LoadPngImageFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_
 	}
 
 	return image;
-
 }
 
 

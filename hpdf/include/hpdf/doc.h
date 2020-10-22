@@ -51,7 +51,7 @@ typedef struct _HPDF_Doc_Rec
 	HPDF_Dict trailer;
 
 	HPDF_List font_mgr;
-	HPDF_BYTE ttfont_tag[6];
+	char ttfont_tag[6];
 
 	/* list for loaded fontdefs */
 	HPDF_List fontdef_list;

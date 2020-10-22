@@ -77,23 +77,23 @@ static HPDF_STATUS CreateDescriptor(HPDF_Font font)
 		if (!descriptor)
 			return HPDF_Error_GetCode(font->error);
 
-		ret += HPDF_Xref_Add(font_attr->xref, descriptor);
-		ret += HPDF_Dict_AddName(descriptor, "Type", "FontDescriptor");
-		ret += HPDF_Dict_AddNumber(descriptor, "Ascent", def->ascent);
-		ret += HPDF_Dict_AddNumber(descriptor, "Descent", def->descent);
-		ret += HPDF_Dict_AddNumber(descriptor, "CapHeight", def->cap_height);
-		ret += HPDF_Dict_AddNumber(descriptor, "Flags", def->flags);
+		ret |= HPDF_Xref_Add(font_attr->xref, descriptor);
+		ret |= HPDF_Dict_AddName(descriptor, "Type", "FontDescriptor");
+		ret |= HPDF_Dict_AddNumber(descriptor, "Ascent", def->ascent);
+		ret |= HPDF_Dict_AddNumber(descriptor, "Descent", def->descent);
+		ret |= HPDF_Dict_AddNumber(descriptor, "CapHeight", def->cap_height);
+		ret |= HPDF_Dict_AddNumber(descriptor, "Flags", def->flags);
 
 		array = HPDF_Box_Array_New(font->mmgr, &def->font_bbox);
-		ret += HPDF_Dict_Add(descriptor, "FontBBox", array);
+		ret |= HPDF_Dict_Add(descriptor, "FontBBox", array);
 
-		ret += HPDF_Dict_AddName(descriptor, "FontName", def_attr->base_font);
-		ret += HPDF_Dict_AddNumber(descriptor, "ItalicAngle", def->italic_angle);
-		ret += HPDF_Dict_AddNumber(descriptor, "StemV", def->stemv);
-		ret += HPDF_Dict_AddNumber(descriptor, "XHeight", def->x_height);
+		ret |= HPDF_Dict_AddName(descriptor, "FontName", def_attr->base_font);
+		ret |= HPDF_Dict_AddNumber(descriptor, "ItalicAngle", def->italic_angle);
+		ret |= HPDF_Dict_AddNumber(descriptor, "StemV", def->stemv);
+		ret |= HPDF_Dict_AddNumber(descriptor, "XHeight", def->x_height);
 
 		if (def_attr->char_set)
-			ret += HPDF_Dict_AddName(descriptor, "CharSet", def_attr->char_set);
+			ret |= HPDF_Dict_AddName(descriptor, "CharSet", def_attr->char_set);
 
 		if (ret != HPDF_OK)
 			return HPDF_Error_GetCode(font->error);
@@ -108,10 +108,10 @@ static HPDF_STATUS CreateDescriptor(HPDF_Font font)
 			if (HPDF_TTFontDef_SaveFontData(font_attr->fontdef, font_data->stream) != HPDF_OK)
 				return HPDF_Error_GetCode(font->error);
 
-			ret += HPDF_Dict_Add(descriptor, "FontFile2", font_data);
-			ret += HPDF_Dict_AddNumber(font_data, "Length1", def_attr->length1);
-			ret += HPDF_Dict_AddNumber(font_data, "Length2", 0);
-			ret += HPDF_Dict_AddNumber(font_data, "Length3", 0);
+			ret |= HPDF_Dict_Add(descriptor, "FontFile2", font_data);
+			ret |= HPDF_Dict_AddNumber(font_data, "Length1", def_attr->length1);
+			ret |= HPDF_Dict_AddNumber(font_data, "Length2", 0);
+			ret |= HPDF_Dict_AddNumber(font_data, "Length3", 0);
 
 			font_data->filter = font->filter;
 		}
@@ -332,16 +332,16 @@ HPDF_Font HPDF_TTFont_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder enc
 
 	fontdef_attr = (HPDF_TTFontDefAttr) fontdef->attr;
 
-	ret += HPDF_Dict_AddName(font, "Type", "Font");
-	ret += HPDF_Dict_AddName(font, "BaseFont", fontdef_attr->base_font);
-	ret += HPDF_Dict_AddName(font, "Subtype", "TrueType");
+	ret |= HPDF_Dict_AddName(font, "Type", "Font");
+	ret |= HPDF_Dict_AddName(font, "BaseFont", fontdef_attr->base_font);
+	ret |= HPDF_Dict_AddName(font, "Subtype", "TrueType");
 
 	encoder_attr = (HPDF_BasicEncoderAttr) encoder->attr;
 
-	ret += HPDF_Dict_AddNumber(font, "FirstChar", encoder_attr->first_char);
-	ret += HPDF_Dict_AddNumber(font, "LastChar", encoder_attr->last_char);
+	ret |= HPDF_Dict_AddNumber(font, "FirstChar", encoder_attr->first_char);
+	ret |= HPDF_Dict_AddNumber(font, "LastChar", encoder_attr->last_char);
 	if (fontdef->missing_width != 0)
-		ret += HPDF_Dict_AddNumber(font, "MissingWidth", fontdef->missing_width);
+		ret |= HPDF_Dict_AddNumber(font, "MissingWidth", fontdef->missing_width);
 
 	if (ret != HPDF_OK)
 	{

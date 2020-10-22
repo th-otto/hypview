@@ -20,6 +20,7 @@
 #include "hpdf/fontdef.h"
 #include <string.h>
 
+#ifndef HPDF_HELVETICA_ONLY
 static const HPDF_CharData CHAR_DATA_COURIER[316] = {
 	{32, 0x0020, 600},
 	{33, 0x0021, 600},
@@ -1295,6 +1296,7 @@ static const HPDF_CharData CHAR_DATA_COURIER_OBLIQUE[316] = {
 	{-1, 0x20AC, 600},
 	{-1, 0xFFFF, 0}
 };
+#endif /* HPDF_HELVETICA_ONLY */
 
 static const HPDF_CharData CHAR_DATA_HELVETICA[316] = {
 	{32, 0x0020, 278},
@@ -1615,6 +1617,7 @@ static const HPDF_CharData CHAR_DATA_HELVETICA[316] = {
 	{-1, 0xFFFF, 0}
 };
 
+#ifndef HPDF_HELVETICA_ONLY
 static const HPDF_CharData CHAR_DATA_HELVETICA_BOLD[316] = {
 	{32, 0x0020, 278},
 	{33, 0x0021, 333},
@@ -4246,6 +4249,7 @@ static const HPDF_CharData CHAR_DATA_SYMBOL[190] = {
 	{254, 0x00FE, 494},
 	{-1, 0xFFFF, 0}
 };
+#endif /* HPDF_HELVETICA_ONLY */
 
 
 /*----------------------------------------------------------------------------*/
@@ -4281,6 +4285,7 @@ typedef struct _HPDF_Base14FontDefData
 
 
 static const HPDF_Base14FontDefData HPDF_BUILTIN_FONTS[] = {
+#ifndef HPDF_HELVETICA_ONLY
 	{
 	 HPDF_FONT_COURIER,
 	 CHAR_DATA_COURIER,
@@ -4321,6 +4326,7 @@ static const HPDF_Base14FontDefData HPDF_BUILTIN_FONTS[] = {
 	 562,
 	 {-57, -250, 869, 801}
 	 },
+#endif /* HPDF_HELVETICA_ONLY */
 	{
 	 HPDF_FONT_HELVETICA,
 	 CHAR_DATA_HELVETICA,
@@ -4331,6 +4337,7 @@ static const HPDF_Base14FontDefData HPDF_BUILTIN_FONTS[] = {
 	 718,
 	 {-166, -225, 1000, 931}
 	 },
+#ifndef HPDF_HELVETICA_ONLY
 	{
 	 HPDF_FONT_HELVETICA_BOLD,
 	 CHAR_DATA_HELVETICA_BOLD,
@@ -4421,6 +4428,7 @@ static const HPDF_Base14FontDefData HPDF_BUILTIN_FONTS[] = {
 	 0,
 	 {-1, -143, 981, 820}
 	 },
+#endif /* HPDF_HELVETICA_ONLY */
 	{
 	 NULL,
 	 NULL,

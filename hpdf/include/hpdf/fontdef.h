@@ -339,7 +339,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 void HPDF_TTFontDef_GetCharBBox(HPDF_FontDef fontdef, HPDF_UINT16 unicode, HPDF_Box *bbox);
 
 
-void HPDF_TTFontDef_SetTagName(HPDF_FontDef fontdef, char *tag);
+void HPDF_TTFontDef_SetTagName(HPDF_FontDef fontdef, const char *tag);
 
 
 /*----------------------------------------------------------------------------*/
