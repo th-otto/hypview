@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 	strcpy(fname, argv[0]);
 	strcat(fname, ".pdf");
 
-	pdf = HPDF_New(error_handler, NULL);
+	pdf = HPDF_New(error_handler, 0, 0, 0, NULL);
 	if (!pdf)
 	{
 		printf("error: cannot create PdfDoc object\n");
@@ -94,8 +94,8 @@ int main(int argc, char **argv)
 	HPDF_UseJPEncodings(pdf);
 	HPDF_UseCNSEncodings(pdf);
 
-	fcp936_name = HPDF_LoadTTFontFromFile2(pdf, argv[1], atoi(argv[2]), HPDF_TRUE);
-	fcp932_name = HPDF_LoadTTFontFromFile2(pdf, argv[3], atoi(argv[4]), HPDF_TRUE);
+	fcp936_name = HPDF_LoadTTFontFromFile(pdf, argv[1], atoi(argv[2]), HPDF_TRUE);
+	fcp932_name = HPDF_LoadTTFontFromFile(pdf, argv[3], atoi(argv[4]), HPDF_TRUE);
 
 	/* add a new page object. */
 	page = HPDF_AddPage(pdf);

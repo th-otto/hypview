@@ -7,7 +7,6 @@ libhpdf_a_SOURCES = \
 	binary.c \
 	boolean.c \
 	dict.c \
-	doc.c \
 	doc_png.c \
 	encoder.c \
 	enc_cns.c \
@@ -143,6 +142,78 @@ libhpdf_a_LIBADD = \
 	destinat_setfitb.o \
 	destinat_setfitbh.o \
 	destinat_setfitbv.o \
+	doc_findencoder.o \
+	doc_registerencoder.o \
+	doc_getencoder.o \
+	doc_getcurrentencoder.o \
+	doc_setcurrentencoder.o \
+	doc_findfontdef.o \
+	doc_registerfontdef.o \
+	doc_getfontdef.o \
+	doc_getinfo.o \
+	doc_setinfoattr.o \
+	doc_getinfoattr.o \
+	doc_setinfodateattr.o \
+	doc_createoutline.o \
+	doc_createextgstate.o \
+	doc_setcompressionmode.o \
+	doc_geterror.o \
+	doc_geterrordetail.o \
+	doc_reseterror.o \
+	doc_outputintent_new.o \
+	doc_addintent.o \
+	doc_loadiccfrommem.o \
+	doc_addcolorspacefromprofile.o \
+	doc_loadiccfromfile.o \
+	doc_getversion.o \
+	doc_validate.o \
+	doc_hasdoc.o \
+	doc_new.o \
+	doc_free.o \
+	doc_newdoc.o \
+	doc_freedoc.o \
+	doc_freedocall.o \
+	doc_setpagesconfiguration.o \
+	doc_internalsavetostream.o \
+	doc_savetostream.o \
+	doc_setencrypton.o \
+	doc_setpassword.o \
+	doc_setpermission.o \
+	doc_setencryptionmode.o \
+	doc_setencryptoff.o \
+	doc_prepareencryption.o \
+	doc_getcontents.o \
+	doc_getstreamsize.o \
+	doc_readfromstream.o \
+	doc_resetstream.o \
+	doc_savetofile.o \
+	doc_getcurrentpage.o \
+	doc_getpagebyindex.o \
+	doc_getcurrentpages.o \
+	doc_setcurrentpages.o \
+	doc_setcurrentpage.o \
+	doc_addpage.o \
+	doc_addpages.o \
+	doc_insertpage.o \
+	doc_seterrorhandler.o \
+	doc_findfont.o \
+	doc_getfont.o \
+	doc_loadtype1fontfromfile.o \
+	doc_getttfontdeffromfile.o \
+	doc_loadttfontfromfile.o \
+	doc_loadrawimagefromfile.o \
+	doc_loadrawimagefrommem.o \
+	doc_loadjpegimagefromfile.o \
+	doc_loadjpegimagefrommem.o \
+	doc_getpagelayout.o \
+	doc_setpagelayout.o \
+	doc_getpagemode.o \
+	doc_setpagemode.o \
+	doc_setopenaction.o \
+	doc_getviewerpreference.o \
+	doc_setviewerpreference.o \
+	doc_addpagelabel.o \
+	doc_attachfile.o \
 	page_setlinewidth.o \
 	page_setlinecap.o \
 	page_setlinejoin.o \
@@ -1031,11 +1102,231 @@ page_insert_shared_content_stream.o: pageop.c
 
 
 
+doc_findencoder.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_FINDENCODER
+
+doc_registerencoder.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_REGISTERENCODER
+
+doc_getencoder.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETENCODER
+
+doc_getcurrentencoder.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETCURRENTENCODER
+
+doc_setcurrentencoder.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETCURRENTENCODER
+
+doc_findfontdef.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_FINDFONTDEF
+
+doc_registerfontdef.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_REGISTERFONTDEF
+
+doc_getfontdef.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETFONTDEF
+
+doc_getinfo.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETINFO
+
+doc_setinfoattr.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETINFOATTR
+
+doc_getinfoattr.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETINFOATTR
+
+doc_setinfodateattr.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETINFODATEATTR
+
+doc_createoutline.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_CREATEOUTLINE
+
+doc_createextgstate.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_CREATEXTGSTATE
+
+doc_setcompressionmode.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETCOMPRESSIONMODE
+
+doc_geterror.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETERROR
+
+doc_geterrordetail.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETERRORDETAIL
+
+doc_reseterror.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_RESETERROR
+
+doc_outputintent_new.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_OUTPUTINTENT_NEW
+
+doc_addintent.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_ADDINTENT
+
+doc_loadiccfrommem.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADICCFROMMEM
+
+doc_addcolorspacefromprofile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_ADDCOLORSPACEFROMPROFILE
+
+doc_loadiccfromfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADICCFROMFILE
+
+doc_getversion.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETVERSION
+
+doc_validate.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_VALIDATE
+
+doc_hasdoc.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_HASDOC
+
+doc_new.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_NEW
+
+doc_free.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_FREE
+
+doc_newdoc.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_NEWDOC
+
+doc_freedoc.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_FREEDOC
+
+doc_freedocall.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_FREEDOCALL
+
+doc_setpagesconfiguration.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETPAGESCONFIURATION
+
+doc_internalsavetostream.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_INTERNALSAVETOSTREAM
+
+doc_savetostream.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SAVETOSTREAM
+
+doc_setencrypton.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETENCRYPTON
+
+doc_setpassword.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETPASSWORD
+
+doc_setpermission.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETPERMISSION
+
+doc_setencryptionmode.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETENCRYPTIONMODE
+
+doc_setencryptoff.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETENCRYPTOFF
+
+doc_prepareencryption.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_PREPAREENCRYPTION
+
+doc_getcontents.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETCONTENTS
+
+doc_getstreamsize.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETSTREAMSIZE
+
+doc_readfromstream.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_READFROMSTREAM
+
+doc_resetstream.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_RESETSTREAM
+
+doc_savetofile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SAVETOFILE
+
+doc_getcurrentpage.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETCURRENTPAGE
+
+doc_getpagebyindex.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETPAGEBYINDEX
+
+doc_getcurrentpages.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETCURRENTPAGES
+
+doc_setcurrentpages.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETCURRENTPAGES
+
+doc_setcurrentpage.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETCURRENTPAGE
+
+doc_addpage.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_ADDPAGE
+
+doc_addpages.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_ADDPAGES
+
+doc_insertpage.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_INSERTPAGE
+
+doc_seterrorhandler.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETERRORHANDLER
+
+doc_findfont.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_FINDFONT
+
+doc_getfont.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETFONT
+
+doc_loadtype1fontfromfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADTYPE1FTONFROMFILE
+
+doc_getttfontdeffromfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETTTFONTDEFFROMFILE
+
+doc_loadttfontfromfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADTTFONTFROMFILE
+
+doc_loadrawimagefromfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADRAWIMAGEFROMFILE
+
+doc_loadrawimagefrommem.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADRAWIMAGEFROMMEM
+
+doc_loadjpegimagefromfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADJPEGIMAGEFROMFILE
+
+doc_loadjpegimagefrommem.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_LOADJPEGIMAGEFROMMEM
+
+doc_getpagelayout.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETPAGELAYOUT
+
+doc_setpagelayout.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETPAGELAYOUT
+
+doc_getpagemode.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETPAGEMODE
+
+doc_setpagemode.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETPAGEMODE
+
+doc_setopenaction.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETOPENACTION
+
+doc_getviewerpreference.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_GETVIEWERPREFERENCE
+
+doc_setviewerpreference.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_SETVIEWERPREFERENCE
+
+doc_addpagelabel.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_ADDPAGELABEL
+
+doc_attachfile.o: doc.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DDOC_ATTACHFILE
+
+
+
+
 EXTRADIST = \
 	annotat.c \
 	array.c \
 	catalog.c \
 	destinat.c \
+	doc.c \
 	pages.c \
 	pageop.c \
 	3dmeasur.c \

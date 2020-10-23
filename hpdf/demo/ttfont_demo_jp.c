@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 	strcpy(fname, argv[0]);
 	strcat(fname, ".pdf");
 
-	pdf = HPDF_New(error_handler, NULL);
+	pdf = HPDF_New(error_handler, 0, 0, 0, NULL);
 	if (!pdf)
 	{
 		printf("error: cannot create PdfDoc object\n");
@@ -91,13 +91,13 @@ int main(int argc, char **argv)
 
 	/* load ttc file */
 	if (argc == 4 && strcmp(argv[3], "-E") == 0)
-		detail_font_name = HPDF_LoadTTFontFromFile2(pdf, argv[1], atoi(argv[2]), HPDF_TRUE);
+		detail_font_name = HPDF_LoadTTFontFromFile(pdf, argv[1], atoi(argv[2]), HPDF_TRUE);
 	else if (argc == 3 && strcmp(argv[2], "-E") == 0)
-		detail_font_name = HPDF_LoadTTFontFromFile(pdf, argv[1], HPDF_TRUE);
+		detail_font_name = HPDF_LoadTTFontFromFile(pdf, argv[1], -1, HPDF_TRUE);
 	else if (argc == 3)
-		detail_font_name = HPDF_LoadTTFontFromFile2(pdf, argv[1], atoi(argv[2]), HPDF_FALSE);
+		detail_font_name = HPDF_LoadTTFontFromFile(pdf, argv[1], atoi(argv[2]), HPDF_FALSE);
 	else
-		detail_font_name = HPDF_LoadTTFontFromFile(pdf, argv[1], HPDF_FALSE);
+		detail_font_name = HPDF_LoadTTFontFromFile(pdf, argv[1], -1, HPDF_FALSE);
 
 	/* add a new page object. */
 	page = HPDF_AddPage(pdf);

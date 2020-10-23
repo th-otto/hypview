@@ -31,11 +31,9 @@ extern "C" {
 const char *HPDF_GetVersion(void);
 
 
-HPDF_Doc HPDF_NewEx(HPDF_Error_Handler user_error_fn,
+HPDF_Doc HPDF_New(HPDF_Error_Handler user_error_fn,
 	HPDF_Alloc_Func user_alloc_fn,
 	HPDF_Free_Func user_free_fn, HPDF_UINT mem_pool_buf_size, void *user_data);
-
-HPDF_Doc HPDF_New(HPDF_Error_Handler user_error_fn, void *user_data);
 
 
 HPDF_STATUS HPDF_SetErrorHandler(HPDF_Doc pdf, HPDF_Error_Handler user_error_fn);
@@ -56,6 +54,7 @@ HPDF_BOOL HPDF_HasDoc(HPDF_Doc pdf);
 void HPDF_FreeDocAll(HPDF_Doc pdf);
 
 
+HPDF_STATUS HPDF_InternalSaveToStream(HPDF_Doc pdf, HPDF_Stream stream);
 HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf, HPDF_Stream *stream);
 
 HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size);
@@ -150,10 +149,7 @@ const char *HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *afm_file_name, 
 
 HPDF_FontDef HPDF_GetTTFontDefFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding);
 
-const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding);
-
-
-const char *HPDF_LoadTTFontFromFile2(HPDF_Doc pdf, const char *file_name, HPDF_UINT index, HPDF_BOOL embedding);
+const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_UINT index, HPDF_BOOL embedding);
 
 
 HPDF_STATUS HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPDF_PageNumStyle style, HPDF_UINT first_page, const char *prefix);
@@ -477,6 +473,7 @@ HPDF_STATUS HPDF_Image_SetMaskImage(HPDF_Image image, HPDF_Image mask_image);
 /*----- info dictionary ----------------------------------------------------*/
 
 
+HPDF_Dict HPDF_GetInfo(HPDF_Doc pdf);
 HPDF_STATUS HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, const char *value);
 
 
@@ -913,9 +910,9 @@ HPDF_STATUS HPDF_Page_TextRect(HPDF_Page page, HPDF_REAL left, HPDF_REAL top, HP
 HPDF_STATUS HPDF_Page_SetSlideShow(HPDF_Page page, HPDF_TransitionStyle type, HPDF_REAL disp_time, HPDF_REAL trans_time);
 
 
-HPDF_OutputIntent HPDF_ICC_LoadIccFromMem(HPDF_Doc pdf, HPDF_MMgr mmgr, HPDF_Stream iccdata, HPDF_Xref xref, int numcomponent);
+HPDF_OutputIntent HPDF_LoadIccFromMem(HPDF_Doc pdf, HPDF_MMgr mmgr, HPDF_Stream iccdata, HPDF_Xref xref, int numcomponent);
 
-HPDF_OutputIntent HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const char *icc_file_name, int numcomponent);
+HPDF_OutputIntent HPDF_LoadIccFromFile(HPDF_Doc pdf, const char *icc_file_name, int numcomponent);
 
 #ifdef __cplusplus
 }

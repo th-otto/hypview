@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	strcpy(fname, argv[0]);
 	strcat(fname, ".pdf");
 
-	pdf = HPDF_New(error_handler, NULL);
+	pdf = HPDF_New(error_handler, 0, 0, 0, NULL);
 	if (!pdf)
 	{
 		printf("error: cannot create PdfDoc object\n");

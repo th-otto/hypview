@@ -25,20 +25,16 @@
 #include "hpdf.h"
 #include <string.h>
 
+#ifdef __PUREC__
+# define DOC_ALL
+#endif
 
-static const char *const HPDF_VERSION_STR[6] = {
-	"%PDF-1.2\012%\267\276\255\252\012",
-	"%PDF-1.3\012%\267\276\255\252\012",
-	"%PDF-1.4\012%\267\276\255\252\012",
-	"%PDF-1.5\012%\267\276\255\252\012",
-	"%PDF-1.6\012%\267\276\255\252\012",
-	"%PDF-1.7\012%\267\276\255\252\012"
-};
 
 
 /*----- encoder handling ----------------------------------------------------*/
 
 
+#if defined(DOC_ALL) || defined(DOC_FINDENCODER)
 HPDF_Encoder HPDF_Doc_FindEncoder(HPDF_Doc pdf, const char *encoding_name)
 {
 	HPDF_List list = pdf->encoder_list;
@@ -63,8 +59,10 @@ HPDF_Encoder HPDF_Doc_FindEncoder(HPDF_Doc pdf, const char *encoding_name)
 
 	return NULL;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_REGISTERENCODER)
 HPDF_STATUS HPDF_Doc_RegisterEncoder(HPDF_Doc pdf, HPDF_Encoder encoder)
 {
 	HPDF_STATUS ret;
@@ -86,8 +84,10 @@ HPDF_STATUS HPDF_Doc_RegisterEncoder(HPDF_Doc pdf, HPDF_Encoder encoder)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETENCODER)
 HPDF_Encoder HPDF_GetEncoder(HPDF_Doc pdf, const char *encoding_name)
 {
 	HPDF_Encoder encoder;
@@ -118,8 +118,10 @@ HPDF_Encoder HPDF_GetEncoder(HPDF_Doc pdf, const char *encoding_name)
 
 	return encoder;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETCURRENTENCODER)
 HPDF_Encoder HPDF_GetCurrentEncoder(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -127,8 +129,10 @@ HPDF_Encoder HPDF_GetCurrentEncoder(HPDF_Doc pdf)
 
 	return pdf->cur_encoder;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETCURRENTENCODER)
 HPDF_STATUS HPDF_SetCurrentEncoder(HPDF_Doc pdf, const char *encoding_name)
 {
 	HPDF_Encoder encoder;
@@ -145,61 +149,13 @@ HPDF_STATUS HPDF_SetCurrentEncoder(HPDF_Doc pdf, const char *encoding_name)
 
 	return HPDF_OK;
 }
-
-
-static void FreeEncoderList(HPDF_Doc pdf)
-{
-	HPDF_List list = pdf->encoder_list;
-	HPDF_UINT i;
-
-	for (i = 0; i < list->count; i++)
-	{
-		HPDF_Encoder encoder = (HPDF_Encoder) HPDF_List_ItemAt(list, i);
-
-		HPDF_Encoder_Free(encoder);
-	}
-
-	HPDF_List_Free(list);
-
-	pdf->encoder_list = NULL;
-}
+#endif
 
 
 /*----- font handling -------------------------------------------------------*/
 
 
-static void FreeFontDefList(HPDF_Doc pdf)
-{
-	HPDF_List list = pdf->fontdef_list;
-	HPDF_UINT i;
-
-	for (i = 0; i < list->count; i++)
-	{
-		HPDF_FontDef def = (HPDF_FontDef) HPDF_List_ItemAt(list, i);
-
-		HPDF_FontDef_Free(def);
-	}
-
-	HPDF_List_Free(list);
-
-	pdf->fontdef_list = NULL;
-}
-
-
-static void CleanupFontDefList(HPDF_Doc pdf)
-{
-	HPDF_List list = pdf->fontdef_list;
-	HPDF_UINT i;
-
-	for (i = 0; i < list->count; i++)
-	{
-		HPDF_FontDef def = (HPDF_FontDef) HPDF_List_ItemAt(list, i);
-
-		HPDF_FontDef_Cleanup(def);
-	}
-}
-
-
+#if defined(DOC_ALL) || defined(DOC_FINDFONTDEF)
 HPDF_FontDef HPDF_Doc_FindFontDef(HPDF_Doc pdf, const char *font_name)
 {
 	HPDF_List list = pdf->fontdef_list;
@@ -223,8 +179,10 @@ HPDF_FontDef HPDF_Doc_FindFontDef(HPDF_Doc pdf, const char *font_name)
 
 	return NULL;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_REGISTERFONTDEF)
 HPDF_STATUS HPDF_Doc_RegisterFontDef(HPDF_Doc pdf, HPDF_FontDef fontdef)
 {
 	HPDF_STATUS ret;
@@ -246,9 +204,11 @@ HPDF_STATUS HPDF_Doc_RegisterFontDef(HPDF_Doc pdf, HPDF_FontDef fontdef)
 
 	return HPDF_OK;
 }
+#endif
 
 
 
+#if defined(DOC_ALL) || defined(DOC_GETFONTDEF)
 HPDF_FontDef HPDF_GetFontDef(HPDF_Doc pdf, const char *font_name)
 {
 	HPDF_STATUS ret;
@@ -276,11 +236,13 @@ HPDF_FontDef HPDF_GetFontDef(HPDF_Doc pdf, const char *font_name)
 
 	return def;
 }
+#endif
 
 
 /*----- Info ---------------------------------------------------------------*/
 
-static HPDF_Dict GetInfo(HPDF_Doc pdf)
+#if defined(DOC_ALL) || defined(DOC_GETINFO)
+HPDF_Dict HPDF_GetInfo(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
 		return NULL;
@@ -295,12 +257,14 @@ static HPDF_Dict GetInfo(HPDF_Doc pdf)
 
 	return pdf->info;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETINFOATTR)
 HPDF_STATUS HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, const char *value)
 {
 	HPDF_STATUS ret;
-	HPDF_Dict info = GetInfo(pdf);
+	HPDF_Dict info = HPDF_GetInfo(pdf);
 
 	if (!info)
 		return HPDF_CheckError(&pdf->error);
@@ -311,12 +275,14 @@ HPDF_STATUS HPDF_SetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type, const char *value
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETINFOATTR)
 const char *HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type)
 {
 	const char *ret = NULL;
-	HPDF_Dict info = GetInfo(pdf);
+	HPDF_Dict info = HPDF_GetInfo(pdf);
 
 	if (info)
 		ret = HPDF_Info_GetInfoAttr(info, type);
@@ -325,12 +291,14 @@ const char *HPDF_GetInfoAttr(HPDF_Doc pdf, HPDF_InfoType type)
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETINFODATEATTR)
 HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, const HPDF_Date *value)
 {
 	HPDF_STATUS ret;
-	HPDF_Dict info = GetInfo(pdf);
+	HPDF_Dict info = HPDF_GetInfo(pdf);
 
 	if (!info)
 		return HPDF_CheckError(&pdf->error);
@@ -341,8 +309,10 @@ HPDF_STATUS HPDF_SetInfoDateAttr(HPDF_Doc pdf, HPDF_InfoType type, const HPDF_Da
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_CREATEOUTLINE)
 HPDF_Outline HPDF_CreateOutline(HPDF_Doc pdf, HPDF_Outline parent, const char *title, HPDF_Encoder encoder)
 {
 	HPDF_Outline outline;
@@ -391,8 +361,10 @@ HPDF_Outline HPDF_CreateOutline(HPDF_Doc pdf, HPDF_Outline parent, const char *t
 
 	return outline;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_CREATEXTGSTATE)
 HPDF_ExtGState HPDF_CreateExtGState(HPDF_Doc pdf)
 {
 	HPDF_ExtGState ext_gstate;
@@ -409,8 +381,10 @@ HPDF_ExtGState HPDF_CreateExtGState(HPDF_Doc pdf)
 
 	return ext_gstate;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETCOMPRESSIONMODE)
 HPDF_STATUS HPDF_SetCompressionMode(HPDF_Doc pdf, HPDF_UINT mode)
 {
 	if (!HPDF_Doc_Validate(pdf))
@@ -430,8 +404,10 @@ HPDF_STATUS HPDF_SetCompressionMode(HPDF_Doc pdf, HPDF_UINT mode)
 
 #endif
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETERROR)
 HPDF_STATUS HPDF_GetError(HPDF_Doc pdf)
 {
 	if (!HPDF_Doc_Validate(pdf))
@@ -439,8 +415,10 @@ HPDF_STATUS HPDF_GetError(HPDF_Doc pdf)
 
 	return HPDF_Error_GetCode(&pdf->error);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETERRORDETAIL)
 HPDF_STATUS HPDF_GetErrorDetail(HPDF_Doc pdf)
 {
 	if (!HPDF_Doc_Validate(pdf))
@@ -448,8 +426,10 @@ HPDF_STATUS HPDF_GetErrorDetail(HPDF_Doc pdf)
 
 	return HPDF_Error_GetDetailCode(&pdf->error);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_RESETERROR)
 void HPDF_ResetError(HPDF_Doc pdf)
 {
 	if (!HPDF_Doc_Validate(pdf))
@@ -457,8 +437,10 @@ void HPDF_ResetError(HPDF_Doc pdf)
 
 	HPDF_Error_Reset(&pdf->error);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_OUTPUTINTENT_NEW)
 /*
  * create an intententry
  */
@@ -511,8 +493,10 @@ HPDF_OutputIntent HPDF_OutputIntent_New(
 
 	return intent;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_ADDINTENT)
 HPDF_STATUS HPDF_AddIntent(HPDF_Doc pdf, HPDF_OutputIntent intent)
 {
 	HPDF_Array intents;
@@ -538,10 +522,12 @@ HPDF_STATUS HPDF_AddIntent(HPDF_Doc pdf, HPDF_OutputIntent intent)
 	HPDF_Array_Add(intents, intent);
 	return HPDF_Error_GetDetailCode(&pdf->error);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_LOADICCFROMMEM)
 /* "Perceptual", "RelativeColorimetric", "Saturation", "AbsoluteColorimetric" */
-HPDF_OutputIntent HPDF_ICC_LoadIccFromMem(
+HPDF_OutputIntent HPDF_LoadIccFromMem(
 	HPDF_Doc pdf,
 	HPDF_MMgr mmgr,
 	HPDF_Stream iccdata,
@@ -610,8 +596,10 @@ HPDF_OutputIntent HPDF_ICC_LoadIccFromMem(
 
 	return icc;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_ADDCOLORSPACEFROMPROFILE)
 HPDF_Array HPDF_AddColorspaceFromProfile(HPDF_Doc pdf, HPDF_Dict icc)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -640,9 +628,11 @@ HPDF_Array HPDF_AddColorspaceFromProfile(HPDF_Doc pdf, HPDF_Dict icc)
 	}
 	return iccentry;
 }
+#endif
 
 
-HPDF_OutputIntent HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const char *icc_file_name, int numcomponent)
+#if defined(DOC_ALL) || defined(DOC_LOADICCFROMFILE)
+HPDF_OutputIntent HPDF_LoadIccFromFile(HPDF_Doc pdf, const char *icc_file_name, int numcomponent)
 {
 	HPDF_Stream iccdata;
 	HPDF_OutputIntent iccentry;
@@ -655,7 +645,7 @@ HPDF_OutputIntent HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const char *icc_file
 
 	if (HPDF_Stream_Validate(iccdata))
 	{
-		iccentry = HPDF_ICC_LoadIccFromMem(pdf, pdf->mmgr, iccdata, pdf->xref, numcomponent);
+		iccentry = HPDF_LoadIccFromMem(pdf, pdf->mmgr, iccdata, pdf->xref, numcomponent);
 	} else
 	{
 		iccentry = NULL;
@@ -670,23 +660,29 @@ HPDF_OutputIntent HPDF_LoadIccProfileFromFile(HPDF_Doc pdf, const char *icc_file
 
 	return iccentry;
 }
+#endif
 
 /*---------------------------------------------------------------------------*/
 
+#if defined(DOC_ALL) || defined(DOC_GETVERSION)
 const char *HPDF_GetVersion(void)
 {
 	return HPDF_VERSION_TEXT;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_VALIDATE)
 HPDF_BOOL HPDF_Doc_Validate(HPDF_Doc pdf)
 {
 	if (!pdf || pdf->sig_bytes != HPDF_SIG_BYTES)
 		return HPDF_FALSE;
 	return HPDF_TRUE;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_HASDOC)
 HPDF_BOOL HPDF_HasDoc(HPDF_Doc pdf)
 {
 	if (!pdf || pdf->sig_bytes != HPDF_SIG_BYTES)
@@ -699,15 +695,11 @@ HPDF_BOOL HPDF_HasDoc(HPDF_Doc pdf)
 	}
 	return HPDF_TRUE;
 }
+#endif
 
 
-HPDF_Doc HPDF_New(HPDF_Error_Handler user_error_fn, void *user_data)
-{
-	return HPDF_NewEx(user_error_fn, 0, 0, 0, user_data);
-}
-
-
-HPDF_Doc HPDF_NewEx(
+#if defined(DOC_ALL) || defined(DOC_NEW)
+HPDF_Doc HPDF_New(
 	HPDF_Error_Handler user_error_fn,
 	HPDF_Alloc_Func user_alloc_fn,
 	HPDF_Free_Func user_free_fn,
@@ -762,8 +754,10 @@ HPDF_Doc HPDF_NewEx(
 
 	return pdf;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_FREE)
 void HPDF_Free(HPDF_Doc pdf)
 {
 	if (pdf)
@@ -778,8 +772,10 @@ void HPDF_Free(HPDF_Doc pdf)
 		HPDF_MMgr_Free(mmgr);
 	}
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_NEWDOC)
 HPDF_STATUS HPDF_NewDoc(HPDF_Doc pdf)
 {
 	char buf[HPDF_TMP_BUF_SIZ];
@@ -839,6 +835,22 @@ HPDF_STATUS HPDF_NewDoc(HPDF_Doc pdf)
 
 	return HPDF_OK;
 }
+#endif
+
+
+#if defined(DOC_ALL) || defined(DOC_FREEDOC)
+static void CleanupFontDefList(HPDF_Doc pdf)
+{
+	HPDF_List list = pdf->fontdef_list;
+	HPDF_UINT i;
+
+	for (i = 0; i < list->count; i++)
+	{
+		HPDF_FontDef def = (HPDF_FontDef) HPDF_List_ItemAt(list, i);
+
+		HPDF_FontDef_Cleanup(def);
+	}
+}
 
 
 void HPDF_FreeDoc(HPDF_Doc pdf)
@@ -892,6 +904,44 @@ void HPDF_FreeDoc(HPDF_Doc pdf)
 		}
 	}
 }
+#endif
+
+
+#if defined(DOC_ALL) || defined(DOC_FREEDOCALL)
+static void FreeEncoderList(HPDF_Doc pdf)
+{
+	HPDF_List list = pdf->encoder_list;
+	HPDF_UINT i;
+
+	for (i = 0; i < list->count; i++)
+	{
+		HPDF_Encoder encoder = (HPDF_Encoder) HPDF_List_ItemAt(list, i);
+
+		HPDF_Encoder_Free(encoder);
+	}
+
+	HPDF_List_Free(list);
+
+	pdf->encoder_list = NULL;
+}
+
+
+static void FreeFontDefList(HPDF_Doc pdf)
+{
+	HPDF_List list = pdf->fontdef_list;
+	HPDF_UINT i;
+
+	for (i = 0; i < list->count; i++)
+	{
+		HPDF_FontDef def = (HPDF_FontDef) HPDF_List_ItemAt(list, i);
+
+		HPDF_FontDef_Free(def);
+	}
+
+	HPDF_List_Free(list);
+
+	pdf->fontdef_list = NULL;
+}
 
 
 void HPDF_FreeDocAll(HPDF_Doc pdf)
@@ -911,8 +961,10 @@ void HPDF_FreeDocAll(HPDF_Doc pdf)
 		HPDF_Error_Reset(&pdf->error);
 	}
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETPAGESCONFIURATION)
 HPDF_STATUS HPDF_SetPagesConfiguration(HPDF_Doc pdf, HPDF_UINT page_per_pages)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -936,6 +988,18 @@ HPDF_STATUS HPDF_SetPagesConfiguration(HPDF_Doc pdf, HPDF_UINT page_per_pages)
 
 	return HPDF_OK;
 }
+#endif
+
+
+#if defined(DOC_ALL) || defined(DOC_INTERNALSAVETOSTREAM)
+static const char *const HPDF_VERSION_STR[6] = {
+	"%PDF-1.2\012%\267\276\255\252\012",
+	"%PDF-1.3\012%\267\276\255\252\012",
+	"%PDF-1.4\012%\267\276\255\252\012",
+	"%PDF-1.5\012%\267\276\255\252\012",
+	"%PDF-1.6\012%\267\276\255\252\012",
+	"%PDF-1.7\012%\267\276\255\252\012"
+};
 
 
 static HPDF_STATUS WriteHeader(HPDF_Doc pdf, HPDF_Stream stream)
@@ -961,7 +1025,67 @@ static HPDF_STATUS PrepareTrailer(HPDF_Doc pdf)
 }
 
 
-__attribute__((__noinline__))
+HPDF_STATUS HPDF_InternalSaveToStream(HPDF_Doc pdf, HPDF_Stream stream)
+{
+	HPDF_STATUS ret;
+
+	if ((ret = WriteHeader(pdf, stream)) != HPDF_OK)
+		return ret;
+
+	/* prepare trailer */
+	if ((ret = PrepareTrailer(pdf)) != HPDF_OK)
+		return ret;
+
+	/* prepare encription */
+	if (pdf->encrypt_on)
+	{
+		HPDF_Encrypt e = HPDF_EncryptDict_GetAttr(pdf->encrypt_dict);
+
+		if ((ret = HPDF_Doc_PrepareEncryption(pdf)) != HPDF_OK)
+			return ret;
+
+		if ((ret = HPDF_Xref_WriteToStream(pdf->xref, stream, e)) != HPDF_OK)
+			return ret;
+	} else
+	{
+		if ((ret = HPDF_Xref_WriteToStream(pdf->xref, stream, NULL)) != HPDF_OK)
+			return ret;
+	}
+
+	return HPDF_OK;
+}
+#endif
+
+
+#if defined(DOC_ALL) || defined(DOC_SAVETOSTREAM)
+HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf, HPDF_Stream *stream)
+{
+	if (stream)
+		*stream = NULL;
+
+	if (!HPDF_HasDoc(pdf))
+		return HPDF_INVALID_DOCUMENT;
+
+	if (!pdf->stream)
+		pdf->stream = HPDF_MemStream_New(pdf->mmgr, HPDF_STREAM_BUF_SIZ);
+
+	if (!HPDF_Stream_Validate(pdf->stream))
+		return HPDF_RaiseError(&pdf->error, HPDF_INVALID_STREAM, 0);
+
+	HPDF_MemStream_FreeData(pdf->stream);
+
+	if (HPDF_InternalSaveToStream(pdf, pdf->stream) != HPDF_OK)
+		return HPDF_CheckError(&pdf->error);
+
+	if (stream)
+		*stream = pdf->stream;
+
+	return HPDF_OK;
+}
+#endif
+
+
+#if defined(DOC_ALL) || defined(DOC_SETENCRYPTON)
 HPDF_STATUS HPDF_Doc_SetEncryptOn(HPDF_Doc pdf)
 {
 	if (pdf->encrypt_on)
@@ -981,8 +1105,10 @@ HPDF_STATUS HPDF_Doc_SetEncryptOn(HPDF_Doc pdf)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETPASSWORD)
 HPDF_STATUS HPDF_SetPassword(HPDF_Doc pdf, const char *owner_passwd, const char *user_passwd)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1001,8 +1127,10 @@ HPDF_STATUS HPDF_SetPassword(HPDF_Doc pdf, const char *owner_passwd, const char 
 
 	return HPDF_Doc_SetEncryptOn(pdf);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETPERMISSION)
 HPDF_STATUS HPDF_SetPermission(HPDF_Doc pdf, HPDF_UINT permission)
 {
 	HPDF_Encrypt e;
@@ -1019,8 +1147,10 @@ HPDF_STATUS HPDF_SetPermission(HPDF_Doc pdf, HPDF_UINT permission)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETENCRYPTIONMODE)
 HPDF_STATUS HPDF_SetEncryptionMode(HPDF_Doc pdf, HPDF_EncryptMode mode, HPDF_UINT key_len)
 {
 	HPDF_Encrypt e;
@@ -1058,8 +1188,10 @@ HPDF_STATUS HPDF_SetEncryptionMode(HPDF_Doc pdf, HPDF_EncryptMode mode, HPDF_UIN
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETENCRYPTOFF)
 HPDF_STATUS HPDF_Doc_SetEncryptOff(HPDF_Doc pdf)
 {
 	if (!pdf->encrypt_on)
@@ -1101,12 +1233,14 @@ HPDF_STATUS HPDF_Doc_SetEncryptOff(HPDF_Doc pdf)
 	pdf->encrypt_on = HPDF_FALSE;
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_PREPAREENCRYPTION)
 HPDF_STATUS HPDF_Doc_PrepareEncryption(HPDF_Doc pdf)
 {
 	HPDF_Encrypt e = HPDF_EncryptDict_GetAttr(pdf->encrypt_dict);
-	HPDF_Dict info = GetInfo(pdf);
+	HPDF_Dict info = HPDF_GetInfo(pdf);
 	HPDF_Array id;
 
 	if (!e)
@@ -1139,65 +1273,10 @@ HPDF_STATUS HPDF_Doc_PrepareEncryption(HPDF_Doc pdf)
 
 	return HPDF_OK;
 }
+#endif
 
 
-static HPDF_STATUS InternalSaveToStream(HPDF_Doc pdf, HPDF_Stream stream)
-{
-	HPDF_STATUS ret;
-
-	if ((ret = WriteHeader(pdf, stream)) != HPDF_OK)
-		return ret;
-
-	/* prepare trailer */
-	if ((ret = PrepareTrailer(pdf)) != HPDF_OK)
-		return ret;
-
-	/* prepare encription */
-	if (pdf->encrypt_on)
-	{
-		HPDF_Encrypt e = HPDF_EncryptDict_GetAttr(pdf->encrypt_dict);
-
-		if ((ret = HPDF_Doc_PrepareEncryption(pdf)) != HPDF_OK)
-			return ret;
-
-		if ((ret = HPDF_Xref_WriteToStream(pdf->xref, stream, e)) != HPDF_OK)
-			return ret;
-	} else
-	{
-		if ((ret = HPDF_Xref_WriteToStream(pdf->xref, stream, NULL)) != HPDF_OK)
-			return ret;
-	}
-
-	return HPDF_OK;
-}
-
-
-HPDF_STATUS HPDF_SaveToStream(HPDF_Doc pdf, HPDF_Stream *stream)
-{
-	if (stream)
-		*stream = NULL;
-
-	if (!HPDF_HasDoc(pdf))
-		return HPDF_INVALID_DOCUMENT;
-
-	if (!pdf->stream)
-		pdf->stream = HPDF_MemStream_New(pdf->mmgr, HPDF_STREAM_BUF_SIZ);
-
-	if (!HPDF_Stream_Validate(pdf->stream))
-		return HPDF_RaiseError(&pdf->error, HPDF_INVALID_STREAM, 0);
-
-	HPDF_MemStream_FreeData(pdf->stream);
-
-	if (InternalSaveToStream(pdf, pdf->stream) != HPDF_OK)
-		return HPDF_CheckError(&pdf->error);
-
-	if (stream)
-		*stream = pdf->stream;
-
-	return HPDF_OK;
-}
-
-
+#if defined(DOC_ALL) || defined(DOC_GETCONTENTS)
 HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 {
 	HPDF_Stream stream;
@@ -1216,7 +1295,7 @@ HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 		return HPDF_CheckError(&pdf->error);
 	}
 
-	if (InternalSaveToStream(pdf, stream) != HPDF_OK)
+	if (HPDF_InternalSaveToStream(pdf, stream) != HPDF_OK)
 	{
 		HPDF_Stream_Free(stream);
 		return HPDF_CheckError(&pdf->error);
@@ -1229,8 +1308,10 @@ HPDF_STATUS HPDF_GetContents(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETSTREAMSIZE)
 HPDF_UINT32 HPDF_GetStreamSize(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1241,8 +1322,10 @@ HPDF_UINT32 HPDF_GetStreamSize(HPDF_Doc pdf)
 
 	return HPDF_Stream_Size(pdf->stream);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_READFROMSTREAM)
 HPDF_STATUS HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 {
 	HPDF_UINT isize = *size;
@@ -1266,8 +1349,10 @@ HPDF_STATUS HPDF_ReadFromStream(HPDF_Doc pdf, HPDF_BYTE *buf, HPDF_UINT32 *size)
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_RESETSTREAM)
 HPDF_STATUS HPDF_ResetStream(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1278,8 +1363,10 @@ HPDF_STATUS HPDF_ResetStream(HPDF_Doc pdf)
 
 	return HPDF_Stream_Seek(pdf->stream, 0, HPDF_SEEK_SET);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SAVETOFILE)
 HPDF_STATUS HPDF_SaveToFile(HPDF_Doc pdf, const char *file_name)
 {
 	HPDF_Stream stream;
@@ -1291,14 +1378,16 @@ HPDF_STATUS HPDF_SaveToFile(HPDF_Doc pdf, const char *file_name)
 	if (!stream)
 		return HPDF_CheckError(&pdf->error);
 
-	InternalSaveToStream(pdf, stream);
+	HPDF_InternalSaveToStream(pdf, stream);
 
 	HPDF_Stream_Free(stream);
 
 	return HPDF_CheckError(&pdf->error);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETCURRENTPAGE)
 HPDF_Page HPDF_GetCurrentPage(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1306,8 +1395,10 @@ HPDF_Page HPDF_GetCurrentPage(HPDF_Doc pdf)
 
 	return pdf->cur_page;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETPAGEBYINDEX)
 HPDF_Page HPDF_GetPageByIndex(HPDF_Doc pdf, HPDF_UINT index)
 {
 	HPDF_Page ret;
@@ -1324,8 +1415,10 @@ HPDF_Page HPDF_GetPageByIndex(HPDF_Doc pdf, HPDF_UINT index)
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETCURRENTPAGES)
 HPDF_Pages HPDF_Doc_GetCurrentPages(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1333,8 +1426,10 @@ HPDF_Pages HPDF_Doc_GetCurrentPages(HPDF_Doc pdf)
 
 	return pdf->cur_pages;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETCURRENTPAGES)
 HPDF_STATUS HPDF_Doc_SetCurrentPages(HPDF_Doc pdf, HPDF_Pages pages)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1351,8 +1446,10 @@ HPDF_STATUS HPDF_Doc_SetCurrentPages(HPDF_Doc pdf, HPDF_Pages pages)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETCURRENTPAGE)
 HPDF_STATUS HPDF_Doc_SetCurrentPage(HPDF_Doc pdf, HPDF_Page page)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -1369,8 +1466,10 @@ HPDF_STATUS HPDF_Doc_SetCurrentPage(HPDF_Doc pdf, HPDF_Page page)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_ADDPAGE)
 HPDF_Page HPDF_AddPage(HPDF_Doc pdf)
 {
 	HPDF_Page page;
@@ -1418,8 +1517,10 @@ HPDF_Page HPDF_AddPage(HPDF_Doc pdf)
 
 	return page;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_ADDPAGES)
 HPDF_Pages HPDF_Doc_AddPagesTo(HPDF_Doc pdf, HPDF_Pages parent)
 {
 	HPDF_Pages pages;
@@ -1449,8 +1550,10 @@ HPDF_Pages HPDF_Doc_AddPagesTo(HPDF_Doc pdf, HPDF_Pages parent)
 
 	return pages;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_INSERTPAGE)
 HPDF_Page HPDF_InsertPage(HPDF_Doc pdf, HPDF_Page target)
 {
 	HPDF_Page page;
@@ -1496,8 +1599,10 @@ HPDF_Page HPDF_InsertPage(HPDF_Doc pdf, HPDF_Page target)
 
 	return page;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETERRORHANDLER)
 HPDF_STATUS HPDF_SetErrorHandler(HPDF_Doc pdf, HPDF_Error_Handler user_error_fn)
 {
 	if (!HPDF_Doc_Validate(pdf))
@@ -1507,11 +1612,13 @@ HPDF_STATUS HPDF_SetErrorHandler(HPDF_Doc pdf, HPDF_Error_Handler user_error_fn)
 
 	return HPDF_OK;
 }
+#endif
 
 
 /*----- font handling -------------------------------------------------------*/
 
 
+#if defined(DOC_ALL) || defined(DOC_FINDFONT)
 HPDF_Font HPDF_Doc_FindFont(HPDF_Doc pdf, const char *font_name, const char *encoding_name)
 {
 	HPDF_UINT i;
@@ -1530,8 +1637,10 @@ HPDF_Font HPDF_Doc_FindFont(HPDF_Doc pdf, const char *font_name, const char *enc
 
 	return NULL;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETFONT)
 HPDF_Font HPDF_GetFont(HPDF_Doc pdf, const char *font_name, const char *encoding_name)
 {
 	HPDF_FontDef fontdef = NULL;
@@ -1641,10 +1750,12 @@ HPDF_Font HPDF_GetFont(HPDF_Doc pdf, const char *font_name, const char *encoding
 
 	return font;
 }
+#endif
 
 
 
 
+#if defined(DOC_ALL) || defined(DOC_LOADTYPE1FTONFROMFILE)
 static const char *LoadType1FontFromStream(HPDF_Doc pdf, HPDF_Stream afmdata, HPDF_Stream pfmdata)
 {
 	HPDF_FontDef def;
@@ -1711,8 +1822,10 @@ const char *HPDF_LoadType1FontFromFile(HPDF_Doc pdf, const char *afm_file_name, 
 
 	return ret;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETTTFONTDEFFROMFILE)
 HPDF_FontDef HPDF_GetTTFontDefFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding)
 {
 	HPDF_Stream font_data;
@@ -1723,7 +1836,7 @@ HPDF_FontDef HPDF_GetTTFontDefFromFile(HPDF_Doc pdf, const char *file_name, HPDF
 
 	if (HPDF_Stream_Validate(font_data))
 	{
-		def = HPDF_TTFontDef_Load(pdf->mmgr, font_data, embedding);
+		def = HPDF_TTFontDef_Load(pdf->mmgr, font_data, -1, embedding);
 	} else
 	{
 		HPDF_CheckError(&pdf->error);
@@ -1732,15 +1845,17 @@ HPDF_FontDef HPDF_GetTTFontDefFromFile(HPDF_Doc pdf, const char *file_name, HPDF
 
 	return def;
 }
+#endif
 
 
-static const char *LoadTTFontFromStream(HPDF_Doc pdf, HPDF_Stream font_data, HPDF_BOOL embedding, const char *file_name)
+#if defined(DOC_ALL) || defined(DOC_LOADTTFONTFROMFILE)
+static const char *LoadTTFontFromStream(HPDF_Doc pdf, HPDF_Stream font_data, HPDF_UINT index, HPDF_BOOL embedding, const char *file_name)
 {
 	HPDF_FontDef def;
 
 	HPDF_UNUSED(file_name);
 
-	def = HPDF_TTFontDef_Load(pdf->mmgr, font_data, embedding);
+	def = HPDF_TTFontDef_Load(pdf->mmgr, font_data, index, embedding);
 	if (def)
 	{
 		HPDF_FontDef tmpdef = HPDF_Doc_FindFontDef(pdf, def->base_font);
@@ -1787,62 +1902,7 @@ static const char *LoadTTFontFromStream(HPDF_Doc pdf, HPDF_Stream font_data, HPD
 }
 
 
-static const char *LoadTTFontFromStream2(HPDF_Doc pdf,
-										 HPDF_Stream font_data,
-										 HPDF_UINT index, HPDF_BOOL embedding, const char *file_name)
-{
-	HPDF_FontDef def;
-
-	HPDF_UNUSED(file_name);
-
-	def = HPDF_TTFontDef_Load2(pdf->mmgr, font_data, index, embedding);
-	if (def)
-	{
-		HPDF_FontDef tmpdef = HPDF_Doc_FindFontDef(pdf, def->base_font);
-
-		if (tmpdef)
-		{
-			HPDF_FontDef_Free(def);
-			return tmpdef->base_font;
-		}
-
-		if (HPDF_List_Add(pdf->fontdef_list, def) != HPDF_OK)
-		{
-			HPDF_FontDef_Free(def);
-			return NULL;
-		}
-	} else
-	{
-		return NULL;
-	}
-
-	if (embedding)
-	{
-		if (pdf->ttfont_tag[0] == 0)
-		{
-			memcpy(pdf->ttfont_tag, "HPDFAA", 6);
-		} else
-		{
-			HPDF_INT i;
-
-			for (i = 5; i >= 0; i--)
-			{
-				pdf->ttfont_tag[i] += 1;
-				if (pdf->ttfont_tag[i] > 'Z')
-					pdf->ttfont_tag[i] = 'A';
-				else
-					break;
-			}
-		}
-
-		HPDF_TTFontDef_SetTagName(def, pdf->ttfont_tag);
-	}
-
-	return def->base_font;
-}
-
-
-const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BOOL embedding)
+const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_UINT index, HPDF_BOOL embedding)
 {
 	HPDF_Stream font_data;
 	const char *ret;
@@ -1855,7 +1915,7 @@ const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BO
 
 	if (HPDF_Stream_Validate(font_data))
 	{
-		ret = LoadTTFontFromStream(pdf, font_data, embedding, file_name);
+		ret = LoadTTFontFromStream(pdf, font_data, index, embedding, file_name);
 	} else
 	{
 		ret = NULL;
@@ -1866,34 +1926,10 @@ const char *HPDF_LoadTTFontFromFile(HPDF_Doc pdf, const char *file_name, HPDF_BO
 
 	return ret;
 }
+#endif
 
 
-const char *HPDF_LoadTTFontFromFile2(HPDF_Doc pdf, const char *file_name, HPDF_UINT index, HPDF_BOOL embedding)
-{
-	HPDF_Stream font_data;
-	const char *ret;
-
-	if (!HPDF_HasDoc(pdf))
-		return NULL;
-
-	/* create file stream */
-	font_data = HPDF_FileReader_New(pdf->mmgr, file_name);
-
-	if (HPDF_Stream_Validate(font_data))
-	{
-		ret = LoadTTFontFromStream2(pdf, font_data, index, embedding, file_name);
-	} else
-	{
-		ret = NULL;
-	}
-
-	if (!ret)
-		HPDF_CheckError(&pdf->error);
-
-	return ret;
-}
-
-
+#if defined(DOC_ALL) || defined(DOC_LOADRAWIMAGEFROMFILE)
 HPDF_Image HPDF_LoadRawImageFromFile(
 	HPDF_Doc pdf,
 	const char *filename,
@@ -1926,8 +1962,10 @@ HPDF_Image HPDF_LoadRawImageFromFile(
 
 	return image;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_LOADRAWIMAGEFROMMEM)
 HPDF_Image HPDF_LoadRawImageFromMem(
 	HPDF_Doc pdf,
 	const HPDF_BYTE *buf,
@@ -1959,8 +1997,10 @@ HPDF_Image HPDF_LoadRawImageFromMem(
 
 	return image;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_LOADJPEGIMAGEFROMFILE)
 HPDF_Image HPDF_LoadJpegImageFromFile(HPDF_Doc pdf, const char *filename)
 {
 	HPDF_Stream imagedata;
@@ -1985,8 +2025,10 @@ HPDF_Image HPDF_LoadJpegImageFromFile(HPDF_Doc pdf, const char *filename)
 
 	return image;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_LOADJPEGIMAGEFROMMEM)
 HPDF_Image HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_UINT size)
 {
 	HPDF_Image image;
@@ -2005,9 +2047,11 @@ HPDF_Image HPDF_LoadJpegImageFromMem(HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF
 
 	return image;
 }
+#endif
 
 /*----- Catalog ------------------------------------------------------------*/
 
+#if defined(DOC_ALL) || defined(DOC_GETPAGELAYOUT)
 HPDF_PageLayout HPDF_GetPageLayout(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -2015,8 +2059,10 @@ HPDF_PageLayout HPDF_GetPageLayout(HPDF_Doc pdf)
 
 	return HPDF_Catalog_GetPageLayout(pdf->catalog);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETPAGELAYOUT)
 HPDF_STATUS HPDF_SetPageLayout(HPDF_Doc pdf, HPDF_PageLayout layout)
 {
 	HPDF_STATUS ret;
@@ -2037,8 +2083,10 @@ HPDF_STATUS HPDF_SetPageLayout(HPDF_Doc pdf, HPDF_PageLayout layout)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETPAGEMODE)
 HPDF_PageMode HPDF_GetPageMode(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -2046,8 +2094,10 @@ HPDF_PageMode HPDF_GetPageMode(HPDF_Doc pdf)
 
 	return HPDF_Catalog_GetPageMode(pdf->catalog);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETPAGEMODE)
 HPDF_STATUS HPDF_SetPageMode(HPDF_Doc pdf, HPDF_PageMode mode)
 {
 	HPDF_STATUS ret;
@@ -2064,8 +2114,10 @@ HPDF_STATUS HPDF_SetPageMode(HPDF_Doc pdf, HPDF_PageMode mode)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETOPENACTION)
 HPDF_STATUS HPDF_SetOpenAction(HPDF_Doc pdf, HPDF_Destination open_action)
 {
 	HPDF_STATUS ret;
@@ -2082,8 +2134,10 @@ HPDF_STATUS HPDF_SetOpenAction(HPDF_Doc pdf, HPDF_Destination open_action)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_GETVIEWERPREFERENCE)
 HPDF_UINT HPDF_GetViewerPreference(HPDF_Doc pdf)
 {
 	if (!HPDF_HasDoc(pdf))
@@ -2091,8 +2145,10 @@ HPDF_UINT HPDF_GetViewerPreference(HPDF_Doc pdf)
 
 	return HPDF_Catalog_GetViewerPreference(pdf->catalog);
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_SETVIEWERPREFERENCE)
 HPDF_STATUS HPDF_SetViewerPreference(HPDF_Doc pdf, HPDF_UINT value)
 {
 	HPDF_STATUS ret;
@@ -2109,8 +2165,10 @@ HPDF_STATUS HPDF_SetViewerPreference(HPDF_Doc pdf, HPDF_UINT value)
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_ADDPAGELABEL)
 HPDF_STATUS HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPDF_PageNumStyle style, HPDF_UINT first_page, const char *prefix)
 {
 	HPDF_Dict page_label;
@@ -2133,8 +2191,10 @@ HPDF_STATUS HPDF_AddPageLabel(HPDF_Doc pdf, HPDF_UINT page_num, HPDF_PageNumStyl
 
 	return HPDF_OK;
 }
+#endif
 
 
+#if defined(DOC_ALL) || defined(DOC_ATTACHFILE)
 HPDF_EmbeddedFile HPDF_AttachFile(HPDF_Doc pdf, const char *file)
 {
 	HPDF_NameDict names;
@@ -2184,3 +2244,4 @@ HPDF_EmbeddedFile HPDF_AttachFile(HPDF_Doc pdf, const char *file)
 
 	return efile;
 }
+#endif

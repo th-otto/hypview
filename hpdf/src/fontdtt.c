@@ -1211,8 +1211,7 @@ static HPDF_STATUS LoadFontData2(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_
 	attr->stream = stream;
 	attr->embedding = embedding;
 
-	ret = HPDF_Stream_Seek(stream, 0, HPDF_SEEK_SET);
-	if (ret != HPDF_OK)
+	if ((ret = HPDF_Stream_Seek(stream, 0, HPDF_SEEK_SET)) != HPDF_OK)
 		return ret;
 
 	size = 4;
@@ -1244,7 +1243,7 @@ static HPDF_STATUS LoadFontData2(HPDF_FontDef fontdef, HPDF_Stream stream, HPDF_
 }
 
 
-HPDF_FontDef HPDF_TTFontDef_Load(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_BOOL embedding)
+HPDF_FontDef HPDF_TTFontDef_Load(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_UINT index, HPDF_BOOL embedding)
 {
 	HPDF_STATUS ret;
 	HPDF_FontDef fontdef;
@@ -1257,31 +1256,10 @@ HPDF_FontDef HPDF_TTFontDef_Load(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_BOOL e
 		return NULL;
 	}
 
-	ret = LoadFontData(fontdef, stream, embedding, 0);
-	if (ret != HPDF_OK)
-	{
-		HPDF_FontDef_Free(fontdef);
-		return NULL;
-	}
-
-	return fontdef;
-}
-
-
-HPDF_FontDef HPDF_TTFontDef_Load2(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_UINT index, HPDF_BOOL embedding)
-{
-	HPDF_STATUS ret;
-	HPDF_FontDef fontdef;
-
-	fontdef = HPDF_TTFontDef_New(mmgr);
-
-	if (!fontdef)
-	{
-		HPDF_Stream_Free(stream);
-		return NULL;
-	}
-
-	ret = LoadFontData2(fontdef, stream, index, embedding);
+	if (index == (HPDF_UINT)-1)
+		ret = LoadFontData(fontdef, stream, embedding, 0);
+	else
+		ret = LoadFontData2(fontdef, stream, index, embedding);
 	if (ret != HPDF_OK)
 	{
 		HPDF_FontDef_Free(fontdef);

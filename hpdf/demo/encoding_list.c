@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 	};
 
 	(void) argc;
-	pdf = HPDF_NewEx(error_handler, NULL, NULL, 0, NULL);
+	pdf = HPDF_New(error_handler, 0, 0, 0, NULL);
 	if (!pdf)
 	{
 		printf("error: cannot create PdfDoc object\n");

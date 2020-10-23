@@ -318,10 +318,7 @@ typedef HPDF_TTFontDefAttr_Rec *HPDF_TTFontDefAttr;
 HPDF_FontDef HPDF_TTFontDef_New(HPDF_MMgr mmgr);
 
 
-HPDF_FontDef HPDF_TTFontDef_Load(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_BOOL embedding);
-
-
-HPDF_FontDef HPDF_TTFontDef_Load2(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_UINT index, HPDF_BOOL embedding);
+HPDF_FontDef HPDF_TTFontDef_Load(HPDF_MMgr mmgr, HPDF_Stream stream, HPDF_UINT index, HPDF_BOOL embedding);
 
 
 HPDF_UINT16 HPDF_TTFontDef_GetGlyphid(HPDF_FontDef fontdef, HPDF_UINT16 unicode);
