@@ -182,9 +182,10 @@ void HPDF_Error_Reset(HPDF_Error error);
 
 
 HPDF_STATUS HPDF_Error_GetCode(HPDF_Error error);
-
+#define HPDF_Error_GetCode(error) ((error)->error_no)
 
 HPDF_STATUS HPDF_Error_GetDetailCode(HPDF_Error error);
+#define HPDF_Error_GetDetailCode(error) ((error)->detail_no)
 
 
 HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS detail_no);

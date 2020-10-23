@@ -15,7 +15,6 @@ libhpdf_a_SOURCES = \
 	enc_kr.c \
 	encrypt.c \
 	encryptd.c \
-	error.c \
 	extgstat.c \
 	font.c \
 	font_cid.c \
@@ -214,6 +213,15 @@ libhpdf_a_LIBADD = \
 	doc_setviewerpreference.o \
 	doc_addpagelabel.o \
 	doc_attachfile.o \
+	error_init.o \
+	error_getcode.o \
+	error_getdetailcode.o \
+	error_copyerror.o \
+	error_seterror.o \
+	error_checkerror.o \
+	error_raiseerror.o \
+	error_reset.o \
+	error_str.o \
 	page_setlinewidth.o \
 	page_setlinecap.o \
 	page_setlinejoin.o \
@@ -1321,12 +1329,47 @@ doc_attachfile.o: doc.c
 
 
 
+error_init.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_INIT
+
+error_getcode.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_GETCODE
+
+error_getdetailcode.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_GETDETAILCODE
+
+error_copyerror.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_COPYERROR
+
+error_seterror.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_SETERROR
+
+error_checkerror.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_CHECKERROR
+
+error_raiseerror.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_RAISEERROR
+
+error_reset.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_RESET
+
+error_str.o: error.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DERROR_STR
+
+
+
+
+
+
+
+
 EXTRADIST = \
 	annotat.c \
 	array.c \
 	catalog.c \
 	destinat.c \
 	doc.c \
+	error.c \
 	pages.c \
 	pageop.c \
 	3dmeasur.c \

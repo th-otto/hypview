@@ -25,6 +25,12 @@
 #define _(x) x
 
 
+#ifdef __PUREC__
+# define ANNOTAT_ALL
+#endif
+
+
+#if defined(ERROR_ALL) || defined(ERROR_INIT)
 void HPDF_Error_Init(HPDF_Error error, void *user_data)
 {
 	error->error_no = 0;
@@ -32,20 +38,26 @@ void HPDF_Error_Init(HPDF_Error error, void *user_data)
 	error->error_fn = 0;
 	error->user_data = user_data;
 }
+#endif
 
 
-HPDF_STATUS HPDF_Error_GetCode(HPDF_Error error)
+#if defined(ERROR_ALL) || defined(ERROR_GETCODE)
+HPDF_STATUS (HPDF_Error_GetCode)(HPDF_Error error)
 {
 	return error->error_no;
 }
+#endif
 
 
-HPDF_STATUS HPDF_Error_GetDetailCode(HPDF_Error error)
+#if defined(ERROR_ALL) || defined(ERROR_GETDETAILCODE)
+HPDF_STATUS (HPDF_Error_GetDetailCode)(HPDF_Error error)
 {
 	return error->detail_no;
 }
+#endif
 
 
+#if defined(ERROR_ALL) || defined(ERROR_COPYERROR)
 void HPDF_CopyError(HPDF_Error dst, HPDF_Error src)
 {
 	dst->error_no = src->error_no;
@@ -53,8 +65,10 @@ void HPDF_CopyError(HPDF_Error dst, HPDF_Error src)
 	dst->error_fn = src->error_fn;
 	dst->user_data = src->user_data;
 }
+#endif
 
 
+#if defined(ERROR_ALL) || defined(ERROR_SETERROR)
 HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS detail_no)
 {
 	error->error_no = error_no;
@@ -62,8 +76,10 @@ HPDF_STATUS HPDF_SetError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS de
 
 	return error_no;
 }
+#endif
 
 
+#if defined(ERROR_ALL) || defined(ERROR_CHECKERROR)
 HPDF_STATUS HPDF_CheckError(HPDF_Error error)
 {
 	if (error->error_no != HPDF_OK && error->error_fn)
@@ -71,23 +87,29 @@ HPDF_STATUS HPDF_CheckError(HPDF_Error error)
 
 	return error->error_no;
 }
+#endif
 
 
+#if defined(ERROR_ALL) || defined(ERROR_RAISEERROR)
 HPDF_STATUS HPDF_RaiseError(HPDF_Error error, HPDF_STATUS error_no, HPDF_STATUS detail_no)
 {
 	HPDF_SetError(error, error_no, detail_no);
 
 	return HPDF_CheckError(error);
 }
+#endif
 
 
+#if defined(ERROR_ALL) || defined(ERROR_RESET)
 void HPDF_Error_Reset(HPDF_Error error)
 {
 	error->error_no = HPDF_NOERROR;
 	error->detail_no = HPDF_NOERROR;
 }
+#endif
 
 
+#if defined(ERROR_ALL) || defined(ERROR_STR)
 const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 {
 	switch ((int)error_no)
@@ -223,3 +245,4 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 	}
 	return _("unknown error");
 }
+#endif
