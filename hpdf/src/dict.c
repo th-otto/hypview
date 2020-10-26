@@ -343,7 +343,7 @@ HPDF_STATUS HPDF_Dict_Add(HPDF_Dict dict, const char *key, void *obj)
 			return HPDF_Error_GetCode(dict->error);
 		}
 
-		HPDF_StrCpy(element->key, key, element->key + HPDF_LIMIT_MAX_NAME_LEN + 1);
+		strcpy(element->key, key);
 		element->value = NULL;
 
 		ret = HPDF_List_Add(dict->list, element);

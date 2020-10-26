@@ -15782,8 +15782,8 @@ static HPDF_STATUS MS_RKSJ_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = RKSJ_IsLeadByte;
 	attr->is_trial_byte_fn = RKSJ_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Japan1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Japan1");
 	attr->suppliment = 2;
 	attr->uid_offset = 950;
 	attr->xuid[0] = 1;
@@ -15821,8 +15821,8 @@ static HPDF_STATUS MSP_RKSJ_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = RKSJ_IsLeadByte;
 	attr->is_trial_byte_fn = RKSJ_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Japan1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Japan1");
 	attr->suppliment = 2;
 	attr->uid_offset = 950;
 	attr->xuid[0] = 1;
@@ -15863,8 +15863,8 @@ static HPDF_STATUS MS_RKSJ_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = RKSJ_IsLeadByte;
 	attr->is_trial_byte_fn = RKSJ_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Japan1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Japan1");
 	attr->suppliment = 2;
 	attr->uid_offset = 1020;
 	attr->xuid[0] = 1;
@@ -15937,8 +15937,8 @@ static HPDF_STATUS EUC_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = EUC_IsLeadByte;
 	attr->is_trial_byte_fn = EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Japan1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Japan1");
 	attr->suppliment = 1;
 	attr->uid_offset = 680;
 	attr->xuid[0] = 1;
@@ -15979,8 +15979,8 @@ static HPDF_STATUS EUC_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = EUC_IsLeadByte;
 	attr->is_trial_byte_fn = EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Japan1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Japan1");
 	attr->suppliment = 1;
 	attr->writing_mode = HPDF_WMODE_VERTICAL;
 	attr->uid_offset = 800;

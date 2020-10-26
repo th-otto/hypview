@@ -65,7 +65,7 @@ HPDF_FontDef HPDF_CIDFontDef_New(HPDF_MMgr mmgr, const char *name, HPDF_FontDef_
 
 	memset(fontdef, 0, sizeof(HPDF_FontDef_Rec));
 	fontdef->sig_bytes = HPDF_FONTDEF_SIG_BYTES;
-	HPDF_StrCpy(fontdef->base_font, name, fontdef->base_font + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(fontdef->base_font, name);
 	fontdef->mmgr = mmgr;
 	fontdef->error = mmgr->error;
 	fontdef->type = HPDF_FONTDEF_TYPE_UNINITIALIZED;

@@ -36083,8 +36083,8 @@ static HPDF_STATUS GBK_EUC_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = GBK_EUC_IsLeadByte;
 	attr->is_trial_byte_fn = GBK_EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "GB1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "GB1");
 	attr->suppliment = 2;
 	attr->uid_offset = -1;
 	attr->xuid[0] = 1;
@@ -36123,8 +36123,8 @@ static HPDF_STATUS GBK_EUC_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = GBK_EUC_IsLeadByte;
 	attr->is_trial_byte_fn = GBK_EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "GB1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "GB1");
 	attr->suppliment = 2;
 	attr->uid_offset = -1;
 	attr->xuid[0] = 1;
@@ -36191,8 +36191,8 @@ static HPDF_STATUS GB_EUC_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = GB_EUC_IsLeadByte;
 	attr->is_trial_byte_fn = GB_EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "GB1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "GB1");
 	attr->suppliment = 0;
 	attr->uid_offset = 100;
 	attr->xuid[0] = 1;
@@ -36231,8 +36231,8 @@ static HPDF_STATUS GB_EUC_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = GB_EUC_IsLeadByte;
 	attr->is_trial_byte_fn = GB_EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "GB1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "GB1");
 	attr->suppliment = 0;
 	attr->writing_mode = HPDF_WMODE_VERTICAL;
 	attr->uid_offset = 310;

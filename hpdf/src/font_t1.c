@@ -36,13 +36,13 @@ static HPDF_STATUS Type1Font_OnWrite(HPDF_Dict obj, HPDF_Stream stream)
 	{
 		char *pbuf;
 
-		pbuf = (char *) HPDF_StrCpy(buf, "/FirstChar ", eptr);
+		pbuf = HPDF_StrCpy(buf, "/FirstChar ", eptr);
 		pbuf = HPDF_IToA(pbuf, encoder_attr->first_char, eptr);
 		HPDF_StrCpy(pbuf, "\012", eptr);
 		if ((ret = HPDF_Stream_WriteStr(stream, buf)) != HPDF_OK)
 			return ret;
 
-		pbuf = (char *) HPDF_StrCpy(buf, "/LastChar ", eptr);
+		pbuf = HPDF_StrCpy(buf, "/LastChar ", eptr);
 		pbuf = HPDF_IToA(pbuf, encoder_attr->last_char, eptr);
 		HPDF_StrCpy(pbuf, "\012", eptr);
 		if ((ret = HPDF_Stream_WriteStr(stream, buf)) != HPDF_OK)

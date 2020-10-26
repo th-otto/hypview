@@ -191,19 +191,19 @@ static HPDF_STATUS LoadAfm(HPDF_FontDef fontdef, HPDF_Stream stream)
 			HPDF_StrCpy(attr->encoding_scheme, s, attr->encoding_scheme + HPDF_LIMIT_MAX_NAME_LEN);
 		} else if (strcmp(keyword, "CapHeight") == 0)
 		{
-			fontdef->cap_height = (HPDF_UINT16) HPDF_AToI(s);
+			fontdef->cap_height = HPDF_AToI(s);
 		} else if (strcmp(keyword, "Ascender") == 0)
 		{
-			fontdef->ascent = (HPDF_INT16) HPDF_AToI(s);
+			fontdef->ascent = HPDF_AToI(s);
 		} else if (strcmp(keyword, "Descender") == 0)
 		{
-			fontdef->descent = (HPDF_INT16) HPDF_AToI(s);
+			fontdef->descent = HPDF_AToI(s);
 		} else if (strcmp(keyword, "STDHW") == 0)
 		{
-			fontdef->stemh = (HPDF_UINT16) HPDF_AToI(s);
+			fontdef->stemh = HPDF_AToI(s);
 		} else if (strcmp(keyword, "STDHV") == 0)
 		{
-			fontdef->stemv = (HPDF_UINT16) HPDF_AToI(s);
+			fontdef->stemv = HPDF_AToI(s);
 		} else if (strcmp(keyword, "StartCharMetrics") == 0)
 		{
 			attr->widths_count = HPDF_AToI(s);

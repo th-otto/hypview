@@ -27648,8 +27648,8 @@ static HPDF_STATUS KSCms_UHC_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = KSCms_UHC_IsLeadByte;
 	attr->is_trial_byte_fn = KSCms_UHC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Korea1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Korea1");
 	attr->suppliment = 1;
 	attr->uid_offset = 430;
 	attr->xuid[0] = 1;
@@ -27685,8 +27685,8 @@ static HPDF_STATUS KSCms_UHC_HW_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = KSCms_UHC_IsLeadByte;
 	attr->is_trial_byte_fn = KSCms_UHC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Korea1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Korea1");
 	attr->suppliment = 1;
 	attr->uid_offset = -1;
 	attr->xuid[0] = 1;
@@ -27725,8 +27725,8 @@ static HPDF_STATUS KSCms_UHC_HW_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = KSCms_UHC_IsLeadByte;
 	attr->is_trial_byte_fn = KSCms_UHC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Korea1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Korea1");
 	attr->suppliment = 1;
 	attr->uid_offset = -1;
 	attr->xuid[0] = 1;
@@ -27793,8 +27793,8 @@ static HPDF_STATUS KSC_EUC_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = KSC_EUC_IsLeadByte;
 	attr->is_trial_byte_fn = KSC_EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Korea1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Korea1");
 	attr->suppliment = 0;
 	attr->uid_offset = 100;
 	attr->xuid[0] = 1;
@@ -27833,8 +27833,8 @@ static HPDF_STATUS KSC_EUC_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = KSC_EUC_IsLeadByte;
 	attr->is_trial_byte_fn = KSC_EUC_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Korea1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Korea1");
 	attr->suppliment = 0;
 	attr->writing_mode = HPDF_WMODE_VERTICAL;
 	attr->uid_offset = 310;

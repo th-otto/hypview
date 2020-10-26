@@ -224,8 +224,8 @@ static HPDF_STATUS UTF8_Init(HPDF_Encoder encoder)
 	attr->is_lead_byte_fn = NULL;
 	attr->is_trial_byte_fn = NULL;
 
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "Identity-H", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "Identity-H");
 	attr->suppliment = 0;
 	attr->writing_mode = HPDF_WMODE_HORIZONTAL;
 

@@ -259,7 +259,7 @@ char *HPDF_FToA(char *s, HPDF_REAL val, char *eptr)
 }
 
 
-HPDF_BYTE *HPDF_StrCpy(char *out, const char *in, char *eptr)
+char *HPDF_StrCpy(char *out, const char *in, char *eptr)
 {
 	if (in != NULL)
 	{
@@ -269,7 +269,7 @@ HPDF_BYTE *HPDF_StrCpy(char *out, const char *in, char *eptr)
 
 	*out = 0;
 
-	return (HPDF_BYTE *) out;
+	return out;
 }
 
 

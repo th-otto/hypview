@@ -479,11 +479,9 @@ const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font)
 		 * font-resource.
 		 */
 		char fontName[HPDF_LIMIT_MAX_NAME_LEN + 1];
-		char *ptr;
-		char *end_ptr = fontName + HPDF_LIMIT_MAX_NAME_LEN;
 
-		ptr = (char *) HPDF_StrCpy(fontName, "F", end_ptr);
-		HPDF_IToA(ptr, attr->fonts->list->count + 1, end_ptr);
+		strcpy(fontName, "F");
+		HPDF_IToA(fontName + 1, attr->fonts->list->count + 1, fontName + HPDF_LIMIT_MAX_NAME_LEN);
 
 		if (HPDF_Dict_Add(attr->fonts, fontName, font) != HPDF_OK)
 			return NULL;
@@ -818,11 +816,9 @@ const char *HPDF_Page_GetXObjectName(HPDF_Page page, HPDF_XObject xobj)
 		 * xobject to xobject-resource.
 		 */
 		char xobj_name[HPDF_LIMIT_MAX_NAME_LEN + 1];
-		char *ptr;
-		char *end_ptr = xobj_name + HPDF_LIMIT_MAX_NAME_LEN;
 
-		ptr = (char *) HPDF_StrCpy(xobj_name, "X", end_ptr);
-		HPDF_IToA(ptr, attr->xobjects->list->count + 1, end_ptr);
+		strcpy(xobj_name, "X");
+		HPDF_IToA(xobj_name + 1, attr->xobjects->list->count + 1, xobj_name + HPDF_LIMIT_MAX_NAME_LEN);
 
 		if (HPDF_Dict_Add(attr->xobjects, xobj_name, xobj) != HPDF_OK)
 			return NULL;
@@ -868,11 +864,9 @@ const char *HPDF_Page_GetExtGStateName(HPDF_Page page, HPDF_ExtGState state)
 		 *  to ext-gstate resource.
 		 */
 		char ext_gstate_name[HPDF_LIMIT_MAX_NAME_LEN + 1];
-		char *ptr;
-		char *end_ptr = ext_gstate_name + HPDF_LIMIT_MAX_NAME_LEN;
 
-		ptr = (char *) HPDF_StrCpy(ext_gstate_name, "E", end_ptr);
-		HPDF_IToA(ptr, attr->ext_gstates->list->count + 1, end_ptr);
+		strcpy(ext_gstate_name, "E");
+		HPDF_IToA(ext_gstate_name + 1, attr->ext_gstates->list->count + 1, ext_gstate_name + HPDF_LIMIT_MAX_NAME_LEN);
 
 		if (HPDF_Dict_Add(attr->ext_gstates, ext_gstate_name, state) != HPDF_OK)
 			return NULL;

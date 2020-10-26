@@ -2153,7 +2153,6 @@ HPDF_Encoder HPDF_BasicEncoder_New(HPDF_MMgr mmgr, const char *encoding_name)
 	HPDF_Encoder encoder;
 	HPDF_BasicEncoderAttr encoder_attr;
 	const HPDF_BuiltinEncodingData *data;
-	char *eptr;
 
 	if (mmgr == NULL)
 		return NULL;
@@ -2171,8 +2170,7 @@ HPDF_Encoder HPDF_BasicEncoder_New(HPDF_MMgr mmgr, const char *encoding_name)
 
 	memset(encoder, 0, sizeof(HPDF_Encoder_Rec));
 
-	eptr = encoder->name + HPDF_LIMIT_MAX_NAME_LEN;
-	HPDF_StrCpy(encoder->name, data->encoding_name, eptr);
+	strcpy(encoder->name, data->encoding_name);
 
 	encoder->mmgr = mmgr;
 	encoder->error = mmgr->error;
@@ -2197,24 +2195,22 @@ HPDF_Encoder HPDF_BasicEncoder_New(HPDF_MMgr mmgr, const char *encoding_name)
 	encoder_attr->last_char = HPDF_BASIC_ENCODER_LAST_CHAR;
 	encoder_attr->has_differences = HPDF_FALSE;
 
-	eptr = encoder_attr->base_encoding + HPDF_LIMIT_MAX_NAME_LEN;
-
 	switch (data->base_encoding)
 	{
 	case HPDF_BASE_ENCODING_STANDARD:
-		HPDF_StrCpy(encoder_attr->base_encoding, HPDF_ENCODING_STANDARD, eptr);
+		strcpy(encoder_attr->base_encoding, HPDF_ENCODING_STANDARD);
 		HPDF_BasicEncoder_CopyMap(encoder, HPDF_UNICODE_MAP_STANDARD);
 		break;
 	case HPDF_BASE_ENCODING_WIN_ANSI:
-		HPDF_StrCpy(encoder_attr->base_encoding, HPDF_ENCODING_WIN_ANSI, eptr);
+		strcpy(encoder_attr->base_encoding, HPDF_ENCODING_WIN_ANSI);
 		HPDF_BasicEncoder_CopyMap(encoder, HPDF_UNICODE_MAP_WIN_ANSI);
 		break;
 	case HPDF_BASE_ENCODING_MAC_ROMAN:
-		HPDF_StrCpy(encoder_attr->base_encoding, HPDF_ENCODING_MAC_ROMAN, eptr);
+		strcpy(encoder_attr->base_encoding, HPDF_ENCODING_MAC_ROMAN);
 		HPDF_BasicEncoder_CopyMap(encoder, HPDF_UNICODE_MAP_MAC_ROMAN);
 		break;
 	default:
-		HPDF_StrCpy(encoder_attr->base_encoding, HPDF_ENCODING_FONT_SPECIFIC, eptr);
+		strcpy(encoder_attr->base_encoding, HPDF_ENCODING_FONT_SPECIFIC);
 		HPDF_BasicEncoder_CopyMap(encoder, HPDF_UNICODE_MAP_FONT_SPECIFIC);
 		break;
 	}
@@ -2344,7 +2340,7 @@ HPDF_STATUS HPDF_BasicEncoder_Write(HPDF_Encoder encoder, HPDF_Stream out)
 				ptmp = HPDF_IToA(ptmp, i, tmp + HPDF_TEXT_DEFAULT_LEN - 1);
 				*ptmp++ = ' ';
 				*ptmp++ = '/';
-				ptmp = (char *) HPDF_StrCpy(ptmp, char_name, tmp + HPDF_TEXT_DEFAULT_LEN - 1);
+				ptmp = HPDF_StrCpy(ptmp, char_name, tmp + HPDF_TEXT_DEFAULT_LEN - 1);
 				*ptmp++ = ' ';
 				*ptmp = 0;
 
@@ -2386,7 +2382,7 @@ HPDF_Encoder HPDF_CMapEncoder_New(HPDF_MMgr mmgr, const char *name, HPDF_Encoder
 
 	memset(encoder, 0, sizeof(HPDF_Encoder_Rec));
 
-	HPDF_StrCpy(encoder->name, name, encoder->name + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(encoder->name, name);
 	encoder->mmgr = mmgr;
 	encoder->error = mmgr->error;
 	encoder->type = HPDF_ENCODER_TYPE_UNINITIALIZED;

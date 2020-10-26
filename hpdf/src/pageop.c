@@ -1788,7 +1788,7 @@ static char *QuarterEllipseA(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	pbuf = HPDF_FToA(pbuf, x, eptr);
 	*pbuf++ = ' ';
 	pbuf = HPDF_FToA(pbuf, y + yray, eptr);
-	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
+	return HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
 
@@ -1805,7 +1805,7 @@ static char *QuarterEllipseB(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	pbuf = HPDF_FToA(pbuf, x + xray, eptr);
 	*pbuf++ = ' ';
 	pbuf = HPDF_FToA(pbuf, y, eptr);
-	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
+	return HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
 
@@ -1822,7 +1822,7 @@ static char *QuarterEllipseC(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	pbuf = HPDF_FToA(pbuf, x, eptr);
 	*pbuf++ = ' ';
 	pbuf = HPDF_FToA(pbuf, y - yray, eptr);
-	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
+	return HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
 
@@ -1839,7 +1839,7 @@ static char *QuarterEllipseD(char *pbuf, char *eptr, HPDF_REAL x, HPDF_REAL y, H
 	pbuf = HPDF_FToA(pbuf, x - xray, eptr);
 	*pbuf++ = ' ';
 	pbuf = HPDF_FToA(pbuf, y, eptr);
-	return (char *) HPDF_StrCpy(pbuf, " c\012", eptr);
+	return HPDF_StrCpy(pbuf, " c\012", eptr);
 }
 
 
@@ -1859,7 +1859,7 @@ HPDF_STATUS HPDF_Page_Ellipse(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REA
 	pbuf = HPDF_FToA(pbuf, x - xray, eptr);
 	*pbuf++ = ' ';
 	pbuf = HPDF_FToA(pbuf, y, eptr);
-	pbuf = (char *) HPDF_StrCpy(pbuf, " m\012", eptr);
+	pbuf = HPDF_StrCpy(pbuf, " m\012", eptr);
 
 	pbuf = QuarterEllipseA(pbuf, eptr, x, y, xray, yray);
 	pbuf = QuarterEllipseB(pbuf, eptr, x, y, xray, yray);

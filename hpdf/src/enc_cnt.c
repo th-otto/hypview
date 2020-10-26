@@ -15186,8 +15186,8 @@ static HPDF_STATUS ETen_B5_H_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = ETen_B5_IsLeadByte;
 	attr->is_trial_byte_fn = ETen_B5_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "CNS1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "CNS1");
 	attr->suppliment = 0;
 	attr->uid_offset = 200;
 	attr->xuid[0] = 1;
@@ -15226,8 +15226,8 @@ static HPDF_STATUS ETen_B5_V_Init(HPDF_Encoder encoder)
 
 	attr->is_lead_byte_fn = ETen_B5_IsLeadByte;
 	attr->is_trial_byte_fn = ETen_B5_IsTrialByte;
-	HPDF_StrCpy(attr->registry, "Adobe", attr->registry + HPDF_LIMIT_MAX_NAME_LEN);
-	HPDF_StrCpy(attr->ordering, "CNS1", attr->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+	strcpy(attr->registry, "Adobe");
+	strcpy(attr->ordering, "CNS1");
 	attr->suppliment = 0;
 	attr->uid_offset = 920;
 	attr->xuid[0] = 1;
