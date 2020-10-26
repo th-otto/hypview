@@ -35,7 +35,11 @@ int main(int argc, char **argv)
 	HPDF_Page page;
 	char fname[256];
 	HPDF_Point pos;
-
+	HPDF_REAL xcenter = 100;
+	HPDF_REAL ycenter = 100;
+	HPDF_REAL xrad = 90;
+	HPDF_REAL yrad = 60;
+	
 	(void) argc;
 	strcpy(fname, argv[0]);
 	strcat(fname, ".pdf");
@@ -72,44 +76,44 @@ int main(int argc, char **argv)
 
 	/* A */
 	HPDF_Page_SetRGBFill(page, 1.0, 0, 0);
-	HPDF_Page_MoveTo(page, 100, 100);
-	HPDF_Page_LineTo(page, 100, 180);
-	HPDF_Page_Arc(page, 100, 100, 80, 0, 360 * 0.45);
+	HPDF_Page_MoveTo(page, xcenter, ycenter);
+	HPDF_Page_LineTo(page, xcenter + xrad, ycenter);
+	HPDF_Page_Arc(page, xcenter, ycenter, xrad, yrad, 0, 360 * 0.45);
 	HPDF_Page_GetCurrentPos(page, &pos);
-	HPDF_Page_LineTo(page, 100, 100);
+	HPDF_Page_LineTo(page, xcenter, ycenter);
 	HPDF_Page_Fill(page);
 
 	/* B */
 	HPDF_Page_SetRGBFill(page, 0, 0, 1.0);
-	HPDF_Page_MoveTo(page, 100, 100);
+	HPDF_Page_MoveTo(page, xcenter, ycenter);
 	HPDF_Page_LineTo(page, pos.x, pos.y);
-	HPDF_Page_Arc(page, 100, 100, 80, 360 * 0.45, 360 * 0.7);
+	HPDF_Page_Arc(page, xcenter, ycenter, xrad, yrad, 360 * 0.45, 360 * 0.7);
 	HPDF_Page_GetCurrentPos(page, &pos);
-	HPDF_Page_LineTo(page, 100, 100);
+	HPDF_Page_LineTo(page, xcenter, ycenter);
 	HPDF_Page_Fill(page);
 
 	/* C */
 	HPDF_Page_SetRGBFill(page, 0, 1.0, 0);
-	HPDF_Page_MoveTo(page, 100, 100);
+	HPDF_Page_MoveTo(page, xcenter, ycenter);
 	HPDF_Page_LineTo(page, pos.x, pos.y);
-	HPDF_Page_Arc(page, 100, 100, 80, 360 * 0.7, 360 * 0.85);
+	HPDF_Page_Arc(page, xcenter, ycenter, xrad, yrad, 360 * 0.7, 360 * 0.85);
 	HPDF_Page_GetCurrentPos(page, &pos);
-	HPDF_Page_LineTo(page, 100, 100);
+	HPDF_Page_LineTo(page, xcenter, ycenter);
 	HPDF_Page_Fill(page);
 
 	/* D */
 	HPDF_Page_SetRGBFill(page, 1.0, 1.0, 0);
-	HPDF_Page_MoveTo(page, 100, 100);
+	HPDF_Page_MoveTo(page, xcenter, ycenter);
 	HPDF_Page_LineTo(page, pos.x, pos.y);
-	HPDF_Page_Arc(page, 100, 100, 80, 360 * 0.85, 360);
+	HPDF_Page_Arc(page, xcenter, ycenter, xrad, yrad, 360 * 0.85, 360);
 	HPDF_Page_GetCurrentPos(page, &pos);
-	HPDF_Page_LineTo(page, 100, 100);
+	HPDF_Page_LineTo(page, xcenter, ycenter);
 	HPDF_Page_Fill(page);
 
 	/* draw center circle */
 	HPDF_Page_SetGrayStroke(page, 0);
 	HPDF_Page_SetGrayFill(page, 1);
-	HPDF_Page_Circle(page, 100, 100, 30);
+	HPDF_Page_Circle(page, xcenter, ycenter, 30);
 	HPDF_Page_Fill(page);
 
 	/* save the document to a file */
