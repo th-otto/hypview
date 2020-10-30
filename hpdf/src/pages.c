@@ -371,14 +371,17 @@ HPDF_Page HPDF_Page_New(HPDF_MMgr mmgr, HPDF_Xref xref)
 #if defined(PAGES_ALL) || defined(PAGE_CHECKSTATE)
 HPDF_STATUS HPDF_Page_CheckState(HPDF_Page page, HPDF_UINT mode)
 {
+	HPDF_PageAttr attr;
+
 	if (!page)
 		return HPDF_INVALID_OBJECT;
 
 	if (page->header.obj_class != (HPDF_OSUBCLASS_PAGE | HPDF_OCLASS_DICT))
 		return HPDF_INVALID_PAGE;
 
-	if (!(((HPDF_PageAttr) page->attr)->gmode & mode))
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_GMODE, mode);
+	attr = (HPDF_PageAttr) page->attr;
+	if (!(attr->gmode & mode))
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_GMODE, attr->gmode);
 
 	return HPDF_OK;
 }
@@ -1391,7 +1394,11 @@ HPDF_UINT HPDF_Page_GetGStateDepth(HPDF_Page page)
 HPDF_UINT16 HPDF_Page_GetGMode(HPDF_Page page)
 {
 	if (HPDF_Page_Validate(page))
-		return ((HPDF_PageAttr) page->attr)->gmode;
+	{
+		HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
+
+		return attr->gmode;
+	}
 
 	return 0;
 }
@@ -1453,7 +1460,7 @@ HPDF_STATUS HPDF_Page_SetBoxValue(HPDF_Page page, const char *name, HPDF_UINT in
 
 	r = (HPDF_Real) HPDF_Array_GetItem(array, index, HPDF_OCLASS_REAL);
 	if (!r)
-		return HPDF_SetError(page->error, HPDF_PAGE_INVALID_INDEX, 0);
+		return HPDF_SetError(page->error, HPDF_PAGE_INVALID_INDEX, index);
 
 	r->value = value;
 
@@ -1510,8 +1517,8 @@ HPDF_STATUS HPDF_Page_SetZoom(HPDF_Page page, HPDF_REAL zoom)
 #if defined(PAGES_ALL) || defined(PAGE_SETWIDTH)
 HPDF_STATUS HPDF_Page_SetWidth(HPDF_Page page, HPDF_REAL value)
 {
-	if (value < 3 || value > 14400)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, 0);
+	if (value < HPDF_MIN_PAGE_SIZE || value > HPDF_MAX_PAGE_SIZE)
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, value);
 
 	if (HPDF_Page_SetBoxValue(page, "MediaBox", 2, value) != HPDF_OK)
 		return HPDF_CheckError(page->error);
@@ -1524,8 +1531,8 @@ HPDF_STATUS HPDF_Page_SetWidth(HPDF_Page page, HPDF_REAL value)
 #if defined(PAGES_ALL) || defined(PAGE_SETHEIGHT)
 HPDF_STATUS HPDF_Page_SetHeight(HPDF_Page page, HPDF_REAL value)
 {
-	if (value < 3 || value > 14400)
-		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, 0);
+	if (value < HPDF_MIN_PAGE_SIZE || value > HPDF_MAX_PAGE_SIZE)
+		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_SIZE, value);
 
 	if (HPDF_Page_SetBoxValue(page, "MediaBox", 3, value) != HPDF_OK)
 		return HPDF_CheckError(page->error);
