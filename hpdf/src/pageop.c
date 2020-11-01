@@ -29,7 +29,10 @@
 /*--- General graphics state ---------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETLINEWIDTH)
-/* w */
+/*
+ lineWidth w
+ Set the line width in the graphics state
+ */
 HPDF_STATUS HPDF_Page_SetLineWidth(HPDF_Page page, HPDF_REAL line_width)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PATH_OBJECT);
@@ -57,7 +60,10 @@ HPDF_STATUS HPDF_Page_SetLineWidth(HPDF_Page page, HPDF_REAL line_width)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETLINECAP)
-/* J */
+/*
+ lineCap J
+ Set the line cap style in the graphics state 
+ */
 HPDF_STATUS HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
@@ -85,7 +91,10 @@ HPDF_STATUS HPDF_Page_SetLineCap(HPDF_Page page, HPDF_LineCap line_cap)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETLINEJOIN)
-/* j */
+/*
+ lineJoin j
+ Set the line join style in the graphics state
+ */
 HPDF_STATUS HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
@@ -113,7 +122,10 @@ HPDF_STATUS HPDF_Page_SetLineJoin(HPDF_Page page, HPDF_LineJoin line_join)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETMITERLIMIT)
-/* M */
+/*
+ miterLimit M
+ Set the miter limit in the graphics state
+ */
 HPDF_STATUS HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter_limit)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
@@ -141,7 +153,10 @@ HPDF_STATUS HPDF_Page_SetMiterLimit(HPDF_Page page, HPDF_REAL miter_limit)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETDASH)
-/* d */
+/*
+ dashArray dashPhase d
+ Set the line dash pattern in the graphics state
+ */
 HPDF_STATUS HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 *dash_ptn, HPDF_UINT num_param, HPDF_UINT phase)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
@@ -205,10 +220,17 @@ HPDF_STATUS HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 *dash_ptn, HPDF_
 #endif
 
 
-/* ri --not implemented yet */
+/*
+ intent ri
+ Set the color rendering intent in the graphics state
+ --not implemented yet
+ */
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETFLAT)
-/* i */
+/*
+ flatness i
+ Set the flatness tolerance in the graphics state
+ */
 HPDF_STATUS HPDF_Page_SetFlat(HPDF_Page page, HPDF_REAL flatness)
 {
 	HPDF_PageAttr attr;
@@ -236,7 +258,10 @@ HPDF_STATUS HPDF_Page_SetFlat(HPDF_Page page, HPDF_REAL flatness)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETEXTGSTATE)
-/* gs */
+/*
+ dictName gs
+ Set the specified parameters in the graphics state
+ */
 HPDF_STATUS HPDF_Page_SetExtGState(HPDF_Page page, HPDF_ExtGState ext_gstate)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
@@ -265,7 +290,7 @@ HPDF_STATUS HPDF_Page_SetExtGState(HPDF_Page page, HPDF_ExtGState ext_gstate)
 		return HPDF_CheckError(page->error);
 
 	/* change objct class to read only. */
-	ext_gstate->header.obj_class = (HPDF_OSUBCLASS_EXT_GSTATE_R | HPDF_OCLASS_DICT);
+	ext_gstate->header.obj_class = HPDF_OSUBCLASS_EXT_GSTATE_R | HPDF_OCLASS_DICT;
 
 	return ret;
 }
@@ -275,7 +300,10 @@ HPDF_STATUS HPDF_Page_SetExtGState(HPDF_Page page, HPDF_ExtGState ext_gstate)
 /*--- Special graphic state operator --------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_GSAVE)
-/* q */
+/*
+ q
+ Save the current graphics state on the graphics state stack
+ */
 HPDF_STATUS HPDF_Page_GSave(HPDF_Page page)
 {
 	HPDF_GState new_gstate;
@@ -302,7 +330,11 @@ HPDF_STATUS HPDF_Page_GSave(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_GRESTORE)
-/* Q */
+/*
+ Q
+ Restore the graphics state by removing the most recently saved
+ state from the stack and making it the current state
+ */
 HPDF_STATUS HPDF_Page_GRestore(HPDF_Page page)
 {
 	HPDF_GState new_gstate;
@@ -330,7 +362,11 @@ HPDF_STATUS HPDF_Page_GRestore(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CONCAT)
-/* cm */
+/*
+ a b c d e f cm
+ Modify the current transformation matrix (CTM) by concatenating
+ the specified matrix
+ */
 HPDF_STATUS HPDF_Page_Concat(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
@@ -377,7 +413,14 @@ HPDF_STATUS HPDF_Page_Concat(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL
 /*--- Path construction operator ------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_MOVETO)
-/* m */
+/*
+ x y m
+ Begin a new subpath by moving the current point to
+ coordinates (x, y), omitting any connecting line segment. If
+ the previous path construction operator in the current path
+ was also m, the new m overrides it; no vestige of the
+ previous m operation remains in the path.
+ */
 HPDF_STATUS HPDF_Page_MoveTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
@@ -410,7 +453,11 @@ HPDF_STATUS HPDF_Page_MoveTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_LINETO)
-/* l */
+/*
+ x y l
+ Append a straight line segment from the current point to the
+ point (x, y). The new current point shall be (x, y).
+ */
 HPDF_STATUS HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -441,7 +488,13 @@ HPDF_STATUS HPDF_Page_LineTo(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CURVETO)
-/* c */
+/*
+ x1 y1 x2 y2 x3 y3 c
+ Append a cubic Bezier curve to the current path. The curve
+ shall extend from the current point to the point (x3, y3), using
+ (x1, y1 ) and (x2, y2 ) as the Bezier control points.
+ The new current point shall be (x3, y3).
+ */
 HPDF_STATUS HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -480,7 +533,13 @@ HPDF_STATUS HPDF_Page_CurveTo(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_R
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CURVETO2)
-/* v */
+/*
+ x2 y2 x3 y3 v
+ Append a cubic Bezier curve to the current path. The curve
+ shall extend from the current point to the point (x3, y3), using
+ the current point and (x2, y2) as the Bezier control points.
+ The new current point shall be (x3, y3).
+ */
 HPDF_STATUS HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_REAL y2, HPDF_REAL x3, HPDF_REAL y3)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -515,7 +574,13 @@ HPDF_STATUS HPDF_Page_CurveTo2(HPDF_Page page, HPDF_REAL x2, HPDF_REAL y2, HPDF_
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CURVETO3)
-/* y */
+/*
+ x1 y1 x3 y3 y
+ Append a cubic Bezier curve to the current path. The curve
+ shall extend from the current point to the point (x3, y3), using
+ (x1, y1) and (x3, y3) as the Bezier control points.
+ The new current point shall be (x3, y3 ).
+ */
 HPDF_STATUS HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_REAL x3, HPDF_REAL y3)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -550,7 +615,13 @@ HPDF_STATUS HPDF_Page_CurveTo3(HPDF_Page page, HPDF_REAL x1, HPDF_REAL y1, HPDF_
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CLOSEPATH)
-/* h */
+/*
+ h
+ Close the current subpath by appending a straight line
+ segment from the current point to the starting point of the
+ subpath. If the current subpath is already closed, h shall do
+ nothing.
+ */
 HPDF_STATUS HPDF_Page_ClosePath(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -572,7 +643,12 @@ HPDF_STATUS HPDF_Page_ClosePath(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_RECTANGLE)
-/* re */
+/*
+ x y width height re
+ Append a rectangle to the current path as a complete
+ subpath, with lower-left corner (x, y) and dimensions width
+ and height in user space.
+ */
 HPDF_STATUS HPDF_Page_Rectangle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT);
@@ -611,7 +687,10 @@ HPDF_STATUS HPDF_Page_Rectangle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_R
 /*--- Path painting operator ---------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_STROKE)
-/* S */
+/*
+ S
+ Stroke the path.
+ */
 HPDF_STATUS HPDF_Page_Stroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -634,7 +713,11 @@ HPDF_STATUS HPDF_Page_Stroke(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CLOSEPATHSTROKE)
-/* s */
+/*
+ s
+ Close and stroke the path. This operator shall have the same effect as the
+ sequence h S.
+ */
 HPDF_STATUS HPDF_Page_ClosePathStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -657,7 +740,11 @@ HPDF_STATUS HPDF_Page_ClosePathStroke(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_FILL)
-/* f */
+/*
+ f
+ Fill the path, using the nonzero winding number rule to determine the region
+ to fill. Any subpaths that are open shall be implicitly closed before being filled.
+ */
 HPDF_STATUS HPDF_Page_Fill(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -680,7 +767,10 @@ HPDF_STATUS HPDF_Page_Fill(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_EOFILL)
-/* f* */
+/*
+ f*
+ Fill the path, using the even-odd rule to determine the region to fill.
+ */
 HPDF_STATUS HPDF_Page_Eofill(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -703,7 +793,13 @@ HPDF_STATUS HPDF_Page_Eofill(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_FILLSTROKE)
-/* B */
+/*
+ B
+ Fill and then stroke the path, using the nonzero winding number rule to
+ determine the region to fill. This operator shall produce the same result as
+ constructing two identical path objects, painting the first with f and the
+ second with S.
+ */
 HPDF_STATUS HPDF_Page_FillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -726,7 +822,12 @@ HPDF_STATUS HPDF_Page_FillStroke(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_EOFILLSTROKE)
-/* B* */
+/*
+ B*
+ Fill and then stroke the path, using the even-odd rule to determine the region
+ to fill. This operator shall produce the same result as B, except that the path
+ is filled as if with f* instead of f.
+ */
 HPDF_STATUS HPDF_Page_EofillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -748,7 +849,12 @@ HPDF_STATUS HPDF_Page_EofillStroke(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CLOSEPATHFILLSTROKE)
-/* b */
+/*
+ b
+ Fill and then stroke the path, using the even-odd rule to determine the region
+ to fill. This operator shall produce the same result as B, except that the path
+ is filled as if with f* instead of f.
+ */
 HPDF_STATUS HPDF_Page_ClosePathFillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -771,7 +877,11 @@ HPDF_STATUS HPDF_Page_ClosePathFillStroke(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CLOSEPATHEOFILLSTROKE)
-/* b* */
+/*
+ b*
+ Close, fill, and then stroke the path, using the even-odd rule to determine the
+ region to fill. This operator shall have the same effect as the sequence h B*.
+ */
 HPDF_STATUS HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -794,7 +904,12 @@ HPDF_STATUS HPDF_Page_ClosePathEofillStroke(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_ENDPATH)
-/* n */
+/*
+ n
+ End the path object without filling or stroking it. This operator shall be a path-
+ painting no-op, used primarily for the side effect of changing the current
+ clipping path.
+ */
 HPDF_STATUS HPDF_Page_EndPath(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_CLIPPING_PATH);
@@ -819,7 +934,12 @@ HPDF_STATUS HPDF_Page_EndPath(HPDF_Page page)
 /*--- Clipping paths operator --------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_CLIP)
-/* W */
+/*
+ W
+ Modify the current clipping path by intersecting it with the current path, using
+ the nonzero winding number rule to determine which regions lie inside the
+ clipping path.
+ */
 HPDF_STATUS HPDF_Page_Clip(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -841,7 +961,11 @@ HPDF_STATUS HPDF_Page_Clip(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_EOCLIP)
-/* W* */
+/*
+ W*
+ Modify the current clipping path by intersecting it with the current path, using
+ the even-odd rule to determine which regions lie inside the clipping path.
+ */
 HPDF_STATUS HPDF_Page_Eoclip(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PATH_OBJECT);
@@ -865,7 +989,12 @@ HPDF_STATUS HPDF_Page_Eoclip(HPDF_Page page)
 /*--- Text object operator -----------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_BEGINTEXT)
-/* BT */
+/*
+ BT
+ Begin a text object, initializing the text matrix, Tm, and the text line matrix,
+ Tlm, to the identity matrix. Text objects shall not be nested; a second BT shall
+ not appear before an ET.
+ */
 HPDF_STATUS HPDF_Page_BeginText(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
@@ -894,7 +1023,10 @@ HPDF_STATUS HPDF_Page_BeginText(HPDF_Page page)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_ENDTEXT)
-/* ET */
+/*
+ ET
+ End a text object, discarding the text matrix.
+ */
 HPDF_STATUS HPDF_Page_EndText(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -918,7 +1050,10 @@ HPDF_STATUS HPDF_Page_EndText(HPDF_Page page)
 /*--- Text state ---------------------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETCHARSPACE)
-/* Tc */
+/*
+ Tc
+ Set character spacing
+ */
 HPDF_STATUS HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -946,7 +1081,10 @@ HPDF_STATUS HPDF_Page_SetCharSpace(HPDF_Page page, HPDF_REAL value)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETWORDSPACE)
-/* Tw */
+/*
+ Tw
+ Set word spacing
+ */
 HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -974,7 +1112,10 @@ HPDF_STATUS HPDF_Page_SetWordSpace(HPDF_Page page, HPDF_REAL value)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETHORIZONTALSCALING)
-/* Tz */
+/*
+ Tz
+ Set horizontal text scaling
+ */
 HPDF_STATUS HPDF_Page_SetHorizontalScaling(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -1002,7 +1143,10 @@ HPDF_STATUS HPDF_Page_SetHorizontalScaling(HPDF_Page page, HPDF_REAL value)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETTEXTLEADING)
-/* TL */
+/*
+ TL
+ Set text leading
+ */
 HPDF_STATUS HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -1027,7 +1171,10 @@ HPDF_STATUS HPDF_Page_SetTextLeading(HPDF_Page page, HPDF_REAL value)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETFONTANDSIZE)
-/* Tf */
+/*
+ Tf
+ Set text font and size
+ */
 HPDF_STATUS HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font, HPDF_REAL size)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -1075,7 +1222,10 @@ HPDF_STATUS HPDF_Page_SetFontAndSize(HPDF_Page page, HPDF_Font font, HPDF_REAL s
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETTEXTRENDERINGMODE)
-/* Tr */
+/*
+ Tr
+ Set text rendering mode
+ */
 HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMode mode)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -1103,7 +1253,10 @@ HPDF_STATUS HPDF_Page_SetTextRenderingMode(HPDF_Page page, HPDF_TextRenderingMod
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETTEXTRISE)
-/* Ts */
+/*
+ Ts
+ Set text rise
+ */
 HPDF_STATUS HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_TEXT_OBJECT);
@@ -1129,7 +1282,12 @@ HPDF_STATUS HPDF_Page_SetTextRise(HPDF_Page page, HPDF_REAL value)
 /*--- Text positioning ---------------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_MOVETEXTPOS)
-/* Td */
+/*
+ tx ty Td
+ Move to the start of the next line, offset from the start of the current line by
+ (tx, ty). tx and ty shall denote numbers expressed in unscaled text space
+ units.
+ */
 HPDF_STATUS HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1162,7 +1320,12 @@ HPDF_STATUS HPDF_Page_MoveTextPos(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_MOVETEXTPOS2)
-/* TD */
+/*
+ tx ty TD
+ Move to the start of the next line, offset from the start of the current line by
+ (tx, ty). As a side effect, this operator shall set the leading parameter in
+ the text state.
+ */
 HPDF_STATUS HPDF_Page_MoveTextPos2(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1196,7 +1359,10 @@ HPDF_STATUS HPDF_Page_MoveTextPos2(HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETTEXTMATRIX)
-/* Tm */
+/*
+ a b c d e f Tm
+ Set the text matrix, Tm, and the text line matrix, Tlm.
+ */
 HPDF_STATUS HPDF_Page_SetTextMatrix(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HPDF_REAL c, HPDF_REAL d, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1244,7 +1410,10 @@ HPDF_STATUS HPDF_Page_SetTextMatrix(HPDF_Page page, HPDF_REAL a, HPDF_REAL b, HP
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_MOVETONEXTLINE)
-/* T* */
+/*
+ T*
+ Move to the start of the next line.
+ */
 HPDF_STATUS HPDF_Page_MoveToNextLine(HPDF_Page page)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1316,7 +1485,10 @@ HPDF_STATUS HPDF_Page_InternalWriteText(HPDF_PageAttr attr, HPDF_MMgr mmgr, cons
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SHOWTEXT)
-/* Tj */
+/*
+ string Tj
+ Show a text string.
+ */
 HPDF_STATUS HPDF_Page_ShowText(HPDF_Page page, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1359,8 +1531,11 @@ HPDF_STATUS HPDF_Page_ShowText(HPDF_Page page, const char *text)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SHOWTEXTNEXTLINE)
-/* TJ */
-/* ' */
+/*
+ string TJ
+ string '
+ Move to the next line and show a text string.
+ */
 HPDF_STATUS HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1382,7 +1557,7 @@ HPDF_STATUS HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
 	if (HPDF_Page_InternalWriteText(attr, page->mmgr, text) != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
-	if (HPDF_Stream_WriteStr(attr->stream, " \'\012") != HPDF_OK)
+	if (HPDF_Stream_WriteStr(attr->stream, " '\012") != HPDF_OK)
 		return HPDF_CheckError(page->error);
 
 	tw = HPDF_Page_TextWidth(page, text);
@@ -1410,7 +1585,13 @@ HPDF_STATUS HPDF_Page_ShowTextNextLine(HPDF_Page page, const char *text)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SHOWTEXTNEXTLINEEX)
-/* " */
+/*
+ aw ac string "
+ Move to the next line and show a text string, using aw as the word spacing
+ and ac as the character spacing (setting the corresponding parameters in
+ the text state). aw and ac shall be numbers expressed in unscaled text
+ space units.
+ */
 HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, HPDF_REAL char_space, const char *text)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
@@ -1481,15 +1662,46 @@ HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, H
 
 /*--- Color showing ------------------------------------------------------*/
 
-/* cs --not implemented yet */
-/* CS --not implemented yet */
-/* sc --not implemented yet */
-/* scn --not implemented yet */
-/* SC --not implemented yet */
-/* SCN --not implemented yet */
+/*
+ name CS
+ Set the current color space to use for stroking operations.
+ --not implemented yet
+ */
+/*
+ name cs
+ --not implemented yet
+ Same as CS but used for nonstroking operations.
+ */
+/*
+ SC
+ Set the color to use for stroking operations in a device, CIE-
+ based (other than ICCBased), or Indexed color space. The number of
+ operands required and their interpretation depends on the current
+ stroking color space.
+ --not implemented yet
+ */
+/*
+ sc
+ Same as SC but used for nonstroking operations.
+  --not implemented yet
+ */
+/*
+ SCN
+ Same as SC but also supports Pattern, Separation, DeviceN
+ and ICCBased color spaces.
+ --not implemented yet
+ */
+/*
+ scn
+ Same as SCN but used for nonstroking operations.
+ --not implemented yet
+ */
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETGRAYFILL)
-/* g */
+/*
+ gray g
+ Same as G but used for nonstroking operations.
+ */
 HPDF_STATUS HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
@@ -1518,7 +1730,12 @@ HPDF_STATUS HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETGRAYSTROKE)
-/* G */
+/*
+ gray G
+ Set the stroking color space to DeviceGray (or the DefaultGray color
+ space) and set the gray level to use for stroking operations.
+ gray shall be a number between 0.0 (black) and 1.0 (white).
+ */
 HPDF_STATUS HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
@@ -1547,7 +1764,10 @@ HPDF_STATUS HPDF_Page_SetGrayStroke(HPDF_Page page, HPDF_REAL gray)
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETRGBFILL)
-/* rg */
+/*
+ r g b rg
+ Same as RG but used for nonstroking operations.
+ */
 HPDF_STATUS HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
@@ -1585,7 +1805,13 @@ HPDF_STATUS HPDF_Page_SetRGBFill(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETRGBSTROKE)
-/* RG */
+/*
+ r g b RG
+ Set the stroking colour space to DeviceRGB (or the DefaultRGB colour
+ space) and set the colour to use for stroking operations.
+ Each operand shall be a number between 0.0 (minimum intensity)
+ and 1.0 (maximum intensity).
+ */
 HPDF_STATUS HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
@@ -1623,7 +1849,10 @@ HPDF_STATUS HPDF_Page_SetRGBStroke(HPDF_Page page, HPDF_REAL r, HPDF_REAL g, HPD
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETCMYKFILL)
-/* k */
+/*
+ c m y k k
+ Same as K but used for nonstroking operations.
+ */
 HPDF_STATUS HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
@@ -1664,7 +1893,14 @@ HPDF_STATUS HPDF_Page_SetCMYKFill(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF
 
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETCMYKSTROKE)
-/* K */
+/*
+ c m y k K
+ Set the stroking colour space to DeviceCMYK (or the DefaultCMYK
+ colour space) and set the colour to
+ use for stroking operations. Each operand shall be a number between 0.0
+ (zero concentration) and 1.0 (maximum concentration). The behaviour of
+ this operator is affected by the overprint mode.
+ */
 HPDF_STATUS HPDF_Page_SetCMYKStroke(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HPDF_REAL y, HPDF_REAL k)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_PAGE_DESCRIPTION);
@@ -1705,18 +1941,55 @@ HPDF_STATUS HPDF_Page_SetCMYKStroke(HPDF_Page page, HPDF_REAL c, HPDF_REAL m, HP
 
 /*--- Shading patterns ---------------------------------------------------*/
 
-/* sh --not implemented yet */
+/*
+ name sh
+ Paint the shape and colour shading described by a shading
+ dictionary, subject to the current clipping path. The current colour in the
+ graphics state is neither used nor altered. The effect is different from that of
+ painting a path using a shading pattern as the current colour.
+ name is the name of a shading dictionary resource in the Shading
+ subdictionary of the current resource dictionary.
+ All coordinates in the shading dictionary are interpreted
+ relative to the current user space. (By contrast, when a shading dictionary is
+ used in a type 2 pattern, the coordinates are expressed in pattern space.) All
+ colours are interpreted in the colour space identified by the shading
+ dictionary?s ColorSpace entry (see Table 78). The Background entry, if
+ present, is ignored.
+ This operator should be applied only to bounded or geometrically defined
+ shadings. If applied to an unbounded shading, it paints the shading?s
+ gradient fill across the entire clipping region, which may be time-consuming.
+ --not implemented yet
+ */
 
 /*--- In-line images -----------------------------------------------------*/
 
-/* BI --not implemented yet */
-/* ID --not implemented yet */
-/* EI --not implemented yet */
+/*
+ BI
+ Begin an inline image object.
+ --not implemented yet
+ */
+/*
+ ID
+ Begin the image data for an inline image object.
+ --not implemented yet
+ */
+/*
+ EI
+ --not implemented yet
+ End an inline image object.
+ */
 
 /*--- XObjects -----------------------------------------------------------*/
 
 #if defined(PAGEOP_ALL) || defined(PAGE_EXECUTEXOBJECT)
-/* Do */
+/*
+ name Do
+ Paint the specified XObject. The operand name shall appear as a key in
+ the XObject subdictionary of the current resource dictionary.
+ The associated value shall be a stream whose
+ Type entry, if present, is XObject. The effect of Do depends on the value
+ of the XObject's Subtype entry, which may be Image, Form, or PS.
+ */
 HPDF_STATUS HPDF_Page_ExecuteXObject(HPDF_Page page, HPDF_XObject obj)
 {
 	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION);
@@ -1750,17 +2023,65 @@ HPDF_STATUS HPDF_Page_ExecuteXObject(HPDF_Page page, HPDF_XObject obj)
 
 /*--- Marked content -----------------------------------------------------*/
 
-/* BMC --not implemented yet */
-/* BDC --not implemented yet */
-/* EMC --not implemented yet */
-/* MP --not implemented yet */
-/* DP --not implemented yet */
+/*
+ tag BMC
+ Begin a marked-content sequence terminated by a balancing EMC
+ operator. tag shall be a name object indicating the role or significance of
+ the sequence.
+ --not implemented yet
+ */
+
+/*
+ tag BDC
+ Begin a marked-content sequence with an associated property list,
+ terminated by a balancing EMC operator. tag shall be a name object
+ indicating the role or significance of the sequence. properties shall be
+ either an inline dictionary containing the property list or a name object
+ associated with it in the Properties subdictionary of the current resource
+ dictionary.
+ --not implemented yet
+ */
+
+/*
+ EMC
+ End a marked-content sequence begun by a BMC or BDC operator.
+ --not implemented yet
+ */
+
+/*
+ tag MP
+ Designate a marked-content point. tag shall be a name object indicating
+ the role or significance of the point.
+ --not implemented yet
+ */
+
+/*
+ tag properties DP
+ Designate a marked-content point with an associated property list. tag
+ shall be a name object indicating the role or significance of the point.
+ properties shall be either an inline dictionary containing the property list or
+ a name object associated with it in the Properties subdictionary of the
+ current resource dictionary.
+ --not implemented yet
+ */
 
 /*--- Compatibility ------------------------------------------------------*/
 
-/* BX --not implemented yet */
-/* EX --not implemented yet */
+/*
+ BX
+ Begin a compatibility section. Unrecognized operators (along with
+ their operands) shall be ignored without error until the balancing EX operator
+ is encountered.
+ --not implemented yet
+ */
 
+/*
+ EX
+ End a compatibility section begun by a balancing BX operator.
+ Ignore any unrecognized operands and operators from previous matching
+ BX onward.
+ --not implemented yet
+ */
 
 /*--- combined function --------------------------------------------------*/
 

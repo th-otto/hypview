@@ -75,9 +75,8 @@
 #define  HPDF_COMP_IMAGE           0x02
 #define  HPDF_COMP_METADATA        0x04
 #define  HPDF_COMP_ALL             0x0F
-/* #define  HPDF_COMP_BEST_COMPRESS   0x10
- * #define  HPDF_COMP_BEST_SPEED      0x20
- */
+#define  HPDF_COMP_BEST_COMPRESS   0x10
+#define  HPDF_COMP_BEST_SPEED      0x20
 #define  HPDF_COMP_MASK            0xFF
 
 
