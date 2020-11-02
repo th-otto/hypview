@@ -212,13 +212,13 @@ char *HPDF_FToA(char *s, HPDF_REAL val, char *eptr)
 	}
 
 	/* separate an integer part and a decimal part. */
-	int_val = (HPDF_INT32) (val + 0.000005);
-	fpart_val = (HPDF_INT32) ((HPDF_REAL) (val - int_val + 0.000005) * 100000L);
+	int_val = val + 0.000005f;
+	fpart_val = (val - int_val + 0.000005f) * 100000.0f;
 
 	/* process decimal part */
 	for (i = 0; i < 5; i++)
 	{
-		*t = (char) ((char) (fpart_val % 10) + '0');
+		*t = (fpart_val % 10) + '0';
 		fpart_val /= 10;
 		t--;
 	}
@@ -231,7 +231,7 @@ char *HPDF_FToA(char *s, HPDF_REAL val, char *eptr)
 
 	while (int_val > 0)
 	{
-		*t = (char) ((char) (int_val % 10) + '0');
+		*t = (int_val % 10) + '0';
 		int_val /= 10;
 		t--;
 	}
