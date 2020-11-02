@@ -135,7 +135,7 @@ const char *HPDF_ErrorStr(HPDF_STATUS error_no)
 		case 0x1012: return _("reserved");
 		case HPDF_ERR_UNKNOWN_CLASS: return _("Unknown class");
 		case HPDF_EXCEED_GSTATE_LIMIT: return _("Stack depth > HPDF_LIMIT_MAX_GSTATE");
-		case HPDF_FAILD_TO_ALLOC_MEM: return _("Memory allocation failed");
+		case HPDF_FAILED_TO_ALLOC_MEM: return _("Memory allocation failed");
 		case HPDF_FILE_IO_ERROR: return _("File processing failed");
 		case HPDF_FILE_OPEN_ERROR: return _("Cannot open a file");
 		case 0x1018: return _("reserved");

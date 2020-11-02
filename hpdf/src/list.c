@@ -100,7 +100,7 @@ static HPDF_STATUS Resize(HPDF_List list, HPDF_UINT count)
  *  item :  Pointer to a object to be added.
  *
  *  return:  If HPDF_List_Add success, it returns HPDF_OK.
- *           HPDF_FAILD_TO_ALLOC_MEM is returned when the expansion of the
+ *           HPDF_FAILED_TO_ALLOC_MEM is returned when the expansion of the
  *           object list is failed.
  *
  */
@@ -131,7 +131,7 @@ HPDF_STATUS HPDF_List_Add(HPDF_List list, void *item)
  *  insert the item before the target.
  *
  *  return:  If HPDF_List_Add success, it returns HPDF_OK.
- *           HPDF_FAILD_TO_ALLOC_MEM is returned when the expansion of the
+ *           HPDF_FAILED_TO_ALLOC_MEM is returned when the expansion of the
  *           object list is failed.
  *           HPDF_ITEM_NOT_FOUND is returned where the target object is not
  *           found.

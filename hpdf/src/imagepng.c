@@ -147,7 +147,7 @@ static HPDF_STATUS ReadTransparentPaletteData(
 	row_ptr = (png_bytep *) HPDF_GetMem(image->mmgr, height * sizeof(png_bytep));
 	if (!row_ptr)
 	{
-		return HPDF_FAILD_TO_ALLOC_MEM;
+		return HPDF_FAILED_TO_ALLOC_MEM;
 	} else
 	{
 		png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
@@ -162,7 +162,7 @@ static HPDF_STATUS ReadTransparentPaletteData(
 					HPDF_FreeMem(image->mmgr, row_ptr[i]);
 				}
 				HPDF_FreeMem(image->mmgr, row_ptr);
-				return HPDF_FAILD_TO_ALLOC_MEM;
+				return HPDF_FAILED_TO_ALLOC_MEM;
 			}
 		}
 	}
@@ -219,7 +219,7 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 	row_ptr = (png_bytep *) HPDF_GetMem(image->mmgr, height * sizeof(png_bytep));
 	if (!row_ptr)
 	{
-		return HPDF_FAILD_TO_ALLOC_MEM;
+		return HPDF_FAILED_TO_ALLOC_MEM;
 	} else
 	{
 		png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
@@ -234,7 +234,7 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 					HPDF_FreeMem(image->mmgr, row_ptr[i]);
 				}
 				HPDF_FreeMem(image->mmgr, row_ptr);
-				return HPDF_FAILD_TO_ALLOC_MEM;
+				return HPDF_FAILED_TO_ALLOC_MEM;
 			}
 		}
 	}
@@ -370,8 +370,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 
 	if (png_ptr == NULL)
 	{
-		HPDF_SetError(image->error, HPDF_FAILD_TO_ALLOC_MEM, 0);
-		return HPDF_FAILD_TO_ALLOC_MEM;
+		return HPDF_SetError(image->error, HPDF_FAILED_TO_ALLOC_MEM, 0);
 	}
 
 	/* create info-struct */
@@ -379,7 +378,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 
 	if (info_ptr == NULL)
 	{
-		HPDF_SetError(image->error, HPDF_FAILD_TO_ALLOC_MEM, 0);
+		HPDF_SetError(image->error, HPDF_FAILED_TO_ALLOC_MEM, 0);
 		goto Exit;
 	}
 
@@ -424,7 +423,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		smask = HPDF_DictStream_New(image->mmgr, xref);
 		if (!smask)
 		{
-			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			ret = HPDF_FAILED_TO_ALLOC_MEM;
 			goto Exit;
 		}
 
@@ -447,7 +446,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		if (!smask_data)
 		{
 			HPDF_Dict_Free(smask);
-			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			ret = HPDF_FAILED_TO_ALLOC_MEM;
 			goto Exit;
 		}
 
@@ -491,7 +490,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		smask = HPDF_DictStream_New(image->mmgr, xref);
 		if (!smask)
 		{
-			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			ret = HPDF_FAILED_TO_ALLOC_MEM;
 			goto Exit;
 		}
 
@@ -514,7 +513,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		if (!smask_data)
 		{
 			HPDF_Dict_Free(smask);
-			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			ret = HPDF_FAILED_TO_ALLOC_MEM;
 			goto Exit;
 		}
 

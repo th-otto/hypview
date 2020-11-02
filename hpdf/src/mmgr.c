@@ -76,7 +76,7 @@ HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func al
 
 			if (node == NULL)
 			{
-				HPDF_SetError(error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+				HPDF_SetError(error, HPDF_FAILED_TO_ALLOC_MEM, HPDF_NOERROR);
 
 				mmgr->free_fn(mmgr);
 				mmgr = NULL;
@@ -96,7 +96,7 @@ HPDF_MMgr HPDF_MMgr_New(HPDF_Error error, HPDF_UINT buf_size, HPDF_Alloc_Func al
 		}
 	} else
 	{
-		HPDF_SetError(error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+		HPDF_SetError(error, HPDF_FAILED_TO_ALLOC_MEM, HPDF_NOERROR);
 	}
 
 	return mmgr;
@@ -152,7 +152,7 @@ void *HPDF_GetMem(HPDF_MMgr mmgr, size_t size)
 
 			if (!node)
 			{
-				HPDF_SetError(mmgr->error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+				HPDF_SetError(mmgr->error, HPDF_FAILED_TO_ALLOC_MEM, HPDF_NOERROR);
 				return NULL;
 			}
 
@@ -168,7 +168,7 @@ void *HPDF_GetMem(HPDF_MMgr mmgr, size_t size)
 	{
 		ptr = mmgr->alloc_fn(size);
 		if (ptr == NULL)
-			HPDF_SetError(mmgr->error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+			HPDF_SetError(mmgr->error, HPDF_FAILED_TO_ALLOC_MEM, HPDF_NOERROR);
 	}
 
 	return ptr;
@@ -193,7 +193,7 @@ void *HPDF_DirectAlloc(HPDF_MMgr mmgr, HPDF_UINT size)
 
 	ptr = mmgr->alloc_fn(size);
 	if (ptr == NULL)
-		HPDF_SetError(mmgr->error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
+		HPDF_SetError(mmgr->error, HPDF_FAILED_TO_ALLOC_MEM, HPDF_NOERROR);
 
 	return ptr;
 }
