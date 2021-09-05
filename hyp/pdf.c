@@ -246,7 +246,7 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		break;
@@ -293,12 +293,12 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 					retval &= pdf_out_curcolor(pdf, attr);
 					rect.right = text_pos->x + LINK_BORDER_WIDTH;
 					dst = NULL; /* XXX should be named dest */
-					annot = HPDF_Page_CreateGoToRAnnot(pdf->page, rect, pdfbase, p ? p + 1 : "Main", newwindow);
+					annot = HPDF_Page_CreateGoToRAnnot(pdf->page, &rect, pdfbase, p ? p + 1 : "Main", newwindow);
 					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 					g_free(pdfbase);
@@ -343,13 +343,13 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 					retval &= pdf_out_curcolor(pdf, attr);
 					rect.right = text_pos->x + LINK_BORDER_WIDTH;
 					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
 					HPDF_Destination_SetFitBH(dst, (label->lineno - 1) * pdf->line_height);
-					annot = HPDF_Page_CreateGoToAnnot(pdf->page, rect, dst);
+					annot = HPDF_Page_CreateGoToAnnot(pdf->page, &rect, dst);
 					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 				} else if (xref->desttype == HYP_NODE_POPUP && !newwindow)
@@ -361,12 +361,12 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 					retval &= pdf_out_curcolor(pdf, attr);
 					rect.right = text_pos->x + LINK_BORDER_WIDTH;
 					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
-					annot = HPDF_Page_CreateLinkAnnot(pdf->page, rect, dst);
+					annot = HPDF_Page_CreateLinkAnnot(pdf->page, &rect, dst);
 					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 				} else
@@ -378,12 +378,12 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 					retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 					retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 					retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-					*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+					HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 					retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 					retval &= pdf_out_curcolor(pdf, attr);
 					rect.right = text_pos->x + LINK_BORDER_WIDTH;
 					dst = HPDF_Page_CreateDestination(pdf->pages[xref->dest_page]);
-					annot = HPDF_Page_CreateLinkAnnot(pdf->page, rect, dst);
+					annot = HPDF_Page_CreateLinkAnnot(pdf->page, &rect, dst);
 					HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 					HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 				}
@@ -395,11 +395,11 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
-		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, rect, xref->destname, NULL, NULL);
+		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, &rect, xref->destname, NULL, NULL);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
@@ -408,11 +408,11 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
-		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, rect, xref->destname, NULL, NULL);
+		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, &rect, xref->destname, NULL, NULL);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
@@ -421,11 +421,11 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
-		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, rect, xref->destname, NULL, NULL);
+		annot = HPDF_Page_CreateLaunchAnnot(pdf->page, &rect, xref->destname, NULL, NULL);
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
@@ -435,7 +435,7 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
@@ -445,11 +445,11 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
-		annot = HPDF_Page_CreateNamedAnnot(pdf->page, rect, "Quit");
+		annot = HPDF_Page_CreateNamedAnnot(pdf->page, &rect, "Quit");
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
@@ -458,11 +458,11 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 		retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 		retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
 		retval &= HPDF_Page_ShowText(pdf->page, xref->text) == HPDF_NOERROR;
-		*text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
 		retval &= pdf_out_curcolor(pdf, attr);
 		rect.right = text_pos->x + LINK_BORDER_WIDTH;
-		annot = HPDF_Page_CreateNamedAnnot(pdf->page, rect, "Close");
+		annot = HPDF_Page_CreateNamedAnnot(pdf->page, &rect, "Close");
 		HPDF_LinkAnnot_SetBorderStyle(annot, 0, 0, 0);
 		HPDF_LinkAnnot_SetHighlightMode(annot, HPDF_ANNOT_INVERT_BOX);
 		break;
@@ -502,7 +502,7 @@ PDF *pdf_new(hcp_opts *opts)
 	if (pdf == NULL)
 		return pdf;
 	pdf->opts = opts;
-	pdf->hpdf = HPDF_New(pdf_error_handler, pdf);
+	pdf->hpdf = HPDF_New(pdf_error_handler, 0, 0, 0, pdf);
 	pdf->pages = NULL;
 	switch (opts->output_charset)
 	{
@@ -953,7 +953,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							UNUSED(str_equal);
 							
 							if (in_text_out)
-								text_pos = HPDF_Page_GetCurrentTextPos(pdf->page);
+								HPDF_Page_GetCurrentTextPos(pdf->page, &text_pos);
 							ENDTEXT();
 							retval &= pdf_generate_link(pdf, hyp, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, &attr, &text_pos);
 	
@@ -1179,7 +1179,8 @@ static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
 {
 	char *str;
 	struct stat s;
-	
+	time_t now;
+
 #define STR(t, x) \
 	if (x != NULL) \
 	{ \
@@ -1190,11 +1191,12 @@ static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
 	STR(HPDF_INFO_AUTHOR, hyp->author);
 	STR(HPDF_INFO_SUBJECT, hyp->subject);
 
-	HPDF_SetInfoAttr(pdf->hpdf, HPDF_INFO_CREATOR, hyp->comp_vers >= 6 || hyp->language != NULL ? gl_program_name : "ST-GUIDE");
+	HPDF_SetInfoAttr(pdf->hpdf, HPDF_INFO_CREATOR, gl_program_name);
 	str = g_strdup_printf("%s %s for %s, using Haru Free PDF Library %s", gl_program_name, gl_program_version, hyp_osname(hyp_get_current_os()), HPDF_GetVersion());
 	STR(HPDF_INFO_PRODUCER, str);
 	g_free(str);
-	str = pdf_datestr(s.st_mtime);
+	time(&now);
+	str = pdf_datestr(now);
 	STR(HPDF_INFO_CREATION_DATE, str);
 	g_free(str);
 	if (hyp_utf8_stat(hyp->file, &s) == 0)
