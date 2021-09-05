@@ -592,7 +592,7 @@ static HPDF_STATUS HPDF_Stream_WriteToStreamWithDeflate(HPDF_Stream src, HPDF_St
 
 	deflateEnd(&strm);
 	return HPDF_OK;
-#else /* LIBHPDF_HAVE_NOZLIB */
+#else
 	HPDF_UNUSED(e);
 	HPDF_UNUSED(dst);
 	HPDF_UNUSED(src);
@@ -626,7 +626,7 @@ HPDF_STATUS HPDF_Stream_WriteToStream(HPDF_Stream src, HPDF_Stream dst, HPDF_UIN
 #ifndef LIBHPDF_HAVE_NOZLIB
 	if (filter & HPDF_STREAM_FILTER_FLATE_DECODE)
 		return HPDF_Stream_WriteToStreamWithDeflate(src, dst, e);
-#endif /* LIBHPDF_HAVE_NOZLIB */
+#endif
 
 	ret = HPDF_Stream_Seek(src, 0, HPDF_SEEK_SET);
 	if (ret != HPDF_OK)

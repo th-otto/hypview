@@ -1871,7 +1871,7 @@ HPDF_STATUS HPDF_TTFontDef_SaveFontData(HPDF_FontDef fontdef, HPDF_Stream stream
 	ret = HPDF_Stream_Seek(tmp_stream, check_sum_ptr, HPDF_SEEK_SET);
 	if (ret == HPDF_OK)
 	{
-		ret = HPDF_MemStream_Rewrite(tmp_stream, (HPDF_BYTE *) & tmp_check_sum, 4);
+		ret = HPDF_MemStream_Rewrite(tmp_stream, (HPDF_BYTE *) &tmp_check_sum, 4);
 	}
 
 	if (ret != HPDF_OK)

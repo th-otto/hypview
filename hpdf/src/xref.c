@@ -125,7 +125,7 @@ HPDF_STATUS HPDF_Xref_Add(HPDF_Xref xref, void *obj)
 
 	header = (HPDF_Obj_Header *) obj;
 
-	if (header->obj_id & HPDF_OTYPE_DIRECT || header->obj_id & HPDF_OTYPE_INDIRECT)
+	if ((header->obj_id & HPDF_OTYPE_DIRECT) || (header->obj_id & HPDF_OTYPE_INDIRECT))
 		return HPDF_SetError(xref->error, HPDF_INVALID_OBJECT, 0);
 
 	if (xref->entries->count >= HPDF_LIMIT_MAX_XREF_ELEMENT)

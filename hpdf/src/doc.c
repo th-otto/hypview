@@ -398,7 +398,7 @@ HPDF_STATUS HPDF_SetCompressionMode(HPDF_Doc pdf, HPDF_UINT mode)
 
 	return HPDF_OK;
 
-#else /* LIBHPDF_HAVE_NOZLIB */
+#else
 
 	return HPDF_INVALID_COMPRESSION_MODE;
 
@@ -1957,7 +1957,7 @@ HPDF_Image HPDF_LoadRawImageFromFile(
 	if (!image)
 		HPDF_CheckError(&pdf->error);
 
-	if (image && pdf->compression_mode & HPDF_COMP_IMAGE)
+	if (image && (pdf->compression_mode & HPDF_COMP_IMAGE))
 		image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
 	return image;
@@ -1990,7 +1990,7 @@ HPDF_Image HPDF_LoadRawImageFromMem(
 	if (!image)
 		HPDF_CheckError(&pdf->error);
 
-	if (image && pdf->compression_mode & HPDF_COMP_IMAGE)
+	if (image && (pdf->compression_mode & HPDF_COMP_IMAGE))
 	{
 		image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 	}

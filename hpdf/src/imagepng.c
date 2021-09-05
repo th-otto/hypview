@@ -115,7 +115,7 @@ static HPDF_STATUS ReadPngData(HPDF_Dict image, png_structp png_ptr, png_infop i
 
 		for (i = 0; i < (HPDF_UINT) height; i++)
 		{
-			png_read_rows(png_ptr, (png_byte **) & buf_ptr, NULL, 1);
+			png_read_rows(png_ptr, (png_byte **) &buf_ptr, NULL, 1);
 			if (image->error->error_no != HPDF_OK)
 				break;
 
@@ -312,7 +312,7 @@ static HPDF_STATUS CreatePallet(HPDF_Dict image, png_structp png_ptr, png_infop 
 	/* png_get_PLTE does not call PngErrorFunc even if it failed.
 	 * so we call HPDF_Set_Error to set error-code.
 	 */
-	if (png_get_PLTE(png_ptr, info_ptr, (png_color **) & src_pl, &num_pl) != PNG_INFO_PLTE)
+	if (png_get_PLTE(png_ptr, info_ptr, (png_color **) &src_pl, &num_pl) != PNG_INFO_PLTE)
 		return HPDF_SetError(image->error, HPDF_LIBPNG_ERROR, HPDF_CANNOT_GET_PALETTE);
 
 
@@ -407,7 +407,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 	}
 
 	/* check palette-based images for transparent areas and load them immediately if found */
-	if (xref && PNG_COLOR_TYPE_PALETTE & color_type)
+	if (xref && (PNG_COLOR_TYPE_PALETTE & color_type))
 	{
 		png_bytep trans;
 		int num_trans;
@@ -482,7 +482,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 
 	/* read images with alpha channel right away
 	   we have to do this because image transparent mask must be added to the Xref */
-	if (xref && PNG_COLOR_MASK_ALPHA & color_type)
+	if (xref && (PNG_COLOR_MASK_ALPHA & color_type))
 	{
 		HPDF_Dict smask;
 		png_bytep smask_data;
