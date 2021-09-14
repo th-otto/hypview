@@ -6,6 +6,11 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
+struct pdf_page {
+	HPDF_Page page;
+	hyp_nodenr node;
+};
+
 typedef struct _pdf {
 	HPDF_Doc hpdf;
 	hcp_opts *opts;
@@ -13,8 +18,11 @@ typedef struct _pdf {
 	HPDF_Font font;
 	HPDF_REAL font_size;
 	HPDF_REAL line_height;
+	size_t num_pages;
+	size_t curr_page_num;
+	struct pdf_page *pages;
+	HPDF_Page *links;
 	HPDF_Page page;
-	HPDF_Page *pages;
 	HPDF_REAL page_height;
 } PDF;
 
