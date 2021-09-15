@@ -15,7 +15,10 @@ typedef struct _pdf {
 	HPDF_Doc hpdf;
 	hcp_opts *opts;
 	jmp_buf error_env;
-	HPDF_Font font;
+	HPDF_Font regular_font;
+	HPDF_Font bold_font;
+	HPDF_Font italic_font;
+	HPDF_Font bold_italic_font;
 	HPDF_REAL font_size;
 	HPDF_REAL line_height;
 	size_t num_pages;

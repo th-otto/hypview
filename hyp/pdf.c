@@ -147,18 +147,39 @@ static gboolean pdf_out_gfx(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, in
 
 static gboolean pdf_out_color(HPDF_Page page, const HPDF_RGBColor *color)
 {
-	return HPDF_Page_SetRGBFill(page, color->r, color->g, color->b) == HPDF_NOERROR;
+	return HPDF_Page_SetRGBFill(page, color->r, color->g, color->b) == HPDF_NOERROR &&
+	       HPDF_Page_SetRGBStroke(page, color->r, color->g, color->b) == HPDF_NOERROR;
 }
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, const unsigned char *str, size_t len, gboolean *converror)
+static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, HPDF_Point *text_pos, const unsigned char *str, size_t len, gboolean *converror, gboolean underlined)
 {
 	char *dst;
-	gboolean ret;
-	
+	gboolean ret = TRUE;
+
 	dst = hyp_conv_charset(hyp->comp_charset, pdf->opts->output_charset, str, len, converror);
-	ret = HPDF_Page_ShowText(pdf->page, dst) == HPDF_NOERROR;
+	ret &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
+	ret &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
+	if (underlined)
+	{
+		HPDF_Point oldpos;
+		HPDF_REAL y;
+		
+		oldpos = *text_pos;
+		ret &= HPDF_Page_ShowText(pdf->page, dst) == HPDF_NOERROR;
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
+		ret &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+		y = oldpos.y + HPDF_Font_GetDescent(pdf->regular_font) * pdf->font_size / 1000;
+		HPDF_Page_MoveTo(pdf->page, oldpos.x, y);
+		HPDF_Page_LineTo(pdf->page, text_pos->x, y);
+		HPDF_Page_Stroke(pdf->page);
+	} else
+	{
+		ret = HPDF_Page_ShowText(pdf->page, dst) == HPDF_NOERROR;
+		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
+		ret &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
+	}
 	g_free(dst);
 	return ret;
 }
@@ -169,8 +190,35 @@ static gboolean pdf_out_curattr(PDF *pdf, struct textattr *attr)
 {
 	gboolean retval = TRUE;
 
-	(void)pdf;
-	(void)attr;
+	switch (attr->curattr & (HYP_TXT_BOLD | HYP_TXT_ITALIC))
+	{
+		case 0: HPDF_Page_SetFontAndSize(pdf->page, pdf->regular_font, pdf->font_size); break;
+		case HYP_TXT_BOLD: HPDF_Page_SetFontAndSize(pdf->page, pdf->bold_font, pdf->font_size); break;
+		case HYP_TXT_ITALIC: HPDF_Page_SetFontAndSize(pdf->page, pdf->italic_font, pdf->font_size); break;
+		case HYP_TXT_BOLD | HYP_TXT_ITALIC: HPDF_Page_SetFontAndSize(pdf->page, pdf->regular_font, pdf->font_size); break;
+	}
+	if (attr->curattr & HYP_TXT_LIGHT)
+		retval &= pdf_out_color(pdf->page, &viewer_colors.ghosted);
+	else if (attr->curfg == HYP_DEFAULT_FG)
+		retval &= pdf_out_color(pdf->page, &viewer_colors.text);
+	else
+		retval &= pdf_out_color(pdf->page, &user_colors[attr->curfg]);
+
+	if (attr->curattr & HYP_TXT_SHADOWED)
+	{
+		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_FILL_THEN_STROKE);
+		HPDF_Page_SetRGBFill(pdf->page, viewer_colors.background.r, viewer_colors.background.g, viewer_colors.background.b);
+		HPDF_Page_SetLineWidth(pdf->page, 0);
+	} else if (attr->curattr & HYP_TXT_OUTLINED)
+	{
+		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_STROKE);
+		HPDF_Page_SetLineWidth(pdf->page, 0);
+	} else
+	{
+		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_FILL);
+		HPDF_Page_SetLineWidth(pdf->page, 1.0);
+	}
+
 	return retval;
 }
 
@@ -566,7 +614,10 @@ PDF *pdf_new(hcp_opts *opts)
 		break;
 	}
 	HPDF_SetCompressionMode(pdf->hpdf, HPDF_COMP_NONE);
-	pdf->font = HPDF_GetFont(pdf->hpdf, "Courier", encoding);
+	pdf->regular_font = HPDF_GetFont(pdf->hpdf, "Courier", encoding);
+	pdf->bold_font = HPDF_GetFont(pdf->hpdf, "Courier-Bold", encoding);
+	pdf->italic_font = HPDF_GetFont(pdf->hpdf, "Courier-Oblique", encoding);
+	pdf->bold_italic_font = HPDF_GetFont(pdf->hpdf, "Courier-BoldOblique", encoding);
 	pdf->font_size = 12.0;
 	pdf->line_height = 0;
 	/* HPDF_SetViewerPreference(pdf->hpdf, HPDF_DISPLAY_TOC_TITLE); */
@@ -588,25 +639,30 @@ void pdf_delete(PDF *pdf)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_attr(PDF *pdf, struct textattr *attr)
+static gboolean pdf_out_attr(PDF *pdf, struct textattr *attr, gboolean dryrun)
 {
 	gboolean retval = TRUE;
 	
 	if (attr->curattr != attr->newattr)
 	{
 		attr->curattr = attr->newattr;
-		pdf_out_curattr(pdf, attr);
+		if (!dryrun)
+			pdf_out_curattr(pdf, attr);
 	}
 
 	if (attr->curfg != attr->newfg)
 	{
 		attr->curfg = attr->newfg;
-		pdf_out_curcolor(pdf, attr);
+		if (!dryrun)
+			pdf_out_curcolor(pdf, attr);
 	}
 
 	if (attr->curbg != attr->newbg)
 	{
 		attr->curbg = attr->newbg;
+		if (!dryrun)
+		{
+		}
 	}
 
 	return retval;
@@ -627,9 +683,10 @@ static HPDF_Page pdf_newpage(PDF *pdf, hyp_nodenr node)
 	if (pdf->links[node] == NULL)
 		pdf->links[node] = page;
 	pdf_out_color(page, &viewer_colors.text);
-	HPDF_Page_SetFontAndSize(page, pdf->font, pdf->font_size); 
+	HPDF_Page_SetFontAndSize(page, pdf->regular_font, pdf->font_size); 
 	HPDF_Page_SetTextRenderingMode(page, HPDF_FILL);
-	pdf->line_height = (HPDF_Font_GetAscent(pdf->font) - HPDF_Font_GetDescent(pdf->font)) * pdf->font_size / 1000;
+	HPDF_Page_SetLineWidth(page, 1.0);
+	pdf->line_height = (HPDF_Font_GetAscent(pdf->regular_font) - HPDF_Font_GetDescent(pdf->regular_font)) * pdf->font_size / 1000;
 	pdf->page_height = HPDF_Page_GetHeight(page);
 
 	return page;
@@ -663,8 +720,6 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 				pdf->page = pdf->pages[pdf->curr_page_num++].page; \
 				text_pos.y = pdf->page_height - pdf->line_height - text_yoffset; \
 			} \
-			retval &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR; \
-			retval &= HPDF_Page_MoveTextPos(pdf->page, text_pos.x, text_pos.y) == HPDF_NOERROR; \
 		} else \
 		{ \
 			if (lineno != 0 && text_pos.y < bottom_margin) \
@@ -678,8 +733,6 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 #define ENDTEXT() \
 	if (in_text_out) \
 	{ \
-		if (!dryrun) \
-			retval &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR; \
 		in_text_out = FALSE; \
 	}
 #define DUMPTEXT() \
@@ -688,7 +741,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 		BEGINTEXT(); \
 		if (!dryrun) { \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]); \
-			retval &= pdf_out_str(pdf, hyp, textstart, src - textstart, &converror); \
+			retval &= pdf_out_str(pdf, hyp, &text_pos, textstart, src - textstart, &converror, attr.curattr & HYP_TXT_UNDERLINED); \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text); \
 		} \
 		at_bol = FALSE; \
@@ -898,14 +951,18 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 				if (*src == HYP_ESC)
 				{
 					DUMPTEXT();
+					ENDTEXT();
 					src++;
 					switch (*src)
 					{
 					case HYP_ESC_ESC:
 						FLUSHTREE();
-						BEGINTEXT();
 						if (!dryrun)
-							retval &= pdf_out_str(pdf, hyp, (const unsigned char *)"\033", 1, &converror);
+						{
+							if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]);
+							retval &= pdf_out_str(pdf, hyp, &text_pos, (const unsigned char *)"\033", 1, &converror, attr.curattr & HYP_TXT_UNDERLINED);
+							if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text);
+						}
 						at_bol = FALSE;
 						src++;
 						break;
@@ -990,9 +1047,6 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							FLUSHTREE();
 							UNUSED(str_equal);
 							
-							if (in_text_out && !dryrun)
-								HPDF_Page_GetCurrentTextPos(pdf->page, &text_pos);
-							ENDTEXT();
 							if (!dryrun)
 								retval &= pdf_generate_link(pdf, hyp, &xref, syms, type == HYP_ESC_ALINK || type == HYP_ESC_ALINK_LINE, &attr, &text_pos);
 	
@@ -1066,7 +1120,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					case HYP_ESC_CASE_TEXTATTR:
 						FLUSHTREE();
 						attr.newattr = *src - HYP_ESC_TEXTATTR_FIRST;
-						retval &= pdf_out_attr(pdf, &attr);
+						retval &= pdf_out_attr(pdf, &attr, dryrun);
 						src++;
 						break;
 					
@@ -1074,7 +1128,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						FLUSHTREE();
 						src++;
 						attr.newfg = *src;
-						retval &= pdf_out_attr(pdf, &attr);
+						retval &= pdf_out_attr(pdf, &attr, dryrun);
 						src++;
 						break;
 				
@@ -1082,7 +1136,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						FLUSHTREE();
 						src++;
 						attr.newbg = *src;
-						retval &= pdf_out_attr(pdf, &attr);
+						retval &= pdf_out_attr(pdf, &attr, dryrun);
 						src++;
 						break;
 				
@@ -1121,7 +1175,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			attr.newattr = 0;
 			attr.newfg = HYP_DEFAULT_FG;
 			attr.newbg = HYP_DEFAULT_BG;
-			retval &= pdf_out_attr(pdf, &attr);
+			retval &= pdf_out_attr(pdf, &attr, dryrun);
 			at_bol = FALSE;
 			FLUSHLINE();
 			FLUSHTREE();
@@ -1441,6 +1495,11 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	
 	pdf_out_globals(hyp, pdf);
 
+	/*
+	 * we have to go through the whole document twice,
+	 * because we have to know the PDF target page
+	 * for links to work.
+	 */
 	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, TRUE);
 	pdf->num_pages = pdf->curr_page_num;
 	pdf->curr_page_num = 0;
@@ -1475,7 +1534,7 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	
 	if (opts->verbose >= 0 && opts->outfile != stdout)
 	{
-		hyp_utf8_fprintf(stdout, _("generated %lu pages\n"), (unsigned long)pdf->num_pages);
+		hyp_utf8_fprintf(stdout, _("generated %lu page%s\n"), (unsigned long)pdf->num_pages, pdf->num_pages == 1 ? "" : "s");
 	}
 
 	pdf_delete(pdf);
