@@ -94,7 +94,7 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, const 
 		59 < value->minutes ||
 		59 < value->seconds ||
 		(value->ind != '+' && value->ind != '-' && value->ind != 'Z' &&
-		 value->ind != ' ') || 23 < value->off_hour || 59 < value->off_minutes)
+		 value->ind != ' '))
 	{
 		return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
 	}
@@ -137,6 +137,8 @@ HPDF_STATUS HPDF_Info_SetInfoDateAttr(HPDF_Dict info, HPDF_InfoType type, const 
 	ptmp = HPDF_IToA2(ptmp, value->seconds, 3);
 	if (value->ind != ' ')
 	{
+		if (value->off_hour > 23 || value->off_minutes > 59)
+			return HPDF_SetError(info->error, HPDF_INVALID_DATE_TIME, 0);
 		*ptmp++ = value->ind;
 		ptmp = HPDF_IToA2(ptmp, value->off_hour, 3);
 		*ptmp++ = '\'';

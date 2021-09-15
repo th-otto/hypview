@@ -208,16 +208,17 @@ static gboolean pdf_out_curattr(PDF *pdf, struct textattr *attr)
 	{
 		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_FILL_THEN_STROKE);
 		HPDF_Page_SetRGBFill(pdf->page, viewer_colors.background.r, viewer_colors.background.g, viewer_colors.background.b);
-		HPDF_Page_SetLineWidth(pdf->page, 0);
 	} else if (attr->curattr & HYP_TXT_OUTLINED)
 	{
 		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_STROKE);
-		HPDF_Page_SetLineWidth(pdf->page, 0);
 	} else
 	{
 		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_FILL);
-		HPDF_Page_SetLineWidth(pdf->page, 1.0);
 	}
+
+	/*
+	 * underlines are drawn manually
+	 */
 
 	return retval;
 }
@@ -685,7 +686,7 @@ static HPDF_Page pdf_newpage(PDF *pdf, hyp_nodenr node)
 	pdf_out_color(page, &viewer_colors.text);
 	HPDF_Page_SetFontAndSize(page, pdf->regular_font, pdf->font_size); 
 	HPDF_Page_SetTextRenderingMode(page, HPDF_FILL);
-	HPDF_Page_SetLineWidth(page, 1.0);
+	HPDF_Page_SetLineWidth(pdf->page, 0);
 	pdf->line_height = (HPDF_Font_GetAscent(pdf->regular_font) - HPDF_Font_GetDescent(pdf->regular_font)) * pdf->font_size / 1000;
 	pdf->page_height = HPDF_Page_GetHeight(page);
 
