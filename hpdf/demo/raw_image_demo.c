@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL);
+	HPDF_SetCompressionMode(pdf, HPDF_COMP_NONE);
 
 	/* create default-font */
 	font = HPDF_GetFont(pdf, "Helvetica", NULL);

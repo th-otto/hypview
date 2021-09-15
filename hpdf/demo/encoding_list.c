@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 	strcat(fname, ".pdf");
 
 	/* set compression mode */
-	HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL);
+	HPDF_SetCompressionMode(pdf, HPDF_COMP_NONE);
 
 	/* Set page mode to use outlines. */
 	HPDF_SetPageMode(pdf, HPDF_PAGE_MODE_USE_OUTLINE);

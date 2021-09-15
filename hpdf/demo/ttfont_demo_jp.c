@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 	/* declaration for using Japanese encoding. */
 	HPDF_UseJPEncodings(pdf);
 
-	HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL);
+	HPDF_SetCompressionMode(pdf, HPDF_COMP_NONE);
 
 	/* load ttc file */
 	if (argc == 4 && strcmp(argv[3], "-E") == 0)

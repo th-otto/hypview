@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 
 	HPDF_Page_EndText(page);
 
-	/* HPDF_TALIGN_RIGTH */
+	/* HPDF_TALIGN_RIGHT */
 	rect.left = 220;
 	rect.right = 395;
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 	HPDF_Page_BeginText(page);
 
 	HPDF_Page_SetFontAndSize(page, font, 10);
-	HPDF_Page_TextOut(page, rect.left, rect.top + 3, "HPDF_TALIGN_RIGTH");
+	HPDF_Page_TextOut(page, rect.left, rect.top + 3, "HPDF_TALIGN_RIGHT");
 
 	HPDF_Page_SetFontAndSize(page, font, 13);
 	HPDF_Page_TextRect(page, rect.left, rect.top, rect.right, rect.bottom, SAMP_TXT, HPDF_TALIGN_RIGHT, NULL);

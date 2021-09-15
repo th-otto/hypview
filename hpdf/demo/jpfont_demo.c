@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 	}
 
 	/* configure pdf-document to be compressed. */
-	HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL);
+	HPDF_SetCompressionMode(pdf, HPDF_COMP_NONE);
 
 	/* declaration for using Japanese font, encoding. */
 	HPDF_UseJPEncodings(pdf);

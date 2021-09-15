@@ -190,7 +190,7 @@ int main(int argc, char **argv)
 
 	/* configure pdf-document (showing outline, compression enabled) */
 	HPDF_SetPageMode(pdf, HPDF_PAGE_MODE_USE_OUTLINE);
-	HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL);
+	HPDF_SetCompressionMode(pdf, HPDF_COMP_NONE);
 	HPDF_SetPagesConfiguration(pdf, 10);
 
 	HPDF_UseJPEncodings(pdf);
