@@ -8,8 +8,8 @@ static char const html_javascript_code[] =
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wBVVQAAqqoAAFVVAACqqgAAVVUAAKqqAABVVQAAqqoAAFVVAACqqgAAVVUAAKqqAABVVQAAqqoAAFVVAACqqgAA',\n"
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAREQAAqqoAAEREAACqqgAAEREAAKqqAABERAAAqqoAABERAACqqgAAREQAAKqqAAAREQAAqqoAAEREAACqqgAA',\n"
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAqqoAAAAAAACqqgAAAAAAAKqqAAAAAAAAqqoAAAAAAACqqgAAAAAAAKqqAAAAAAAAqqoAAAAAAACqqgAA',\n"
-	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',\n"
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAIiIAAAAAAACIiAAAAAAAACIiAAAAAAAAiIgAAAAAAAAiIgAAAAAAAIiIAAAAAAAAIiIAAAAAAACIiAAA',\n"
+	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',\n"
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wDv7wAA7+8AAO/vAAAAAAAA/v4AAP7+AAD+/gAAAAAAAO/vAADv7wAA7+8AAAAAAAD+/gAA/v4AAP7+AAAAAAAA',\n"
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wD39wAA7+8AANfXAAC7uwAAfX0AAP7+AAD9/QAA+/sAAPf3AADv7wAA19cAALu7AAB9fQAA/v4AAP39AAD7+wAA',\n"
 	"  'data:image/bmp;base64,Qk1+AAAAAAAAAD4AAAAoAAAAEAAAABAAAAABAAEAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAP///wC+vgAAf38AAP//AAD//wAA6+sAAPf3AAD//wAA//8AAL6+AAB/fwAA//8AAP//AADr6wAA9/cAAP//AAD//wAA',\n"
@@ -170,34 +170,40 @@ static char const html_javascript_code[] =
 	"  var x0, y0, x1, y1;\n"
 	"  if (width < 0)\n"
 	"  {\n"
+	     /* draw from right to left */
 	"    xoffset += width;\n"
 	"    width = (-width) * xraster;\n"
 	"    x0 = width + 0.5;\n"
 	"    x1 = 0.5;\n"
 	"  } else if (width == 0)\n"
 	"  {\n"
+	     /* vertical line */
 	"    width = 1;\n"
 	"    x0 = 0.5;\n"
 	"    x1 = 0.5;\n"
 	"  } else\n"
 	"  {\n"
+	     /* draw from left to right */
 	"    width = width * xraster;\n"
 	"    x0 = 0.5;\n"
 	"    x1 = width + 0.5;\n"
 	"  }\n"
 	"  if (height < 0)\n"
 	"  {\n"
+	     /* draw from bottom to top */
 	"    height = -height;\n"
 	"    height = height * (yraster + 0.05);\n"
 	"    y0 = height + 0.5;\n"
 	"    y1 = 0.5;\n"
 	"  } else if (height == 0)\n"
 	"  {\n"
+	     /* horizontal line */
 	"    height = 1;\n"
 	"    y0 = 0.5;\n"
 	"    y1 = 0.5;\n"
 	"  } else\n"
 	"  {\n"
+	     /* draw from top to bottom */
 	"    height = height * (yraster + 0.05);\n"
 	"    y0 = 0.5;\n"
 	"    y1 = height + 0.5;\n"
@@ -217,29 +223,30 @@ static char const html_javascript_code[] =
 	"    switch (linestyle)\n"
 	"    {\n"
 	"    default:\n"
-	"    case 1: \n"
+	"    case 1: \n" /* SOLID */
 	"      break;\n"
-	"    case 2: \n"
+	"    case 2: \n" /* LONGDASH */
 	"      ctx.setLineDash([12, 4]);\n"
 	"      break;\n"
-	"    case 3: \n"
+	"    case 3: \n" /* DOT */
 	"      ctx.setLineDash([2, 6, 2, 6]);\n"
 	"      break;\n"
-	"    case 4: \n"
+	"    case 4: \n" /* DASHDOT */
 	"      ctx.setLineDash([8, 3, 2, 3]);\n"
 	"      break;\n"
-	"    case 5: \n"
+	"    case 5: \n" /* DASH */
 	"      ctx.setLineDash([8, 8]);\n"
 	"      break;\n"
-	"    case 6: \n"
+	"    case 6: \n" /* DASH2DOT */
 	"      ctx.setLineDash([4, 3, 2, 2, 1, 3, 1, 0]);\n"
 	"      break;\n"
-	"    case 7: \n"
+	"    case 7: \n" /* USERLINE */
 	"      ctx.setLineDash([1, 1]);\n"
 	"      break;\n"
 	"    }\n"
 	"  } catch (e)\n"
 	"  {\n"
+	     /* setLineDash not supported, but not much we can do about it */
 	"  }\n"
 	"  ctx.beginPath();\n"
 	"  ctx.moveTo(x0, y0);\n"
