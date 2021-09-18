@@ -21,12 +21,15 @@ typedef struct _pdf {
 	HPDF_Font bold_italic_font;
 	HPDF_REAL font_size;
 	HPDF_REAL line_height;
+	HPDF_REAL cell_width;
 	size_t num_pages;
 	size_t curr_page_num;
 	struct pdf_page *pages;
 	HPDF_Page *links;
 	HPDF_Page page;
+	HPDF_REAL page_width;
 	HPDF_REAL page_height;
+	struct hyp_gfx *hyp_gfx;
 } PDF;
 
 PDF *pdf_new(hcp_opts *opts);

@@ -20,10 +20,6 @@
 #include "hpdf.h"
 #include <string.h>
 
-static char const COL_CMYK[] = "DeviceCMYK";
-static char const COL_RGB[] = "DeviceRGB";
-static char const COL_GRAY[] = "DeviceGray";
-
 
 /*---------------------------------------------------------------------------*/
 
@@ -111,10 +107,10 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 	switch (num_components)
 	{
 	case 1:
-		color_space_name = COL_GRAY;
+		color_space_name = HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY];
 		break;
 	case 3:
-		color_space_name = COL_RGB;
+		color_space_name = HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB];
 		break;
 	case 4:
 		array = HPDF_Array_New(image->mmgr);
@@ -137,7 +133,7 @@ static HPDF_STATUS LoadJpegHeader(HPDF_Image image, HPDF_Stream stream)
 		if (ret != HPDF_OK)
 			return HPDF_Error_GetCode(stream->error);
 
-		color_space_name = COL_CMYK;
+		color_space_name = HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_CMYK];
 
 		break;
 	default:
@@ -267,15 +263,15 @@ HPDF_Image HPDF_Image_LoadRawImage(
 	if (color_space == HPDF_CS_DEVICE_GRAY)
 	{
 		size = width * height;
-		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_GRAY);
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 	} else if (color_space == HPDF_CS_DEVICE_CMYK)
 	{
 		size = width * height * 4;
-		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_CMYK);
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_CMYK]);
 	} else
 	{
 		size = width * height * 3;
-		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_RGB);
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 	}
 
 	if (ret != HPDF_OK)
@@ -312,7 +308,7 @@ HPDF_Image HPDF_Image_LoadRawImageFromMem(
 	HPDF_ColorSpace color_space,
 	HPDF_UINT bits_per_component)
 {
-	HPDF_Dict image;
+	HPDF_Image image;
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_UINT size = 0;
 
@@ -341,18 +337,18 @@ HPDF_Image HPDF_Image_LoadRawImageFromMem(
 	switch (color_space)
 	{
 	case HPDF_CS_DEVICE_GRAY:
-		size = (HPDF_UINT) ((HPDF_DOUBLE) width * height / (8 / bits_per_component) + 0.876);
-		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_GRAY);
+		size = ((width * bits_per_component + 7) / 8) * height;
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 		break;
 	case HPDF_CS_DEVICE_RGB:
-		size = (HPDF_UINT) ((HPDF_DOUBLE) width * height / (8 / bits_per_component) + 0.876);
+		size = ((width * bits_per_component + 7) / 8) * height;
 		size *= 3;
-		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_RGB);
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 		break;
 	case HPDF_CS_DEVICE_CMYK:
-		size = (HPDF_UINT) ((HPDF_DOUBLE) width * height / (8 / bits_per_component) + 0.876);
+		size = ((width * bits_per_component + 7) / 8) * height;
 		size *= 4;
-		ret = HPDF_Dict_AddName(image, "ColorSpace", COL_CMYK);
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_CMYK]);
 		break;
 	default:
 		break;
@@ -551,7 +547,7 @@ HPDF_STATUS HPDF_Image_SetColorMask(
 		return HPDF_RaiseError(image->error, HPDF_INVALID_BIT_PER_COMPONENT, 0);
 
 	name = HPDF_Image_GetColorSpace(image);
-	if (!name || strcmp(COL_RGB, name) != 0)
+	if (!name || strcmp(HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB], name) != 0)
 		return HPDF_RaiseError(image->error, HPDF_INVALID_COLOR_SPACE, 0);
 
 	/* Each integer must be in the range 0 to 2^BitsPerComponent - 1 */
@@ -591,7 +587,7 @@ HPDF_STATUS HPDF_Image_AddSMask(HPDF_Image image, HPDF_Image smask)
 		return HPDF_RaiseError(image->error, HPDF_INVALID_OPERATION, 0);
 
 	name = HPDF_Image_GetColorSpace(smask);
-	if (!name || strcmp(COL_GRAY, name) != 0)
+	if (!name || strcmp(HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY], name) != 0)
 		return HPDF_RaiseError(smask->error, HPDF_INVALID_COLOR_SPACE, 0);
 
 	return HPDF_Dict_Add(image, "SMask", smask);

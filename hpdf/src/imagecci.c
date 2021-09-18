@@ -763,7 +763,7 @@ HPDF_Image HPDF_Image_Load1BitImageFromMem(
 		return NULL;
 
 	/* size = width * height; */
-	ret = HPDF_Dict_AddName(image, "ColorSpace", "DeviceGray");
+	ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 	if (ret != HPDF_OK)
 		return NULL;
 

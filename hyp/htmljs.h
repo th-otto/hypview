@@ -170,40 +170,34 @@ static char const html_javascript_code[] =
 	"  var x0, y0, x1, y1;\n"
 	"  if (width < 0)\n"
 	"  {\n"
-	     /* draw from right to left */
 	"    xoffset += width;\n"
 	"    width = (-width) * xraster;\n"
 	"    x0 = width + 0.5;\n"
 	"    x1 = 0.5;\n"
 	"  } else if (width == 0)\n"
 	"  {\n"
-	     /* vertical line */
 	"    width = 1;\n"
 	"    x0 = 0.5;\n"
 	"    x1 = 0.5;\n"
 	"  } else\n"
 	"  {\n"
-	     /* draw from left to right */
 	"    width = width * xraster;\n"
 	"    x0 = 0.5;\n"
 	"    x1 = width + 0.5;\n"
 	"  }\n"
 	"  if (height < 0)\n"
 	"  {\n"
-	     /* draw from bottom to top */
 	"    height = -height;\n"
 	"    height = height * (yraster + 0.05);\n"
 	"    y0 = height + 0.5;\n"
 	"    y1 = 0.5;\n"
 	"  } else if (height == 0)\n"
 	"  {\n"
-	     /* horizontal line */
 	"    height = 1;\n"
 	"    y0 = 0.5;\n"
 	"    y1 = 0.5;\n"
 	"  } else\n"
 	"  {\n"
-	     /* draw from top to bottom */
 	"    height = height * (yraster + 0.05);\n"
 	"    y0 = 0.5;\n"
 	"    y1 = height + 0.5;\n"
@@ -223,30 +217,29 @@ static char const html_javascript_code[] =
 	"    switch (linestyle)\n"
 	"    {\n"
 	"    default:\n"
-	"    case 1: \n" /* SOLID */
+	"    case 1: \n"
 	"      break;\n"
-	"    case 2: \n" /* LONGDASH */
+	"    case 2: \n"
 	"      ctx.setLineDash([12, 4]);\n"
 	"      break;\n"
-	"    case 3: \n" /* DOT */
+	"    case 3: \n"
 	"      ctx.setLineDash([2, 6, 2, 6]);\n"
 	"      break;\n"
-	"    case 4: \n" /* DASHDOT */
+	"    case 4: \n"
 	"      ctx.setLineDash([8, 3, 2, 3]);\n"
 	"      break;\n"
-	"    case 5: \n" /* DASH */
+	"    case 5: \n"
 	"      ctx.setLineDash([8, 8]);\n"
 	"      break;\n"
-	"    case 6: \n" /* DASH2DOT */
+	"    case 6: \n"
 	"      ctx.setLineDash([4, 3, 2, 2, 1, 3, 1, 0]);\n"
 	"      break;\n"
-	"    case 7: \n" /* USERLINE */
+	"    case 7: \n"
 	"      ctx.setLineDash([1, 1]);\n"
 	"      break;\n"
 	"    }\n"
 	"  } catch (e)\n"
 	"  {\n"
-	     /* setLineDash not supported, but not much we can do about it */
 	"  }\n"
 	"  ctx.beginPath();\n"
 	"  ctx.moveTo(x0, y0);\n"

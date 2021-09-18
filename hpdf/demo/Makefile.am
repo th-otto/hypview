@@ -15,6 +15,7 @@ noinst_PROGRAMS = \
 	attach \
 	character_map \
 	chfont_demo \
+	chunk_background \
 	encoding_list \
 	encryption \
 	ext_gstate_demo \
@@ -46,6 +47,9 @@ attach_DEPENDENCIES = ../src/libhpdf.a
 
 chfont_demo_SOURCES = chfont_demo.c grid_sheet.c grid_sheet.h
 chfont_demo_DEPENDENCIES = ../src/libhpdf.a
+
+chunk_background_demo_SOURCES = chunk_background.c
+chunk_background_DEPENDENCIES = ../src/libhpdf.a
 
 character_map_SOURCES = character_map.c
 character_map_DEPENDENCIES = ../src/libhpdf.a
@@ -119,6 +123,7 @@ CLEANFILES = \
 	attach.pdf \
 	character_map.pdf \
 	chfont_demo.pdf \
+	chunk_background.pdf \
 	encoding_list.pdf \
 	encryption.pdf \
 	ext_gstate_demo.pdf \

@@ -1034,7 +1034,7 @@ HPDF_STATUS HPDF_3DView_SetCrossSectionOn(
 		HPDF_Dict_Free(crosssection);
 		return HPDF_INVALID_U3D_DATA;
 	}
-	ret += HPDF_Array_AddName(array_b, "DeviceRGB");
+	ret += HPDF_Array_AddName(array_b, HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 	ret += HPDF_Array_AddReal(array_b, 1.0);
 	ret += HPDF_Array_AddReal(array_b, 0.0);
 	ret += HPDF_Array_AddReal(array_b, 0.0);

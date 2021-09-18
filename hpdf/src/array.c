@@ -17,6 +17,7 @@
 
 #include "hpdf/conf.h"
 #include "hpdf/utils.h"
+#include "hpdf.h"
 #include "hpdf/objects.h"
 #include <string.h>
 
@@ -364,5 +365,99 @@ void HPDF_Array_Clear(HPDF_Array array)
 	}
 
 	HPDF_List_Clear(array->list);
+}
+#endif
+
+
+#if defined(ARRAY_ALL) || defined(PATTERN_COLORSPACE_NEW)
+HPDF_PatternColorspace HPDF_PatternColorspace_New(HPDF_MMgr mmgr, HPDF_ColorSpace color_space)
+{
+	HPDF_PatternColorspace array;
+	
+	array = HPDF_Array_New(mmgr);
+	if (array)
+	{
+		HPDF_Array_AddName(array, "Pattern");
+		HPDF_Array_AddName(array, HPDF_COLORSPACE_NAMES[color_space]);
+	}
+	return array;
+}
+#endif
+
+
+#if defined(ARRAY_ALL) || defined(PATTERN_NEW)
+HPDF_Pattern HPDF_Pattern_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_PATTERN_TYPE patterntype, HPDF_PAINT_TYPE painttype, HPDF_TILING_TYPE tilingtype, void *image)
+{
+	HPDF_Pattern pattern;
+	HPDF_STATUS ret = 0;
+	
+	pattern = HPDF_DictStream_New(mmgr, xref);
+	if (!pattern)
+		return NULL;
+
+	pattern->header.obj_class |= HPDF_OSUBCLASS_PATTERN;
+
+	ret |= HPDF_Dict_AddName(pattern, "Type", "Pattern");
+	ret |= HPDF_Dict_AddNumber(pattern, "PatternType", patterntype);
+	if (patterntype == HPDF_PATTERN_TYPE_TILED)
+	{
+		HPDF_UINT w;
+		HPDF_UINT h;
+		HPDF_Array bbox;
+		HPDF_Dict resources;
+		HPDF_Dict xobjects;
+		
+		ret |= HPDF_Image_GetSize((HPDF_Image) image, &w, &h);
+		ret |= HPDF_Dict_AddNumber(pattern, "PaintType", painttype);
+		ret |= HPDF_Dict_AddNumber(pattern, "TilingType", tilingtype);
+		ret |= HPDF_Dict_AddReal(pattern, "XStep", w);
+		ret |= HPDF_Dict_AddReal(pattern, "YStep", h);
+#if 0
+		{
+		HPDF_Array matrix;
+		matrix = HPDF_Array_New(mmgr);
+		ret |= HPDF_Array_AddReal(matrix, 1.0);
+		ret |= HPDF_Array_AddReal(matrix, 0.0);
+		ret |= HPDF_Array_AddReal(matrix, 0.0);
+		ret |= HPDF_Array_AddReal(matrix, 1.0);
+		ret |= HPDF_Array_AddReal(matrix, 0.0);
+		ret |= HPDF_Array_AddReal(matrix, 0.0);
+		HPDF_Dict_Add(pattern, "Matrix", matrix);
+		}
+#endif
+		
+		resources = HPDF_Dict_New(mmgr);
+		ret |= HPDF_Dict_Add(pattern, "Resources", resources);
+		xobjects = HPDF_Dict_New(mmgr);
+		HPDF_Dict_Add(resources, "XObject", xobjects);
+		HPDF_Dict_Add(xobjects, "Im1", image);
+		
+		bbox = HPDF_Array_New(mmgr);
+		if (bbox == NULL)
+		{
+			ret = HPDF_Error_GetCode(mmgr->error);
+		} else
+		{
+			ret |= HPDF_Array_AddReal(bbox, 0);
+			ret |= HPDF_Array_AddReal(bbox, 0);
+			ret |= HPDF_Array_AddReal(bbox, w);
+			ret |= HPDF_Array_AddReal(bbox, h);
+			ret |= HPDF_Dict_Add(pattern, "BBox", bbox);
+		}
+		HPDF_Stream_WriteStr(pattern->stream, "q\n");
+		HPDF_Stream_WriteReal(pattern->stream, w);
+		HPDF_Stream_WriteStr(pattern->stream, " 0 0 ");
+		HPDF_Stream_WriteReal(pattern->stream, h);
+		HPDF_Stream_WriteStr(pattern->stream, " 0 0 cm\n/Im1 Do\nQ");
+	} else
+	{
+		ret |= HPDF_Dict_Add(pattern, "Shading", image);
+	}
+	if (ret != HPDF_OK)
+	{
+		HPDF_Dict_Free(pattern);
+		pattern = NULL;
+	}
+	return pattern;
 }
 #endif

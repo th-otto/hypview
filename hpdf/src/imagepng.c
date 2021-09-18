@@ -38,7 +38,7 @@ static void PngReadFunc(png_structp png_ptr, png_bytep data, png_size_t length)
 static void PngErrorFunc(png_structp png_ptr, const char *msg)
 {
 	char error_number[16];
-	HPDF_UINT i;
+	int i;
 	HPDF_STATUS detail_no;
 	HPDF_Error error;
 
@@ -66,10 +66,10 @@ static HPDF_STATUS ReadPngData_Interlaced(HPDF_Dict image, png_structp png_ptr, 
 
 	if (row_pointers)
 	{
-		HPDF_UINT i;
+		png_uint_32 i;
 
 		memset(row_pointers, 0, height * sizeof(png_bytep));
-		for (i = 0; i < (HPDF_UINT) height; i++)
+		for (i = 0; i < height; i++)
 		{
 			row_pointers[i] = (png_bytep) HPDF_GetMem(image->mmgr, len);
 
@@ -82,7 +82,7 @@ static HPDF_STATUS ReadPngData_Interlaced(HPDF_Dict image, png_structp png_ptr, 
 			png_read_image(png_ptr, row_pointers);
 			if (image->error->error_no == HPDF_OK)
 			{							/* add this line */
-				for (i = 0; i < (HPDF_UINT) height; i++)
+				for (i = 0; i < height; i++)
 				{
 					if (HPDF_Stream_Write(image->stream, row_pointers[i], len) != HPDF_OK)
 						break;
@@ -91,7 +91,7 @@ static HPDF_STATUS ReadPngData_Interlaced(HPDF_Dict image, png_structp png_ptr, 
 		}
 
 		/* clean up */
-		for (i = 0; i < (HPDF_UINT) height; i++)
+		for (i = 0; i < height; i++)
 		{
 			HPDF_FreeMem(image->mmgr, row_pointers[i]);
 		}
@@ -111,9 +111,9 @@ static HPDF_STATUS ReadPngData(HPDF_Dict image, png_structp png_ptr, png_infop i
 
 	if (buf_ptr)
 	{
-		HPDF_UINT i;
+		png_uint_32 i;
 
-		for (i = 0; i < (HPDF_UINT) height; i++)
+		for (i = 0; i < height; i++)
 		{
 			png_read_rows(png_ptr, (png_byte **) &buf_ptr, NULL, 1);
 			if (image->error->error_no != HPDF_OK)
@@ -139,7 +139,7 @@ static HPDF_STATUS ReadTransparentPaletteData(
 	int num_trans)
 {
 	HPDF_STATUS ret = HPDF_OK;
-	HPDF_UINT i, j;
+	png_uint_32 i, j;
 	png_bytep *row_ptr;
 	png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
 	png_uint_32 width = png_get_image_width(png_ptr, info_ptr);
@@ -152,13 +152,14 @@ static HPDF_STATUS ReadTransparentPaletteData(
 	{
 		png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
 
-		for (i = 0; i < (HPDF_UINT) height; i++)
+		for (i = 0; i < height; i++)
 		{
 			row_ptr[i] = (png_bytep) HPDF_GetMem(image->mmgr, len);
-			if (!row_ptr[i])
+			if (row_ptr[i] == NULL)
 			{
-				for (; i > 0; i--)
+				while (i != 0)
 				{
+					--i;
 					HPDF_FreeMem(image->mmgr, row_ptr[i]);
 				}
 				HPDF_FreeMem(image->mmgr, row_ptr);
@@ -189,7 +190,7 @@ static HPDF_STATUS ReadTransparentPaletteData(
 	}
 
   Error:
-	for (i = 0; i < (HPDF_UINT) height; i++)
+	for (i = 0; i < height; i++)
 	{
 		HPDF_FreeMem(image->mmgr, row_ptr[i]);
 	}
@@ -203,7 +204,7 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_INT row_len;
-	HPDF_UINT i, j;
+	png_uint_32 i, j;
 	png_bytep *row_ptr, row;
 	png_byte color_type;
 	png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
@@ -224,13 +225,14 @@ static HPDF_STATUS ReadTransparentPngData(HPDF_Dict image, png_structp png_ptr, 
 	{
 		png_uint_32 len = (png_uint_32)png_get_rowbytes(png_ptr, info_ptr);
 
-		for (i = 0; i < (HPDF_UINT) height; i++)
+		for (i = 0; i < height; i++)
 		{
 			row_ptr[i] = (png_bytep) HPDF_GetMem(image->mmgr, len);
 			if (!row_ptr[i])
 			{
-				for (; i > 0; i--)
+				while (i != 0)
 				{
+					--i;
 					HPDF_FreeMem(image->mmgr, row_ptr[i]);
 				}
 				HPDF_FreeMem(image->mmgr, row_ptr);
@@ -336,8 +338,8 @@ static HPDF_STATUS CreatePallet(HPDF_Dict image, png_structp png_ptr, png_infop 
 
 		HPDF_Dict_Add(image, "ColorSpace", array);
 
-		HPDF_Array_AddName(array, "Indexed");
-		HPDF_Array_AddName(array, "DeviceRGB");
+		HPDF_Array_AddName(array, HPDF_COLORSPACE_NAMES[HPDF_CS_INDEXED]);
+		HPDF_Array_AddName(array, HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 		HPDF_Array_AddNumber(array, num_pl - 1);
 
 		b = HPDF_Binary_New(image->mmgr, ppallet, num_pl * 3);
@@ -432,7 +434,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		ret += HPDF_Dict_AddName(smask, "Subtype", "Image");
 		ret += HPDF_Dict_AddNumber(smask, "Width", width);
 		ret += HPDF_Dict_AddNumber(smask, "Height", height);
-		ret += HPDF_Dict_AddName(smask, "ColorSpace", "DeviceGray");
+		ret += HPDF_Dict_AddName(smask, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 		ret += HPDF_Dict_AddNumber(smask, "BitsPerComponent", bit_depth);
 
 		if (ret != HPDF_OK)
@@ -499,7 +501,7 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 		ret += HPDF_Dict_AddName(smask, "Subtype", "Image");
 		ret += HPDF_Dict_AddNumber(smask, "Width", width);
 		ret += HPDF_Dict_AddNumber(smask, "Height", height);
-		ret += HPDF_Dict_AddName(smask, "ColorSpace", "DeviceGray");
+		ret += HPDF_Dict_AddName(smask, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 		ret += HPDF_Dict_AddNumber(smask, "BitsPerComponent", bit_depth);
 
 		if (ret != HPDF_OK)
@@ -536,10 +538,10 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 
 		if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
 		{
-			ret += HPDF_Dict_AddName(image, "ColorSpace", "DeviceGray");
+			ret += HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 		} else
 		{
-			ret += HPDF_Dict_AddName(image, "ColorSpace", "DeviceRGB");
+			ret += HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 		}
 		ret += HPDF_Dict_AddNumber(image, "Width", width);
 		ret += HPDF_Dict_AddNumber(image, "Height", height);
@@ -556,9 +558,9 @@ static HPDF_STATUS LoadPngData(HPDF_Dict image, HPDF_Xref xref, HPDF_Stream png_
 	if (color_type == PNG_COLOR_TYPE_PALETTE)
 		ret = CreatePallet(image, png_ptr, info_ptr);
 	else if (color_type == PNG_COLOR_TYPE_GRAY)
-		ret = HPDF_Dict_AddName(image, "ColorSpace", "DeviceGray");
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 	else
-		ret = HPDF_Dict_AddName(image, "ColorSpace", "DeviceRGB");
+		ret = HPDF_Dict_AddName(image, "ColorSpace", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 
 	if (ret != HPDF_OK)
 		goto Exit;

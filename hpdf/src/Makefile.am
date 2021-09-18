@@ -273,6 +273,10 @@ libhpdf_a_LIBADD = \
 	page_setrgbstroke.o \
 	page_setcmykfill.o \
 	page_setcmykstroke.o \
+	page_setpatternfill.o \
+	page_setpatternstroke.o \
+	page_setcolorspacefill.o \
+	page_setcolorspacestroke.o \
 	page_executexobject.o \
 	page_circle.o \
 	page_llipse.o \
@@ -293,6 +297,8 @@ libhpdf_a_LIBADD = \
 	page_checkstate.o \
 	page_getinheritableitem.o \
 	page_getlocalfontname.o \
+	page_getlocalpatternname.o \
+	page_getlocalcolorspacename.o \
 	page_getmediabox.o \
 	page_createxobjectfromimage.o \
 	page_createxobjectaswhiterect.o \
@@ -366,6 +372,8 @@ libhpdf_a_LIBADD = \
 	page_createpd33dmeasure.o \
 	page_create3dannotexdata.o \
 	page_setfilter.o \
+	pattern_colorspace_new.o \
+	pattern_new.o \
 	3dmeasur_addpoint.o \
 	3dmeasur_new.o \
 	3dmeasur_setcolor.o \
@@ -670,6 +678,12 @@ page_getinheritableitem.o: pages.c
 page_getlocalfontname.o: pages.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLOCALFONTNAME
 
+page_getlocalpatternname.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLOCALPATTERNNAME
+
+page_getlocalcolorspacename.o: pages.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETLOCALCOLORSPACENAME
+
 page_getmediabox.o: pages.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_GETMEDIABOX
 
@@ -890,6 +904,14 @@ page_setfilter.o: pages.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETFILTER
 
 
+pattern_colorspace_new.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPATTERN_COLORSPACE_NEW
+
+pattern_new.o: array.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPATTERN_NEW
+
+
+
 
 
 page_setlinewidth.o: pageop.c
@@ -1044,6 +1066,18 @@ page_setcmykfill.o: pageop.c
 
 page_setcmykstroke.o: pageop.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETCMYKSTROKE
+
+page_setpatternfill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETPATTERNFILL
+
+page_setpatternstroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETPATTERNSTROKE
+
+page_setcolorspacefill.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETCOLORSPACEFILL
+
+page_setcolorspacestroke.o: pageop.c
+	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_SETCOLORSPACESTROKE
 
 page_executexobject.o: pageop.c
 	$(AM_V_CC)$(COMPILE) -c -o $@ $< -DPAGE_EXECUTEXOBJECT

@@ -249,7 +249,7 @@ static void Type1Font_OnFree(HPDF_Dict obj)
 
 HPDF_Font HPDF_Type1Font_New(HPDF_MMgr mmgr, HPDF_FontDef fontdef, HPDF_Encoder encoder, HPDF_Xref xref)
 {
-	HPDF_Dict font;
+	HPDF_Font font;
 	HPDF_FontAttr attr;
 	HPDF_Type1FontDefAttr fontdef_attr;
 	HPDF_BasicEncoderAttr encoder_attr;

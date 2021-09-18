@@ -61,6 +61,7 @@ extern "C" {
 #define  HPDF_OSUBCLASS_EXT_GSTATE_R  0x0B00	/* read only object */
 #define  HPDF_OSUBCLASS_NAMEDICT      0x0C00
 #define  HPDF_OSUBCLASS_NAMETREE      0x0D00
+#define  HPDF_OSUBCLASS_PATTERN       0x0E00
 
 
 
@@ -476,13 +477,22 @@ typedef HPDF_Dict HPDF_ExData;
 typedef HPDF_Dict HPDF_XObject;
 typedef HPDF_Dict HPDF_Image;
 typedef HPDF_Dict HPDF_Outline;
+typedef HPDF_Dict HPDF_Pattern;
 typedef HPDF_Dict HPDF_EncryptDict;
 typedef HPDF_Dict HPDF_Action;
 typedef HPDF_Dict HPDF_ExtGState;
 typedef HPDF_Array HPDF_Destination;
+typedef HPDF_Array HPDF_PatternColorspace;
 typedef HPDF_Dict HPDF_U3D;
 typedef HPDF_Dict HPDF_OutputIntent;
 typedef HPDF_Dict HPDF_JavaScript;
+
+/*---------------------------------------------------------------------------*/
+/*----- HPDF_PatternColorspace ----------------------------------------------*/
+
+HPDF_PatternColorspace HPDF_PatternColorspace_New(HPDF_MMgr mmgr, HPDF_ColorSpace color_space);
+HPDF_Pattern HPDF_Pattern_New(HPDF_MMgr mmgr, HPDF_Xref xref, HPDF_PATTERN_TYPE patterntype, HPDF_PAINT_TYPE painttype, HPDF_TILING_TYPE tilingtype, void *resources);
+
 
 #ifdef __cplusplus
 }

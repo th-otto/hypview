@@ -3,6 +3,7 @@
 #include "hcp_opts.h"
 #include "pdf.h"
 #include "outcomm.h"
+#include "pattern.h"
 
 #ifdef WITH_PDF /* whole file */
 
@@ -55,6 +56,16 @@ struct pdf_xref {
 
 static HPDF_REAL text_xoffset;
 static HPDF_REAL text_yoffset;
+
+#define IP_HOLLOW		0
+#define IP_1PATT		1
+#define IP_2PATT		2
+#define IP_3PATT		3
+#define IP_4PATT		4
+#define IP_5PATT		5
+#define IP_6PATT		6
+#define IP_7PATT		7
+#define IP_WIN_SOLID	8
 
 /* ------------------------------------------------------------------------- */
 
@@ -133,18 +144,6 @@ static gboolean pdf_out_labels(PDF *pdf, HYP_DOCUMENT *hyp, const INDEX_ENTRY *e
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_gfx(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, int *gfx_id)
-{
-	(void)pdf;
-	(void)hyp;
-	(void)gfx;
-	(void)gfx_id;
-	
-	return TRUE;
-}
-
-/* ------------------------------------------------------------------------- */
-
 static gboolean pdf_out_color(HPDF_Page page, const HPDF_RGBColor *color)
 {
 	return HPDF_Page_SetRGBFill(page, color->r, color->g, color->b) == HPDF_NOERROR &&
@@ -153,15 +152,28 @@ static gboolean pdf_out_color(HPDF_Page page, const HPDF_RGBColor *color)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, HPDF_Point *text_pos, const unsigned char *str, size_t len, gboolean *converror, gboolean underlined)
+static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, HPDF_Point *text_pos, const unsigned char *str, size_t len, gboolean *converror, struct textattr *attr)
 {
 	char *dst;
 	gboolean ret = TRUE;
 
 	dst = hyp_conv_charset(hyp->comp_charset, pdf->opts->output_charset, str, len, converror);
+	if (attr->curbg != HYP_DEFAULT_BG)
+	{
+		HPDF_TextWidth tw;
+		HPDF_RGBColor color;
+		
+		HPDF_Font_TextWidth(pdf->regular_font, str, len, &tw);
+		HPDF_Page_GetRGBFill(pdf->page, &color);
+		HPDF_Page_SetRGBFill(pdf->page, user_colors[attr->curbg].r, user_colors[attr->curbg].g, user_colors[attr->curbg].b);
+		HPDF_Page_Rectangle(pdf->page, text_pos->x, text_pos->y, tw.width * pdf->font_size / 1000, pdf->line_height);
+		HPDF_Page_Fill(pdf->page);
+		
+		HPDF_Page_SetRGBFill(pdf->page, color.r, color.g, color.b);
+	}
 	ret &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 	ret &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
-	if (underlined)
+	if (attr->curattr & HYP_TXT_UNDERLINED)
 	{
 		HPDF_Point oldpos;
 		HPDF_REAL y;
@@ -524,20 +536,230 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, long lineno, int *gfx_id)
+static HPDF_REAL draw_image(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
 {
-	gboolean retval = TRUE;
+	(void)pdf;
+	(void)gfx;
+	(void) x;
+	return y;
+}
+
+static int adjust_for_limage(PDF *pdf, long lineno, int h)
+{
+	struct hyp_gfx *gfx;
+	int diff = 0;
+	long end = lineno + h / pdf->line_height;
 	
+	for (gfx = pdf->hyp_gfx; gfx != NULL; gfx = gfx->next)
+	{
+		if (gfx->type == HYP_ESC_PIC && gfx->islimage && gfx->y_offset >= lineno && gfx->y_offset < end)
+		{
+			int adj = ((gfx->pixheight + HYP_PIC_FONTH - 1) / HYP_PIC_FONTH);
+			if (adj > 0)
+			{
+				diff += adj * (HYP_PIC_FONTH - pdf->line_height);
+			}
+		}
+	}
+	return diff;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void draw_arrows(PDF *pdf, HPDF_REAL x0, HPDF_REAL y0, HPDF_REAL x1, HPDF_REAL y1, unsigned char line_ends)
+{
+	(void) pdf;
+	(void) x0;
+	(void) y0;
+	(void) x1;
+	(void) y1;
+	(void) line_ends;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+{
+	int w, h;
+	HPDF_REAL ret = y;
+	int diff;
+	HPDF_REAL x0, y0, x1, y1;
+
+	w = gfx->width * pdf->cell_width;
+	h = gfx->height * pdf->line_height;
+
+	if (w == 0)
+	{
+		w = gfx->pixwidth = 1;
+	} else if (w < 0)
+	{
+		w = -w;
+		x -= w;
+	}
+	if (h == 0)
+	{
+		h = gfx->pixheight = 1;
+	} else if (h < 0)
+	{
+		h = -h;
+		diff = adjust_for_limage(pdf, gfx->y_offset - h / pdf->line_height, h);
+		h += diff;
+		y -= h;
+	} else
+	{
+		diff = adjust_for_limage(pdf, gfx->y_offset, h);
+		h += diff;
+	}
+	gfx->pixwidth = w;
+	gfx->pixheight = h;
+
+	x = x + (gfx->x_offset - 1) * pdf->cell_width;
+	
+	if (gfx->width < 0)
+	{
+		/* draw from right to left */
+		x0 = x + w - 1;
+		x1 = x;
+	} else
+	{
+		/* draw from left to right */
+		x0 = x;
+		x1 = x + w - 1;
+	}
+	if (gfx->height < 0)
+	{
+		/* draw from bottom to top */
+		y0 = y + h - 1;
+		y1 = y;
+	} else
+	{
+		/* draw from top to bottom */
+		y0 = y;
+		y1 = y + h - 1;
+	}
+
+	HPDF_Page_GSave(pdf->page);
+	pdf_out_color(pdf->page, &viewer_colors.text);
+
+	HPDF_Page_MoveTo(pdf->page, x0, pdf->page_height - 1 - y0);
+	HPDF_Page_LineTo(pdf->page, x1, pdf->page_height - 1 - y1);
+	HPDF_Page_Stroke(pdf->page);
+
+	draw_arrows(pdf, x0, y0, x1, y1, gfx->begend);
+	
+	HPDF_Page_GRestore(pdf->page);
+
+	return ret;
+}
+
+static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+{
+	HPDF_REAL ret = y;
+	HPDF_REAL w, h;
+	HPDF_REAL tx, ty;
+	int fillstyle;
+	
+	tx = (gfx->x_offset - 1) * pdf->cell_width;
+	w = gfx->width * pdf->cell_width;
+	h = gfx->height * pdf->line_height;
+	h += adjust_for_limage(pdf, gfx->y_offset, h);
+
+	gfx->pixwidth = w;
+	gfx->pixheight = h;
+
+	tx += x;
+	ty = y;
+	
+	if (tx >= pdf->page_width || (tx + w) <= 0)
+		return ret;
+	if (ty >= pdf->page_height || (ty + h) <= 0)
+		return ret;
+
+	HPDF_Page_GSave(pdf->page);
+	pdf_out_color(pdf->page, &viewer_colors.text);
+
+	HPDF_Page_Rectangle(pdf->page, x, y, w, h);
+
+	if (gfx->style != 0)
+	{
+		fillstyle = gfx->style;
+	} else
+	{
+		fillstyle = IP_HOLLOW;
+	}
+
+	switch (fillstyle)
+	{
+	case IP_1PATT:
+	case IP_2PATT:
+	case IP_3PATT:
+	case IP_4PATT:
+	case IP_5PATT:
+	case IP_6PATT:
+	case IP_7PATT:
+		/*
+		 * translate these into gray levels instead of patterns
+		 */
+		HPDF_Page_SetGrayFill(pdf->page, (1.0 / 8) * (fillstyle - IP_1PATT));
+		break;
+	         case  9: case 10: case 11: case 12: case 13: case 14: case 15:
+	case 16: case 17: case 18: case 19: case 20: case 21: case 22: case 23:
+	case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31:
+	case 32: case 33: case 34: case 35: case 36:
+		break;
+	}
+	if (gfx->type == HYP_ESC_BOX)
+	{
+		if (fillstyle == IP_WIN_SOLID)
+			HPDF_Page_Fill(pdf->page);
+		else if (fillstyle == IP_HOLLOW)
+			HPDF_Page_Stroke(pdf->page);
+		else
+			HPDF_Page_FillStroke(pdf->page);
+	} else
+	{
+	}
+	
+	HPDF_Page_GRestore(pdf->page);
+
+	return ret;
+}
+
+static HPDF_REAL pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, long lineno, HPDF_REAL sx, HPDF_REAL sy)
+{
+	HPDF_REAL max_y, y;
+	struct hyp_gfx *gfx;
+	
+	(void)hyp;
+	max_y = sy;
+	gfx = pdf->hyp_gfx;
 	while (gfx != NULL)
 	{
 		if (gfx->y_offset == lineno)
 		{
 			gfx->used = TRUE;
-			retval &= pdf_out_gfx(pdf, hyp, gfx, gfx_id);
+			switch (gfx->type)
+			{
+			case HYP_ESC_PIC:
+				y = draw_image(pdf, gfx, sx, sy);
+				break;
+			case HYP_ESC_LINE:
+				y = draw_line(pdf, gfx, sx, sy);
+				break;
+			case HYP_ESC_BOX:
+			case HYP_ESC_RBOX:
+				y = draw_box(pdf, gfx, sx, sy);
+				break;
+			default:
+				y = sy;
+				break;
+			}
+			if (y > max_y)
+				max_y = y;
 		}
 		gfx = gfx->next;
 	}
-	return retval;
+	return max_y;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -546,6 +768,7 @@ PDF *pdf_new(hcp_opts *opts)
 {
 	PDF *pdf;
 	const char *encoding = NULL;
+	HPDF_TextWidth tw;
 
 	pdf = g_new(PDF, 1);
 	if (pdf == NULL)
@@ -620,7 +843,9 @@ PDF *pdf_new(hcp_opts *opts)
 	pdf->italic_font = HPDF_GetFont(pdf->hpdf, "Courier-Oblique", encoding);
 	pdf->bold_italic_font = HPDF_GetFont(pdf->hpdf, "Courier-BoldOblique", encoding);
 	pdf->font_size = 12.0;
-	pdf->line_height = 0;
+	pdf->line_height = (HPDF_Font_GetAscent(pdf->regular_font) - HPDF_Font_GetDescent(pdf->regular_font)) * pdf->font_size / 1000;
+	HPDF_Font_TextWidth(pdf->regular_font, (const HPDF_BYTE *) "m", 1, &tw);
+	pdf->cell_width = tw.width * pdf->font_size / 1000;
 	/* HPDF_SetViewerPreference(pdf->hpdf, HPDF_DISPLAY_TOC_TITLE); */
 
 	return pdf;
@@ -687,7 +912,7 @@ static HPDF_Page pdf_newpage(PDF *pdf, hyp_nodenr node)
 	HPDF_Page_SetFontAndSize(page, pdf->regular_font, pdf->font_size); 
 	HPDF_Page_SetTextRenderingMode(page, HPDF_FILL);
 	HPDF_Page_SetLineWidth(pdf->page, 0);
-	pdf->line_height = (HPDF_Font_GetAscent(pdf->regular_font) - HPDF_Font_GetDescent(pdf->regular_font)) * pdf->font_size / 1000;
+	pdf->page_width = HPDF_Page_GetWidth(page);
 	pdf->page_height = HPDF_Page_GetHeight(page);
 
 	return page;
@@ -702,15 +927,14 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	int in_tree;
 	struct textattr attr;
 	long lineno;
-	struct hyp_gfx *hyp_gfx = NULL;
 	HYP_NODE *nodeptr;
 	gboolean retval = TRUE;
-	int gfx_id = 0;
 	gboolean converror = FALSE;
 	gboolean in_text_out = FALSE;
 	HPDF_Point text_pos;
 	HPDF_REAL bottom_margin = 0;
-	
+	HPDF_REAL sx, sy;
+
 #define BEGINTEXT() \
 	if (!in_text_out) \
 	{ \
@@ -720,6 +944,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			{ \
 				pdf->page = pdf->pages[pdf->curr_page_num++].page; \
 				text_pos.y = pdf->page_height - pdf->line_height - text_yoffset; \
+				sy = text_yoffset; \
 			} \
 		} else \
 		{ \
@@ -727,6 +952,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			{ \
 				pdf->page = pdf_newpage(pdf, node); \
 				text_pos.y = pdf->page_height - pdf->line_height - text_yoffset; \
+				sy = text_yoffset; \
 			} \
 		} \
 		in_text_out = TRUE; \
@@ -742,7 +968,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 		BEGINTEXT(); \
 		if (!dryrun) { \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]); \
-			retval &= pdf_out_str(pdf, hyp, &text_pos, textstart, src - textstart, &converror, attr.curattr & HYP_TXT_UNDERLINED); \
+			retval &= pdf_out_str(pdf, hyp, &text_pos, textstart, src - textstart, &converror, &attr); \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text); \
 		} \
 		at_bol = FALSE; \
@@ -799,6 +1025,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			src = nodeptr->start;
 			end = nodeptr->end;
 			dithermask = 0;
+			pdf->hyp_gfx = NULL;
 			while (retval && src < end && *src == HYP_ESC)
 			{
 				switch (src[1])
@@ -810,7 +1037,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					{
 						struct hyp_gfx *adm, **last;
 						
-						last = &hyp_gfx;
+						last = &pdf->hyp_gfx;
 						while (*last != NULL)
 							last = &(*last)->next;
 						adm = g_new0(struct hyp_gfx, 1);
@@ -892,7 +1119,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			{
 				struct hyp_gfx *gfx1, *gfx2;
 				
-				for (gfx1 = hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
+				for (gfx1 = pdf->hyp_gfx; gfx1 != NULL; gfx1 = gfx1->next)
 				{
 					if (gfx1->type == HYP_ESC_LINE && gfx1->width == 0 && gfx1->begend == 0)
 					{
@@ -939,12 +1166,14 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			attr.curfg = attr.newfg = HYP_DEFAULT_FG;
 			attr.curbg = attr.newbg = HYP_DEFAULT_BG;
 			lineno = 0;
+			sx = text_xoffset;
+			sy = text_yoffset;
 			text_pos.x = text_xoffset;
 			text_pos.y = pdf->page_height - pdf->line_height - text_yoffset;
 			if (!dryrun)
 			{
 				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-				retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
+				sy = pdf_out_graphics(pdf, hyp, lineno, sx, sy);
 			}
 				
 			while (retval && src < end)
@@ -961,7 +1190,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						if (!dryrun)
 						{
 							if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]);
-							retval &= pdf_out_str(pdf, hyp, &text_pos, (const unsigned char *)"\033", 1, &converror, attr.curattr & HYP_TXT_UNDERLINED);
+							retval &= pdf_out_str(pdf, hyp, &text_pos, (const unsigned char *)"\033", 1, &converror, &attr);
 							if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text);
 						}
 						at_bol = FALSE;
@@ -1158,10 +1387,11 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					++lineno;
 					text_pos.x = text_xoffset;
 					text_pos.y -= pdf->line_height;
+					sy += pdf->line_height;
 					if (!dryrun)
 					{
 						retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-						retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
+						sy = pdf_out_graphics(pdf, hyp, lineno, sx, sy);
 					}
 					src++;
 					textstart = src;
@@ -1183,22 +1413,23 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			++lineno;
 			text_pos.x = text_xoffset;
 			text_pos.y -= pdf->line_height;
+			sy += pdf->line_height;
 			if (!dryrun)
 			{
 				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-				retval &= pdf_out_graphics(pdf, hyp, hyp_gfx, lineno, &gfx_id);
+				sy = pdf_out_graphics(pdf, hyp, lineno, sx, sy);
 			}
 			
-			if (hyp_gfx != NULL)
+			if (pdf->hyp_gfx != NULL)
 			{
 				struct hyp_gfx *gfx, *next;
 				
-				for (gfx = hyp_gfx; gfx != NULL; gfx = next)
+				for (gfx = pdf->hyp_gfx; gfx != NULL; gfx = next)
 				{
 					if (!gfx->used)
 					{
 						/* hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "<!-- gfx unused: "); */
-						pdf_out_gfx(pdf, hyp, gfx, &gfx_id);
+						/* pdf_out_gfx(pdf, hyp, gfx); */
 						/* hyp_utf8_sprintf_charset(out, opts->output_charset, NULL, "-->\n"); */
 					}
 					next = gfx->next;
@@ -1227,7 +1458,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			char *text = g_strdup_printf(_("%s: Node %u: failed to decode"), hyp->file, node);
 			HPDF_REAL tw = HPDF_Page_TextWidth(pdf->page, text);
 			HPDF_Page_BeginText(pdf->page);
-			HPDF_Page_TextOut(pdf->page, (HPDF_Page_GetWidth(pdf->page) - tw) / 2, HPDF_Page_GetHeight(pdf->page) - 50, text);
+			HPDF_Page_TextOut(pdf->page, (HPDF_Page_GetWidth(pdf->page) - tw) / 2, HPDF_Page_GetHeight(pdf->page) - pdf->line_height - 50, text);
 			HPDF_Page_EndText(pdf->page);
 			g_free(text);
 		}

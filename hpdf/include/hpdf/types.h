@@ -265,6 +265,8 @@ typedef enum _HPDF_ColorSpace
 	HPDF_CS_EOF
 } HPDF_ColorSpace;
 
+extern const char *const HPDF_COLORSPACE_NAMES[HPDF_CS_EOF];
+
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_RGBColor struct ------------------------------------------------*/
 
@@ -631,6 +633,24 @@ typedef enum _HPDF_NameDictKey
 	HPDF_NAME_RENDITIONS,
 	HPDF_NAME_EOF
 } HPDF_NameDictKey;
+
+/*----------------------------------------------------------------------------*/
+
+typedef enum {
+	HPDF_PATTERN_TYPE_TILED = 1,
+	HPDF_PATTERN_TYPE_SHADING = 2,
+} HPDF_PATTERN_TYPE;
+
+typedef enum {
+	HPDF_PAINT_TYPE_COLORED = 1,
+	HPDF_PAINT_TYPE_UNCOLORED = 2,
+} HPDF_PAINT_TYPE;
+
+typedef enum {
+	HPDF_TILING_TYPE_CONSTANT = 1,
+	HPDF_TILING_TYPE_NO_DISTORTION = 2,
+	HPDF_TILING_TYPE_DISTORTION = 3,
+} HPDF_TILING_TYPE;
 
 #ifdef __cplusplus
 }

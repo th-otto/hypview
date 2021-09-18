@@ -46,6 +46,8 @@ typedef struct _HPDF_PageAttr_Rec
 	HPDF_Dict fonts;
 	HPDF_Dict xobjects;
 	HPDF_Dict ext_gstates;
+	HPDF_Dict patterns;
+	HPDF_Dict colorspaces;
 	HPDF_GState gstate;
 	HPDF_Point str_pos;
 	HPDF_Point cur_pos;
@@ -55,8 +57,6 @@ typedef struct _HPDF_PageAttr_Rec
 	HPDF_Dict contents;
 	HPDF_Stream stream;
 	HPDF_Xref xref;
-	HPDF_UINT compression_mode;
-	HPDF_PDFVer *ver;
 } HPDF_PageAttr_Rec;
 
 typedef HPDF_PageAttr_Rec *HPDF_PageAttr;
@@ -78,6 +78,12 @@ const char *HPDF_Page_GetXObjectName(HPDF_Page page, HPDF_XObject xobj);
 
 
 const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font);
+
+
+const char *HPDF_Page_GetLocalPatternName(HPDF_Page page, HPDF_Pattern pattern);
+
+
+const char *HPDF_Page_GetLocalColorspaceName(HPDF_Page page, HPDF_PatternColorspace colorspace);
 
 
 const char *HPDF_Page_GetExtGStateName(HPDF_Page page, HPDF_ExtGState gstate);

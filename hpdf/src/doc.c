@@ -545,13 +545,13 @@ HPDF_OutputIntent HPDF_LoadIccFromMem(
 	switch (numcomponent)
 	{
 	case 1:
-		HPDF_Dict_AddName(icc, "Alternate", "DeviceGray");
+		HPDF_Dict_AddName(icc, "Alternate", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_GRAY]);
 		break;
 	case 3:
-		HPDF_Dict_AddName(icc, "Alternate", "DeviceRGB");
+		HPDF_Dict_AddName(icc, "Alternate", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 		break;
 	case 4:
-		HPDF_Dict_AddName(icc, "Alternate", "DeviceCMYK");
+		HPDF_Dict_AddName(icc, "Alternate", HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_CMYK]);
 		break;
 	default:							/* unsupported */
 		HPDF_RaiseError(&pdf->error, HPDF_INVALID_ICC_COMPONENT_NUM, 0);
@@ -612,7 +612,7 @@ HPDF_Array HPDF_AddColorspaceFromProfile(HPDF_Doc pdf, HPDF_Dict icc)
 	if (!iccentry)
 		return NULL;
 
-	ret = HPDF_Array_AddName(iccentry, "ICCBased");
+	ret = HPDF_Array_AddName(iccentry, HPDF_COLORSPACE_NAMES[HPDF_CS_ICC_BASED]);
 	if (ret != HPDF_OK)
 	{
 		HPDF_Array_Free(iccentry);

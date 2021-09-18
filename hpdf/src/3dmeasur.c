@@ -95,7 +95,7 @@ HPDF_STATUS HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, const HPDF_RGBColor 
 	if (ret != HPDF_OK)
 		return ret;
 
-	ret += HPDF_Array_AddName(array, "DeviceRGB");
+	ret += HPDF_Array_AddName(array, HPDF_COLORSPACE_NAMES[HPDF_CS_DEVICE_RGB]);
 	ret += HPDF_Array_AddReal(array, color->r);
 	ret += HPDF_Array_AddReal(array, color->g);
 	ret += HPDF_Array_AddReal(array, color->b);

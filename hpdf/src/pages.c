@@ -60,6 +60,21 @@ const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[HPDF_PAGE_SIZE_EOF] = {
 };
 #endif
 
+#if defined(PAGES_ALL) || defined(PAGES_SIZES)
+const char *const HPDF_COLORSPACE_NAMES[HPDF_CS_EOF] = {
+	"DeviceGray",
+	"DeviceRGB",
+	"DeviceCMYK",
+	"CalGray",
+	"CalRGB",
+	"Lab",
+	"ICCBased",
+	"Separation",
+	"DeviceN",
+	"Indexed",
+	"Pattern",
+};
+#endif
 
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_Pages -----------------------------------------------------------*/
@@ -497,6 +512,102 @@ const char *HPDF_Page_GetLocalFontName(HPDF_Page page, HPDF_Font font)
 #endif
 
 
+#if defined(PAGES_ALL) || defined(PAGE_GETLOCALPATTERNNAME)
+const char *HPDF_Page_GetLocalPatternName(HPDF_Page page, HPDF_Pattern pattern)
+{
+	HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
+	const char *key;
+
+	if (!attr->patterns)
+	{
+		HPDF_Dict resources;
+		HPDF_Dict patterns;
+
+		resources = (HPDF_Dict) HPDF_Page_GetInheritableItem(page, "Resources", HPDF_OCLASS_DICT);
+		if (!resources)
+			return NULL;
+
+		patterns = HPDF_Dict_New(page->mmgr);
+		if (!patterns)
+			return NULL;
+
+		if (HPDF_Dict_Add(resources, "Pattern", patterns) != HPDF_OK)
+			return NULL;
+
+		attr->patterns = patterns;
+	}
+
+	/* search font-object from font-resource */
+	key = HPDF_Dict_GetKeyByObj(attr->patterns, pattern);
+	if (!key)
+	{
+		/* if the pattern is not registered in pattern-resource, register pattern to
+		 * pattern-resource.
+		 */
+		char patternName[HPDF_LIMIT_MAX_NAME_LEN + 1];
+
+		strcpy(patternName, "P");
+		HPDF_IToA(patternName + 1, attr->patterns->list->count + 1, patternName + HPDF_LIMIT_MAX_NAME_LEN);
+
+		if (HPDF_Dict_Add(attr->patterns, patternName, pattern) != HPDF_OK)
+			return NULL;
+
+		key = HPDF_Dict_GetKeyByObj(attr->patterns, pattern);
+	}
+
+	return key;
+}
+#endif
+
+
+#if defined(PAGES_ALL) || defined(PAGE_GETLOCALCOLORSPACENAME)
+const char *HPDF_Page_GetLocalColorspaceName(HPDF_Page page, HPDF_PatternColorspace colorspace)
+{
+	HPDF_PageAttr attr = (HPDF_PageAttr) page->attr;
+	const char *key;
+
+	if (!attr->colorspaces)
+	{
+		HPDF_Dict resources;
+		HPDF_Dict colorspaces;
+
+		resources = (HPDF_Dict) HPDF_Page_GetInheritableItem(page, "Resources", HPDF_OCLASS_DICT);
+		if (!resources)
+			return NULL;
+
+		colorspaces = HPDF_Dict_New(page->mmgr);
+		if (!colorspaces)
+			return NULL;
+
+		if (HPDF_Dict_Add(resources, "ColorSpace", colorspaces) != HPDF_OK)
+			return NULL;
+
+		attr->colorspaces = colorspaces;
+	}
+
+	/* search font-object from font-resource */
+	key = HPDF_Dict_GetKeyByObj(attr->colorspaces, colorspace);
+	if (!key)
+	{
+		/* if the colorspace is not registered in colorspace-resource, register colorspace to
+		 * colorspace-resource.
+		 */
+		char colorspaceName[HPDF_LIMIT_MAX_NAME_LEN + 1];
+
+		strcpy(colorspaceName, "Cs");
+		HPDF_IToA(colorspaceName + 2, attr->colorspaces->list->count + 1, colorspaceName + HPDF_LIMIT_MAX_NAME_LEN);
+
+		if (HPDF_Dict_Add(attr->colorspaces, colorspaceName, colorspace) != HPDF_OK)
+			return NULL;
+
+		key = HPDF_Dict_GetKeyByObj(attr->colorspaces, colorspace);
+	}
+
+	return key;
+}
+#endif
+
+
 #if defined(PAGES_ALL) || defined(PAGE_GETMEDIABOX)
 void HPDF_Page_GetMediaBox(HPDF_Page page, HPDF_Box *media_box)
 {
@@ -815,7 +926,7 @@ const char *HPDF_Page_GetXObjectName(HPDF_Page page, HPDF_XObject xobj)
 	key = HPDF_Dict_GetKeyByObj(attr->xobjects, xobj);
 	if (!key)
 	{
-		/* if the xobject is not resisterd in xobject-resource, register
+		/* if the xobject is not registered in xobject-resource, register
 		 * xobject to xobject-resource.
 		 */
 		char xobj_name[HPDF_LIMIT_MAX_NAME_LEN + 1];
@@ -863,7 +974,7 @@ const char *HPDF_Page_GetExtGStateName(HPDF_Page page, HPDF_ExtGState state)
 	key = HPDF_Dict_GetKeyByObj(attr->ext_gstates, state);
 	if (!key)
 	{
-		/* if the ext-gstate is not resisterd in ext-gstate resource, register
+		/* if the ext-gstate is not registered in ext-gstate resource, register
 		 *  to ext-gstate resource.
 		 */
 		char ext_gstate_name[HPDF_LIMIT_MAX_NAME_LEN + 1];

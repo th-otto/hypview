@@ -826,12 +826,17 @@ HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, H
 
 /*--- Color showing ------------------------------------------------------*/
 
-/* cs --not implemented yet */
-/* CS --not implemented yet */
-/* sc --not implemented yet */
-/* scn --not implemented yet */
-/* SC --not implemented yet */
-/* SCN --not implemented yet */
+/* cs */
+HPDF_STATUS HPDF_Page_SetColorspaceFill(HPDF_Page page, HPDF_PatternColorspace colorspace);
+
+/* CS */
+HPDF_STATUS HPDF_Page_SetColorspaceStroke(HPDF_Page page, HPDF_PatternColorspace colorspace);
+
+/* sc scn */
+HPDF_STATUS HPDF_Page_SetPatternFill(HPDF_Page page, HPDF_Pattern pattern, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b);
+
+/* SC SCN */
+HPDF_STATUS HPDF_Page_SetPatternStroke(HPDF_Page page, HPDF_Pattern pattern, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b);
 
 /* g */
 HPDF_STATUS HPDF_Page_SetGrayFill(HPDF_Page page, HPDF_REAL gray);
@@ -886,8 +891,7 @@ HPDF_STATUS HPDF_Page_Insert_Shared_Content_Stream(HPDF_Page page, HPDF_Dict sha
 /* BX --not implemented yet */
 /* EX --not implemented yet */
 
-HPDF_STATUS HPDF_Page_DrawImage(HPDF_Page page,
-						HPDF_Image image, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height);
+HPDF_STATUS HPDF_Page_DrawImage(HPDF_Page page, HPDF_Image image, HPDF_REAL x, HPDF_REAL y, HPDF_REAL width, HPDF_REAL height);
 
 
 HPDF_STATUS HPDF_Page_Circle(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL ray);

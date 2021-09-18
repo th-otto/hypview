@@ -1662,40 +1662,186 @@ HPDF_STATUS HPDF_Page_ShowTextNextLineEx(HPDF_Page page, HPDF_REAL word_space, H
 
 /*--- Color showing ------------------------------------------------------*/
 
+#if defined(PAGEOP_ALL) || defined(PAGE_SETCOLORSPACESTROKE)
 /*
  name CS
  Set the current color space to use for stroking operations.
- --not implemented yet
  */
+HPDF_STATUS HPDF_Page_SetColorspaceStroke(HPDF_Page page, HPDF_PatternColorspace colorspace)
+{
+	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
+	HPDF_PageAttr attr;
+	const char *local_name;
+
+	if (ret != HPDF_OK)
+		return ret;
+
+	attr = (HPDF_PageAttr) page->attr;
+	local_name = HPDF_Page_GetLocalColorspaceName(page, colorspace);
+
+	if (!local_name)
+		return HPDF_RaiseError(page->error, HPDF_INVALID_OBJECT, 0);
+
+	if (HPDF_Stream_WriteEscapeName(attr->stream, local_name) != HPDF_OK)
+		return HPDF_CheckError(page->error);
+
+	if (HPDF_Stream_WriteStr(attr->stream, " CS\012") != HPDF_OK)
+		return HPDF_CheckError(page->error);
+
+	attr->gstate->cs_stroke = HPDF_CS_PATTERN;
+
+	return ret;
+}
+#endif
+
+
+#if defined(PAGEOP_ALL) || defined(PAGE_SETCOLORSPACEFILL)
 /*
  name cs
- --not implemented yet
  Same as CS but used for nonstroking operations.
  */
+HPDF_STATUS HPDF_Page_SetColorspaceFill(HPDF_Page page, HPDF_PatternColorspace colorspace)
+{
+	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
+	HPDF_PageAttr attr;
+	const char *local_name;
+
+	if (ret != HPDF_OK)
+		return ret;
+
+	attr = (HPDF_PageAttr) page->attr;
+	local_name = HPDF_Page_GetLocalColorspaceName(page, colorspace);
+
+	if (!local_name)
+		return HPDF_RaiseError(page->error, HPDF_INVALID_OBJECT, 0);
+
+	if (HPDF_Stream_WriteEscapeName(attr->stream, local_name) != HPDF_OK)
+		return HPDF_CheckError(page->error);
+
+	if (HPDF_Stream_WriteStr(attr->stream, " cs\012") != HPDF_OK)
+		return HPDF_CheckError(page->error);
+
+	attr->gstate->cs_fill = HPDF_CS_PATTERN;
+
+	return ret;
+}
+#endif
+
+
+#if defined(PAGEOP_ALL) || defined(PAGE_SETPATTERNSTROKE)
 /*
  SC
  Set the color to use for stroking operations in a device, CIE-
  based (other than ICCBased), or Indexed color space. The number of
  operands required and their interpretation depends on the current
  stroking color space.
- --not implemented yet
- */
-/*
- sc
- Same as SC but used for nonstroking operations.
-  --not implemented yet
- */
-/*
  SCN
  Same as SC but also supports Pattern, Separation, DeviceN
  and ICCBased color spaces.
- --not implemented yet
  */
+HPDF_STATUS HPDF_Page_SetPatternStroke(HPDF_Page page, HPDF_Pattern pattern, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
+{
+	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
+	HPDF_PageAttr attr;
+	const char *local_name;
+	char buf[HPDF_TMP_BUF_SIZ];
+	char *pbuf = buf;
+	char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
+
+	if (ret != HPDF_OK)
+		return ret;
+
+	attr = (HPDF_PageAttr) page->attr;
+	local_name = HPDF_Page_GetLocalPatternName(page, pattern);
+
+	if (!local_name)
+		return HPDF_RaiseError(page->error, HPDF_INVALID_OBJECT, 0);
+
+	/*
+	 * FIXME: only for uncolord tiling patterns
+	 */
+	pbuf = HPDF_FToA(pbuf, r, eptr);
+	*pbuf++ = ' ';
+	pbuf = HPDF_FToA(pbuf, g, eptr);
+	*pbuf++ = ' ';
+	pbuf = HPDF_FToA(pbuf, b, eptr);
+	*pbuf++ = ' ';
+	*pbuf++ = '/';
+	pbuf = HPDF_StrCpy(pbuf, local_name, eptr);
+
+	switch (attr->gstate->cs_fill)
+	{
+	case HPDF_CS_ICC_BASED:
+	case HPDF_CS_SEPARATION:
+	case HPDF_CS_DEVICE_N:
+	case HPDF_CS_PATTERN:
+		pbuf = HPDF_StrCpy(pbuf, " SCN\012", eptr);
+		break;
+	default:
+		pbuf = HPDF_StrCpy(pbuf, " SC\012", eptr);
+		break;
+	}
+	if (HPDF_Stream_WriteStr(attr->stream, buf) != HPDF_OK)
+		return HPDF_CheckError(page->error);
+
+	return ret;
+}
+#endif
+
+
+#if defined(PAGEOP_ALL) || defined(PAGE_SETPATTERNFILL)
 /*
+ sc
+ Same as SC but used for nonstroking operations.
  scn
  Same as SCN but used for nonstroking operations.
- --not implemented yet
  */
+HPDF_STATUS HPDF_Page_SetPatternFill(HPDF_Page page, HPDF_Pattern pattern, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
+{
+	HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION | HPDF_GMODE_PATH_OBJECT | HPDF_GMODE_TEXT_OBJECT);
+	HPDF_PageAttr attr;
+	const char *local_name;
+	char buf[HPDF_TMP_BUF_SIZ];
+	char *pbuf = buf;
+	char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
+
+	if (ret != HPDF_OK)
+		return ret;
+
+	attr = (HPDF_PageAttr) page->attr;
+	local_name = HPDF_Page_GetLocalPatternName(page, pattern);
+
+	if (!local_name)
+		return HPDF_RaiseError(page->error, HPDF_INVALID_OBJECT, 0);
+
+	pbuf = HPDF_FToA(pbuf, r, eptr);
+	*pbuf++ = ' ';
+	pbuf = HPDF_FToA(pbuf, g, eptr);
+	*pbuf++ = ' ';
+	pbuf = HPDF_FToA(pbuf, b, eptr);
+	*pbuf++ = ' ';
+	*pbuf++ = '/';
+	pbuf = HPDF_StrCpy(pbuf, local_name, eptr);
+
+	switch (attr->gstate->cs_fill)
+	{
+	case HPDF_CS_ICC_BASED:
+	case HPDF_CS_SEPARATION:
+	case HPDF_CS_DEVICE_N:
+	case HPDF_CS_PATTERN:
+		pbuf = HPDF_StrCpy(pbuf, " scn\012", eptr);
+		break;
+	default:
+		pbuf = HPDF_StrCpy(pbuf, " sc\012", eptr);
+		break;
+	}
+	if (HPDF_Stream_WriteStr(attr->stream, buf) != HPDF_OK)
+		return HPDF_CheckError(page->error);
+
+	return ret;
+}
+#endif
+
 
 #if defined(PAGEOP_ALL) || defined(PAGE_SETGRAYFILL)
 /*
