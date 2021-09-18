@@ -8,6 +8,7 @@
 #include "outcomm.h"
 #include "pattern.h"
 #include <math.h>
+#include "picture.h"
 
 #ifdef WITH_PDF /* whole file */
 
@@ -39,6 +40,7 @@ struct _pdf {
 	struct hyp_gfx *hyp_gfx;
 	HPDF_PatternColorspace pattern_colorspace;
 	HPDF_Pattern patterns[NUM_PATTERNS];
+	HPDF_Image *images;
 };
 
 
@@ -101,6 +103,8 @@ static HPDF_REAL text_yoffset;
 #define IP_6PATT		6
 #define IP_7PATT		7
 #define IP_WIN_SOLID	8
+
+#define XMAX_PLANES 32
 
 
 /* ------------------------------------------------------------------------- */
@@ -585,11 +589,172 @@ static gboolean pdf_generate_link(PDF *pdf, HYP_DOCUMENT *hyp, struct pdf_xref *
 
 /* ------------------------------------------------------------------------- */
 
-static HPDF_REAL draw_image(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+static HPDF_Image convert_image(PDF *pdf, HYP_IMAGE *pic)
 {
-	(void)pdf;
-	(void)gfx;
-	(void) x;
+	int width = pic->pic.fd_w;
+	int height = pic->pic.fd_h;
+	int planes = pic->pic.fd_nplanes;
+	unsigned char *src = (unsigned char *)pic->pic.fd_addr;
+	HPDF_Image image;
+	unsigned char *pixbuf;
+	unsigned char *dst;
+	int dststride;
+	int srcstride;
+	int x, planesize, pos;
+	int i;
+	PALETTE pal;
+	unsigned char *plane_ptr[XMAX_PLANES];
+	guint16 back[XMAX_PLANES];
+	int np;
+	int pixel;
+	guint16 color;
+
+	dststride = width * 3;
+	
+	pixbuf = g_new(unsigned char, dststride * height);
+	if (pixbuf == NULL)
+		return NULL;
+	srcstride = ((width + 15) >> 4) << 1;
+	planesize = srcstride * height;
+	pic_stdpalette(pal, planes);
+
+	dst = pixbuf;
+	
+	for (i = 0; i < planes; i++)
+		plane_ptr[i] = &src[i * planesize];
+	
+	pos = 0;
+	width *= 3; /* we write 3 bytes per pixel */
+	for (x = 0; x < planesize; x += 2)
+	{
+		for (np = 0; np < planes; np++)
+			back[np] = (plane_ptr[np][x] << 8) | plane_ptr[np][x + 1];
+		
+		for (pixel = 0; pixel < 16; pixel++)
+		{
+			color = 0;
+			for (np = 0; np < planes; np++)
+			{
+				color |= ((back[np] & 0x8000) >> (15 - np));
+				back[np] <<= 1;
+			}
+			if (pos < width)
+			{
+				dst[pos++] = pal[color].r;
+				dst[pos++] = pal[color].g;
+				dst[pos++] = pal[color].b;
+			}
+		}
+		if (pos >= width)
+		{
+			pos = 0;
+			dst += dststride;
+		}
+	}
+
+	image = HPDF_Image_LoadRawImageFromMem(pdf->hpdf->mmgr, pixbuf, pdf->hpdf->xref, pic->pic.fd_w, height, HPDF_CS_DEVICE_RGB, 8);
+	g_free(pixbuf);
+	return image;
+}
+
+
+static HPDF_REAL draw_image(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+{
+	HYP_IMAGE *pic;
+	HPDF_REAL tx, ty, tw, th;
+	HPDF_Image image;
+	void *orig_data;
+	
+	pic = (HYP_IMAGE *)AskCache(hyp, gfx->extern_node_index);
+
+	if (pic)
+	{
+		/*
+		 * in the GUI, this may have been already
+		 * converted to a system dependant format
+		 * (BITMAP or GdkPixbuf).
+		 * We need the original data here.
+		 */
+		orig_data = NULL;
+		if (!cmdline_version)
+		{
+			if (pic->decompressed)
+			{
+				orig_data = pic->pic.fd_addr;
+				pic->pic.fd_addr = hyp_loaddata(hyp, gfx->extern_node_index);
+				pic->decompressed = FALSE;
+			}
+		}
+
+		if (gfx->x_offset == 0)
+		{
+			tx = (hyp->line_width * pdf->cell_width - gfx->pixwidth) / 2;
+		} else
+		{
+			int xc;
+			
+			xc = gfx->x_offset - 1;
+			if ((xc + (gfx->pixwidth / HYP_PIC_FONTW)) == hyp->line_width)
+				tx = pdf->page_width - gfx->pixwidth;
+			else
+				tx = xc * pdf->cell_width;
+		}
+		if (tx < 0)
+			tx = 0;
+		
+		tx += x;
+		ty = y;
+		tw = (gfx->pixwidth / HYP_PIC_FONTW) * pdf->cell_width;
+		th = ((gfx->pixheight + HYP_PIC_FONTH - 1) / HYP_PIC_FONTH) * pdf->line_height;
+		if (gfx->islimage)
+		{
+			y += gfx->pixheight;
+			/* st-guide leaves an empty line after each @limage */
+			if ((gfx->pixheight % HYP_PIC_FONTH) == 0)
+				y += pdf->line_height;
+		}
+
+		if (tx >= pdf->page_width || (tx + gfx->pixwidth) <= 0)
+			return y;
+		if (ty >= pdf->page_height || (ty + gfx->pixheight) <= 0)
+			return y;
+
+		if (pdf->images == NULL)
+		{
+			pdf->images = g_new0(HPDF_Image, hyp->num_index);
+			if (pdf->images == NULL)
+				return y;
+		}
+		if (pdf->images[gfx->extern_node_index] == NULL)
+		{
+			if (!pic->decompressed)
+			{
+				if (hyp_transform_image(hyp, gfx) == FALSE)
+					return y;
+			}
+			image = convert_image(pdf, pic);
+			pdf->images[gfx->extern_node_index] = image;
+			if (cmdline_version)
+			{
+				char *data = (char *)pic->pic.fd_addr;
+				data -= SIZEOF_HYP_PICTURE;
+				g_free(data);
+				pic->pic.fd_addr = NULL;
+			}
+		} else
+		{
+			image = pdf->images[gfx->extern_node_index];
+		}
+		if (orig_data)
+		{
+			pic->pic.fd_addr = orig_data;
+			pic->decompressed = TRUE;
+		}
+		if (image)
+		{
+			HPDF_Page_DrawImage(pdf->page, image, tx, pdf->page_height - 1 - ty - th, tw, th);
+		}
+	}
 	return y;
 }
 
@@ -882,7 +1047,6 @@ static HPDF_REAL pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, long lineno, HPDF
 	HPDF_REAL max_y, y;
 	struct hyp_gfx *gfx;
 	
-	(void)hyp;
 	max_y = sy;
 	gfx = pdf->hyp_gfx;
 	while (gfx != NULL)
@@ -893,7 +1057,7 @@ static HPDF_REAL pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, long lineno, HPDF
 			switch (gfx->type)
 			{
 			case HYP_ESC_PIC:
-				y = draw_image(pdf, gfx, sx, sy);
+				y = draw_image(pdf, hyp, gfx, sx, sy);
 				break;
 			case HYP_ESC_LINE:
 				y = draw_line(pdf, gfx, sx, sy);
@@ -1007,6 +1171,8 @@ PDF *pdf_new(hcp_opts *opts)
 	for (i = 0; i < NUM_PATTERNS; i++)
 		pdf->patterns[i] = NULL;
 
+	pdf->images = NULL;
+
 	return pdf;
 }
 	
@@ -1032,6 +1198,7 @@ void pdf_delete(PDF *pdf)
 #endif
 
 	HPDF_Free(pdf->hpdf);
+	g_free(pdf->images);
 	g_free(pdf->links);
 	g_free(pdf->pages);
 	g_free(pdf);
@@ -1107,7 +1274,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	gboolean in_text_out = FALSE;
 	HPDF_Point text_pos;
 	HPDF_REAL bottom_margin = 0;
-	HPDF_REAL sx, sy;
+	HPDF_REAL sx, sy, dy;
 
 #define BEGINTEXT() \
 	if (!in_text_out) \
@@ -1347,7 +1514,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			if (!dryrun)
 			{
 				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-				sy = pdf_out_graphics(pdf, hyp, lineno, sx, sy);
+				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy) - sy;
+				sy += dy;
+				text_pos.y -= dy;
 			}
 				
 			while (retval && src < end)
@@ -1565,7 +1734,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					if (!dryrun)
 					{
 						retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-						sy = pdf_out_graphics(pdf, hyp, lineno, sx, sy);
+						dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy) - sy;
+						sy += dy;
+						text_pos.y -= dy;
 					}
 					src++;
 					textstart = src;
@@ -1591,7 +1762,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			if (!dryrun)
 			{
 				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-				sy = pdf_out_graphics(pdf, hyp, lineno, sx, sy);
+				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy) - sy;
+				sy += dy;
+				text_pos.y -= dy;
 			}
 			
 			if (pdf->hyp_gfx != NULL)

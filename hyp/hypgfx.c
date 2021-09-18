@@ -164,7 +164,7 @@ void hyp_pic_apply_planemasks(HYP_IMAGE *pic, unsigned char *buf)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
+gboolean hyp_transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx)
 {
 	hyp_nodenr node = gfx->extern_node_index;
 	unsigned long data_size;
@@ -279,7 +279,7 @@ gboolean hyp_prep_graphics(HYP_DOCUMENT *hyp, HYP_NODE *node)
 			if (gfx->type == HYP_ESC_PIC)
 			{
 				gfx->dithermask = dithermask;
-				transform_image(hyp, gfx);
+				hyp_transform_image(hyp, gfx);
 				dithermask = 0;
 			}
 			break;

@@ -781,6 +781,7 @@ void hyp_free_graphics(HYP_NODE *node);
 gboolean W_Fix_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
 void W_Release_Bitmap(void **data, _WORD width, _WORD height, _WORD planes);
 _WORD GetNumPlanes(void);
+gboolean hyp_transform_image(HYP_DOCUMENT *hyp, struct hyp_gfx *gfx);
 
 
 /*

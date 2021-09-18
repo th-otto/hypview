@@ -8,34 +8,35 @@
 @width 75
 
 
+@remark 216x177x2 (12 lines)
 @node "Main"
 center (width 75)
 01234578901234578901234578901234578901234578901234578901234578901234
 @image "rtr_logo.img" 0
-
-
-
-
-
-
-
-
-
-
-
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
 left, at offset 10
 @image "rtr_logo.img" 11
-
-
-
-
-
-
-
-
-
-
-
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
 right
 @image "rtr_logo.img" 49
 @endnode
