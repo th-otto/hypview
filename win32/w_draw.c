@@ -446,23 +446,27 @@ void W_rounded_box(HDC hdc, const GRECT *gr, int fillstyle, COLORREF color)
 
 	xc = x2 - xrad;
 	yc = y1 - yrad;
+	/* top right */
 	for (i = 4, j = 5; i >= 0; i--, j++)
 	{
 	    points[j].y = yc + points[i].y;
 	    points[j].x = xc + points[i].x;
 	}
 	xc = x1 + xrad; 
+	/* top left */
 	for (i = 0, j = 10; i < 5; i++, j++)
 	{
 	    points[j].x = xc - points[i].x;
 	    points[j].y = yc + points[i].y;
 	}
+	/* bottom left */
 	yc = y2 + yrad;
 	for (i = 4, j = 15; i >= 0; i--, j++)
 	{ 
 	    points[j].y = yc - points[i].y;
 	    points[j].x = xc - points[i].x;
 	}
+	/* bottom right */
 	xc = x2 - xrad;
 	for (i = 0, j = 0; i < 5; i++, j++)
 	{ 

@@ -172,7 +172,7 @@ HPDF_STATUS HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 *dash_ptn, HPDF_
 	if (ret != HPDF_OK)
 		return ret;
 
-	if (num_param != 1 && (num_param / 2) * 2 != num_param)
+	if ((num_param != 1 && (num_param / 2) * 2 != num_param) || num_param > 8)
 		return HPDF_RaiseError(page->error, HPDF_PAGE_INVALID_PARAM_COUNT, num_param);
 
 	if (num_param == 0 && phase > 0)
@@ -185,8 +185,10 @@ HPDF_STATUS HPDF_Page_SetDash(HPDF_Page page, const HPDF_UINT16 *dash_ptn, HPDF_
 
 	for (i = 0; i < num_param; i++)
 	{
+#if 0
 		if (*pdash_ptn == 0 || *pdash_ptn > HPDF_MAX_DASH_PATTERN)
 			return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
+#endif
 
 		pbuf = HPDF_IToA(pbuf, *pdash_ptn, eptr);
 		*pbuf++ = ' ';
@@ -1747,7 +1749,8 @@ HPDF_STATUS HPDF_Page_SetPatternStroke(HPDF_Page page, HPDF_Pattern pattern, HPD
 	char buf[HPDF_TMP_BUF_SIZ];
 	char *pbuf = buf;
 	char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
-
+	HPDF_Number obj;
+	
 	if (ret != HPDF_OK)
 		return ret;
 
@@ -1758,14 +1761,22 @@ HPDF_STATUS HPDF_Page_SetPatternStroke(HPDF_Page page, HPDF_Pattern pattern, HPD
 		return HPDF_RaiseError(page->error, HPDF_INVALID_OBJECT, 0);
 
 	/*
-	 * FIXME: only for uncolord tiling patterns
+	 * only for uncolored tiling patterns
 	 */
-	pbuf = HPDF_FToA(pbuf, r, eptr);
-	*pbuf++ = ' ';
-	pbuf = HPDF_FToA(pbuf, g, eptr);
-	*pbuf++ = ' ';
-	pbuf = HPDF_FToA(pbuf, b, eptr);
-	*pbuf++ = ' ';
+	obj = (HPDF_Number) HPDF_Dict_GetItem(pattern, "PatternType", HPDF_OCLASS_NUMBER);
+	if (obj && obj->value == HPDF_PATTERN_TYPE_TILED)
+	{
+		obj = (HPDF_Number) HPDF_Dict_GetItem(pattern, "PaintType", HPDF_OCLASS_NUMBER);
+		if (obj && obj->value == HPDF_PAINT_TYPE_UNCOLORED)
+		{
+			pbuf = HPDF_FToA(pbuf, r, eptr);
+			*pbuf++ = ' ';
+			pbuf = HPDF_FToA(pbuf, g, eptr);
+			*pbuf++ = ' ';
+			pbuf = HPDF_FToA(pbuf, b, eptr);
+			*pbuf++ = ' ';
+		}
+	}
 	*pbuf++ = '/';
 	pbuf = HPDF_StrCpy(pbuf, local_name, eptr);
 
@@ -1804,6 +1815,7 @@ HPDF_STATUS HPDF_Page_SetPatternFill(HPDF_Page page, HPDF_Pattern pattern, HPDF_
 	char buf[HPDF_TMP_BUF_SIZ];
 	char *pbuf = buf;
 	char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
+	HPDF_Number obj;
 
 	if (ret != HPDF_OK)
 		return ret;
@@ -1814,12 +1826,23 @@ HPDF_STATUS HPDF_Page_SetPatternFill(HPDF_Page page, HPDF_Pattern pattern, HPDF_
 	if (!local_name)
 		return HPDF_RaiseError(page->error, HPDF_INVALID_OBJECT, 0);
 
-	pbuf = HPDF_FToA(pbuf, r, eptr);
-	*pbuf++ = ' ';
-	pbuf = HPDF_FToA(pbuf, g, eptr);
-	*pbuf++ = ' ';
-	pbuf = HPDF_FToA(pbuf, b, eptr);
-	*pbuf++ = ' ';
+	/*
+	 * only for uncolored tiling patterns
+	 */
+	obj = (HPDF_Number) HPDF_Dict_GetItem(pattern, "PatternType", HPDF_OCLASS_NUMBER);
+	if (obj && obj->value == HPDF_PATTERN_TYPE_TILED)
+	{
+		obj = (HPDF_Number) HPDF_Dict_GetItem(pattern, "PaintType", HPDF_OCLASS_NUMBER);
+		if (obj && obj->value == HPDF_PAINT_TYPE_UNCOLORED)
+		{
+			pbuf = HPDF_FToA(pbuf, r, eptr);
+			*pbuf++ = ' ';
+			pbuf = HPDF_FToA(pbuf, g, eptr);
+			*pbuf++ = ' ';
+			pbuf = HPDF_FToA(pbuf, b, eptr);
+			*pbuf++ = ' ';
+		}
+	}
 	*pbuf++ = '/';
 	pbuf = HPDF_StrCpy(pbuf, local_name, eptr);
 

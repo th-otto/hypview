@@ -211,7 +211,7 @@ HPDF_STATUS HPDF_Catalog_AddPageLabel(HPDF_Catalog catalog, HPDF_UINT page_num, 
 		labels = HPDF_Dict_New(catalog->mmgr);
 
 		if (!labels)
-			return catalog->error->error_no;
+			return HPDF_Error_GetCode(catalog->error);
 
 		if ((ret = HPDF_Dict_Add(catalog, "PageLabels", labels)) != HPDF_OK)
 			return ret;
@@ -224,7 +224,7 @@ HPDF_STATUS HPDF_Catalog_AddPageLabel(HPDF_Catalog catalog, HPDF_UINT page_num, 
 		nums = HPDF_Array_New(catalog->mmgr);
 
 		if (!nums)
-			return catalog->error->error_no;
+			return HPDF_Error_GetCode(catalog->error);
 
 		if ((ret = HPDF_Dict_Add(labels, "Nums", nums)) != HPDF_OK)
 			return ret;
@@ -256,7 +256,7 @@ HPDF_STATUS HPDF_Catalog_SetViewerPreference(HPDF_Catalog catalog, HPDF_UINT val
 
 	preferences = HPDF_Dict_New(catalog->mmgr);
 	if (!preferences)
-		return catalog->error->error_no;
+		return HPDF_Error_GetCode(catalog->error);
 
 	if ((ret = HPDF_Dict_Add(catalog, "ViewerPreferences", preferences)) != HPDF_OK)
 		return ret;
@@ -329,13 +329,13 @@ HPDF_STATUS HPDF_Catalog_SetViewerPreference(HPDF_Catalog catalog, HPDF_UINT val
 				return ret;
 	}
 
-	if (value & HPDF_DISPLAY_TOC_TITLE)
+	if (value & HPDF_DISPLAY_DOC_TITLE)
 	{
-		if ((ret = HPDF_Dict_AddBoolean(preferences, "DisplayTocTitle", HPDF_TRUE)) != HPDF_OK)
+		if ((ret = HPDF_Dict_AddBoolean(preferences, "DisplayDocTitle", HPDF_TRUE)) != HPDF_OK)
 			return ret;
 	} else
 	{
-		if ((ret = HPDF_Dict_RemoveElement(preferences, "DisplayTocTitle")) != HPDF_OK)
+		if ((ret = HPDF_Dict_RemoveElement(preferences, "DisplayDocTitle")) != HPDF_OK)
 			if (ret != HPDF_DICT_ITEM_NOT_FOUND)
 				return ret;
 	}
@@ -366,7 +366,7 @@ HPDF_UINT HPDF_Catalog_GetViewerPreference(HPDF_Catalog catalog)
 	preferences = (HPDF_Dict) HPDF_Dict_GetItem(catalog, "ViewerPreferences", HPDF_OCLASS_DICT);
 
 	if (!preferences)
-		return 0;
+		return value;
 
 	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "HideToolbar", HPDF_OCLASS_BOOLEAN);
 	if (obj)
@@ -409,11 +409,11 @@ HPDF_UINT HPDF_Catalog_GetViewerPreference(HPDF_Catalog catalog)
 		value |= HPDF_PRINT_SCALING_NONE;
 	}
 
-	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "DisplayTocTitle", HPDF_OCLASS_BOOLEAN);
+	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "DisplayDocTitle", HPDF_OCLASS_BOOLEAN);
 	if (obj)
 	{
 		if (obj->value)
-			value |= HPDF_DISPLAY_TOC_TITLE;
+			value |= HPDF_DISPLAY_DOC_TITLE;
 	}
 
 	obj = (HPDF_Boolean) HPDF_Dict_GetItem(preferences, "Direction", HPDF_OCLASS_BOOLEAN);

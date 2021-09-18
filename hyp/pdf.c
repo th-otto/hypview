@@ -1,11 +1,46 @@
+#define __HYP_PDF_IMPLEMENTATION__
 #include "hypdefs.h"
 #include "hypdebug.h"
 #include "hcp_opts.h"
+#include <setjmp.h>
+#include "hpdf.h"
 #include "pdf.h"
 #include "outcomm.h"
 #include "pattern.h"
+#include <math.h>
 
 #ifdef WITH_PDF /* whole file */
+
+struct pdf_page {
+	HPDF_Page page;
+	hyp_nodenr node;
+};
+
+struct _pdf {
+	HPDF_Doc hpdf;
+	hcp_opts *opts;
+	jmp_buf error_env;
+	HPDF_Font regular_font;
+	HPDF_Font bold_font;
+	HPDF_Font italic_font;
+	HPDF_Font bold_italic_font;
+	HPDF_REAL font_size;
+	HPDF_REAL ascent;
+	HPDF_REAL descent;
+	HPDF_REAL line_height;
+	HPDF_REAL cell_width;
+	size_t num_pages;
+	size_t curr_page_num;
+	struct pdf_page *pages;
+	HPDF_Page *links;
+	HPDF_Page page;
+	HPDF_REAL page_width;
+	HPDF_REAL page_height;
+	struct hyp_gfx *hyp_gfx;
+	HPDF_PatternColorspace pattern_colorspace;
+	HPDF_Pattern patterns[NUM_PATTERNS];
+};
+
 
 static struct {
 	HPDF_RGBColor background;           /* window background color */
@@ -66,6 +101,7 @@ static HPDF_REAL text_yoffset;
 #define IP_6PATT		6
 #define IP_7PATT		7
 #define IP_WIN_SOLID	8
+
 
 /* ------------------------------------------------------------------------- */
 
@@ -144,10 +180,23 @@ static gboolean pdf_out_labels(PDF *pdf, HYP_DOCUMENT *hyp, const INDEX_ENTRY *e
 
 /* ------------------------------------------------------------------------- */
 
+static gboolean pdf_out_fill_color(HPDF_Page page, const HPDF_RGBColor *color)
+{
+	return HPDF_Page_SetRGBFill(page, color->r, color->g, color->b) == HPDF_NOERROR;
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean pdf_out_stroke_color(HPDF_Page page, const HPDF_RGBColor *color)
+{
+	return HPDF_Page_SetRGBStroke(page, color->r, color->g, color->b) == HPDF_NOERROR;
+}
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean pdf_out_color(HPDF_Page page, const HPDF_RGBColor *color)
 {
-	return HPDF_Page_SetRGBFill(page, color->r, color->g, color->b) == HPDF_NOERROR &&
-	       HPDF_Page_SetRGBStroke(page, color->r, color->g, color->b) == HPDF_NOERROR;
+	return pdf_out_fill_color(page, color) && pdf_out_stroke_color(page, color);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -165,11 +214,11 @@ static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, HPDF_Point *text_pos, c
 		
 		HPDF_Font_TextWidth(pdf->regular_font, str, len, &tw);
 		HPDF_Page_GetRGBFill(pdf->page, &color);
-		HPDF_Page_SetRGBFill(pdf->page, user_colors[attr->curbg].r, user_colors[attr->curbg].g, user_colors[attr->curbg].b);
+		pdf_out_fill_color(pdf->page, &user_colors[attr->curbg]);
 		HPDF_Page_Rectangle(pdf->page, text_pos->x, text_pos->y, tw.width * pdf->font_size / 1000, pdf->line_height);
 		HPDF_Page_Fill(pdf->page);
 		
-		HPDF_Page_SetRGBFill(pdf->page, color.r, color.g, color.b);
+		pdf_out_fill_color(pdf->page, &color);
 	}
 	ret &= HPDF_Page_BeginText(pdf->page) == HPDF_NOERROR;
 	ret &= HPDF_Page_MoveTextPos(pdf->page, text_pos->x, text_pos->y) == HPDF_NOERROR;
@@ -182,7 +231,7 @@ static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, HPDF_Point *text_pos, c
 		ret &= HPDF_Page_ShowText(pdf->page, dst) == HPDF_NOERROR;
 		HPDF_Page_GetCurrentTextPos(pdf->page, text_pos);
 		ret &= HPDF_Page_EndText(pdf->page) == HPDF_NOERROR;
-		y = oldpos.y + HPDF_Font_GetDescent(pdf->regular_font) * pdf->font_size / 1000;
+		y = oldpos.y + pdf->descent;
 		HPDF_Page_MoveTo(pdf->page, oldpos.x, y);
 		HPDF_Page_LineTo(pdf->page, text_pos->x, y);
 		HPDF_Page_Stroke(pdf->page);
@@ -219,7 +268,7 @@ static gboolean pdf_out_curattr(PDF *pdf, struct textattr *attr)
 	if (attr->curattr & HYP_TXT_SHADOWED)
 	{
 		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_FILL_THEN_STROKE);
-		HPDF_Page_SetRGBFill(pdf->page, viewer_colors.background.r, viewer_colors.background.g, viewer_colors.background.b);
+		pdf_out_fill_color(pdf->page, &viewer_colors.background);
 	} else if (attr->curattr & HYP_TXT_OUTLINED)
 	{
 		HPDF_Page_SetTextRenderingMode(pdf->page, HPDF_STROKE);
@@ -568,6 +617,7 @@ static int adjust_for_limage(PDF *pdf, long lineno, int h)
 
 static void draw_arrows(PDF *pdf, HPDF_REAL x0, HPDF_REAL y0, HPDF_REAL x1, HPDF_REAL y1, unsigned char line_ends)
 {
+	/* FIXME: not yet implemented */
 	(void) pdf;
 	(void) x0;
 	(void) y0;
@@ -584,6 +634,13 @@ static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL
 	HPDF_REAL ret = y;
 	int diff;
 	HPDF_REAL x0, y0, x1, y1;
+
+	static HPDF_UINT16 const long_dash[] = { 12, 4 };
+	static HPDF_UINT16 const dot[] = { 2, 6, 2, 6 };
+	static HPDF_UINT16 const dashdot[] = { 8, 3, 2, 3 };
+	static HPDF_UINT16 const dash[] = { 8, 8 };
+	static HPDF_UINT16 const dashdotdot[] = { 4, 3, 2, 2, 1, 3, 1, 0 };
+	static HPDF_UINT16 const userline[] = { 1, 1 };
 
 	w = gfx->width * pdf->cell_width;
 	h = gfx->height * pdf->line_height;
@@ -641,6 +698,33 @@ static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL
 	HPDF_Page_GSave(pdf->page);
 	pdf_out_color(pdf->page, &viewer_colors.text);
 
+	switch (gfx->style)
+	{
+	case 0:
+	case 1:
+	default:
+		/* solid */
+		break;
+	case 2: /* long dash */
+		HPDF_Page_SetDash(pdf->page, long_dash, 2, 0);
+		break;
+	case 3: /* dot */
+		HPDF_Page_SetDash(pdf->page, dot, 4, 0);
+		break;
+	case 4: /* dashdot */
+		HPDF_Page_SetDash(pdf->page, dashdot, 4, 0);
+		break;
+	case 5: /* dash */
+		HPDF_Page_SetDash(pdf->page, dash, 2, 0);
+		break;
+	case 6: /* dashdotdot */
+		HPDF_Page_SetDash(pdf->page, dashdotdot, 8, 0);
+		break;
+	case 7: /* userline */
+		/* FIXME: maybe better use gray instead? */
+		HPDF_Page_SetDash(pdf->page, userline, 2, 0);
+		break;
+	}
 	HPDF_Page_MoveTo(pdf->page, x0, pdf->page_height - 1 - y0);
 	HPDF_Page_LineTo(pdf->page, x1, pdf->page_height - 1 - y1);
 	HPDF_Page_Stroke(pdf->page);
@@ -652,13 +736,44 @@ static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL
 	return ret;
 }
 
+
+static void rounded_box(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL w, HPDF_REAL h)
+{
+	HPDF_REAL rdeltax, rdeltay;
+	HPDF_REAL xrad, yrad;
+	HPDF_REAL x1, y1, x2, y2;
+
+	x1 = x;
+	y1 = y;
+	x2 = x1 + w;
+	y2 = y1 + h;
+
+	rdeltax = w / 2;
+	rdeltay = h / 2;
+
+	xrad = 10;
+	if (xrad > rdeltax)
+	    xrad = rdeltax;
+
+	yrad = xrad;
+	if (yrad > rdeltay)
+	    yrad = rdeltay;
+
+	HPDF_Page_Arc(page, x2 - xrad, y2 - yrad, xrad, yrad, 0, 90);
+	HPDF_Page_Arc(page, x1 + xrad, y2 - yrad, xrad, yrad, 90, 180);
+	HPDF_Page_Arc(page, x1 + xrad, y1 + yrad, xrad, yrad, 180, 270);
+	HPDF_Page_Arc(page, x2 - xrad, y1 + yrad, xrad, yrad, 270, 0);
+	HPDF_Page_ClosePath(page);
+}
+
+
 static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
 {
 	HPDF_REAL ret = y;
 	HPDF_REAL w, h;
 	HPDF_REAL tx, ty;
 	int fillstyle;
-	
+
 	tx = (gfx->x_offset - 1) * pdf->cell_width;
 	w = gfx->width * pdf->cell_width;
 	h = gfx->height * pdf->line_height;
@@ -676,9 +791,6 @@ static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL 
 		return ret;
 
 	HPDF_Page_GSave(pdf->page);
-	pdf_out_color(pdf->page, &viewer_colors.text);
-
-	HPDF_Page_Rectangle(pdf->page, x, y, w, h);
 
 	if (gfx->style != 0)
 	{
@@ -690,6 +802,9 @@ static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL 
 
 	switch (fillstyle)
 	{
+	case IP_HOLLOW:
+		pdf_out_stroke_color(pdf->page, &viewer_colors.text);
+		break;
 	case IP_1PATT:
 	case IP_2PATT:
 	case IP_3PATT:
@@ -700,25 +815,62 @@ static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL 
 		/*
 		 * translate these into gray levels instead of patterns
 		 */
-		HPDF_Page_SetGrayFill(pdf->page, (1.0 / 8) * (fillstyle - IP_1PATT));
+		{
+			static HPDF_REAL const gray_levels[ IP_7PATT - IP_1PATT + 1] = {
+				0.875, 0.750, 0.625, 0.500, 0.375, 0.250, 0.125
+			};
+			HPDF_Page_SetGrayFill(pdf->page, gray_levels[fillstyle - IP_1PATT]);
+			pdf_out_stroke_color(pdf->page, &viewer_colors.text);
+		}
 		break;
-	         case  9: case 10: case 11: case 12: case 13: case 14: case 15:
+	case 8:
+		pdf_out_color(pdf->page, &viewer_colors.text);
+		break;
+	case  9: case 10: case 11: case 12: case 13: case 14: case 15:
 	case 16: case 17: case 18: case 19: case 20: case 21: case 22: case 23:
 	case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31:
 	case 32: case 33: case 34: case 35: case 36:
+		if (pdf->patterns[fillstyle] == 0)
+		{
+			HPDF_Image pattern_image;
+			HPDF_Array array;
+			const unsigned char *data = pattern_bits + fillstyle * PATTERN_SIZE;
+			unsigned char mask[PATTERN_SIZE];
+			int j;
+			
+			for (j = 0; j < PATTERN_SIZE; j++)
+				mask[j] = bitrevtab[data[j]];
+			pattern_image = HPDF_Image_LoadRawImageFromMem(pdf->hpdf->mmgr, mask, pdf->hpdf->xref, 16, 16, HPDF_CS_DEVICE_GRAY, 1);
+			HPDF_Image_SetMask(pattern_image, HPDF_TRUE);
+			array = HPDF_Array_New(pattern_image->mmgr);
+			HPDF_Dict_Add(pattern_image, "Decode", array);
+			HPDF_Array_Add(array, HPDF_Number_New(pattern_image->mmgr, 1));
+			HPDF_Array_Add(array, HPDF_Number_New(pattern_image->mmgr, 0));
+			pdf->patterns[fillstyle] = HPDF_Pattern_New(pdf->hpdf->mmgr, pdf->hpdf->xref,
+				HPDF_PATTERN_TYPE_TILED, HPDF_PAINT_TYPE_UNCOLORED, HPDF_TILING_TYPE_NO_DISTORTION, pattern_image);
+		}
+		if (pdf->pattern_colorspace == NULL)
+			pdf->pattern_colorspace = HPDF_PatternColorspace_New(pdf->hpdf->mmgr, HPDF_CS_DEVICE_RGB);
+		HPDF_Page_SetColorspaceFill(pdf->page, pdf->pattern_colorspace);
+		HPDF_Page_SetPatternFill(pdf->page, pdf->patterns[fillstyle], viewer_colors.text.r, viewer_colors.text.g, viewer_colors.text.b);
+		pdf_out_stroke_color(pdf->page, &viewer_colors.text);
 		break;
 	}
+
+	ty = pdf->page_height - 1 - ty - h;
 	if (gfx->type == HYP_ESC_BOX)
 	{
-		if (fillstyle == IP_WIN_SOLID)
-			HPDF_Page_Fill(pdf->page);
-		else if (fillstyle == IP_HOLLOW)
-			HPDF_Page_Stroke(pdf->page);
-		else
-			HPDF_Page_FillStroke(pdf->page);
+		HPDF_Page_Rectangle(pdf->page, tx, ty, w, h);
 	} else
 	{
+		rounded_box(pdf->page, tx, ty, w, h);
 	}
+	if (fillstyle == IP_WIN_SOLID)
+		HPDF_Page_Fill(pdf->page);
+	else if (fillstyle == IP_HOLLOW)
+		HPDF_Page_Stroke(pdf->page);
+	else
+		HPDF_Page_FillStroke(pdf->page);
 	
 	HPDF_Page_GRestore(pdf->page);
 
@@ -769,7 +921,8 @@ PDF *pdf_new(hcp_opts *opts)
 	PDF *pdf;
 	const char *encoding = NULL;
 	HPDF_TextWidth tw;
-
+	int i;
+	
 	pdf = g_new(PDF, 1);
 	if (pdf == NULL)
 		return pdf;
@@ -837,16 +990,22 @@ PDF *pdf_new(hcp_opts *opts)
 	case HYP_CHARSET_CP850:
 		break;
 	}
-	HPDF_SetCompressionMode(pdf->hpdf, HPDF_COMP_NONE);
+	HPDF_SetCompressionMode(pdf->hpdf, opts->compression ? HPDF_COMP_ALL : HPDF_COMP_NONE);
 	pdf->regular_font = HPDF_GetFont(pdf->hpdf, "Courier", encoding);
 	pdf->bold_font = HPDF_GetFont(pdf->hpdf, "Courier-Bold", encoding);
 	pdf->italic_font = HPDF_GetFont(pdf->hpdf, "Courier-Oblique", encoding);
 	pdf->bold_italic_font = HPDF_GetFont(pdf->hpdf, "Courier-BoldOblique", encoding);
 	pdf->font_size = 12.0;
-	pdf->line_height = (HPDF_Font_GetAscent(pdf->regular_font) - HPDF_Font_GetDescent(pdf->regular_font)) * pdf->font_size / 1000;
+	pdf->ascent = HPDF_Font_GetAscent(pdf->regular_font) * pdf->font_size / 1000;
+	pdf->descent = HPDF_Font_GetDescent(pdf->regular_font) * pdf->font_size / 1000;
+	pdf->line_height = pdf->ascent - pdf->descent;
 	HPDF_Font_TextWidth(pdf->regular_font, (const HPDF_BYTE *) "m", 1, &tw);
 	pdf->cell_width = tw.width * pdf->font_size / 1000;
-	/* HPDF_SetViewerPreference(pdf->hpdf, HPDF_DISPLAY_TOC_TITLE); */
+	/* HPDF_SetViewerPreference(pdf->hpdf, HPDF_DISPLAY_DOC_TITLE); */
+
+	pdf->pattern_colorspace = NULL;
+	for (i = 0; i < NUM_PATTERNS; i++)
+		pdf->patterns[i] = NULL;
 
 	return pdf;
 }
@@ -857,6 +1016,21 @@ void pdf_delete(PDF *pdf)
 {
 	if (pdf == NULL)
 		return;
+
+#if 0
+	if (pdf->pattern_colorspace)
+		HPDF_Array_Free(pdf->pattern_colorspace);
+
+	/* not needed; they are part of the xref */
+	{
+		int i;
+	
+		for (i = 0; i < NUM_PATTERNS; i++)
+			if (pdf->patterns[i])
+				HPDF_Dict_Free(pdf->patterns[i]);
+	}
+#endif
+
 	HPDF_Free(pdf->hpdf);
 	g_free(pdf->links);
 	g_free(pdf->pages);
@@ -911,7 +1085,7 @@ static HPDF_Page pdf_newpage(PDF *pdf, hyp_nodenr node)
 	pdf_out_color(page, &viewer_colors.text);
 	HPDF_Page_SetFontAndSize(page, pdf->regular_font, pdf->font_size); 
 	HPDF_Page_SetTextRenderingMode(page, HPDF_FILL);
-	HPDF_Page_SetLineWidth(pdf->page, 0);
+	HPDF_Page_SetLineWidth(page, 0);
 	pdf->page_width = HPDF_Page_GetWidth(page);
 	pdf->page_height = HPDF_Page_GetHeight(page);
 
