@@ -105,6 +105,8 @@ gboolean AutolocatorKey(WINDOW_DATA *win, GdkEventKey *event)
 		return FALSE;
 	if (IsModifierKey(event->keyval))
 		return FALSE;
+	if (!doc->buttons.searchbox && (event->state & GDK_CONTROL_MASK))
+		return FALSE;
 
 	AutolocatorInit(doc);
 	doc->autolocator_dir = 1;

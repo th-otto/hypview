@@ -99,6 +99,8 @@ gboolean AutolocatorKey(WINDOW_DATA *win, unsigned int message, WPARAM wparam, L
 	keycode = MapVirtualKey((lparam >> 16) & 0xff, MAPVK_VSC_TO_VK_EX);
 	if (IsModifierKey(keycode))
 		return FALSE;
+	if (!doc->buttons.searchbox && (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
+		return FALSE;
 
 	AutolocatorInit(doc);
 	doc->autolocator_dir = 1;

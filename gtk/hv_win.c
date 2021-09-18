@@ -903,6 +903,38 @@ static void on_save(GtkAction *action, WINDOW_DATA *win)
 
 /*** ---------------------------------------------------------------------- ***/
 
+#ifdef WITH_PDF
+static void on_savepdf(GtkAction *action, WINDOW_DATA *win)
+{
+	char *filename;
+	GtkTextIter start, end;
+	DOCUMENT *doc = win->data;
+	
+	UNUSED(action);
+
+	/*
+	 * the text widget will loose the selection when something gets selected
+	 * in the file chooser, so save the selection bound now
+	 */
+	if (gtk_text_buffer_get_has_selection(win->text_buffer))
+	{
+		gtk_text_buffer_get_selection_bounds(win->text_buffer, &start, &end);
+	} else
+	{
+		gtk_text_buffer_get_bounds(win->text_buffer, &start, &end);
+	}
+	
+	filename = SelectFileSave(win, HYP_FT_PDF);
+	if (filename)
+	{
+		hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_PDF);
+		g_free(filename);
+	}
+}
+#endif
+
+/*** ---------------------------------------------------------------------- ***/
+
 static void on_recompile(GtkAction *action, WINDOW_DATA *win)
 {
 	char *filename;
@@ -2284,6 +2316,9 @@ static GtkActionEntry const action_entries[] = {
 	{ "open",               "hv-load",               N_("_Open Hypertext..."),              "<Ctrl>O",     N_("Load a file"),                                   G_CALLBACK(on_select_source) },
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_save) },
 	{ "recompile",          "hv-save",               N_("_Recompile..."),                   "<Ctrl>R",     N_("Recompile to ST-Guide format"),                  G_CALLBACK(on_recompile) },
+#ifdef WITH_PDF
+	{ "savepdf",            "hv-save",               N_("_Save as PDF..."),                 NULL,          N_("Save file as PDF"),                              G_CALLBACK(on_savepdf) },
+#endif
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
 	{ "remarker",           "hv-remarker",           N_("_Run Remarker"),                   "<Alt>R",      N_("Start Remarker"),                                G_CALLBACK(on_remarker) },
 	{ "close",              "gtk-close",             N_("_Close"),                          "<Ctrl>U",     NULL,                                                G_CALLBACK(on_close) },
@@ -2373,6 +2408,9 @@ static char const ui_info[] =
 "      <separator/>\n"
 "      <menuitem action='save'/>\n"
 "      <menuitem action='recompile'/>\n"
+#ifdef WITH_PDF
+"      <menuitem action='savepdf'/>\n"
+#endif
 "      <separator/>\n"
 "      <menuitem action='catalog' />\n"
 "      <menuitem action='defaultfile' />\n"
