@@ -1097,6 +1097,7 @@ PDF *pdf_new(hcp_opts *opts)
 	{
 	case HYP_CHARSET_UTF8:
 		HPDF_UseUTF8Encodings(pdf->hpdf);
+		/* encoding = HPDF_ENCODING_FONT_SPECIFIC; */
 		break;
 	case HYP_CHARSET_MACROMAN:
 		encoding = HPDF_ENCODING_MAC_ROMAN;

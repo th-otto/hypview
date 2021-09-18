@@ -164,7 +164,7 @@ HPDF_STATUS HPDF_Annotation_SetBorderStyle(HPDF_Annotation annot,
 		ret += HPDF_Array_AddReal(dash, dash_off);
 
 		if (dash_phase != 0)
-			ret += HPDF_Array_AddReal(dash, dash_off);
+			ret += HPDF_Array_AddReal(dash, dash_phase);
 	}
 
 	switch (subtype)
