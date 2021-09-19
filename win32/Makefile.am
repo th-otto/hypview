@@ -125,7 +125,7 @@ resource_icons = \
 	$(empty)
 	
 resource.res: $(resource_files) $(resource_icons) $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
+	$(AM_V_RC)$(WINDRES) $(DEFS) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $(srcdir)/resource.rc
 
 EXTRA_DIST = $(resource_files)
 

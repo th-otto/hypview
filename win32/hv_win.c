@@ -733,6 +733,24 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 				}
 			}
 			break;
+#ifdef WITH_PDF
+		case IDM_FILE_SAVEPDF:
+			{
+				char *filename;
+				DOCUMENT *doc = win->data;
+				
+				if (doc->type == HYP_FT_HYP)
+				{
+					filename = SelectFileSave(win, HYP_FT_PDF);
+					if (filename)
+					{
+						hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_PDF);
+						g_free(filename);
+					}
+				}
+			}
+			break;
+#endif
 		case IDM_FILE_CATALOG:
 			GoThisButton(win, TO_CATALOG);
 			break;

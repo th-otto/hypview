@@ -275,6 +275,8 @@ char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 		filter = _(pdf_file_filter);
 		title = _("Recompile to PDF");
 		break;
+#else
+		return NULL;
 #endif
 	case HYP_FT_NONE:
 	case HYP_FT_UNKNOWN:
