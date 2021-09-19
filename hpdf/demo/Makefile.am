@@ -48,7 +48,7 @@ attach_DEPENDENCIES = ../src/libhpdf.a
 chfont_demo_SOURCES = chfont_demo.c grid_sheet.c grid_sheet.h
 chfont_demo_DEPENDENCIES = ../src/libhpdf.a
 
-chunk_background_demo_SOURCES = chunk_background.c
+chunk_background_SOURCES = chunk_background.c
 chunk_background_DEPENDENCIES = ../src/libhpdf.a
 
 character_map_SOURCES = character_map.c

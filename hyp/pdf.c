@@ -659,7 +659,7 @@ static HPDF_Image convert_image(PDF *pdf, HYP_IMAGE *pic)
 }
 
 
-static HPDF_REAL draw_image(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+static HPDF_REAL draw_image(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y, gboolean dryrun)
 {
 	HYP_IMAGE *pic;
 	HPDF_REAL tx, ty, tw, th;
@@ -751,7 +751,7 @@ static HPDF_REAL draw_image(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, HP
 			pic->pic.fd_addr = orig_data;
 			pic->decompressed = TRUE;
 		}
-		if (image)
+		if (image && !dryrun)
 		{
 			HPDF_Page_DrawImage(pdf->page, image, tx, pdf->page_height - 1 - ty - th, tw, th);
 		}
@@ -794,7 +794,7 @@ static void draw_arrows(PDF *pdf, HPDF_REAL x0, HPDF_REAL y0, HPDF_REAL x1, HPDF
 
 /*** ---------------------------------------------------------------------- ***/
 
-static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y, gboolean dryrun)
 {
 	int w, h;
 	HPDF_REAL ret = y;
@@ -807,6 +807,9 @@ static HPDF_REAL draw_line(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL
 	static HPDF_UINT16 const dash[] = { 8, 8 };
 	static HPDF_UINT16 const dashdotdot[] = { 4, 3, 2, 2, 1, 3, 1, 0 };
 	static HPDF_UINT16 const userline[] = { 1, 1 };
+
+	if (dryrun)
+		return ret;
 
 	w = gfx->width * pdf->cell_width;
 	h = gfx->height * pdf->line_height;
@@ -933,12 +936,15 @@ static void rounded_box(HPDF_Page page, HPDF_REAL x, HPDF_REAL y, HPDF_REAL w, H
 }
 
 
-static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y)
+static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL y, gboolean dryrun)
 {
 	HPDF_REAL ret = y;
 	HPDF_REAL w, h;
 	HPDF_REAL tx, ty;
 	int fillstyle;
+
+	if (dryrun)
+		return ret;
 
 	tx = (gfx->x_offset - 1) * pdf->cell_width;
 	w = gfx->width * pdf->cell_width;
@@ -1043,7 +1049,7 @@ static HPDF_REAL draw_box(PDF *pdf, struct hyp_gfx *gfx, HPDF_REAL x, HPDF_REAL 
 	return ret;
 }
 
-static HPDF_REAL pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, long lineno, HPDF_REAL sx, HPDF_REAL sy)
+static HPDF_REAL pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, long lineno, HPDF_REAL sx, HPDF_REAL sy, gboolean dryrun)
 {
 	HPDF_REAL max_y, y;
 	struct hyp_gfx *gfx;
@@ -1058,14 +1064,14 @@ static HPDF_REAL pdf_out_graphics(PDF *pdf, HYP_DOCUMENT *hyp, long lineno, HPDF
 			switch (gfx->type)
 			{
 			case HYP_ESC_PIC:
-				y = draw_image(pdf, hyp, gfx, sx, sy);
+				y = draw_image(pdf, hyp, gfx, sx, sy, dryrun);
 				break;
 			case HYP_ESC_LINE:
-				y = draw_line(pdf, gfx, sx, sy);
+				y = draw_line(pdf, gfx, sx, sy, dryrun);
 				break;
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-				y = draw_box(pdf, gfx, sx, sy);
+				y = draw_box(pdf, gfx, sx, sy, dryrun);
 				break;
 			default:
 				y = sy;
@@ -1285,6 +1291,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 		{ \
 			if (lineno != 0 && text_pos.y < bottom_margin) \
 			{ \
+				ASSERT(pdf->curr_page_num < pd->num_pages); \
 				pdf->page = pdf->pages[pdf->curr_page_num++].page; \
 				text_pos.y = pdf->page_height - pdf->line_height - text_yoffset; \
 				sy = text_yoffset; \
@@ -1294,6 +1301,8 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			if (lineno != 0 && text_pos.y < bottom_margin) \
 			{ \
 				pdf->page = pdf_newpage(pdf, node); \
+				if (pdf->page == NULL) \
+					retval = FALSE; \
 				text_pos.y = pdf->page_height - pdf->line_height - text_yoffset; \
 				sy = text_yoffset; \
 			} \
@@ -1309,7 +1318,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	if (src > textstart) \
 	{ \
 		BEGINTEXT(); \
-		if (!dryrun) { \
+		if (!dryrun && retval) { \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]); \
 			retval &= pdf_out_str(pdf, hyp, &text_pos, textstart, src - textstart, &converror, &attr); \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text); \
@@ -1333,8 +1342,11 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	if (dryrun)
 	{
 		pdf->page = pdf_newpage(pdf, node);
+		if (pdf->page == NULL)
+			return FALSE;
 	} else
 	{
+		ASSERT(pdf->curr_page_num < pd->num_pages);
 		pdf->page = pdf->pages[pdf->curr_page_num++].page;
 	}
 
@@ -1513,10 +1525,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			sy = text_yoffset;
 			text_pos.x = text_xoffset;
 			text_pos.y = pdf->page_height - pdf->line_height - text_yoffset;
-			if (!dryrun)
 			{
 				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy) - sy;
+				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy, dryrun) - sy;
 				sy += dy;
 				text_pos.y -= dy;
 			}
@@ -1733,10 +1744,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					text_pos.x = text_xoffset;
 					text_pos.y -= pdf->line_height;
 					sy += pdf->line_height;
-					if (!dryrun)
 					{
 						retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-						dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy) - sy;
+						dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy, dryrun) - sy;
 						sy += dy;
 						text_pos.y -= dy;
 					}
@@ -1761,10 +1771,9 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			text_pos.x = text_xoffset;
 			text_pos.y -= pdf->line_height;
 			sy += pdf->line_height;
-			if (!dryrun)
 			{
 				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
-				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy) - sy;
+				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy, dryrun) - sy;
 				sy += dy;
 				text_pos.y -= dy;
 			}
@@ -1997,6 +2006,64 @@ static gboolean pdf_print_nodes(PDF *pdf, HYP_DOCUMENT *hyp, hcp_opts *opts, sym
 
 /* ------------------------------------------------------------------------- */
 
+static gboolean pdf_print_tree(HYP_DOCUMENT *hyp, PDF *pdf, HYPTREE *tree, HPDF_Outline root, hyp_nodenr parent, int depth)
+{
+	char *str;
+	HPDF_Outline outline;
+	HPDF_Page page;
+	HPDF_Destination dst;
+	hyp_nodenr child;
+	gboolean converror;
+	
+	str = hyp_conv_charset(HYP_CHARSET_UTF8, pdf->opts->output_charset, tree[parent].title, STR0TERM, &converror);
+	if (str == NULL)
+		return FALSE;
+	outline = HPDF_CreateOutline(pdf->hpdf, root, str, HPDF_GetCurrentEncoder(pdf->hpdf));
+	g_free(str);
+	if (outline == NULL)
+		return FALSE;
+	if ((page = pdf->links[parent]) == NULL)
+		return TRUE;
+	dst = HPDF_Page_CreateDestination(page);
+	HPDF_Destination_SetXYZ(dst, 0, HPDF_Page_GetHeight(page), 1);
+	HPDF_Outline_SetDestination(outline, dst);
+	if (tree[parent].num_childs != 0)
+	{
+		child = tree[parent].head;
+		while (child != HYP_NOINDEX)
+		{
+			if (pdf_print_tree(hyp, pdf, tree, outline, child, depth + 1) == FALSE)
+				return FALSE;
+			child = tree[child].next;
+		}
+	}
+	return TRUE;
+}
+
+static gboolean pdf_output_outline(HYP_DOCUMENT *hyp, PDF *pdf)
+{
+	HYPTREE *tree;
+	gboolean ret = FALSE;
+	
+	if (hyp->num_index == 0)
+		return TRUE;
+	tree = hyp_tree_build(hyp, hyp->handle);
+	if (tree == NULL)
+		return ret;
+	ret = TRUE;
+
+	if (tree[0].num_childs != 0)
+	{
+		HPDF_SetPageMode(pdf->hpdf, HPDF_PAGE_MODE_USE_OUTLINE);
+		ret = pdf_print_tree(hyp, pdf, tree, NULL, 0, 0);
+	}
+	
+	hyp_tree_free(hyp, tree);
+	return ret;
+}
+
+/* ------------------------------------------------------------------------- */
+
 gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char **argv)
 {
 	hyp_nodenr node;
@@ -2087,7 +2154,10 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, FALSE);
 	ASSERT(pdf->num_pages == pdf->curr_page_num);
 
-	ret &= HPDF_SaveToStream(pdf->hpdf, &stream) == HPDF_NOERROR;
+	ret &= pdf_output_outline(hyp, pdf);
+	
+	if (ret)
+		ret &= HPDF_SaveToStream(pdf->hpdf, &stream) == HPDF_NOERROR;
 	if (ret)
 	{
 		idx = 0;
@@ -2113,7 +2183,7 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		}
 	}
 	
-	if (opts->verbose >= 0 && opts->outfile != stdout)
+	if (ret && opts->verbose >= 0 && opts->outfile != stdout)
 	{
 		hyp_utf8_fprintf(stdout, _("generated %lu page%s\n"), (unsigned long)pdf->num_pages, pdf->num_pages == 1 ? "" : "s");
 	}
