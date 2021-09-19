@@ -63,3 +63,8 @@ $(top_builddir)/rsc/libgem.a::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc libgem.a; fi
 $(top_builddir)/rsc/src/librsc.a::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc/src librsc.a; fi
+
+if OS_WIN32
+EVAL_RC_TARGET = if test $(host_cpu) = "x86_64"; then echo pe-x86-64; else echo pe-i386; fi
+RC_TARGET := $(shell $(EVAL_RC_TARGET))
+endif

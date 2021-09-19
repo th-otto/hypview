@@ -340,10 +340,6 @@ case $host in
      done
      TARGET_OS=win32
      LIBS="-lole32"
-     case $host in
-  	x86_64-*-*) RC_TARGET=pe-x86-64 ;;
-	*) RC_TARGET=pe-i386 ;;
-     esac
      ;;
   *-apple-darwin* )
      test "$CC" = "" && CC=gcc
@@ -370,7 +366,6 @@ case $host in
      CPPFLAGS="$CPPFLAGS -D__UNIX__"
      ;;
 esac
-AC_SUBST(RC_TARGET)
 
 if test "$cross_compiling" = no; then
   # do not consider this as a native build only because we can exec build programs;
