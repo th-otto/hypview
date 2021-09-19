@@ -2,15 +2,16 @@
 #include "hypdefs.h"
 #include "hypdebug.h"
 #include "hcp_opts.h"
+
+#ifdef WITH_PDF /* whole file */
+
+#include "outcomm.h"
+#include <math.h>
+#include "picture.h"
 #include <setjmp.h>
 #include "hpdf.h"
 #include "pdf.h"
-#include "outcomm.h"
 #include "pattern.h"
-#include <math.h>
-#include "picture.h"
-
-#ifdef WITH_PDF /* whole file */
 
 struct pdf_page {
 	HPDF_Page page;
@@ -604,10 +605,10 @@ static HPDF_Image convert_image(PDF *pdf, HYP_IMAGE *pic)
 	int i;
 	PALETTE pal;
 	unsigned char *plane_ptr[XMAX_PLANES];
-	guint16 back[XMAX_PLANES];
+	unsigned short back[XMAX_PLANES];
 	int np;
 	int pixel;
-	guint16 color;
+	unsigned short color;
 
 	dststride = width * 3;
 	

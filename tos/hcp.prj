@@ -1,6 +1,7 @@
 c:\usr\bin\hcp.ttp
 .C[-I..\include\tos]
 .C[-I..\pic]
+.C[-I..\hpdf\include]
 .C[-I..\include]
 .C[-Ic:\pc\include]
 .C[-P]
@@ -9,6 +10,7 @@ c:\usr\bin\hcp.ttp
 .C[-S-]
 .C[-2-]
 .C[-8-]
+.C[-DWITH_PDF]
 
 .L[-S=65536]
 
@@ -51,6 +53,12 @@ cstartv.o
 ..\hyp\hypgfx.c
 ..\hyp\base64.c
 ..\hyp\outcomm.c
+..\hyp\outstg.c
+..\hyp\outhtml.c
+..\hyp\outxml.c
+..\hyp\outasc.c
+..\hyp\outdump.c
+..\hyp\pdf.c
 
 ..\hyp\tos\cookie.c
 
@@ -81,8 +89,13 @@ cstartv.o
 
 ..\hyp\tos\hypmain.c
 ..\hyp\tos\mkdir.c
+
+hpdf.prj
+000\zlib.lib
+
 ..\hyp\tos\malloc.c
 
 pctoslib.lib
+pcfltlib.lib ; only needed for PDF
 pcstdlib.lib
 pcextlib.lib ; for sleep()

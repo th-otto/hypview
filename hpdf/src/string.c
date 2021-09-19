@@ -20,9 +20,7 @@
 #include "hpdf/utils.h"
 #include "hpdf/objects.h"
 
-static const HPDF_BYTE UNICODE_HEADER[] = {
-	0xFE, 0xFF
-};
+static const HPDF_BYTE UNICODE_HEADER[] = { 0xFE, 0xFF };
 
 
 HPDF_String HPDF_String_New(HPDF_MMgr mmgr, const char *value, HPDF_Encoder encoder)

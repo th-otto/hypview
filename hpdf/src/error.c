@@ -26,7 +26,7 @@
 
 
 #ifdef __PUREC__
-# define ANNOTAT_ALL
+# define ERROR_ALL
 #endif
 
 

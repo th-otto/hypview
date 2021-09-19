@@ -1,0 +1,77 @@
+hpdf.lib
+.C[-A-]		; no ANSI, because we need to use cdecl keyword
+.C[-P]		; use king calls
+.C[-M]		; no string merging
+.C[-K]		; default char unsigned
+.C[-G]		; size optimization
+.C[-Z-]		; register optimization
+.C[-J-]		; jump optimization
+.C[-C-]		; no nested comments please
+.C[-2-]		; no 68020 code
+.C[-8-]		; no 68881 fpu instructions
+.C[-L64]	; maximum identifier length
+
+.C[-I..\hpdf\include]
+.C[-Ic:\pc\include]
+;.C[-DHPDF_HELVETICA_ONLY]
+.L[-J]
+
+=
+
+..\hpdf\src\3dmeasur.c
+..\hpdf\src\annotat.c
+..\hpdf\src\array.c
+..\hpdf\src\binary.c
+..\hpdf\src\boolean.c
+..\hpdf\src\catalog.c
+..\hpdf\src\destinat.c
+..\hpdf\src\dict.c
+..\hpdf\src\doc.c
+..\hpdf\src\doc_png.c
+..\hpdf\src\encoder.c
+..\hpdf\src\enc_cns.c
+..\hpdf\src\enc_cnt.c
+..\hpdf\src\enc_jp.c
+..\hpdf\src\enc_kr.c
+..\hpdf\src\enc_utf8.c
+..\hpdf\src\encrypt.c
+..\hpdf\src\encryptd.c
+..\hpdf\src\error.c
+..\hpdf\src\exdata.c
+..\hpdf\src\extgstat.c
+..\hpdf\src\font.c
+..\hpdf\src\font_cid.c
+..\hpdf\src\font_tt.c
+..\hpdf\src\font_t1.c
+..\hpdf\src\fontdef.c
+..\hpdf\src\fontdb14.c
+..\hpdf\src\fontdcid.c
+..\hpdf\src\fontdcns.c
+..\hpdf\src\fontdcnt.c
+..\hpdf\src\fontdjp.c
+..\hpdf\src\fontdkr.c
+..\hpdf\src\fontdtt.c
+..\hpdf\src\fontdt1.c
+..\hpdf\src\gstate.c
+..\hpdf\src\image.c
+..\hpdf\src\imagecci.c
+..\hpdf\src\imagepng.c
+..\hpdf\src\info.c
+..\hpdf\src\list.c
+..\hpdf\src\mmgr.c
+..\hpdf\src\name.c
+..\hpdf\src\namedict.c
+..\hpdf\src\null.c
+..\hpdf\src\number.c
+..\hpdf\src\objects.c
+..\hpdf\src\outline.c
+..\hpdf\src\pagelab.c
+..\hpdf\src\pageop.c
+..\hpdf\src\pages.c
+..\hpdf\src\pdfa.c
+..\hpdf\src\real.c
+..\hpdf\src\streams.c
+..\hpdf\src\string.c
+..\hpdf\src\u3d.c
+..\hpdf\src\utils.c
+..\hpdf\src\xref.c

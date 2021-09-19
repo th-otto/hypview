@@ -5,7 +5,7 @@
 
 typedef struct _pdf PDF;
 #if defined(__PUREC__) && !defined(__HYP_PDF_IMPLEMENTATION__)
-struct _pdf { int dummy; }
+struct _pdf { int dummy; };
 #endif
 
 PDF *pdf_new(hcp_opts *opts);
