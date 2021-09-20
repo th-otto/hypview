@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-21 15:14+0200\n"
+"POT-Creation-Date: 2021-09-20 18:52+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <admin@tho-otto.de>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -246,6 +246,7 @@ msgstr ""
 #: ../gtk/hv_rsc.c:770
 #: ../gtk/hv_srch.c:224
 #: ../gtk/hv_srch.c:315
+#: ../gtk/hv_tree.c:171
 #: ../hyp/cgi.c:495
 #: ../macos/hv_block.m:50
 #: ../macos/hv_block.m:77
@@ -280,6 +281,7 @@ msgstr ""
 #: ../win32/hv_rsc.c:988
 #: ../win32/hv_srch.c:223
 #: ../win32/hv_srch.c:294
+#: ../win32/hv_tree.c:128
 msgid  "Error"
 msgstr ""
 
@@ -371,6 +373,7 @@ msgstr ""
 #: ../gtk/hv_file.c:82
 #: ../macos/hv_file.m:59
 #: ../tos/hv_file.c:83
+#: ../tos/tv_win.c:557
 #: ../win32/hv_file.c:80
 msgid  "not found"
 msgstr ""
@@ -437,22 +440,34 @@ msgid  ""
 "*.*|All files (*.*)\n"
 msgstr ""
 
-#: ../gtk/hv_fsel.c:235
-#: ../macos/hv_fsel.m:189
-#: ../win32/hv_fsel.c:212
+#: ../gtk/hv_fsel.c:37
+msgid  ""
+"*.pdf *.PDF|PDF files (*.pdf)\n"
+"*.*|All files (*.*)\n"
+msgstr ""
+
+#: ../gtk/hv_fsel.c:238
+#: ../macos/hv_fsel.m:190
+#: ../win32/hv_fsel.c:215
 msgid  "Open Hypertext..."
 msgstr ""
 
-#: ../gtk/hv_fsel.c:261
-#: ../macos/hv_fsel.m:215
-#: ../win32/hv_fsel.c:238
+#: ../gtk/hv_fsel.c:264
+#: ../macos/hv_fsel.m:216
+#: ../win32/hv_fsel.c:241
 msgid  "Save ASCII text as"
 msgstr ""
 
-#: ../gtk/hv_fsel.c:267
-#: ../macos/hv_fsel.m:221
-#: ../win32/hv_fsel.c:244
+#: ../gtk/hv_fsel.c:270
+#: ../macos/hv_fsel.m:222
+#: ../win32/hv_fsel.c:247
 msgid  "Recompile to"
+msgstr ""
+
+#: ../gtk/hv_fsel.c:276
+#: ../macos/hv_fsel.m:228
+#: ../win32/hv_fsel.c:253
+msgid  "Recompile to PDF"
 msgstr ""
 
 #: ../gtk/hv_help.c:131
@@ -603,18 +618,18 @@ msgid  "%s is Open Source (see %s for further information).\n"
 msgstr ""
 
 #: ../gtk/hv_mark.c:55
-#: ../gtk/hv_win.c:2316
-#: ../gtk/hv_win.c:2317
-#: ../gtk/hv_win.c:2318
-#: ../gtk/hv_win.c:2319
-#: ../gtk/hv_win.c:2320
-#: ../gtk/hv_win.c:2321
-#: ../gtk/hv_win.c:2322
-#: ../gtk/hv_win.c:2323
-#: ../gtk/hv_win.c:2324
-#: ../gtk/hv_win.c:2325
-#: ../gtk/hv_win.c:2326
-#: ../gtk/hv_win.c:2327
+#: ../gtk/hv_win.c:2351
+#: ../gtk/hv_win.c:2352
+#: ../gtk/hv_win.c:2353
+#: ../gtk/hv_win.c:2354
+#: ../gtk/hv_win.c:2355
+#: ../gtk/hv_win.c:2356
+#: ../gtk/hv_win.c:2357
+#: ../gtk/hv_win.c:2358
+#: ../gtk/hv_win.c:2359
+#: ../gtk/hv_win.c:2360
+#: ../gtk/hv_win.c:2361
+#: ../gtk/hv_win.c:2362
 #: ../macos/hv_mark.m:34
 #: ../tos/hv_mark.c:59
 #: ../win32/hv_mark.c:56
@@ -1139,6 +1154,19 @@ msgstr ""
 msgid  "No ALL.REF file defined"
 msgstr ""
 
+#: ../gtk/hv_tree.c:170
+#: ../win32/hv_tree.c:127
+#, c-format
+msgid  "Error reading hyp tree: %s"
+msgstr ""
+
+#: ../gtk/hv_tree.c:327
+#: ../tos/tv_win.c:580
+#: ../win32/hv_tree.c:224
+#, c-format
+msgid  "Treeview of %s"
+msgstr ""
+
 #: ../gtk/hv_win.c:403
 #, c-format
 msgid  "Not supported"
@@ -1155,98 +1183,98 @@ msgid  ""
 "Quit anyway?"
 msgstr ""
 
-#: ../gtk/hv_win.c:1978
+#: ../gtk/hv_win.c:2010
 #: ../hyp/outhtml.c:1595
 msgid  "Back"
 msgstr ""
 
-#: ../gtk/hv_win.c:1979
-#: ../gtk/hv_win.c:2300
+#: ../gtk/hv_win.c:2011
+#: ../gtk/hv_win.c:2335
 msgid  "History"
 msgstr ""
 
-#: ../gtk/hv_win.c:1980
-#: ../gtk/hv_win.c:2279
-#: ../gtk/hv_win.c:2301
+#: ../gtk/hv_win.c:2012
+#: ../gtk/hv_win.c:2311
+#: ../gtk/hv_win.c:2336
 msgid  "Bookmarks"
 msgstr ""
 
-#: ../gtk/hv_win.c:1981
-#: ../gtk/hv_win.c:2303
+#: ../gtk/hv_win.c:2013
+#: ../gtk/hv_win.c:2338
 msgid  "Previous logical page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1982
-#: ../gtk/hv_win.c:2302
+#: ../gtk/hv_win.c:2014
+#: ../gtk/hv_win.c:2337
 msgid  "Previous physical page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1983
-#: ../gtk/hv_win.c:2304
+#: ../gtk/hv_win.c:2015
+#: ../gtk/hv_win.c:2339
 msgid  "Contents"
 msgstr ""
 
-#: ../gtk/hv_win.c:1984
-#: ../gtk/hv_win.c:2305
+#: ../gtk/hv_win.c:2016
+#: ../gtk/hv_win.c:2340
 msgid  "Next logical page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1985
-#: ../gtk/hv_win.c:2306
+#: ../gtk/hv_win.c:2017
+#: ../gtk/hv_win.c:2341
 msgid  "Next physical page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1986
-#: ../gtk/hv_win.c:2307
+#: ../gtk/hv_win.c:2018
+#: ../gtk/hv_win.c:2342
 msgid  "First page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1987
-#: ../gtk/hv_win.c:2308
+#: ../gtk/hv_win.c:2019
+#: ../gtk/hv_win.c:2343
 msgid  "Last page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1988
-#: ../gtk/hv_win.c:2309
+#: ../gtk/hv_win.c:2020
+#: ../gtk/hv_win.c:2344
 msgid  "Index"
 msgstr ""
 
-#: ../gtk/hv_win.c:1989
-#: ../gtk/hv_win.c:2310
+#: ../gtk/hv_win.c:2021
+#: ../gtk/hv_win.c:2345
 #: ../hyp/outhtml.c:1704
 #: ../win32/hv_win.c:56
 msgid  "Tree View"
 msgstr ""
 
-#: ../gtk/hv_win.c:1990
-#: ../gtk/hv_win.c:2311
+#: ../gtk/hv_win.c:2022
+#: ../gtk/hv_win.c:2346
 msgid  "Catalog"
 msgstr ""
 
-#: ../gtk/hv_win.c:1991
-#: ../gtk/hv_win.c:2313
+#: ../gtk/hv_win.c:2023
+#: ../gtk/hv_win.c:2348
 msgid  "References"
 msgstr ""
 
-#: ../gtk/hv_win.c:1992
-#: ../gtk/hv_win.c:2314
+#: ../gtk/hv_win.c:2024
+#: ../gtk/hv_win.c:2349
 #: ../win32/hv_win.c:59
 msgid  "Show help page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1993
+#: ../gtk/hv_win.c:2025
 msgid  "Show info page"
 msgstr ""
 
-#: ../gtk/hv_win.c:1994
+#: ../gtk/hv_win.c:2026
 msgid  "_Open Hypertext"
 msgstr ""
 
-#: ../gtk/hv_win.c:1995
+#: ../gtk/hv_win.c:2027
 msgid  "_Save text"
 msgstr ""
 
-#: ../gtk/hv_win.c:1996
+#: ../gtk/hv_win.c:2028
 msgid  "Remarker"
 msgstr ""
 
@@ -1254,32 +1282,32 @@ msgstr ""
 #. * menu titles
 #. * name,                stock id,  label
 #.
-#: ../gtk/hv_win.c:2273
+#: ../gtk/hv_win.c:2305
 msgid  "_File"
 msgstr ""
 
-#: ../gtk/hv_win.c:2274
+#: ../gtk/hv_win.c:2306
 msgid  "_Edit"
 msgstr ""
 
-#: ../gtk/hv_win.c:2275
+#: ../gtk/hv_win.c:2307
 msgid  "_Navigate"
 msgstr ""
 
-#: ../gtk/hv_win.c:2276
+#: ../gtk/hv_win.c:2308
 msgid  "Options"
 msgstr ""
 
-#: ../gtk/hv_win.c:2277
+#: ../gtk/hv_win.c:2309
 msgid  "_Help"
 msgstr ""
 
-#: ../gtk/hv_win.c:2278
+#: ../gtk/hv_win.c:2310
 msgid  "Open _Recent"
 msgstr ""
 
-#: ../gtk/hv_win.c:2279
-#: ../gtk/hv_win.c:2301
+#: ../gtk/hv_win.c:2311
+#: ../gtk/hv_win.c:2336
 #: ../win32/hv_win.c:47
 msgid  "Show list of bookmarks"
 msgstr ""
@@ -1288,212 +1316,220 @@ msgstr ""
 #. * menu entries
 #. * name,                stock id,                label                                  accelerator    tooltip                                              callback
 #.
-#: ../gtk/hv_win.c:2284
+#: ../gtk/hv_win.c:2316
 msgid  "_Open Hypertext..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2284
+#: ../gtk/hv_win.c:2316
 #: ../win32/hv_win.c:61
 msgid  "Load a file"
 msgstr ""
 
-#: ../gtk/hv_win.c:2285
+#: ../gtk/hv_win.c:2317
 msgid  "_Save text..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2285
+#: ../gtk/hv_win.c:2317
 #: ../win32/hv_win.c:62
 msgid  "Save page to file"
 msgstr ""
 
-#: ../gtk/hv_win.c:2286
+#: ../gtk/hv_win.c:2318
 msgid  "_Recompile..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2286
+#: ../gtk/hv_win.c:2318
 msgid  "Recompile to ST-Guide format"
 msgstr ""
 
-#: ../gtk/hv_win.c:2287
+#: ../gtk/hv_win.c:2320
+msgid  "Save as _PDF..."
+msgstr ""
+
+#: ../gtk/hv_win.c:2320
+msgid  "Save file as PDF"
+msgstr ""
+
+#: ../gtk/hv_win.c:2322
 msgid  "_File info..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2287
+#: ../gtk/hv_win.c:2322
 #: ../hyp/outhtml.c:1758
 #: ../win32/hv_win.c:60
 msgid  "Show info about hypertext"
 msgstr ""
 
-#: ../gtk/hv_win.c:2288
+#: ../gtk/hv_win.c:2323
 msgid  "_Run Remarker"
 msgstr ""
 
 #. [ TO_MENU ] = { TO_MENU, 0, IDI_MENU, NULL },
-#: ../gtk/hv_win.c:2288
+#: ../gtk/hv_win.c:2323
 #: ../win32/hv_win.c:64
 msgid  "Start Remarker"
 msgstr ""
 
-#: ../gtk/hv_win.c:2289
+#: ../gtk/hv_win.c:2324
 msgid  "_Close"
 msgstr ""
 
-#: ../gtk/hv_win.c:2290
+#: ../gtk/hv_win.c:2325
 msgid  "_Quit"
 msgstr ""
 
-#: ../gtk/hv_win.c:2292
+#: ../gtk/hv_win.c:2327
 msgid  "_Copy"
 msgstr ""
 
-#: ../gtk/hv_win.c:2293
+#: ../gtk/hv_win.c:2328
 msgid  "_Paste"
 msgstr ""
 
-#: ../gtk/hv_win.c:2294
+#: ../gtk/hv_win.c:2329
 msgid  "_Find"
 msgstr ""
 
-#: ../gtk/hv_win.c:2295
+#: ../gtk/hv_win.c:2330
 msgid  "Find _Next"
 msgstr ""
 
-#: ../gtk/hv_win.c:2296
+#: ../gtk/hv_win.c:2331
 msgid  "Select _All"
 msgstr ""
 
-#: ../gtk/hv_win.c:2298
+#: ../gtk/hv_win.c:2333
 #: ../win32/hv_win.c:45
 msgid  "Back one page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2299
+#: ../gtk/hv_win.c:2334
 msgid  "Clear stack"
 msgstr ""
 
-#: ../gtk/hv_win.c:2300
+#: ../gtk/hv_win.c:2335
 #: ../win32/hv_win.c:46
 msgid  "Show history of pages"
 msgstr ""
 
-#: ../gtk/hv_win.c:2302
+#: ../gtk/hv_win.c:2337
 #: ../win32/hv_win.c:49
 msgid  "Goto previous physical page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2303
+#: ../gtk/hv_win.c:2338
 #: ../win32/hv_win.c:50
 msgid  "Goto previous page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2304
+#: ../gtk/hv_win.c:2339
 #: ../win32/hv_win.c:51
 msgid  "Go up one page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2305
+#: ../gtk/hv_win.c:2340
 #: ../win32/hv_win.c:52
 msgid  "Goto next page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2306
+#: ../gtk/hv_win.c:2341
 #: ../win32/hv_win.c:53
 msgid  "Goto next physical page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2307
+#: ../gtk/hv_win.c:2342
 #: ../win32/hv_win.c:48
 msgid  "Goto first page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2308
+#: ../gtk/hv_win.c:2343
 #: ../win32/hv_win.c:54
 msgid  "Goto last page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2309
+#: ../gtk/hv_win.c:2344
 #: ../win32/hv_win.c:55
 msgid  "Goto index page"
 msgstr ""
 
-#: ../gtk/hv_win.c:2310
+#: ../gtk/hv_win.c:2345
 msgid  "Show a treeview"
 msgstr ""
 
-#: ../gtk/hv_win.c:2311
+#: ../gtk/hv_win.c:2346
 #: ../win32/hv_win.c:57
 msgid  "Show catalog of hypertexts"
 msgstr ""
 
-#: ../gtk/hv_win.c:2312
+#: ../gtk/hv_win.c:2347
 msgid  "Default file"
 msgstr ""
 
-#: ../gtk/hv_win.c:2312
+#: ../gtk/hv_win.c:2347
 msgid  "Show default file"
 msgstr ""
 
-#: ../gtk/hv_win.c:2313
+#: ../gtk/hv_win.c:2348
 #: ../win32/hv_win.c:58
 msgid  "Show list of cross references"
 msgstr ""
 
-#: ../gtk/hv_win.c:2316
-#: ../gtk/hv_win.c:2317
-#: ../gtk/hv_win.c:2318
-#: ../gtk/hv_win.c:2319
-#: ../gtk/hv_win.c:2320
-#: ../gtk/hv_win.c:2321
-#: ../gtk/hv_win.c:2322
-#: ../gtk/hv_win.c:2323
-#: ../gtk/hv_win.c:2324
-#: ../gtk/hv_win.c:2325
-#: ../gtk/hv_win.c:2326
-#: ../gtk/hv_win.c:2327
+#: ../gtk/hv_win.c:2351
+#: ../gtk/hv_win.c:2352
+#: ../gtk/hv_win.c:2353
+#: ../gtk/hv_win.c:2354
+#: ../gtk/hv_win.c:2355
+#: ../gtk/hv_win.c:2356
+#: ../gtk/hv_win.c:2357
+#: ../gtk/hv_win.c:2358
+#: ../gtk/hv_win.c:2359
+#: ../gtk/hv_win.c:2360
+#: ../gtk/hv_win.c:2361
+#: ../gtk/hv_win.c:2362
 msgid  "Open bookmark"
 msgstr ""
 
-#: ../gtk/hv_win.c:2340
+#: ../gtk/hv_win.c:2375
 msgid  "_Font..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2341
+#: ../gtk/hv_win.c:2376
 msgid  "_Colors..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2342
+#: ../gtk/hv_win.c:2377
 msgid  "_Output..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2343
+#: ../gtk/hv_win.c:2378
 msgid  "_Settings..."
 msgstr ""
 
-#: ../gtk/hv_win.c:2345
+#: ../gtk/hv_win.c:2380
 msgid  "_Contents"
 msgstr ""
 
-#: ../gtk/hv_win.c:2346
+#: ../gtk/hv_win.c:2381
 msgid  "_Index"
 msgstr ""
 
-#: ../gtk/hv_win.c:2347
+#: ../gtk/hv_win.c:2382
 msgid  "_About"
 msgstr ""
 
-#: ../gtk/hv_win.c:2351
+#: ../gtk/hv_win.c:2386
 msgid  "_Alternative font"
 msgstr ""
 
-#: ../gtk/hv_win.c:2352
+#: ../gtk/hv_win.c:2387
 msgid  "_Expand multiple spaces"
 msgstr ""
 
-#: ../gtk/hv_win.c:2353
+#: ../gtk/hv_win.c:2388
 msgid  "_Scale bitmaps"
 msgstr ""
 
-#: ../gtk/hv_win.c:2588
+#: ../gtk/hv_win.c:2626
 msgid  "<span color=\"red\">not found!</span>"
 msgstr ""
 
@@ -1505,453 +1541,453 @@ msgstr ""
 msgid  "HyperText Help File Viewer"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:94
+#: ../hpdf/src/error.c:117
 msgid  "no error"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:95
+#: ../hpdf/src/error.c:118
 msgid  "Array count error"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:96
+#: ../hpdf/src/error.c:119
 msgid  "Array item not found"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:97
+#: ../hpdf/src/error.c:120
 msgid  "Unexpected array item type"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:98
+#: ../hpdf/src/error.c:121
 msgid  "Data length > HPDF_LIMIT_MAX_STRING_LEN"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:99
+#: ../hpdf/src/error.c:122
 msgid  "Cannot get palette data from PNG image"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:100
-#: ../hpdf/src/hpdf_error.c:107
-#: ../hpdf/src/hpdf_error.c:110
-#: ../hpdf/src/hpdf_error.c:112
-#: ../hpdf/src/hpdf_error.c:118
-#: ../hpdf/src/hpdf_error.c:123
-#: ../hpdf/src/hpdf_error.c:130
-#: ../hpdf/src/hpdf_error.c:135
-#: ../hpdf/src/hpdf_error.c:136
-#: ../hpdf/src/hpdf_error.c:152
-#: ../hpdf/src/hpdf_error.c:156
-#: ../hpdf/src/hpdf_error.c:164
-#: ../hpdf/src/hpdf_error.c:165
-#: ../hpdf/src/hpdf_error.c:184
-#: ../hpdf/src/hpdf_error.c:200
-#: ../hpdf/src/hpdf_error.c:201
-#: ../hpdf/src/hpdf_error.c:202
-#: ../hpdf/src/hpdf_error.c:203
-#: ../hpdf/src/hpdf_error.c:204
-#: ../hpdf/src/hpdf_error.c:205
-#: ../hpdf/src/hpdf_error.c:220
+#: ../hpdf/src/error.c:123
+#: ../hpdf/src/error.c:130
+#: ../hpdf/src/error.c:133
+#: ../hpdf/src/error.c:135
+#: ../hpdf/src/error.c:141
+#: ../hpdf/src/error.c:146
+#: ../hpdf/src/error.c:153
+#: ../hpdf/src/error.c:158
+#: ../hpdf/src/error.c:159
+#: ../hpdf/src/error.c:175
+#: ../hpdf/src/error.c:179
+#: ../hpdf/src/error.c:187
+#: ../hpdf/src/error.c:188
+#: ../hpdf/src/error.c:207
+#: ../hpdf/src/error.c:223
+#: ../hpdf/src/error.c:224
+#: ../hpdf/src/error.c:225
+#: ../hpdf/src/error.c:226
+#: ../hpdf/src/error.c:227
+#: ../hpdf/src/error.c:228
+#: ../hpdf/src/error.c:243
 msgid  "reserved"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:101
+#: ../hpdf/src/error.c:124
 msgid  "Dictionary elements > HPDF_LIMIT_MAX_DICT_ELEMENT"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:102
+#: ../hpdf/src/error.c:125
 msgid  "Dictionary item not found"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:103
+#: ../hpdf/src/error.c:126
 msgid  "Unexpected dictionary item type"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:104
+#: ../hpdf/src/error.c:127
 msgid  "Stream length not found"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:105
+#: ../hpdf/src/error.c:128
 msgid  "HPDF_SetEncryptMode() or HPDF_SetPermission() called before password set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:106
+#: ../hpdf/src/error.c:129
 msgid  "Invalid object"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:108
+#: ../hpdf/src/error.c:131
 msgid  "Tried to re-register a registered font"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:109
+#: ../hpdf/src/error.c:132
 msgid  "Cannot register a character to the Japanese word wrap characters list."
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:111
+#: ../hpdf/src/error.c:134
 msgid  "Invalid encryption password"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:113
+#: ../hpdf/src/error.c:136
 msgid  "Unknown class"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:114
+#: ../hpdf/src/error.c:137
 msgid  "Stack depth > HPDF_LIMIT_MAX_GSTATE"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:115
+#: ../hpdf/src/error.c:138
 msgid  "Memory allocation failed"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:116
+#: ../hpdf/src/error.c:139
 msgid  "File processing failed"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:117
+#: ../hpdf/src/error.c:140
 msgid  "Cannot open a file"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:119
+#: ../hpdf/src/error.c:142
 msgid  "Tried to load a font that has been registered"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:120
+#: ../hpdf/src/error.c:143
 msgid  "Font-file format is invalid"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:121
+#: ../hpdf/src/error.c:144
 msgid  "Cannot recognize header of afm file"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:122
+#: ../hpdf/src/error.c:145
 msgid  "Specified annotation handle is invalid"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:124
+#: ../hpdf/src/error.c:147
 msgid  "Bit-per-component of a image which was set as mask-image is invalid"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:125
+#: ../hpdf/src/error.c:148
 msgid  "Cannot recognize char-metrics-data of afm file"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:126
+#: ../hpdf/src/error.c:149
 msgid  "Invalid color_space parameter"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:127
+#: ../hpdf/src/error.c:150
 msgid  "Invalid value set when invoking HPDF_SetCompressionMode()"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:128
+#: ../hpdf/src/error.c:151
 msgid  "An invalid date-time value was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:129
+#: ../hpdf/src/error.c:152
 msgid  "HPDF_INVALID_DESTINATION"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:131
+#: ../hpdf/src/error.c:154
 msgid  "An invalid document handle was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:132
+#: ../hpdf/src/error.c:155
 msgid  "Function invalid in the present state was invoked"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:133
+#: ../hpdf/src/error.c:156
 msgid  "An invalid encoder handle was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:134
+#: ../hpdf/src/error.c:157
 msgid  "Combination between font and encoder is wrong"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:137
+#: ../hpdf/src/error.c:160
 msgid  "An invalid encoding name is specified"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:138
+#: ../hpdf/src/error.c:161
 msgid  "Encryption key length is invalid"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:139
+#: ../hpdf/src/error.c:162
 msgid  "An invalid font handle was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:140
+#: ../hpdf/src/error.c:163
 msgid  "Invalid font definition type"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:141
+#: ../hpdf/src/error.c:164
 msgid  "Font with the specified name is not found"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:142
+#: ../hpdf/src/error.c:165
 msgid  "Unsupported image format"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:143
+#: ../hpdf/src/error.c:166
 msgid  "Invalid Jpeg data"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:144
+#: ../hpdf/src/error.c:167
 msgid  "Cannot read a postscript-name from an afm file"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:145
+#: ../hpdf/src/error.c:168
 msgid  "An invalid object is set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:146
+#: ../hpdf/src/error.c:169
 msgid  "An invalid object id is set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:147
+#: ../hpdf/src/error.c:170
 msgid  "Invoked HPDF_Image_SetColorMask() against the image-object which was set a mask-image"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:148
+#: ../hpdf/src/error.c:171
 msgid  "An invalid outline-handle was specified"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:149
+#: ../hpdf/src/error.c:172
 msgid  "An invalid page-handle was specified"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:150
+#: ../hpdf/src/error.c:173
 msgid  "An invalid pages-handle was specified"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:151
+#: ../hpdf/src/error.c:174
 msgid  "An invalid value is set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:153
+#: ../hpdf/src/error.c:176
 msgid  "Invalid PNG image format"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:154
+#: ../hpdf/src/error.c:177
 msgid  "An invalid stream handle was specified"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:155
+#: ../hpdf/src/error.c:178
 msgid  "\"_FILE_NAME\" entry for delayed loading is missing"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:157
+#: ../hpdf/src/error.c:180
 msgid  "Invalid .TTC file format"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:158
+#: ../hpdf/src/error.c:181
 msgid  "Index parameter > number of included fonts"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:159
+#: ../hpdf/src/error.c:182
 msgid  "Cannot read a width-data from an afm file"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:160
+#: ../hpdf/src/error.c:183
 msgid  "Item not found"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:161
+#: ../hpdf/src/error.c:184
 msgid  "Error returned from PNGLIB while loading image"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:162
+#: ../hpdf/src/error.c:185
 msgid  "Invalid name was used"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:163
+#: ../hpdf/src/error.c:186
 msgid  "Name out of range"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:166
+#: ../hpdf/src/error.c:189
 msgid  "Invalid page param count"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:167
+#: ../hpdf/src/error.c:190
 msgid  "Pages is missing kids entry"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:168
+#: ../hpdf/src/error.c:191
 msgid  "Cannot find page object"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:169
+#: ../hpdf/src/error.c:192
 msgid  "Cannot get root pages"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:170
+#: ../hpdf/src/error.c:193
 msgid  "There are no graphics-states to be restored"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:171
+#: ../hpdf/src/error.c:194
 msgid  "Cannot set page parent"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:172
+#: ../hpdf/src/error.c:195
 msgid  "The current font is not set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:173
-#: ../hpdf/src/hpdf_error.c:211
+#: ../hpdf/src/error.c:196
+#: ../hpdf/src/error.c:234
 msgid  "An invalid font-handle was specified"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:174
+#: ../hpdf/src/error.c:197
 msgid  "An invalid font-size was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:175
+#: ../hpdf/src/error.c:198
 msgid  "Invalid page graphics mode"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:176
+#: ../hpdf/src/error.c:199
 msgid  "Invalid page index"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:177
+#: ../hpdf/src/error.c:200
 msgid  "Specified value is not multiple of 90"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:178
+#: ../hpdf/src/error.c:201
 msgid  "An invalid page-size was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:179
+#: ../hpdf/src/error.c:202
 msgid  "An invalid image-handle was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:180
-#: ../hpdf/src/hpdf_error.c:181
+#: ../hpdf/src/error.c:203
+#: ../hpdf/src/error.c:204
 msgid  "The specified value is out of range"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:182
+#: ../hpdf/src/error.c:205
 msgid  "Unexpected EOF marker was detected"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:183
+#: ../hpdf/src/error.c:206
 msgid  "Continue reading line"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:185
+#: ../hpdf/src/error.c:208
 msgid  "The length of the text is too long"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:186
+#: ../hpdf/src/error.c:209
 msgid  "Function not executed because of other errors"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:187
+#: ../hpdf/src/error.c:210
 msgid  "Font cannot be embedded. license restriction"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:188
+#: ../hpdf/src/error.c:211
 msgid  "Unsupported ttf format (cannot find unicode cmap)"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:189
+#: ../hpdf/src/error.c:212
 msgid  "Unsupported ttf format"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:190
+#: ../hpdf/src/error.c:213
 msgid  "Unsupported ttf format (cannot find a necessary table)"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:191
+#: ../hpdf/src/error.c:214
 msgid  "Unsupported font type"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:192
+#: ../hpdf/src/error.c:215
 msgid  "Library not configured to use PNGLIB"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:193
+#: ../hpdf/src/error.c:216
 msgid  "Unsupported JPEG format"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:194
+#: ../hpdf/src/error.c:217
 msgid  "Failed to parse .PFB file"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:195
+#: ../hpdf/src/error.c:218
 msgid  "XRef count error"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:196
+#: ../hpdf/src/error.c:219
 msgid  "Error while executing ZLIB function"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:197
+#: ../hpdf/src/error.c:220
 msgid  "An invalid page index was passed"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:198
+#: ../hpdf/src/error.c:221
 msgid  "An invalid URI was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:199
+#: ../hpdf/src/error.c:222
 msgid  "An invalid page-layout was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:206
+#: ../hpdf/src/error.c:229
 msgid  "An invalid page-mode was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:207
+#: ../hpdf/src/error.c:230
 msgid  "An invalid page-num-style was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:208
+#: ../hpdf/src/error.c:231
 msgid  "An invalid icon was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:209
+#: ../hpdf/src/error.c:232
 msgid  "An invalid border-style was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:210
+#: ../hpdf/src/error.c:233
 msgid  "An invalid page-direction was set"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:212
+#: ../hpdf/src/error.c:235
 msgid  "Insufficient space on page"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:213
+#: ../hpdf/src/error.c:236
 msgid  "Invalid display time"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:214
+#: ../hpdf/src/error.c:237
 msgid  "Invalid page transition time"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:215
+#: ../hpdf/src/error.c:238
 msgid  "Invalid page slideshow type"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:216
+#: ../hpdf/src/error.c:239
 msgid  "ExtGState out of range"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:217
+#: ../hpdf/src/error.c:240
 msgid  "Invalid ExtGState"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:218
+#: ../hpdf/src/error.c:241
 msgid  "ExtGStateis read-only"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:219
+#: ../hpdf/src/error.c:242
 msgid  "Invalid U3D data"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:221
+#: ../hpdf/src/error.c:244
 msgid  "Invalid ICC component number"
 msgstr ""
 
-#: ../hpdf/src/hpdf_error.c:223
+#: ../hpdf/src/error.c:246
 msgid  "unknown error"
 msgstr ""
 
@@ -1961,7 +1997,7 @@ msgstr ""
 #: ../hyp/hcpmain.c:28
 #: ../hyp/hypfind.c:67
 #: ../hyp/hypinfo.c:40
-#: ../hyp/icn2ico.c:96
+#: ../hyp/icn2ico.c:98
 #: ../hyp/icn2img.c:56
 #: ../hyp/ico2icn.c:56
 #: ../hyp/img2bmp.c:59
@@ -1977,7 +2013,7 @@ msgstr ""
 #: ../hyp/bmp2img.c:80
 #: ../hyp/gif2bmp.c:85
 #: ../hyp/hypinfo.c:82
-#: ../hyp/icn2ico.c:120
+#: ../hyp/icn2ico.c:122
 #: ../hyp/icn2img.c:80
 #: ../hyp/ico2icn.c:80
 #: ../hyp/img2bmp.c:83
@@ -2036,7 +2072,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:112
 #: ../hyp/bmp2img.c:103
 #: ../hyp/gif2bmp.c:113
-#: ../hyp/icn2ico.c:146
+#: ../hyp/icn2ico.c:150
 #: ../hyp/icn2img.c:103
 #: ../hyp/ico2icn.c:102
 #: ../hyp/img2bmp.c:110
@@ -2049,7 +2085,7 @@ msgstr ""
 #: ../hyp/bmp2img.c:120
 #: ../hyp/gif2bmp.c:130
 #: ../hyp/hcp_opts.c:528
-#: ../hyp/icn2ico.c:162
+#: ../hyp/icn2ico.c:166
 #: ../hyp/icn2img.c:119
 #: ../hyp/ico2icn.c:118
 #: ../hyp/img2bmp.c:127
@@ -2061,7 +2097,7 @@ msgstr ""
 #: ../hyp/bmp2img.c:125
 #: ../hyp/gif2bmp.c:135
 #: ../hyp/hcp_comp.c:4507
-#: ../hyp/icn2ico.c:167
+#: ../hyp/icn2ico.c:171
 #: ../hyp/icn2img.c:124
 #: ../hyp/ico2icn.c:123
 #: ../hyp/img2bmp.c:132
@@ -2072,7 +2108,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:146
 #: ../hyp/bmp2img.c:137
 #: ../hyp/gif2bmp.c:144
-#: ../hyp/icn2ico.c:181
+#: ../hyp/icn2ico.c:185
 #: ../hyp/icn2img.c:136
 #: ../hyp/ico2icn.c:137
 #: ../hyp/img2bmp.c:144
@@ -2087,7 +2123,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:177
 #: ../hyp/bmp2img.c:159
 #: ../hyp/gif2bmp.c:180
-#: ../hyp/icn2ico.c:211
+#: ../hyp/icn2ico.c:215
 #: ../hyp/icn2img.c:165
 #: ../hyp/ico2icn.c:154
 #: ../hyp/img2bmp.c:176
@@ -2098,7 +2134,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:186
 #: ../hyp/bmp2img.c:168
 #: ../hyp/gif2bmp.c:194
-#: ../hyp/icn2ico.c:223
+#: ../hyp/icn2ico.c:229
 #: ../hyp/icn2img.c:175
 #: ../hyp/ico2icn.c:162
 #: ../hyp/img2bmp.c:184
@@ -2109,7 +2145,7 @@ msgstr ""
 #: ../hyp/bmp2gif.c:190
 #: ../hyp/bmp2img.c:172
 #: ../hyp/gif2bmp.c:198
-#: ../hyp/icn2ico.c:227
+#: ../hyp/icn2ico.c:233
 #: ../hyp/icn2img.c:179
 #: ../hyp/ico2icn.c:166
 #: ../hyp/img2bmp.c:188
@@ -2122,7 +2158,7 @@ msgstr ""
 #: ../hyp/gif2bmp.c:285
 #: ../hyp/hcpmain.c:667
 #: ../hyp/hypinfo.c:1365
-#: ../hyp/icn2ico.c:303
+#: ../hyp/icn2ico.c:309
 #: ../hyp/icn2img.c:255
 #: ../hyp/ico2icn.c:242
 #: ../hyp/img2bmp.c:264
@@ -2144,7 +2180,7 @@ msgstr ""
 #: ../hyp/outstg.c:964
 #: ../hyp/outxml.c:792
 #: ../hyp/outxml.c:798
-#: ../hyp/pdf.c:1053
+#: ../hyp/pdf.c:1733
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr ""
@@ -2427,6 +2463,17 @@ msgstr ""
 #: ../hyp/cgirsc.c:596
 #, c-format
 msgid  "Tree #%u not found!\n"
+msgstr ""
+
+#: ../hyp/csetname.c:229
+#: ../hyp/hyp.c:163
+#: ../hyp/stool.c:54
+msgid  "Unknown"
+msgstr ""
+
+#: ../hyp/csetname.c:233
+#, c-format
+msgid  "Charset 0x%02x"
 msgstr ""
 
 #: ../hyp/hcp_comp.c:386
@@ -3132,61 +3179,61 @@ msgstr ""
 msgid  "would overwrite input file"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8250
+#: ../hyp/hcp_comp.c:8256
 #, c-format
 msgid  "compiling %s to %s\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8284
+#: ../hyp/hcp_comp.c:8290
 msgid  "Please add a @subject-command to this text"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8287
+#: ../hyp/hcp_comp.c:8293
 #, c-format
 msgid  "ST-Guide may not be able to display character set %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8325
+#: ../hyp/hcp_comp.c:8331
 #, c-format
 msgid  "internal nodes: %u\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8326
+#: ../hyp/hcp_comp.c:8332
 #, c-format
 msgid  "external nodes: %u\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8327
+#: ../hyp/hcp_comp.c:8333
 #, c-format
 msgid  "images        : %u\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8328
+#: ../hyp/hcp_comp.c:8334
 #, c-format
 msgid  "other nodes   : %u\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8329
+#: ../hyp/hcp_comp.c:8335
 #, c-format
 msgid  "autorefs      : %lu\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8331
+#: ../hyp/hcp_comp.c:8337
 #, c-format
 msgid  "Refs generated: %lu\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8333
+#: ../hyp/hcp_comp.c:8339
 #, c-format
 msgid  "compression   : %lu (%lu%%)\n"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8345
+#: ../hyp/hcp_comp.c:8351
 #, c-format
 msgid  "not referenced: %s"
 msgstr ""
 
-#: ../hyp/hcp_comp.c:8351
+#: ../hyp/hcp_comp.c:8357
 msgid  "cannot start pass2"
 msgstr ""
 
@@ -3519,11 +3566,6 @@ msgstr ""
 msgid  "Version %s for %s, %s"
 msgstr ""
 
-#: ../hyp/hyp.c:163
-#: ../hyp/stool.c:54
-msgid  "Unknown"
-msgstr ""
-
 #: ../hyp/hyp.c:179
 #, c-format
 msgid  "OS %c"
@@ -3748,7 +3790,7 @@ msgstr ""
 
 #: ../hyp/outasc.c:514
 #: ../hyp/outdump.c:539
-#: ../hyp/pdf.c:1414
+#: ../hyp/pdf.c:2183
 #, c-format
 msgid  "'%s' not found.\n"
 msgstr ""
@@ -4256,10 +4298,17 @@ msgstr ""
 msgid  "<!-- %s: Node %u: failed to decode -->\n"
 msgstr ""
 
-#: ../hyp/pdf.c:1125
+#: ../hyp/pdf.c:1817
 #, c-format
 msgid  "%s: Node %u: failed to decode"
 msgstr ""
+
+#: ../hyp/pdf.c:2190
+#, c-format
+msgid  "generated %lu page\n"
+msgid_plural "generated %lu pages\n"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../hyp/pdfid.c:1197
 #, c-format
@@ -5044,6 +5093,13 @@ msgid  ""
 "*.*|All files (*.*)\n"
 msgstr ""
 
+#: ../macos/hv_fsel.m:7
+#: ../win32/hv_fsel.c:29
+msgid  ""
+"*.pdf|PDF files (*.pdf)\n"
+"*.*|All files (*.*)\n"
+msgstr ""
+
 #: ../macos/hv_prefs.m:91
 #: ../win32/hv_prefs.c:94
 msgid  "Pick a color"
@@ -5539,6 +5595,11 @@ msgstr ""
 
 #: ../tos/hv_srch.c:247
 msgid  "Search Result..."
+msgstr ""
+
+#: ../tos/tv_win.c:524
+#, c-format
+msgid  "[1][Error reading hyp tree|%s][Cancel]"
 msgstr ""
 
 #: ../win32/hv_about.c:44

@@ -707,9 +707,10 @@ static HPDF_REAL draw_image(PDF *pdf, HYP_DOCUMENT *hyp, struct hyp_gfx *gfx, HP
 		ty = y;
 		tw = (gfx->pixwidth / HYP_PIC_FONTW) * pdf->cell_width;
 		th = ((gfx->pixheight + HYP_PIC_FONTH - 1) / HYP_PIC_FONTH) * pdf->line_height;
+		th = gfx->pixheight;
 		if (gfx->islimage)
 		{
-			y += gfx->pixheight;
+			y += th;
 			/* st-guide leaves an empty line after each @limage */
 			if ((gfx->pixheight % HYP_PIC_FONTH) == 0)
 				y += pdf->line_height;
@@ -2186,7 +2187,7 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	
 	if (ret && opts->verbose >= 0 && opts->outfile != stdout)
 	{
-		hyp_utf8_fprintf(stdout, _("generated %lu page%s\n"), (unsigned long)pdf->num_pages, pdf->num_pages == 1 ? "" : "s");
+		hyp_utf8_fprintf(stdout, P_("generated %lu page\n", "generated %lu pages\n", (unsigned long)pdf->num_pages), (unsigned long)pdf->num_pages);
 	}
 
 	pdf_delete(pdf);

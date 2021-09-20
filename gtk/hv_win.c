@@ -2317,7 +2317,7 @@ static GtkActionEntry const action_entries[] = {
 	{ "save",               "hv-save",               N_("_Save text..."),                   "<Ctrl>S",     N_("Save page to file"),                             G_CALLBACK(on_save) },
 	{ "recompile",          "hv-save",               N_("_Recompile..."),                   "<Ctrl>R",     N_("Recompile to ST-Guide format"),                  G_CALLBACK(on_recompile) },
 #ifdef WITH_PDF
-	{ "savepdf",            "hv-save",               N_("_Save as PDF..."),                 NULL,          N_("Save file as PDF"),                              G_CALLBACK(on_savepdf) },
+	{ "savepdf",            "hv-save",               N_("Save as _PDF..."),                 NULL,          N_("Save file as PDF"),                              G_CALLBACK(on_savepdf) },
 #endif
 	{ "info",               "hv-info",               N_("_File info..."),                   "<Ctrl>I",     N_("Show info about hypertext"),                     G_CALLBACK(on_info) },
 	{ "remarker",           "hv-remarker",           N_("_Run Remarker"),                   "<Alt>R",      N_("Start Remarker"),                                G_CALLBACK(on_remarker) },

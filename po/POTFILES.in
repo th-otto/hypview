@@ -1,4 +1,4 @@
-# Auto-generated: Fr 14. Jun 05:51:05 CEST 2019
+# Auto-generated: Mo 20. Sep 07:20:49 CEST 2021
 gtk/gfilesel.c
 gtk/gtk_comp.h
 gtk/hv_about.c
@@ -20,13 +20,15 @@ gtk/hv_prefs.c
 gtk/hv_rcomp.c
 gtk/hv_rsc.c
 gtk/hv_srch.c
+gtk/hv_tree.c
 gtk/hv_win.c
 gtk/hypview.desktop.in
-hpdf/src/hpdf_error.c
+hpdf/src/error.c
 hyp/bmp2gif.c
 hyp/bmp2img.c
 hyp/cgi.c
 hyp/cgirsc.c
+hyp/csetname.c
 hyp/gif2bmp.c
 hyp/hcp_comp.c
 hyp/hcp_opts.c
@@ -34,7 +36,6 @@ hyp/hcpmain.c
 hyp/hyp.c
 hyp/hyp_asc.c
 hyp/hyp_cfg.c
-hyp/hyp_cset.c
 hyp/hyp_err.c
 hyp/hypdoc.c
 hyp/hypfind.c
@@ -91,6 +92,7 @@ tos/hv_mark.c
 tos/hv_nav.c
 tos/hv_srch.c
 tos/nf_ops.c
+tos/tv_win.c
 win32/hv_about.c
 win32/hv_block.c
 win32/hv_click.c
@@ -109,4 +111,5 @@ win32/hv_prefs.c
 win32/hv_rcomp.c
 win32/hv_rsc.c
 win32/hv_srch.c
+win32/hv_tree.c
 win32/hv_win.c
