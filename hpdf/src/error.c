@@ -25,7 +25,7 @@
 #define _(x) x
 
 
-#ifdef __PUREC__
+#if defined(__PUREC__) || defined(__APPLE__)
 # define ERROR_ALL
 #endif
 

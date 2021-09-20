@@ -20,7 +20,7 @@
 #include "hpdf.h"
 #include "hpdf/destinat.h"
 
-#ifdef __PUREC__
+#if defined(__PUREC__) || defined(__APPLE__)
 # define DESTINAT_ALL
 #endif
 

@@ -21,7 +21,7 @@
 #include "hpdf/3dmeasur.h"
 #include "hpdf.h"
 
-#ifdef __PUREC__
+#if defined(__PUREC__) || defined(__APPLE__)
 # define MEASURE3D_ALL
 #endif
 

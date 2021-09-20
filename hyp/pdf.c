@@ -217,7 +217,7 @@ static gboolean pdf_out_str(PDF *pdf, HYP_DOCUMENT *hyp, HPDF_Point *text_pos, c
 		HPDF_TextWidth tw;
 		HPDF_RGBColor color;
 		
-		HPDF_Font_TextWidth(pdf->regular_font, str, len, &tw);
+		HPDF_Font_TextWidth(pdf->regular_font, str, (HPDF_UINT)len, &tw);
 		HPDF_Page_GetRGBFill(pdf->page, &color);
 		pdf_out_fill_color(pdf->page, &user_colors[attr->curbg]);
 		HPDF_Page_Rectangle(pdf->page, text_pos->x, text_pos->y, tw.width * pdf->font_size / 1000, pdf->line_height);
@@ -2156,6 +2156,7 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 
 	ret &= pdf_output_outline(hyp, pdf);
 	
+	stream = NULL;
 	if (ret)
 		ret &= HPDF_SaveToStream(pdf->hpdf, &stream) == HPDF_NOERROR;
 	if (ret)

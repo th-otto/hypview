@@ -22,7 +22,7 @@
 #include <string.h>
 
 
-#ifdef __PUREC__
+#if defined(__PUREC__) || defined(__APPLE__)
 # define CATALOG_ALL
 #endif
 

@@ -21,7 +21,7 @@
 #include "hpdf/objects.h"
 #include <string.h>
 
-#ifdef __PUREC__
+#if defined(__PUREC__) || defined(__APPLE__)
 # define ARRAY_ALL
 #endif
 

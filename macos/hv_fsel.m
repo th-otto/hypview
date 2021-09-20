@@ -3,7 +3,8 @@
 
 char const hypertext_file_filter[] = N_("*.hyp|Hypertext files (*.hyp)\n*.*|All files (*.*)\n");
 char const text_file_filter[] = N_("*.txt|Text files (*.txt)\n*.*|All files (*.*)\n");
-char const stg_file_filter[] = N_("*.stg|ST-Guide files (*.stg)\n*.*|All files (*.*)\n");
+static char const stg_file_filter[] = N_("*.stg|ST-Guide files (*.stg)\n*.*|All files (*.*)\n");
+static char const pdf_file_filter[] = N_("*.pdf|PDF files (*.pdf)\n*.*|All files (*.*)\n");
 
 #define G_SEARCHPATH_SEPARATOR_S ";"
 
@@ -220,21 +221,28 @@ char *SelectFileSave(WINDOW_DATA *win, hyp_filetype type)
 		filter = _(stg_file_filter);
 		title = _("Recompile to");
 		break;
+	case HYP_FT_PDF:
+#ifdef WITH_PDF
+		defext = HYP_EXT_PDF;
+		filter = _(pdf_file_filter);
+		title = _("Recompile to PDF");
+		break;
+#else
+		return NULL;
+#endif
 	case HYP_FT_NONE:
 	case HYP_FT_UNKNOWN:
 	case HYP_FT_LOADERROR:
 	case HYP_FT_BINARY:
-	case HYP_FT_HYP:
 	case HYP_FT_REF:
 	case HYP_FT_RSC:
 	case HYP_FT_IMAGE:
 	case HYP_FT_HTML:
 	case HYP_FT_XML:
 	case HYP_FT_HTML_XML:
-	case HYP_FT_PDF:
+	case HYP_FT_HYP:
 	case HYP_FT_TREEVIEW:
 	default:
-		unreachable();
 		return NULL;
 	}
 	

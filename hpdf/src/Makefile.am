@@ -13,6 +13,7 @@ libhpdf_a_SOURCES = \
 	enc_cnt.c \
 	enc_jp.c \
 	enc_kr.c \
+	enc_utf8.c \
 	encrypt.c \
 	encryptd.c \
 	extgstat.c \
@@ -43,15 +44,14 @@ libhpdf_a_SOURCES = \
 	objects.c \
 	outline.c \
 	pagelab.c \
+	pdfa.c \
 	real.c \
 	streams.c \
 	string.c \
 	u3d.c \
 	utils.c \
 	xref.c \
-	pdfa.c \
 	exdata.c \
-	enc_utf8.c \
 	t4.h \
 	$(empty)
 

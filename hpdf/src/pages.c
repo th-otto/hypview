@@ -25,7 +25,7 @@
 #include "hpdf/u3d.h"
 #include <string.h>
 
-#ifdef __PUREC__
+#if defined(__PUREC__) || defined(__APPLE__)
 # define PAGES_ALL
 #endif
 

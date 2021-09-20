@@ -146,7 +146,7 @@ void *HPDF_GetMem(HPDF_MMgr mmgr, size_t size)
 			return ptr;
 		} else
 		{
-			HPDF_UINT tmp_buf_siz = (mmgr->buf_size < size) ? size : mmgr->buf_size;
+			HPDF_UINT tmp_buf_siz = (mmgr->buf_size < size) ? (HPDF_UINT)size : mmgr->buf_size;
 
 			node = (HPDF_MPool_Node) mmgr->alloc_fn(sizeof(HPDF_MPool_Node_Rec) + tmp_buf_siz);
 
@@ -161,12 +161,12 @@ void *HPDF_GetMem(HPDF_MMgr mmgr, size_t size)
 
 		node->next_node = mmgr->mpool;
 		mmgr->mpool = node;
-		node->used_size = size;
+		node->used_size = (HPDF_UINT)size;
 		node->buf = (HPDF_BYTE *) node + sizeof(HPDF_MPool_Node_Rec);
 		ptr = node->buf;
 	} else
 	{
-		ptr = mmgr->alloc_fn(size);
+		ptr = mmgr->alloc_fn((HPDF_UINT)size);
 		if (ptr == NULL)
 			HPDF_SetError(mmgr->error, HPDF_FAILED_TO_ALLOC_MEM, HPDF_NOERROR);
 	}

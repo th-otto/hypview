@@ -822,6 +822,25 @@ static gboolean NOINLINE WriteProfile(void)
 }
 
 
+#ifdef WITH_PDF
+- (void)saveDocumentPdf:(id)sender
+{
+	WINDOW_DATA *win = top_window();
+	char *filename;
+	DOCUMENT *doc = win->data;
+	
+	dprintf(("NSApplication::saveDocumentPdf:"));
+	UNUSED(sender);
+	filename = SelectFileSave(win, HYP_FT_PDF);
+	if (filename)
+	{
+		hv_recompile((HYP_DOCUMENT *)doc->data, filename, HYP_FT_PDF);
+		g_free(filename);
+	}
+}
+#endif
+
+
 - (void)recompile:(id)sender
 {
 	WINDOW_DATA *win = top_window();
@@ -1210,6 +1229,10 @@ static gboolean clipregion_empty(WINDOW_DATA *win)
 		return doc && doc->buttons.save;
 	if (action == @selector(saveDocumentAs:))
 		return doc && doc->buttons.save;
+#ifdef WITH_PDF
+	if (action == @selector(saveDocumentPdf:))
+		return doc && doc->buttons.save;
+#endif
 	if (action == @selector(recompile:))
 		return doc && doc->buttons.save && doc->type == HYP_FT_HYP;
 	if (action == @selector(startRemarker:))
@@ -1535,7 +1558,13 @@ static NSImage *load_image_from_data(const unsigned char *data)
 	[item setTarget:NSApp];
 	item.toolTip = W_("Recompile to ST-Guide format");
 	item.image = load_image_from_data(save_icon_data);
-
+#ifdef WITH_PDF
+	item = [menu addItemWithTitle:W_("Save as PDF...")    action:@selector(saveDocumentPdf:)              keyEquivalent:@""];
+	[item setTarget:NSApp];
+	item.toolTip = W_("Save file as PDF");
+	item.image = load_image_from_data(save_icon_data);
+#endif
+	
 	[menu addItem:[NSMenuItem separatorItem]];
 	item = [menu addItemWithTitle:W_("Catalog")           action:@selector(navigateCatalog:)              keyEquivalent:@"k"];
 	[item setKeyEquivalentModifierMask: NSAlternateKeyMask];
