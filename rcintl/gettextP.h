@@ -12,6 +12,8 @@
 #ifdef __CYGWIN__
 /* we still need some windows definitions */
 # include <windows.h>
+#else
+typedef struct _instance *HINSTANCE;
 #endif
 #endif
 
