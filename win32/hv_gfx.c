@@ -360,7 +360,7 @@ static void init_screen(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-GLOBAL _WORD GetNumPlanes(void)
+_WORD GetNumPlanes(void)
 {
 	init_screen();
 	return screen_planes;

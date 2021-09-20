@@ -31,7 +31,7 @@
 #include "nls.h"
 #include "ws.h"
 #include "debug.h"
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #include <direct.h>
 #endif
 #include "picture.h"

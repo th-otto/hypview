@@ -309,7 +309,7 @@ icons: $(NAV_IMAGES)
 outhtml.o: $(NAV_IMAGES)
 
 EVAL_MOFILES = cat $(srcdir)/../po/LINGUAS | sed -e '/^\#/d' -e 's@^\(.*\)@ ../po/\1@CATOBJEXT@ @'
-MOFILES := $(shell $(EVAL_MOFILES))
+MOFILES := $(shell if test @CATOBJEXT@ = "NONE"; then echo ""; else $(EVAL_MOFILES); fi)
 
 hcp_DEPENDENCIES = libhyp.a $(LIBPIC_DEP)
 hcp_LDADD =
@@ -332,7 +332,7 @@ hcp_SOURCES += hcp_rc.rc
 hcp_DEPENDENCIES += hcp_rc.res $(LIBRCINTL_DEP)
 hcp_LDADD += hcp_rc.res
 hcp_rc.res: $(srcdir)/hcp_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 if WITH_GUI_GTK
 hcp_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
@@ -448,7 +448,7 @@ reflink_SOURCES += reflink_rc.rc
 reflink_DEPENDENCIES += reflink_rc.res $(LIBRCINTL_DEP)
 reflink_LDADD += reflink_rc.res
 reflink_rc.res: $(srcdir)/reflink_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 
 reflink.ttp: reflink
@@ -467,7 +467,7 @@ refcheck_SOURCES += refcheck_rc.rc
 refcheck_DEPENDENCIES += refcheck_rc.res $(LIBRCINTL_DEP)
 refcheck_LDADD += refcheck_rc.res
 refcheck_rc.res: $(srcdir)/refcheck_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 
 refcheck.ttp: refcheck
@@ -485,7 +485,7 @@ stool_SOURCES += stool_rc.rc
 stool_DEPENDENCIES += stool_rc.res $(LIBRCINTL_DEP)
 stool_LDADD += stool_rc.res
 stool_rc.res: $(srcdir)/stool_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 if WITH_GUI_GTK
 stool_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
@@ -510,7 +510,7 @@ hypfind_SOURCES += hypfind_rc.rc
 hypfind_DEPENDENCIES += hypfind_rc.res $(LIBRCINTL_DEP)
 hypfind_LDADD += hypfind_rc.res
 hypfind_rc.res: $(srcdir)/hypfind_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
-	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
+	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
 if WITH_GUI_GTK
 hypfind_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)

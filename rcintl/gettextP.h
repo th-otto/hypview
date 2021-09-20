@@ -8,8 +8,11 @@
 # define LC_MESSAGES 1729
 #endif
 
-#if !(defined _WIN32 || defined __WIN32__ || defined __CYGWIN__ || defined(__MSYS__))
-typedef struct _instance *HINSTANCE;
+#if !(defined _WIN32 || defined __WIN32__ || defined(__MSYS__))
+#ifdef __CYGWIN__
+/* we still need some windows definitions */
+# include <windows.h>
+#endif
 #endif
 
 union _strptr {

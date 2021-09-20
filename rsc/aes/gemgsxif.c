@@ -189,7 +189,7 @@ void gsx_mret(void **pmaddr, _LONG *pmlen)
 static void gsx_wsopen(void)
 {
 	_WORD i;
-	_WORD intin[11];
+	_WORD intin[16];
 
 	static short const restype[] =  { 0, 1, 1, 1, 2, 3, 4, 5, 6 };
 	static short const restable[] = { 0, 2, 5, 7, 3, 4, 6, 8, 9 };

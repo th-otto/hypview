@@ -90,6 +90,8 @@ char *alloca();
 static char *stpcpy(char *dest, const char *src);
 # endif
 #if !defined(HAVE_MEMPCPY) && !defined(__GLIBC__)
+#undef mempcpy
+#define mempcpy mymempcpy
 static void *mempcpy(void *dest, const void *src, size_t n);
 #endif
 

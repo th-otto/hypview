@@ -39,9 +39,9 @@
 #  define LLONG_MIN TYPE_MINIMUM(intmax_t)
 # endif
 
-#define ISSPACE(Ch) isspace (Ch)
-#define ISALPHA(Ch) isalpha (Ch)
-#define TOUPPER(Ch) toupper (Ch)
+#define ISSPACE(Ch) isspace ((unsigned char)(Ch))
+#define ISALPHA(Ch) isalpha ((unsigned char)(Ch))
+#define TOUPPER(Ch) toupper ((unsigned char)(Ch))
 
 
 intmax_t xs_strtoimax(const char *nptr, const char **endptr, int base)

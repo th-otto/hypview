@@ -1047,7 +1047,11 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 					entry = hyp->indextable[node];
 					text = hyp_conv_to_utf8(hyp->comp_charset, entry->name, entry->length - SIZEOF_INDEX_ENTRY);
 					str = hyp_utf8_to_wchar(text, STR0TERM, NULL);
+#ifdef __CYGWIN__
+					wcscpy(tip->pszText, str);
+#else
 					wcscpy_s(tip->pszText, tip->cchTextMax, str);
+#endif
 					g_free(str);
 					g_free(text);
 				}
@@ -1068,7 +1072,11 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 					hyp = (HYP_DOCUMENT *)target->data->data;
 					entry = hyp->indextable[node];
 					str = hyp_conv_charset(hyp->comp_charset, hyp_get_current_charset(), entry->name, entry->length - SIZEOF_INDEX_ENTRY, NULL);
+#ifdef __CYGWIN__
+					strncpy(tip->pszText, str, tip->cchTextMax);
+#else
 					strcpy_s(tip->pszText, tip->cchTextMax, str);
+#endif
 					g_free(str);
 				}
 				return TRUE;

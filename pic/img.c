@@ -124,7 +124,7 @@ gboolean pic_type_img(PICTURE *pic, const _UBYTE *buf, _LONG size)
 
 /*** ---------------------------------------------------------------------- ***/
 
-LOCAL _UBYTE const masks[8] = { 0xff, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe };
+static _UBYTE const masks[8] = { 0xff, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe };
 
 gboolean img_unpack(_UBYTE *dst, const _UBYTE *src, PICTURE *pic)
 {
@@ -487,7 +487,7 @@ gboolean img_unpack_safe(_UBYTE *dst, const _UBYTE *src, PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-LOCAL _WORD do_compress(const _UBYTE *start, const _UBYTE *end)
+static _WORD do_compress(const _UBYTE *start, const _UBYTE *end)
 {
 	_WORD i;
 	_UBYTE c;
@@ -513,7 +513,7 @@ LOCAL _WORD do_compress(const _UBYTE *start, const _UBYTE *end)
 }
 
 
-LOCAL _UBYTE *put_uncompressed(_UBYTE *outptr, const _UBYTE *start, const _UBYTE *end)
+static _UBYTE *put_uncompressed(_UBYTE *outptr, const _UBYTE *start, const _UBYTE *end)
 {
 	size_t n = end - start;
 
@@ -546,7 +546,7 @@ LOCAL _UBYTE *put_uncompressed(_UBYTE *outptr, const _UBYTE *start, const _UBYTE
 }
 
 
-LOCAL _UBYTE *put_compressed(_UBYTE *outptr, const _UBYTE *start, _WORD n)
+static _UBYTE *put_compressed(_UBYTE *outptr, const _UBYTE *start, _WORD n)
 {
 	_UBYTE c1;
 	_UBYTE c2;
@@ -589,7 +589,7 @@ LOCAL _UBYTE *put_compressed(_UBYTE *outptr, const _UBYTE *start, _WORD n)
 }
 
 
-LOCAL _UBYTE *compress_line(_UBYTE *outptr, const _UBYTE *buf, _WORD rect_bytes)
+static _UBYTE *compress_line(_UBYTE *outptr, const _UBYTE *buf, _WORD rect_bytes)
 {
 	const _UBYTE *pend;
 	const _UBYTE *start;
@@ -617,7 +617,7 @@ LOCAL _UBYTE *compress_line(_UBYTE *outptr, const _UBYTE *buf, _WORD rect_bytes)
 }
 
 
-LOCAL _WORD cmp_lines(const _UBYTE *buf, _WORD maxlines, _WORD rect_bytes, _WORD plane_bytes)
+static _WORD cmp_lines(const _UBYTE *buf, _WORD maxlines, _WORD rect_bytes, _WORD plane_bytes)
 {
 	_WORD j;
 	_WORD i;
@@ -640,7 +640,7 @@ LOCAL _WORD cmp_lines(const _UBYTE *buf, _WORD maxlines, _WORD rect_bytes, _WORD
 }
 
 
-LOCAL _UBYTE *do_1line(_UBYTE *outptr, const _UBYTE *buf, _WORD rect_bytes, _WORD num_planes)
+static _UBYTE *do_1line(_UBYTE *outptr, const _UBYTE *buf, _WORD rect_bytes, _WORD num_planes)
 {
 	_WORD i;
 	const _WORD *p1;
@@ -673,7 +673,7 @@ LOCAL _UBYTE *do_1line(_UBYTE *outptr, const _UBYTE *buf, _WORD rect_bytes, _WOR
 }
 
 
-LOCAL _UBYTE *_packimg(
+static _UBYTE *_packimg(
 	_UBYTE *outptr,
 	const _UBYTE *buf,
 	_WORD rect_width,

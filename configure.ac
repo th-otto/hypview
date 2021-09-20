@@ -437,7 +437,7 @@ AC_CHECK_FUNCS([strcasecmp strncasecmp stricmp strnicmp strincmp strncmpi strlwr
 	getuid geteuid getgid getegid getpid getppid lstat mkdir mktemp mkstemp mkstemps])
 
 AC_CHECK_LIB(m, log)
-AC_CHECK_LIB(gettextpo, po_read_file, have_gettextpo=yes, have_gettextpo=no)
+AC_CHECK_LIB(gettextpo, po_file_read, have_gettextpo=yes, have_gettextpo=no)
 AM_CONDITIONAL([HAVE_GETTEXTPO], test "$have_gettextpo" = yes)
 
 if test "$TARGET_OS" = "mac"; then

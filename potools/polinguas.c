@@ -20,6 +20,7 @@
 #include "portab.h"
 #include "hypmem.h"
 #include "hypintl.h"
+#include "gettextP.h"
 #include <gettext-po.h>
 #include "rcintl.h"
 
@@ -195,6 +196,12 @@ static gboolean dofile(FILE *out, struct fileentry *entry)
 	{
 		fprintf(stderr, _("%s: %s: unsupported language %s\n"), gl_program_name, entry->filename, entry->lang);
 	}
+	fprintf(out, "#ifndef %s\n", sublang_table[i].langname);
+	fprintf(out, "#define %s 0x%x\n", sublang_table[i].langname, PRIMARYLANGID(sublang_table[i].id));
+	fprintf(out, "#endif\n");
+	fprintf(out, "#ifndef %s\n", sublang_table[i].subname);
+	fprintf(out, "#define %s 0x%x\n", sublang_table[i].subname, SUBLANGID(sublang_table[i].id));
+	fprintf(out, "#endif\n");
 	fprintf(out, "LANGUAGE %s, %s\n", sublang_table[i].langname, sublang_table[i].subname);
 	moname = g_strdup(hyp_basename(entry->filename));
 	p = strrchr(moname, '.');
@@ -251,13 +258,13 @@ static gboolean read_linguas(const char *filename)
 		fprintf(stderr, "%s: %s: %s:\n", gl_program_name, filename, strerror(errno));
 		return FALSE;
 	}
-	while (fgets(buf, (int)sizeof(buf), fp) != NULL)
+	while (fgets(buf, (int)sizeof(buf) - 4, fp) != NULL)
 	{
 		g_strchomp(buf);
 		g_strchug(buf);
 		if (*buf == '\0' || *buf == '#')
 			continue;
-		strncat(buf, ".po", sizeof(buf));
+		strcat(buf, ".po");
 		addfile(buf);
 	}
 	
@@ -382,6 +389,12 @@ int main(int argc, const char **argv)
 			translations = NULL;
 		}
 		fprintf(out, "\n");
+		fprintf(out, "#ifndef LANG_ENGLISH\n");
+		fprintf(out, "#define LANG_ENGLISH 0x%x\n", LANG_ENGLISH);
+		fprintf(out, "#endif\n");
+		fprintf(out, "#ifndef SUBLANG_ENGLISH_US\n");
+		fprintf(out, "#define SUBLANG_ENGLISH_US 0x%x\n", SUBLANG_ENGLISH_US);
+		fprintf(out, "#endif\n");
 		fprintf(out, "LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US\n");
 		fprintf(out, "#pragma code_page(1252)\n");
 		fprintf(out, "\n");

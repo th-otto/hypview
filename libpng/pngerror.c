@@ -130,7 +130,7 @@ png_safecat(png_charp buffer, size_t bufsize, size_t pos,
  * Returns the pointer to the start of the formatted string.
  */
 png_charp
-png_format_number(png_const_charp start, png_charp end, int format,
+png_format_number(png_charp start, png_charp end, int format,
     png_alloc_size_t number)
 {
    int count = 0;    /* number of digits output */

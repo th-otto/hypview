@@ -531,14 +531,13 @@ typedef uLong FAR uLongf;
 #endif
 
 #if !defined(Z_SOLO)
-#  ifdef _WIN32
+#  if defined(__GNUC__)
+__extension__ typedef long long z_off64_t_;
+#    define z_off64_t z_off64_t_
+#  elif defined(_WIN32)
 #    define z_off64_t __int64
 #  elif defined(ULONG_MAX) && (ULONG_MAX > 0xffffffffUL)
 #    define z_off64_t long
-#  elif defined(__GNUC__)
-__extension__ typedef long long z_off64_t_;
-#    define z_off64_t z_off64_t_
-#  
 #  else
 #    define z_off64_t off_t
 #  endif

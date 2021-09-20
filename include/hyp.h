@@ -1111,8 +1111,10 @@ void hyp_tree_free(HYP_DOCUMENT *hyp, HYPTREE *tree);
 char *win32_errstring(DWORD err);
 int win32_to_errno(DWORD oserrno);
 DWORD win32_from_errno(int err_no);
+#ifndef __CYGWIN__
 #include <direct.h>
 #define mkdir(s, m) _mkdir(s)
+#endif
 #endif
 
 

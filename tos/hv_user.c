@@ -53,7 +53,7 @@ static _WORD *colortbl;
 /* table for pixel oriented imaged */
 static _ULONG colortbl2[XMAX_COLOR];
 /* wether an palette has already been set */
-LOCAL table4 rgb_palette;
+static table4 rgb_palette;
 
 static _WORD const pixtbl[XMAX_COLOR] = {
     0,   2,   3,   6,   4,   7,   5,   8,   9,  10,  11,  14,  12,  15,  13, 255,

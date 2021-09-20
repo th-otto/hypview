@@ -155,6 +155,9 @@ char *hyp_utf8_strerror(int err)
 
 int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 {
+#ifdef __CYGWIN__
+	return open(filename, flags, mode);
+#else
 	wchar_t *wstr;
 	int fd;
 	size_t len;
@@ -165,12 +168,16 @@ int hyp_utf8_open(const char *filename, int flags, mode_t mode)
 	fd = _wopen(wstr, flags, mode);
 	g_free(wstr);
 	return fd;
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_unlink(const char *name)
 {
+#ifdef __CYGWIN__
+	return unlink(name);
+#else
 	wchar_t *wstr;
 	int ret;
 	size_t len;
@@ -181,12 +188,16 @@ int hyp_utf8_unlink(const char *name)
 	ret = _wunlink(wstr);
 	g_free(wstr);
 	return ret;
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 int hyp_utf8_rename(const char *oldname, const char *newname)
 {
+#ifdef __CYGWIN__
+	return rename(oldname, newname);
+#else
 	wchar_t *wstr1, *wstr2;
 	int ret;
 	size_t len;
@@ -203,12 +214,16 @@ int hyp_utf8_rename(const char *oldname, const char *newname)
 	g_free(wstr2);
 	g_free(wstr1);
 	return ret;
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 {
+#ifdef __CYGWIN__
+	return fopen(filename, mode);
+#else
 	wchar_t *wstr;
 	FILE *fp;
 	size_t len;
@@ -226,12 +241,16 @@ FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 	g_free(wstr);
 	g_free(wmode);
 	return fp;
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 DIR *hyp_utf8_opendir(const char *dirname)
 {
+#ifdef __CYGWIN__
+	return opendir(dirname);
+#else
 	wchar_t *wstr;
 	_WDIR *dir;
 	size_t len;
@@ -242,12 +261,20 @@ DIR *hyp_utf8_opendir(const char *dirname)
 	dir = _wopendir(wstr);
 	g_free(wstr);
 	return (DIR *)dir;
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 char *hyp_utf8_readdir(DIR *dir)
 {
+#ifdef __CYGWIN__
+	struct dirent *ent;
+	ent = readdir(dir);
+	if (ent == NULL)
+		return NULL;
+	return ent->d_name;
+#else
 	_WDIR *wdir = (_WDIR *)dir;
 	struct _wdirent *ent;
 	char *str;
@@ -257,14 +284,19 @@ char *hyp_utf8_readdir(DIR *dir)
 		return NULL;
 	str = hyp_wchar_to_utf8(ent->d_name, STR0TERM);
 	return str;
+#endif
 }
 
 /*** ---------------------------------------------------------------------- ***/
 
 void hyp_utf8_closedir(DIR *dir)
 {
+#ifdef __CYGWIN__
+	closedir(dir);
+#else
 	_WDIR *wdir = (_WDIR *)dir;
 	_wclosedir(wdir);
+#endif
 }
 
 #endif /* __WIN32__ */

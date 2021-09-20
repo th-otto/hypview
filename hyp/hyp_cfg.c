@@ -138,7 +138,7 @@ static void subst_var(char **str, const char *name, const char *value)
 	if (value == NULL || empty(*str))
 		return;
 	namelen = strlen(name);
-	if ((p = strstr(*str, name)) != NULL && (p[namelen] == '\0' || !isalnum(p[namelen])))
+	if ((p = strstr(*str, name)) != NULL && (p[namelen] == '\0' || !isalnum((unsigned char)p[namelen])))
 	{
 		vallen = strlen(value);
 		if (vallen > 0 && G_IS_DIR_SEPARATOR(p[namelen]) && G_IS_DIR_SEPARATOR(value[vallen]))
@@ -587,6 +587,8 @@ gboolean HypProfile_Save(gboolean report_error)
 				return FALSE;
 			}
 		}
+#else
+		UNUSED(report_error);
 #endif
 	}
 

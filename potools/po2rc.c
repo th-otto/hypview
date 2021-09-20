@@ -272,13 +272,13 @@ static gboolean read_linguas(const char *filename)
 		fprintf(stderr, "%s: %s: %s:\n", gl_program_name, filename, strerror(errno));
 		return FALSE;
 	}
-	while (fgets(buf, (int)sizeof(buf), fp) != NULL)
+	while (fgets(buf, (int)sizeof(buf) - 4, fp) != NULL)
 	{
 		g_strchomp(buf);
 		g_strchug(buf);
 		if (*buf == '\0' || *buf == '#')
 			continue;
-		strncat(buf, ".po", sizeof(buf));
+		strcat(buf, ".po");
 		addfile(buf);
 	}
 	

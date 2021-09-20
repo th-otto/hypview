@@ -213,6 +213,9 @@ wchar_t *hyp_utf8_to_wchar(const char *str, size_t len, size_t *lenp)
 
 FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 {
+#ifdef __CYGWIN__
+	return fopen(filename, mode);
+#else
 	wchar_t *wstr;
 	FILE *fp;
 	size_t len;
@@ -230,8 +233,8 @@ FILE *hyp_utf8_fopen(const char *filename, const char *mode)
 	g_free(wstr);
 	g_free(wmode);
 	return fp;
+#endif
 }
-
 #else
 
 FILE *hyp_utf8_fopen(const char *filename, const char *mode)

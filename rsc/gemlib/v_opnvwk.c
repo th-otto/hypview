@@ -17,7 +17,7 @@
 
 
 void
-v_opnvwk (short work_in[], short *handle, short work_out[])
+v_opnvwk (short *work_in, short *handle, short *work_out)
 {
 	short vdi_control[VDI_CNTRLMAX]; 
 

@@ -968,7 +968,7 @@ gboolean g_path_is_absolute(const char *file_name)
 
 #ifdef G_DOSTYLE_PATHNAMES
 	/* Recognize drive letter on native Windows */
-	if ((isalpha(file_name[0]) || file_name[0] == '*') && file_name[1] == ':')
+	if ((isalpha((unsigned char)file_name[0]) || file_name[0] == '*') && file_name[1] == ':')
 		return TRUE;
 #endif
 
@@ -1084,7 +1084,7 @@ const char *hyp_basename(const char *path)
 	if (base != NULL)
 		return base;
 	
-	if (isalpha(path[0]) && path[1] == ':')
+	if (isalpha((unsigned char)path[0]) && path[1] == ':')
 	{
     	/* can only be X:name, without slash */
     	path += 2;

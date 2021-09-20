@@ -50,6 +50,14 @@
 # endif
 #endif
 
+#ifndef __GNUC_PREREQ
+# ifdef __GNUC__
+#   define __GNUC_PREREQ(maj, min) ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
+# else
+#   define __GNUC_PREREQ(maj, min) 0
+# endif
+#endif
+
 #if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__) || defined(__MSYS__)
 # define WINDOWS_NATIVE
 #endif
@@ -1582,12 +1590,12 @@ const char *gl_locale_name(int category, const char *categoryname)
 
 #ifndef LOCALE_ALL
 #define LOCALE_ALL                  0                     /* enumerate all named based locales */
+#endif
 typedef BOOL (CALLBACK *LOCALE_ENUMPROCEX)(LPWSTR lpLocaleString, DWORD dwFlags, LPARAM lParam);
 
 WINBASEAPI BOOL WINAPI EnumSystemLocalesEx(LOCALE_ENUMPROCEX, DWORD, LPARAM lParam, LPVOID lpReserved);
 WINBASEAPI LCID WINAPI LocaleNameToLCID(LPCWSTR lpName, DWORD dwFlags);
 typedef LCID (WINAPI *LPLOCALENAMETOLCID)(LPCWSTR lpName, DWORD dwFlags);
-#endif
 
 typedef BOOL (WINAPI *LPENUMSYSTEMLOCALESEX)(LOCALE_ENUMPROCEX, DWORD, LPARAM lParam, LPVOID lpReserved);
 
@@ -1682,10 +1690,14 @@ char *gl_locale_name_posify(const char *locale)
 			if (kernel32 == 0)
 			{
 				kernel32 = GetModuleHandle("kernel32");
+#if __GNUC_PREREQ(8, 0)
 #pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
 				pEnumSystemLocalesEx = (LPENUMSYSTEMLOCALESEX)GetProcAddress(kernel32, "EnumSystemLocalesEx");
 				pLocaleNameToLCID = (LPLOCALENAMETOLCID)GetProcAddress(kernel32, "LocaleNameToLCID");
+#if __GNUC_PREREQ(8, 0)
 #pragma GCC diagnostic warning "-Wcast-function-type"
+#endif
 			}
 			
 			if (pEnumSystemLocalesEx && pLocaleNameToLCID)

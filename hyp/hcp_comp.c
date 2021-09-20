@@ -8240,7 +8240,13 @@ gboolean hcp_compile(const char *filename, hcp_opts *opts)
 			dir = g_strdup(".");
 		}
 		vars->tmpfile = g_build_filename(dir, "hyXXXXXX", NULL);
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 		mktemp(vars->tmpfile);
+#ifdef __GNUC__
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#endif
 		g_free(dir);
 
 		if (retval)

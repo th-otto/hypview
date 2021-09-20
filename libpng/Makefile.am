@@ -1,10 +1,11 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
+Z_CFLAGS = -I$(top_srcdir)/zlib -DZLIB_STATIC
+
 AM_CPPFLAGS =
 AM_CPPFLAGS += -I$(top_srcdir)/include
 AM_CPPFLAGS += -I$(srcdir)
 AM_CPPFLAGS += $(Z_CFLAGS)
-AM_CPPFLAGS += -DZLIB_STATIC
 
 noinst_LIBRARIES = libpng.a
 

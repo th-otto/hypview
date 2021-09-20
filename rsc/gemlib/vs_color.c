@@ -32,7 +32,7 @@
  */
 
 void
-vs_color (short handle, short index, const short rgb[])
+vs_color (short handle, short index, const short rgb[3])
 {
 	short *ptr;
 	short vdi_control[VDI_CNTRLMAX]; 

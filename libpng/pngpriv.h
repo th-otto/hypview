@@ -1721,7 +1721,7 @@ PNG_INTERNAL_FUNCTION(size_t,png_safecat,(png_charp buffer, size_t bufsize,
  * Returns the pointer to the start of the formatted string.  This utility only
  * does unsigned values.
  */
-PNG_INTERNAL_FUNCTION(png_charp,png_format_number,(png_const_charp start,
+PNG_INTERNAL_FUNCTION(png_charp,png_format_number,(png_charp start,
    png_charp end, int format, png_alloc_size_t number),PNG_EMPTY);
 
 /* Convenience macro that takes an array: */

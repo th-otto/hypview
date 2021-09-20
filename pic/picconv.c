@@ -11,11 +11,11 @@
 #include <osbind.h>
 #endif
 
-LOCAL unsigned char const masktab[8] = {
+static unsigned char const masktab[8] = {
 	0xC0, 0x30, 0x0C, 0x03, 0xC0, 0x30, 0x0C, 0x03
 };
 
-LOCAL TOSPALETTE const palet1 = {
+static TOSPALETTE const palet1 = {
 	{ 0x07, 0x77 },
 	{ 0x03, 0x33 },
 	{ 0x03, 0x33 },
@@ -294,7 +294,7 @@ PALETTE const std256_palette = {
 };
 
 
-LOCAL unsigned char const pattern1[16 * 16] = {
+static unsigned char const pattern1[16 * 16] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x88, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00,
@@ -329,7 +329,7 @@ LOCAL unsigned char const pattern1[16 * 16] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
 
-LOCAL unsigned char const pattern2[16 * 16] = {
+static unsigned char const pattern2[16 * 16] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x88, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00,
@@ -363,8 +363,8 @@ LOCAL unsigned char const pattern2[16 * 16] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
-LOCAL const unsigned char *patptr1[16];
-LOCAL const unsigned char *patptr2[16];
+static const unsigned char *patptr1[16];
+static const unsigned char *patptr2[16];
 
 #define toword(pixels) (((pixels) + 15) >> 4)
 #define tobyte(pixels) (toword(pixels) << 1)
@@ -588,7 +588,7 @@ void pic_vdi_to_rgbcolor(_WORD vdi[3])
 
 /*** ---------------------------------------------------------------------- ***/
 
-LOCAL void convinit(PALETTE pal)
+static void convinit(PALETTE pal)
 {
 	_WORD i;
 	_WORD color;
@@ -1349,8 +1349,8 @@ void pic_normal_planes(PICTURE *pic)
 
 void pic_stdsize(PICTURE *pic)
 {
-	LOCAL _WORD const maxwidth[4] = { 320, 640, 640, 640 };
-	LOCAL _WORD const maxheight[4] = { 200, 200, 400, 480 };
+	static _WORD const maxwidth[4] = { 320, 640, 640, 640 };
+	static _WORD const maxheight[4] = { 200, 200, 400, 480 };
 	_WORD rez;
 
 	rez = pic_calcrez(pic->pi_planes);
@@ -1362,7 +1362,7 @@ void pic_stdsize(PICTURE *pic)
 
 /*** ---------------------------------------------------------------------- ***/
 
-LOCAL gboolean is_palette(const TOSPALETTE pal)
+static gboolean is_palette(const TOSPALETTE pal)
 {
 	_WORD i;
 

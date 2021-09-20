@@ -5,6 +5,10 @@
 #include <limits.h>
 #include <errno.h>
 #include "stat_.h"
+#ifdef __CYGWIN__
+#include <process.h>
+int _wspawnvp(int mode, const wchar_t *path, const wchar_t * const *argv);
+#endif
 
 
 int hyp_utf8_spawnvp(int mode, int argc, const char *const *argv)
@@ -25,7 +29,11 @@ int hyp_utf8_spawnvp(int mode, int argc, const char *const *argv)
 		retval = 0;
 	} else
 	{
+#ifdef __CYGWIN__
+		retval = spawnvp(mode, argv[0], argv);
+#else
 		retval = _wspawnvp(mode, new_argv[0], (const wchar_t *const *)new_argv);
+#endif
 	}
 	for (i = 0; i < argc; i++)
 		g_free(new_argv[i]);

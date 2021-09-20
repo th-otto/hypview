@@ -63,9 +63,9 @@ typedef struct point_coord
 
 /****** Control definitions *********************************************/
 
-void    v_opnwk( _WORD work_in[16],  _WORD *handle, _WORD work_out[57]);
+void    v_opnwk( _WORD *work_in,  _WORD *handle, _WORD *work_out);
 void    v_clswk( _WORD handle );
-void    v_opnvwk( _WORD work_in[11], _WORD *handle, _WORD work_out[57]);
+void    v_opnvwk( _WORD *work_in, _WORD *handle, _WORD *work_out);
 void    v_clsvwk( _WORD handle );
 void    v_clrwk( _WORD handle );
 void    v_updwk( _WORD handle );

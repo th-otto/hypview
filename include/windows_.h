@@ -27,12 +27,6 @@
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif
-#ifndef LOCAL
-#define LOCAL static
-#endif
-#ifndef GLOBAL
-#define GLOBAL
-#endif
 #define GetInstance()  ((HINSTANCE)GetModuleHandleW(NULL))
 
 #undef MAKEWPARAM
@@ -188,6 +182,7 @@
 
 #else
 typedef unsigned short LANGID;
+typedef unsigned long LCID;
 #endif /* __WIN32__ */
 
 #endif /* __WINDOWS__H__ */
