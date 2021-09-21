@@ -156,130 +156,130 @@ htmljs.h: $(top_srcdir)/www/_hypview.js
 	) > $@
 
 iback_png.h: $(top_srcdir)/www/images/iback.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_back_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 iprev_png.h: $(top_srcdir)/www/images/iprev.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_prev_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 itoc_png.h: $(top_srcdir)/www/images/itoc.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_toc_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 inext_png.h: $(top_srcdir)/www/images/inext.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_next_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 ixref_png.h: $(top_srcdir)/www/images/ixref.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_xref_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 iload_png.h: $(top_srcdir)/www/images/iload.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_load_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 iindex_png.h: $(top_srcdir)/www/images/iindex.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_index_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 ihelp_png.h: $(top_srcdir)/www/images/ihelp.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_help_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 iinfo_png.h: $(top_srcdir)/www/images/iinfo.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_info_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 itreeview_png.h: $(top_srcdir)/www/images/itreeview.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const nav_treeview_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_blank_png.h: $(top_srcdir)/www/images/tv_blank.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_blank_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_intersec_png.h: $(top_srcdir)/www/images/tv_intersec.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_intersec_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_collapsed_png.h: $(top_srcdir)/www/images/tv_collapsed.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_collapsed_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_collapsed_end_png.h: $(top_srcdir)/www/images/tv_collapsed_end.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_collapsed_end_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_expanded_png.h: $(top_srcdir)/www/images/tv_expanded.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_expanded_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_expanded_end_png.h: $(top_srcdir)/www/images/tv_expanded_end.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_expanded_end_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_nointersec_png.h: $(top_srcdir)/www/images/tv_nointersec.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_nointersec_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 tv_end_png.h: $(top_srcdir)/www/images/tv_end.png
-	$(AM_V_GEN)( \
+	$(AM_V_GEN)if test "$(XXD)" != ""; then ( \
 	  echo 'static unsigned char const tv_end_data[] = {'; \
-	  xxd -i < $<; \
+	  $(XXD) -i < $<; \
 	  echo '};' \
-	) > $@
+	) > $@; else touch $@; fi
 
 NAV_IMAGES = \
 	iback_png.h \

@@ -966,6 +966,17 @@ if test "$USE_NLS" = no; then
 	LIBINTL=''
 fi
 
+###############################################################################
+#
+#       Misc
+#
+###############################################################################
+
+AC_PATH_PROGS(XXD, xxd,, $PATH)
+
+if test -z "$XXD" ; then
+  AC_MSG_WARN([xxd not found!])
+fi
 
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_LIBDIR)
@@ -981,6 +992,7 @@ AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(JPEG_CFLAGS)
 AC_SUBST(JPEG_LIBS)
 AC_SUBST(XPM_LIBS)
+AC_SUBST(XXD)
 
 AH_BOTTOM([
 #endif /* __CONFIG_H__ */
