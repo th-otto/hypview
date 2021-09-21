@@ -17,6 +17,8 @@ cstartv.o
 
 ..\hyp\hypinfo.c
 ..\hyp\hcp_opts.c
+..\hyp\refcmds.c
+..\hyp\outcomm.c
 ;..\hyp\llangid.c
 ;..\hyp\sparse.c
 ;..\hyp\model.c

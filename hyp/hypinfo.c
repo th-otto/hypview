@@ -509,7 +509,7 @@ static void remove_entries(REF_MODULE *mod, hyp_reftype type)
 			unsigned char *pos = (unsigned char *)entry->name.utf8 - 2;
 			size = pos[1] + 2;
 			mod->module_len -= size;
-			memmove(pos, pos + size, mod->module_len - (pos - mod->data));
+			memmove(pos, pos + size, mod->module_len - ((const unsigned char *)pos - mod->data));
 			mod->num_entries--;
 			memmove(entry, entry + 1, (mod->num_entries - num) * sizeof(*entry));
 		} else
