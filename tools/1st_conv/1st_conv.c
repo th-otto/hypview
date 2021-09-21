@@ -903,7 +903,7 @@ const char *hyp_basename(const char *path)
 	if (base != NULL)
 		return base;
 	
-	if (isalpha(path[0]) && path[1] == ':')
+	if (isalpha((unsigned char)path[0]) && path[1] == ':')
 	{
     	/* can only be X:name, without slash */
     	path += 2;

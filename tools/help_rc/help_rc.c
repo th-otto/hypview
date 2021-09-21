@@ -251,11 +251,11 @@ static int strint(const char *s, const char **lp)
 	while (*s)
 	{
 		*lp = s;
-		if (isdigit(*s))
+		if (isdigit((unsigned char)*s))
 		{
 			value *= base;
 			value += *s - '0';
-		} else if (base == 16 && isxdigit(*s))
+		} else if (base == 16 && isxdigit((unsigned char)*s))
 		{
 			value *= 16;
 			value += *s - 'A' + 10;
