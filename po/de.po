@@ -5,7 +5,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: hypview HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-20 18:52+0200\n"
+"POT-Creation-Date: 2021-09-21 16:55+0200\n"
 "PO-Revision-Date: 2011-05-30 02:03+0200\n"
 "Last-Translator: Thorsten Otto <admin@tho-otto.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -2267,7 +2267,7 @@ msgstr "Keine Dateien angegeben"
 #: ../hyp/outstg.c:964
 #: ../hyp/outxml.c:792
 #: ../hyp/outxml.c:798
-#: ../hyp/pdf.c:1733
+#: ../hyp/pdf.c:1761
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr "<unknown hex esc $%02x>\n"
@@ -3882,7 +3882,7 @@ msgstr "Siehe auch: %s\n"
 
 #: ../hyp/outasc.c:514
 #: ../hyp/outdump.c:539
-#: ../hyp/pdf.c:2183
+#: ../hyp/pdf.c:2230
 #, c-format
 msgid  "'%s' not found.\n"
 msgstr "'%s' nicht gefunden.\n"
@@ -4404,12 +4404,17 @@ msgstr "Link auf unbekannten Index-Typ %u\n"
 msgid  "<!-- %s: Node %u: failed to decode -->\n"
 msgstr "<!-- %s: Node %u: failed to decode -->\n"
 
-#: ../hyp/pdf.c:1817
+#: ../hyp/pdf.c:1845
 #, c-format
 msgid  "%s: Node %u: failed to decode"
 msgstr "%s: Node %u: Fehler beim dekomprimieren"
 
-#: ../hyp/pdf.c:2190
+#: ../hyp/pdf.c:1977
+#, c-format
+msgid  "%s: Some characters could not be converted"
+msgstr "%s: Einige Zeichen konnten nocht konvertiert werden"
+
+#: ../hyp/pdf.c:2237
 #, c-format
 msgid  "generated %lu page\n"
 msgid_plural "generated %lu pages\n"

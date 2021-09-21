@@ -30,15 +30,6 @@ Known bugs in this version:
   at all if the corresponding REF-file is missing. In this case,
   you will have to investigate the generated link-commands.
 
-- when recompiling to PDF, a white background is always implied. Any
-  background color configured in hypview.ini will be ignored.
-
-- PDF output currently does not support @xref
-
-- PDF output currently does not display any window title
-  at the start of a page (they will occur in the contents view
-  however)
-
 - Not all viewers currently support lines with arrow endings
 
 - hypinfo.ttp is way too large (~16MB), and may not work on TOS.

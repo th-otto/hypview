@@ -1,3 +1,15 @@
+New in Version 1.0.5:
+=====================
+
+- new: PDF output for the (re)compiler,
+  and in the linux and win32 viewers
+  (omitted from GUI application for TOS,
+  because it adds +250K of code that is rarely needed).
+  See also readpdf.txt for some limitations
+- some fixes to html output
+
+- several smaller bug fixes
+
 New in Version 1.0.4:
 =====================
 

@@ -1,0 +1,38 @@
+Known limitations for PDF output:
+
+- when recompiling to PDF, a white background is always implied. Any
+  background color configured in hypview.ini will be ignored.
+
+- PDF output currently does not support @xref
+
+- PDF output currently does not display any window title
+  at the start of a page (they will occur in the contents view
+  however)
+
+- Popup nodes are written just like ordinary pages. Using
+  interactive PDF features currently is not supported in most
+  viewers (not even Acrobat Reader), and displaying them as
+  footnotes would make the calculation of page sizes awfully
+  complicated (especially  since they are not limited in size,
+  and therefor may span more than a single page)
+
+- Not all non-ascii characters may be displayed properly.
+  This is a limitation of the PDF format, and solving it
+  would require to embed the whole font into the file.
+  This affects all the hebrew character from Atari codepage,
+  as well as a few others. Characters that are part of
+  of the windows codepage 1252 should work.
+
+- Graphics (images, lines, boxes etc.) that span an output
+  page boundary may be truncated.
+
+- The table of contents is generated from an analysis of the
+  @toc commands (same algorithm as used in the HypTree view).
+  This may or may not work as expected, depending on how the
+  input file was organized.
+
+- Conversion of large files may need large amounts of memory,
+  since the whole file (including all pages & images) has to be
+  kept in memory before it can be written out. For this reason,
+  "Save to PDF" is not an option in the TOS viewer. It is supported
+  in the command line tool however.

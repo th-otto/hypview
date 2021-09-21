@@ -39,7 +39,7 @@ bindist:
 	mkdir $(DISTDIR)/bin
 	mkdir $(DISTDIR)/defaults
 	mkdir $(DISTDIR)/doc
-	cp -a BUGS hyp/README NEWS $(DISTDIR)
+	cp -a BUGS hyp/README NEWS READPDF.txt $(DISTDIR)
 	cp -a hyp/reflink$(EXEEXT) hyp/hypfind$(EXEEXT) hyp/hypinfo$(EXEEXT) hyp/refcheck$(EXEEXT) hyp/stool$(EXEEXT) hyp/hcp$(EXEEXT) $(DISTDIR)/bin
 	cp -a tools/pc_conv/pc_conv$(EXEEXT) $(DISTDIR)/bin
 	cp -a tools/1st_conv/1st_conv$(EXEEXT) $(DISTDIR)/bin
@@ -70,6 +70,9 @@ if OS_TOS
 	for f in BUGS README NEWS; do \
 		mv $(DISTDIR)/$$f $(DISTDIR)/$$f.txt; \
 		cr2nl -d $(DISTDIR)/$$f.txt; \
+	done
+	for f in READPDF.txt; do \
+		cr2nl -d $(DISTDIR)/$$f; \
 	done
 	zip=hcp`echo $(HYP_VERSION)`.zip; \
 	$(RM) "$$zip"; \

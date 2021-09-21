@@ -8,7 +8,7 @@ msgid  ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-20 18:52+0200\n"
+"POT-Creation-Date: 2021-09-21 16:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2183,7 +2183,7 @@ msgstr ""
 #: ../hyp/outstg.c:964
 #: ../hyp/outxml.c:792
 #: ../hyp/outxml.c:798
-#: ../hyp/pdf.c:1733
+#: ../hyp/pdf.c:1761
 #, c-format
 msgid  "<unknown hex esc $%02x>\n"
 msgstr ""
@@ -3793,7 +3793,7 @@ msgstr ""
 
 #: ../hyp/outasc.c:514
 #: ../hyp/outdump.c:539
-#: ../hyp/pdf.c:2183
+#: ../hyp/pdf.c:2230
 #, c-format
 msgid  "'%s' not found.\n"
 msgstr ""
@@ -4301,12 +4301,17 @@ msgstr ""
 msgid  "<!-- %s: Node %u: failed to decode -->\n"
 msgstr ""
 
-#: ../hyp/pdf.c:1817
+#: ../hyp/pdf.c:1845
 #, c-format
 msgid  "%s: Node %u: failed to decode"
 msgstr ""
 
-#: ../hyp/pdf.c:2190
+#: ../hyp/pdf.c:1977
+#, c-format
+msgid  "%s: Some characters could not be converted"
+msgstr ""
+
+#: ../hyp/pdf.c:2237
 #, c-format
 msgid  "generated %lu page\n"
 msgid_plural "generated %lu pages\n"
