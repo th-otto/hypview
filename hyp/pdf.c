@@ -149,7 +149,7 @@ static gboolean pdf_out_alias(PDF *pdf, HYP_DOCUMENT *hyp, const INDEX_ENTRY *en
 	sym = sym_find(syms, nodename, REF_ALIASNAME);
 	while (sym)
 	{
-		char *str = pdf_quote_name(hyp->comp_charset, sym->name, STR0TERM, pdf->opts->output_charset, converror);
+		char *str = pdf_quote_name(HYP_CHARSET_UTF8, sym->name, STR0TERM, pdf->opts->output_charset, converror);
 		/* hyp_utf8_sprintf_charset(out, pdf->opts->output_charset, converror, "<a %s=\"%s\"></a>", html_name_attr, str); */
 		g_free(str);
 		sym->referenced = TRUE;
@@ -172,7 +172,7 @@ static gboolean pdf_out_labels(PDF *pdf, HYP_DOCUMENT *hyp, const INDEX_ENTRY *e
 	{
 		if (sym->lineno == lineno)
 		{
-			char *str = pdf_quote_name(hyp->comp_charset, sym->name, STR0TERM, pdf->opts->output_charset, converror);
+			char *str = pdf_quote_name(HYP_CHARSET_UTF8, sym->name, STR0TERM, pdf->opts->output_charset, converror);
 			/* hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<!-- lineno %u --><a %s=\"%s\"></a>", sym->lineno, html_name_attr, str); */
 			g_free(str);
 			sym->referenced = TRUE;
@@ -1105,7 +1105,12 @@ PDF *pdf_new(hcp_opts *opts)
 	{
 	case HYP_CHARSET_UTF8:
 		HPDF_UseUTF8Encodings(pdf->hpdf);
-		/* encoding = HPDF_ENCODING_FONT_SPECIFIC; */
+		encoding = HPDF_ENCODING_UTF8;
+		HPDF_SetCurrentEncoder(pdf->hpdf, encoding);
+		/*
+		 * FIXME: using GetFont with UTF-8 doe snot work;
+		 * we have to load and embed the font instead
+		 */
 		break;
 	case HYP_CHARSET_MACROMAN:
 		encoding = HPDF_ENCODING_MAC_ROMAN;
@@ -1426,7 +1431,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						dest_page = DEC_255(&src[3]);
 						buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
 						buf = chomp(buf);
-						text = pdf_quote_name(hyp->comp_charset, buf, STR0TERM, pdf->opts->output_charset, converror);
+						text = pdf_quote_name(HYP_CHARSET_UTF8, buf, STR0TERM, pdf->opts->output_charset, converror);
 						g_free(buf);
 						if (hypnode_valid(hyp, dest_page))
 						{
@@ -1867,7 +1872,7 @@ static char *pdf_datestr(time_t t)
 
 /* ------------------------------------------------------------------------- */
 
-static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
+static void pdf_out_globals(HYP_DOCUMENT *hyp, hcp_opts *opts, PDF *pdf)
 {
 	char *str;
 	struct stat s;
@@ -1876,7 +1881,9 @@ static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
 #define STR(t, x) \
 	if (x != NULL) \
 	{ \
-		HPDF_SetInfoAttr(pdf->hpdf, t, x); \
+		char *str = hyp_utf8_to_charset(opts->output_charset, x, STR0TERM, NULL); \
+		HPDF_SetInfoAttr(pdf->hpdf, t, str); \
+		g_free(str); \
 	}
 
 	STR(HPDF_INFO_TITLE, hyp->database);
@@ -1885,16 +1892,16 @@ static void pdf_out_globals(HYP_DOCUMENT *hyp, PDF *pdf)
 
 	HPDF_SetInfoAttr(pdf->hpdf, HPDF_INFO_CREATOR, gl_program_name);
 	str = g_strdup_printf("%s %s for %s, using Haru Free PDF Library %s", gl_program_name, gl_program_version, hyp_osname(hyp_get_current_os()), HPDF_GetVersion());
-	STR(HPDF_INFO_PRODUCER, str);
+	HPDF_SetInfoAttr(pdf->hpdf, HPDF_INFO_PRODUCER, str);
 	g_free(str);
 	time(&now);
 	str = pdf_datestr(now);
-	STR(HPDF_INFO_CREATION_DATE, str);
+	HPDF_SetInfoAttr(pdf->hpdf, HPDF_INFO_CREATION_DATE, str);
 	g_free(str);
 	if (hyp_utf8_stat(hyp->file, &s) == 0)
 	{
 		str = pdf_datestr(s.st_mtime);
-		STR(HPDF_INFO_MOD_DATE, str);
+		HPDF_SetInfoAttr(pdf->hpdf, HPDF_INFO_MOD_DATE, str);
 		g_free(str);
 	}
 
@@ -2157,7 +2164,7 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 		}
 	}
 	
-	pdf_out_globals(hyp, pdf);
+	pdf_out_globals(hyp, opts, pdf);
 
 	/*
 	 * we have to go through the whole document twice,
@@ -2167,6 +2174,7 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, TRUE, &converror);
 	pdf->num_pages = pdf->curr_page_num;
 	pdf->curr_page_num = 0;
+	converror = FALSE;
 	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, FALSE, &converror);
 	ASSERT(pdf->num_pages == pdf->curr_page_num);
 

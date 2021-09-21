@@ -251,7 +251,7 @@ HPDF_STATUS HPDF_UseUTF8Encodings(HPDF_Doc pdf)
 	if (!HPDF_HasDoc(pdf))
 		return HPDF_INVALID_DOCUMENT;
 
-	encoder = HPDF_CMapEncoder_New(pdf->mmgr, "UTF-8", UTF8_Init);
+	encoder = HPDF_CMapEncoder_New(pdf->mmgr, HPDF_ENCODING_UTF8, UTF8_Init);
 
 	if ((ret = HPDF_Doc_RegisterEncoder(pdf, encoder)) != HPDF_OK)
 		return ret;

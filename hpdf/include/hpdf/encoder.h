@@ -60,6 +60,7 @@ extern "C" {
 #define  HPDF_ENCODING_CP1257         "CP1257"
 #define  HPDF_ENCODING_CP1258         "CP1258"
 #define  HPDF_ENCODING_KOI8_R         "KOI8-R"
+#define  HPDF_ENCODING_UTF8           "UTF-8"
 
 /*----------------------------------------------------------------------------*/
 /*----- definition for font encoding -----------------------------------------*/
