@@ -23,7 +23,7 @@ BEGIN
 		MENUITEM "&Als Text speichern...\tCtrl+S",	IDM_FILE_SAVE
 		MENUITEM "&Rekompilieren...\tCtrl+R",        	IDM_FILE_RECOMPILE
 #ifdef WITH_PDF
-		MENUITEM "Als &PDF specichern...\tAlt+P",      	IDM_FILE_SAVEPDF
+		MENUITEM "Als &PDF speichern...\tAlt+P",      	IDM_FILE_SAVEPDF
 #endif
 		MENUITEM "", -1, MFT_SEPARATOR
 		MENUITEM "&Katalog\tAlt+K",		IDM_FILE_CATALOG
