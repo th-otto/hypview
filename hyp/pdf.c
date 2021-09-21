@@ -610,50 +610,74 @@ static HPDF_Image convert_image(PDF *pdf, HYP_IMAGE *pic)
 	int pixel;
 	unsigned short color;
 
-	dststride = width * 3;
-	
-	pixbuf = g_new(unsigned char, dststride * height);
-	if (pixbuf == NULL)
-		return NULL;
 	srcstride = ((width + 15) >> 4) << 1;
 	planesize = srcstride * height;
 	pic_stdpalette(pal, planes);
 
-	dst = pixbuf;
-	
-	for (i = 0; i < planes; i++)
-		plane_ptr[i] = &src[i * planesize];
-	
-	pos = 0;
-	width *= 3; /* we write 3 bytes per pixel */
-	for (x = 0; x < planesize; x += 2)
+	if (planes == 1)
 	{
-		for (np = 0; np < planes; np++)
-			back[np] = (plane_ptr[np][x] << 8) | plane_ptr[np][x + 1];
+		int y;
+
+		dststride = (width + 7) >> 3;
+
+		pixbuf = g_new(unsigned char, dststride * height);
+		if (pixbuf == NULL)
+			return NULL;
+		dst = pixbuf;
 		
-		for (pixel = 0; pixel < 16; pixel++)
+		for (y = 0; y < height; y++)
 		{
-			color = 0;
+			for (x = 0, pos = 0; x < dststride; x++, pos++)
+			{
+				*dst++ = ~src[pos];
+			}
+			src += srcstride;
+		}
+		image = HPDF_Image_LoadRawImageFromMem(pdf->hpdf->mmgr, pixbuf, pdf->hpdf->xref, pic->pic.fd_w, height, HPDF_CS_DEVICE_GRAY, 1);
+	} else
+	{
+		dststride = width * 3;
+
+		pixbuf = g_new(unsigned char, dststride * height);
+		if (pixbuf == NULL)
+			return NULL;
+		dst = pixbuf;
+
+		for (i = 0; i < planes; i++)
+			plane_ptr[i] = &src[i * planesize];
+
+		pos = 0;
+		width *= 3; /* we write 3 bytes per pixel */
+		for (x = 0; x < planesize; x += 2)
+		{
 			for (np = 0; np < planes; np++)
+				back[np] = (plane_ptr[np][x] << 8) | plane_ptr[np][x + 1];
+
+			for (pixel = 0; pixel < 16; pixel++)
 			{
-				color |= ((back[np] & 0x8000) >> (15 - np));
-				back[np] <<= 1;
+				color = 0;
+				for (np = 0; np < planes; np++)
+				{
+					color |= ((back[np] & 0x8000) >> (15 - np));
+					back[np] <<= 1;
+				}
+				if (pos < width)
+				{
+					dst[pos++] = pal[color].r;
+					dst[pos++] = pal[color].g;
+					dst[pos++] = pal[color].b;
+				}
 			}
-			if (pos < width)
+			if (pos >= width)
 			{
-				dst[pos++] = pal[color].r;
-				dst[pos++] = pal[color].g;
-				dst[pos++] = pal[color].b;
+				pos = 0;
+				dst += dststride;
 			}
 		}
-		if (pos >= width)
-		{
-			pos = 0;
-			dst += dststride;
-		}
+
+		image = HPDF_Image_LoadRawImageFromMem(pdf->hpdf->mmgr, pixbuf, pdf->hpdf->xref, pic->pic.fd_w, height, HPDF_CS_DEVICE_RGB, 8);
 	}
 
-	image = HPDF_Image_LoadRawImageFromMem(pdf->hpdf->mmgr, pixbuf, pdf->hpdf->xref, pic->pic.fd_w, height, HPDF_CS_DEVICE_RGB, 8);
 	g_free(pixbuf);
 	return image;
 }
