@@ -433,7 +433,7 @@ static gboolean search_node(HYP_DOCUMENT *hyp, struct hypfind_opts *opts, HYP_NO
 				src += 2;
 				break;
 			
-			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_ATTR_TYPEWRITER:
 				if (opts->print_unknown)
 					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
 				src++;

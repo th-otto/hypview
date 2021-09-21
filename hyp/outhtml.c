@@ -2962,7 +2962,7 @@ gboolean html_out_node(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, hyp_node
 						src++;
 						break;
 				
-					case HYP_ESC_UNKNOWN_A4:
+					case HYP_ESC_ATTR_TYPEWRITER:
 						if (opts->print_unknown)
 							hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
 						src++;

@@ -531,7 +531,7 @@ void HypDisplayPage(WINDOW_DATA *win)
 			case HYP_ESC_LINE:
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_ATTR_TYPEWRITER:
 			default:
 				src = hyp_skip_esc(--src);
 				textstart = src;
@@ -742,7 +742,7 @@ void HypPrepNode(WINDOW_DATA *win, HYP_NODE *node)
 			case HYP_ESC_LINE:
 			case HYP_ESC_BOX:
 			case HYP_ESC_RBOX:
-			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_ATTR_TYPEWRITER:
 			case HYP_ESC_FG_COLOR:
 			case HYP_ESC_BG_COLOR:
 			default:

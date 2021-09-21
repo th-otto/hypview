@@ -298,7 +298,7 @@ gboolean sym_check_links(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, sym
 				case HYP_ESC_CASE_TEXTATTR:
 				case HYP_ESC_LINK:
 				case HYP_ESC_ALINK:
-				case HYP_ESC_UNKNOWN_A4:
+				case HYP_ESC_ATTR_TYPEWRITER:
 				case HYP_ESC_FG_COLOR:
 				case HYP_ESC_BG_COLOR:
 					src = hyp_skip_esc(src - 1);

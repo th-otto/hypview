@@ -259,7 +259,7 @@ typedef enum  {
 #define HYP_ESC_RBOX			0x35	/* rounded box */
 #define HYP_ESC_TEXTATTR_FIRST	0x64	/* text/font attribute */
 #define HYP_ESC_TEXTATTR_LAST	0xa3
-#define HYP_ESC_UNKNOWN_A4		0xa4	/* found in hyp2gdos.hyp */
+#define HYP_ESC_ATTR_TYPEWRITER	0xa4	/* found in hyp2gdos.hyp; actually uses range 0xa4-0xe3 */
 #define HYP_ESC_FG_COLOR		0xa5
 #define HYP_ESC_BG_COLOR		0xa6
 

@@ -953,7 +953,7 @@ gboolean stg_out_nodedata(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, HYP_N
 				src++;
 				break;
 				
-			case HYP_ESC_UNKNOWN_A4:
+			case HYP_ESC_ATTR_TYPEWRITER:
 				if (opts->print_unknown)
 					hyp_utf8_fprintf(opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
 				src++;

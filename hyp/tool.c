@@ -139,7 +139,9 @@ const unsigned char *hyp_skip_esc(const unsigned char *pos)
 	case HYP_ESC_CASE_TEXTATTR:			/* @{UBISGO} attribute */
 		pos++;
 		break;
-	case HYP_ESC_UNKNOWN_A4:			/* ?? from hyp2gdos.hyp */
+	case HYP_ESC_ATTR_TYPEWRITER:		/* from hyp2gdos.hyp */
+		/* actually same as text attributes in range 0xa4-0xe3,
+		   but using typewriter font for subsequent output */
 		pos++;
 		break;
 	case HYP_ESC_FG_COLOR:				/* foreground color */

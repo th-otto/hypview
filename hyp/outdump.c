@@ -272,7 +272,7 @@ static gboolean dump_node(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node)
 					src++;
 					break;
 				
-				case HYP_ESC_UNKNOWN_A4:
+				case HYP_ESC_ATTR_TYPEWRITER:
 					hyp_utf8_fprintf(outfile, _("<unknown hex esc $%02x>\n"), *src);
 					src++;
 					break;

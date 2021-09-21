@@ -1727,7 +1727,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						src++;
 						break;
 				
-					case HYP_ESC_UNKNOWN_A4:
+					case HYP_ESC_ATTR_TYPEWRITER:
 					default:
 						if (pdf->opts->print_unknown)
 							hyp_utf8_fprintf(pdf->opts->errorfile, _("<unknown hex esc $%02x>\n"), *src);
