@@ -1270,7 +1270,7 @@ static HPDF_Page pdf_newpage(PDF *pdf, hyp_nodenr node)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symtab_entry *syms, gboolean dryrun)
+static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symtab_entry *syms, gboolean dryrun, gboolean *converror)
 {
 	char *str;
 	gboolean at_bol;
@@ -1279,7 +1279,6 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 	long lineno;
 	HYP_NODE *nodeptr;
 	gboolean retval = TRUE;
-	gboolean converror = FALSE;
 	gboolean in_text_out = FALSE;
 	HPDF_Point text_pos;
 	HPDF_REAL bottom_margin = 0;
@@ -1321,7 +1320,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 		BEGINTEXT(); \
 		if (!dryrun && retval) { \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]); \
-			retval &= pdf_out_str(pdf, hyp, &text_pos, textstart, src - textstart, &converror, &attr); \
+			retval &= pdf_out_str(pdf, hyp, &text_pos, textstart, src - textstart, converror, &attr); \
 			if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text); \
 		} \
 		at_bol = FALSE; \
@@ -1369,10 +1368,10 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			
 			if (nodeptr->window_title)
 			{
-				title = hyp_conv_charset(hyp->comp_charset, pdf->opts->output_charset, nodeptr->window_title, STR0TERM, &converror);
+				title = hyp_conv_charset(hyp->comp_charset, pdf->opts->output_charset, nodeptr->window_title, STR0TERM, converror);
 			} else
 			{
-				title = pdf_quote_nodename(hyp, node, pdf->opts->output_charset, &converror);
+				title = pdf_quote_nodename(hyp, node, pdf->opts->output_charset, converror);
 			}
 	
 			/*
@@ -1427,7 +1426,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						dest_page = DEC_255(&src[3]);
 						buf = hyp_conv_to_utf8(hyp->comp_charset, src + 5, max(src[2], 5u) - 5u);
 						buf = chomp(buf);
-						text = pdf_quote_name(hyp->comp_charset, buf, STR0TERM, pdf->opts->output_charset, &converror);
+						text = pdf_quote_name(hyp->comp_charset, buf, STR0TERM, pdf->opts->output_charset, converror);
 						g_free(buf);
 						if (hypnode_valid(hyp, dest_page))
 						{
@@ -1509,7 +1508,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			/*
 			 * check for alias names in ref file
 			 */
-			retval &= pdf_out_alias(pdf, hyp, entry, syms, &converror);
+			retval &= pdf_out_alias(pdf, hyp, entry, syms, converror);
 
 			/*
 			 * now output data
@@ -1527,7 +1526,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			text_pos.x = text_xoffset;
 			text_pos.y = pdf->page_height - pdf->line_height - text_yoffset;
 			{
-				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
+				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, converror);
 				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy, dryrun) - sy;
 				sy += dy;
 				text_pos.y -= dy;
@@ -1547,7 +1546,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 						if (!dryrun)
 						{
 							if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &user_colors[attr.curfg]);
-							retval &= pdf_out_str(pdf, hyp, &text_pos, (const unsigned char *)"\033", 1, &converror, &attr);
+							retval &= pdf_out_str(pdf, hyp, &text_pos, (const unsigned char *)"\033", 1, converror, &attr);
 							if (attr.curfg != HYP_DEFAULT_FG) retval &= pdf_out_color(pdf->page, &viewer_colors.text);
 						}
 						at_bol = FALSE;
@@ -1608,7 +1607,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 								{
 									INDEX_ENTRY *entry = hyp->indextable[xref.dest_page];
 									len = entry->length - SIZEOF_INDEX_ENTRY;
-									xref.text = pdf_quote_nodename(hyp, xref.dest_page, pdf->opts->output_charset, &converror);
+									xref.text = pdf_quote_nodename(hyp, xref.dest_page, pdf->opts->output_charset, converror);
 									str_equal = entry->type == HYP_NODE_INTERNAL;
 								} else
 								{
@@ -1620,7 +1619,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							{
 								len = *src - HYP_STRLEN_OFFSET;
 								src++;
-								xref.text = pdf_quote_name(hyp->comp_charset, (const char *)src, len, pdf->opts->output_charset, &converror);
+								xref.text = pdf_quote_name(hyp->comp_charset, (const char *)src, len, pdf->opts->output_charset, converror);
 								src += len;
 								if (hypnode_valid(hyp, xref.dest_page))
 								{
@@ -1665,7 +1664,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							dest_page = DEC_255(&src[7]);
 							if (hypnode_valid(hyp, dest_page))
 							{
-								str = pdf_quote_nodename(hyp, dest_page, pdf->opts->output_charset, &converror);
+								str = pdf_quote_nodename(hyp, dest_page, pdf->opts->output_charset, converror);
 							} else
 							{
 								str = hyp_invalid_page(dest_page);
@@ -1674,10 +1673,10 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 							if (tree != in_tree)
 							{
 								FLUSHTREE();
-								/* hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "<!-- begin tree %d\n", tree); */
+								/* hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "<!-- begin tree %d\n", tree); */
 								in_tree = tree;
 							}
-							/* hyp_utf8_sprintf_charset(out, opts->output_charset, &converror, "   %d \"%s\" %u\n", obj, str, line); */
+							/* hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "   %d \"%s\" %u\n", obj, str, line); */
 							(void)line;
 							(void)obj;
 							g_free(str);
@@ -1746,7 +1745,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 					text_pos.y -= pdf->line_height;
 					sy += pdf->line_height;
 					{
-						retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
+						retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, converror);
 						dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy, dryrun) - sy;
 						sy += dy;
 						text_pos.y -= dy;
@@ -1773,7 +1772,7 @@ static gboolean pdf_out_node(PDF *pdf, HYP_DOCUMENT *hyp, hyp_nodenr node, symta
 			text_pos.y -= pdf->line_height;
 			sy += pdf->line_height;
 			{
-				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, &converror);
+				retval &= pdf_out_labels(pdf, hyp, entry, lineno, syms, converror);
 				dy = pdf_out_graphics(pdf, hyp, lineno, sx, sy, dryrun) - sy;
 				sy += dy;
 				text_pos.y -= dy;
@@ -1939,7 +1938,21 @@ static void parse_color(const char *name, HPDF_RGBColor *color)
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_print_nodes(PDF *pdf, HYP_DOCUMENT *hyp, hcp_opts *opts, symtab_entry *syms, int argc, const char **argv, gboolean dryrun)
+static void warn_converror(hcp_opts *opts, gboolean *converror, HYP_CHARSET charset, const unsigned char *name, size_t len)
+{
+	if (*converror)
+	{
+		char *str = hyp_conv_to_utf8(charset, name, len);
+		hyp_utf8_fprintf(opts->errorfile, _("%s: Some characters could not be converted"), str);
+		fputc('\n', opts->errorfile);
+		g_free(str);
+		*converror = FALSE;
+	}
+}
+
+/* ------------------------------------------------------------------------- */
+
+static gboolean pdf_print_nodes(PDF *pdf, HYP_DOCUMENT *hyp, hcp_opts *opts, symtab_entry *syms, int argc, const char **argv, gboolean dryrun, gboolean *converror)
 {
 	hyp_nodenr node;
 	INDEX_ENTRY *entry;
@@ -1987,7 +2000,9 @@ static gboolean pdf_print_nodes(PDF *pdf, HYP_DOCUMENT *hyp, hcp_opts *opts, sym
 		{
 		case HYP_NODE_INTERNAL:
 		case HYP_NODE_POPUP:
-			ret &= pdf_out_node(pdf, hyp, node, syms, dryrun);
+			ret &= pdf_out_node(pdf, hyp, node, syms, dryrun, converror);
+			if (!dryrun)
+				warn_converror(opts, converror, hyp->comp_charset, entry->name, entry->length - SIZEOF_INDEX_ENTRY);
 			break;
 		case HYP_NODE_IMAGE:
 		case HYP_NODE_EXTERNAL_REF:
@@ -2007,16 +2022,15 @@ static gboolean pdf_print_nodes(PDF *pdf, HYP_DOCUMENT *hyp, hcp_opts *opts, sym
 
 /* ------------------------------------------------------------------------- */
 
-static gboolean pdf_print_tree(HYP_DOCUMENT *hyp, PDF *pdf, HYPTREE *tree, HPDF_Outline root, hyp_nodenr parent, int depth)
+static gboolean pdf_print_tree(HYP_DOCUMENT *hyp, PDF *pdf, HYPTREE *tree, HPDF_Outline root, hyp_nodenr parent, int depth, gboolean *converror)
 {
 	char *str;
 	HPDF_Outline outline;
 	HPDF_Page page;
 	HPDF_Destination dst;
 	hyp_nodenr child;
-	gboolean converror;
 	
-	str = hyp_conv_charset(HYP_CHARSET_UTF8, pdf->opts->output_charset, tree[parent].title, STR0TERM, &converror);
+	str = hyp_conv_charset(HYP_CHARSET_UTF8, pdf->opts->output_charset, tree[parent].title, STR0TERM, converror);
 	if (str == NULL)
 		return FALSE;
 	outline = HPDF_CreateOutline(pdf->hpdf, root, str, HPDF_GetCurrentEncoder(pdf->hpdf));
@@ -2033,7 +2047,7 @@ static gboolean pdf_print_tree(HYP_DOCUMENT *hyp, PDF *pdf, HYPTREE *tree, HPDF_
 		child = tree[parent].head;
 		while (child != HYP_NOINDEX)
 		{
-			if (pdf_print_tree(hyp, pdf, tree, outline, child, depth + 1) == FALSE)
+			if (pdf_print_tree(hyp, pdf, tree, outline, child, depth + 1, converror) == FALSE)
 				return FALSE;
 			child = tree[child].next;
 		}
@@ -2041,7 +2055,7 @@ static gboolean pdf_print_tree(HYP_DOCUMENT *hyp, PDF *pdf, HYPTREE *tree, HPDF_
 	return TRUE;
 }
 
-static gboolean pdf_output_outline(HYP_DOCUMENT *hyp, PDF *pdf)
+static gboolean pdf_output_outline(HYP_DOCUMENT *hyp, PDF *pdf, gboolean *converror)
 {
 	HYPTREE *tree;
 	gboolean ret = FALSE;
@@ -2056,7 +2070,7 @@ static gboolean pdf_output_outline(HYP_DOCUMENT *hyp, PDF *pdf)
 	if (tree[0].num_childs != 0)
 	{
 		HPDF_SetPageMode(pdf->hpdf, HPDF_PAGE_MODE_USE_OUTLINE);
-		ret = pdf_print_tree(hyp, pdf, tree, NULL, 0, 0);
+		ret = pdf_print_tree(hyp, pdf, tree, NULL, 0, 0, converror);
 	}
 	
 	hyp_tree_free(hyp, tree);
@@ -2076,7 +2090,8 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	HPDF_Stream stream;
 	HPDF_UINT idx, length;
 	HPDF_BYTE *buf;
-	
+	gboolean converror = FALSE;
+
 	/* force_crlf = FALSE; */
 
 	parse_color(gl_profile.colors.background, &viewer_colors.background);
@@ -2149,13 +2164,13 @@ gboolean recompile_pdf(HYP_DOCUMENT *hyp, hcp_opts *opts, int argc, const char *
 	 * because we have to know the PDF target page
 	 * for links to work.
 	 */
-	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, TRUE);
+	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, TRUE, &converror);
 	pdf->num_pages = pdf->curr_page_num;
 	pdf->curr_page_num = 0;
-	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, FALSE);
+	ret &= pdf_print_nodes(pdf, hyp, opts, syms, argc, argv, FALSE, &converror);
 	ASSERT(pdf->num_pages == pdf->curr_page_num);
 
-	ret &= pdf_output_outline(hyp, pdf);
+	ret &= pdf_output_outline(hyp, pdf, &converror);
 	
 	stream = NULL;
 	if (ret)
