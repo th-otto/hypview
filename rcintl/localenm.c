@@ -1441,7 +1441,7 @@ const char *gl_locale_name_default(void)
 			case 3: return "en_UK";
 			case 4: return "es";
 			case 5: return "it";
-			case 6: return "nl";
+			case 6: return "se";
 			case 7: return "fr_CH";
 			case 8: return "de_CH";
 			case 9: return "tr";
