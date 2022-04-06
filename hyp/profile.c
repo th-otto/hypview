@@ -846,7 +846,13 @@ static void x_init_home_dir(void)
 			}
 
 			if (!x_home_dir)
-				x_home_dir = g_strdup(pw->pw_dir);
+			{
+				/* on MiNT, avoid accessing something like "/root" on other drives than U: */
+				if (pw->pw_dir[0] == '/')
+					x_home_dir = g_strconcat("U:", pw->pw_dir, NULL);
+				else
+					x_home_dir = g_strdup(pw->pw_dir);
+			}
 		}
 		endpwent();
 	}
