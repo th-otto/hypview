@@ -161,27 +161,27 @@ manpage:	hypview.1
 hypview.1:	$(srcdir)/manpage.u
 		$(AM_V_GEN)$(UDO) --nroff -o $@ $(srcdir)/manpage.u
 
-man: .stamp.man
+man: .stamp_man
 
-.stamp.man: $(HYPVIEW_DOC_DEP)
+.stamp_man: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Man documentation"; \
 		$(UDO) --man -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.man -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-ascii txt: .stamp.ascii
+ascii txt: .stamp_ascii
 
-.stamp.ascii: $(HYPVIEW_DOC_DEP)
+.stamp_ascii: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Ascii documentation"; \
 		$(UDO) --asc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.txt -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-stg: .stamp.stguide
+stg: .stamp_stguide
 
-.stamp.stguide:	$(HYPVIEW_DOC_DEP) $(HCP_DEP)
+.stamp_stguide:	$(HYPVIEW_DOC_DEP) $(HCP_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(STGUIDE_DIR)/images || exit 1; \
 		 $(CP) $(srcdir)/images/*.img $(STGUIDE_DIR)/images; \
 		 echo "generating ST-Guide documentation"; \
@@ -198,9 +198,9 @@ stg: .stamp.stguide
 
 ####################################################################
 
-tex latex: .stamp.tex
+tex latex: .stamp_tex
 
-.stamp.tex:	$(HYPVIEW_DOC_DEP)
+.stamp_tex:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(TEX_DIR) || exit 1; \
 		 echo "generating LaTeX documentation"; \
 		 $(CP) $(srcdir)/images/*.eps $(TEX_DIR); \
@@ -228,9 +228,9 @@ tex latex: .stamp.tex
 
 ####################################################################
 
-rtf: .stamp.rtf
+rtf: .stamp_rtf
 
-.stamp.rtf:	$(HYPVIEW_DOC_DEP)
+.stamp_rtf:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(RTF_DIR) || exit 1; \
 		 echo "generating rtf documentation"; \
 		 $(UDO) --rtf -o $(RTF_DIR)hypview.rtf -l $(srcdir)/hypview.u || exit 1; \
@@ -239,9 +239,9 @@ rtf: .stamp.rtf
 
 ####################################################################
 
-pch pchelp: .stamp.pchelp
+pch pchelp: .stamp_pchelp
 
-.stamp.pchelp:	$(HYPVIEW_DOC_DEP)
+.stamp_pchelp:	$(HYPVIEW_DOC_DEP)
 		@($(MKDIRHIER) $(PCHELP_DIR) || exit 1; \
 		 echo "generating PC-Help documentation"; \
 		 $(UDO) --pchelp -o $(PCHELP_DIR)hypview.scr -l $(srcdir)/hypview.u || exit 1; \
@@ -257,9 +257,9 @@ pch pchelp: .stamp.pchelp
 
 ####################################################################
 
-html: .stamp.html
+html: .stamp_html
 
-.stamp.html:	$(HYPVIEW_DOC_DEP) $(srcdir)/../hypview.css
+.stamp_html:	$(HYPVIEW_DOC_DEP) $(srcdir)/../hypview.css
 		$(AM_V_at)$(MKDIRHIER) $(HTML_DIR) || exit 1; \
 		echo "generating Html documentation"; \
 		( cd $(HTML_DIR) && $(RM) `ls .`) ; \
@@ -274,9 +274,9 @@ html: .stamp.html
 
 ####################################################################
 
-win winhelp3: .stamp.winhelp
+win winhelp3: .stamp_winhelp
 
-.stamp.winhelp:	$(HYPVIEW_DOC_DEP)
+.stamp_winhelp:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) "$(WINHELP3_DIR)" || exit 1; \
 		 echo "generating WinHelp3 documentation"; \
 		 $(UDO) --win -o "$(WINHELP3_DIR)hypview.rtf" -l $(srcdir)/hypview.u || exit 1; \
@@ -299,9 +299,9 @@ win winhelp3: .stamp.winhelp
 
 ####################################################################
 
-info: .stamp.info
+info: .stamp_info
 
-.stamp.info: $(HYPVIEW_DOC_DEP)
+.stamp_info: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(INFO_DIR) || exit 1; \
 		 echo "generating info documentation"; \
 		 $(UDO) --info -o $(INFO_DIR)/hypview.texinfo -l $(srcdir)/hypview.u || exit 1; \
@@ -317,9 +317,9 @@ info: .stamp.info
 
 ####################################################################
 
-tvh vision: .stamp.tvh
+tvh vision: .stamp_tvh
 
-.stamp.tvh: $(HYPVIEW_DOC_DEP)
+.stamp_tvh: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating Turbo-Vision documentation"; \
 		 $(UDO) --vision -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.tvh -l $(srcdir)/hypview.u || exit 1; \
 		)
@@ -327,9 +327,9 @@ tvh vision: .stamp.tvh
 
 ####################################################################
 
-ldoc linuxdoc: .stamp.linuxdoc
+ldoc linuxdoc: .stamp_linuxdoc
 
-.stamp.linuxdoc: $(HYPVIEW_DOC_DEP)
+.stamp_linuxdoc: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating Linux-Doc documentation"; \
 		 $(UDO) --linuxdoc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.sgml -l $(srcdir)/hypview.u || exit 1; \
 		)
@@ -337,9 +337,9 @@ ldoc linuxdoc: .stamp.linuxdoc
 
 ####################################################################
 
-aqv quickview: .stamp.quickview
+aqv quickview: .stamp_quickview
 
-.stamp.quickview: $(HYPVIEW_DOC_DEP)
+.stamp_quickview: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(QUICKVIEW_DIR) || exit 1; \
 		 echo "generating Apple QuickView documentation"; \
 		 $(UDO) --quickview -o $(QUICKVIEW_DIR)hypview.aqv -l $(srcdir)/hypview.u || exit 1; \
@@ -348,9 +348,9 @@ aqv quickview: .stamp.quickview
 
 ####################################################################
 
-hph helptag: .stamp.helptag
+hph helptag: .stamp_helptag
 
-.stamp.helptag: $(HYPVIEW_DOC_DEP)
+.stamp_helptag: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating HP Helptag documentation"; \
 		 $(UDO) --helptag -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hph -l $(srcdir)/hypview.u || exit 1; \
 		)
@@ -358,9 +358,9 @@ hph helptag: .stamp.helptag
 
 ####################################################################
 
-lyx: .stamp.lyx
+lyx: .stamp_lyx
 
-.stamp.lyx:	$(HYPVIEW_DOC_DEP)
+.stamp_lyx:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(LYX_DIR) || exit 1; \
 		 echo "generating LyX documentation"; \
 		 $(MKDIRHIER) $(LYX_DIR)images/ || exit 1; \
@@ -375,54 +375,54 @@ lyx: .stamp.lyx
 
 ####################################################################
 
-nroff: .stamp.nroff
+nroff: .stamp_nroff
 
-.stamp.nroff: $(HYPVIEW_DOC_DEP)
+.stamp_nroff: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Nroff documentation"; \
 		$(UDO) --nroff -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.1 -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-src: .stamp.src
+src: .stamp_src
 
-.stamp.src: $(HYPVIEW_DOC_DEP)
+.stamp_src: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating C-Source documentation"; \
 		$(UDO) --c -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.c -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-srp: .stamp.srp
+srp: .stamp_srp
 
-.stamp.srp: $(HYPVIEW_DOC_DEP)
+.stamp_srp: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Pascal-Source documentation"; \
 		$(UDO) --pascal -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pas -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-ipf: .stamp.ipf
+ipf: .stamp_ipf
 
-.stamp.ipf: $(HYPVIEW_DOC_DEP)
+.stamp_ipf: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating OS/2 IPF documentation"; \
 		$(UDO) --ipf -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ipf -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-drc: .stamp.drc
+drc: .stamp_drc
 
-.stamp.drc: $(HYPVIEW_DOC_DEP)
+.stamp_drc: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating David's Readme Compiler documentation"; \
 		$(UDO) --drc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.drc -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-htmlhelp: .stamp.htmlhelp
+htmlhelp: .stamp_htmlhelp
 
-.stamp.htmlhelp:	$(HYPVIEW_DOC_DEP)
+.stamp_htmlhelp:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)$(MKDIRHIER) "$(HTMLHELP_DIR)" || exit 1; \
 		echo "generating HtmlHelp documentation"; \
 		$(CP) $(srcdir)/images/*.gif "$(HTMLHELP_DIR)"; \
@@ -450,9 +450,9 @@ htmlhelp: .stamp.htmlhelp
 
 ####################################################################
 
-pdf pdflatex: .stamp.pdflatex
+pdf pdflatex: .stamp_pdflatex
 
-.stamp.pdflatex:	$(HYPVIEW_DOC_DEP)
+.stamp_pdflatex:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) $(PDF_DIR)images/ || exit 1; \
 		 echo "generating PDF documentation"; \
 		 $(CP) $(srcdir)/images/*.png $(PDF_DIR)images; \
@@ -481,9 +481,9 @@ pdf pdflatex: .stamp.pdflatex
 
 ####################################################################
 
-win4 winhelp4: .stamp.winhelp4
+win4 winhelp4: .stamp_winhelp4
 
-.stamp.winhelp4:	$(HYPVIEW_DOC_DEP)
+.stamp_winhelp4:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)($(MKDIRHIER) "$(WINHELP4_DIR)images" || exit 1; \
 		 echo "generating WinHelp4 documentation"; \
 		 for i in $(TOOL_DOCS); do \
@@ -520,18 +520,18 @@ win4 winhelp4: .stamp.winhelp4
 
 ####################################################################
 
-ps: .stamp.ps
+ps: .stamp_ps
 
-.stamp.ps: $(HYPVIEW_DOC_DEP)
+.stamp_ps: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating PostScript documentation"; \
 		$(UDO) --ps -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ps -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
 
-amg: .stamp.amguide
+amg: .stamp_amguide
 
-.stamp.amguide: $(HYPVIEW_DOC_DEP)
+.stamp_amguide: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)$(MKDIRHIER) "$(AMGUIDE_DIR)" || exit 1; \
 		echo "generating AmigaGuide documentation"; \
                 $(CP) $(srcdir)/images/*.img "$(AMGUIDE_DIR)"; \
@@ -540,9 +540,9 @@ amg: .stamp.amguide
 		
 ####################################################################
 
-hah applehelp: .stamp.applehelp
+hah applehelp: .stamp_applehelp
 
-.stamp.applehelp:	$(HYPVIEW_DOC_DEP) $(srcdir)/../hypview.css
+.stamp_applehelp:	$(HYPVIEW_DOC_DEP) $(srcdir)/../hypview.css
 		$(AM_V_at)$(MKDIRHIER) $(APPLEHELP_DIR) || exit 1; \
 		echo "generating AppleHelp documentation"; \
 		( cd $(APPLEHELP_DIR) && $(RM) `ls .`) ; \
@@ -554,9 +554,9 @@ hah applehelp: .stamp.applehelp
 
 ####################################################################
 
-udo: .stamp.udo
+udo: .stamp_udo
 
-.stamp.udo:	$(HYPVIEW_DOC_DEP)
+.stamp_udo:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating UDO documentation"; \
 		 $(UDO) --udo --check -o $(BIN_DIR)/$(OUTPUT_LANG)/manual.u -l $(srcdir)/hypview.u || exit 1
 		)
@@ -646,7 +646,7 @@ clean-local:
 	$(RM) *.png
 	$(RM) core gmon.out
 	for i in man ascii stguide tex rtf pchelp html winhelp info tvh linuxdoc quickview helptag lyx nroff src srp ipf drc htmlhelp pdflatex winhelp4 ps amguide applehelp udo; do \
-		$(RM) .stamp.$$i; \
+		$(RM) .stamp_$$i; \
 	done
 
 ####################################################################
