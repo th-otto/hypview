@@ -11,7 +11,7 @@
 #if !(defined _WIN32 || defined __WIN32__ || defined(__MSYS__))
 #ifdef __CYGWIN__
 /* we still need some windows definitions */
-# include <windows.h>
+# include "windows_.h"
 #else
 typedef struct _instance *HINSTANCE;
 #endif

@@ -24,6 +24,9 @@ LDFLAGS =
 
 #AM_CFLAGS = $(CFLAGS_FOR_BUILD)
 AM_CFLAGS = -O2 -g -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wcast-qual -Wdeclaration-after-statement -Wundef -Wc++-compat -Werror
+if OS_WIN32
+AM_CFLAGS += -mwin32
+endif
 AM_CPPFLAGS = $(CPPFLAGS_FOR_BUILD) -DCATOBJEXT=\"$(CATOBJEXT)\"
 AM_CPPFLAGS += -I$(top_srcdir)/rcintl -I$(top_srcdir)/include
 AM_LDFLAGS = $(LDFLAGS_FOR_BUILD)
