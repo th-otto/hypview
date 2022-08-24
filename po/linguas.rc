@@ -1,3 +1,5 @@
+#ifdef ENABLE_NLS
+
 #define RT_MOFILE 257
 
 #ifndef LANG_CZECH
@@ -36,3 +38,8 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 
+#else
+
+#define PO_TRANSLATIONS 0x0409, 1200
+
+#endif

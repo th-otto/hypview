@@ -256,6 +256,12 @@ msgstr ""
       fi
     ])
 
+    if test "$USE_NLS" != no -a "$TARGET_OS" = win32; then
+	gt_cv_have_gettext=yes
+	CATOBJEXT=.gmo
+	INSTOBJEXT=.mo
+	DATADIRNAME=share
+    fi
     if test "$gt_cv_have_gettext" = "yes" -a "$USE_NLS" != "no" ; then
       AC_DEFINE(ENABLE_NLS, 1,
         [indicate that i18n is enabled])
@@ -295,7 +301,6 @@ msgstr ""
     AC_SUBST(CATALOGS)
     AC_SUBST(CATOBJEXT)
     AC_SUBST(DATADIRNAME)
-    AC_SUBST(GMOFILES)
     AC_SUBST(INSTOBJEXT)
     AC_SUBST(INTLLIBS)
   ])
