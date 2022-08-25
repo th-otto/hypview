@@ -129,7 +129,16 @@ HYP_CHARSET hyp_default_charset(HYP_OS os)
 	case HYP_OS_MAC:
 		return HYP_CHARSET_MACROMAN;
 	case HYP_OS_WIN32:
+#ifdef __CYGWIN__
+		/*
+		 * this is for the fact that we treat cygwin like win32,
+		 * but console I/O is already done in UTF-8 there.
+		 * maybe better to treat cygwin as unix?
+		 */
+		return HYP_CHARSET_UTF8;
+#else
 		return HYP_CHARSET_CP1252;
+#endif
 	case HYP_OS_UNIX:
 	case HYP_OS_MACOS:
 		return HYP_CHARSET_UTF8;
@@ -2286,7 +2295,7 @@ int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, gboolean *converror
 	if (fp == NULL)
 		return EOF;
 	
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__CYGWIN__)
 	/*
 	 * Another win32 nuisance: when writing to the console,
 	 * we have to use WriteConsoleW. For this to work,
@@ -2325,7 +2334,12 @@ int hyp_utf8_vfprintf_charset(FILE *fp, HYP_CHARSET charset, gboolean *converror
 	}
 #endif
 
-	if (charset == HYP_CHARSET_UTF8)
+	if (charset == HYP_CHARSET_UTF8
+#if defined(__WIN32__)
+		/* above code still does not work when running in mintty :( */
+		|| fileno(fp) == 1 || fileno(fp) == 2
+#endif
+		)
 	{
 		res = vfprintf(fp, format, args);
 	} else
