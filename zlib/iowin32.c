@@ -206,7 +206,7 @@ voidpf ZCALLBACK win32_open_file_func (voidpf opaque,const char* filename,int mo
 
 uLong ZCALLBACK win32_read_file_func (voidpf opaque, voidpf stream, void* buf,uLong size)
 {
-    uLong ret=0;
+    DWORD ret=0;
     HANDLE hFile = NULL;
 
     (void)opaque;
@@ -230,7 +230,7 @@ uLong ZCALLBACK win32_read_file_func (voidpf opaque, voidpf stream, void* buf,uL
 
 uLong ZCALLBACK win32_write_file_func (voidpf opaque,voidpf stream,const void* buf,uLong size)
 {
-    uLong ret=0;
+    DWORD ret=0;
     HANDLE hFile = NULL;
 
     (void)opaque;
