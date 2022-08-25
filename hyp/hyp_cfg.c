@@ -577,16 +577,17 @@ gboolean HypProfile_Save(gboolean report_error)
 #ifdef HAVE_MKDIR
 		char *dir = get_profile_dir(NULL);
 		int ret = mkdir(dir, 0700);
-		g_free(dir);
 		if (ret != 0)
 		{
 			if (errno != EEXIST)
 			{
 				if (report_error)
 					hyp_utf8_fprintf(stderr, _("%s: could not create directory %s: %s\n"), gl_program_name, dir, hyp_utf8_strerror(errno));
+				g_free(dir);
 				return FALSE;
 			}
 		}
+		g_free(dir);
 #else
 		UNUSED(report_error);
 #endif
