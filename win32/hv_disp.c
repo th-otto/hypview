@@ -56,6 +56,7 @@ static long DrawPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 		ty = y;
 		if (gfx->islimage)
 		{
+			/* keep in sync with SkipPicture */
 			/* y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster; */
 			y += gfx->pixheight;
 			/* st-guide leaves an empty line after each @limage */

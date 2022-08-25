@@ -189,9 +189,12 @@ static long SkipPicture(WINDOW_DATA *win, struct hyp_gfx *gfx, long x, long y)
 	{
 		if (gfx->islimage)
 		{
+			/* keep in sync with DrawPicture */
 			/* y += ((gfx->pixheight + win->y_raster - 1) / win->y_raster) * win->y_raster; */
 			y += gfx->pixheight;
-			y += win->y_raster;
+			/* st-guide leaves an empty line after each @limage */
+			if ((gfx->pixheight % win->y_raster) == 0)
+				y += win->y_raster;
 		}
 	}
 	return y;
