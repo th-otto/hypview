@@ -1011,6 +1011,34 @@ static LRESULT CALLBACK mainWndProc(HWND hwnd, UINT message, WPARAM wParam, LPAR
 		}
 		return 0;
 
+	case WM_MOUSEWHEEL:
+		{
+			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+
+			if (win->textwin)
+			{
+				UpdateWindow(win->textwin);
+
+				hv_scroll_window(win, 0, -amount * win->y_raster);
+			}
+		}
+		win32debug_msg_end("textWndProc", message, "0");
+		return 0;
+	
+	case WM_MOUSEHWHEEL:
+		{
+			int amount = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+
+			if (win->textwin)
+			{
+				UpdateWindow(win->textwin);
+
+				hv_scroll_window(win, -amount * win->x_raster, 0);
+			}
+		}
+		win32debug_msg_end("textWndProc", message, "0");
+		return 0;
+	
 	case WM_SYSKEYDOWN:
 	case WM_KEYDOWN:
 	case WM_CHAR:
