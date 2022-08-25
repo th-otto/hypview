@@ -529,6 +529,14 @@ if test "$cross_compiling" != no -a "$PKG_CONFIG_LIBDIR" = ""; then
   pkg_config=false
 fi
 
+AC_PATH_PROGS(WINDRES, orc,, $PATH)
+if test "$WINDRES" = ""; then
+	WINDRES=windres
+else
+	WINDRES="$WINDRES --compiler none"
+fi
+AC_SUBST(WINDRES)
+
 
 # Utility function for running pkg-config-based tests...
 #

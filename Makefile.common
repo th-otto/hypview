@@ -5,9 +5,6 @@ pkgdatadir = $(datadir)/hypview
 hyp_srcdir = $(top_srcdir)
 hyp_builddir = $(top_builddir)
 
-#WINDRES = windres
-WINDRES = orc --compiler none
-
 LIBHYP_DEP = $(hyp_builddir)/hyp/libhyp.a
 LIBHYP = -L$(hyp_builddir)/hyp -lhyp
 
