@@ -17,7 +17,7 @@
 DRV_INFO *v_create_driver_info( short handle, short driver_id )
 {
 	short vdi_control[VDI_CNTRLMAX]; 
-	short vdi_intout[2]; 
+	short vdi_intout[N_PTRINTS];
 
 	VDI_PARAMS(vdi_control, &driver_id, 0L, vdi_intout, 0L);
 	
