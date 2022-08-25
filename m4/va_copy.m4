@@ -53,7 +53,7 @@ if test -n "$g_va_copy_func"; then
 fi
 
 AC_CACHE_CHECK([whether va_lists can be copied by value],glib_cv_va_val_copy,[
-	AC_TRY_RUN([#include <stdarg.h>
+	AC_RUN_IFELSE([AC_LANG_SOURCE([[#include <stdarg.h>
 #include <stdlib.h> 
 	void f (int i, ...) {
 	va_list args1, args2;
@@ -66,7 +66,7 @@ AC_CACHE_CHECK([whether va_lists can be copied by value],glib_cv_va_val_copy,[
 	int main() {
 	  f (0, 42);
 	  return 0;
-	}],
+	}]])],
 	[glib_cv_va_val_copy=yes],
 	[glib_cv_va_val_copy=no],
 	[glib_cv_va_val_copy=yes])

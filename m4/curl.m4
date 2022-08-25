@@ -6,15 +6,15 @@ AC_DEFUN([AM_PATH_CURL],
 dnl Get the cflags and libraries
 dnl
 AC_ARG_WITH(curl,
-   [AC_HELP_STRING(--with-curl=PFX, [Prefix where libcurl is installed (optional)])],
+   [AS_HELP_STRING(--with-curl=PFX, [Prefix where libcurl is installed (optional)])],
    [curl_prefix="$withval"],
    [curl_prefix=""])
 AC_ARG_WITH(curl-libraries,
-   [AC_HELP_STRING(--with-curl-libraries=DIR, [Directory where libcurl library is installed (optional)])],
+   [AS_HELP_STRING(--with-curl-libraries=DIR, [Directory where libcurl library is installed (optional)])],
    [curl_libraries="$withval"],
    [curl_libraries=""])
 AC_ARG_WITH(curl-includes,
-   [AC_HELP_STRING(--with-curl-includes=DIR, [Directory where libcurl header files are installed (optional)])],
+   [AS_HELP_STRING(--with-curl-includes=DIR, [Directory where libcurl header files are installed (optional)])],
    [curl_includes="$withval"],
    [curl_includes=""])
 

@@ -4,9 +4,9 @@ dnl @(#) Thorsten Otto, 04.07.2002
 dnl
 dnl TODO: check for Roman-8 system charset on HPUX systems
 dnl
-AC_PREREQ(2.52)
+AC_PREREQ([2.59])
 
-AC_INIT(hcp, 1.0.5, [https://github.com/th-otto/hypview/issues/],,[https://github.com/th-otto/hypview/])
+AC_INIT([hcp], [1.0.5], [https://github.com/th-otto/hypview/issues/], [], [https://github.com/th-otto/hypview/])
 AC_CONFIG_SRCDIR(hyp/hcp_comp.c)
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -33,7 +33,7 @@ if test "$ECHO_E" = ""; then
 fi
 AC_SUBST(ECHO_E)
 
-AC_CONFIG_HEADER(include/config.h)
+AC_CONFIG_HEADERS([include/config.h])
 
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([enable])
@@ -85,7 +85,7 @@ AC_DEFUN([AC_EGREP_X_HEADER], [
   AC_EGREP_HEADER([$1], [$2], [$3], [$4])
   CPPFLAGS="$ac_save_CPPFLAGS"])
 
-# Like AC_TRY_COMPILE, but it uses the already-computed -I directories.
+# Like AC_COMPILE_IFELSE, but it uses the already-computed -I directories.
 #
 AC_DEFUN([AC_TRY_X_COMPILE], [
   ac_save_CPPFLAGS="$CPPFLAGS"
@@ -94,7 +94,7 @@ AC_DEFUN([AC_TRY_X_COMPILE], [
   fi
   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
   CPPFLAGS=`eval eval eval eval eval eval eval eval eval echo $CPPFLAGS`
-  AC_TRY_COMPILE([$1], [$2], [$3], [$4])
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[$1]], [[$2]])], [$3],[$4])
   CPPFLAGS="$ac_save_CPPFLAGS"])
 
 
@@ -159,7 +159,7 @@ done
 ])
 
 
-# Like AC_TRY_RUN, but it uses the already-computed -I directories.
+# Like AC_RUN_IFELSE, but it uses the already-computed -I directories.
 # (But not the -L directories!)
 #
 AC_DEFUN([AC_TRY_X_RUN], [
@@ -168,7 +168,7 @@ AC_DEFUN([AC_TRY_X_RUN], [
     CPPFLAGS="$CPPFLAGS -I$includedir"
   fi
   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-  AC_TRY_RUN([$1], [$2], [$3], [$4])
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[$1]])],[$2],[$3],[$4])
   CPPFLAGS="$ac_save_CPPFLAGS"])
 
 
@@ -384,7 +384,7 @@ AH_TEMPLATE([__HPUX_ROMAN8__], [use HP-Roman-8 character set on HPUX])
 AH_TEMPLATE([__HPUX_ISO__], [use iso-latin1 character set on HPUX])
 
 AC_ARG_ENABLE(roman-8,
-[AC_HELP_STRING(--enable-roman-8, [use HP-Roman-8 character set on HPUX])],
+[AS_HELP_STRING([--enable-roman-8], [use HP-Roman-8 character set on HPUX])],
 [case $enableval in
 yes) AC_DEFINE(__HPUX_ROMAN8__) ;;
 no)  case $host in 
@@ -396,7 +396,7 @@ esac
 ])
 
 AC_ARG_ENABLE(warnings,
-[AC_HELP_STRING(--enable-warnings, [enable compiler warnings])],
+[AS_HELP_STRING([--enable-warnings], [enable compiler warnings])],
 [case $enableval in
 yes)
      for arg in -Wall -W -Wstrict-prototypes -Wmissing-prototypes \
@@ -412,7 +412,7 @@ esac
 ])
 
 AC_ARG_ENABLE(fatal-warnings,
-[AC_HELP_STRING(--enable-fatal-warnings, [Turn compiler warnings into errors [default=disabled]])],
+[AS_HELP_STRING([--enable-fatal-warnings], [Turn compiler warnings into errors [default=disabled]])],
 [case $enableval in
 yes) enable_fatal_warnings=yes
      ;;
@@ -456,7 +456,7 @@ AC_ARG_WITH(gui,[
 
 User interface options:
 
-]AC_HELP_STRING(--with-gui, [Select gui to use @<:@automatic@:>@])],
+]AS_HELP_STRING([--with-gui], [Select gui to use @<:@automatic@:>@])],
   [with_gui="$withval"],[with_gui=auto])
 with_gui_req="$with_gui"
 
@@ -714,11 +714,7 @@ if test "$with_gui" = gtk2 -o "$with_gui" = gtk3 -o "$with_gui" = auto; then
       ac_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS  $ac_cv_gtkhtml_config_cflags"
       LDFLAGS="$LDFLAGS $ac_cv_gtkhtml_config_libs"
-      AC_TRY_LINK([#include <libgtkhtml/gtkhtml.h>],
-                  [html_document_new();],
-                  ,
-                  [have_gtkhtml=no],
-                  [have_gtkhtml=no])
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <libgtkhtml/gtkhtml.h>]], [[html_document_new();]])],[],[have_gtkhtml=no])
       LDFLAGS=$ac_save_LDFLAGS
       CFLAGS=$ac_save_CFLAGS
   fi
@@ -739,11 +735,7 @@ if test "$with_gui" = gtk2 -o "$with_gui" = gtk3 -o "$with_gui" = auto; then
       ac_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS  $ac_cv_gtkhtml2_config_cflags"
       LDFLAGS="$LDFLAGS $ac_cv_gtkhtml2_config_libs"
-      AC_TRY_LINK([#include <gtkhtml/gtkhtml.h>],
-                  [gtk_html_new();],
-                  ,
-                  [have_gtkhtml2=no],
-                  [have_gtkhtml2=no])
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <gtkhtml/gtkhtml.h>]], [[gtk_html_new();]])],[],[have_gtkhtml2=no])
       LDFLAGS=$ac_save_LDFLAGS
       CFLAGS=$ac_save_CFLAGS
   fi
@@ -1028,7 +1020,7 @@ AC_CONFIG_COMMANDS([automake],[
         rm -rf autom4te.cache
       ])
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 	Makefile
 	include/Makefile
 	rcintl/Makefile
@@ -1059,3 +1051,4 @@ AC_OUTPUT([
 	doc/en/Makefile
 	www/Makefile
 ])
+AC_OUTPUT

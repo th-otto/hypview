@@ -37,7 +37,7 @@ AC_DEFUN([GLIB_LC_MESSAGES],
   [AC_CHECK_HEADERS([locale.h])
     if test $ac_cv_header_locale_h = yes; then
     AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
-      [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
+      [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <locale.h>]], [[return LC_MESSAGES]])],
        am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
     if test $am_cv_val_LC_MESSAGES = yes; then
       AC_DEFINE(HAVE_LC_MESSAGES, 1,
@@ -92,7 +92,7 @@ AC_DEFUN([GLIB_WITH_NLS],
   AC_MSG_CHECKING([whether NLS is requested])
   dnl Default is enabled NLS
   AC_ARG_ENABLE([nls],
-    [AC_HELP_STRING([--disable-nls], [do not use Native Language Support])],
+    [AS_HELP_STRING([--disable-nls], [do not use Native Language Support])],
     USE_NLS=$enableval, USE_NLS=maybe)
   AC_MSG_RESULT([$USE_NLS])
   AC_SUBST([USE_NLS])
@@ -135,20 +135,16 @@ msgstr ""
       # First check in libc
       #
       AC_CACHE_CHECK([for ngettext in libc], gt_cv_func_ngettext_libc,
-        [AC_TRY_LINK([
-#include <libintl.h>
-],
-         [return !ngettext ("","", 1)],
+        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <libintl.h>]],
+         [[return !ngettext ("","", 1)]])],
 	  gt_cv_func_ngettext_libc=yes,
           gt_cv_func_ngettext_libc=no)
         ])
   
       if test "$gt_cv_func_ngettext_libc" = "yes" ; then
 	      AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
-        	[AC_TRY_LINK([
-#include <libintl.h>
-],
-	          [return !dgettext ("","")],
+		  [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <libintl.h>]],
+	          [[return !dgettext ("","")]])],
 		  gt_cv_func_dgettext_libc=yes,
 	          gt_cv_func_dgettext_libc=no)
         	])
@@ -222,8 +218,8 @@ msgstr ""
           glib_save_LIBS="$LIBS"
           LIBS="$LIBS $INTLLIBS"
 	  AC_CHECK_FUNCS(dcgettext)
-	  AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
-			 return _nl_msg_cat_cntr],
+	  AC_LINK_IFELSE([AC_LANG_PROGRAM([[extern int _nl_msg_cat_cntr;]],
+			 [[return _nl_msg_cat_cntr]])],
 	    [CATOBJEXT=.gmo 
              DATADIRNAME=share],
 	    [case $host in
@@ -292,10 +288,10 @@ msgstr ""
     AC_MSG_CHECKING([whether NLS is supported])
     AC_MSG_RESULT([$USE_NLS])
 
-    AC_OUTPUT_COMMANDS(
-      [case "$CONFIG_FILES" in *po/Makefile.in*)
+    AC_CONFIG_COMMANDS([nls],
+      [[case "$CONFIG_FILES" in *po/Makefile.in*)
         sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile
-      esac])
+      esac]],[[]])
 
     dnl Make all variables we use known to autoconf.
     AC_SUBST(CATALOGS)
