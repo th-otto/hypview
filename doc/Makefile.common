@@ -1,4 +1,5 @@
 BIN_DIR=	$(abs_builddir)/../output
+win_bindir:=	$(shell cygpath -w -m $(BIN_DIR) 2>/dev/null || echo $(BIN_DIR))
 
 if CROSS_COMPILING
 UDO=		$(build_triplet)-udo
@@ -32,20 +33,20 @@ MAKEFILE=	$(builddir)/Makefile
 
 ####################################################################
 
-HTML_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/html/
-APPLEHELP_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/applehelp/
-HTMLHELP_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/htmlhelp/
-WINHELP3_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/winhelp3/
-WINHELP4_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/winhelp4/
-STGUIDE_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/stguide/
-AMGUIDE_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/amigaguide/
-PCHELP_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/pchelp/
-QUICKVIEW_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/quickview/
-TEX_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/tex/
-RTF_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/rtf/
-PDF_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/pdf/
-LYX_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/lyx/
-INFO_DIR=	$(BIN_DIR)/$(OUTPUT_LANG)/info/
+HTML_DIR=	$(win_bindir)/$(OUTPUT_LANG)/html/
+APPLEHELP_DIR=	$(win_bindir)/$(OUTPUT_LANG)/applehelp/
+HTMLHELP_DIR=	$(win_bindir)/$(OUTPUT_LANG)/htmlhelp/
+WINHELP3_DIR=	$(win_bindir)/$(OUTPUT_LANG)/winhelp3/
+WINHELP4_DIR=	$(win_bindir)/$(OUTPUT_LANG)/winhelp4/
+STGUIDE_DIR=	$(win_bindir)/$(OUTPUT_LANG)/stguide/
+AMGUIDE_DIR=	$(win_bindir)/$(OUTPUT_LANG)/amigaguide/
+PCHELP_DIR=	$(win_bindir)/$(OUTPUT_LANG)/pchelp/
+QUICKVIEW_DIR=	$(win_bindir)/$(OUTPUT_LANG)/quickview/
+TEX_DIR=	$(win_bindir)/$(OUTPUT_LANG)/tex/
+RTF_DIR=	$(win_bindir)/$(OUTPUT_LANG)/rtf/
+PDF_DIR=	$(win_bindir)/$(OUTPUT_LANG)/pdf/
+LYX_DIR=	$(win_bindir)/$(OUTPUT_LANG)/lyx/
+INFO_DIR=	$(win_bindir)/$(OUTPUT_LANG)/info/
 
 HYPVIEW_DOC=	$(srcdir)/header.ui \
 		$(srcdir)/hyphen.ui \
@@ -165,7 +166,7 @@ man: .stamp_man
 
 .stamp_man: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Man documentation"; \
-		$(UDO) --man -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.man -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --man -o $(win_bindir)/$(OUTPUT_LANG)/hypview.man -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -174,7 +175,7 @@ ascii txt: .stamp_ascii
 
 .stamp_ascii: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Ascii documentation"; \
-		$(UDO) --asc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.txt -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --asc -o $(win_bindir)/$(OUTPUT_LANG)/hypview.txt -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -321,7 +322,7 @@ tvh vision: .stamp_tvh
 
 .stamp_tvh: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating Turbo-Vision documentation"; \
-		 $(UDO) --vision -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.tvh -l $(srcdir)/hypview.u || exit 1; \
+		 $(UDO) --vision -o $(win_bindir)/$(OUTPUT_LANG)/hypview.tvh -l $(srcdir)/hypview.u || exit 1; \
 		)
 		$(AM_V_at)touch $@
 
@@ -331,7 +332,7 @@ ldoc linuxdoc: .stamp_linuxdoc
 
 .stamp_linuxdoc: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating Linux-Doc documentation"; \
-		 $(UDO) --linuxdoc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.sgml -l $(srcdir)/hypview.u || exit 1; \
+		 $(UDO) --linuxdoc -o $(win_bindir)/$(OUTPUT_LANG)/hypview.sgml -l $(srcdir)/hypview.u || exit 1; \
 		)
 		$(AM_V_at)touch $@
 
@@ -352,7 +353,7 @@ hph helptag: .stamp_helptag
 
 .stamp_helptag: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating HP Helptag documentation"; \
-		 $(UDO) --helptag -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.hph -l $(srcdir)/hypview.u || exit 1; \
+		 $(UDO) --helptag -o $(win_bindir)/$(OUTPUT_LANG)/hypview.hph -l $(srcdir)/hypview.u || exit 1; \
 		)
 		$(AM_V_at)touch $@
 
@@ -379,7 +380,7 @@ nroff: .stamp_nroff
 
 .stamp_nroff: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Nroff documentation"; \
-		$(UDO) --nroff -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.1 -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --nroff -o $(win_bindir)/$(OUTPUT_LANG)/hypview.1 -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -388,7 +389,7 @@ src: .stamp_src
 
 .stamp_src: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating C-Source documentation"; \
-		$(UDO) --c -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.c -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --c -o $(win_bindir)/$(OUTPUT_LANG)/hypview.c -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -397,7 +398,7 @@ srp: .stamp_srp
 
 .stamp_srp: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating Pascal-Source documentation"; \
-		$(UDO) --pascal -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.pas -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --pascal -o $(win_bindir)/$(OUTPUT_LANG)/hypview.pas -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -406,7 +407,7 @@ ipf: .stamp_ipf
 
 .stamp_ipf: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating OS/2 IPF documentation"; \
-		$(UDO) --ipf -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ipf -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --ipf -o $(win_bindir)/$(OUTPUT_LANG)/hypview.ipf -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -415,7 +416,7 @@ drc: .stamp_drc
 
 .stamp_drc: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating David's Readme Compiler documentation"; \
-		$(UDO) --drc -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.drc -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --drc -o $(win_bindir)/$(OUTPUT_LANG)/hypview.drc -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -524,7 +525,7 @@ ps: .stamp_ps
 
 .stamp_ps: $(HYPVIEW_DOC_DEP)
 		$(AM_V_at)echo "generating PostScript documentation"; \
-		$(UDO) --ps -o $(BIN_DIR)/$(OUTPUT_LANG)/hypview.ps -l $(srcdir)/hypview.u || exit 1
+		$(UDO) --ps -o $(win_bindir)/$(OUTPUT_LANG)/hypview.ps -l $(srcdir)/hypview.u || exit 1
 		$(AM_V_at)touch $@
 		
 ####################################################################
@@ -558,7 +559,7 @@ udo: .stamp_udo
 
 .stamp_udo:	$(HYPVIEW_DOC_DEP)
 		$(AM_V_at)(echo "generating UDO documentation"; \
-		 $(UDO) --udo --check -o $(BIN_DIR)/$(OUTPUT_LANG)/manual.u -l $(srcdir)/hypview.u || exit 1
+		 $(UDO) --udo --check -o $(win_bindir)/$(OUTPUT_LANG)/manual.u -l $(srcdir)/hypview.u || exit 1
 		)
 		$(AM_V_at)touch $@
 
