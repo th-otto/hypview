@@ -32,7 +32,7 @@ char *hyp_wchar_to_utf8(const wchar_t *str, size_t wlen)
 
 /*** ---------------------------------------------------------------------- ***/
 
-#if defined(_WIN32) && !GLIB_CHECK_VERSION(2, 40, 0) && !defined(CC_FOR_BUILD)
+#if defined(_WIN32) && !defined(__CYGWIN__) && !GLIB_CHECK_VERSION(2, 40, 0) && !defined(CC_FOR_BUILD)
 #include <shellapi.h>
 
 char **g_win32_get_command_line(void)

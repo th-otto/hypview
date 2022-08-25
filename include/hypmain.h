@@ -5,7 +5,7 @@
 int hypmain(int argc, const char **argv);
 int utf8_main(int argc, const char **argv);
 
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__CYGWIN__)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int cmdShow)
 {
