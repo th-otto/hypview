@@ -65,6 +65,7 @@ typedef struct {
 	gboolean long_filenames;
 	gboolean warn_compat;
 	char *image_name_prefix;
+	gboolean ignore_image_name;
 	char *output_dir;
 	HYP_CHARSET output_charset;
 	gboolean all_links;

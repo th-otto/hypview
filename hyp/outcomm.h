@@ -38,7 +38,7 @@ typedef gboolean (*recompile_func)(HYP_DOCUMENT *hyp, hcp_opts *opt, int argc, c
 
 gboolean check_long_filenames(const char *dir);
 char *format_dithermask(unsigned short dithermask);
-char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, const char *name_prefix);
+char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, const char *name_prefix, gboolean ignore_image_name);
 void lowercase_image_name(HYP_DOCUMENT *hyp, hyp_nodenr node);
 hyp_pic_format format_from_pic(hcp_opts *opts, INDEX_ENTRY *entry, hyp_pic_format default_format);
 symtab_entry *sym_find(symtab_entry *sym, const char *search, hyp_reftype type);

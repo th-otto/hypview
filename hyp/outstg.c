@@ -363,7 +363,7 @@ static void stg_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct 
 			else if (hyp->indextable[gfx->extern_node_index]->type != HYP_NODE_IMAGE)
 				fname = g_strdup_printf(_("<non-image node #%u>"), gfx->extern_node_index);
 			else
-				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix, opts->ignore_image_name);
 			colors = pic_colornameformat(gfx->planes);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "@remark %ux%u%s\n", gfx->pixwidth, gfx->pixheight, colors);
 			if (opts->for_cgi && opts->showstg)

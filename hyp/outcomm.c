@@ -115,7 +115,7 @@ char *format_dithermask(unsigned short dithermask)
 
 /* ------------------------------------------------------------------------- */
 
-char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, const char *name_prefix)
+char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, const char *name_prefix, gboolean ignore_image_name)
 {
 	INDEX_ENTRY *entry;
 	size_t namelen;
@@ -155,7 +155,7 @@ char *image_name(hyp_pic_format format, HYP_DOCUMENT *hyp, hyp_nodenr node, cons
 	 */
 	entry = hyp->indextable[node];
 	namelen = entry->length - SIZEOF_INDEX_ENTRY;
-	if (namelen > 0)
+	if (namelen > 0 && !ignore_image_name)
 	{
 		name = hyp_conv_to_utf8(hyp->comp_charset, entry->name, namelen);
 		res = replace_ext(name, NULL, ext);
@@ -525,7 +525,7 @@ gboolean write_image(HYP_DOCUMENT *hyp, hcp_opts *opts, hyp_nodenr node, hyp_pic
 		g_free(colors);
 		goto error;
 	}
-	pic.pi_name = image_name(format, hyp, node, opts->image_name_prefix);
+	pic.pi_name = image_name(format, hyp, node, opts->image_name_prefix, opts->ignore_image_name);
 	if (empty(pic.pi_name))
 		goto error;
 	

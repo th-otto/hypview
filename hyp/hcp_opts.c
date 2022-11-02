@@ -89,7 +89,8 @@ enum hcp_option {
 	OPT_LONG_FILENAMES,
 	OPT_NO_LONG_FILENAMES,
 	OPT_HIDEMENU,
-	OPT_NO_HIDEMENU
+	OPT_NO_HIDEMENU,
+	OPT_IGNORE_IMAGE_NAME
 };
 
 static struct option const long_options[] = {
@@ -137,6 +138,7 @@ static struct option const long_options[] = {
 	{ "no-long-filenames", no_argument, NULL, OPT_NO_LONG_FILENAMES },
 	{ "hidemenu", no_argument, NULL, OPT_HIDEMENU },
 	{ "no-hidemenu", no_argument, NULL, OPT_NO_HIDEMENU },
+	{ "ignore-image-name", no_argument, NULL, OPT_IGNORE_IMAGE_NAME },
 	
 	{ "help", no_argument, NULL, OPT_HELP },
 	{ "version", no_argument, NULL, OPT_VERSION },
@@ -193,6 +195,7 @@ void hcp_opts_init(hcp_opts *opts)
 	opts->long_filenames = -1;
 	opts->warn_compat = TRUE;
 	opts->image_name_prefix = g_strdup("img");
+	opts->ignore_image_name = FALSE;
 	opts->print_unknown = FALSE;
 	opts->output_charset = HYP_CHARSET_NONE;
 }
@@ -709,6 +712,10 @@ gboolean hcp_opts_parse(hcp_opts *opts, int argc, const char **argv, opts_origin
 			opts->hidemenu = FALSE;
 			break;
 		
+		case OPT_IGNORE_IMAGE_NAME:
+			opts->ignore_image_name = TRUE;
+			break;
+
 		case OPT_OPTERROR:
 			if (getopt_opt_r(d) == '?')
 			{

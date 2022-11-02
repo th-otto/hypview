@@ -765,20 +765,17 @@ static int html_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct 
 			{
 				if (opts->read_images)
 				{
-					if (opts->cgi_cached)
-						fname = g_strdup_printf("%s?url=%s&index=%u&cached=1", cgi_scriptname, html_referer_url, gfx->extern_node_index);
-					else
-						fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+					fname = g_strdup_printf("%s?url=%s&index=%u%s", cgi_scriptname, html_referer_url, gfx->extern_node_index, opts->cgi_cached ? "&cached=1" : "");
 					alt = g_strdup_printf("index=%u", gfx->extern_node_index);
 				} else
 				{
 					fname = g_strdup("");
 					alt = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 				}
-				origfname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+				origfname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix, opts->ignore_image_name);
 			} else
 			{
-				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix, opts->ignore_image_name);
 				origfname = fname;
 				alt = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 			}
@@ -920,10 +917,7 @@ void html_out_stg_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct hy
 	if (hypnode_valid(hyp, gfx->extern_node_index) &&
 		hyp->indextable[gfx->extern_node_index]->type == HYP_NODE_IMAGE)
 	{
-		if (opts->cgi_cached)
-			fname = g_strdup_printf("%s?url=%s&index=%u&cached=1", cgi_scriptname, html_referer_url, gfx->extern_node_index);
-		else
-			fname = g_strdup_printf("%s?url=%s&index=%u", cgi_scriptname, html_referer_url, gfx->extern_node_index);
+		fname = g_strdup_printf("%s?url=%s&index=%u%s", cgi_scriptname, html_referer_url, gfx->extern_node_index, opts->cgi_cached ? "&cached=1" : "");
 	}
 	quoted = html_quote_name(fname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE|QUOTE_NOLTR : 0);
 	origquoted = html_quote_name(origfname, opts->output_charset == HYP_CHARSET_UTF8 ? QUOTE_UNICODE : 0);

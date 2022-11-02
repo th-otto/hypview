@@ -268,7 +268,7 @@ static void xml_out_gfx(hcp_opts *opts, GString *out, HYP_DOCUMENT *hyp, struct 
 				format = "application/octet-stream";
 			} else
 			{
-				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix);
+				fname = image_name(gfx->format, hyp, gfx->extern_node_index, opts->image_name_prefix, opts->ignore_image_name);
 				format = hcp_pic_format_to_mimetype(gfx->format);
 			}
 			quoted = xml_quote_name(fname, 0);
@@ -878,7 +878,7 @@ static gboolean xml_out_image(HYP_DOCUMENT *hyp, hcp_opts *opts, GString *out, h
 		if (Base64_Encode(b, image->str, image->len))
 		{
 			format = format_from_pic(opts, hyp->indextable[node], XML_DEFAULT_PIC_TYPE);
-			fname = image_name(format, hyp, node, opts->image_name_prefix);
+			fname = image_name(format, hyp, node, opts->image_name_prefix, opts->ignore_image_name);
 			formatname = hcp_pic_format_to_mimetype(format);
 			quoted = xml_quote_name(fname, 0);
 			hyp_utf8_sprintf_charset(out, opts->output_charset, converror, "  <node index=\"%u\" type=\"%s\">\n",
