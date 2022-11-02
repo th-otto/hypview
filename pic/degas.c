@@ -71,7 +71,7 @@ gboolean degas_unpack(_UBYTE *dest, const _UBYTE *src, PICTURE *pic)
 	planeptr[2] = dest + 4;
 	planeptr[3] = dest + 6;
 	bytes = tobyte(width);
-	words = (bytes >> 1);
+	words = (bytes + 1) >> 1;
 	linesize = (_LONG)words * 2 * planes;
 	linebuf = g_new(_UBYTE, linesize);
 	if (linebuf == NULL)
