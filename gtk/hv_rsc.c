@@ -20,6 +20,9 @@
  */
 
 #include "hv_gtk.h"
+
+#ifdef HAVE_PNG /* almost whole file */
+
 #undef G_ICON /* conflict from gio */
 #include <gem.h>
 #include <errno.h>
@@ -790,3 +793,16 @@ void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr)
 	
 	appl_exit();
 }
+
+#else
+
+void ShowResource(WINDOW_DATA *win, const char *path, _UWORD treenr)
+{
+	char *str = g_strdup_printf(_("Display of resource files not available."));
+	UNUSED(path);
+	UNUSED(treenr);
+	show_message(GTK_WIDGET(win), _("Error"), str, FALSE);
+	g_free(str);
+}
+
+#endif /* HAVE_PNG */

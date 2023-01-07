@@ -3,10 +3,14 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = include rcintl potools pic icons po
 if NEED_ZLIB
+if !USE_SYSTEM_ZLIB
 SUBDIRS += zlib
 endif
+endif
 if HAVE_PNG
+if !USE_SYSTEM_PNGLIB
 SUBDIRS += libpng
+endif
 endif
 if WITH_PDF
 SUBDIRS += hpdf

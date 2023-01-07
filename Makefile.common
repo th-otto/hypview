@@ -23,19 +23,33 @@ LIBPIC = -L$(hyp_builddir)/pic -lpic
 $(LIBPIC_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/pic libpic.a; fi
 
+if NEED_ZLIB
+if USE_SYSTEM_ZLIB
+LIBZ_DEP =
+LIBZ = -lz
+else
 LIBZ_DEP = $(hyp_builddir)/zlib/libz.a
 LIBZ = -L$(hyp_builddir)/zlib -lz
 Z_CFLAGS = -I$(top_srcdir)/zlib -DZLIB_STATIC
 
 $(LIBZ_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/zlib libz.a; fi
+endif
+endif
 
+if HAVE_PNG
+if USE_SYSTEM_PNGLIB
+LIBPNG_DEP =
+LIBPNG = -lpng
+else
 LIBPNG_DEP = $(hyp_builddir)/libpng/libpng.a
 LIBPNG = -L$(hyp_builddir)/libpng -lpng
 PNG_CFLAGS = -I$(top_srcdir)/libpng
 
 $(LIBPNG_DEP)::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(hyp_builddir)/libpng libpng.a; fi
+endif
+endif
 
 LIBHPDF_DEP = $(hyp_builddir)/hpdf/src/libhpdf.a
 LIBHPDF = -L$(hyp_builddir)/hpdf/src -lhpdf
@@ -53,8 +67,10 @@ if OS_TOS
 GEMLIB_DEPS =
 GEMLIBS = -lgem
 else
+if NEED_GEMLIB
 GEMLIB_DEPS = $(top_builddir)/rsc/libgem.a $(top_builddir)/rsc/src/librsc.a
 GEMLIBS = $(top_builddir)/rsc/src/librsc.a $(top_builddir)/rsc/libgem.a
+endif
 endif
 $(top_builddir)/rsc/libgem.a::
 	@if test "0$(MAKELEVEL)" -gt 1; then :; else $(MAKE) --no-print-directory -C $(top_builddir)/rsc libgem.a; fi

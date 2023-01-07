@@ -427,7 +427,6 @@ AM_CONDITIONAL(OS_TOS, test "$TARGET_OS" = "tos")
 AM_CONDITIONAL(OS_UNIX, test "$TARGET_OS" = "unix")
 AM_CONDITIONAL(OS_MACOS, test "$TARGET_OS" = "mac")
 AM_CONDITIONAL(CROSS_COMPILING, test "$cross_compiling" != no)
-AM_CONDITIONAL(NEED_GEMLIB, test "$TARGET_OS" != "tos")
 
 AC_CHECK_HEADERS([argz.h limits.h locale.h nl_types.h malloc.h string.h strings.h unistd.h process.h sys/param.h endian.h io.h fcntl.h dlfcn.h pwd.h wchar.h])
 
@@ -906,7 +905,6 @@ AM_CONDITIONAL(HAVE_CURL, test "$no_curl" = "")
 
 AH_TEMPLATE([WITH_PDF], [include PDF output support])
 AH_TEMPLATE([LIBHPDF_HAVE_NOZLIB], [zlib is not available])
-AH_TEMPLATE([HAVE_PNG], [libpng is available])
 AH_TEMPLATE([LIBHPDF_WITH_ASIAN_FONTS], [include support for asian character encodings])
 AC_ARG_WITH(pdf,
   [AS_HELP_STRING([--with-pdf],[include PDF output support])],
@@ -926,16 +924,38 @@ if test "$with_asian_fonts" = "yes"; then
   AC_DEFINE([LIBHPDF_WITH_ASIAN_FONTS])
 fi
 
+###############################################################################
+#
+#       pnglib support (needed to display RSC files on platforms other than TOS)
+#
+###############################################################################
+
+AH_TEMPLATE([HAVE_PNG], [libpng is available])
+
 AC_ARG_WITH(png,
-  [AS_HELP_STRING([--with-png],[include PNG support])],
+  [AS_HELP_STRING([--with-png],[include PNG support (no|yes|system)])],
   [ ],
-  [with_png=yes]
+  [with_png=system]
 )
+if test "$with_png" = "system"; then
+  if $pkg_config --exists "libpng" ; then
+     :
+  else
+     AC_MSG_WARN([pnglib not available])
+     with_png=no
+  fi
+fi
 if test "$with_png" = "yes"; then
   AC_DEFINE([HAVE_PNG])
+else
+  AC_MSG_WARN([pnglib not available, resource files cannot be displayed])
 fi
 AM_CONDITIONAL(HAVE_PNG, test "$with_png" != "no")
 AM_CONDITIONAL(NEED_ZLIB, test "$with_png" != "no" -o "$with_pdf" = "yes")
+AM_CONDITIONAL(USE_SYSTEM_PNGLIB, test "$with_png" = "system")
+AM_CONDITIONAL(USE_SYSTEM_ZLIB, test "$with_png" = "system")
+
+AM_CONDITIONAL(NEED_GEMLIB, test "$TARGET_OS" != "tos" -a "$with_png" != "no")
 
 ###############################################################################
 #

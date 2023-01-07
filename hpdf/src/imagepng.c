@@ -24,6 +24,12 @@
 #include <png.h>
 #include <string.h>
 
+/* small hack: define png_int_t if *not* using our private version of pnglib */
+#ifndef __gcc_double_t_defined
+typedef int png_int_t;
+#endif
+
+
 static void PngReadFunc(png_structp png_ptr, png_bytep data, png_size_t length)
 {
 	HPDF_UINT len = (HPDF_UINT)length;
