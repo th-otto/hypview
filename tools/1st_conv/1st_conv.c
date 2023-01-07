@@ -3,6 +3,7 @@
 #endif
 #undef HAVE_GLIB
 #undef HAVE_GTK
+#define DEBUG_ALLOC 0
 
 #include "hypdefs.h"
 #include <stdio.h>

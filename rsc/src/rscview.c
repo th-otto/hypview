@@ -228,7 +228,7 @@ static _WORD write_png(RSCTREE *tree, _WORD x, _WORD y, _WORD w, _WORD h, _BOOL 
 {
 	_WORD pxy[4];
 	char basename[PATH_MAX];
-	char filename[PATH_MAX];
+	char filename[PATH_MAX + 20];
 	_WORD err;
 	char *p;
 	

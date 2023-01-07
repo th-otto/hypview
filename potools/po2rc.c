@@ -1,4 +1,5 @@
 #define CC_FOR_BUILD 1
+#define DEBUG_ALLOC 0
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

@@ -458,6 +458,8 @@ void *dbg_realloc(void *ptr, size_t newsize, const char *file, long line)
 			newcntl->checker[i] = MEM_MAGIC_END;
 	}
 #if DEBUG_ALLOC >= 2
+/* supppress warning about using cntL; we only use thepointer with deferencing it */
+#pragma GCC diagnostic ignored "-Wuse-after-free"
 	if (cntl != newcntl)
 	{
 		if (!move_alloc_list(file, line, cntl, newcntl))
