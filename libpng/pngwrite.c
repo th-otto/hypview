@@ -1,7 +1,7 @@
 
 /* pngwrite.c - general routines to write a PNG file
  *
- * Copyright (c) 2018-2019 Cosmin Truta
+ * Copyright (c) 2018-2022 Cosmin Truta
  * Copyright (c) 1998-2002,2004,2006-2018 Glenn Randers-Pehrson
  * Copyright (c) 1996-1997 Andreas Dilger
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
@@ -12,6 +12,7 @@
  */
 
 #include "pngpriv.h"
+
 #ifdef PNG_SIMPLIFIED_WRITE_STDIO_SUPPORTED
 #  include <errno.h>
 #endif /* SIMPLIFIED_WRITE_STDIO */
@@ -75,10 +76,10 @@ write_unknown_chunks(png_structrp png_ptr, png_const_inforp info_ptr,
  * library.  If you have a new chunk to add, make a function to write it,
  * and put it in the correct location here.  If you want the chunk written
  * after the image data, put it in png_write_end().  I strongly encourage
- * you to supply a PNG_INFO_ flag, and check info_ptr->valid before writing
- * the chunk, as that will keep the code from breaking if you want to just
- * write a plain PNG file.  If you have long comments, I suggest writing
- * them in png_write_end(), and compressing them.
+ * you to supply a PNG_INFO_<chunk> flag, and check info_ptr->valid before
+ * writing the chunk, as that will keep the code from breaking if you want
+ * to just write a plain PNG file.  If you have long comments, I suggest
+ * writing them in png_write_end(), and compressing them.
  */
 void PNGAPI
 png_write_info_before_PLTE(png_structrp png_ptr, png_const_inforp info_ptr)
@@ -489,6 +490,16 @@ png_convert_from_time_t(png_timep ptime, time_t ttime)
    png_debug(1, "in png_convert_from_time_t");
 
    tbuf = gmtime(&ttime);
+   if (tbuf == NULL)
+   {
+      /* TODO: add a safe function which takes a png_ptr argument and raises
+       * a png_error if the ttime argument is invalid and the call to gmtime
+       * fails as a consequence.
+       */
+      memset(ptime, 0, sizeof(*ptime));
+      return;
+   }
+
    png_convert_from_struct_tm(ptime, tbuf);
 }
 #endif
@@ -500,10 +511,10 @@ png_create_write_struct,(png_const_charp user_png_ver, png_voidp error_ptr,
 {
 #ifndef PNG_USER_MEM_SUPPORTED
    png_structrp png_ptr = png_create_png_struct(user_png_ver, error_ptr,
-       error_fn, warn_fn, NULL, NULL, NULL);
+       error_fn, warn_fn, NULL, (png_malloc_ptr)0, (png_free_ptr)0);
 #else
    return png_create_write_struct_2(user_png_ver, error_ptr, error_fn,
-       warn_fn, NULL, NULL, NULL);
+       warn_fn, NULL, (png_malloc_ptr)0, (png_free_ptr)0);
 }
 
 /* Alternate initialize png_ptr structure, and allocate any memory needed */
@@ -563,7 +574,7 @@ png_create_write_struct_2,(png_const_charp user_png_ver, png_voidp error_ptr,
        * do it itself) avoiding setting the default function if it is not
        * required.
        */
-      png_set_write_fn(png_ptr, NULL, NULL, NULL);
+      png_set_write_fn(png_ptr, NULL, (png_rw_ptr)0, (png_flush_ptr)0);
    }
 
    return png_ptr;
@@ -1584,7 +1595,7 @@ png_write_image_16bit(png_voidp argument)
           * allows correct rounding by adding .5 before the shift.  'reciprocal'
           * is only initialized when required.
           */
-         if (alpha > 0 && alpha < 65535)
+         if (alpha > 0 && alpha < 65535L)
             reciprocal = ((0xffff<<15)+(alpha>>1))/alpha;
 
          c = (int)channels;
@@ -1600,12 +1611,12 @@ png_write_image_16bit(png_voidp argument)
              * areas tend not to be 0 intensity.)
              */
             if (component >= alpha)
-               component = 65535;
+               component = 65535U;
 
             /* component<alpha, so component/alpha is less than one and
              * component*reciprocal is less than 2^31.
              */
-            else if (component > 0 && alpha < 65535)
+            else if (component > 0 && alpha < 65535U)
             {
                png_uint_32 calc = component * reciprocal;
                calc += 16384; /* round to nearest */
@@ -1665,7 +1676,7 @@ png_unpremultiply(png_uint_32 component, png_uint_32 alpha,
        * NOTE: this must agree with the PNG_DIV257 macro (which must, therefore,
        * be exact!)  [Could also test reciprocal != 0]
        */
-      if (alpha < 65407)
+      if (alpha < 65407L)
       {
          component *= reciprocal;
          component += 64; /* round to nearest */
@@ -1937,7 +1948,7 @@ png_image_write_main(png_voidp argument)
    png_uint_32 format = image->format;
 
    /* The following four ints are actually booleans */
-   int colormap = (format & PNG_FORMAT_FLAG_COLORMAP);
+   int colormap = (int)(format & PNG_FORMAT_FLAG_COLORMAP);
    int linear = !colormap && (format & PNG_FORMAT_FLAG_LINEAR); /* input */
    int alpha = !colormap && (format & PNG_FORMAT_FLAG_ALPHA);
    int write_16bit = linear && (display->convert_to_8bit == 0);
@@ -1953,7 +1964,7 @@ png_image_write_main(png_voidp argument)
    {
       unsigned int channels = (unsigned int)PNG_IMAGE_PIXEL_CHANNELS(image->format);
 
-      if (image->width <= 0x7fffffffU/channels) /* no overflow */
+      if (image->width <= 0x7fffffffUL/channels) /* no overflow */
       {
          png_uint_32 check;
          png_uint_32 png_row_stride = image->width * channels;
@@ -1973,7 +1984,7 @@ png_image_write_main(png_voidp argument)
              * limits the whole image size to 32 bits for API compatibility with
              * the current, 32-bit, PNG_IMAGE_BUFFER_SIZE macro.
              */
-            if (image->height > 0xffffffffU/png_row_stride)
+            if (image->height > 0xffffffffUL/png_row_stride)
                png_error(image->opaque->png_ptr, "memory image too large");
          }
 
@@ -2025,11 +2036,11 @@ png_image_write_main(png_voidp argument)
 
       if ((image->flags & PNG_IMAGE_FLAG_COLORSPACE_NOT_sRGB) == 0)
          png_set_cHRM_fixed(png_ptr, info_ptr,
-             /* color      x       y */
-             /* white */ 31270, 32900,
-             /* red   */ 64000, 33000,
-             /* green */ 30000, 60000,
-             /* blue  */ 15000,  6000
+             /* color      x        y */
+             /* white */ 31270L, 32900L,
+             /* red   */ 64000L, 33000L,
+             /* green */ 30000L, 60000L,
+             /* blue  */ 15000L,  6000L
          );
    }
 

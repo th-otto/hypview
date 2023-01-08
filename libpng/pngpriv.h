@@ -1,7 +1,7 @@
 
 /* pngpriv.h - private declarations for use inside libpng
  *
- * Copyright (c) 2018-2019 Cosmin Truta
+ * Copyright (c) 2018-2022 Cosmin Truta
  * Copyright (c) 1998-2002,2004,2006-2018 Glenn Randers-Pehrson
  * Copyright (c) 1996-1997 Andreas Dilger
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
@@ -48,6 +48,22 @@
 #endif
 
 #define PNGLIB_BUILD /*libpng is being built, not used*/
+
+/* If HAVE_CONFIG_H is defined during the build then the build system must
+ * provide an appropriate "config.h" file on the include path.  The header file
+ * must provide definitions as required below (search for "HAVE_CONFIG_H");
+ * see configure.ac for more details of the requirements.  The macro
+ * "PNG_NO_CONFIG_H" is provided for maintainers to test for dependencies on
+ * 'configure'; define this macro to prevent the configure build including the
+ * configure generated config.h.  Libpng is expected to compile without *any*
+ * special build system support on a reasonably ANSI-C compliant system.
+ */
+#if defined(HAVE_CONFIG_H) && !defined(PNG_NO_CONFIG_H)
+#  include <config.h>
+
+   /* Pick up the definition of 'restrict' from config.h if it was read: */
+#  define PNG_RESTRICT restrict
+#endif
 
 /* To support symbol prefixing it is necessary to know *before* including png.h
  * whether the fixed point (and maybe other) APIs are exported, because if they
@@ -160,7 +176,7 @@
 #     else /* !defined __ARM_NEON__ */
          /* The 'intrinsics' code simply won't compile without this -mfpu=neon:
           */
-#        if !defined(__aarch64__)
+#        if !defined(__aarch64__) && !defined(_M_ARM64)
             /* The assembler code currently does not work on ARM64 */
 #          define PNG_ARM_NEON_IMPLEMENTATION 2
 #        endif /* __aarch64__ */
@@ -171,6 +187,8 @@
       /* Use the intrinsics code by default. */
 #     define PNG_ARM_NEON_IMPLEMENTATION 1
 #  endif
+#else /* PNG_ARM_NEON_OPT == 0 */
+#     define PNG_ARM_NEON_IMPLEMENTATION 0
 #endif /* PNG_ARM_NEON_OPT > 0 */
 
 #ifndef PNG_MIPS_MSA_OPT
@@ -190,6 +208,7 @@
 #endif
 
 #ifndef PNG_INTEL_SSE_OPT
+#   ifdef PNG_INTEL_SSE
       /* Only check for SSE if the build configuration has been modified to
        * enable SSE optimizations.  This means that these optimizations will
        * be off by default.  See contrib/intel for more details.
@@ -201,6 +220,9 @@
 #      else
 #         define PNG_INTEL_SSE_OPT 0
 #      endif
+#   else
+#      define PNG_INTEL_SSE_OPT 0
+#   endif
 #endif
 
 #if PNG_INTEL_SSE_OPT > 0
@@ -244,11 +266,15 @@
 #  ifndef PNG_MIPS_MSA_IMPLEMENTATION
 #     define PNG_MIPS_MSA_IMPLEMENTATION 1
 #  endif
+#else
+#  define PNG_MIPS_MSA_IMPLEMENTATION 0
 #endif /* PNG_MIPS_MSA_OPT > 0 */
 
 #if PNG_POWERPC_VSX_OPT > 0
 #  define PNG_FILTER_OPTIMIZATIONS png_init_filter_functions_vsx
 #  define PNG_POWERPC_VSX_IMPLEMENTATION 1
+#else
+#  define PNG_POWERPC_VSX_IMPLEMENTATION 0
 #endif
 
 
@@ -475,7 +501,7 @@
 #  define png_voidcast(type, value) (type)(value)
 #  ifdef _WIN64
 #     ifdef __GNUC__
-         __extension__ typedef unsigned long long png_ptruint;
+         typedef unsigned long long png_ptruint;
 #     else
          typedef unsigned __int64 png_ptruint;
 #     endif
@@ -524,9 +550,8 @@
 #  include <alloc.h>
 #endif
 
-#if defined(WIN32) || defined(_Windows) || defined(_WINDOWS) || \
-    defined(_WIN32) || defined(__WIN32__)
-#  include <windows.h>  /* defines _WINDOWS_ macro */
+#if defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#  include <windows.h>
 #endif
 #endif /* PNG_VERSION_INFO_ONLY */
 
@@ -535,24 +560,20 @@
  * functions that are passed far data must be model-independent.
  */
 
-/* Memory model/platform independent fns */
+/* Platform-independent functions */
 #ifndef PNG_ABORT
-#  ifdef _WINDOWS_
-#    define PNG_ABORT() ExitProcess(0)
-#  else
-#    define PNG_ABORT() abort()
-#  endif
+#  define PNG_ABORT() abort()
 #endif
 
 /* These macros may need to be architecture dependent. */
-#define PNG_ALIGN_NONE   0 /* do not use data alignment */
-#define PNG_ALIGN_ALWAYS 1 /* assume unaligned accesses are OK */
+#define PNG_ALIGN_NONE      0 /* do not use data alignment */
+#define PNG_ALIGN_ALWAYS    1 /* assume unaligned accesses are OK */
 #ifdef offsetof
-#  define PNG_ALIGN_OFFSET 2 /* use offsetof to determine alignment */
+#  define PNG_ALIGN_OFFSET  2 /* use offsetof to determine alignment */
 #else
 #  define PNG_ALIGN_OFFSET -1 /* prevent the use of this */
 #endif
-#define PNG_ALIGN_SIZE   3 /* use sizeof to determine alignment */
+#define PNG_ALIGN_SIZE      3 /* use sizeof to determine alignment */
 
 #ifndef PNG_ALIGN_TYPE
    /* Default to using aligned access optimizations and requiring alignment to a
@@ -566,26 +587,25 @@
    /* This is used because in some compiler implementations non-aligned
     * structure members are supported, so the offsetof approach below fails.
     * Set PNG_ALIGN_SIZE=0 for compiler combinations where unaligned access
-    * is good for performance.  Do not do this unless you have tested the result
-    * and understand it.
+    * is good for performance.  Do not do this unless you have tested the
+    * result and understand it.
     */
-#  define png_alignof(type) (sizeof (type))
+#  define png_alignof(type) (sizeof(type))
 #else
 #  if PNG_ALIGN_TYPE == PNG_ALIGN_OFFSET
-#     define png_alignof(type) offsetof(struct{char c; type t;}, t)
+#    define png_alignof(type) offsetof(struct{char c; type t;}, t)
 #  else
-#     if PNG_ALIGN_TYPE == PNG_ALIGN_ALWAYS
-#        define png_alignof(type) (1)
-#     endif
-      /* Else leave png_alignof undefined to prevent use thereof */
+#    if PNG_ALIGN_TYPE == PNG_ALIGN_ALWAYS
+#      define png_alignof(type) 1
+#    endif
+     /* Else leave png_alignof undefined to prevent use thereof */
 #  endif
 #endif
 
 /* This implicitly assumes alignment is always to a power of 2. */
 #ifdef png_alignof
 #  define png_isaligned(ptr, type)\
-   (((type)((const char*)ptr-(const char*)0) & \
-   (type)(png_alignof(type)-1)) == 0)
+   (((type)((const char*)ptr-(const char*)0) & (type)(png_alignof(type)-1)) == 0)
 #else
 #  define png_isaligned(ptr, type) 0
 #endif
@@ -1721,7 +1741,7 @@ PNG_INTERNAL_FUNCTION(size_t,png_safecat,(png_charp buffer, size_t bufsize,
  * Returns the pointer to the start of the formatted string.  This utility only
  * does unsigned values.
  */
-PNG_INTERNAL_FUNCTION(png_charp,png_format_number,(png_charp start,
+PNG_INTERNAL_FUNCTION(png_charp,png_format_number,(png_const_charp start,
    png_charp end, int format, png_alloc_size_t number),PNG_EMPTY);
 
 /* Convenience macro that takes an array: */
@@ -1935,7 +1955,7 @@ PNG_INTERNAL_FUNCTION(void,png_ascii_from_fixed,(png_const_structrp png_ptr,
  * the problem character.)  This has not been tested within libpng.
  */
 PNG_INTERNAL_FUNCTION(int,png_check_fp_number,(png_const_charp string,
-   size_t size, int *statep, png_size_tp whereami),PNG_EMPTY);
+   size_t size, int *statep, size_t *whereami),PNG_EMPTY);
 
 /* This is the same but it checks a complete string and returns true
  * only if it just contains a floating point number.  As of 1.5.4 this
@@ -2097,30 +2117,7 @@ PNG_INTERNAL_FUNCTION(void, png_init_filter_functions_sse2,
 PNG_INTERNAL_FUNCTION(png_uint_32, png_check_keyword, (png_structrp png_ptr,
    png_const_charp key, png_bytep new_key), PNG_EMPTY);
 
-#if defined(PNG_ARM_NEON_IMPLEMENTATION) && PNG_ARM_NEON_IMPLEMENTATION == 1
-PNG_INTERNAL_FUNCTION(void,
-                      png_riffle_palette_neon,
-                      (png_structrp),
-                      PNG_EMPTY);
-PNG_INTERNAL_FUNCTION(int,
-                      png_do_expand_palette_rgba8_neon,
-                      (png_structrp,
-                       png_row_infop,
-                       png_const_bytep,
-                       const png_bytepp,
-                       const png_bytepp),
-                      PNG_EMPTY);
-PNG_INTERNAL_FUNCTION(int,
-                      png_do_expand_palette_rgb8_neon,
-                      (png_structrp,
-                       png_row_infop,
-                       png_const_bytep,
-                       const png_bytepp,
-                       const png_bytepp),
-                      PNG_EMPTY);
-#endif
-
-#if defined(PNG_ARM_NEON_IMPLEMENTATION) && PNG_ARM_NEON_IMPLEMENTATION == 1
+#if PNG_ARM_NEON_IMPLEMENTATION == 1
 PNG_INTERNAL_FUNCTION(void,
                       png_riffle_palette_neon,
                       (png_structrp),

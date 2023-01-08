@@ -1,7 +1,7 @@
 
 /* png.c - location for general purpose libpng functions
  *
- * Copyright (c) 2018-2019 Cosmin Truta
+ * Copyright (c) 2018-2022 Cosmin Truta
  * Copyright (c) 1998-2002,2004,2006-2018 Glenn Randers-Pehrson
  * Copyright (c) 1996-1997 Andreas Dilger
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
@@ -14,7 +14,7 @@
 #include "pngpriv.h"
 
 /* Generate a compiler error if there is an old png.h in the search path. */
-typedef png_libpng_version_1_6_37 Your_png_h_is_not_version_1_6_37;
+typedef png_libpng_version_1_6_39 Your_png_h_is_not_version_1_6_39;
 
 #ifdef __GNUC__
 /* The version tests may need to be added to, but the problem warning has
@@ -127,7 +127,7 @@ void /* PRIVATE */
 png_reset_crc(png_structrp png_ptr)
 {
    /* The cast is safe because the crc is a 32-bit value. */
-   png_ptr->crc = (png_uint_32)crc32(0, Z_NULL, 0);
+   png_ptr->crc = (png_uint_32)crc32_z(0, Z_NULL, 0);
 }
 
 /* Calculate the CRC over a section of data.  We can only pass as
@@ -720,7 +720,7 @@ png_init_io(png_structrp png_ptr, png_FILE_p fp)
  *
  * Where UNSIGNED_MAX is the appropriate maximum unsigned value, so when the
  * negative integral value is added the result will be an unsigned value
- * correspnding to the 2's complement representation.
+ * corresponding to the 2's complement representation.
  */
 void PNGAPI
 png_save_int_32(png_bytep buf, png_int_32 i)
@@ -759,6 +759,7 @@ png_convert_to_rfc1123_buffer(char out[29], png_const_timep ptime)
          APPEND_STRING(PNG_FORMAT_NUMBER(number_buf, format, (value)))
 #     define APPEND(ch) if (pos < 28) out[pos++] = (ch)
 
+      number_buf[0] = '\0';
       APPEND_NUMBER(PNG_NUMBER_FORMAT_u, (unsigned)ptime->day);
       APPEND(' ');
       APPEND_STRING(short_months[(ptime->month - 1)]);
@@ -815,8 +816,8 @@ png_get_copyright(png_const_structrp png_ptr)
    return PNG_STRING_COPYRIGHT
 #else
    return PNG_STRING_NEWLINE \
-      "libpng version 1.6.37" PNG_STRING_NEWLINE \
-      "Copyright (c) 2018-2019 Cosmin Truta" PNG_STRING_NEWLINE \
+      "libpng version 1.6.39" PNG_STRING_NEWLINE \
+      "Copyright (c) 2018-2022 Cosmin Truta" PNG_STRING_NEWLINE \
       "Copyright (c) 1998-2002,2004,2006-2018 Glenn Randers-Pehrson" \
       PNG_STRING_NEWLINE \
       "Copyright (c) 1996-1997 Andreas Dilger" PNG_STRING_NEWLINE \
@@ -1127,7 +1128,7 @@ png_colorspace_set_gamma(png_const_structrp png_ptr,
     */
    png_const_charp errmsg;
 
-   if (gAMA < 16 || gAMA > 625000000)
+   if (gAMA < 16 || gAMA > 625000000L)
       errmsg = "gamma value out of range";
 
 #  ifdef PNG_READ_gAMA_SUPPORTED
@@ -1554,10 +1555,10 @@ png_XYZ_normalize(png_XYZ *XYZ)
     * safe.
     */
    Y = XYZ->red_Y;
-   if (0x7fffffff - Y < XYZ->green_X)
+   if (0x7fffffffL - Y < XYZ->green_X)
       return 1;
    Y += XYZ->green_Y;
-   if (0x7fffffff - Y < XYZ->blue_X)
+   if (0x7fffffffL - Y < XYZ->blue_X)
       return 1;
    Y += XYZ->blue_Y;
 
@@ -1662,10 +1663,10 @@ png_colorspace_check_XYZ(png_xy *xy, png_XYZ *XYZ)
 static const png_xy sRGB_xy = /* From ITU-R BT.709-3 */
 {
    /* color      x       y */
-   /* red   */ 64000, 33000,
-   /* green */ 30000, 60000,
-   /* blue  */ 15000,  6000,
-   /* white */ 31270, 32900
+   /* red   */ 64000L, 33000L,
+   /* green */ 30000L, 60000L,
+   /* blue  */ 15000L,  6000L,
+   /* white */ 31270L, 32900L
 };
 
 static int
@@ -1843,12 +1844,12 @@ png_icc_profile_error(png_const_structrp png_ptr, png_colorspacerp colorspace,
 #  ifdef PNG_WARNINGS_SUPPORTED
    else
       {
-         char number[PNG_NUMBER_BUFFER_SIZE]; /* +24 = 114*/
+         char number[PNG_NUMBER_BUFFER_SIZE]; /* +24 = 114 */
 
          pos = png_safecat(message, (sizeof message), pos,
              png_format_number(number, number+(sizeof number),
              PNG_NUMBER_FORMAT_x, value));
-         pos = png_safecat(message, (sizeof message), pos, "h: "); /*+2 = 116*/
+         pos = png_safecat(message, (sizeof message), pos, "h: "); /* +2 = 116 */
       }
 #  endif
    /* The 'reason' is an arbitrary message, allow +79 maximum 195 */
@@ -1886,10 +1887,10 @@ png_colorspace_set_sRGB(png_const_structrp png_ptr, png_colorspacerp colorspace,
     */
    static const png_XYZ sRGB_XYZ = /* D65 XYZ (*not* the D50 adapted values!) */
    {
-      /* color      X      Y      Z */
-      /* red   */ 41239, 21264,  1933,
-      /* green */ 35758, 71517, 11919,
-      /* blue  */ 18048,  7219, 95053
+      /* color       X       Y       Z */
+      /* red   */ 41239L, 21264L,  1933L,
+      /* green */ 35758L, 71517L, 11919L,
+      /* blue  */ 18048L,  7219L, 95053L
    };
 
    /* Do nothing if the colorspace is already invalidated. */
@@ -1995,16 +1996,16 @@ png_icc_check_length(png_const_structrp png_ptr, png_colorspacerp colorspace,
                png_ptr->user_chunk_malloc_max < profile_length)
          return png_icc_profile_error(png_ptr, colorspace, name, profile_length,
              "exceeds application limits");
-#  elif PNG_USER_CHUNK_MALLOC_MAX > 0
-      else if (PNG_USER_CHUNK_MALLOC_MAX < profile_length)
+#  endif /* !SET_USER_LIMITS */
+      else if (PNG_USER_CHUNK_MALLOC_MAX > 0 && PNG_USER_CHUNK_MALLOC_MAX < profile_length)
          return png_icc_profile_error(png_ptr, colorspace, name, profile_length,
              "exceeds libpng limits");
-#  else /* !SET_USER_LIMITS */
       /* This will get compiled out on all 32-bit and better systems. */
+#if __SIZEOF_INT__ < 4
       else if (PNG_SIZE_MAX < profile_length)
          return png_icc_profile_error(png_ptr, colorspace, name, profile_length,
              "exceeds system limits");
-#  endif /* !SET_USER_LIMITS */
+#endif
 
    return 1;
 }
@@ -2033,7 +2034,7 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
           "invalid length");
 
    temp = png_get_uint_32(profile+128); /* tag count: 12 bytes/tag */
-   if (temp > 357913930 || /* (2^32-4-132)/12: maximum possible tag count */
+   if (temp > 357913930L || /* (2^32-4-132)/12: maximum possible tag count */
       profile_length < 132+12*temp) /* truncated tag table */
       return png_icc_profile_error(png_ptr, colorspace, name, temp,
           "tag count too large");
@@ -2066,7 +2067,7 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
     * data.)
     */
    temp = png_get_uint_32(profile+36); /* signature 'ascp' */
-   if (temp != 0x61637370)
+   if (temp != 0x61637370UL)
       return png_icc_profile_error(png_ptr, colorspace, name, temp,
           "invalid signature");
 
@@ -2102,21 +2103,20 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
     * almost certainly more correct to ignore the profile.
     */
    temp = png_get_uint_32(profile+16); /* data colour space field */
-   switch (temp)
+   if (temp == 0x52474220UL) /* 'RGB ' */
    {
-      case 0x52474220: /* 'RGB ' */
          if ((color_type & PNG_COLOR_MASK_COLOR) == 0)
             return png_icc_profile_error(png_ptr, colorspace, name, temp,
                 "RGB color space not permitted on grayscale PNG");
-         break;
 
-      case 0x47524159: /* 'GRAY' */
+   } else if (temp == 0x47524159UL) /* 'GRAY' */
+   {
          if ((color_type & PNG_COLOR_MASK_COLOR) != 0)
             return png_icc_profile_error(png_ptr, colorspace, name, temp,
                 "Gray color space not permitted on RGB PNG");
-         break;
 
-      default:
+   } else
+   {
          return png_icc_profile_error(png_ptr, colorspace, name, temp,
              "invalid ICC profile color space");
    }
@@ -2131,21 +2131,19 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
     * Profiles of these classes may not be embedded in images.
     */
    temp = png_get_uint_32(profile+12); /* profile/device class */
-   switch (temp)
+   if (temp == 0x73636e72UL || /* 'scnr' */
+       temp == 0x6d6e7472UL || /* 'mntr' */
+       temp == 0x70727472UL || /* 'prtr' */
+       temp == 0x73706163UL)   /* 'spac' */
    {
-      case 0x73636e72: /* 'scnr' */
-      case 0x6d6e7472: /* 'mntr' */
-      case 0x70727472: /* 'prtr' */
-      case 0x73706163: /* 'spac' */
          /* All supported */
-         break;
-
-      case 0x61627374: /* 'abst' */
+   } else if (temp == 0x61627374UL) /* 'abst' */
+   {
          /* May not be embedded in an image */
          return png_icc_profile_error(png_ptr, colorspace, name, temp,
              "invalid embedded Abstract ICC profile");
-
-      case 0x6c696e6b: /* 'link' */
+   } else if (temp == 0x6c696e6bUL) /* 'link' */
+   {
          /* DeviceLink profiles cannot be interpreted in a non-device specific
           * fashion, if an app uses the AToB0Tag in the profile the results are
           * undefined unless the result is sent to the intended device,
@@ -2155,16 +2153,17 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
          return png_icc_profile_error(png_ptr, colorspace, name, temp,
              "unexpected DeviceLink ICC profile class");
 
-      case 0x6e6d636c: /* 'nmcl' */
+   } else if (temp == 0x6e6d636cUL) /* 'nmcl' */
+   {
          /* A NamedColor profile is also device specific, however it doesn't
           * contain an AToB0 tag that is open to misinterpretation.  Almost
           * certainly it will fail the tests below.
           */
          (void)png_icc_profile_error(png_ptr, NULL, name, temp,
              "unexpected NamedColor ICC profile class");
-         break;
 
-      default:
+   } else
+   {
          /* To allow for future enhancements to the profile accept unrecognized
           * profile classes with a warning, these then hit the test below on the
           * tag content to ensure they are backward compatible with one of the
@@ -2172,20 +2171,17 @@ png_icc_check_header(png_const_structrp png_ptr, png_colorspacerp colorspace,
           */
          (void)png_icc_profile_error(png_ptr, NULL, name, temp,
              "unrecognized ICC profile class");
-         break;
    }
 
    /* For any profile other than a device link one the PCS must be encoded
     * either in XYZ or Lab.
     */
    temp = png_get_uint_32(profile+20);
-   switch (temp)
+   if (temp == 0x58595a20UL || /* 'XYZ ' */
+       temp == 0x4c616220UL)   /* 'Lab ' */
    {
-      case 0x58595a20: /* 'XYZ ' */
-      case 0x4c616220: /* 'Lab ' */
-         break;
-
-      default:
+   } else
+   {
          return png_icc_profile_error(png_ptr, colorspace, name, temp,
              "unexpected ICC PCS encoding");
    }
@@ -2244,15 +2240,12 @@ png_icc_check_tag_table(png_const_structrp png_ptr, png_colorspacerp colorspace,
 /* Information about the known ICC sRGB profiles */
 static const struct
 {
-   png_uint_32 adler, crc, length;
+   png_uint_32 adler, crc;
    png_uint_32 md5[4];
    png_byte    have_md5;
    png_byte    is_broken;
    png_uint_16 intent;
-
-#  define PNG_MD5(a,b,c,d) { a, b, c, d }, (a!=0)||(b!=0)||(c!=0)||(d!=0)
-#  define PNG_ICC_CHECKSUM(adler, crc, md5, intent, broke, date, length, fname)\
-      { adler, crc, length, md5, broke, intent },
+   png_uint_32 length;
 
 } png_sRGB_checks[] =
 {
@@ -2260,32 +2253,32 @@ static const struct
     * all four ICC sRGB profiles from www.color.org.
     */
    /* adler32, crc32, MD5[4], intent, date, length, file-name */
-   PNG_ICC_CHECKSUM(0x0a3fd9f6, 0x3b8772b9,
-       PNG_MD5(0x29f83dde, 0xaff255ae, 0x7842fae4, 0xca83390d), 0, 0,
-       "2009/03/27 21:36:31", 3048, "sRGB_IEC61966-2-1_black_scaled.icc")
+   { 0x0a3fd9f6UL, 0x3b8772b9UL,
+       {0x29f83ddeUL, 0xaff255aeUL, 0x7842fae4UL, 0xca83390dUL}, 1, 0, 0,
+       3048L /*, "2009/03/27 21:36:31", "sRGB_IEC61966-2-1_black_scaled.icc" */ },
 
    /* ICC sRGB v2 perceptual no black-compensation: */
-   PNG_ICC_CHECKSUM(0x4909e5e1, 0x427ebb21,
-       PNG_MD5(0xc95bd637, 0xe95d8a3b, 0x0df38f99, 0xc1320389), 1, 0,
-       "2009/03/27 21:37:45", 3052, "sRGB_IEC61966-2-1_no_black_scaling.icc")
+   { 0x4909e5e1UL, 0x427ebb21UL,
+       { 0xc95bd637UL, 0xe95d8a3bUL, 0x0df38f99UL, 0xc1320389UL }, 1, 1, 0,
+       3052L /*, "2009/03/27 21:37:45", "sRGB_IEC61966-2-1_no_black_scaling.icc" */ },
 
-   PNG_ICC_CHECKSUM(0xfd2144a1, 0x306fd8ae,
-       PNG_MD5(0xfc663378, 0x37e2886b, 0xfd72e983, 0x8228f1b8), 0, 0,
-       "2009/08/10 17:28:01", 60988, "sRGB_v4_ICC_preference_displayclass.icc")
+   { 0xfd2144a1UL, 0x306fd8aeUL,
+       { 0xfc663378UL, 0x37e2886bUL, 0xfd72e983UL, 0x8228f1b8UL }, 1, 0, 0,
+       60988L /*, "2009/08/10 17:28:01", "sRGB_v4_ICC_preference_displayclass.icc" */ },
 
    /* ICC sRGB v4 perceptual */
-   PNG_ICC_CHECKSUM(0x209c35d2, 0xbbef7812,
-       PNG_MD5(0x34562abf, 0x994ccd06, 0x6d2c5721, 0xd0d68c5d), 0, 0,
-       "2007/07/25 00:05:37", 60960, "sRGB_v4_ICC_preference.icc")
+   { 0x209c35d2UL, 0xbbef7812UL,
+       { 0x34562abfUL, 0x994ccd06UL, 0x6d2c5721UL, 0xd0d68c5dUL }, 1, 0, 0,
+       60960L /*, "2007/07/25 00:05:37", "sRGB_v4_ICC_preference.icc" */ },
 
    /* The following profiles have no known MD5 checksum. If there is a match
     * on the (empty) MD5 the other fields are used to attempt a match and
     * a warning is produced.  The first two of these profiles have a 'cprt' tag
     * which suggests that they were also made by Hewlett Packard.
     */
-   PNG_ICC_CHECKSUM(0xa054d762, 0x5d5129ce,
-       PNG_MD5(0x00000000, 0x00000000, 0x00000000, 0x00000000), 1, 0,
-       "2004/07/21 18:57:42", 3024, "sRGB_IEC61966-2-1_noBPC.icc")
+   { 0xa054d762UL, 0x5d5129ceUL,
+       { 0x00000000UL, 0x00000000UL, 0x00000000UL, 0x00000000UL }, 0, 1, 0,
+       3024L /*, "2004/07/21 18:57:42", "sRGB_IEC61966-2-1_noBPC.icc" */ },
 
    /* This is a 'mntr' (display) profile with a mediaWhitePointTag that does not
     * match the D50 PCS illuminant in the header (it is in fact the D65 values,
@@ -2294,13 +2287,13 @@ static const struct
     * the previous profile except for the mediaWhitePointTag error and a missing
     * chromaticAdaptationTag.
     */
-   PNG_ICC_CHECKSUM(0xf784f3fb, 0x182ea552,
-       PNG_MD5(0x00000000, 0x00000000, 0x00000000, 0x00000000), 0, 1/*broken*/,
-       "1998/02/09 06:49:00", 3144, "HP-Microsoft sRGB v2 perceptual")
+   { 0xf784f3fbUL, 0x182ea552UL,
+       { 0x00000000UL, 0x00000000UL, 0x00000000UL, 0x00000000UL }, 0, 0, 1 /*broken*/,
+       3144 /*, "1998/02/09 06:49:00", "HP-Microsoft sRGB v2 perceptual" */ },
 
-   PNG_ICC_CHECKSUM(0x0398f3fc, 0xf29e526d,
-       PNG_MD5(0x00000000, 0x00000000, 0x00000000, 0x00000000), 1, 1/*broken*/,
-       "1998/02/09 06:49:00", 3144, "HP-Microsoft sRGB v2 media-relative")
+   { 0x0398f3fcUL, 0xf29e526dUL,
+       { 0x00000000UL, 0x00000000UL, 0x00000000UL, 0x00000000UL }, 0, 1, 1/*broken*/,
+       3144 /*, "1998/02/09 06:49:00", "HP-Microsoft sRGB v2 media-relative" */ }
 };
 
 static int
@@ -2316,7 +2309,7 @@ png_compare_ICC_profile_with_sRGB(png_const_structrp png_ptr,
     */
 
    png_uint_32 length = 0;
-   png_uint_32 intent = 0x10000; /* invalid */
+   png_uint_32 intent = 0x10000UL; /* invalid */
 #if PNG_sRGB_PROFILE_CHECKS > 1
    uLong crc = 0; /* the value for 0 length data */
 #endif
@@ -2359,8 +2352,8 @@ png_compare_ICC_profile_with_sRGB(png_const_structrp png_ptr,
             /* Now calculate the adler32 if not done already. */
             if (adler == 0)
             {
-               adler = adler32(0, NULL, 0);
-               adler = adler32(adler, profile, length);
+               adler = adler32_z(0, NULL, 0);
+               adler = adler32_z(adler, profile, length);
             }
 
             if (adler == png_sRGB_checks[i].adler)
@@ -2372,8 +2365,8 @@ png_compare_ICC_profile_with_sRGB(png_const_structrp png_ptr,
 #              if PNG_sRGB_PROFILE_CHECKS > 1
                   if (crc == 0)
                   {
-                     crc = crc32(0, NULL, 0);
-                     crc = crc32(crc, profile, length);
+                     crc = crc32_z(0, NULL, 0);
+                     crc = crc32_z(crc, profile, length);
                   }
 
                   /* So this check must pass for the 'return' below to happen.
@@ -2481,10 +2474,10 @@ png_colorspace_set_rgb_coefficients(png_structrp png_ptr)
       png_fixed_point total = r+g+b;
 
       if (total > 0 &&
-         r >= 0 && png_muldiv(&r, r, 32768, total) && r >= 0 && r <= 32768 &&
-         g >= 0 && png_muldiv(&g, g, 32768, total) && g >= 0 && g <= 32768 &&
-         b >= 0 && png_muldiv(&b, b, 32768, total) && b >= 0 && b <= 32768 &&
-         r+g+b <= 32769)
+         r >= 0 && png_muldiv(&r, r, 32768L, total) && r >= 0 && r <= 32768L &&
+         g >= 0 && png_muldiv(&g, g, 32768L, total) && g >= 0 && g <= 32768L &&
+         b >= 0 && png_muldiv(&b, b, 32768L, total) && b >= 0 && b <= 32768L &&
+         r+g+b <= 32769L)
       {
          /* We allow 0 coefficients here.  r+g+b may be 32769 if two or
           * all of the coefficients were rounded up.  Handle this by
@@ -2493,9 +2486,9 @@ png_colorspace_set_rgb_coefficients(png_structrp png_ptr)
           */
          int add = 0;
 
-         if (r+g+b > 32768)
+         if (r+g+b > 32768L)
             add = -1;
-         else if (r+g+b < 32768)
+         else if (r+g+b < 32768L)
             add = 1;
 
          if (add != 0)
@@ -2509,7 +2502,7 @@ png_colorspace_set_rgb_coefficients(png_structrp png_ptr)
          }
 
          /* Check for an internal error. */
-         if (r+g+b != 32768)
+         if (r+g+b != 32768L)
             png_error(png_ptr,
                 "internal error handling cHRM coefficients");
 
@@ -2710,7 +2703,7 @@ png_check_IHDR(png_const_structrp png_ptr,
 
 int /* PRIVATE */
 png_check_fp_number(png_const_charp string, size_t size, int *statep,
-    png_size_tp whereami)
+    size_t *whereami)
 {
    int state = *statep;
    size_t i = *whereami;
@@ -3248,7 +3241,7 @@ png_ascii_from_fixed(png_const_structrp png_ptr, png_charp ascii,
       else
          num = (png_uint_32)fp;
 
-      if (num <= 0x80000000) /* else overflowed */
+      if (num <= 0x80000000UL) /* else overflowed */
       {
          unsigned int ndigits = 0, first = 16 /* flag value */;
          char digits[10];
@@ -3256,7 +3249,7 @@ png_ascii_from_fixed(png_const_structrp png_ptr, png_charp ascii,
          while (num)
          {
             /* Split the low digit off num: */
-            unsigned int tmp = num/10;
+            png_uint_32 tmp = num/10;
             num -= tmp*10;
             digits[ndigits++] = (char)(48 + num);
             /* Record the first non-zero digit, note that this is a number
@@ -3315,7 +3308,7 @@ png_ascii_from_fixed(png_const_structrp png_ptr, png_charp ascii,
 png_fixed_point
 png_fixed(png_const_structrp png_ptr, double fp, png_const_charp text)
 {
-   double r = floor(100000 * fp + .5);
+   double r = floor(100000L * fp + .5);
 
    if (r > 2147483647. || r < -2147483648.)
       png_fixed_error(png_ptr, text);
@@ -3909,9 +3902,9 @@ png_gamma_8bit_correct(unsigned int value, png_fixed_point gamma_val)
 
 #ifdef PNG_16BIT_SUPPORTED
 png_uint_16
-png_gamma_16bit_correct(unsigned int value, png_fixed_point gamma_val)
+png_gamma_16bit_correct(png_uint_32 value, png_fixed_point gamma_val)
 {
-   if (value > 0 && value < 65535)
+   if (value > 0 && value < 65535L)
    {
 # ifdef PNG_FLOATING_ARITHMETIC_SUPPORTED
       /* The same (unsigned int)->(double) constraints apply here as above,
@@ -3919,7 +3912,7 @@ png_gamma_16bit_correct(unsigned int value, png_fixed_point gamma_val)
        * overflow on an ANSI-C90 compliant system so the cast needs to ensure
        * that this is not possible.
        */
-      double r = floor(65535*pow((png_int_32)value/65535.,
+      double r = floor(65535.*pow((png_int_32)value/65535.,
           gamma_val*.00001)+.5);
       return (png_uint_16)r;
 # else
@@ -4372,38 +4365,38 @@ png_set_option(png_structrp png_ptr, int option, int onoff)
 /* The convert-to-sRGB table is only currently required for read. */
 const png_uint_16 png_sRGB_table[256] =
 {
-   0,20,40,60,80,99,119,139,
-   159,179,199,219,241,264,288,313,
-   340,367,396,427,458,491,526,562,
-   599,637,677,718,761,805,851,898,
-   947,997,1048,1101,1156,1212,1270,1330,
-   1391,1453,1517,1583,1651,1720,1790,1863,
-   1937,2013,2090,2170,2250,2333,2418,2504,
-   2592,2681,2773,2866,2961,3058,3157,3258,
-   3360,3464,3570,3678,3788,3900,4014,4129,
-   4247,4366,4488,4611,4736,4864,4993,5124,
-   5257,5392,5530,5669,5810,5953,6099,6246,
-   6395,6547,6700,6856,7014,7174,7335,7500,
-   7666,7834,8004,8177,8352,8528,8708,8889,
-   9072,9258,9445,9635,9828,10022,10219,10417,
-   10619,10822,11028,11235,11446,11658,11873,12090,
-   12309,12530,12754,12980,13209,13440,13673,13909,
-   14146,14387,14629,14874,15122,15371,15623,15878,
-   16135,16394,16656,16920,17187,17456,17727,18001,
-   18277,18556,18837,19121,19407,19696,19987,20281,
-   20577,20876,21177,21481,21787,22096,22407,22721,
-   23038,23357,23678,24002,24329,24658,24990,25325,
-   25662,26001,26344,26688,27036,27386,27739,28094,
-   28452,28813,29176,29542,29911,30282,30656,31033,
-   31412,31794,32179,32567,32957,33350,33745,34143,
-   34544,34948,35355,35764,36176,36591,37008,37429,
-   37852,38278,38706,39138,39572,40009,40449,40891,
-   41337,41785,42236,42690,43147,43606,44069,44534,
-   45002,45473,45947,46423,46903,47385,47871,48359,
-   48850,49344,49841,50341,50844,51349,51858,52369,
-   52884,53401,53921,54445,54971,55500,56032,56567,
-   57105,57646,58190,58737,59287,59840,60396,60955,
-   61517,62082,62650,63221,63795,64372,64952,65535
+   0U,20U,40U,60U,80U,99U,119U,139U,
+   159U,179U,199U,219U,241U,264U,288U,313U,
+   340U,367U,396U,427U,458U,491U,526U,562U,
+   599U,637U,677U,718U,761U,805U,851U,898U,
+   947U,997U,1048U,1101U,1156U,1212U,1270U,1330U,
+   1391U,1453U,1517U,1583U,1651U,1720U,1790U,1863U,
+   1937U,2013U,2090U,2170U,2250U,2333U,2418U,2504U,
+   2592U,2681U,2773U,2866U,2961U,3058U,3157U,3258U,
+   3360U,3464U,3570U,3678U,3788U,3900U,4014U,4129U,
+   4247U,4366U,4488U,4611U,4736U,4864U,4993U,5124U,
+   5257U,5392U,5530U,5669U,5810U,5953U,6099U,6246U,
+   6395U,6547U,6700U,6856U,7014U,7174U,7335U,7500U,
+   7666U,7834U,8004U,8177U,8352U,8528U,8708U,8889U,
+   9072U,9258U,9445U,9635U,9828U,10022U,10219U,10417U,
+   10619U,10822U,11028U,11235U,11446U,11658U,11873U,12090U,
+   12309U,12530U,12754U,12980U,13209U,13440U,13673U,13909U,
+   14146U,14387U,14629U,14874U,15122U,15371U,15623U,15878U,
+   16135U,16394U,16656U,16920U,17187U,17456U,17727U,18001U,
+   18277U,18556U,18837U,19121U,19407U,19696U,19987U,20281U,
+   20577U,20876U,21177U,21481U,21787U,22096U,22407U,22721U,
+   23038U,23357U,23678U,24002U,24329U,24658U,24990U,25325U,
+   25662U,26001U,26344U,26688U,27036U,27386U,27739U,28094U,
+   28452U,28813U,29176U,29542U,29911U,30282U,30656U,31033U,
+   31412U,31794U,32179U,32567U,32957U,33350U,33745U,34143U,
+   34544U,34948U,35355U,35764U,36176U,36591U,37008U,37429U,
+   37852U,38278U,38706U,39138U,39572U,40009U,40449U,40891U,
+   41337U,41785U,42236U,42690U,43147U,43606U,44069U,44534U,
+   45002U,45473U,45947U,46423U,46903U,47385U,47871U,48359U,
+   48850U,49344U,49841U,50341U,50844U,51349U,51858U,52369U,
+   52884U,53401U,53921U,54445U,54971U,55500U,56032U,56567U,
+   57105U,57646U,58190U,58737U,59287U,59840U,60396U,60955U,
+   61517U,62082U,62650U,63221U,63795U,64372U,64952U,65535U
 };
 #endif /* SIMPLIFIED_READ */
 
@@ -4412,70 +4405,70 @@ const png_uint_16 png_sRGB_table[256] =
  */
 const png_uint_16 png_sRGB_base[512] =
 {
-   128,1782,3383,4644,5675,6564,7357,8074,
-   8732,9346,9921,10463,10977,11466,11935,12384,
-   12816,13233,13634,14024,14402,14769,15125,15473,
-   15812,16142,16466,16781,17090,17393,17690,17981,
-   18266,18546,18822,19093,19359,19621,19879,20133,
-   20383,20630,20873,21113,21349,21583,21813,22041,
-   22265,22487,22707,22923,23138,23350,23559,23767,
-   23972,24175,24376,24575,24772,24967,25160,25352,
-   25542,25730,25916,26101,26284,26465,26645,26823,
-   27000,27176,27350,27523,27695,27865,28034,28201,
-   28368,28533,28697,28860,29021,29182,29341,29500,
-   29657,29813,29969,30123,30276,30429,30580,30730,
-   30880,31028,31176,31323,31469,31614,31758,31902,
-   32045,32186,32327,32468,32607,32746,32884,33021,
-   33158,33294,33429,33564,33697,33831,33963,34095,
-   34226,34357,34486,34616,34744,34873,35000,35127,
-   35253,35379,35504,35629,35753,35876,35999,36122,
-   36244,36365,36486,36606,36726,36845,36964,37083,
-   37201,37318,37435,37551,37668,37783,37898,38013,
-   38127,38241,38354,38467,38580,38692,38803,38915,
-   39026,39136,39246,39356,39465,39574,39682,39790,
-   39898,40005,40112,40219,40325,40431,40537,40642,
-   40747,40851,40955,41059,41163,41266,41369,41471,
-   41573,41675,41777,41878,41979,42079,42179,42279,
-   42379,42478,42577,42676,42775,42873,42971,43068,
-   43165,43262,43359,43456,43552,43648,43743,43839,
-   43934,44028,44123,44217,44311,44405,44499,44592,
-   44685,44778,44870,44962,45054,45146,45238,45329,
-   45420,45511,45601,45692,45782,45872,45961,46051,
-   46140,46229,46318,46406,46494,46583,46670,46758,
-   46846,46933,47020,47107,47193,47280,47366,47452,
-   47538,47623,47709,47794,47879,47964,48048,48133,
-   48217,48301,48385,48468,48552,48635,48718,48801,
-   48884,48966,49048,49131,49213,49294,49376,49458,
-   49539,49620,49701,49782,49862,49943,50023,50103,
-   50183,50263,50342,50422,50501,50580,50659,50738,
-   50816,50895,50973,51051,51129,51207,51285,51362,
-   51439,51517,51594,51671,51747,51824,51900,51977,
-   52053,52129,52205,52280,52356,52432,52507,52582,
-   52657,52732,52807,52881,52956,53030,53104,53178,
-   53252,53326,53400,53473,53546,53620,53693,53766,
-   53839,53911,53984,54056,54129,54201,54273,54345,
-   54417,54489,54560,54632,54703,54774,54845,54916,
-   54987,55058,55129,55199,55269,55340,55410,55480,
-   55550,55620,55689,55759,55828,55898,55967,56036,
-   56105,56174,56243,56311,56380,56448,56517,56585,
-   56653,56721,56789,56857,56924,56992,57059,57127,
-   57194,57261,57328,57395,57462,57529,57595,57662,
-   57728,57795,57861,57927,57993,58059,58125,58191,
-   58256,58322,58387,58453,58518,58583,58648,58713,
-   58778,58843,58908,58972,59037,59101,59165,59230,
-   59294,59358,59422,59486,59549,59613,59677,59740,
-   59804,59867,59930,59993,60056,60119,60182,60245,
-   60308,60370,60433,60495,60558,60620,60682,60744,
-   60806,60868,60930,60992,61054,61115,61177,61238,
-   61300,61361,61422,61483,61544,61605,61666,61727,
-   61788,61848,61909,61969,62030,62090,62150,62211,
-   62271,62331,62391,62450,62510,62570,62630,62689,
-   62749,62808,62867,62927,62986,63045,63104,63163,
-   63222,63281,63340,63398,63457,63515,63574,63632,
-   63691,63749,63807,63865,63923,63981,64039,64097,
-   64155,64212,64270,64328,64385,64443,64500,64557,
-   64614,64672,64729,64786,64843,64900,64956,65013,
-   65070,65126,65183,65239,65296,65352,65409,65465
+   128U,1782U,3383U,4644U,5675U,6564U,7357U,8074U,
+   8732U,9346U,9921U,10463U,10977U,11466U,11935U,12384U,
+   12816U,13233U,13634U,14024U,14402U,14769U,15125U,15473U,
+   15812U,16142U,16466U,16781U,17090U,17393U,17690U,17981U,
+   18266U,18546U,18822U,19093U,19359U,19621U,19879U,20133U,
+   20383U,20630U,20873U,21113U,21349U,21583U,21813U,22041U,
+   22265U,22487U,22707U,22923U,23138U,23350U,23559U,23767U,
+   23972U,24175U,24376U,24575U,24772U,24967U,25160U,25352U,
+   25542U,25730U,25916U,26101U,26284U,26465U,26645U,26823U,
+   27000U,27176U,27350U,27523U,27695U,27865U,28034U,28201U,
+   28368U,28533U,28697U,28860U,29021U,29182U,29341U,29500U,
+   29657U,29813U,29969U,30123U,30276U,30429U,30580U,30730U,
+   30880U,31028U,31176U,31323U,31469U,31614U,31758U,31902U,
+   32045U,32186U,32327U,32468U,32607U,32746U,32884U,33021U,
+   33158U,33294U,33429U,33564U,33697U,33831U,33963U,34095U,
+   34226U,34357U,34486U,34616U,34744U,34873U,35000U,35127U,
+   35253U,35379U,35504U,35629U,35753U,35876U,35999U,36122U,
+   36244U,36365U,36486U,36606U,36726U,36845U,36964U,37083U,
+   37201U,37318U,37435U,37551U,37668U,37783U,37898U,38013U,
+   38127U,38241U,38354U,38467U,38580U,38692U,38803U,38915U,
+   39026U,39136U,39246U,39356U,39465U,39574U,39682U,39790U,
+   39898U,40005U,40112U,40219U,40325U,40431U,40537U,40642U,
+   40747U,40851U,40955U,41059U,41163U,41266U,41369U,41471U,
+   41573U,41675U,41777U,41878U,41979U,42079U,42179U,42279U,
+   42379U,42478U,42577U,42676U,42775U,42873U,42971U,43068U,
+   43165U,43262U,43359U,43456U,43552U,43648U,43743U,43839U,
+   43934U,44028U,44123U,44217U,44311U,44405U,44499U,44592U,
+   44685U,44778U,44870U,44962U,45054U,45146U,45238U,45329U,
+   45420U,45511U,45601U,45692U,45782U,45872U,45961U,46051U,
+   46140U,46229U,46318U,46406U,46494U,46583U,46670U,46758U,
+   46846U,46933U,47020U,47107U,47193U,47280U,47366U,47452U,
+   47538U,47623U,47709U,47794U,47879U,47964U,48048U,48133U,
+   48217U,48301U,48385U,48468U,48552U,48635U,48718U,48801U,
+   48884U,48966U,49048U,49131U,49213U,49294U,49376U,49458U,
+   49539U,49620U,49701U,49782U,49862U,49943U,50023U,50103U,
+   50183U,50263U,50342U,50422U,50501U,50580U,50659U,50738U,
+   50816U,50895U,50973U,51051U,51129U,51207U,51285U,51362U,
+   51439U,51517U,51594U,51671U,51747U,51824U,51900U,51977U,
+   52053U,52129U,52205U,52280U,52356U,52432U,52507U,52582U,
+   52657U,52732U,52807U,52881U,52956U,53030U,53104U,53178U,
+   53252U,53326U,53400U,53473U,53546U,53620U,53693U,53766U,
+   53839U,53911U,53984U,54056U,54129U,54201U,54273U,54345U,
+   54417U,54489U,54560U,54632U,54703U,54774U,54845U,54916U,
+   54987U,55058U,55129U,55199U,55269U,55340U,55410U,55480U,
+   55550U,55620U,55689U,55759U,55828U,55898U,55967U,56036U,
+   56105U,56174U,56243U,56311U,56380U,56448U,56517U,56585U,
+   56653U,56721U,56789U,56857U,56924U,56992U,57059U,57127U,
+   57194U,57261U,57328U,57395U,57462U,57529U,57595U,57662U,
+   57728U,57795U,57861U,57927U,57993U,58059U,58125U,58191U,
+   58256U,58322U,58387U,58453U,58518U,58583U,58648U,58713U,
+   58778U,58843U,58908U,58972U,59037U,59101U,59165U,59230U,
+   59294U,59358U,59422U,59486U,59549U,59613U,59677U,59740U,
+   59804U,59867U,59930U,59993U,60056U,60119U,60182U,60245U,
+   60308U,60370U,60433U,60495U,60558U,60620U,60682U,60744U,
+   60806U,60868U,60930U,60992U,61054U,61115U,61177U,61238U,
+   61300U,61361U,61422U,61483U,61544U,61605U,61666U,61727U,
+   61788U,61848U,61909U,61969U,62030U,62090U,62150U,62211U,
+   62271U,62331U,62391U,62450U,62510U,62570U,62630U,62689U,
+   62749U,62808U,62867U,62927U,62986U,63045U,63104U,63163U,
+   63222U,63281U,63340U,63398U,63457U,63515U,63574U,63632U,
+   63691U,63749U,63807U,63865U,63923U,63981U,64039U,64097U,
+   64155U,64212U,64270U,64328U,64385U,64443U,64500U,64557U,
+   64614U,64672U,64729U,64786U,64843U,64900U,64956U,65013U,
+   65070U,65126U,65183U,65239U,65296U,65352U,65409U,65465U
 };
 
 const png_byte png_sRGB_delta[512] =

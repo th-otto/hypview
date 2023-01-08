@@ -106,7 +106,7 @@ png_malloc_base,(png_const_structrp png_ptr, png_alloc_size_t size),
  * png_malloc_array.
  */
 static png_voidp
-png_malloc_array_checked(png_const_structrp png_ptr, int nelements,
+png_malloc_array_checked(png_const_structrp png_ptr, png_int_32 nelements,
     size_t element_size)
 {
    png_alloc_size_t req = (png_alloc_size_t)nelements; /* known to be > 0 */
@@ -119,7 +119,7 @@ png_malloc_array_checked(png_const_structrp png_ptr, int nelements,
 }
 
 PNG_FUNCTION(png_voidp /* PRIVATE */,
-png_malloc_array,(png_const_structrp png_ptr, int nelements,
+png_malloc_array,(png_const_structrp png_ptr, png_int_32 nelements,
     size_t element_size),PNG_ALLOCATED)
 {
    if (nelements <= 0 || element_size == 0)
@@ -130,7 +130,7 @@ png_malloc_array,(png_const_structrp png_ptr, int nelements,
 
 PNG_FUNCTION(png_voidp /* PRIVATE */,
 png_realloc_array,(png_const_structrp png_ptr, png_const_voidp old_array,
-    int old_elements, int add_elements, size_t element_size),PNG_ALLOCATED)
+    png_int_32 old_elements, png_int_32 add_elements, size_t element_size),PNG_ALLOCATED)
 {
    /* These are internal errors: */
    if (add_elements <= 0 || element_size == 0 || old_elements < 0 ||

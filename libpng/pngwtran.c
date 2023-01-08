@@ -254,7 +254,6 @@ png_do_shift(png_row_infop row_info, png_bytep row,
 
          for (i = 0; i < istop; i++, bp++)
          {
-
             unsigned int c = (unsigned int)(i%channels);
             int j;
             unsigned int v, out;

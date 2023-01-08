@@ -21,7 +21,7 @@
 #ifdef PNG_ARM_NEON_IMPLEMENTATION
 #  if PNG_ARM_NEON_IMPLEMENTATION == 1
 #    define PNG_ARM_NEON_INTRINSICS_AVAILABLE
-#    if defined(_MSC_VER) && defined(_M_ARM64)
+#    if defined(_MSC_VER) && !defined(__clang__) && defined(_M_ARM64)
 #      include <arm64_neon.h>
 #    else
 #      include <arm_neon.h>
@@ -306,7 +306,7 @@ png_set_alpha_mode_fixed(png_structrp png_ptr, int mode,
     * 1.6.x: changed from 0.07..3 to 0.01..100 (to accommodate the optimal 16-bit
     * gamma of 36, and its reciprocal.)
     */
-   if (output_gamma < 1000 || output_gamma > 10000000)
+   if (output_gamma < 1000 || output_gamma > 10000000L)
       png_error(png_ptr, "output gamma out of expected range");
 
    /* The default file gamma is the inverse of the output gamma; the output
@@ -1019,8 +1019,8 @@ png_set_rgb_to_gray_fixed(png_structrp png_ptr, int error_action,
           * overwrites the coefficients, regardless of whether they have been
           * defaulted or set already.
           */
-         red_int = (png_uint_16)(((png_uint_32)red*32768)/100000);
-         green_int = (png_uint_16)(((png_uint_32)green*32768)/100000);
+         red_int = (png_uint_16)(((png_uint_32)red*32768L)/100000L);
+         green_int = (png_uint_16)(((png_uint_32)green*32768L)/100000L);
 
          png_ptr->rgb_to_gray_red_coeff   = red_int;
          png_ptr->rgb_to_gray_green_coeff = green_int;
@@ -2431,7 +2431,7 @@ png_do_scale_16_to_8(png_row_infop row_info, png_bytep row)
           */
 
          png_int_32 tmp = *sp++; /* must be signed! */
-         tmp += (((int)*sp++ - tmp + 128) * 65535) >> 24;
+         tmp += (((int)*sp++ - tmp + 128) * 65535L) >> 24;
          *dp++ = (png_byte)tmp;
       }
 

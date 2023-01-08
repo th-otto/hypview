@@ -1,7 +1,7 @@
 
 /* pngstruct.h - header file for PNG reference library
  *
- * Copyright (c) 2018-2019 Cosmin Truta
+ * Copyright (c) 2018-2022 Cosmin Truta
  * Copyright (c) 1998-2002,2004,2006-2018 Glenn Randers-Pehrson
  * Copyright (c) 1996-1997 Andreas Dilger
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
@@ -334,17 +334,7 @@ struct png_struct_def
    size_t current_buffer_size;       /* amount of data now in current_buffer */
    int process_mode;                 /* what push library is currently doing */
    int cur_palette;                  /* current push library palette index */
-
 #endif /* PROGRESSIVE_READ */
-
-#if defined(__TURBOC__) && !defined(_Windows) && !defined(__FLAT__)
-/* For the Borland special 64K segment handler */
-   png_bytepp offset_table_ptr;
-   png_bytep offset_table;
-   png_uint_16 offset_table_number;
-   png_uint_16 offset_table_count;
-   png_uint_16 offset_table_count_free;
-#endif
 
 #ifdef PNG_READ_QUANTIZE_SUPPORTED
    png_bytep palette_lookup; /* lookup table for quantizing */
@@ -465,7 +455,7 @@ struct png_struct_def
   png_alloc_size_t read_buffer_size; /* current size of the buffer */
 #endif
 #ifdef PNG_SEQUENTIAL_READ_SUPPORTED
-  uInt             IDAT_read_size;   /* limit on read buffer size for IDAT */
+  png_uint_32      IDAT_read_size;   /* limit on read buffer size for IDAT */
 #endif
 
 #ifdef PNG_IO_STATE_SUPPORTED
