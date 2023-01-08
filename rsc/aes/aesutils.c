@@ -80,21 +80,6 @@ int aes_toupper(int ch)
 }
 
 
-/*
- * Length of a string
- */
-size_t strlen(const char *p1)
-{
-	_WORD len;
-
-	len = 0;
-	while (*p1++)
-		len++;
-
-	return len;
-}
-
-
 _BOOL streq(const char *p1, const char *p2)
 {
 	while (*p1)
