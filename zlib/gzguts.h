@@ -1,7 +1,10 @@
 /* gzguts.h -- zlib internal header definitions for gz* operations
- * Copyright (C) 2004, 2005, 2010, 2011, 2012, 2013, 2016 Mark Adler
+ * Copyright (C) 2004-2019 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
+
+#ifndef __ZLIB_GZGUTS_H__
+#define __ZLIB_GZGUTS_H__
 
 #ifdef _LARGEFILE64_SOURCE
 #  ifndef _LARGEFILE_SOURCE
@@ -191,6 +194,7 @@ typedef struct {
         /* just for writing */
     int level;              /* compression level */
     int strategy;           /* compression strategy */
+    int reset;              /* true if a reset is pending after a Z_FINISH */
         /* seek request */
     z_off64_t skip;         /* amount to skip (already rewound if backwards) */
     int seek;               /* true if seek request pending */
@@ -221,3 +225,5 @@ unsigned ZLIB_INTERNAL gz_intmax OF((void));
 #if defined(ZLIB_COMPILATION) && defined(ZLIB_SLB)
 #include "zlibslb.h"
 #endif
+
+#endif /* __ZLIB_GZGUTS_H__ */

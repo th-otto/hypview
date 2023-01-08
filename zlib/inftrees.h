@@ -1,3 +1,6 @@
+#ifndef __ZLIB_INFTREES_H__
+#define __ZLIB_INFTREES_H__
+
 /* inftrees.h -- header to use inftrees.c
  * Copyright (C) 1995-2005, 2010 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
@@ -60,3 +63,5 @@ typedef enum {
 int ZLIB_INTERNAL inflate_table OF((codetype type, unsigned short FAR *lens,
                              unsigned codes, code FAR * FAR *table,
                              unsigned FAR *bits, unsigned short FAR *work));
+
+#endif

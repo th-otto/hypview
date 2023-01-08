@@ -1,3 +1,6 @@
+#ifndef __ZLIB_INFFIXED_H__
+#define __ZLIB_INFFIXED_H__ 1
+
     /* inffixed.h -- table for decoding fixed codes
      * Generated automatically by makefixed().
      */
@@ -92,3 +95,5 @@
         {16,5,4},{24,5,769},{20,5,49},{28,5,12289},{18,5,13},{26,5,3073},
         {22,5,193},{64,5,0}
     };
+
+#endif /* __ZLIB_INFFIXED_H__ */

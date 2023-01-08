@@ -1,5 +1,5 @@
 /* gzwrite.c -- zlib functions for writing gzip files
- * Copyright (C) 2004-2017 Mark Adler
+ * Copyright (C) 2004-2019 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -99,6 +99,15 @@ local int gz_comp(gz_statep state, int flush)
         return 0;
     }
 
+    /* check for a pending reset */
+    if (state->reset) {
+        /* don't start a new gzip member unless there is data to write */
+        if (strm->avail_in == 0)
+            return 0;
+        deflateReset(strm);
+        state->reset = 0;
+    }
+
     /* run deflate() on provided input until it produces no more output */
     ret = Z_OK;
     do {
@@ -136,7 +145,7 @@ local int gz_comp(gz_statep state, int flush)
 
     /* if that completed a deflate stream, allow another to start */
     if (flush == Z_FINISH)
-        deflateReset(strm);
+        state->reset = 1;
 
     /* all done, no errors */
     return 0;
@@ -337,10 +346,10 @@ int ZEXPORT gzputc(gzFile file, int c)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzputs(gzFile file, const char *str)
+int ZEXPORT gzputs(gzFile file, const char *s)
 {
-    int ret;
     z_size_t len;
+    z_size_t put;
     gz_statep state;
 
     /* get internal structure */
@@ -353,9 +362,14 @@ int ZEXPORT gzputs(gzFile file, const char *str)
         return -1;
 
     /* write string */
-    len = strlen(str);
-    ret = (int)gz_write(state, str, len);
-    return ret == 0 && len != 0 ? -1 : ret;
+    len = strlen(s);
+    if ((int)len < 0 || (unsigned)len != len)
+    {
+        gz_error(state, Z_STREAM_ERROR, "string length does not fit in int");
+        return -1;
+    }
+    put = gz_write(state, s, len);
+    return put < len ? -1 : (int)len;
 }
 
 #if defined(STDC) || defined(Z_HAVE_STDARG_H)
@@ -427,7 +441,7 @@ int ZEXPORTVA gzvprintf(gzFile file, const char *format, va_list va)
         strm->avail_in = state->size;
         if (gz_comp(state, Z_NO_FLUSH) == -1)
             return state->err;
-        memcpy(state->in, state->in + state->size, left);
+        memmove(state->in, state->in + state->size, left);
         strm->next_in = state->in;
         strm->avail_in = left;
     }
@@ -526,7 +540,7 @@ int ZEXPORTVA gzprintf (file, format, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
         strm->avail_in = state->size;
         if (gz_comp(state, Z_NO_FLUSH) == -1)
             return state->err;
-        memcpy(state->in, state->in + state->size, left);
+        memmove(state->in, state->in + state->size, left);
         strm->next_in = state->in;
         strm->avail_in = left;
     }

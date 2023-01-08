@@ -26,6 +26,10 @@ struct internal_state      {int dummy;}; /* for buggy compilers */
 #include "iowin32.h"
 #include "dbgmem.h"
 
+#ifndef NO_DUMMY_DECL
+struct internal_state      {int dummy;}; /* for buggy compilers */
+#endif
+
 #ifndef INVALID_HANDLE_VALUE
 #define INVALID_HANDLE_VALUE (0xFFFFFFFF)
 #endif
@@ -424,6 +428,7 @@ int ZCALLBACK win32_close_file_func (voidpf opaque, voidpf stream)
 int ZCALLBACK win32_error_file_func (voidpf opaque,voidpf stream)
 {
     int ret=-1;
+
     (void)opaque;
     if (stream!=NULL)
     {
