@@ -194,7 +194,7 @@ If the  data belongs  to a  text page  ((!link [@node] [Command @node]), (!link 
         !item [ ] Daten
         !end_xlist
         Type 47 is used to store the dithermask for images. In this case,
-        it immediately preceeds the corresponding image command.
+        it immediately precedes the corresponding image command.
 
     !item [d)] Optional window (!link [title] [Command @title]) ((!link [@node] [Command @node]), (!link [@title] [Command @title]))
         !begin_xlist [1] !compressed

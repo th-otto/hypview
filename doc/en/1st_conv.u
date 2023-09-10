@@ -117,7 +117,7 @@ switch to disable automatic cross referencing on compilation.
 !begin_node Option -q
 !alias -q
 
-This option supresses output apart from error messages.
+This option suppresses output apart from error messages.
 (i.e. 1stConv runs in 'quiet' mode.
 
 This option is particularly useful when 1stConv output is diverted to a

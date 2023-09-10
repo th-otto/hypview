@@ -532,7 +532,7 @@ This variable is ignored in monochrome resolutions.
 !item [PATHS]
 Contains a list of paths ST-Guide searches to locate files that are
 to be displayed via external references (see 'Link' for more
-details). Several paths may be entered by seperating each path with
+details). Several paths may be entered by separating each path with
 a comma or semi-colon.
 
 For example:
@@ -914,7 +914,7 @@ click.
 
 To use, you must first define the mark using the key sequence
 (!key [Shift + Fx]), it is subsequently retrieved using just the
-function key (!key [Fx]), or with a mouse click as previousl described.
+function key (!key [Fx]), or with a mouse click as previously described.
 The defined marks can be retained after switch off, provided
 that the variable MARKFILE has been set, this will ensure that
 marks are loaded and saved automatically by ST-Guide.
@@ -2038,8 +2038,8 @@ the window (VT 52)
 !item [ST-Guide:] Use of external references will now allow you to define
 paths including the first '/' or '\\', the statement of
 paths to files is no longer possible (only caused problems
-anyway), to use seperate paths for node names can also be
-acheived (see also option -k of HCP)
+anyway), to use separate paths for node names can also be
+achieved (see also option -k of HCP)
 !item [ST-Guide:] 'Set mark' and 'Go to mark' have been removed in favour of
 10 freely definable marks; Set by Shift-Fx, Call by Fx
 !item [ST-Guide:] New variable MARKFILE contains the access path to the file
@@ -2055,7 +2055,7 @@ displayed in ST-Guide
 !item [ST-Guide:] Small Bug in memory shortage behaviour, rectified
 !item [ST-Guide:] Pictures can now be centred
 !item [ST-Guide:] Windows can't be made smaller than an icon plus three text
-lines, this will avoid a display errror
+lines, this will avoid a display error
 !item [ST-Guide:] Positioning error with graphic objects in connection with
 fonts that are narrower or wider than the system font,
 rectified
@@ -2113,7 +2113,7 @@ rectified
 !item [HCP:] '+q' will also toggle to '-q', using it allows you to undo
 locally what HCP is to do as defined as a preset in HCP_OPT
 by using +i1 you can now build a "distributed", i.e. a
-seperate page for each character
+separate page for each character
 !item [HCP:] Problems with @uses in REF-Files and use of @symbols
 rectified
 !item [HCP:] No more superfluous blanks in the Index page

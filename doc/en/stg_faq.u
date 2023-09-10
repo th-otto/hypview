@@ -274,11 +274,11 @@
 !begin_itemize
    !item ST-Guide makes no response whatsoever (!nl)
       Check whether the program in question supports this feature. If
-      neccessary rename ST-Guide as Help-ACC and try that:
+      necessary rename ST-Guide as Help-ACC and try that:
       !begin_xlist [Everest:] !compressed
       !item [7UP:]     Works in dialogs
       !item [Everest:] Currently only works in the file monitor the next
-               version howver does work.
+               version however does work.
       !item [QED:]     Currently only in the file monitor
       !item [Tempus:]  No information
       !item [xEDIT:]   No information
@@ -659,7 +659,7 @@ Contributions: Landessparkasse zu Oldenburg
 
 !begin_blist [Q:]
 
-!item [Q:] I prefer the method used by (!link [1stGuide] [Using 1stGuide & PC_HELP files with ST-Guide]) where every page is a seperate
+!item [Q:] I prefer the method used by (!link [1stGuide] [Using 1stGuide & PC_HELP files with ST-Guide]) where every page is a separate
 file.
 Is this possible with ST-Guide?
 !item [A:] Yes, use the (!XLINK [@include] [hcp] [Command @include]) command.
@@ -675,7 +675,7 @@ Is this possible with ST-Guide?
 
 !item [Q:] But this only generates one file per page which means the entire
    file needs to be stored even if only a small part of the text is
-   required -and what about seperate, but interrelated, files?
+   required -and what about separate, but interrelated, files?
 !item [A:] Don't worry! The (!XLINK [@uses] [hcp] [Command @uses]) command processes both the HYP
    and REF files to automatically establish comprehensive text
    references.
@@ -771,7 +771,7 @@ Is this possible with ST-Guide?
 
 !item [Q:] That's well and good but I have a couple of pages in my text whose
    names appear very frequently in different nodes and these ideally
-   shouldn't be automatically referenced for every occurence, is there
+   shouldn't be automatically referenced for every occurrence, is there
    an alternative?
 !item [A:] The (!XLINK [@noref] [hcp] [Command @noref]) command is designed specifically for this eventuality.
    Nodes within this command are not automatically referenced but
