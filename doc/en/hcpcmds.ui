@@ -794,7 +794,7 @@ These patterns may be used with the commands @box and @rbox.
 Syntax: @line <x-offset = Start-column> <x-length = Number of columns>
               <y-length = Number of lines> [<attribute> [<style>]]
 
-This command is used for drawing lines in hypertexts. It is particuarly
+This command is used for drawing lines in hypertexts. It is particularly
 effective as a stylish alternative to the usual ASCII underlining
 and also for linking rectangles with one another and/or drawing  arrows
 between texts, images and rectangles.
@@ -1296,7 +1296,7 @@ database name will be recreated.
 !index remark
 !html_name command_remark_hcp
 
-Theses directives can be used for providing source texts with comments.
+These directives can be used for providing source texts with comments.
 They may only be placed at the start of a line, and make the HCP ignore
 the whole line so it is not incorporated in the hypertext.
 
@@ -1623,7 +1623,7 @@ which HypView will then look for in the (!file [hypview.ini]) file.
 !end_quote
 
 One should note the '$' character before the name, from which  ST-Guide
-recognises that this is a varaible.
+recognises that this is a variable.
 
 For this to work, (!file [hypview.ini]) then  has to contain something like  the
 following:

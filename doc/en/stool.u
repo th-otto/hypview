@@ -364,7 +364,7 @@ would then appear as follows:
 !begin_preformatted
           --------Root-------
           |                 |
-    Documenation       Entertainment-------
+    Documentation       Entertainment-------
                             |             |
                         Hobbits.hyp   Dwarfs.hyp
 !end_preformatted
@@ -545,7 +545,7 @@ special importance if you intend  to distribute your hypertexts  to
 other users!
 
 A link is set for each file so  that it can be accessed even if  it
-is addded at a  later stage, as  long as this  is in the  specified
+is added at a  later stage, as  long as this  is in the  specified
 path, or one of the search paths defined in (!file [hypview.ini]).
 
 The filename for  the catalogue  is fixed; the  English version  is
@@ -627,7 +627,7 @@ Specialist text/Drinks
 !end_sourcecode
 
 A theme assigned in  the configuration file  has a higher  priority
-than a theme specifed  in a hypertext, which  makes it easy to  re-
+than a theme specified  in a hypertext, which  makes it easy to  re-
 classify hypertexts according to your own requirements.
 
 !end_node # Changing or supplementing themes

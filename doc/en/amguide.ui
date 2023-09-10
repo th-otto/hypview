@@ -43,7 +43,7 @@ Global tags and commands
 @macro v40
     Defines a macro. A macro consists of a name, and a string to
     substitute for it in the document. This string may contain arguments,
-    refered to as $1, $2 and so on. A macro can override the built-in
+    referred to as $1, $2 and so on. A macro can override the built-in
     tags and commands. Example: @macro bulletlink @{" " link $2} $1 
 @onclose v40
     Specifies an ARexx script to execute when the document is closed.
@@ -77,7 +77,7 @@ Node-level tags and commands
 @toc base
     The contents page, displayed when the user clicks the \u2018Contents\u2019 button. This defaults to the main node. Example: @toc "A contents node" 
 @embed v39
-    Embeds a text document withing this node. Example: @embed "Documents:Text/speech.txt" 
+    Embeds a text document within this node. Example: @embed "Documents:Text/speech.txt" 
 @proportional v39
     Specifies that a proportional font is used for this node. Example: @proportional 
 @wordwrap v39
@@ -96,7 +96,7 @@ Node-level tags and commands
 Local tags and commands
 
 @{alink} base
-    Specifies a hypertext link to open in a new window. Non-local links are specifed using the path to the amigaguide file, followed by / and the node name. A line number can also be specified. Example: @{"Link text" alink "local node" 7} 
+    Specifies a hypertext link to open in a new window. Non-local links are specified using the path to the amigaguide file, followed by / and the node name. A line number can also be specified. Example: @{"Link text" alink "local node" 7} 
 @{bg} base
     Specifies the background colour to use from the next
     character onwards. Valid values are \u2018back\u2019,
@@ -112,7 +112,7 @@ Local tags and commands
     \u2018highlight\u2019, \u2018shadow\u2019, \u2018shine\u2019
     and \u2018text\u2019. Example: @{fg text} 
 @{link} base
-    Specifies a hypertext link to another node. Non-local links are specifed using the path to the amigaguide file, followed by / and the node name. A line number can also be specified. Example: @{"Link text" link "Documents:Amigaguide/safalra.guide/non local node name" 12} 
+    Specifies a hypertext link to another node. Non-local links are specified using the path to the amigaguide file, followed by / and the node name. A line number can also be specified. Example: @{"Link text" link "Documents:Amigaguide/safalra.guide/non local node name" 12} 
 @{rx} base
     Specifies a hypertext link that executes an ARexx script. Example: @{"Execute a script" rx "script.rexx"} 
 @{rxs} base
