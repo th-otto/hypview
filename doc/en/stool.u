@@ -364,7 +364,7 @@ would then appear as follows:
 !begin_preformatted
           --------Root-------
           |                 |
-    Documentation       Entertainment-------
+    Documentation      Entertainment-------
                             |             |
                         Hobbits.hyp   Dwarfs.hyp
 !end_preformatted
