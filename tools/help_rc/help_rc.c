@@ -414,6 +414,7 @@ static void read_info(void)
 				s = bold_off;
 				break;
 			case 2:
+			default:
 				s = form_feed;
 				break;
 			}
