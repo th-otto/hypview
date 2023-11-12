@@ -33,6 +33,7 @@
 #ifdef HAVE_SETLOCALE
 #include <locale.h>
 #endif
+#define CURL_DISABLE_DEPRECATION
 #include <curl/curl.h>
 #include <sys/time.h>
 #include <utime.h>
@@ -893,10 +894,8 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 	char *local_filename;
 	struct curl_parms parms;
 	struct stat st;
-	long unmet;
 	long respcode;
 	CURLcode curlcode;
-	double size;
 	char err[CURL_ERROR_SIZE];
 	char *content_type;
 
@@ -932,15 +931,24 @@ static char *curl_download(CURL *curl, hcp_opts *opts, GString *body, const char
 	 */
 	curlcode = curl_easy_perform(curl);
 	
-	respcode = 0;
-	unmet = -1;
-	size = 0;
-	content_type = NULL;
-	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &respcode);
-	curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
-	curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &size);
-	curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &content_type);
-	hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, url=%s, curl=%d, resp=%ld, size=%ld, content=%s\n", currdate(), fixnull(cgiRemoteHost), filename, curlcode, respcode, (long)size, printnull(content_type));
+	{
+		long unmet;
+
+#if LIBCURL_VERSION_NUM >= 0x073700 /* 7.55.0 */
+		off_t size = 0;
+		curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD_T, &size);
+#else
+		double size = 0;
+		curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &size);
+#endif
+		respcode = 0;
+		unmet = -1;
+		content_type = NULL;
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &respcode);
+		curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
+		curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &content_type);
+		hyp_utf8_fprintf(opts->errorfile, "%s: GET from %s, url=%s, curl=%d, resp=%ld, size=%ld, content=%s\n", currdate(), fixnull(cgiRemoteHost), filename, curlcode, respcode, (long)size, printnull(content_type));
+	}
 	
 	if (parms.fp)
 	{
@@ -1010,6 +1018,40 @@ static void mk_output_dir(hcp_opts *opts)
 }
 	
 /* ------------------------------------------------------------------------- */
+
+#if defined(__LINUX_GLIBC_WRAP_H)
+
+/* ugly hack to get __libc_start_main versioned */
+
+#if __GLIBC_PREREQ(2, 34)
+
+#define STR_(s) #s
+#define STR(s)  STR_(s)
+#include <dlfcn.h>
+
+#ifdef __UCLIBC__
+#define __libc_start_main       __uClibc_main
+#endif
+
+int __libc_start_main(
+        int (*main)(int,char**,char**), int ac, char **av,
+        int (*init)(void), void (*fini)(void),
+        void (*rtld_fini)(void), void *stack_end);
+int __libc_start_main(
+        int (*main)(int,char**,char**), int ac, char **av,
+        int (*init)(void), void (*fini)(void),
+        void (*rtld_fini)(void), void *stack_end)
+{
+	typeof(__libc_start_main) *real_lsm;
+	if ((*(void**)&real_lsm = dlsym(RTLD_NEXT, STR(__libc_start_main))) != 0)
+		return real_lsm(main, ac, av, init, fini, rtld_fini, stack_end);
+	fputs("BUG: dlsym error\n", stderr);
+	return 1;
+}
+#undef STR
+#undef STR_
+#endif
+#endif
 
 /*
  * this module does not get any parameters, so we don't need our wrappers */
