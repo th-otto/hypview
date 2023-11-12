@@ -838,7 +838,7 @@ static int mint_fstat(int fd, struct stat *st)
 */
 static int rpl_do_stat(char const *name, struct stat *st, int lflag)
 {
-	int result = (lflag ? real_lstat : real_stat)(name, st);
+	int result = lflag ? real_lstat(name, st) : real_stat(name, st);
 
 	/*
 	 * Solaris 9 mistakenly succeeds when given a non-directory with a
@@ -888,7 +888,7 @@ static int rpl_do_stat(char const *name, struct stat *st, int lflag)
 				fixed_name[len++] = '/';
 				fixed_name[len] = '\0';
 			}
-			result = (lflag ? real_lstat : real_stat)(fixed_name, st);
+			result = lflag ? real_lstat(fixed_name, st) : real_stat(fixed_name, st);
 			if (result == 0 && check_dir && !S_ISDIR(st->st_mode))
 			{
 				result = -1;

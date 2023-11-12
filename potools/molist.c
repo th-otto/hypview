@@ -17,19 +17,18 @@
 #include <ctype.h>
 #include "time_.h"
 #include <sys/stat.h>
+#include "stat_.h"
 #include <fcntl.h>
 #include "portab.h"
 #include "hypintl.h"
 #include "gmo.h"
 #include "gettextP.h"
 #include "hash-string.h"
-#include "stat_.h"
 #include "hypmem.h"
 #ifdef _MSC_VER
 #include <io.h>
 #endif
 #include <sys/types.h>
-#include <sys/stat.h>
 
 /* The separator between msgctxt and msgid in a .mo file. */
 #ifndef GETTEXT_CONTEXT_GLUE

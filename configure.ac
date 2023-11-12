@@ -300,22 +300,40 @@ AC_CHECK_TOOL(STRIP, strip, :)
 # to make
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-AH_TOP([
-#ifndef __CONFIG_H__
-#define __CONFIG_H__ 1
-
-#include "linux/libcwrap.h"
-
-])
-dnl append that also to confdefs.h
-echo "#include \"${srcdir}/include/linux/libcwrap.h\"" >> confdefs.h
-
 AC_PROG_CC
 AC_EXEEXT
 AC_C_CONST
 AC_PROG_CC_C_O
 AX_PROG_CC_FOR_BUILD
 AC_PROG_OBJC
+
+AC_MSG_CHECKING(whether we are using glibc)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdlib.h>
+#ifndef __GLIBC__
+no
+#endif]],[[]])], result=yes, result=no)
+AC_MSG_RESULT([$result])
+
+if test $result = yes; then
+AC_DEFINE([HAVE_GLIBC], 1, [Define if using glibc])
+dnl append that also to confdefs.h
+echo "#include \"${srcdir}/include/linux/libcwrap.h\"" >> confdefs.h
+GLIBC_SO_SCRIPT='$(top_srcdir)/include/linux/libc.so'
+fi
+AC_SUBST([GLIBC_SO_SCRIPT])
+
+AH_TOP([
+#ifndef __CONFIG_H__
+#define __CONFIG_H__ 1
+
+#undef HAVE_GLIBC
+#ifdef HAVE_GLIBC
+#include "linux/libcwrap.h"
+#endif
+
+])
+dnl append that also to confdefs.h
+echo "#include \"${srcdir}/include/linux/libcwrap.h\"" >> confdefs.h
 
 ###############################################################################
 #
@@ -908,7 +926,7 @@ AH_TEMPLATE([LIBHPDF_HAVE_NOZLIB], [zlib is not available])
 AH_TEMPLATE([LIBHPDF_WITH_ASIAN_FONTS], [include support for asian character encodings])
 AC_ARG_WITH(pdf,
   [AS_HELP_STRING([--with-pdf],[include PDF output support])],
-  [ ],
+  [with_pdf=$withval],
   [with_pdf=no]
 )
 AM_CONDITIONAL(WITH_PDF, test "$with_pdf" = "yes")
@@ -916,7 +934,7 @@ if test "$with_pdf" = "yes"; then
 AC_DEFINE([WITH_PDF])
 AC_ARG_ENABLE(asian-fonts,
   [AS_HELP_STRING([--enable-asian-font],[include support for asian character encodings])],
-  [ ],
+  [with_asian_fonts=$enableval],
   [with_asian_fonts=no]
 )
 fi
@@ -934,7 +952,7 @@ AH_TEMPLATE([HAVE_PNG], [libpng is available])
 
 AC_ARG_WITH(png,
   [AS_HELP_STRING([--with-png],[include PNG support (no|yes|system)])],
-  [ ],
+  [with_png=$withval],
   [with_png=system]
 )
 if test "$with_png" = "system"; then
@@ -945,10 +963,10 @@ if test "$with_png" = "system"; then
      with_png=no
   fi
 fi
-if test "$with_png" = "yes"; then
-  AC_DEFINE([HAVE_PNG])
-else
+if test "$with_png" = "no"; then
   AC_MSG_WARN([pnglib not available, resource files cannot be displayed])
+else
+  AC_DEFINE([HAVE_PNG])
 fi
 AM_CONDITIONAL(HAVE_PNG, test "$with_png" != "no")
 AM_CONDITIONAL(NEED_ZLIB, test "$with_png" != "no" -o "$with_pdf" = "yes")

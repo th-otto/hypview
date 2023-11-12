@@ -34,7 +34,7 @@
 #include <io.h>
 #endif
 #include <sys/types.h>
-#include <sys/stat.h>
+#include "stat_.h"
 
 #ifdef __GNUC__
 # undef  alloca

@@ -7,6 +7,7 @@
 #undef HAVE_GLIB
 #undef HAVE_GTK
 #include "windows_.h"
+#include "linux/libcwrap.h"
 
 #include <stdio.h>
 #include <stdarg.h>

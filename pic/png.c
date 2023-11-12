@@ -8,6 +8,11 @@
 
 #include "picture.h"
 
+/* small hack: define png_int_t if *not* using our private version of pnglib */
+#ifndef __gcc_double_t_defined
+typedef int png_int_t;
+#endif
+
 
 #define get_long() \
 	(((_ULONG)(buf[0]) << 24) | \

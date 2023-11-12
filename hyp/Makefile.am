@@ -337,6 +337,7 @@ endif
 if WITH_GUI_GTK
 hcp_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
+hcp_LDADD += @GLIBC_SO_SCRIPT@
 
 hcp.ttp: hcp
 	$(LN_S) $?$(EXEEXT) $@
@@ -389,6 +390,7 @@ hypview_cgi_LDFLAGS = -Wl,-rpath,$(CURL_LIBDIR)
 if WITH_GUI_GTK
 hypview_cgi_LDFLAGS += -Wl,-rpath,$(GTK_LIBDIR)
 endif
+hypview_cgi_LDADD += @GLIBC_SO_SCRIPT@
 hypview.cgi$(EXEEXT): $(hypview_cgi_OBJECTS) $(hypview_cgi_DEPENDENCIES) $(EXTRA_hypview_cgi_DEPENDENCIES) 
 	@rm -f $@
 	$(AM_V_CCLD)$(hypview_cgi_LINK) $(hypview_cgi_OBJECTS) $(hypview_cgi_LDADD) $(LIBS)
@@ -423,6 +425,7 @@ endif
 if WITH_GUI_GTK
 hypinfo_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
+hypinfo_LDADD += @GLIBC_SO_SCRIPT@
 hypinfo$(EXEEXT): $(hypinfo_OBJECTS) $(hypinfo_DEPENDENCIES) $(EXTRA_hypinfo_DEPENDENCIES) 
 	@rm -f hypinfo$(EXEEXT)
 	$(AM_V_CCLD)$(hypinfo_LINK) $(hypinfo_OBJECTS) $(hypinfo_LDADD) $(LIBS)
@@ -450,6 +453,7 @@ reflink_LDADD += reflink_rc.res
 reflink_rc.res: $(srcdir)/reflink_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
 	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
+reflink_LDADD += @GLIBC_SO_SCRIPT@
 
 reflink.ttp: reflink
 	$(LN_S) $?$(EXEEXT) $@
@@ -469,6 +473,7 @@ refcheck_LDADD += refcheck_rc.res
 refcheck_rc.res: $(srcdir)/refcheck_rc.rc $(srcdir)/../po/linguas.rc $(MOFILES)
 	$(AM_V_RC)$(WINDRES) $(AM_CPPFLAGS) -I../po --target=$(RC_TARGET) --input-format rc --output-format coff -o $@ $<
 endif
+refcheck_LDADD += @GLIBC_SO_SCRIPT@
 
 refcheck.ttp: refcheck
 	$(LN_S) $?$(EXEEXT) $@
@@ -490,6 +495,7 @@ endif
 if WITH_GUI_GTK
 stool_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
+stool_LDADD += @GLIBC_SO_SCRIPT@
 
 stool.tos: stool
 	$(LN_S) $?$(EXEEXT) $@
@@ -515,6 +521,7 @@ endif
 if WITH_GUI_GTK
 hypfind_LDFLAGS = -Wl,-rpath,$(GTK_LIBDIR)
 endif
+hypfind_LDADD += @GLIBC_SO_SCRIPT@
 
 hypfind.ttp: hypfind
 	$(LN_S) $?$(EXEEXT) $@

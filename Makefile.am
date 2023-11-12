@@ -92,3 +92,21 @@ endif
 if OS_MACOS
 	tar cvfj hcp-$(HYP_VERSION)-macos.tar.bz2 $(DISTDIR)
 endif
+
+
+DIST_CONFIGURE_ARGS=--prefix=/usr --enable-warnings --enable-fatal-warnings --with-pdf
+
+# reconfigure so that command line tools do not need glib-2.0 or libpng
+
+unixdist:
+	$(MAKE) clean
+	./configure ./configure $(DIST_CONFIGURE_ARGS)
+	$(MAKE) -j8
+	mkdir $(DISTDIR)/bin
+	cp -a gtk/hypview$(EXEEXT) $(DISTDIR)/bin
+	$(MAKE) clean
+	./configure ./configure $(DIST_CONFIGURE_ARGS) --without-gui --with-png
+	$(MAKE) bindist
+	cp -a hyp/hypview.cgi $(DISTDIR)/bin
+	$(MAKE) clean
+	./configure ./configure $(DIST_CONFIGURE_ARGS) --with-pdf

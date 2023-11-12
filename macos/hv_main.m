@@ -9,7 +9,7 @@
 #include <time.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <sys/stat.h>
+#include "stat_.h"
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <dlfcn.h>
