@@ -801,7 +801,7 @@ Is this possible with ST-Guide?
    the text is referenced.
 
    These commands make it possible to create, for example, for a
-   herarchical table of contents.
+   hierarchical table of contents.
    In such a structure, for example, the "Page >" button could be
    disabled even though further pages exist. HCP still automatically
    checks these pages and adds corresponding entries in the Index page.
